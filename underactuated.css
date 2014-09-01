@@ -1,0 +1,43 @@
+/*********************************************
+ * GLOBAL STYLES
+ *********************************************/
+body {
+  background: white;
+  background-color: white; 
+  width: 500px; 
+  margin-left: auto; 
+  margin-right: auto; 
+  text-align: justify;
+}
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: Arial, Helvetica, sans-serif;
+  color: rgb(153,51,51); /* mit red */
+}
+
+a:not(.image) {
+  color: rgb(153,51,51); /* mit red */
+}
+
+[data-type="titlepage"] {
+  font-size: 22px;
+}
+[data-type="titlepage"] h1 {
+  font-variant: small-caps; 
+  margin-bottom: 0px;
+}
+
+[data-type="subtitle"] {
+  font-weight: bold;  
+  font-style: italic;
+  font-size: 16px;
+  margin-top: 0px;
+}
+
+[data-type="author"] {
+  font-size: 18px;  
+}
+
+b { color: rgb(153,51,51); /* mit red */ }
+i { color: rgb(153,51,51); /* mit red */ }
+em { color: rgb(153,51,51); /* mit red */ }
