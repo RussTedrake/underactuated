@@ -43,6 +43,10 @@ a:not(.image) {
 [data-type="author"] {
   font-size: 18px;  
 }
+[data-type="copyright"] {
+  font-size: 14px;  
+  text-align: right;
+}
 
 b { color: rgb(153,51,51); /* mit red */ }
 i { color: rgb(153,51,51); /* mit red */ }
@@ -79,6 +83,10 @@ body {
 }
 [data-type="sect2"] h1:before {
   content: counter(chapter) "." counter(sect1) "." counter(sect2) " ";
+}
+
+[data-type="figure"] {
+  text-align: center;
 }
 
 /* end counters*/

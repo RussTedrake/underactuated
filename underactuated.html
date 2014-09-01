@@ -41,7 +41,8 @@
       <header>
         <h1>Underactuated Robotics</h1>
         <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p>
-      	<p data-type="author">Russ Tedrake, 2014</p>
+      	<p data-type="author">Russ Tedrake</p>
+        <p data-type="copyright">&copy; Russ Tedrake, 2014</p>
       </header>
     </section>
     <div style="display:none"> <!-- definitions for mathjax -->
@@ -96,7 +97,7 @@
             below now].
           </p>
           
-          <p style="text-align: center;">
+          <p data-type="figure">
             <object name="kaltura_player_1409562873" id="kaltura_player_1409562873" type="application/x-shockwave-flash" allowScriptAccess="always" allowNetworking="all" allowFullScreen="true" height="300" width="100%" data="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151?autoPlay=false"><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="allowFullScreen" value="true" /><param name="bgcolor" value="#000000" /><param name="movie" value="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151"/><param name="flashVars" value=""/><a href="http://corp.kaltura.com">video platform</a><a href="http://corp.kaltura.com/video_platform/video_management">video management</a><a href="http://corp.kaltura.com/solutions/video_solution">video solutions</a><a href="http://corp.kaltura.com/video_platform/video_publishing">video player</a></object>          
             Honda's ASIMO (from <a href="http://world.honda.com/ASIMO">http://world.honda.com/ASIMO</a>)
           </p>
@@ -107,27 +108,36 @@
           Although the motions are very smooth, there is something a little
           unnatural about ASIMO's gait.  It feels a little like an astronaut
           encumbered by a heavy space suit.  In fact this is a reasonable
-          analogy... ASIMO is walking like somebody that is unfamiliar with
+          analogy... ASIMO is walking a bit like somebody that is unfamiliar with
           his/her dynamics.  It's control system is using high-gain feedback,
           and therefore considerable joint torque, to cancel out the natural
           dynamics of the machine and strictly follow a desired trajectory.
           This control approach comes with a stiff penalty.  ASIMO uses roughly
           20 times the energy (scaled) that a human uses to walk on the flat
-          (measured by cost of transport) <elib>Collins05</elib>.  Also, control
+          (measured by cost of transport)<elib>Collins05</elib>.  Also, control
           stabilization in this approach only works in a relatively small
           portion of the state space (when the stance foot is flat on the
           ground), so ASIMO can't move nearly as quickly as a human, and cannot
           walk on unmodelled or uneven terrain.          
           </p>
           
-          <p style="color: red;">TODO: Insert movies here</p>
-
+          <p data-type="figure" style="width: 900px; margin-left: auto; margin-right: auto; ">
+            <video width="45%" controls>
+              <source src="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_angle.mpg" type="video/mp4">
+              <a href="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_angle.mpg">Play the video</a>
+            </video> 
+            <video width="45%" controls>
+              <source src="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_behind.mpg" type="video/mp4">
+                <a href="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_behind.mpg">Play the video</a>
+            </video> <br/>
+            A 3D passive dynamic walker by Steve Collins and Andy
+            Ruina<elib>Collins01</elib>
+          </p>
 <p>
 For contrast, let's now consider a very different type of walking
 robot, called a passive dynamic walker (PDW).  This "robot" has no motors,
 no controllers, no computer, but is still capable of walking stably
-down a small ramp, powered only by gravity [watch videos in
-Figure~\ref{f:collins_movie} now].  Most people will agree that the
+down a small ramp, powered only by gravity [watch videos above now].  Most people will agree that the
 passive gait of this machine is more natural than ASIMO's; it is
 certainly more efficient.  Passive walking machines have a long
 history - there are patents for passively walking toys dating back to
