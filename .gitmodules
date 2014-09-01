@@ -1,0 +1,3 @@
+[submodule "HTMLBook"]
+	path = HTMLBook
+	url = https://github.com/oreillymedia/HTMLBook

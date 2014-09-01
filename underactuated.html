@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+
+<html xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ xsi:schemaLocation="http://www.w3.org/1999/xhtml HTMLBook/schema/htmlbook.xsd"
+ xmlns="http://www.w3.org/1999/xhtml">
+
+  <head>
+    <title>Underactuated Robotics</title>
+    <meta name="Underactuated Robotics" content="text/html; charset=utf-8" />
+    
+    <script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    extensions: ["tex2jax.js"],
+    jax: ["input/TeX", "output/HTML-CSS"],
+    TeX: { equationNumbers: {autoNumber: "AMS"} },
+    tex2jax: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+      processEscapes: true
+    },
+    "HTML-CSS": { availableFonts: ["TeX"] }
+  });
+</script>
+    <script type="text/javascript"
+      src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
+    </script>
+    <script type="text/javascript">
+      function bibtex(){
+        var citeTags=document.getElementsByTagName('cite');
+        for(i=0;i<citeTags.length;i++)
+        {
+          var c = citeTags[i].innerHTML;
+          citeTags[i].innerHTML='[<a href="http://groups.csail.mit.edu/locomotion/elib.cgi?b='+c+'">'+(i+1)+'</a>]';
+        }
+      }  
+    </script>    
+  </head>
+  <body data-type="book" class="book" id="htmlbook" onload="bibtex()">
+    <section data-type="titlepage" class="titlepage">
+      <header>
+        <h1>Underactuated Robotics</h1>
+        <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p>
+      	<p data-type="author">Russ Tedrake</p>
+      </header>
+    </section>
+    <div style="display:none"> <!-- definitions for mathjax -->
+      \[
+      \newcommand{\bq}{{\bf q}}
+      \newcommand{\bv}{{\bf v}}
+      \newcommand{\bx}{{\bf x}}
+      \newcommand{\by}{{\bf y}}
+      \newcommand{\bu}{{\bf u}}
+      \newcommand{\bw}{{\bf w}}
+      \newcommand{\bz}{{\bf z}}
+      \newcommand{\bK}{{\bf K}}
+      \newcommand{\balpha}{{\bf \alpha}}
+      \newcommand{\bbeta}{{\bf \beta}}
+      \newcommand{\avg}[1]{E\left[ #1 \right]}
+      \newcommand{\subjto}{\textrm{subject to}}
+      \renewcommand{\minimize}{\operatorname{\textrm{minimize}}}
+      \renewcommand{\maximize}{\operatorname{\textrm{maximize}}}
+      \]
+    </div>    
+    <section data-type="chapter">
+      <h1>Fully-actuated vs Underactuated Systems</h1>
+      
+      <p>Robots today move far too conservatively, and accomplish only a
+        fraction of the tasks and achieve a fraction of the performance that
+        they are mechanically capable of.  In many cases, we are still
+        fundamentally limited by control technology which matured on rigid
+        robotic arms in structured factory environments.  The study of
+        underactuated robotics focuses on building control systems which use
+        the natural dynamics of the machines in an attempt to achieve
+        extraordinary performance in terms of speed, efficiency, or
+        robustness.</p>
+      
+      <section data-type="sect1">
+        <h1>Motivation</h1>
+        <p>Let's start with some examples, and some videos.</p>
+        
+        <section data-type="sect2">
+          <h1>Honda's ASIMO vs. Passive Dynamic Walkers</h1>
+         
+          <p>
+            The world of robotics changed when, in late 1996, Honda Motor
+            Co. announced that they had been working for nearly 15 years (behind
+            closed doors) on walking robot technology.  Their designs have
+            continued to evolve over the last 12 years, resulting in a humanoid
+            robot they call ASIMO (Advanced Step in Innovative MObility).  Honda's
+            ASIMO is widely considered to be the state of the art in walking
+            robots, although there are now many robots with designs and
+            performance very similar to ASIMO's.  We will dedicate effort to
+            understanding a few of the details of ASIMO in
+            chapter~\ref{ch:walking}... for now I just want you to become familiar
+            with the look and feel of ASIMO's movements [watch asimo video
+            in Figure~\ref{f:asimo_movie} now].
+          </p>
+          
+          <p style="color: red;">TODO: Insert movies here</p>
+          
+          <p>
+          I hope that your first reaction is to be incredibly impressed with the
+          quality and versatility of ASIMO's movements.  Now take a second look.
+          Although the motions are very smooth, there is something a little
+          unnatural about ASIMO's gait.  It feels a little like an astronaut
+          encumbered by a heavy space suit.  In fact this is a reasonable
+          analogy... ASIMO is walking like somebody that is unfamiliar with
+          his/her dynamics.  It's control system is using high-gain feedback,
+          and therefore considerable joint torque, to cancel out the natural
+          dynamics of the machine and strictly follow a desired trajectory.
+          This control approach comes with a stiff penalty.  ASIMO uses roughly
+          20 times the energy (scaled) that a human uses to walk on the flat
+          (measured by cost of transport) <cite>Collins05</cite>.  Also, control
+          stabilization in this approach only works in a relatively small
+          portion of the state space (when the stance foot is flat on the
+          ground), so ASIMO can't move nearly as quickly as a human, and cannot
+          walk on unmodelled or uneven terrain.          
+          </p>
+          
+          <p style="color: red;">TODO: Insert movies here</p>
+
+<p>
+For contrast, let's now consider a very different type of walking
+robot, called a passive dynamic walker (PDW).  This ``robot" has no motors,
+no controllers, no computer, but is still capable of walking stably
+down a small ramp, powered only by gravity [watch videos in
+Figure~\ref{f:collins_movie} now].  Most people will agree that the
+passive gait of this machine is more natural than ASIMO's; it is
+certainly more efficient.  Passive walking machines have a long
+history - there are patents for passively walking toys dating back to
+the mid 1800's.  We will discuss, in detail, what people know about
+the dynamics of these machines and what has been accomplished
+experimentally.  This most impressive passive dynamic walker to date
+was built by Steve Collins in Andy Ruina's lab at Cornell<cite>Collins01</cite>.
+</p>
+          
+<p>
+Passive walkers demonstrate that the high-gain, dynamics-cancelling
+feedback approach taken on ASIMO is not a necessary one.  In fact, the
+dynamics of walking is beautiful, and should be exploited - not
+cancelled out.
+</p>
+        </section>
+
+<section data-type="sect2">
+  <h1>Birds vs. modern aircraft</h1>
+
+<p>
+The story is surprisingly similar in a very different type of machine.
+Modern airplanes are extremely effective for steady-level flight in
+still air.  Propellers produce thrust very efficiently, and today's
+cambered airfoils are highly optimized for speed and/or efficiency.
+It would be easy to convince yourself that we have nothing left to
+learn from birds.  But, like ASIMO, these machines are mostly confined
+to a very conservative, low angle-of-attack flight regime where the
+aerodynamics on the wing are well understood.  Birds routinely execute
+maneuvers outside of this flight envelope (for instance, when they are
+landing on a perch), and are considerably more effective than our best
+aircraft at exploiting energy (eg, wind) in the air.  </p>
+
+<p>
+As a consequence, birds are extremely efficient flying machines; some
+are capable of migrating thousands of kilometers with incredibly small
+fuel supplies.  The wandering albatross can fly for hours, or even
+days, without flapping its wings - these birds exploit the shear layer
+formed by the wind over the ocean surface in a technique called
+dynamic soaring.  Remarkably, the metabolic cost of flying for these
+birds is indistinguishable from the baseline metabolic
+cost <cite>Arnould96</cite>, suggesting that they can travel incredible
+distances (upwind or downwind) powered almost completely by gradients
+in the wind.  Other birds achieve efficiency through similarly rich
+interactions with the air - including formation flying, thermal
+soaring, and ridge soaring.  Small birds and large insects, such as
+butterflies and locusts, use `gust soaring' to migrate hundreds or
+even thousands of kilometers carried primarily by the wind.
+</p>
+  
+<p>
+Birds are also incredibly maneuverable.  The roll rate of a highly
+acrobatic aircraft (e.g, the A-4 Skyhawk) is approximately 720
+deg/sec <cite>Shyy08</cite>; a barn swallow has a roll rate in excess of 5000
+  deg/sec <cite>Shyy08</cite>. Bats can be flying at full-speed in one
+direction, and completely reverse direction while maintaining forward
+speed, all in just over 2 wing-beats and in a distance less than half
+the wingspan <cite>Tian06</cite>.  Although quantitative flow visualization
+data from maneuvering flight is scarce, a dominant theory is that the
+ability of these animals to produce sudden, large forces for
+maneuverability can be attributed to unsteady aerodynamics, e.g., the
+animal creates a large suction vortex to rapidly change
+direction\cite{Triantafyllou95}.  These astonishing capabilities are
+called upon routinely in maneuvers like flared perching,
+prey-catching, and high speed flying through forests and caves.  Even
+at high speeds and high turn rates, these animals are capable of
+incredible agility - bats sometimes capture prey on their wings,
+Peregrine falcons can pull 25 G's out of a 240 mph dive to catch a
+sparrow in mid-flight\cite{Tucker98}, and even the small birds outside
+our building can be seen diving through a chain-link fence to grab a
+bite of food. 
+</p>
+  
+<p>  
+Although many impressive statistics about avian flight have been
+recorded, our understanding is partially limited by experimental
+accessibility - it's is quite difficult to carefully measure birds (and
+the surrounding airflow) during their most impressive maneuvers
+without disturbing them.  The dynamics of a swimming fish are closely
+related, and can be more convenient to study.  Dolphins have been
+known to swim gracefully through the waves alongside ships moving at
+20 knots\cite{Triantafyllou95}.  Smaller fish, such as the bluegill
+sunfish, are known to possess an escape response in which they propel
+themselves to full speed from rest in less than a body length; flow
+visualizations indeed confirm that this is accomplished by creating a
+large suction vortex along the side of the body\cite{Tytell08} -
+similar to how bats change direction in less than a body length.
+There are even observations of a dead fish swimming upstream
+by pulling energy out of the wake of a cylinder; this passive
+propulsion is presumably part of the technique used by rainbow trout
+to swim upstream at mating season\cite{Beal06}.
+</p>
+
+</section>
+        
+<section data-type="sect2">        
+<h1>The common theme</h1>
+
+<p>
+Classical control techniques for robotics are based on the idea that
+feedback can be used to override the dynamics of our machines.  These
+examples suggest that to achieve outstanding dynamic performance
+(efficiency, agility, and robustness) from our robots, we need to
+understand how to design control system which take advantage of the
+dynamics, not cancel them out.  That is the topic of this course.
+</p>
+  
+<p>  
+Surprisingly, there are relatively few formal control ideas that
+consider ``exploiting" the dynamics.  In order to convince a control
+theorist to consider the dynamics (efficiency arguments are not
+enough), you have to do something drastic, like taking away his
+control authority - remove a motor, or enforce a torque-limit.  These
+issues have created a formal class of systems, the underactuated
+systems, for which people have begun to more carefully consider the
+dynamics of their machines in the context of control.
+</p>
+  
+        </section>
+      </section>
+        
+        
+      <section data-type="sect1">
+        <h1>Definitions</h1>
+        
+        <p>
+          According to Newton, the dynamics of mechanical systems are second
+          order ($F = ma$).  Their state is given by a vector of positions,
+          $\bq$, and a vector of velocities, $\dot{\bq}$, and (possibly) time.
+          The general form for a second-order controllable dynamical system is:
+          $$\ddot{\bq} = {\bf f}(\bq,\dot{\bq},\bu,t),$$ where $\bu$ is the
+          control vector.  As we will see, the dynamics for many of the
+          robots that we care about turn out to be affine in commanded torque,
+          so let's consider a slightly constrained form:
+          \begin{equation}\ddot{\bq} = {\bf f}_1(\bq,\dot{\bq},t) + {\bf
+          f}_2(\bq,\dot{\bq},t)\bu \label{eq:f1_plus_f2}.\end{equation}
+        </p>
+          
+          <div class="definition">
+            <h1>Fully-Actuated</h1>
+          A control system described by equation \ref{eq:f1_plus_f2} is
+          fully-actuated in configuration $(\bq,\dot{\bq},t)$ if it is able to
+          command an instantaneous acceleration in an arbitrary direction in
+          $\bq$: \begin{equation} \textrm{rank}\left[{\bf f}_2
+          (\bq,\dot{\bq},t)\right] = \dim\left[\bq\right].\end{equation}
+          </div>
+        </section>
+        
+      </section>
+        
+  </body>
+</html>
