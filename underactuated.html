@@ -63,7 +63,7 @@
       \]
     </div>    
     <section data-type="chapter">
-      <h1>Chapter 1<br/> Fully-actuated vs Underactuated Systems</h1>
+      <h1>Fully-actuated vs Underactuated Systems</h1>
       
       <p>Robots today move far too conservatively, and accomplish only a
         fraction of the tasks and achieve a fraction of the performance that
@@ -88,16 +88,18 @@
             closed doors) on walking robot technology.  Their designs have
             continued to evolve over the last 12 years, resulting in a humanoid
             robot they call ASIMO (Advanced Step in Innovative MObility).  Honda's
-            ASIMO is widely considered to be the state of the art in walking
+            ASIMO is widely considered to be state of the art in walking
             robots, although there are now many robots with designs and
             performance very similar to ASIMO's.  We will dedicate effort to
-            understanding a few of the details of ASIMO in
-            chapter~\ref{ch:walking}... for now I just want you to become familiar
-            with the look and feel of ASIMO's movements [watch asimo video
-            in Figure~\ref{f:asimo_movie} now].
+            understanding a few of the details of ASIMO when we discuss algorithms for walking... for now I just want you to become familiar
+            with the look and feel of ASIMO's movements [watch the asimo video
+            below now].
           </p>
           
-          <p style="color: red;">TODO: Insert movies here</p>
+          <p style="text-align: center;">
+            <object name="kaltura_player_1409562873" id="kaltura_player_1409562873" type="application/x-shockwave-flash" allowScriptAccess="always" allowNetworking="all" allowFullScreen="true" height="300" width="100%" data="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151?autoPlay=false"><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="allowFullScreen" value="true" /><param name="bgcolor" value="#000000" /><param name="movie" value="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151"/><param name="flashVars" value=""/><a href="http://corp.kaltura.com">video platform</a><a href="http://corp.kaltura.com/video_platform/video_management">video management</a><a href="http://corp.kaltura.com/solutions/video_solution">video solutions</a><a href="http://corp.kaltura.com/video_platform/video_publishing">video player</a></object>          
+            Honda's ASIMO (from <a href="http://world.honda.com/ASIMO">http://world.honda.com/ASIMO</a>)
+          </p>
           
           <p>
           I hope that your first reaction is to be incredibly impressed with the
@@ -122,7 +124,7 @@
 
 <p>
 For contrast, let's now consider a very different type of walking
-robot, called a passive dynamic walker (PDW).  This ``robot" has no motors,
+robot, called a passive dynamic walker (PDW).  This "robot" has no motors,
 no controllers, no computer, but is still capable of walking stably
 down a small ramp, powered only by gravity [watch videos in
 Figure~\ref{f:collins_movie} now].  Most people will agree that the
@@ -167,7 +169,7 @@ days, without flapping its wings - these birds exploit the shear layer
 formed by the wind over the ocean surface in a technique called
 dynamic soaring.  Remarkably, the metabolic cost of flying for these
 birds is indistinguishable from the baseline metabolic
-cost <elib>Arnould96</elib>, suggesting that they can travel incredible
+cost<elib>Arnould96</elib>, suggesting that they can travel incredible
 distances (upwind or downwind) powered almost completely by gradients
 in the wind.  Other birds achieve efficiency through similarly rich
 interactions with the air - including formation flying, thermal
@@ -179,11 +181,11 @@ even thousands of kilometers carried primarily by the wind.
 <p>
 Birds are also incredibly maneuverable.  The roll rate of a highly
 acrobatic aircraft (e.g, the A-4 Skyhawk) is approximately 720
-deg/sec <elib>Shyy08</elib>; a barn swallow has a roll rate in excess of 5000
-  deg/sec <elib>Shyy08</elib>. Bats can be flying at full-speed in one
+deg/sec<elib>Shyy08</elib>; a barn swallow has a roll rate in excess of 5000
+  deg/sec<elib>Shyy08</elib>. Bats can be flying at full-speed in one
 direction, and completely reverse direction while maintaining forward
 speed, all in just over 2 wing-beats and in a distance less than half
-the wingspan <elib>Tian06</elib>.  Although quantitative flow visualization
+the wingspan<elib>Tian06</elib>.  Although quantitative flow visualization
 data from maneuvering flight is scarce, a dominant theory is that the
 ability of these animals to produce sudden, large forces for
 maneuverability can be attributed to unsteady aerodynamics, e.g., the

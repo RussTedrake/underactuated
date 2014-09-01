@@ -26,6 +26,12 @@ a:not(.image) {
   font-variant: small-caps; 
   margin-bottom: 0px;
 }
+[data-type="sect1"] h1 {
+  font-variant: small-caps; 
+}
+[data-type="sect2"] h1 {
+  font-variant: normal; 
+}
 
 [data-type="subtitle"] {
   font-weight: bold;  
@@ -41,3 +47,40 @@ a:not(.image) {
 b { color: rgb(153,51,51); /* mit red */ }
 i { color: rgb(153,51,51); /* mit red */ }
 em { color: rgb(153,51,51); /* mit red */ }
+
+
+/* Counters */
+body {
+  counter-reset:chapter;
+  counter-reset:definition;
+  counter-reset:example;
+}
+
+[data-type="chapter"] {
+  counter-increment:chapter;
+  counter-reset:sect1; 
+}
+[data-type="sect1"] {
+  counter-increment:sect1;
+  counter-reset:sect2;  
+}
+[data-type="sect2"] {
+  counter-increment:sect2;
+}
+
+[data-type="chapter"] h1:before {
+  content: "Chapter " counter(chapter);
+  display: block;
+  font-variant: small-caps; 
+}
+[data-type="sect1"] h1:before {
+  content: counter(chapter) "." counter(sect1) ' ';
+  display: inline;
+}
+[data-type="sect2"] h1:before {
+  content: counter(chapter) "." counter(sect1) "." counter(sect2) " ";
+}
+
+/* end counters*/
+
+
