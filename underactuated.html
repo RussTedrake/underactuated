@@ -6,33 +6,33 @@
 
   <head>
     <title>Underactuated Robotics</title>
-    <meta name="Underactuated Robotics" content="text/html; charset=utf-8" />
+    <meta name="Underactuated Robotics" content="text/html; charset=utf-8;" />
 
     <script type="text/javascript">
-      var QueryString = function () {
-        // This function is anonymous, is executed immediately and
-        // the return value is assigned to QueryString!
-        var query_string = {};
-        var query = window.location.search.substring(1);
-        var vars = query.split("&");
-        for (var i=0;i<vars.length;i++) {
-          var pair = vars[i].split("=");
-          	// If first entry with this name
-          if (typeof query_string[pair[0]] === "undefined") {
-            query_string[pair[0]] = pair[1];
-          	// If second entry with this name
-          } else if (typeof query_string[pair[0]] === "string") {
-            var arr = [ query_string[pair[0]], pair[1] ];
-            query_string[pair[0]] = arr;
-          	// If third or later entry with this name
-          } else {
-            query_string[pair[0]].push(pair[1]);
+      function getParameterByName(name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+          results = regex.exec(location.search);
+        return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+        }
+
+      function revealChapters() {
+        var chapter = getParameterByName("chapter");
+        if (chapter) {
+          //document.getElementById("debug_output").innerHTML="displaying only chapter " + chapter;
+          chapter = Number(chapter);
+          var chapters = document.getElementsByClassName("chapter");
+          var i;
+          for (i = 0; i < chapters.length; i++) {
+            if ((i+1) != chapter) {
+              chapters[i].style.display = "none";
+            } else {
+              chapters[i].style.counterReset = "chapter " + i;
+            }
           }
         }
-          return query_string;
-      } ();
-
-    </script>
+      }
+      </script>
 
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
@@ -67,7 +67,7 @@
     </script>
     <link rel="stylesheet" type="text/css" href="underactuated.css">
   </head>
-  <body data-type="book" class="book" id="htmlbook" onload="bibtex()">
+  <body data-type="book" class="book" id="htmlbook" onload="bibtex(); revealChapters();">
     <section data-type="titlepage" class="titlepage">
       <header>
         <h1>Underactuated Robotics</h1>
@@ -94,7 +94,8 @@
       \renewcommand{\maximize}{\operatorname{\textrm{maximize}}}
       \]
     </div>
-    <section data-type="chapter">
+    <div id="debug_output"></div>
+    <section data-type="chapter" class="chapter">
       <h1>Fully-actuated vs Underactuated Systems</h1>
 
       <p>Robots today move far too conservatively, and accomplish only a
@@ -690,7 +691,7 @@ The target audience for the class includes both computer science and
 
       </section>
 
-<section data-type="chapter"><h1>The Simple Pendulum</h1>
+<section data-type="chapter" class="chapter"><h1>The Simple Pendulum</h1>
 
   <section data-type="sect1"><h1>Introduction</h1>
 
