@@ -9,33 +9,33 @@
     <meta name="Underactuated Robotics" content="text/html; charset=utf-8" />
     
     <script type="text/x-mathjax-config">
-  MathJax.Hub.Config({
-    extensions: ["tex2jax.js"],
-    jax: ["input/TeX", "output/HTML-CSS"],
-    TeX: { equationNumbers: {autoNumber: "AMS"} },
-    tex2jax: {
-      inlineMath: [ ['$','$'], ["\\(","\\)"] ],
-      displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
-      processEscapes: true
-    },
-    "HTML-CSS": { availableFonts: ["TeX"] }
-  });
-</script>
+      MathJax.Hub.Config({
+        extensions: ["tex2jax.js"],
+        jax: ["input/TeX", "output/HTML-CSS"],
+        TeX: { equationNumbers: {autoNumber: "AMS"} },
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+          processEscapes: true
+        },
+        "HTML-CSS": { availableFonts: ["TeX"] }
+      });
+    </script>
     <script type="text/javascript"
       src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
     </script>
     <script type="text/javascript">
       function bibtex(){
-        var citeTags=document.getElementsByTagName('cite');
-        for(i=0;i<citeTags.length;i++)
+        var elibTags=document.getElementsByTagName('elib');
+        for(i=0;i<elibTags.length;i++)
         {
-          var c = citeTags[i].innerHTML;
-          citeTags[i].innerHTML='[<a href="http://groups.csail.mit.edu/locomotion/elib.cgi?b='+c+'">'+(i+1)+'</a>]';
+          var c = elibTags[i].innerHTML;
+          elibTags[i].innerHTML='[<a href="http://groups.csail.mit.edu/locomotion/elib.cgi?b='+c+'">'+(i+1)+'</a>]';
         }
       }  
     </script>    
   </head>
-  <body data-type="book" class="book" id="htmlbook" onload="bibtex()">
+  <body style="width: 500px; margin-left: auto; margin-right: auto; text-align: justify;" data-type="book" class="book" id="htmlbook" onload="bibtex()">
     <section data-type="titlepage" class="titlepage">
       <header>
         <h1>Underactuated Robotics</h1>
@@ -62,7 +62,7 @@
       \]
     </div>    
     <section data-type="chapter">
-      <h1>Fully-actuated vs Underactuated Systems</h1>
+      <h1>Chapter 1: Fully-actuated vs Underactuated Systems</h1>
       
       <p>Robots today move far too conservatively, and accomplish only a
         fraction of the tasks and achieve a fraction of the performance that
@@ -110,7 +110,7 @@
           dynamics of the machine and strictly follow a desired trajectory.
           This control approach comes with a stiff penalty.  ASIMO uses roughly
           20 times the energy (scaled) that a human uses to walk on the flat
-          (measured by cost of transport) <cite>Collins05</cite>.  Also, control
+          (measured by cost of transport) <elib>Collins05</elib>.  Also, control
           stabilization in this approach only works in a relatively small
           portion of the state space (when the stance foot is flat on the
           ground), so ASIMO can't move nearly as quickly as a human, and cannot
@@ -131,7 +131,7 @@ history - there are patents for passively walking toys dating back to
 the mid 1800's.  We will discuss, in detail, what people know about
 the dynamics of these machines and what has been accomplished
 experimentally.  This most impressive passive dynamic walker to date
-was built by Steve Collins in Andy Ruina's lab at Cornell<cite>Collins01</cite>.
+was built by Steve Collins in Andy Ruina's lab at Cornell<elib>Collins01</elib>.
 </p>
           
 <p>
@@ -166,7 +166,7 @@ days, without flapping its wings - these birds exploit the shear layer
 formed by the wind over the ocean surface in a technique called
 dynamic soaring.  Remarkably, the metabolic cost of flying for these
 birds is indistinguishable from the baseline metabolic
-cost <cite>Arnould96</cite>, suggesting that they can travel incredible
+cost <elib>Arnould96</elib>, suggesting that they can travel incredible
 distances (upwind or downwind) powered almost completely by gradients
 in the wind.  Other birds achieve efficiency through similarly rich
 interactions with the air - including formation flying, thermal
@@ -178,22 +178,22 @@ even thousands of kilometers carried primarily by the wind.
 <p>
 Birds are also incredibly maneuverable.  The roll rate of a highly
 acrobatic aircraft (e.g, the A-4 Skyhawk) is approximately 720
-deg/sec <cite>Shyy08</cite>; a barn swallow has a roll rate in excess of 5000
-  deg/sec <cite>Shyy08</cite>. Bats can be flying at full-speed in one
+deg/sec <elib>Shyy08</elib>; a barn swallow has a roll rate in excess of 5000
+  deg/sec <elib>Shyy08</elib>. Bats can be flying at full-speed in one
 direction, and completely reverse direction while maintaining forward
 speed, all in just over 2 wing-beats and in a distance less than half
-the wingspan <cite>Tian06</cite>.  Although quantitative flow visualization
+the wingspan <elib>Tian06</elib>.  Although quantitative flow visualization
 data from maneuvering flight is scarce, a dominant theory is that the
 ability of these animals to produce sudden, large forces for
 maneuverability can be attributed to unsteady aerodynamics, e.g., the
 animal creates a large suction vortex to rapidly change
-direction\cite{Triantafyllou95}.  These astonishing capabilities are
+direction<elib>Triantafyllou95</elib>.  These astonishing capabilities are
 called upon routinely in maneuvers like flared perching,
 prey-catching, and high speed flying through forests and caves.  Even
 at high speeds and high turn rates, these animals are capable of
 incredible agility - bats sometimes capture prey on their wings,
 Peregrine falcons can pull 25 G's out of a 240 mph dive to catch a
-sparrow in mid-flight\cite{Tucker98}, and even the small birds outside
+sparrow in mid-flight<elib>Tucker98</elib>, and even the small birds outside
 our building can be seen diving through a chain-link fence to grab a
 bite of food. 
 </p>
@@ -206,16 +206,16 @@ the surrounding airflow) during their most impressive maneuvers
 without disturbing them.  The dynamics of a swimming fish are closely
 related, and can be more convenient to study.  Dolphins have been
 known to swim gracefully through the waves alongside ships moving at
-20 knots\cite{Triantafyllou95}.  Smaller fish, such as the bluegill
+20 knots<elib>Triantafyllou95</elib>.  Smaller fish, such as the bluegill
 sunfish, are known to possess an escape response in which they propel
 themselves to full speed from rest in less than a body length; flow
 visualizations indeed confirm that this is accomplished by creating a
-large suction vortex along the side of the body\cite{Tytell08} -
+large suction vortex along the side of the body\elib{Tytell08} -
 similar to how bats change direction in less than a body length.
 There are even observations of a dead fish swimming upstream
 by pulling energy out of the wake of a cylinder; this passive
 propulsion is presumably part of the technique used by rainbow trout
-to swim upstream at mating season\cite{Beal06}.
+to swim upstream at mating season<elib>Beal06</elib>.
 </p>
 
 </section>
