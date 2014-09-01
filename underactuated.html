@@ -97,10 +97,10 @@
             below now].
           </p>
           
-          <p data-type="figure">
+          <div data-type="figure">
             <object name="kaltura_player_1409562873" id="kaltura_player_1409562873" type="application/x-shockwave-flash" allowScriptAccess="always" allowNetworking="all" allowFullScreen="true" height="300" width="100%" data="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151?autoPlay=false"><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="allowFullScreen" value="true" /><param name="bgcolor" value="#000000" /><param name="movie" value="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151"/><param name="flashVars" value=""/><a href="http://corp.kaltura.com">video platform</a><a href="http://corp.kaltura.com/video_platform/video_management">video management</a><a href="http://corp.kaltura.com/solutions/video_solution">video solutions</a><a href="http://corp.kaltura.com/video_platform/video_publishing">video player</a></object>          
-            Honda's ASIMO (from <a href="http://world.honda.com/ASIMO">http://world.honda.com/ASIMO</a>)
-          </p>
+            <div data-type="caption">Honda's ASIMO (from <a href="http://world.honda.com/ASIMO">http://world.honda.com/ASIMO</a>)</div>
+          </div>
           
           <p>
           I hope that your first reaction is to be incredibly impressed with the
@@ -121,7 +121,7 @@
           walk on unmodelled or uneven terrain.          
           </p>
           
-          <p data-type="figure" style="width: 900px; margin-left: auto; margin-right: auto; ">
+          <div data-type="figure" style="width: 900px; margin-left: auto; margin-right: auto; ">
             <video width="45%" controls>
               <source src="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_angle.mpg" type="video/mp4">
               <a href="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_angle.mpg">Play the video</a>
@@ -130,9 +130,9 @@
               <source src="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_behind.mpg" type="video/mp4">
                 <a href="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_behind.mpg">Play the video</a>
             </video> <br/>
-            A 3D passive dynamic walker by Steve Collins and Andy
-            Ruina<elib>Collins01</elib>
-          </p>
+            <div data-type="caption">A 3D passive dynamic walker by Steve Collins and Andy
+              Ruina<elib>Collins01</elib></div>
+          </div>
 <p>
 For contrast, let's now consider a very different type of walking
 robot, called a passive dynamic walker (PDW).  This "robot" has no motors,
@@ -223,7 +223,7 @@ known to swim gracefully through the waves alongside ships moving at
 sunfish, are known to possess an escape response in which they propel
 themselves to full speed from rest in less than a body length; flow
 visualizations indeed confirm that this is accomplished by creating a
-large suction vortex along the side of the body\elib{Tytell08} -
+large suction vortex along the side of the body<elib>Tytell08</elib> -
 similar to how bats change direction in less than a body length.
 There are even observations of a dead fish swimming upstream
 by pulling energy out of the wake of a cylinder; this passive
@@ -247,7 +247,7 @@ dynamics, not cancel them out.  That is the topic of this course.
   
 <p>  
 Surprisingly, there are relatively few formal control ideas that
-consider ``exploiting" the dynamics.  In order to convince a control
+consider "exploiting" the dynamics.  In order to convince a control
 theorist to consider the dynamics (efficiency arguments are not
 enough), you have to do something drastic, like taking away his
 control authority - remove a motor, or enforce a torque-limit.  These
@@ -276,7 +276,7 @@ dynamics of their machines in the context of control.
           f}_2(\bq,\dot{\bq},t)\bu \label{eq:f1_plus_f2}.\end{equation}
         </p>
           
-          <div class="definition">
+          <div data-type="definition">
             <h1>Fully-Actuated</h1>
           A control system described by equation \ref{eq:f1_plus_f2} is
           fully-actuated in configuration $(\bq,\dot{\bq},t)$ if it is able to
@@ -284,7 +284,56 @@ dynamics of their machines in the context of control.
           $\bq$: \begin{equation} \textrm{rank}\left[{\bf f}_2
           (\bq,\dot{\bq},t)\right] = \dim\left[\bq\right].\end{equation}
           </div>
+        
+        <div data-type="definition"><h1>Underactuated</h1>
+        A control system described by equation \ref{eq:f1_plus_f2} is
+        underactuated in configuration $(\bq,\dot{\bq},t)$ if it is not able
+        to command an instantaneous acceleration in an arbitrary direction in
+        $\bq$: \begin{equation} \textrm{rank}\left[{\bf
+        f}_2(\bq,\dot{\bq},t)\right] <
+        \dim\left[\bq\right]. \label{eq:underactuated_def}\end{equation}
+        </div>
+        
+        <p>Notice that whether or not a control system is underactuated
+        may depend on the state of the system, although for most systems
+        (including all of the systems in this book) underactuation is a global
+        property of the system.</p>
+        
+        <p>
+        In words, underactuated control systems are those in which the control
+        input cannot accelerate the state of the robot in arbitrary
+        directions.  As a consequence, unlike fully-actuated systems,
+        underactuated system cannot be commanded to follow arbitrary
+        trajectories.  </p>
+        
+        <div data-type="example"><h1>Robot Manipulators</h1>
+          
+          <div data-type="figure">
+          <img style="align: center;" src="figures/simple_double_pend.svg"/>
+          <todo>make this image spring to life with a matlab movie<</todo>
+          <p data-type="caption"">Simple double pendulum</p>
+          
+        <p>
+        Consider the simple robot manipulator illustrated in
+        Figure~\ref{f:manip}.  As described in Appendix~\ref{ch:robot_dynamics}, the
+        equations of motion for this system are quite simple to derive, and
+        take the form of the standard ``manipulator equations'': 
+        $${\bf H}(\bq)\ddot\bq + {\bf C}(\bq,\dot\bq)\dot\bq + {\bf G}(\bq) =
+        {\bf B}(\bq)\bu.$$ It is well known that the inertial matrix, ${\bf
+        H}(\bq)$ is (always) uniformly symmetric and positive definite, and
+        is therefore invertible.  Putting the system into the form of
+        equation~\ref{eq:f1_plus_f2} yields:
+        \begin{align*}\ddot{\bq} =& -{\bf H}^{-1}(\bq)\left[ {\bf C}(\bq,\dot\bq) \dot\bq +
+        {\bf G}(\bq) \right]\\ &+ {\bf H}^{-1}(\bq) {\bf B}(\bq) \bu.\end{align*} Because
+        ${\bf H}^{-1}(\bq)$ is always full rank, we find that a system
+        described by the manipulator equations is fully-actuated if and only
+        if ${\bf B}(\bq)$ is full row rank.   For this particular example, $\bq = [\theta_1,\theta_2]^T$ and $\bu =
+        [\tau_1,\tau_2]^T$, and ${\bf B}(\bq) = {\bf I}_{2 \times 2}$.  The
+        system is fully actuated.</p>
+        </div>
+        
         </section>
+        
         
       </section>
         
