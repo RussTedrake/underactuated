@@ -24,6 +24,11 @@
     <script type="text/javascript"
       src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML">
     </script>
+    
+    <link rel="stylesheet" href="highlight/styles/default.css">
+    <script src="hightlight/highlight.pack.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+      
     <script type="text/javascript">
       function bibtex(){
         var elibTags=document.getElementsByTagName('elib');
@@ -97,10 +102,10 @@
             below now].
           </p>
           
-          <div data-type="figure">
+          <figure>
             <object name="kaltura_player_1409562873" id="kaltura_player_1409562873" type="application/x-shockwave-flash" allowScriptAccess="always" allowNetworking="all" allowFullScreen="true" height="300" width="100%" data="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151?autoPlay=false"><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="allowFullScreen" value="true" /><param name="bgcolor" value="#000000" /><param name="movie" value="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151"/><param name="flashVars" value=""/><a href="http://corp.kaltura.com">video platform</a><a href="http://corp.kaltura.com/video_platform/video_management">video management</a><a href="http://corp.kaltura.com/solutions/video_solution">video solutions</a><a href="http://corp.kaltura.com/video_platform/video_publishing">video player</a></object>          
-            <div data-type="caption">Honda's ASIMO (from <a href="http://world.honda.com/ASIMO">http://world.honda.com/ASIMO</a>)</div>
-          </div>
+            <figcaption>Honda's ASIMO (from <a href="http://world.honda.com/ASIMO">http://world.honda.com/ASIMO</a>)</figcaption>
+          </figure>
           
           <p>
           I hope that your first reaction is to be incredibly impressed with the
@@ -121,7 +126,7 @@
           walk on unmodelled or uneven terrain.          
           </p>
           
-          <div data-type="figure" style="width: 900px; margin-left: auto; margin-right: auto; ">
+          <figure style="width: 900px; margin-left: -150px; margin-right: 150px; ">
             <video width="45%" controls>
               <source src="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_angle.mpg" type="video/mp4">
               <a href="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_angle.mpg">Play the video</a>
@@ -130,9 +135,9 @@
               <source src="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_behind.mpg" type="video/mp4">
                 <a href="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_behind.mpg">Play the video</a>
             </video> <br/>
-            <div data-type="caption">A 3D passive dynamic walker by Steve Collins and Andy
-              Ruina<elib>Collins01</elib></div>
-          </div>
+            <figcaption>A 3D passive dynamic walker by Steve Collins and Andy
+              Ruina<elib>Collins01</elib></figcaption>
+          </figure>
 <p>
 For contrast, let's now consider a very different type of walking
 robot, called a passive dynamic walker (PDW).  This "robot" has no motors,
@@ -308,21 +313,21 @@ dynamics of their machines in the context of control.
         
         <div data-type="example"><h1>Robot Manipulators</h1>
           
-          <div data-type="figure">
-          <img style="align: center;" src="figures/simple_double_pend.svg"/>
+          <figure>
+          <img style="align: center; width:250px;" src="figures/simple_double_pend.svg"/>
           <todo>make this image spring to life with a matlab movie<</todo>
-          <p data-type="caption"">Simple double pendulum</p>
+          <figcaption>Simple double pendulum</figcaption>
+          </figure>
           
         <p>
-        Consider the simple robot manipulator illustrated in
-        Figure~\ref{f:manip}.  As described in Appendix~\ref{ch:robot_dynamics}, the
+        Consider the simple robot manipulator illustrated above.  As described in Appendix A, the
         equations of motion for this system are quite simple to derive, and
-        take the form of the standard ``manipulator equations'': 
+        take the form of the standard "manipulator equations": 
         $${\bf H}(\bq)\ddot\bq + {\bf C}(\bq,\dot\bq)\dot\bq + {\bf G}(\bq) =
         {\bf B}(\bq)\bu.$$ It is well known that the inertial matrix, ${\bf
         H}(\bq)$ is (always) uniformly symmetric and positive definite, and
         is therefore invertible.  Putting the system into the form of
-        equation~\ref{eq:f1_plus_f2} yields:
+        equation \ref{eq:f1_plus_f2} yields:
         \begin{align*}\ddot{\bq} =& -{\bf H}^{-1}(\bq)\left[ {\bf C}(\bq,\dot\bq) \dot\bq +
         {\bf G}(\bq) \right]\\ &+ {\bf H}^{-1}(\bq) {\bf B}(\bq) \bu.\end{align*} Because
         ${\bf H}^{-1}(\bq)$ is always full rank, we find that a system
@@ -330,11 +335,327 @@ dynamics of their machines in the context of control.
         if ${\bf B}(\bq)$ is full row rank.   For this particular example, $\bq = [\theta_1,\theta_2]^T$ and $\bu =
         [\tau_1,\tau_2]^T$, and ${\bf B}(\bq) = {\bf I}_{2 \times 2}$.  The
         system is fully actuated.</p>
+          
+        <todo>make drake elements expandable/collapseable.  nice example here: http://quhno.internetstrahlen.de/myopera/csstests/collapsible-paragraph.html</todo>
+        <div data-type="drake"><h1>MATLAB Example</h1>
+          
+          <p>
+          I personally learn best when I can experiment and get some
+          physical intuition.  The <a href="http://drake.mit.edu">companion software for the course</a> should make it easy for you to see this
+            system in action.  To try it, make sure you've installed drake, then open MATLAB and run <code>addpath_drake</code>
+          (possibly from your <code>startup.m</code>) in the <code>drake</code> directory, then
+          try the following lines (one at a time) from the MATLAB command line:
+<todo>fix syntax highlighting w/ highlight.js</todo>    
+            
+          <pre><code class="matlab">
+% a platform independent way to cd into the example directory
+cd(fullfile(getDrakePath,'examples','SimpleDoublePendulum'));
+
+% first construct the "robot" or "plant" object
+plant = DoublePendPlant;  % check out the code in DoublePendPlant.m
+
+% a visualizer will draw the robot  
+visualizer = DoublePendVisualizer(plant);
+visualizer.inspector();  % (optional) simple gui to examine the joints
+
+% simulate the robot from time=0 to time=5 seconds from random
+% initial conditions taken from a Gaussian distribution (using randn)
+trajectory = simulate(plant, [0 5], randn(4,1));  
+
+% play back the simulation using the cpu clock to get the timing right
+visualizer.playback(trajectory);
+
+% if you want to access the manipulator equations programmatically,
+% you can use, e.g.:
+[H,C_times_v,G,B] = plant.manipulatorEquations()
+% which outputs using the abbreviations v for qdot, s1 for sin(q1), etc
+          </code></pre>
+          </p>
+        </div>  
+        <div data-type="drake"><h1>MATLAB Example (an even simpler version)</h1>
+          
+          <p>Note that you don't have to write the dynamics yourself.  The software
+          supports a high-level description format for describing robots.  We
+          could have alternatively done:
+          </p>
+          
+<pre><code class="matlab">
+cd(fullfile(getDrakePath,'examples','SimpleDoublePendulum'));
+
+% construct the robot from a URDF high-level description file
+plant = RigidBodyManipulator('SimpleDoublePendulum.urdf');
+visualizer = plant.constructVisualizer();
+
+% all of the other commands will work, e.g.:
+trajectory = simulate(plant, [0 5], randn(4,1));  
+visualizer.playback(trajectory);
+[H,C_times_v,G,B] = plant.manipulatorEquations()
+</code></pre>
+
+          <p>Make sure you take a peek at the file
+            <code>SimpleDoublePendulum.urdf</code>.  Documentation for the input format is
+          available on the <a href="http://drake.mit.edu">drake wiki</a>; it supports even
+          quite complex robots.  
+          </p>
+        </div>
+          
+          <p>
+          While the basic double pendulum is fully actuated, imagine the somewhat bizarre case that
+          we have a motor to provide torque at the elbow, but no motor at the
+          shoulder.  In this case, we have $\bu = \tau_2$, and ${\bf B}(\bq) =
+          [0,1]^T$.  This system is clearly underactuated.  While it may sound
+          like a contrived example, it turns out that it is exactly the dynamics
+          we will use to study the compass gait model of walking later in the class.
+          </p>
+          
         </div>
         
+        <p>The matrix ${\bf f}_2$ is equation \ref{eq:f1_plus_f2} always has
+          dim$[\bq]$ rows, and dim$[\bu]$ columns. Therefore, as in the example,
+          one of the most common cases for underactuation, which trivially
+          implies that ${\bf f}_2$ is not full row rank, is dim$[\bu] < $
+          dim$[\bq]$.  This is the case when a robot has joints with no motors.
+          But this is not the only case.  The human body, for instance, has an
+          incredible number of actuators (muscles), and in many cases has
+          multiple muscles per joint; despite having more actuators that
+          position variables, when I jump through the air, there is no
+          combination of muscle inputs that can change the ballistic trajectory
+          of my center of mass (barring aerodynamic effects).  My control
+          system is underactuated.</p>
+        
+        <p>For completeness, let's generalize the definition of underactuation to
+          systems beyond the second-order control affine systems.
+        <div data-type="definition">
+          <h1>Underactuated Control Differential Equations</h1>
+          An $n$th-order control differential equation control described by the
+          equations \begin{equation} \frac{d^n{\bf q}}{dt^n} = f({\bf q}, ..., \frac{d^{n-1}
+          {\bf q}}{dt^{n-1}}, t, {\bf u}) \end{equation} is fully actuated in state ${\bf x} = ({\bf q}, ..., \frac{d^{n-1}
+          {\bf q}}{dt^{n-1}})$ and time $t$ if the resulting map $f$ is surjective: for every $\frac{d^n{\bf q}}{dt^n} $ there
+          exists a ${\bf u}$ which produces the desired response.  Otherwise it
+          is underactuated. 
+        </div>
+          It is easy to see that equation \ref{eq:underactuated_def}
+          is a sufficient condition for underactuation.  This definition can also
+          be extended to discrete-time systems and/or differential inclusions.  
+        </p>
+        
+        <p>A quick note about notation.  When describing the dynamics of rigid-body systems in this class, I will use $\bq$ for positions,
+          $\dot{\bq}$ for velocities, and use $\bx$ for the full state ($\bx =
+          [\bq,\dot{\bq}]^T$).  There is an important limitation to this
+          convention, described in the Appendix<!-- ch:robot_dynamics -->, but it will keep the notes more clean.
+          Unless otherwise noted, vectors are always treated as column vectors.
+          Vectors and matrices are bold (scalars are not).
+        </p>
+        
         </section>
-        
-        
+        <section data-type="sect1">
+          <h1>Feedback Linearization</h1>
+          
+          <p>
+            Fully-actuated systems are dramatically easier to control than
+            underactuated systems.  The key observation is that, for
+            fully-actuated systems with known dynamics (e.g., ${\bf f}_1$ and
+            ${\bf f}_2$ are known), it is possible to use feedback to effectively
+            change a nonlinear control problem into a linear control problem.  The
+            field of linear control is incredibly advanced, and there are many
+            well-known solutions for controlling linear systems.
+          </p>
+          
+          <p>The trick is called feedback linearization.  When ${\bf f}_2$ is full
+            row rank, it is invertible.  Consider the nonlinear feedback
+            law: $$\bu = {\bf \pi}(\bq,\dot\bq,t) = {\bf f}_2^{-1}(\bq,\dot\bq,t)
+            \left[ \bu' - {\bf f}_1(\bq,\dot\bq,t) \right],$$ where $\bu'$ is some
+            additional control input.  Applying this feedback controller to
+            equation~\ref{eq:f1_plus_f2} results in the linear, decoupled,
+            second-order system: $$\ddot{\bq} = \bu'.$$ In other words, if ${\bf
+            f}_1$ and ${\bf f}_2$ are known and ${\bf f}_2$ is invertible, then
+            we say that the system is "feedback equivalent" to $\ddot{\bq} =
+            \bu'$.  There are a number of strong results which generalize this
+            idea to the case where ${\bf f}_1$ and ${\bf f}_2$ are estimated,
+            rather than known (e.g, <elib>Slotine90</elib>).</p>
+          
+          <div data-type="example"><h1>Feedback-Cancellation Double Pendulum</h1>
+            
+          <p>
+          Let's say that we would like our simple double pendulum to act like a
+          simple single pendulum (with damping), whose dynamics are given by:
+          \begin{align*}
+          \ddot \theta_1 &= -\frac{g}{l}\cos\theta_1 -b\dot\theta_1 \\
+          \ddot\theta_2 &= 0.
+          \end{align*}
+          This is easily achieved using <sidenote>Note that our chosen dynamics do not
+            actually stabilize $\theta_2$ - this detail was left out for
+            clarity, but would be necessary for any real implementation.</sidenote>
+            $$\bu = {\bf B}^{-1}\left[ {\bf C}\dot{\bq} + {\bf G} + {\bf
+          H}\begin{bmatrix} -\frac{g}{l}c_1 - b\dot{q}_1 \\ 0 \end{bmatrix}
+          \right].$$ 
+          </p>
+          
+          <p>
+          Since we are embedding a nonlinear dynamics (not a linear one), we
+          refer to this as "feedback cancellation", or "dynamic
+          inversion".  This idea can, and does, make control look easy - for
+          the special case of a fully-actuated deterministic system with known
+          dynamics.  For example, it would have been just as easy for me to
+          invert gravity. Observe that the control derivations here would not
+          have been any more difficult if the robot had 100 joints.
+          </p>
+            
+          <div data-type="drake"><h1>MATLAB Example</h1>
+          You can find scripts which implement both of these examples in drake:
+<pre><code class="matlab">
+cd(fullfile(getDrakePath,'examples','SimpleDoublePendulum'));
+runSimplePend;    % feedback linearization to simulate a pendulum 
+runSimplePendInv; % and a gravity-inverted pendulum
+</code></pre>          
+            </div>
+          </div>
+          
+          <p>
+          The underactuated systems are not feedback linearizable.  Therefore,
+          unlike fully-actuated systems, the control designer has no choice but
+          to reason about the nonlinear dynamics of the plant in the control
+          design.  This dramatically complicates feedback controller design.
+          </p>
+        </section>
+      
+        <section data-type="sect1"><h1>Input and State Constraints</h1>
+          
+          <p>
+          Although the dynamic constraints due to missing actuators certainly
+          embody the spirit of this course, many of the systems we care about
+          could be subject to other dynamic constraints, as well.  For example, the
+          actuators on our machines may only be mechanically capable of
+          producing some limited amount of torque, or their may be a physical
+          obstacle in the free space which we cannot permit our robot to come
+          into contact with.
+          </p>
+          
+          <div data-type="definition"><h1>Input and State Constraints</h1>
+          A dynamical system described by $\dot{\bx} = {\bf f}(\bx,\bu,t)$ may be
+          subject to one or more constraints described by ${\bf \phi}(\bx,\bu,t)\le0$.
+          </div>
+          
+          <p>In practice it can useful to separate out constraints which depend
+          only on the input, e.g. $\phi(\bu)\le0$, such as actuator limits, as
+          they can often be easier to handle than state constraints.  An
+          obstacle in the environment might manifest itself as one or more
+          constraints that depend only on position, e.g. $\phi(\bq)\le0$.</p>
+          
+          <p>By our generalized definition of underactuation, we can see that input and state
+          constraints can also cause a system to be underactuated. 
+          <div data-type="example"><h1>Input limits</h1>
+          Consider the constrained second-order linear system \[ \ddot{x} = u, \quad |u| \le 1. \]
+          By our definition, this system is underactuated.  For example, there
+          is no $u$ which can produce the acceleration $\ddot{x} = 2$.
+          </div>
+          Input and state constraints can complicate control design in similar
+          ways to having an insufficient number of actuators, (i.e., the robot cannot
+          follow arbitrary trajectories), and often require similar tools to
+          find a control solution.</p>
+          
+          <section data-type="sect2"><h1>Nonholonomic constraints</h1>
+          
+          <p>
+          You might have heard of the term "nonholonomic system" (e.g. <elib>Bloch03</elib>), and be
+          thinking about how nonholonomy relates to underactuation.  Briefly, a
+          nonholonomic constraint is a constraint on the derivatives of the
+          system which cannot be integrated into a constraint on the
+          positions of the system.  An automobile or traditional wheeled robot provides a canonical example:
+          <div data-type="example"><h1>Wheeled robot</h1>
+          Consider a simple model of a wheeled robot who's configuration is
+          described by its Cartesian position $x,y$ and its orientation,
+          $\theta$, so ${\bf q} = \begin{bmatrix} x, y,
+          \theta \end{bmatrix}^T$.  The system is subject to differential
+          constraints that prevent side-slip, e.g., \begin{gather*} \dot{x} =
+          v \cos\theta \\ \dot{y} = v \sin\theta \\ v = \sqrt{\dot{x}^2 +
+          \dot{y}^2} \end{gather*} These constraints cannot be integrated
+          into constraint on position--the car can get to any configuration
+          $(x,y,\theta)$, it just can't move directly sideways--so they are
+          nonholonomic constraints.
+          </div>
+          Contrast the wheel robot example with a robot on train tracks.  The
+          train tracks would represent a holonomic constraint: if the system was
+          written down in the $(x,y,\theta)$ coordinates then the differential track constriants
+          could be integrated resulting in a description of the system in a
+          reduced coordinate system--train tracks are holonomic constraints.
+          </p>
+          
+          <p>
+          A nonholomic constraint like the no-side-slip constraint on the
+          wheeled vehicle certainly results in an underactuated system.  The
+          converse is not necessarily true--the double pendulum system which is
+          missing an actuator is underactauted but would not typically be called
+          a nonholonmic system.  However, while the definition of a nonholonomic
+          constraint is clear, in my view the definition used in the
+          literature for a "nonholonomic system" is more ambiguous&dagger;<sidenote>&dagger; Why,
+          for instance, are the Lagrangian equations of motion for the double pendulum--clearly non-integrable--
+          not considered nonholonomic constraints?</sidenote>, and we'll
+          generally avoid using the term. 
+          </p>
+          
+          </section>
+        </section>
+
+        <section data-type="sect1"><h1>Underactuated robotics</h1>
+          
+          <p>
+          The control of underactuated systems is an open and interesting
+          problem in controls - although there are a number of special cases
+          where underactuated systems have been controlled, there are relatively
+          few general principles.  Now here's the rub... most of the interesting
+          problems in robotics are underactuated:
+          </p>
+          
+          <ul>
+          <li> Legged robots are underactuated.  Consider a legged machine with
+          $N$ internal joints and $N$ actuators.  If the robot is not bolted
+          to the ground, then the degrees of freedom of the system include
+          both the internal joints and the six degrees of freedom which define
+          the position and orientation of the robot in space.  Since $\bu \in
+          \Re^N$ and $\bq \in \Re^{N+6}$, equation \ref{eq:underactuated_def}
+          is satisfied.</li>
+          <li> (Most) Swimming and flying robots are underactuated.  The story
+          is the same here as for legged machines.  Each control surface adds
+          one actuator and one DOF.  And this is already a simplification, as
+          the true state of the system should really include the
+          (infinite-dimensional) state of the flow.</li>
+          <li> Robot manipulation is (often) underactuated.  Consider a
+          fully-actuated robotic arm.  When this arm is manipulating an object
+          w/ degrees of freedom (even a brick has six), it can become
+          underactuated.  If force closure is achieved, and maintained, then
+          we can think of the system as fully-actuated, because the degrees of
+          freedom of the object are constrained to match the degrees of
+          freedom of the hand.  That is, of course, unless the manipulated
+          object has extra DOFs.</li>
+          </ul>
+
+          <p>
+          Even fully-actuated and otherwise unconstrained control systems can be improved using the lessons
+          from underactuated systems, particularly if there is a need to
+          increase the efficiency of their motions or reduce the complexity of
+          their designs.</p>
+          
+        </section>
+      <section data-type="sect1"><h1>Goals for the course</h1>
+          
+          <p>
+          This course is based on the observation that there are new
+          computational tools from optimization theory, control theory, motion
+          planning, and even machine learning which be used to design feedback control for
+          underactuated systems.  The goal of this
+          class is to develop these tools in order to design robots that are
+          more dynamic and more agile than the current state-of-the-art.</p>
+          
+          <p>
+The target audience for the class includes both computer science and
+          mechanical/aero students pursuing research in robotics.  Although I
+          assume a comfort with linear algebra, ODEs, and MATLAB, the course
+          notes will provide most of the material and references required for
+          the course.  
+          </p>
+      </section>
+      
       </section>
         
   </body>

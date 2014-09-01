@@ -52,6 +52,13 @@ a:not(.image) {
   text-align: right;
 }
 
+sidenote {
+float: right; margin-right: -170px;
+width: 150px; text-align: left; 
+}
+
+pre { margin-top: -5px; }
+
 b { color: rgb(153,51,51); /* mit red */ }
 i { color: rgb(153,51,51); /* mit red */ }
 em { color: rgb(153,51,51); /* mit red */ }
@@ -121,8 +128,9 @@ body {
   content: ")";
 }
 [data-type="example"] h1 {
-  display: inline;
+  display: block;
   font-variant: normal;
+  margin: 2px;
 }
 [data-type="example"] {
   border: 1px solid;
@@ -134,18 +142,24 @@ body {
 }
 
 
-[data-type="figure"] {
+figure {
   text-align: center;
   counter-increment: figure;
 }
 
-[data-type="caption"]:before {
-  content: "Figure " counter(chapter) "." counter(figure) "  ";
+figcaption:before {
+  content: "Figure " counter(chapter) "." counter(figure) " - ";
 }
 
-[data-type="caption"] {
+figcaption {
   text-align: center;
 }
-/* end counters*/
+
+[data-type="drake"] h1:before{
+  content: "";
+}
+[data-type="drake"] h1:after {
+  content: "";
+}/* end counters*/
 
 
