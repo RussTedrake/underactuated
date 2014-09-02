@@ -19,17 +19,32 @@
       function revealChapters() {
         var chapter = getParameterByName("chapter");
         if (chapter) {
-          //document.getElementById("debug_output").innerHTML="displaying only chapter " + chapter;
           chapter = Number(chapter);
           var chapters = document.getElementsByClassName("chapter");
           var i;
+          //document.getElementById("debug_output").innerHTML="displaying only chapter " + chapter + " of " + chapters.length;
           for (i = 0; i < chapters.length; i++) {
             if ((i+1) != chapter) {
               chapters[i].style.display = "none";
             } else {
+//              document.getElementById("debug_output").innerHTML="got here";
               chapters[i].style.counterReset = "chapter " + i;
             }
           }
+        }
+
+        var appendix = getParameterByName("appendix");
+        if (appendix) {
+          var app = document.getElementsByTagName("appendix");
+          var chapters = document.getElementsByClassName("chapter");
+          var i;
+          for (i = 0; i < chapters.length; i++) {
+            chapters[i].style.display = "none";
+          }
+          var chapters = app[0].getElementsByClassName("chapter");
+          i = Number(appendix)-1;
+          chapters[i].style.display = "inline";
+          chapters[i].style.counterReset = "chapter " + i;
         }
       }
       </script>
@@ -67,36 +82,44 @@
     </script>
     <link rel="stylesheet" type="text/css" href="underactuated.css">
   </head>
-  <body data-type="book" class="book" id="htmlbook" onload="bibtex(); revealChapters();">
-    <section data-type="titlepage" class="titlepage">
-      <header>
-        <h1>Underactuated Robotics</h1>
-        <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p>
-      	<p data-type="author">Russ Tedrake</p>
-        <p data-type="copyright">&copy; Russ Tedrake, 2014</p>
-      </header>
-    </section>
-    <div style="display:none"> <!-- definitions for mathjax -->
-      \[
-      \newcommand{\bq}{{\bf q}}
-      \newcommand{\bv}{{\bf v}}
-      \newcommand{\bx}{{\bf x}}
-      \newcommand{\by}{{\bf y}}
-      \newcommand{\bu}{{\bf u}}
-      \newcommand{\bw}{{\bf w}}
-      \newcommand{\bz}{{\bf z}}
-      \newcommand{\bK}{{\bf K}}
-      \newcommand{\balpha}{{\bf \alpha}}
-      \newcommand{\bbeta}{{\bf \beta}}
-      \newcommand{\avg}[1]{E\left[ #1 \right]}
-      \newcommand{\subjto}{\textrm{subject to}}
-      \renewcommand{\minimize}{\operatorname{\textrm{minimize}}}
-      \renewcommand{\maximize}{\operatorname{\textrm{maximize}}}
-      \]
-    </div>
-    <div id="debug_output"></div>
-    <section data-type="chapter" class="chapter">
-      <h1>Fully-actuated vs Underactuated Systems</h1>
+
+
+<body data-type="book" class="book" id="htmlbook" onload="bibtex(); revealChapters();">
+<section data-type="titlepage" class="titlepage">
+  <header>
+    <h1>Underactuated Robotics</h1>
+    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p>
+  	<p data-type="author">Russ Tedrake</p>
+    <p data-type="copyright">&copy; Russ Tedrake, 2014</p>
+  </header>
+</section>
+<div style="display:none"> <!-- definitions for mathjax -->
+  \[
+  \newcommand{\bq}{{\bf q}}
+  \newcommand{\bv}{{\bf v}}
+  \newcommand{\bx}{{\bf x}}
+  \newcommand{\by}{{\bf y}}
+  \newcommand{\bu}{{\bf u}}
+  \newcommand{\bw}{{\bf w}}
+  \newcommand{\bz}{{\bf z}}
+  \newcommand{\bK}{{\bf K}}
+  \newcommand{\balpha}{{\bf \alpha}}
+  \newcommand{\bbeta}{{\bf \beta}}
+  \newcommand{\avg}[1]{E\left[ #1 \right]}
+  \newcommand{\subjto}{\textrm{subject to}}
+  \renewcommand{\minimize}{\operatorname{\textrm{minimize}}}
+  \renewcommand{\maximize}{\operatorname{\textrm{maximize}}}
+  \]
+</div>
+
+<div id="debug_output"></div>
+
+<div id="table_of_contents"></div>
+<todo>generate table of contents (w/ javascript?)</todo>
+
+
+<section data-type="chapter" class="chapter">
+<h1>Fully-actuated vs Underactuated Systems</h1>
 
 <p>Robots today move far too conservatively, and accomplish only a fraction of
 the tasks and achieve a fraction of the performance that they are mechanically
@@ -903,11 +926,23 @@ t = \frac{2I}{E+mgl} \int_{\phi(0)}^{\phi(t)} \frac{d\phi}{\sqrt{1 -
 Notes: Use MATLAB's \url{atan2} and \url{unwrap} to recover the
 complete trajectory.</p>
 
+</section>
+
 </section> <!-- end of undamped pend -->
 
 </section> <!-- end of constant torque -->
 
 </section> <!-- end of pendulum chapter -->
 
-  </body>
+<appendix>
+
+<section data-type="chapter" class="chapter"><h1>Robot Dynamics</h1>
+
+This is a test...
+
+</section> <!-- end robot dynamics chapter -->
+
+</appendix>
+
+</body>
 </html>

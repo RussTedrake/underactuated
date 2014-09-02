@@ -70,6 +70,10 @@ body {
   counter-reset:definition;
 }
 
+appendix {
+  counter-reset:chapter;
+}
+
 [data-type="chapter"] {
   counter-increment:chapter;
   counter-reset:sect1;
@@ -96,6 +100,11 @@ body {
   display: block;
   font-variant: small-caps;
 }
+
+appendix [data-type="chapter"] h1:before {
+  content: "Appendix " counter(chapter, upper-alpha);
+}
+
 [data-type="sect1"] h1:before {
   content: counter(chapter) "." counter(sect1) ' ';
   display: inline;
