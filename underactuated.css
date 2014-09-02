@@ -101,10 +101,6 @@ appendix {
   font-variant: small-caps;
 }
 
-appendix [data-type="chapter"] h1:before {
-  content: "Appendix " counter(chapter, upper-alpha);
-}
-
 [data-type="sect1"] h1:before {
   content: counter(chapter) "." counter(sect1) ' ';
   display: inline;
@@ -178,4 +174,27 @@ figcaption {
 }
 [data-type="drake"] h1:after {
   content: "";
-}/* end counters*/
+}
+
+appendix [data-type="chapter"] h1:before {
+  content: "Appendix " counter(chapter, upper-alpha);
+}
+
+appendix [data-type="sect1"] h1:before {
+  content: counter(chapter, upper-alpha) "." counter(sect1) ' ';
+  display: inline;
+}
+appendix [data-type="sect2"] h1:before {
+  content: counter(chapter, upper-alpha) "." counter(sect1) "." counter(sect2) " ";
+}
+
+appendix [data-type="sect3"] h1:before {
+  content: "";
+}
+
+appendix figcaption:before {
+  content: "Figure " counter(chapter, upper-alpha) "." counter(figure) " - ";
+}
+
+
+/* end counters*/
