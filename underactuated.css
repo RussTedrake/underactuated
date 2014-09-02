@@ -3,10 +3,10 @@
  *********************************************/
 body {
   background: white;
-  background-color: white; 
-  width: 600px; 
-  margin-left: auto; 
-  margin-right: auto; 
+  background-color: white;
+  width: 600px;
+  margin-left: auto;
+  margin-right: auto;
   text-align: justify;
 }
 
@@ -27,34 +27,34 @@ a:not(.image) {
   font-size: 22px;
 }
 [data-type="titlepage"] h1 {
-  font-variant: small-caps; 
+  font-variant: small-caps;
   margin-bottom: 0px;
 }
 [data-type="sect1"] h1 {
-  font-variant: small-caps; 
+  font-variant: small-caps;
 }
 [data-type="sect2"] h1 {
-  font-variant: normal; 
+  font-variant: normal;
 }
 
 [data-type="subtitle"] {
-  font-weight: bold;  
+  font-weight: bold;
   font-style: italic;
   font-size: 16px;
   margin-top: 0px;
 }
 
 [data-type="author"] {
-  font-size: 18px;  
+  font-size: 18px;
 }
 [data-type="copyright"] {
-  font-size: 14px;  
+  font-size: 14px;
   text-align: right;
 }
 
 sidenote {
 float: right; margin-right: -170px;
-width: 150px; text-align: left; 
+width: 150px; text-align: left;
 }
 
 pre { margin-top: -5px; }
@@ -72,13 +72,13 @@ body {
 
 [data-type="chapter"] {
   counter-increment:chapter;
-  counter-reset:sect1; 
+  counter-reset:sect1;
   counter-reset:example;
   counter-reset:figure;
 }
 [data-type="sect1"] {
   counter-increment:sect1;
-  counter-reset:sect2;  
+  counter-reset:sect2;
 }
 [data-type="sect2"] {
   counter-increment:sect2;
@@ -94,7 +94,7 @@ body {
 [data-type="chapter"] h1:before {
   content: "Chapter " counter(chapter);
   display: block;
-  font-variant: small-caps; 
+  font-variant: small-caps;
 }
 [data-type="sect1"] h1:before {
   content: counter(chapter) "." counter(sect1) ' ';
@@ -103,6 +103,15 @@ body {
 [data-type="sect2"] h1:before {
   content: counter(chapter) "." counter(sect1) "." counter(sect2) " ";
 }
+
+[data-type="sect3"] h1:before {
+  content: "";
+}
+
+[data-type="sect3"] h1 {
+  display: inline;
+}
+
 [data-type="definition"] h1:before {
   content: "Definition " counter(definition) " (";
 }
@@ -161,5 +170,3 @@ figcaption {
 [data-type="drake"] h1:after {
   content: "";
 }/* end counters*/
-
-

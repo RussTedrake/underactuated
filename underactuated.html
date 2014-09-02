@@ -875,8 +875,174 @@ analysis tool for many first-order nonlinear systems (not just
 pendula); as illustrated by the following example:
 </p>
 
+<div data-type="example"><h1>Nonlinear autapse</h1>
+Consider the following system:
+\begin{equation} \dot{x} + x = \tanh(w x) \end{equation}
+It's convenient to note that $\tanh(z) \approx z$ for small $z$.  For
+$w \le 1$ the system has only a single fixed point.  For $w > 1$ the
+system has three fixed points : two stable and one unstable.
+<figure>
+  <img width="80%" src="figures/pend_autapse.svg"/>
+</figure>
+These equations are not arbitrary - they are actually a model for one
+of the simplest neural networks, and one of the simplest model of
+persistent memory<elib>Seung00</elib>.  In the equation $x$ models the
+firing rate of a single neuron, which has a feedback connection to
+itself.  $\tanh$ is the activation (sigmoidal) function of the neuron,
+and $w$ is the weight of the synaptic feedback.
+</div>
+
+<p>
+  One last piece of terminology.  In the neuron example, and in many
+dynamical systems, the dynamics were parameterized; in this case by a
+single parameter, $w$.  As we varied $w$, the fixed points of the
+system moved around.  In fact, if we increase $w$ through $w=1$,
+something dramatic happens - the system goes from having one fixed
+point to having three fixed points.  This is called a
+<em>bifurcation</em>.  This particular bifurcation is called a pitchfork
+bifurcation.  We often draw bifurcation diagrams which plot the fixed
+points of the system as a function of the parameters, with solid lines
+indicating stable fixed points and dashed lines indicating unstable
+fixed points, as seen in the figure:</p>
+
+<figure>
+  <todo>bifurcation diagram asymptotes to $x^* = 1$</todo>
+  <img width="80%" src="figures/pend_autapse_bifurcation.svg"/>
+  <figcaption>Bifurcation diagram of the nonlinear autapse.</figcaption>
+</figure>
+
+<p>
+Our pendulum equations also have a (saddle-node) bifurcation when we
+change the constant torque input, $u_0$.  <!-- This is the subject of
+exercise~\ref{p:pend_bifurcation}.-->  Finally, let's return to the
+original equations in $\theta$, instead of in $x$.  Only one point to
+make: because of the wrap-around, this system will <em>appear</em> have
+oscillations.  In fact, the graphical analysis reveals that the
+pendulum will turn forever whenever $|u_0| > mgl$.</p>
 
 </section> <!-- end of overdamped pend -->
+
+<section data-type="sect2"><h1>The Undamped Pendulum w/ Zero Torque</h1>
+
+<p>
+Consider again the system $$ml^2 \ddot\theta = u_0 - mgl \sin\theta -
+b\dot\theta,$$ this time with $b = 0$.  This time the system dynamics
+are truly second-order.  We can always think of any second-order
+system as (coupled) first-order system with twice as many variables.
+Consider a general, autonomous (not dependent on time), second-order
+system, $$\ddot{q} = f(q,\dot q,u).$$ This system is equivalent to the
+two-dimensional first-order system \begin{align*} \dot x_1 =& x_2 \\
+\dot x_2 =& f(x_1,x_2,u), \end{align*} where $x_1 = q$ and $x_2 = \dot
+q$.  Therefore, the graphical depiction of this system is not a line,
+but a vector field where the vectors $[\dot x_1, \dot x_2]^T$ are
+plotted over the domain $(x_1,x_2)$.  This vector field is known as
+the <em>phase portrait</em> of the system.</p>
+
+<p>
+In this section we restrict ourselves to the simplest case when $u_0 =
+0$.  Let's sketch the phase portrait.  First sketch along the
+$\theta$-axis. The $x$-component of the vector field here is zero, the
+$y$-component is $-mgl\sin\theta.$ As expected, we have fixed points
+at $\pm \pi, ...$ Now sketch the rest of the vector field.  Can you
+tell me which fixed points are stable?  Some of them are stable
+i.s.L., none are asymptotically stable.
+
+<figure>
+  <img width="80%" src="figures/pend_undamped_phase.svg"/>
+</figure>
+</p>
+
+<section data-type="sect3"><h1>Orbit Calculations</h1>
+
+<p>
+Directly integrating the equations of motion is difficult, but at
+least for the case when $u_0 = 0$, we have some additional physical
+insight for this problem that we can take advantage of.  The kinetic
+energy, $T$, and potential energy, $U$, of the pendulum are given by
+$$T = \frac{1}{2}I\dot\theta^2, \quad U = -mgl\cos(\theta),$$ where
+$I=ml^2$ and the
+total energy is $E(\theta,\dot\theta) = T(\dot\theta)+U(\theta)$.  The
+undamped pendulum is a conservative system: total energy is a constant
+over system trajectories.  Using conservation of energy, we have:
+\begin{gather*} E(\theta(t),\dot\theta(t)) =
+  E(\theta(0),\dot\theta(0)) = E \\
+\frac{1}{2} I \dot\theta^2(t) - mgl\cos(\theta(t)) = E  \\
+\dot\theta(t) = \pm \sqrt{\frac{2}{I}\left[E + mgl\cos\left(\theta(t)\right)\right]}
+\end{gather*}
+This equation is valid (the squareroot evaluates to a real number)
+when $\cos(\theta) > \cos(\theta_{max})$, where $$\theta_{max} =
+\begin{cases} \cos^{-1}\left( \frac{E}{mgl} \right), & E < mgl \\ \pi, &
+  \text{otherwise}. \end{cases}$$ Furthermore, differentiating this
+equation with respect to time indeed results in the equations of
+motion.</p>
+
+</section>
+
+<section data-type="sect3" style="display: none;"><h1>Trajectory Calculations</h1>
+
+<p>
+Solving for $\theta(t)$ is a bit harder, because it cannot be
+accomplished using elementary functions.  We begin the integration with
+\begin{gather*}
+\frac{d\theta}{dt} = \sqrt{\frac{2}{I}\left[E +
+  mgl\cos\left(\theta(t)\right)\right]} \\
+\int_{\theta(0)}^{\theta(t)} \frac{d\theta}{\sqrt{\frac{2}{I}\left[E +
+  mgl\cos\left(\theta(t)\right)\right]}}
+= \int_0^t dt' = t
+\end{gather*}
+The integral on the left side of this equation is an (incomplete)
+elliptic integral of the first kind.  Using the identity:
+$$\cos(\theta) = 1 - 2 \sin^2(\frac{1}{2}\theta),$$ and manipulating, we have
+$$t = \sqrt{\frac{I}{2(E+mgl)}} \int_{\theta(0)}^{\theta(t)}
+\frac{d\theta}{\sqrt{1 - k_1^2\sin^2(\frac{\theta}{2})}}, \quad
+\text{with }k_1=\sqrt{\frac{2mgl}{E+mgl}}.$$ In terms of the
+incomplete elliptic integral function, $$F(\phi,k) = \int_0^\phi
+\frac{d\theta}{\sqrt{1-k^2\sin^2\theta}},$$ accomplished by a change
+of variables.  If $E <= mgl$, which is the case of closed-orbits, we
+use the following change of variables to ensure $0<k<1$:
+\begin{gather*}\phi =
+\sin^{-1}\left[ k_1 \sin\left( \frac{\theta}{2} \right) \right] \\
+\cos(\phi) d\phi = \frac{1}{2} k_1 \cos\left(\frac{\theta}{2}\right)
+d\theta = \frac{1}{2} k_1 \sqrt{1 - \frac{\sin^2 (\phi)}{k_1^2}}
+d\theta \end{gather*} we
+have
+\begin{gather*}
+t = \frac{1}{k_1}\sqrt{\frac{2I}{(E+mgl)}} \int_{\phi(0)}^{\phi(t)}
+\frac{d\phi}{\sqrt{1 - \sin^2(\phi)}} \frac{\cos(\phi)}{\sqrt{1 -
+\frac{\sin^2\phi}{k_1^2}}} \\ = \sqrt{\frac{I}{mgl}} \left[
+F\left(\phi(t),k_2\right) - F\left(\phi(0),k_2\right) \right],\quad
+k_2 = \frac{1}{k_1}.\end{gather*} The inverse of $F$ is given by the
+Jacobi elliptic functions (sn,cn,...), yielding:
+<!-- http://en.wikipedia.org/wiki/Jacobi%27s_elliptic_functions -->
+<!-- \begin{gather*}\sin(\phi(t)) = \text{sn}\left(t
+  \sqrt{\frac{mgl}{I}} + F\left(\phi(0),k_2\right),k_2 \right) \\
+\theta(t) = 2\sin^{-1} \left[ k_2 \text{sn}\left(t
+  \sqrt{\frac{mgl}{I}} + F\left(\phi(0),k_2\right),k_2 \right) \right]
+\end{gather*}
+The function $\text{sn}$ used here can be evaluated in MATLAB by
+calling $$\text{sn}(u,k) = \text{ellipj}(u,k^2).$$ The function
+$F$ is not implemented in MATLAB, but implementations can be
+downloaded.. (note that $F(0,k) = 0$).</p>
+
+<!-- still don't totally understand why this case isn't covered by the
+above derivation... -->
+<p>
+For the open-orbit case, $E>mgl$, we use $$\phi =
+\frac{\theta}{2},\quad \frac{d\phi}{d\theta} = \frac{1}{2},$$ yielding
+\begin{gather*}
+t = \frac{2I}{E+mgl} \int_{\phi(0)}^{\phi(t)} \frac{d\phi}{\sqrt{1 -
+    k_1^2 \sin^2(\phi)}} \\
+\theta(t) = 2 \tan^{-1} \left[ \frac{ \text{sn} \left( t
+    \sqrt{\frac{E+mgl}{2I}} + F\left( \frac{\theta(0)}{2}, k_1 \right)
+    \right) } { \text{cn} \left( t
+    \sqrt{\frac{E+mgl}{2I}} + F\left( \frac{\theta(0)}{2}, k_1 \right)
+    \right) }
+ \right]
+\end{gather*}
+Notes: Use MATLAB's \url{atan2} and \url{unwrap} to recover the
+complete trajectory.</p>
+
+</section> <!-- end of undamped pend -->
 
 </section> <!-- end of constant torque -->
 
