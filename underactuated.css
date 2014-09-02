@@ -125,6 +125,7 @@ appendix {
 }
 [data-type="definition"] h1 {
   display: inline;
+  font-size: 16px;
   font-variant: normal;
 }
 [data-type="definition"] {
@@ -143,6 +144,7 @@ appendix {
 }
 [data-type="example"] h1 {
   display: block;
+  font-size: 16px;
   font-variant: normal;
   margin: 2px;
 }
@@ -175,6 +177,10 @@ figcaption {
 [data-type="drake"] h1:after {
   content: "";
 }
+[data-type="drake"] h1 {
+  font-size: 16px;
+}
+
 
 appendix [data-type="chapter"] h1:before {
   content: "Appendix " counter(chapter, upper-alpha);
