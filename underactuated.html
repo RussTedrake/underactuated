@@ -14,7 +14,7 @@
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
           results = regex.exec(location.search);
         return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-        }
+      }
 
       function revealChapters() {
         var chapter = getParameterByName("chapter");
@@ -695,8 +695,8 @@ The target audience for the class includes both computer science and
 
   <section data-type="sect1"><h1>Introduction</h1>
 
-    <p>
-      Our goals for this chapter are modest: we'd like to understand the
+<p>
+Our goals for this chapter are modest: we'd like to understand the
 dynamics of a pendulum.  Why a pendulum?  In part, because the
 dynamics of a majority of our multi-link robotics manipulators are
 simply the dynamics of a large number of coupled pendula.  Also, the
@@ -705,8 +705,182 @@ concepts from nonlinear dynamics that we will use in this text, but
 tractable enough for us to (mostly) understand in the next few pages.
 </p>
 
-  </section>
+<figure>
+  <img width="30%" src="figures/simple_pend.svg"/>
+  <figcaption>The simple pendulum</figcaption>
+</figure>
+
+<p>
+The Lagrangian derivation of the equations
+of motion of the simple pendulum yields:
+\begin{equation*}
+m l^2 \ddot\theta(t) + mgl\sin{\theta(t)} = Q.
+\end{equation*}
+We'll consider the case where the generalized force,
+$Q$, models a damping torque (from friction) plus a control torque input,
+$u(t)$: $$Q = -b\dot\theta(t) + u(t).$$
+</p>
+
 </section>
+
+<section data-type="sect1"><h1>Nonlinear Dynamics w/ a Constant Torque</h1>
+
+<p>
+  Let us first consider the dynamics of the pendulum if it is driven in
+a particular simple way: a torque which does not vary with time:
+\begin{equation}
+ml^2 \ddot\theta + b\dot\theta + mgl \sin\theta = u_0.
+\end{equation}
+These are relatively simple equations, so we should be able to
+integrate them to obtain $\theta(t)$ given
+$\theta(0),\dot\theta(0)$... right?  Although it is possible,
+integrating even the simplest case ($b = u = 0$) involves elliptic
+integrals of the first kind; there is relatively little intuition to
+be gained here.
+</p>
+
+<p>
+This is in stark contrast to the case of linear
+systems, where we much of our understanding comes from being able to
+explictly integrate the equations.  For instance, for a simple linear
+system we have $$\dot{q} =
+a q \quad \rightarrow \quad q(t) = q(0) e^{at},$$ and we can
+immediately understand that the long-term behavior of the system is a
+(stable) decaying exponential if $a<0$, an (unstable) growing
+expontential if $a>0$, and that the system does nothing if $a=0$.
+Here we are with certainly one of the simplest nonlinear systems we
+can imagine, and we can't even solve this system?
+</p>
+
+<p>
+  All is not lost.  If what we care about is the long-term behavior of
+the system, then we can investigate the system using a graphical solution
+method.  These methods are described beautifully in a book by Steve
+Strogatz<elib>Strogatz94</elib>.
+
+<section data-type="sect2"><h1>The Overdamped Pendulum</h1>
+
+<p>
+Let's start by studying a special case, when $\frac{b}{ml^2} \sqrt\frac{g}{l} \gg 1$.
+This is the case of heavy damping - for instance if the pendulum was
+moving in molasses.  In this case, the damping term dominates the
+acceleration term, and we have: $$ml^2 \ddot\theta + b\dot\theta
+\approx b\dot\theta = u_0 - mgl\sin\theta.$$ In other words, in the case of
+heavy damping, the system looks approximately first-order.  This is a
+general property of heavily damped systems, such as fluids at very low Reynolds
+number.
+</p>
+
+<p>
+I'd like to ignore one detail for a moment: the fact that $\theta$
+wraps around on itself every $2\pi$.  To be clear, let's write the
+system without the wrap-around as: \begin{equation}b\dot{x} = u_0 -
+mgl\sin{x}.\label{eq:overdamped_pend_ct}\end{equation} Our goal is to
+understand the long-term behavior of this system: to find $x(\infty)$
+given $x(0)$.  Let's start by plotting $\dot{x}$ vs $x$ for the case
+when $u_0=0$:
+
+<figure>
+  <img width="70%" src="figures/pend_sinx.svg"/>
+</figure>
+</p>
+
+<p>
+The first thing to notice is that the system has a number of
+<em>fixed points</em> or <em>steady states</em>, which occur whenever
+$\dot{x} = 0$.  In this simple example, the zero-crossings are $x^* =
+\{..., -\pi, 0, \pi, 2\pi, ...\}$.  When the system is in one of
+these states, it will never leave that state.  If the initial
+conditions are at a fixed point, we know that $x(\infty)$ will be at
+the same fixed point.</p>
+
+<p>Next let's investigate the behavior of the system in the local
+vicinity of the fixed points.  Examing the fixed point at $x^* =
+\pi$, if the system starts just to the right of the fixed point,
+then $\dot{x}$ is positive, so the system will move away from the
+fixed point.  If it starts to the left, then $\dot{x}$ is negative,
+and the system will move away in the opposite direction.  We'll call
+fixed-points which have this property \emph{unstable}.  If we look at
+the fixed point at $x^* = 0$, then the story is different:
+trajectories starting to the right or to the left will move back
+towards the fixed point.  We will call this fixed point \emph{locally
+stable}.  More specifically, we'll distinguish between three types of
+local stability:
+<ul>
+  <li>Locally stable in the sense of Lyapunov (i.s.L.).  A fixed
+point, $x^*$ is locally stable i.s.L. if for every small $\epsilon$, I
+can produce a $\delta$ such that if $\| x(0) - x^* \| < \delta$ then
+$\forall t$ $\| x(t) - x^*\| < \epsilon$.  In words, this means that
+for any ball of size $\epsilon$ around the fixed point, I can create a
+ball of size $\delta$ which guarantees that if the system is started
+inside the $\delta$ ball then it will remain inside the $\epsilon$
+ball for all of time.</li>
+  <li>Locally asymptotically stable.  A fixed point is locally
+asymptotically stable if $x(0) = x^* + \epsilon$ implies that
+$x(\infty) = x^*$.</li>
+  <li>Locally exponentially stable.  A fixed point is locally
+exponentially stable if $x(0) = x^* + \epsilon$ implies that $\| x(t)
+- x^* \| < Ce^{-\alpha}t$, for some positive constants $C$ and
+$\alpha$.</li>
+</ul>
+An initial condition near a fixed point that is stable in the sense of
+Lyapunov may never reach the fixed point (but it won't diverge), near
+an asymptotically stable fixed point will reach the fixed point as $t
+\rightarrow \infty$, and near an exponentially stable fixed point will
+reach the fixed point with a bounded rate.  An exponentially stable
+fixed point is also an asymptotically stable fixed point, and for locally
+smooth nonlinear systems an asymptotically stable fixed point is also
+stable i.s.L.&dagger;<sidenote>&dagger; This is not obvious, but can be shown using a
+  Converse Lyapunov Theorem (e.g. <elib>Khalil01</elib>).</sidenote> but the converse of these
+  is not necessarily true.
+</p>
+
+<p>
+  Our graph of $\dot{x}$ vs. $x$ can be used to convince ourselves of
+i.s.L. and asymptotic stability.  Exponential stability could
+potentially be inferred if the function could be bounded by a
+negatively-sloped line through the fixed point, but this requires some
+care.  I will graphically illustrate unstable fixed points with open
+circles and stable fixed points (i.s.L.) with filled circles.  Next,
+we need to consider what happens to initial conditions which begin
+farther from the fixed points.  If we think of the dynamics of the
+system as a flow on the $x$-axis, then we know that anytime $\dot{x} >
+0$, the flow is moving to the right, and $\dot{x} < 0$, the flow is
+moving to the left.  If we further annotate our graph with arrows
+indicating the direction of the flow, then the entire (long-term)
+system behavior becomes clear:
+
+<figure>
+  <img width="70%" src="figures/pend_sinx_annotated.svg"/>
+</figure>
+
+
+For instance, we can see that any initial condition $x(0) \in
+(\pi,\pi)$ will result in $x(\infty) = 0$.  This region is called the
+<em>basin of attraction</em> of the fixed point at $x^* = 0$.
+Basins of attraction of two fixed points cannot overlap, and the
+manifold separating two basins of attraction is called the
+<em>separatrix</em>.  Here the unstable fixed points, at $x^* = \{..,
+-\pi, \pi, 3\pi, ...\}$ form the separatrix between the basins
+of attraction of the stable fixed points.
+</p>
+
+<p>
+  As these plots demonstrate, the behavior of a first-order one
+dimensional system on a line is relatively constrained.  The system
+will either monotonically approach a fixed-point or monotonically move
+toward $\pm \infty$.  There are no other possibilities.  Oscillations,
+for example, are impossible.  Graphical analysis is a fantastic
+analysis tool for many first-order nonlinear systems (not just
+pendula); as illustrated by the following example:
+</p>
+
+
+</section> <!-- end of overdamped pend -->
+
+</section> <!-- end of constant torque -->
+
+</section> <!-- end of pendulum chapter -->
 
   </body>
 </html>
