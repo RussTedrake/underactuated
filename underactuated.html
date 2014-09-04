@@ -565,7 +565,7 @@ nonholonomic constraints. </div>
 
 Contrast the wheel robot example with a robot on train tracks.  The train tracks
 would represent a holonomic constraint: if the system was written down in the
-$(x,y,\theta)$ coordinates then the differential track constriants could be
+$(x,y,\theta)$ coordinates then the differential track constraints could be
 integrated resulting in a description of the system in a reduced coordinate
 system--train tracks are holonomic constraints. </p>
 
@@ -1011,24 +1011,25 @@ in MATLAB produces the expected result. </p>
 
 <section data-type="sect1"><h1>The Manipulator Equations</h1>
 
-<p>
-If you crank through the Lagrangian dynamics for a few simple serial
-chain robotic manipulators, you will begin to see a pattern emerge -
-the resulting equations of motion all have a characteristic form.  For
-example, the kinetic energy of your robot can always be written in the
-form: $$T = \frac{1}{2} \dot{\bq}^T {\bf H}(\bq) \dot{\bq},$$ where
-${\bf H}$ is the state-dependent inertial matrix.  This abstraction
-affords some insight into general manipulator dynamics - for example
-we know that ${\bf H}$ is always positive definite, and
-symmetric<elib>Asada86</elib>(p.107).</p>
+<p> If you crank through the Lagrangian dynamics for a few simple robotic
+manipulators, you will begin to see a pattern emerge - the resulting equations
+of motion all have a characteristic form.  For example, the kinetic energy of
+your robot can always be written in the form: $$T = \frac{1}{2} \dot{\bq}^T {\bf
+H}(\bq) \dot{\bq},$$ where ${\bf H}$ is the state-dependent inertial matrix.
+This abstraction affords some insight into general manipulator dynamics - for
+example we know that ${\bf H}$ is always positive definite, and
+symmetric<elib>Asada86</elib>(p.107) and has a beautiful sparsity
+pattern<elib>Featherstone05</elib> that we'll attempt to take advantage of in
+our algorithms.</p>
 
 
 <p>   Continuing our abstractions, we find that the equations of motion of a
-general robotic manipulator take the form $${\bf H}(\bq)\ddot{\bq} + {\bf
-C}(\bq,\dot{\bq})\dot{\bq} + {\bf G}(\bq) = {\bf B}(\bq)\bu,$$ where $\bq$ is
-the state vector, ${\bf H}$ is the inertial matrix, ${\bf C}$ captures Coriolis
-forces, and ${\bf G}$ captures potentials (such as gravity).  The matrix ${\bf
-B}$ maps control inputs $\bu$ into generalized forces.</p>
+general robotic manipulator (sans kinematic loops) take the form $${\bf
+H}(\bq)\ddot{\bq} + {\bf C}(\bq,\dot{\bq})\dot{\bq} + {\bf G}(\bq) = {\bf
+B}(\bq)\bu,$$ where $\bq$ is the state vector, ${\bf H}$ is the inertial matrix,
+${\bf C}$ captures Coriolis forces, and ${\bf G}$ captures potentials (such as
+gravity).  The matrix ${\bf B}$ maps control inputs $\bu$ into generalized
+forces.</p>
 
 <div data-type="example"><h1>Manipulator Equation form of the Simple Double Pendulum</h1>
 The equations of motion from Example 1 can be written compactly as:
