@@ -155,8 +155,14 @@ with the look and feel of ASIMO's movements [watch the asimo video below now].
 </p>
 
 <figure>
-  <object name="kaltura_player_1409562873" id="kaltura_player_1409562873" type="application/x-shockwave-flash" allowScriptAccess="always" allowNetworking="all" allowFullScreen="true" height="300" width="100%" data="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151?autoPlay=false"><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="allowFullScreen" value="true" /><param name="bgcolor" value="#000000" /><param name="movie" value="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151"/><param name="flashVars" value=""/><a href="http://corp.kaltura.com">video platform</a><a href="http://corp.kaltura.com/video_platform/video_management">video management</a><a href="http://corp.kaltura.com/solutions/video_solution">video solutions</a><a href="http://corp.kaltura.com/video_platform/video_publishing">video player</a></object>
-  <figcaption>Honda's ASIMO (from <a href="http://world.honda.com/ASIMO/video/">http://world.honda.com/ASIMO/video/</a>)</figcaption>
+  <video width="80%" controls>
+    <source src="figures/walking_while_avoiding_people.ogg" type="video/ogg"/>
+  </video><br/>
+<!--
+<object name="kaltura_player_1409562873" id="kaltura_player_1409562873" type="application/x-shockwave-flash" allowScriptAccess="always" allowNetworking="all" allowFullScreen="true" height="300" width="100%" data="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151?autoPlay=false"><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="allowFullScreen" value="true" /><param name="bgcolor" value="#000000" /><param name="movie" value="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151"/><param name="flashVars" value=""/><a href="http://corp.kaltura.com">video platform</a><a href="http://corp.kaltura.com/video_platform/video_management">video management</a><a href="http://corp.kaltura.com/solutions/video_solution">video solutions</a><a href="http://corp.kaltura.com/video_platform/video_publishing">video player</a></object>
+-->
+<figcaption>Honda's ASIMO (from <a href="http://world.honda.com/ASIMO/video/">http://world.honda.com/ASIMO/video/</a>)</figcaption>
+
 </figure>
 
 <p> I hope that your first reaction is to be incredibly impressed with the
@@ -176,14 +182,14 @@ and cannot walk on unmodelled or uneven terrain. </p>
 
 <figure>
 <p>
-  <video width="100%" controls title="If your browser cannot play this video, then download it using the link below.">
+  <video width="80%" controls title="If your browser cannot play this video, then download it using the link below.">
     <source src="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_angle.mpg" type="video/mp4"/>
     <source src="figures/passive_angle.ogg" type="video/ogg"/>
   </video><br/>
   <a href="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_angle.mpg">Download the video</a>
 </p>
 <p>
-  <video width="100%" controls title="If your browser cannot play this video, then download it using the link below.">
+  <video width="80%" controls title="If your browser cannot play this video, then download it using the link below.">
     <source src="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_behind.mpg" type="video/mp4">
     <source src="figures/passive_behind.ogg" type="video/ogg"/>
   </video><br/>
@@ -864,55 +870,57 @@ Some of them are stable i.s.L., none are asymptotically stable.
 
 <section data-type="sect3"><h1>Orbit Calculations</h1>
 
-<p> Directly integrating the equations of motion is difficult, but at least for
-the case when $u_0 = 0$, we have some additional physical insight for this
-problem that we can take advantage of.  The kinetic energy, $T$, and potential
-energy, $U$, of the pendulum are given by $$T = \frac{1}{2}I\dot\theta^2, \quad
-U = -mgl\cos(\theta),$$ where $I=ml^2$ and the total energy is
-$E(\theta,\dot\theta) = T(\dot\theta)+U(\theta)$.  The undamped pendulum is a
-conservative system: total energy is a constant over system trajectories.  Using
-conservation of energy, we have:
+<p> You might wonder how we drew the black countour lines in the figure above.  We could
+have obtained them by simulating the system numerically, but those lines can be
+easily obtained in closed-form.  Directly integrating the equations of motion is
+difficult, but at least for the case when $u_0 = 0$, we have some additional
+physical insight for this problem that we can take advantage of.  The kinetic
+energy, $T$, and potential energy, $U$, of the pendulum are given by $$T =
+\frac{1}{2}I\dot\theta^2, \quad U = -mgl\cos(\theta),$$ where $I=ml^2$ and the
+total energy is $E(\theta,\dot\theta) = T(\dot\theta)+U(\theta)$.  The undamped
+pendulum is a conservative system: total energy is a constant over system
+trajectories.  Using conservation of energy, we have:
 
-\begin{gather*}  E(\theta(t),\dot\theta(t)) = E(\theta(0),\dot\theta(0)) = E \\
-\frac{1}{2} I \dot\theta^2(t) - mgl\cos(\theta(t)) = E  \\ \dot\theta(t) = \pm
-\sqrt{\frac{2}{I}\left[E + mgl\cos\left(\theta(t)\right)\right]} \end{gather*}
+\begin{gather*}  E(\theta(t),\dot\theta(t)) = E(\theta(0),\dot\theta(0)) = E_0 \\
+\frac{1}{2} I \dot\theta^2(t) - mgl\cos(\theta(t)) = E_0  \\ \dot\theta(t) = \pm
+\sqrt{\frac{2}{I}\left[E_0 + mgl\cos\left(\theta(t)\right)\right]} \end{gather*}
 
-This equation is valid (the squareroot evaluates to a real number) when
-$\cos(\theta) > \cos(\theta_{max})$, where $$\theta_{max} = \begin{cases}
-\cos^{-1}\left( \frac{E}{mgl} \right), & E < mgl \\ \pi, & \text{otherwise}.
-\end{cases}$$ Furthermore, differentiating this equation with respect to time
-indeed results in the equations of motion.</p>
+Using this, if you tell me $\theta$ I can determine one of two possible values
+for $\dot\theta$, and the solution has all of the richness of the black countour
+lines from the plot.  This equation has a real solution when $\cos(\theta) >
+\cos(\theta_{max})$, where $$\theta_{max} = \begin{cases} \cos^{-1}\left(
+\frac{E}{mgl} \right), & E < mgl \\ \pi, & \text{otherwise}. \end{cases}$$ Of
+course this is just the intuitive notion that the pendulum will not swing above
+the height where the total energy equals the potential energy.  As an exercise,
+you can verify that differentiating this equation with respect to time indeed
+results in the equations of motion.</p>
 
 </section>
-<section data-type="sect3" style="display: none;"><h1>Trajectory Calculations</h1>
+<section data-type="sect3"><h1>Trajectory Calculations</h1>
 
-<p>
-Solving for $\theta(t)$ is a bit harder, because it cannot be
-accomplished using elementary functions.  We begin the integration with
-\begin{gather*}
-\frac{d\theta}{dt} = \sqrt{\frac{2}{I}\left[E +
-  mgl\cos\left(\theta(t)\right)\right]} \\
-\int_{\theta(0)}^{\theta(t)} \frac{d\theta}{\sqrt{\frac{2}{I}\left[E +
-  mgl\cos\left(\theta(t)\right)\right]}}
-= \int_0^t dt' = t
-\end{gather*}
-The integral on the left side of this equation is an (incomplete)
-elliptic integral of the first kind.  Using the identity:
-$$\cos(\theta) = 1 - 2 \sin^2(\frac{1}{2}\theta),$$ and manipulating, we have
-$$t = \sqrt{\frac{I}{2(E+mgl)}} \int_{\theta(0)}^{\theta(t)}
-\frac{d\theta}{\sqrt{1 - k_1^2\sin^2(\frac{\theta}{2})}}, \quad
-\text{with }k_1=\sqrt{\frac{2mgl}{E+mgl}}.$$ In terms of the
-incomplete elliptic integral function, $$F(\phi,k) = \int_0^\phi
-\frac{d\theta}{\sqrt{1-k^2\sin^2\theta}},$$ accomplished by a change
-of variables.  If $E <= mgl$, which is the case of closed-orbits, we
-use the following change of variables to ensure $0<k<1$:
-\begin{gather*}\phi =
-\sin^{-1}\left[ k_1 \sin\left( \frac{\theta}{2} \right) \right] \\
-\cos(\phi) d\phi = \frac{1}{2} k_1 \cos\left(\frac{\theta}{2}\right)
-d\theta = \frac{1}{2} k_1 \sqrt{1 - \frac{\sin^2 (\phi)}{k_1^2}}
-d\theta \end{gather*} we
-have
+<p> For completeness, I'll include what it would take to solve for $\theta(t)$,
+even thought it cannot be accomplished using elementary functions.  Feel free to
+skip this subsection.  We begin the integration with
 
+\begin{gather*} \frac{d\theta}{dt} = \sqrt{\frac{2}{I}\left[E +
+mgl\cos\left(\theta(t)\right)\right]} \\ \int_{\theta(0)}^{\theta(t)}
+\frac{d\theta}{\sqrt{\frac{2}{I}\left[E +
+mgl\cos\left(\theta(t)\right)\right]}} = \int_0^t dt' = t \end{gather*}
+
+The
+integral on the left side of this equation is an (incomplete) elliptic integral
+of the first kind.  Using the identity: $$\cos(\theta) = 1 - 2
+\sin^2(\frac{1}{2}\theta),$$ and manipulating, we have $$t =
+\sqrt{\frac{I}{2(E+mgl)}} \int_{\theta(0)}^{\theta(t)} \frac{d\theta}{\sqrt{1 -
+k_1^2\sin^2(\frac{\theta}{2})}}, \quad \text{with
+}k_1=\sqrt{\frac{2mgl}{E+mgl}}.$$ In terms of the incomplete elliptic integral
+function, $$F(\phi,k) = \int_0^\phi \frac{d\theta}{\sqrt{1-k^2\sin^2\theta}},$$
+accomplished by a change of variables.  If $E <= mgl$, which is the case of
+closed-orbits, we use the following change of variables to ensure $ 0 < k < 1 $ :
+\begin{gather*}\phi = \sin^{-1}\left[ k_1 \sin\left( \frac{\theta}{2} \right)
+\right] \\ \cos(\phi) d\phi = \frac{1}{2} k_1 \cos\left(\frac{\theta}{2}\right)
+d\theta = \frac{1}{2} k_1 \sqrt{1 - \frac{\sin^2 (\phi)}{k_1^2}} d\theta
+\end{gather*} so we have
 \begin{gather*}
 t = \frac{1}{k_1}\sqrt{\frac{2I}{(E+mgl)}} \int_{\phi(0)}^{\phi(t)}
 \frac{d\phi}{\sqrt{1 - \sin^2(\phi)}} \frac{\cos(\phi)}{\sqrt{1 -
@@ -921,7 +929,7 @@ F\left(\phi(t),k_2\right) - F\left(\phi(0),k_2\right) \right],\quad
 k_2 = \frac{1}{k_1}.\end{gather*} The inverse of $F$ is given by the
 Jacobi elliptic functions (sn,cn,...), yielding:
 <!-- http://en.wikipedia.org/wiki/Jacobi%27s_elliptic_functions -->
-<!-- \begin{gather*}\sin(\phi(t)) = \text{sn}\left(t
+\begin{gather*}\sin(\phi(t)) = \text{sn}\left(t
   \sqrt{\frac{mgl}{I}} + F\left(\phi(0),k_2\right),k_2 \right) \\
 \theta(t) = 2\sin^{-1} \left[ k_2 \text{sn}\left(t
   \sqrt{\frac{mgl}{I}} + F\left(\phi(0),k_2\right),k_2 \right) \right]
@@ -929,10 +937,8 @@ Jacobi elliptic functions (sn,cn,...), yielding:
 The function $\text{sn}$ used here can be evaluated in MATLAB by
 calling $$\text{sn}(u,k) = \text{ellipj}(u,k^2).$$ The function
 $F$ is not implemented in MATLAB, but implementations can be
-downloaded.. (note that $F(0,k) = 0$).</p>
+downloaded. (note that $F(0,k) = 0$).</p>
 
-<!-- still don't totally understand why this case isn't covered by the
-above derivation... -->
 <p>
 For the open-orbit case, $E>mgl$, we use $$\phi =
 \frac{\theta}{2},\quad \frac{d\phi}{d\theta} = \frac{1}{2},$$ yielding
@@ -946,14 +952,85 @@ t = \frac{2I}{E+mgl} \int_{\phi(0)}^{\phi(t)} \frac{d\phi}{\sqrt{1 -
     \right) }
  \right]
 \end{gather*}
-Notes: Use MATLAB's \url{atan2} and \url{unwrap} to recover the
+Notes: Use MATLAB's <code>atan2</code> and <code>unwrap</code> to recover the
 complete trajectory.</p>
 
+<!-- primary refs:
+  http://en.wikipedia.org/wiki/Pendulum_%28mathematics%29
+  http://kr.cs.ait.ac.th/~radok/math/mat6/calc81.htm
+  http://books.google.com/books?id=xWrJlTIYl_IC&pg=PA280&lpg=PA280&dq=pendulum+elliptic+integrals&source=web&ots=zas9k5qVc0&sig=Tz-OwdqS84VPM2I_pZbtaspVZNk#PPA280,M1 (Computational Physics: Problem Solving with Computers by Rubin H. Landau, Cristian C. Bordeianu, p.280)
+  http://en.wikipedia.org/wiki/Binomial_theorem
+  http://mathworld.wolfram.com/EllipticIntegraloftheFirstKind.html -->
+
+
+</div>
 </section>
 
 </section> <!-- end of undamped pend -->
 
+<section data-type="sect2"><h1>The Undamped Pendulum w/ a Constant Torque</h1>
+
+<p> Now what happens if we add a constant torque?  If you visualize the
+bifurcation diagram, you'll see that the fixed points come together, towards $q =
+\frac{\pi}{2}, \frac{5\pi}{2}, ...$, until they disappear.  One fixed-point is
+unstable, and one is stable.</p>
+
+<!-- todo: find a way to add an animation or something in here.  do a matlab demo in class -->
+
+</section> <!-- undamped constant torque -->
+
+<section data-type="sect2"><h1>The Dampled Pendulum</h1>
+
+<p>
+Now let's add damping back.  You can still add torque to move the fixed points
+(in the same way).</p>
+
+<figure>
+  <img width="90%" src="figures/pend_damped_phase.svg"/>
+  <figcaption>Phase diagram for the damped pendulum</figcaption>
+</figure>
+
+<p> Here's a thought exercise.  If $u$ is no longer a constant, but a function
+$\pi(q,\dot{q})$, then how would you choose $\pi$ to stabilize the vertical
+position.  Feedback linearization is the trivial solution, for example: $$u =
+\pi(q,\dot{q}) = 2 \frac{g}{l}\cos\theta.$$ But these plots we've been making
+tell a different story.  How would you shape the natural dynamics - at each
+point pick a $u$ from the stack of phase plots - to stabilize the vertical fixed
+point <em>with minimal torque effort</em>?  This is exactly the way that I would
+like you to think about control system design.  And we'll give you your first solution techniques -- using dynamic programming -- in the next lecture.</p>
+
+</section> <!-- damped pend -->
+
 </section> <!-- end of constant torque -->
+
+<section data-type="sect1"><h1>The Torque-limited Simple Pendulum</h1>
+
+<p>
+The simple pendulum is fully actuated.  Given enough torque, we can
+produce any number of control solutions to stabilize the originally
+unstable fixed point at the top (such as designing a feedback law to
+effectively invert gravity).</p>
+
+
+<p>   The problem begins to get interesting (a.k.a. becomes underactuated) if we
+impose a torque-limit constraint, $|u|\le u_{max}$.  Looking at the phase
+portraits again, you can now visualize the control problem.  Via feedback, you
+are allowed to change the direction of the vector field at each point, but only
+by a fixed amount.  Clearly, if the maximum torque is small (smaller than
+$mgl$), then there are some states which cannot be driven directly to the goal,
+but must pump up energy to reach the goal.  Futhermore, if the torque-limit is
+too severe and the system has damping, then it may be impossible to swing up to
+the top.  The existence of a solution, and number of pumps required to reach the
+top, is a non-trivial function of the initial conditions and the
+torque-limits.</p>
+
+<p> Although this system is very simple, its solution requires much of the same
+reasoning necessary for controlling much more complex underactuated systems;
+this problem will be a work-horse for us as we introduce new algorithms
+throughout this book.</p>
+
+</section>
+
 
 </section> <!-- end of pendulum chapter -->
 
