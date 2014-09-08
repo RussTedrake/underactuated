@@ -761,17 +761,21 @@ obvious, but can be shown using a Converse Lyapunov Theorem (e.g.
 <elib>Khalil01</elib>).</sidenote> but the converse of these is not necessarily
 true. Interestingly, it is also possible to have nonlinear systems that converge
 (or diverge) in finite-time; a so-called <em>finite-time stability</em>.  We
-will see exmaples of this later in the book, but it is a difficult topic to
+will see examples of this later in the book, but it is a difficult topic to
 penetrate with graphical analysis.</p>
 
 <p> Our graph of $\dot{x}$ vs. $x$ can be used to convince ourselves of i.s.L.
-and asymptotic stability.  Exponential stability could potentially be inferred
-if the function could be bounded by a negatively-sloped line through the fixed
-point, but this requires some care.  I will graphically illustrate unstable
-fixed points with open circles and stable fixed points (i.s.L.) with filled
-circles.  Next, we need to consider what happens to initial conditions which
-begin farther from the fixed points.  If we think of the dynamics of the system
-as a flow on the $x$-axis, then we know that anytime $\dot{x} > 0$, the flow is
+and asymptotic stability by visually inspecting $\dot{x}$ in the vicinity of a
+fixed point.  Even exponential stability can be inferred if the function can be
+bounded away from the origin by a negatively-sloped line through the fixed
+point, since it implies that the nonlinear system will converge at least as fast
+as the linear system represented by the straight line.  I will graphically
+illustrate unstable fixed points with open circles and stable fixed points
+(i.s.L.) with filled circles. </p>
+
+<p>Next, we need to consider what happens to initial conditions which begin
+farther from the fixed points.  If we think of the dynamics of the system as a
+flow on the $x$-axis, then we know that anytime $\dot{x} > 0$, the flow is
 moving to the right, and $\dot{x} < 0$, the flow is moving to the left.  If we
 further annotate our graph with arrows indicating the direction of the flow,
 then the entire (long-term) system behavior becomes clear:
@@ -779,7 +783,7 @@ then the entire (long-term) system behavior becomes clear:
 <figure> <img width="70%" src="figures/pend_sinx_annotated.svg"/> </figure>
 
 For instance, we can see that any initial condition $x(0) \in (\pi,\pi)$ will
-result in $x(\infty) = 0$.  This region is called the <em>basin of
+result in $\lim_{t\rightarrow \infty} x(t) = 0$.  This region is called the <em>basin of
 attraction</em> of the fixed point at $x^* = 0$. Basins of attraction of two
 fixed points cannot overlap, and the manifold separating two basins of
 attraction is called the <em>separatrix</em>.  Here the unstable fixed points,
@@ -794,10 +798,11 @@ Graphical analysis is a fantastic analysis tool for many first-order nonlinear
 systems (not just pendula); as illustrated by the following example: </p>
 
 <div data-type="example"><h1>Nonlinear autapse</h1> Consider the following
-system: \begin{equation} \dot{x} + x = \tanh(w x) \end{equation} It's convenient
-to note that $\tanh(z) \approx z$ for small $z$.  For $w \le 1$ the system has
-only a single fixed point.  For $w > 1$ the system has three fixed points : two
-stable and one unstable.
+system: \begin{equation} \dot{x} + x = \tanh(w x), \end{equation} which is
+plotted below for a few values of $w$.  It's convenient to note that $\tanh(z)
+\approx z$ for small $z$.  For $w \le 1$ the system has only a single fixed
+point.  For $w > 1$ the system has three fixed points : two stable and one
+unstable.
 
 <figure> <img width="80%" src="figures/pend_autapse.svg"/> </figure>
 
@@ -829,7 +834,8 @@ exercise~\ref{p:pend_bifurcation}.-->  Finally, let's return to the original
 equations in $\theta$, instead of in $x$.  Only one point to make: because of
 the wrap-around, this system will <em>appear</em> have oscillations.  In fact,
 the graphical analysis reveals that the pendulum will turn forever whenever
-$|u_0| > mgl$.</p>
+$|u_0| > mgl$, but now you understand that this is not an oscillation, but an
+instability with $\theta \rightarrow \pm \infty$. </p>
 
 </section> <!-- end of overdamped pend -->
 
