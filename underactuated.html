@@ -1033,7 +1033,118 @@ throughout this book.</p>
 </section>
 
 
-</section> <!-- end of pendulum chapter -->
+</section>
+
+ <!-- ***************  end of pendulum chapter **************   -->
+
+<section data-type="chapter" class="chapter"><h1>Acrobots, Cart-Poles, and Quadrotors</h1>
+
+</section>
+
+<!-- ***************  end of acrobot/cartpole/quadrotor chapter **************   -->
+
+
+<section data-type="chapter" class="chapter"><h1>Walking and Running</h1>
+
+</section>
+
+<!-- ***************  end of walking and running **************   -->
+
+<section data-type="chapter" class="chapter"><h1>Manipulation</h1>
+
+</section>
+
+<!-- ***************  end of Manipulation **************   -->
+
+<section data-type="chapter" class="chapter"><h1>Model Systems with Fluid Dynamics</h1>
+
+</section>
+
+<!-- ***************  end of fluid dynamics **************   -->
+
+<section data-type="chapter" class="chapter"><h1>Model Systems with Stochasticity</h1>
+
+</section>
+
+<!-- ***************  end of stochasticity **************   -->
+
+<!-- START PART II:  Nonlinear Planning and Control -->
+
+<section data-type="chapter" class="chapter"><h1>Dynamic Programming</h1>
+
+<p>In chapter 2, we spent some time thinking about the phase portrait of the
+simple pendulum, and concluded with a challenge: can we design a nonlinear
+controller to <em>reshape</em> the phase portrait, with a very modest amount of
+actuation, so that the upright fixed point becomes globally stable?  With
+unbounded torque, feedback linearization solutions (e.g., invert gravity) can
+work well, but can also require an unecessarily large amount of control effort.
+The energy-based swing-up control solutions presented for the acrobot and
+cart-pole systems  are considerably more appealing, but required some cleverness
+and might not scale to more complicated systems.  Here we investigate another
+approach to the problem, using computational optimal control to synthesize a
+feedback controller directly.</p>
+
+<section data-type="sect1"><h1>Formulating control design as an optimization</h1>
+
+  <!-- motivation, reshape the phase diagram on the simple pendulum -->
+
+<p>   In this chapter, we will introduce optimal control - a control design
+process using optimization.  This approach is powerful for a number of
+reasons.  First and foremost, it is very general - allowing us to   specify the
+goal of control equally well for fully- or under-actuated,   linear or
+nonlinear, deterministic or stochastic, and continuous or   discrete systems.
+Second of all, this control formulation permits   numerical solutions.
+<elib>Bertsekas00a</elib> is a fantastic reference on this material.</p>
+
+<p>   The fundamental idea in optimal control is to formulate the goal of
+control as the <em>long-term</em> optimization of a scalar cost function.
+Let's introduce the basic concepts by considering a system that is even
+simpler than the simple pendulum.</p>
+
+
+</section>
+
+<!-- ***************  end of dynamic programming **************   -->
+
+
+<section data-type="chapter" class="chapter"><h1>Analytical Optimal Control</h1>
+
+</section>
+
+<!-- ***************  end of analytical optimal control **************   -->
+
+<section data-type="chapter" class="chapter"><h1>Trajectory Optimization</h1>
+
+</section>
+
+<!-- ***************  end of trajectory optimization **************   -->
+
+<section data-type="chapter" class="chapter"><h1>Feasible Motion Planning</h1>
+
+</section>
+
+<!-- ***************  end of feasible motion planning **************   -->
+
+<section data-type="chapter" class="chapter"><h1>Verification</h1>
+
+</section>
+
+<!-- ***************  end of verification **************   -->
+
+<section data-type="chapter" class="chapter"><h1>Robust Control, Stochastic Control, and Planning Under Uncertainty</h1>
+
+</section>
+
+<!-- ***************  end of robust control **************   -->
+
+<section data-type="chapter" class="chapter"><h1>Feedback Motion Planning</h1>
+
+</section>
+
+<!-- ***************  end of feedback motion planning **************   -->
+
+<!-- START OF PART III - Estimation and Learning -->
+
 
 <appendix>
 
