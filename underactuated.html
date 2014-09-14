@@ -1183,13 +1183,13 @@ incredible pace over the last few years.</p>
 <p>
 For more intuition, let's do an informal derivation of the solution to
 the minimum time problem for the double integrator with input constraints:
-\begin{flalign*}
+\begin{align*}
   \minimize_{\pi} \quad & t_f\\
   \subjto \quad & \bx(t_0) = \bx_0, \\
   & \bx(t_f) = {\bf 0}, \\
   & \ddot{q}(t) = u(t), \\
   & |u| \le 1.
-\end{flalign*}
+\end{align*}
 What behavior would you expect an optimal controller exhibit?</p>
 
 <p>
@@ -1299,7 +1299,7 @@ src="figures/graph_search.svg"/><figcaption>A simple directed
 graph.</figcaption></figure> Let us also assume that each edge has an associate
 weight or cost, using $g(s,a)$ to denote the cost of being in state $s$ and
 taking action $a$. Furthemore we will denote the transition "dynamics" using \[ s[n+1] =
-f(s[n],a[n]) \].</p>
+f(s[n],a[n]). \]</p>
 
 <p>There are many algorithms for finding (or approximating) the optimal path
 from a start to a goal on directed graphs.  In dynamic programming, we can use
