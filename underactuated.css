@@ -78,6 +78,7 @@ appendix {
   counter-increment:chapter;
   counter-reset:sect1;
   counter-reset:example;
+  counter-reset:algorithm;
   counter-reset:figure;
 }
 [data-type="sect1"] {
@@ -93,7 +94,9 @@ appendix {
 [data-type="example"] {
   counter-increment:example;
 }
-
+[data-type="algorithm"] {
+  counter-increment:algorithm;
+}
 
 [data-type="chapter"] h1:before {
   content: "Chapter " counter(chapter);
@@ -139,7 +142,13 @@ appendix {
 [data-type="example"] h1:before {
   content: "Example " counter(chapter) "." counter(example) " (";
 }
+[data-type="algorithm"] h1:before {
+  content: "Algorithm " counter(chapter) "." counter(algorithm) " (";
+}
 [data-type="example"] h1:after {
+  content: ")";
+}
+[data-type="algorithm"] h1:after {
   content: ")";
 }
 [data-type="example"] h1 {

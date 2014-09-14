@@ -1,0 +1,18 @@
+# run me with
+#  dot -Tsvg graph_search.gv -o graph_search.svg
+
+digraph graph_search {
+  rankdir="LR";
+  node [];
+    "s1"; # [label = <s<sub>16</sub>>];
+    "s2";
+    "s3";
+    "s4";
+    "s1" -> "s2" [ label = "a1" ];
+    "s1" -> "s3" [ label = "a2" ];
+    "s2" -> "s3" [ label = "a1" ];
+    "s2" -> "s4" [ label = "a2" ];
+    "s3" -> "s2" [ label = "a1" ];
+    "s3" -> "s4" [ label = "a2" ];
+#    "s4" -> "s4" [ label = "a1" ];
+}

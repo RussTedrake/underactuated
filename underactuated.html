@@ -113,7 +113,7 @@
   \newcommand{\find}{\operatorname{\textrm{find}}}
   \newcommand{\argmax}{\operatorname{\textrm{argmax}}}
   \newcommand{\argmin}{\operatorname{\textrm{argmin}}}
-  \newcommand{\sgn}{\operatorname{\textrm{sng}}}
+  \newcommand{\sgn}{\operatorname{\textrm{sgn}}}
   \newcommand{\trace}{\operatorname{\textrm{tr}}}
   \newcommand{\sos}{\text{is SOS}}
   \]
@@ -678,8 +678,17 @@ torque input, $u(t)$: $$Q = -b\dot\theta(t) + u(t).$$ </p>
 
 <p> Let us first consider the dynamics of the pendulum if it is driven in a
 particular simple way: a torque which does not vary with time: \begin{equation}
-ml^2 \ddot\theta + b\dot\theta + mgl \sin\theta = u_0. \end{equation} These are
-relatively simple differential equations, so if I give you $\theta(0)$ and
+ml^2 \ddot\theta + b\dot\theta + mgl \sin\theta = u_0. \end{equation}
+You can experiment with this system in <em>drake</em> using
+
+<pre><code class="matlab">
+cd(fullfile(getDrakePath,'examples','Pendulum'));
+open_system('constantTorqueDemo');
+% hit play to start the simulation, and click on the boxes
+% labeled as 'slider' to control the torque and damping
+</code></pre>
+
+These are relatively simple differential equations, so if I give you $\theta(0)$ and
 $\dot\theta(0)$, then you should be able to integrate them to obtain
 $\theta(t)$... right?  Although it is possible, integrating even the simplest
 case ($b = u = 0$) involves elliptic integrals of the first kind; there is
@@ -1188,7 +1197,7 @@ Your intuition might tell you that the best thing that the brick can
 do, to reach the goal in minimum time with limited control input, is
 to accelerate maximally towards the goal until reaching a critical
 point, then hitting the brakes in order to come to a stop exactly at
-the goal.  This would be called a \emph{bang-bang} control policy;
+the goal.  This would be called a <em>bang-bang</em> control policy;
 these are often optimal for systems with bounded input, and it is in
 fact optimal for the double integrator, although we will not prove it
 until we have developed more tools.  <!-- leave the proof to the pontryagin notes -->.</p>
@@ -1201,70 +1210,164 @@ start with the case where $q(0) < 0$, and $\dot{q}(0)>0$, and "hitting
 the brakes" implies that $u=-1$ .
 Integrating the equations, we have \begin{gather*} \ddot{q}(t) = u =
   -1 \\\dot{q}(t) = \dot{q}(0) - t \\ q(t) = q(0) + \dot{q}(0) t -
-  \frac{1}{2} t^2.  \end{gather*} If we require that $q(t_f) = \dot{q}(t_f) = 0$, then
-these equations define a manifold of initial conditions
-($q(0),\dot{q}(0)$) which come to rest at the origin: $$\dot{q}(0) =
-t_f,\quad q(0) = -\frac{1}{2} t_f^2.$$
-The equations (with a sign flipped) hold for trajectories starting on
-the other side of the origin: $q(0)>0, \dot{q}(0)<0, u=1$.  The entire
-``braking'' policy can be written as $u = \text{sgn}(q)$, and it
-results in system trajectories that stop at the origin for all initial
-conditions described by
-$$\dot{q} = - \sgn(q) \sqrt{2 \sgn(q) q}.$$</p>
+  \frac{1}{2} t^2.  \end{gather*}
+Substituting $t = \dot{q}(0) - \dot{q}$ into the solution give $\dot{q}$ reveals
+that the system orbits are parabolic arcs:
+\[ q = -\frac{1}{2} \dot{q}^2 + c, \] with $c = q(0) + \frac{1}{2}\dot{q}^2(0)$.
+<figure>
+  <img width="80%" src="figures/double_integrator_orbits.svg"/>
+  <figcaption>Two solutions for the system with $u=-1$</figcaption>
+</figure>
+Similarly, the solutions for $u=1$ are $q = \frac{1}{2} \dot{q}^2 + c$.
+</p>
 
-<p>
-Following our initial logic, if the system is going slower than this
-$\dot{q}$ for any $q$, then the optimal thing to do is to slam on the
-accelerator ($u=-\text{sgn}(q)$).  If it's going faster than the
-$\dot{q}$ that we've solved for, then still the best thing to do is to
-brake; but inevitably the system will overshoot the origin and have to
-come back.  <!--This policy is cartooned in
+<p> Perhaps the most important of these orbits are the ones that pass directly
+through the origin ($c=0$). Following our initial logic, if the system is going
+slower than this $\dot{q}$ for any $q$, then the optimal thing to do is to slam
+on the accelerator ($u=-\text{sgn}(q)$).  If it's going faster than the
+$\dot{q}$ that we've solved for, then still the best thing to do is to brake;
+but inevitably the system will overshoot the origin and have to come back.  We
+can summarize this policy with: \[ u = \begin{cases}  +1 & \text{if } (\dot{q} < 0 \text{ and } q \le \frac{1}{2} \dot{q}^2) \text{ or } (\dot{q}\ge 0 \text{ and } q < -\frac{1}{2} \dot{q}^2) \\ 0 & \text{if } q=0 \text{
+and } \dot{q}=0 \\ -1 & \text{otherwise} \end{cases} \]
+<!--This policy is cartooned in
 Figure~\ref{fig:mintime_double_int}.  %Trajectories of the system
 %executing this policy are also included - the fundamental
 %characteristic is that the system is accelerated as quickly as
 %possible toward the switching surface, then rides the switching
 %surface in to the origin. -->
-<todo>make a second plot with a handful of system trajectories</todo>
 <figure>
 <img width="80%" src="figures/mintime_double_int.svg"/>
 <figcaption>Candidate optimal (bang-bang) policy for the minimum-time
   double integrator problem.</figcaption>
 </figure>
+and illustrate some of the optimal solution trajectories:
+<figure>
+<img width="80%" src="figures/double_integrator_mintime_orbits.svg"/>
+</figure>
 </p>
 
-<todo>include plot for time to goal (cost-to-go)</todo>
+
+
 
 </div>
 
 <section data-type="sect2"><h1>Additive cost</h1>
 
 <p>
-  There is an extremely important subset of optimal control formulations
-for which more is known theoretically and algorithmically: those
-problems where the objective can be described using <em>additive
-  cost</em>.  In the additive cost formulation, the long-term "score"
+As we begin to develop theoretical and algorithmic tools for optimal control,
+we will see that some formulations are much easier to deal with than others.
+One important example is the dramatic simplification that can come from
+formulating objective functions using <em>additive
+  cost</em>, because they often yield recursive solutions.  In the additive cost formulation, the long-term "score"
 for a trajectory can be written as $$\int_0^T g(x(t),u(t)) dt,$$ where
 $g()$ is the instantaneous cost, and $T$ can be either a finite
 real number or $\infty$.  We will call a problem specification with a finite $T$ a
 "finite-horizon" problem, and $T=\infty$ an "infinite-horizon"
-problem.  Problems for which $T=\infty$ tend to be more elegant, but
+problem.  Problems and solutions for infinite-horizon problems tend to be more elegant, but
 care is required to make sure that the integral converges for the
 optimal controller (typically
 by having a goal state/action pair that allows the robot to accrue zero-cost).</p>
 
-<p>
-At first glance, our minimum-time problem formulation for the double
-integrator does not look like an additive cost problem.  However, we
-can write in as an additive cost problem using the instanteous cost  $$g(x,u) = \begin{cases} 0 & \text{if } x=0
-  \text{ and } u=0, \\ 1 & \text{otherwise.} \end{cases}$$</p>
+<p> At first glance, our minimum-time problem formulation for the double
+integrator does not look like an additive cost problem.  However, we can write
+in as an additive cost problem using an infinite horizon and the instantaneous
+cost  $$g(x,u) = \begin{cases} 0 & \text{if } x=0   \text{ and } u=0, \\ 1 &
+\text{otherwise.} \end{cases}$$</p>
 
 <p>
 We will examine a number of approaches to solving optimal control
 problems throughout the next few chapters.  For the remainder of this chapter, we will
-focus on additive cost problems and their solution via "dynamic programming".</p>
+focus on additive cost problems and their solution via <em>dynamic programming</em>.</p>
 
 
 </section> <!-- control design as an optimization -->
+
+<section data-type="sect1"><h1>Optimal Control as Graph Search</h1>
+
+<p> For systems with continuous states and continuous actions, dynamic
+programming is a set of theoretical ideas surrounding additive cost optimal
+control problems. For systems with a finite, discrete set of states and a
+finite, discrete set of actions, dynamic programming also represents a set of very
+efficient numerical <em>algorithm</em> which can compute optimal feedback
+controllers. Many of you will have learned it before as a tool for graph search.
+</p>
+
+<p>Imagine you have a directed graph with states (or nodes) $\{s_1,s_2,...\} \in
+S$ and "actions" associated with edges labeled as $\{a_1,a_2,...\} \in A$, as in
+the following trivial example: <figure><img width="70%"
+src="figures/graph_search.svg"/><figcaption>A simple directed
+graph.</figcaption></figure> Let us also assume that each edge has an associate
+weight or cost, using $g(s,a)$ to denote the cost of being in state $s$ and
+taking action $a$. Furthemore we will denote the transition "dynamics" using \[ s[n+1] =
+f(s[n],a[n]) \].</p>
+
+<p>There are many algorithms for finding (or approximating) the optimal path
+from a start to a goal on directed graphs.  In dynamic programming, we can use
+the <em>value iteration</em> algorithm to solving simultaneously for the optimal
+<em>cost-to-go</em> from every node to the goal -- we'll use $J_i^*$ to denote
+the optimal cost-to-go from state $i$.  We initialize an estimate $\hat{J}^*=0$
+for all $i$, then proceed with an iterative algorithm which sets \[ \hat{J}^*_i =
+\min_{a \in A} \left[ g(s_i,a) + \hat{J}^*_{f(s_i,a)} \right]. \] This algorithm is
+guaranteed to converge to the optimal cost-to-go, $\hat{J}^* \rightarrow J^*$,
+and in practice does so rapidly. Assuming the graph has a goal state with a zero-cost
+self-transition, then this cost-to-go function represents the weighted shortest
+distance to the goal. </p>
+
+<p>
+Let's experiment with dynamic programming in a discrete-state,
+discrete-action, discrete-time problem to further improve our
+intuition.</p>
+
+<div data-type="example"><h1>Grid World</h1>
+
+<p>Imagine a robot living in a grid (finite state) world.  Wants to get to the goal
+location.  Possibly has to negotiate cells with obstacles.  Actions
+are to move up, down, left, right, or do nothing.  <elib>Sutton98</elib></p>
+
+<todo>insert value iteration animation for min time and quadratic cost</todo>
+
+<p>You can experiment with the grid world example in <em>drake</em> using
+<pre><code class="matlab">
+cd(fullfile(getDrakePath,'examples'));
+GridWorld.runValueIteration();
+</code></pre>
+I recommend trying to edit the cost function and obstacles.</p>
+
+</div> <!-- end grid world -->
+
+Graph approximation of a continuous state space.
+
+Stochastic shortest path.
+
+<div data-type="example"><h1>Dynamic Programming for the Double Integrator</h1>
+
+<p>You can run value iteration for the double integrator (using barycentric interpolation to interpolate between nodes) in <em>drake</em> using:
+<pre><code class="matlab">
+cd(fullfile(getDrakePath,'examples'));
+DoubleIntegrator.runValueIteration();
+</code></pre>
+Again, you can easily try different cost functions by editing the code yourself.</p>
+
+</div>
+
+<div data-type="example"><h1>Dynamic Programming for the Simple Pendulum</h1>
+
+<p>You can run value iteration for the simple pendulum (using barycentric interpolation to interpolate between nodes) in <em>drake</em> using:
+<pre><code class="matlab">
+cd(fullfile(getDrakePath,'examples','Pendulum'));
+runValueIteration();
+</code></pre>
+Again, you can easily try different cost functions by editing the code yourself.</p>
+
+</div>
+
+</section> <!-- end of graph search -->
+
+<section data-type="sect1"><h1>Continuous Dynamic Programming</h1>
+
+<p>(coming in the next lectures...)</p>
+
+</section> <!-- end continuous dp -->
 
 <!-- ***************  end of dynamic programming **************   -->
 
