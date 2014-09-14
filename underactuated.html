@@ -752,7 +752,7 @@ $\epsilon$ ball for all of time.</li>
 stable if $x(0) = x^* + \epsilon$ implies that $\lim_{t\rightarrow \infty} x(t) = x^*$.</li>
 
 <li>Locally <em>exponentially stable</em>.  A fixed point is locally exponentially stable
-if $x(0) = x^* + \epsilon$ implies that $\| x(t) - x^* \| < Ce^{-\alpha}t$, for
+if $x(0) = x^* + \epsilon$ implies that $\| x(t) - x^* \| < Ce^{-\alpha t}$, for
 some positive constants $C$ and $\alpha$.</li>
 
 </ul>
@@ -1086,23 +1086,185 @@ feedback controller directly.</p>
 
 <section data-type="sect1"><h1>Formulating control design as an optimization</h1>
 
-  <!-- motivation, reshape the phase diagram on the simple pendulum -->
-
 <p>   In this chapter, we will introduce optimal control - a control design
-process using optimization.  This approach is powerful for a number of
-reasons.  First and foremost, it is very general - allowing us to   specify the
-goal of control equally well for fully- or under-actuated,   linear or
-nonlinear, deterministic or stochastic, and continuous or   discrete systems.
-Second of all, this control formulation permits   numerical solutions.
-<elib>Bertsekas00a</elib> is a fantastic reference on this material.</p>
+process using optimization.  This approach is powerful for a number of reasons.
+First and foremost, it is very general - allowing us to   specify the goal of
+control equally well for fully- or under-actuated,   linear or nonlinear,
+deterministic or stochastic, and continuous or   discrete systems. Second, it
+permits concise descriptions of potentially very complex desired behaviours,
+specifying the goal of control as an scalar objective (plus a list of
+constraints).  Finally, and most importantly, optimal control is very amenable
+to numerical solutions. <elib>Bertsekas00a</elib> is a fantastic reference on
+this material.</p>
 
 <p>   The fundamental idea in optimal control is to formulate the goal of
 control as the <em>long-term</em> optimization of a scalar cost function.
 Let's introduce the basic concepts by considering a system that is even
 simpler than the simple pendulum.</p>
 
+<div data-type="example"><h1>Optimal Control Formulations for the Double Integrator</h1>
 
-</section>
+<p>
+Consider the double integrator system $$\ddot{q} = u, \quad |u| \le 1.$$   If you would like a mechanical analog of the
+system (I always do), then you can think about this as a unit mass
+brick moving along the x-axis on a frictionless surface, with a control
+input which provides a horizontal force, $u$.
+The task is to design a
+control system, $u = \pi(\bx,t)$, $\bx=[q,\dot{q}]^T$ to regulate this
+brick to $\bx = [0,0]^T$.
+<figure>
+<img width="70%" src="figures/double_integrator_brick.svg"/>
+<figcaption>The double integrator as a unit-mass brick on a frictionless surface</figcaption>
+</figure>
+</p>
+
+<p>
+In order to formulate this control design problem using optimal
+control, we must define a scalar objective which scores the
+long-term performance of running each candidate control policy,
+$\pi(\bx,t)$, from each initial condition, $(\bx_0,t_0)$, and a list
+of constraints that must be satisfied.   For the
+task of driving the double integrator to the origin, one could imagine
+a number of optimal control formulations which would accomplish the
+task, e.g.:
+<ul>
+<li> Minimum time:  $\min_\pi t_f,$ subject to $\bx(t_0) =
+  \bx_0,$ $\bx(t_f) = {\bf 0}.$ </li>
+<li> Quadratic cost:  $\min_\pi \int_{t_0}^{\infty} \left[ \bx^T(t)
+    {\bf Q} \bx(t) \right] dt,$ ${\bf Q}\succ0$.</li>
+</ul>
+where the first is a constrained optimization formulation which
+optimizes time, and the second accrues a penalty at every instance
+according to the distance that the state is away from the origin (in a
+metric space defined by the matrix ${\bf Q}$), and therefore
+encourages trajectories that go more directly towards the goal,
+possibly at the expense of requiring a longer time to reach the goal
+(in fact it will result in an exponential approach to the goal, where
+as the minimum-time formulation will arrive at the goal in finite time).
+Note that both optimization problems are only
+well defined if it is possible for the system to actually reach the
+origin, otherwise the minimum-time problem cannot satisfy the terminal
+constraint, and the integral in the quadratic cost would not converge
+to a finite value as time approaches infinity (fortunately the double
+integrator system is controllable, and therefore can be driven to the
+goal in finite time).</p>
+
+<p> Note that the input limits, $|u|\le1$ are also required to make this problem
+well-posed; otherwise both optimizations would result in the optimal policy
+using infinite control input to approach the goal infinitely fast.  Besides input limits,
+another common approach to limiting the control effort is to add an additional
+quadratic cost on the input (or "effort"), e.g.
+$\int \left[ \bu^T(t) {\bf R} \bu(t) \right] dt,$   ${\bf R}\succ0$.
+This could be added to either formulation above.  We will examine many of these formulations
+in some details in the examples worked out at the end of this chapter.
+</p>
+
+</div> <!-- end example -->
+
+<p>Optimal control has a long history in robotics.  For instance, there has been
+a great deal of work on the minimum-time problem for pick-and-place robotic
+manipulators, and the linear quadratic regulator (LQR) and linear quadratic
+regulator with Gaussian noise (LQG) have become essential tools for any
+practicing controls engineer.  With increasingly powerful computers and
+algorithms, the popularity of numerical optimal control has grown at an
+incredible pace over the last few years.</p>
+
+<div data-type="example"><h1>The minimum time problem for the double integrator</h1>
+
+<p>
+For more intuition, let's do an informal derivation of the solution to
+the minimum time problem for the double integrator with input constraints:
+\begin{flalign*}
+  \minimize_{\pi} \quad & t_f\\
+  \subjto \quad & \bx(t_0) = \bx_0, \\
+  & \bx(t_f) = {\bf 0}, \\
+  & \ddot{q}(t) = u(t), \\
+  & |u| \le 1.
+\end{flalign*}
+What behavior would you expect an optimal controller exhibit?</p>
+
+<p>
+Your intuition might tell you that the best thing that the brick can
+do, to reach the goal in minimum time with limited control input, is
+to accelerate maximally towards the goal until reaching a critical
+point, then hitting the brakes in order to come to a stop exactly at
+the goal.  This would be called a \emph{bang-bang} control policy;
+these are often optimal for systems with bounded input, and it is in
+fact optimal for the double integrator, although we will not prove it
+until we have developed more tools.  <!-- leave the proof to the pontryagin notes -->.</p>
+
+<p>
+Let's work out the details of this bang-bang policy.  First, we can
+figure out the states from which, when the brakes are fully
+applied, the system comes to rest precisely at the origin.  Let's
+start with the case where $q(0) < 0$, and $\dot{q}(0)>0$, and "hitting
+the brakes" implies that $u=-1$ .
+Integrating the equations, we have \begin{gather*} \ddot{q}(t) = u =
+  -1 \\\dot{q}(t) = \dot{q}(0) - t \\ q(t) = q(0) + \dot{q}(0) t -
+  \frac{1}{2} t^2.  \end{gather*} If we require that $q(t_f) = \dot{q}(t_f) = 0$, then
+these equations define a manifold of initial conditions
+($q(0),\dot{q}(0)$) which come to rest at the origin: $$\dot{q}(0) =
+t_f,\quad q(0) = -\frac{1}{2} t_f^2.$$
+The equations (with a sign flipped) hold for trajectories starting on
+the other side of the origin: $q(0)>0, \dot{q}(0)<0, u=1$.  The entire
+``braking'' policy can be written as $u = \text{sgn}(q)$, and it
+results in system trajectories that stop at the origin for all initial
+conditions described by
+$$\dot{q} = - \sgn(q) \sqrt{2 \sgn(q) q}.$$</p>
+
+<p>
+Following our initial logic, if the system is going slower than this
+$\dot{q}$ for any $q$, then the optimal thing to do is to slam on the
+accelerator ($u=-\text{sgn}(q)$).  If it's going faster than the
+$\dot{q}$ that we've solved for, then still the best thing to do is to
+brake; but inevitably the system will overshoot the origin and have to
+come back.  <!--This policy is cartooned in
+Figure~\ref{fig:mintime_double_int}.  %Trajectories of the system
+%executing this policy are also included - the fundamental
+%characteristic is that the system is accelerated as quickly as
+%possible toward the switching surface, then rides the switching
+%surface in to the origin. -->
+<todo>make a second plot with a handful of system trajectories</todo>
+<figure>
+<img width="80%" src="figures/mintime_double_int.svg"/>
+<figcaption>Candidate optimal (bang-bang) policy for the minimum-time
+  double integrator problem.</figcaption>
+</figure>
+</p>
+
+<todo>include plot for time to goal (cost-to-go)</todo>
+
+</div>
+
+<section data-type="sect2"><h1>Additive cost</h1>
+
+<p>
+  There is an extremely important subset of optimal control formulations
+for which more is known theoretically and algorithmically: those
+problems where the objective can be described using <em>additive
+  cost</em>.  In the additive cost formulation, the long-term "score"
+for a trajectory can be written as $$\int_0^T g(x(t),u(t)) dt,$$ where
+$g()$ is the instantaneous cost, and $T$ can be either a finite
+real number or $\infty$.  We will call a problem specification with a finite $T$ a
+"finite-horizon" problem, and $T=\infty$ an "infinite-horizon"
+problem.  Problems for which $T=\infty$ tend to be more elegant, but
+care is required to make sure that the integral converges for the
+optimal controller (typically
+by having a goal state/action pair that allows the robot to accrue zero-cost).</p>
+
+<p>
+At first glance, our minimum-time problem formulation for the double
+integrator does not look like an additive cost problem.  However, we
+can write in as an additive cost problem using the instanteous cost  $$g(x,u) = \begin{cases} 0 & \text{if } x=0
+  \text{ and } u=0, \\ 1 & \text{otherwise.} \end{cases}$$</p>
+
+<p>
+We will examine a number of approaches to solving optimal control
+problems throughout the next few chapters.  For the remainder of this chapter, we will
+focus on additive cost problems and their solution via "dynamic programming".</p>
+
+
+</section> <!-- control design as an optimization -->
 
 <!-- ***************  end of dynamic programming **************   -->
 
