@@ -20,6 +20,7 @@
         var chapter = getParameterByName("chapter");
         if (chapter) {
           chapter = Number(chapter);
+          document.getElementById("preface").style.display = "none";
           var chapters = document.getElementsByClassName("chapter");
           var i;
           //document.getElementById("debug_output").innerHTML="displaying only chapter " + chapter + " of " + chapters.length;
@@ -36,12 +37,16 @@
         var appendix = getParameterByName("appendix");
         if (appendix) {
           var app = document.getElementsByTagName("appendix");
+          document.getElementById("preface").style.display = "none";
           var chapters = document.getElementsByClassName("chapter");
           var i;
           for (i = 0; i < chapters.length; i++) {
             chapters[i].style.display = "none";
           }
           var chapters = app[0].getElementsByClassName("chapter");
+          for (i = 0; i < chapters.length; i++) {
+            chapters[i].style.display = "inline";
+          }
           i = Number(appendix)-1;
           chapters[i].style.display = "inline";
           chapters[i].style.counterReset = "chapter " + i;
@@ -130,6 +135,76 @@
 <div id="table_of_contents"></div>
 <todo>generate table of contents (w/ javascript?)</todo>
 
+
+<section id="preface">
+<h1>Preface</h1>
+
+<p>This book is about building robots that move with speed, efficiency,
+and grace.  I believe that this can only be achieve through
+a tight coupling between mechanical design, passive dynamics, and
+nonlinear control synthesis.  Therefore, these notes contain selected
+material from dynamical systems theory, as well as linear and
+nonlinear control.<p>
+
+<p>These notes also reflect a deep belief in computational algorithms
+playing an essential role in finding and optimizing solutions to
+complex dynamics and control problems.  Algorithms play an
+increasingly central role in modern control theory; these days even rigorous
+mathematicians consider finding convexity in a problem (therefore
+making it amenable to an efficient computational solution) almost
+tantamount to an analytical result.  Therefore, the notes necessarily also cover
+selected material from optimization theory, motion planning, and
+machine learning.</p>
+
+<p>
+Although the material in the book comes from many sources, the
+presentation is targeted very specifically at a handful of robotics
+problems.  Concepts are introduced only when and if they can help
+progress the capabilities we are trying to develop.  I
+hope that the result is a broad but reasonably self-contained and
+readable manuscript that will be of use to any enthusiastic roboticist.</p>
+
+<section><h1>Organization</h1>
+
+<p>
+The material in these notes is organized into a few main parts.
+"Model Systems" introduces a series of increasingly complex
+dynamical systems and overviews some of the relevant results from the
+literature for each system. "Nonlinear Planning and Control"
+introduces quite general computational algorithms for reasoning about about those
+dynamical systems, with optimization theory playing a central role.
+Many of these algorithms treat the dynamical system as known and
+deterministic until the last chapters in this part which introduce
+stochasticity and robustness.  "Estimation and Learning" follows
+this up with techniques from statistics and machine learning which
+capitalize on this viewpoint to introduce additional algorithms which
+can operate with less assumptions on knowing the model or having
+perfect sensors.  The book closes with chapters on "Applications and
+Extensions" and an "Appendix".</p>
+
+<p>The order of the chapters was chosen to make the book valuable as a
+reference.  When teaching the course, however, I take a spiral trajectory
+through the material, introducing robot dynamics and control problems
+one at a time, and introducing only the techniques that are required
+to solve that particular problem.</p>
+
+<todo>insert figure showing progression of problems here.  pendulum ->
+cp/acro -> walking ...  with chapter numbers associated.</todo>
+
+</section>
+
+<section><h1>Software</h1>
+
+<p>
+All of the examples and algorithms in this book, plus many more, are
+now available as a part of our open-source software project:
+<drake></drake>.  I will give pointers to these examples
+throughout the text.  </p>
+
+
+</section>
+
+</section> <!-- end preface -->
 
 <section data-type="chapter" class="chapter">
 <h1>Fully-actuated vs Underactuated Systems</h1>
@@ -1285,6 +1360,7 @@ We will examine a number of approaches to solving optimal control
 problems throughout the next few chapters.  For the remainder of this chapter, we will
 focus on additive cost problems and their solution via <em>dynamic programming</em>.</p>
 
+</section> <!-- end of additive cost -->
 
 </section> <!-- control design as an optimization -->
 
@@ -1386,6 +1462,7 @@ Again, you can easily try different cost functions by editing the code yourself.
 
 </section> <!-- end continuous dp -->
 
+</section>
 <!-- ***************  end of dynamic programming **************   -->
 
 
