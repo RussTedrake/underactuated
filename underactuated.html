@@ -71,12 +71,18 @@
     <script>hljs.initHighlightingOnLoad();</script>
 
     <script type="text/javascript">
-      function bibtex(){
+      function myMacros(){
         var elibTags=document.getElementsByTagName('elib');
         for(i=0;i<elibTags.length;i++)
         {
           var c = elibTags[i].innerHTML;
           elibTags[i].innerHTML='[<a href="http://groups.csail.mit.edu/locomotion/elib.cgi?b='+c+'">'+(i+1)+'</a>]';
+        }
+
+        var drakeTags=document.getElementsByTagName('drake');
+        for(i=0;i<drakeTags.length;i++)
+        {
+          drakeTags[i].innerHTML='<a style="font-variant:small-caps; text-decoration:none;" href="http://drake.mit.edu">Drake</a>';
         }
       }
     </script>
@@ -84,7 +90,7 @@
   </head>
 
 
-<body data-type="book" class="book" id="htmlbook" onload="bibtex(); revealChapters();">
+<body data-type="book" class="book" id="htmlbook" onload="myMacros(); revealChapters();">
 <section data-type="titlepage" class="titlepage">
   <header>
     <h1>Underactuated Robotics</h1>
@@ -367,7 +373,7 @@ I}_{2 \times 2}$.  The system is fully actuated.</p>
 <p> I personally learn best when I can experiment and get some physical
 intuition.  The <a href="http://drake.mit.edu">companion software for the
 course</a> should make it easy for you to see this   system in action.  To try
-it, make sure you've installed drake, then open MATLAB and run
+it, make sure you've installed <drake></drake>, then open MATLAB and run
 <code>addpath_drake</code> (possibly from your <code>startup.m</code>) in the
 <code>drake</code> directory, then try the following lines (one at a time) from
 the MATLAB command line:
@@ -507,7 +513,7 @@ as easy for me to invert gravity. Observe that the control derivations here
 would not have been any more difficult if the robot had 100 joints. </p>
 
 <div data-type="drake"><h1>MATLAB Example</h1> You can find scripts which
-implement both of these examples in drake:
+implement both of these examples in <drake></drake>:
 
 <pre><code class="matlab">
 cd(fullfile(getDrakePath,'examples','SimpleDoublePendulum'));
@@ -679,7 +685,7 @@ torque input, $u(t)$: $$Q = -b\dot\theta(t) + u(t).$$ </p>
 <p> Let us first consider the dynamics of the pendulum if it is driven in a
 particular simple way: a torque which does not vary with time: \begin{equation}
 ml^2 \ddot\theta + b\dot\theta + mgl \sin\theta = u_0. \end{equation}
-You can experiment with this system in <em>drake</em> using
+You can experiment with this system in <drake></drake> using
 
 <pre><code class="matlab">
 cd(fullfile(getDrakePath,'examples','Pendulum'));
@@ -1299,24 +1305,28 @@ src="figures/graph_search.svg"/><figcaption>A simple directed
 graph.</figcaption></figure> Let us also assume that each edge has an associate
 weight or cost, using $g(s,a)$ to denote the cost of being in state $s$ and
 taking action $a$. Furthemore we will denote the transition "dynamics" using \[ s[n+1] =
-f(s[n],a[n]). \]</p>
+f(s[n],a[n]). \] For instance, in the graph above, $f(s_1,a_1) = s_2$.</p>
 
 <p>There are many algorithms for finding (or approximating) the optimal path
-from a start to a goal on directed graphs.  In dynamic programming, we can use
-the <em>value iteration</em> algorithm to solving simultaneously for the optimal
-<em>cost-to-go</em> from every node to the goal -- we'll use $J_i^*$ to denote
-the optimal cost-to-go from state $i$.  We initialize an estimate $\hat{J}^*=0$
-for all $i$, then proceed with an iterative algorithm which sets \[ \hat{J}^*_i =
-\min_{a \in A} \left[ g(s_i,a) + \hat{J}^*_{f(s_i,a)} \right]. \] This algorithm is
-guaranteed to converge to the optimal cost-to-go, $\hat{J}^* \rightarrow J^*$,
-and in practice does so rapidly. Assuming the graph has a goal state with a zero-cost
-self-transition, then this cost-to-go function represents the weighted shortest
-distance to the goal. </p>
+from a start to a goal on directed graphs.  In dynamic programming, the key
+insight is that we can find the shortest path from every node by solving
+recursively for the optimal <em>cost-to-go</em> from every node to the goal --
+we'll use $J_i^*$ to denote the optimal cost-to-go from state $i$.  One way to achieve this is to
+initialize an estimate $\hat{J}^*=0$ for all $i$, then proceed with an iterative
+algorithm which sets \[ \hat{J}^*_i = \min_{a \in A} \left[ g(s_i,a) +
+\hat{J}^*_{f(s_i,a)} \right]. \] This algorithm, appropriately known as
+<em>value iteration</em>, is guaranteed to converge to the optimal cost-to-go,
+$\hat{J}^* \rightarrow J^*$ <elib>Bertsekas96</elib>, and in practice does so rapidly. Assuming the graph
+has a goal state with a zero-cost self-transition, then this cost-to-go function
+represents the weighted shortest distance to the goal. </p>
 
 <p>
-Let's experiment with dynamic programming in a discrete-state,
-discrete-action, discrete-time problem to further improve our
-intuition.</p>
+Value iteration is an amazingly simple algorithm, but it accomplishes something quite
+amazing -- it efficiently computes the long-term cost of an optimal policy from <i>every</i>
+state by iteratively evaluating the one-step cost.  If we know the optimal cost-to-go, then
+it's easy to extract the optimal policy, $a = \pi^*(s)$: \[ \pi^*(s_i) =
+\argmin_a \left[ g(s_i,a) + J^*_{f(s_i,a)} \right]. \]  It's a simple
+algorithm, but playing with an example can help our intuition.</p>
 
 <div data-type="example"><h1>Grid World</h1>
 
@@ -1324,9 +1334,16 @@ intuition.</p>
 location.  Possibly has to negotiate cells with obstacles.  Actions
 are to move up, down, left, right, or do nothing.  <elib>Sutton98</elib></p>
 
+<figure>
+  <a href="figures/gridworld_mintime.swf">
+    <img width="80%" src="figures/gridworld_mintime.svg" />
+  </a>
+  <figcaption>The one-step cost for the grid-world minimum-time problem. The goal state has a cost of zero, the obstacles have a cost of 10, and every other state has a cost of 1. <em>Click the image to watch the value iteration algorithm in action.</em></figcaption>
+</figure>
+
 <todo>insert value iteration animation for min time and quadratic cost</todo>
 
-<p>You can experiment with the grid world example in <em>drake</em> using
+<p>You can experiment with the grid world example in <drake></drake> using
 <pre><code class="matlab">
 cd(fullfile(getDrakePath,'examples'));
 GridWorld.runValueIteration();
@@ -1341,7 +1358,7 @@ Stochastic shortest path.
 
 <div data-type="example"><h1>Dynamic Programming for the Double Integrator</h1>
 
-<p>You can run value iteration for the double integrator (using barycentric interpolation to interpolate between nodes) in <em>drake</em> using:
+<p>You can run value iteration for the double integrator (using barycentric interpolation to interpolate between nodes) in <drake></drake> using:
 <pre><code class="matlab">
 cd(fullfile(getDrakePath,'examples'));
 DoubleIntegrator.runValueIteration();
@@ -1352,7 +1369,7 @@ Again, you can easily try different cost functions by editing the code yourself.
 
 <div data-type="example"><h1>Dynamic Programming for the Simple Pendulum</h1>
 
-<p>You can run value iteration for the simple pendulum (using barycentric interpolation to interpolate between nodes) in <em>drake</em> using:
+<p>You can run value iteration for the simple pendulum (using barycentric interpolation to interpolate between nodes) in <drake></drake> using:
 <pre><code class="matlab">
 cd(fullfile(getDrakePath,'examples','Pendulum'));
 runValueIteration();
@@ -1527,7 +1544,7 @@ a 3D rotation is the unit quaternion, described by 4 real values (plus a norm
 constraint).  However we can still represent the rotational velocity without
 singularities using just 3 real values.  This means that the length of our
 velocity vector is no longer the same as the length of our position vector.  For
-this reason, you will see that most of the software in Drake uses the more
+this reason, you will see that most of the software in <drake></drake> uses the more
 general notation with $\bv$ to represent velocity, $\bq$ to represent positions,
 and the manipulator equations are written as \[ {\bf H}(\bq) \dot{\bv} + {\bf
 C}(\bq,\bv)\bv + {\bf G}(\bq) = {\bf B}(\bq) \bu, \] which is not necessarily a
