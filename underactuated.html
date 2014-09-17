@@ -1560,7 +1560,7 @@ function: $$J(\bx) = \sqrt{3} q^2 + 2 q \dot{q} + \sqrt{3} \dot{q}.$$</p>
   we can write \begin{align*} g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) &= q^2 + \dot{q}^2 + u^2 + (2\sqrt{3} q + 2\dot{q}) \dot{q} + (2q + 2\sqrt{3}\dot{q}) u \end{align*}
   This is a positive quadratic function in $u$, so we can find the minimum with respect to $u$, but finding where the gradient with respect to $u$ evaluates to zero.
   \[ \pd{}{u} \left[ g(\bx,\bu) + \pd{J}{\bx} f(\bx,\bu) \right] = 2u + 2q + 2\sqrt{3}\dot{q}. \]  Setting this equal to $0$ and
-  solving for $u$ yields: $$u^* = -q - 2\sqrt{3} \dot{q}.$$  Substituting $u^*$ back into the HJB reveals that
+  solving for $u$ yields: $$u^* = -q - \sqrt{3} \dot{q}.$$  Substituting $u^*$ back into the HJB reveals that
   the right side does in fact simplify to zero.  I hope you are convinced!
 </div>
 
