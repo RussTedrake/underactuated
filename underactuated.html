@@ -1517,12 +1517,42 @@ In many cases, we can do better; coming up with algorithms which work more nativ
 on continuous dynamical systems.  We'll explore those extensions in this section.</p>
 
 <p>
-Before we start, it's important to note that the value iteration equations, equations (\ref{eq:value_update}) and (\ref{eq:policy_update}),
+It's important to note that the value iteration equations, equations (\ref{eq:value_update}) and (\ref{eq:policy_update}),
 are more than just an algorithm.  They are also sufficient conditions for optimality:
 if we can produce a $J^*$ and $\pi^*$ which satisfy these equations, then $\pi^*$ must
-be an optimal controller.  As we work through the continuous versions, we should keep two
-goals in mind: understanding the sufficiency conditions for continuous systems as
-well as producing more suitable algorithms.</p>
+be an optimal controller.  There are an analagous set of conditions for the continuous
+systems.  For a system $\dot{\bx} = f(\bx,\bu)$ and an inifinite-horizon
+additive cost $\int_0^\infty g(\bx,\bu)dt$, we have:
+\begin{gather} 0 = \min_\bu \left[ g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right], \label{eq:HJB} \\ \pi^*(\bx) = \argmin_\bu \left[ g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right]. \end{gather}
+Equation \ref{eq:HJB} is known as the <em>Hamilton-Jacobi-Bellman</em> (HJB) equation.  <elib>Bertsekas05</elib> <!-- chapter 3 --> gives an informal derivation
+of these equations as the limit of a discrete-time approximation of the dynamics, and also gives
+the following sufficiency theorem:
+<div data-type="theorem"><h1>HJB Sufficiency Theorem (from <elib>Bertsekas05</elib>)</h1>
+<todo> populate this from bertsekas </todo>
+</div>
+</p>
+
+<p>As a tool for verifying optimality, the HJB actually surprisingly easy to work with:
+  we can verify optimality for an infinite-horizon objective without doing any integration; we simply
+  have to check a derivative condition on the optimal cost-to-go function $J^*$.  Let's see this
+  play out on the double integrator example.</p>
+
+<div data-type="example"><h1>HJB for the Double Integrator</h1>
+
+<p>Consider the problem of regulating the double integrator to the origin
+  using a quadratic cost: $$ g(\bx,\bu) = q^2 + \dot{q}^2 + u^2. $$  I claim
+  (without derivation) that the optimal controller for this objective is $$\pi(\bx) = -q - \sqrt{3}\dot{q}.$$
+  To convince you that this is indeed optimal, I will also give you
+  the following cost-to-go function: $$J(\bx) = \sqrt{3} q^2 + 2 q \dot{q} + \sqrt{3} \dot{q}.$$
+</div>
+
+<p>Note that evaluating the HJB for the time-to-go of the minimum-time
+  problem for the double integrator will also reveal that the
+  gradient condition holds wherever that gradient is well-defined.  This is
+  certainly mounting evidence in support of our bang-bang policy being
+  optimal, but since $\pd{J}{\bx}$ is not defined everywhere, it does
+  not actually satisfy the requirements of the sufficiency theorem.</p>
+
 
 <section data-type="sect2"><h1>From discrete states to continuous states</h1>
 

@@ -78,6 +78,7 @@ appendix {
   counter-increment:chapter;
   counter-reset:sect1;
   counter-reset:example;
+  counter-reset:theorem;
   counter-reset:algorithm;
   counter-reset:figure;
 }
@@ -90,6 +91,9 @@ appendix {
 }
 [data-type="definition"] {
   counter-increment:definition;
+}
+[data-type="theorem"] {
+  counter-increment:theorem;
 }
 [data-type="example"] {
   counter-increment:example;
@@ -123,15 +127,18 @@ appendix {
 [data-type="definition"] h1:before {
   content: "Definition " counter(definition) " (";
 }
+[data-type="theorem"] h1:before {
+  content: "Theorem " counter(chapter) "." counter(theorem) " - ";
+}
 [data-type="definition"] h1:after {
   content: ")";
 }
-[data-type="definition"] h1 {
+[data-type="definition"],[data-type="theorem"] h1 {
   display: inline;
   font-size: 16px;
   font-variant: normal;
 }
-[data-type="definition"] {
+[data-type="definition"],[data-type="theorem"] {
   border: 1px solid;
   border-radius: 10px;
   background-color: rgb(242,242,242); /* light gray */
