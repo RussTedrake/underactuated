@@ -58,7 +58,7 @@
       MathJax.Hub.Config({
         extensions: ["tex2jax.js"],
         jax: ["input/TeX", "output/HTML-CSS"],
-        TeX: { equationNumbers: {autoNumber: "AMS"} },
+        TeX: { equationNumbers: {autoNumber: "AMS"}, noErrors: { disabled: true } },
         tex2jax: {
           inlineMath: [ ['$','$'], ["\\(","\\)"] ],
           displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
@@ -1414,23 +1414,29 @@ f(s[n],a[n]). \] For instance, in the graph above, $f(s_1,a_1) = s_2$.</p>
 <p>There are many algorithms for finding (or approximating) the optimal path
 from a start to a goal on directed graphs.  In dynamic programming, the key
 insight is that we can find the shortest path from every node by solving
-recursively for the optimal <em>cost-to-go</em> from every node to the goal --
-we'll use $J_i^*$ to denote the optimal cost-to-go from state $i$.  One way to achieve this is to
-initialize an estimate $\hat{J}^*=0$ for all $i$, then proceed with an iterative
-algorithm which sets \[ \hat{J}^*_i = \min_{a \in A} \left[ g(s_i,a) +
-\hat{J}^*_{f(s_i,a)} \right]. \] This algorithm, appropriately known as
-<em>value iteration</em>, is guaranteed to converge to the optimal cost-to-go,
-$\hat{J}^* \rightarrow J^*$ <elib>Bertsekas96</elib>, and in practice does so rapidly. Assuming the graph
-has a goal state with a zero-cost self-transition, then this cost-to-go function
-represents the weighted shortest distance to the goal. </p>
+recursively for the optimal <em>cost-to-go</em> from every node to the goal. One
+such algorithm starts by initializing an estimate $\hat{J}^*=0$ for all $s_i$,
+then proceeds with an iterative algorithm which sets \begin{equation}
+\hat{J}^*(s_i) = \min_{a \in A} \left[ g(s_i,a) +
+\hat{J}^*\left({f(s_i,a)}\right) \right]. \label{eq:value_update} \end{equation}
+In software, $\hat{J}^*$ can be represented as a vector with dimension equal to
+the number of discrete states.  This algorithm, appropriately known as <em>value
+iteration</em>, is guaranteed to converge to the optimal cost-to-go, $\hat{J}^*
+\rightarrow J^*$ <elib>Bertsekas96</elib>, and in practice does so rapidly.
+Typically the update is done in <em>batch</em> -- e.g. the estimate is updated
+for all $i$ at once -- but the <em>asynchronous</em> version where states are
+updated one at a time is also known to converge, so long as every state is
+eventually updated infinitely often.  Assuming the graph has a goal state with a
+zero-cost self-transition, then this cost-to-go function represents the weighted
+shortest distance to the goal. </p>
 
-<p>
-Value iteration is an amazingly simple algorithm, but it accomplishes something quite
-amazing -- it efficiently computes the long-term cost of an optimal policy from <i>every</i>
-state by iteratively evaluating the one-step cost.  If we know the optimal cost-to-go, then
-it's easy to extract the optimal policy, $a = \pi^*(s)$: \[ \pi^*(s_i) =
-\argmin_a \left[ g(s_i,a) + J^*_{f(s_i,a)} \right]. \]  It's a simple
-algorithm, but playing with an example can help our intuition.</p>
+<p> Value iteration is an amazingly simple algorithm, but it accomplishes
+something quite amazing: it efficiently computes the long-term cost of an
+optimal policy from <i>every</i> state by iteratively evaluating the one-step
+cost.  If we know the optimal cost-to-go, then it's easy to extract the optimal
+policy, $a = \pi^*(s)$: \begin{equation} \pi^*(s_i) = \argmin_a \left[ g(s_i,a) +
+J^*\left( f(s_i,a) \right) \right]. \label{eq:policy_update} \end{equation}
+It's a simple algorithm, but playing with an example can help our intuition.</p>
 
 <div data-type="example"><h1>Grid World</h1>
 
@@ -1471,6 +1477,24 @@ Again, you can easily try different cost functions by editing the code yourself.
 
 </div>
 
+<p>
+Let's take a minute to appreciate how amazing this is.  Our solution to finding the
+optimal controller for the double integrator wasn't all that hard, but it required
+some mechanical intuition and solutions to differential equations.  The resulting
+policy was non-trivial -- bang-bang control with a parabolic switching surface.
+The value iteration algorithm doesn't use any of this directly -- it's a simple
+algorithm for graph search.  But remarkably, it can generate effectively the same
+policy with just a few moments of computation.</p>
+
+<p>It's important to note that there <em>are</em> some differences between the computed
+  policy and the optimal policy that we derived, due to discretization errors.  We
+  will ask you to explore these in the problems.</p>
+
+<p>The real value of this numerical solution, however, is unlike our analytical
+solution for the double integrator, we can apply this same algorithm to any number
+of dynamical systems virtually without modification.  Let's apply it now to the simple
+pendulum, which was intractable analytically.</p>
+
 <div data-type="example"><h1>Dynamic Programming for the Simple Pendulum</h1>
 
 <p>You can run value iteration for the simple pendulum (using barycentric interpolation to interpolate between nodes) in <drake></drake> using:
@@ -1486,14 +1510,67 @@ Again, you can easily try different cost functions by editing the code yourself.
 
 <section data-type="sect1"><h1>Continuous Dynamic Programming</h1>
 
-<section data-type="sect2"><h1>Discrete states to continuous states</h1>
+<p>
+I find the graph search algorithm extremely satisfying as a first step, but also
+become quickly frustrated by the limitations of the discretization required to use it.
+In many cases, we can do better; coming up with algorithms which work more natively
+on continuous dynamical systems.  We'll explore those extensions in this section.</p>
 
-<p>s to x.  formulas stay the same.  but algorithms need to use function approximation.
-</p>
+<p>
+Before we start, it's important to note that the value iteration equations, equations (\ref{eq:value_update}) and (\ref{eq:policy_update}),
+are more than just an algorithm.  They are also sufficient conditions for optimality:
+if we can produce a $J^*$ and $\pi^*$ which satisfy these equations, then $\pi^*$ must
+be an optimal controller.  As we work through the continuous versions, we should keep two
+goals in mind: understanding the sufficiency conditions for continuous systems as
+well as producing more suitable algorithms.</p>
+
+<section data-type="sect2"><h1>From discrete states to continuous states</h1>
+
+<p>
+  First let's consider what happens when we transition from discrete states, $s$, back
+to continuous states, $\bx$.  It is perfectly reasonable to write down a discrete-time system
+with discrete actions, $a$, with dynamics in a continuous space; we'll write the
+dynamics and one-step cost as \[ x[n+1] = f(x[n],a[n]), \text{ and } g(x,a), \] respectively. The recursive value iteration
+equations are also easily updated:
+
+\begin{gather*} J^*(\bx) = \min_{a
+\in A} \left[ g(\bx,a) + J^*\left({f(\bx,a)}\right) \right], \\
+ \pi^*(\bx) =
+\argmin_a \left[ g(\bx,a) + J^*\left( f(\bx,a) \right) \right].
+\end{gather*}
+
+As we will discuss below, under some assumptions these will turn out to be
+sufficient conditions to demonstrate optimality; but they actually do not yield an algorithm
+directly.  This is because in practice $\hat{J}(\bx)$ has to be representable with a finite
+set of numbers, but we don't yet know anything about the potential form it must take.
+In fact, knowing the solution for even the double integrator example above, we see that
+this function might need to be non-smooth for even very simple formulations.</p>
+
+<p>If we approximate $J^*$ with a finitely-parameterized function
+$\hat{J}_\balpha^*$, with parameter vector $\balpha$, then   this immediately raises
+many important questions:
+<ul>
+  <li>What if the true cost-to-go function does not live in
+the prescribed function class; e.g., there does not exist an $\balpha$ which
+satisfies the sufficiency conditions for all $\bx$?  (This seems very likely to
+be the case.)</li>
+<li>What update should we apply in the iterative algorithm?</li>
+<li>What can
+we say about it's convergence?</li>
+</ul>
+In general, many of these questions will have to go unanswered.  But there are some answers available
+for the special case of <em>linear function approximators</em> (see Appendix B for a brief background on function
+approximation).  A linear function approximator takes the form: \[ \hat{J}^*_\balpha(\bx) = \sum_i \alpha_i \psi_i(\bx) = \balpha^T {\bf\psi}(\bx), \]
+where ${\bf \psi}(\bx)$ is a vector of potentially nonlinear features.  Common examples of features include
+polynomials, radial basis functions, or the barycentric interpolator used above.  The distinguishing
+feature of a linear function approximator is the ability to exactly solve for $\balpha$ in order
+to represent a desired function optimally, in a least-squares sense.  For instance, if we
+have a desired set of $N$ input-output points, $(\bx_n,J^d_n)$, then we easily can write
+down the closed form solution to \[ \minimize_\balpha \sum_n \left(\hat{J}_\balpha(\bx_n) - J^d_n \right)^2. \]</p>
 
 </section> <!-- cont states -->
 
-<section data-type="sect2"><h1>Discrete time to continuous time</h1>
+<section data-type="sect2"><h1>From discrete time to continuous time</h1>
 
 <p>
 Discrete time to continuous time.  HJB.
@@ -1501,7 +1578,7 @@ Discrete time to continuous time.  HJB.
 
 </section> <!-- cont time -->
 
-<section data-type="sect2"><h1>Discrete actions to continuous actions</h1>
+<section data-type="sect2"><h1>From discrete actions to continuous actions</h1>
 
 <p>
 Discrete actions to continuous actions.  For control affine systems w/ quadratic cost and/or limits (in more than one dim?), can compute the optimal solution analytically (but only for continuous time)
@@ -1509,7 +1586,11 @@ Discrete actions to continuous actions.  For control affine systems w/ quadratic
 
 </section> <!-- cont actions -->
 
-<section data-type="sect2"><h1>The Hamilton-Bellman-Jacobi Sufficiency Theorem</h1>
+</section> <!-- end continuous dp -->
+
+<section data-type="sect1"><h1>Sufficiency Theorems</h1>
+
+<p>discrete and continuous bellman equation.  provide algorithms but also provide a means to verify optimality (opening from S12 lecture 4 notes)</p>
 
 <p>Include the viscosity equations?</p>
 
@@ -1517,7 +1598,6 @@ Discrete actions to continuous actions.  For control affine systems w/ quadratic
 
 </section> <!-- end hjb -->
 
-</section> <!-- end continuous dp -->
 
 <section data-type="sect1"><h1>How far can we take this?  (Performance and Scaling)</h1>
 
@@ -1526,6 +1606,8 @@ Errors in bang-bang for double integrator due to discretization.
 Limited in number of dimensions.  Function approximation, but lacks convergence results.
 
 </section> <!-- end scaling -->
+
+<todo> add section on extensions.  discounting.  finite-horizon / time-varying dynamics or cost.</todo>
 
 </section>
 <!-- ***************  end of dynamic programming **************   -->
