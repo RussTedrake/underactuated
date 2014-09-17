@@ -1294,16 +1294,21 @@ Integrating the equations, we have \begin{gather*} \ddot{q}(t) = u =
   \frac{1}{2} t^2.  \end{gather*}
 Substituting $t = \dot{q}(0) - \dot{q}$ into the solution give $\dot{q}$ reveals
 that the system orbits are parabolic arcs:
-\[ q = -\frac{1}{2} \dot{q}^2 + c, \] with $c = q(0) + \frac{1}{2}\dot{q}^2(0)$.
+\[ q = -\frac{1}{2} \dot{q}^2 + c_{-}, \] with $c_{-} = q(0) + \frac{1}{2}\dot{q}^2(0)$.
 <figure>
   <img width="80%" src="figures/double_integrator_orbits.svg"/>
   <figcaption>Two solutions for the system with $u=-1$</figcaption>
 </figure>
-Similarly, the solutions for $u=1$ are $q = \frac{1}{2} \dot{q}^2 + c$.
+<!-- t = qdot - qdot0,
+q = q0 + qdot0(qdot-qdot0) + 1/2(qdot-qdot0)^2
+  = q0 + qdot0*qdot - qdot0^2 + 1/2qdot^2 - qdot*qdot0 + 1/2qdot0^2
+  = 1/2qdot^2 + (q0 - 1/2 qdot0^2)
+-->
+Similarly, the solutions for $u=1$ are $q = \frac{1}{2} \dot{q}^2 + c_{+}$, with $c_{+}=q(0)-\frac{1}{2}\dot{q}^2(0)$.
 </p>
 
 <p> Perhaps the most important of these orbits are the ones that pass directly
-through the origin ($c=0$). Following our initial logic, if the system is going
+through the origin (e.g., $c_{-}=0$). Following our initial logic, if the system is going
 slower than this $\dot{q}$ for any $q$, then the optimal thing to do is to slam
 on the accelerator ($u=-\text{sgn}(q)$).  If it's going faster than the
 $\dot{q}$ that we've solved for, then still the best thing to do is to brake;
@@ -1317,7 +1322,7 @@ Figure~\ref{fig:mintime_double_int}.  %Trajectories of the system
 %possible toward the switching surface, then rides the switching
 %surface in to the origin. -->
 <figure>
-<img width="80%" src="figures/mintime_double_int.svg"/>
+<img width="80%" src="figures/double_integrator_mintime_policy.svg"/>
 <figcaption>Candidate optimal (bang-bang) policy for the minimum-time
   double integrator problem.</figcaption>
 </figure>
@@ -1326,6 +1331,31 @@ and illustrate some of the optimal solution trajectories:
 <img width="80%" src="figures/double_integrator_mintime_orbits.svg"/>
 <figcaption>Solution trajectories of system using the optimal policy</figcaption>
 </figure>
+
+And for completeness, we can compute the optimal time to the goal by solving for
+the amount of time required to reach the switching surface plus the amount of
+time spent moving along the switching surface to the goal.  With a little
+algebra, you will find that the time to goal, $T(\bx)$, is given by
+\[ T(\bx) = \begin{cases} 2\sqrt{\frac{1}{2}\dot{q}^2-q} - \dot{q} & \text{for } u=+1 \text{ regime}, \\
+0 & \text{for } u=0, \\ \dot{q} + 2\sqrt{\frac{1}{2}\dot{q}^2+q} & \text{for } u=-1, \end{cases} \]<!--
+call t_m the time to the surface, then the
+time on switching surface = |qdot(t_m)|
+
+for u=1
+q0,qdot0 => qm,qdotm with qm = -1/2 qdotm^2
+-1/2 qdotm^2 = 1/2 qdotm^2 + c+
+qdotm^2 = - c+  , qdotm = sqrt(-c+)
+T = (qdotm-qdot0)+qdotm = 2*sqrt(-c+) - qdot0
+for u=-1, qdotm^2 = c- , qdotm = -sqrt(c-)
+T = (qdot0-qdotm)-qdotm = qdot0 + 2*sqrt(c-)
+-->
+plotted here:
+<figure>
+<img width="80%" src="figures/double_integrator_mintime_cost_to_go.svg"/>
+<figcaption>Time to the origin using the bang-bang policy</figcaption>
+</figure>
+Notice that the function is continuous (though not smooth), even though
+the policy is discontinous.
 </p>
 
 </div> <!-- end of example -->
