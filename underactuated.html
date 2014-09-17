@@ -1380,7 +1380,7 @@ by having a goal state/action pair that allows the robot to accrue zero-cost).</
 <p> At first glance, our minimum-time problem formulation for the double
 integrator does not look like an additive cost problem.  However, we can write
 in as an additive cost problem using an infinite horizon and the instantaneous
-cost  $$g(x,u) = \begin{cases} 0 & \text{if } x=0   \text{ and } u=0, \\ 1 &
+cost  $$g(x,u) = \begin{cases} 0 & \text{if } x=0, \\ 1 &
 \text{otherwise.} \end{cases}$$</p>
 
 <p>
@@ -1516,6 +1516,8 @@ become quickly frustrated by the limitations of the discretization required to u
 In many cases, we can do better; coming up with algorithms which work more natively
 on continuous dynamical systems.  We'll explore those extensions in this section.</p>
 
+<section data-type="sect2"><h1>The Hamilton-Jacobi-Bellman Equation</h1>
+
 <p>
 It's important to note that the value iteration equations, equations (\ref{eq:value_update}) and (\ref{eq:policy_update}),
 are more than just an algorithm.  They are also sufficient conditions for optimality:
@@ -1527,8 +1529,16 @@ additive cost $\int_0^\infty g(\bx,\bu)dt$, we have:
 Equation \ref{eq:HJB} is known as the <em>Hamilton-Jacobi-Bellman</em> (HJB) equation.  <elib>Bertsekas05</elib> <!-- chapter 3 --> gives an informal derivation
 of these equations as the limit of a discrete-time approximation of the dynamics, and also gives
 the following sufficiency theorem:
-<div data-type="theorem"><h1>HJB Sufficiency Theorem (from <elib>Bertsekas05</elib>)</h1>
-<todo> populate this from bertsekas </todo>
+<div data-type="theorem"><h1>HJB Sufficiency Theorem</h1>
+<p>The following statement is adapted from Proposition 3.2.1 of <elib>Bertsekas05</elib>.  Suppose $J(\bx)$ is a solution
+  to the HJB equation; that is $J$ is continuously differentiable in $\bx$ and is such that
+  \[ 0 = \min_{u\in U} \left[ g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx. \]
+   Suppose also that $\pi^*(\bx)$ attains the minimum in the equation for all $\bx$.  Further
+   assume that the differential equation described by $f$ has a unique solution starting
+   from any state $\bx$, and that the control input trajectory, $\bu^*(t)$, obtained by evaluating
+   $\pi^*$ along any solution is piecewise continuous as a function of $t$.  Then $J$ is equal
+   to the optimal cost-to-go function, $J(\bx)=J^*(\bx)$ for all $\bx$, and the control trajectories
+   $\bu^*(t)$ are optimal.
 </div>
 </p>
 
@@ -1539,42 +1549,80 @@ the following sufficiency theorem:
 
 <div data-type="example"><h1>HJB for the Double Integrator</h1>
 
-<p>Consider the problem of regulating the double integrator to the origin
-  using a quadratic cost: $$ g(\bx,\bu) = q^2 + \dot{q}^2 + u^2. $$  I claim
-  (without derivation) that the optimal controller for this objective is $$\pi(\bx) = -q - \sqrt{3}\dot{q}.$$
-  To convince you that this is indeed optimal, I will also give you
-  the following cost-to-go function: $$J(\bx) = \sqrt{3} q^2 + 2 q \dot{q} + \sqrt{3} \dot{q}.$$
+<p>Consider the problem of regulating the double integrator (this time without
+input limits) to the origin   using a quadratic cost: $$ g(\bx,\bu) = q^2 +
+\dot{q}^2 + u^2. $$  I claim   (without derivation) that the optimal controller
+for this objective is $$\pi(\bx) = -q - \sqrt{3}\dot{q}.$$   To convince you
+that this is indeed optimal, I have produced   the following cost-to-go
+function: $$J(\bx) = \sqrt{3} q^2 + 2 q \dot{q} + \sqrt{3} \dot{q}.$$</p>
+
+<p>Taking \begin{gather*} \pd{J}{q} = 2\sqrt{3} q + 2\dot{q}, \qquad \pd{J}{\dot{q}} = 2q + 2\sqrt{3}\dot{q}, \end{gather*}
+  we can write \begin{align*} g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) &= q^2 + \dot{q}^2 + u^2 + (2\sqrt{3} q + 2\dot{q}) \dot{q} + (2q + 2\sqrt{3}\dot{q}) u \end{align*}
+  This is a positive quadratic function in $u$, so we can find the minimum with respect to $u$, but finding where the gradient with respect to $u$ evaluates to zero.
+  \[ \pd{}{u} \left[ g(\bx,\bu) + \pd{J}{\bx} f(\bx,\bu) \right] = 2u + 2q + 2\sqrt{3}\dot{q}. \]  Setting this equal to $0$ and
+  solving for $u$ yields: $$u^* = -q - 2\sqrt{3} \dot{q}.$$  Substituting $u^*$ back into the HJB reveals that
+  the right side does in fact simplify to zero.  I hope you are convinced!
 </div>
 
 <p>Note that evaluating the HJB for the time-to-go of the minimum-time
   problem for the double integrator will also reveal that the
-  gradient condition holds wherever that gradient is well-defined.  This is
+  HJB is satisfied wherever that gradient is well-defined.  This is
   certainly mounting evidence in support of our bang-bang policy being
   optimal, but since $\pd{J}{\bx}$ is not defined everywhere, it does
-  not actually satisfy the requirements of the sufficiency theorem.</p>
+  not actually satisfy the requirements of the sufficiency theorem as stated above.</p>
 
+</section> <!-- end HJB -->
 
-<section data-type="sect2"><h1>From discrete states to continuous states</h1>
+<section data-type="sect2"><h1>Solving for the minimizing control</h1>
 
-<p>
-  First let's consider what happens when we transition from discrete states, $s$, back
-to continuous states, $\bx$.  It is perfectly reasonable to write down a discrete-time system
-with discrete actions, $a$, with dynamics in a continuous space; we'll write the
-dynamics and one-step cost as \[ x[n+1] = f(x[n],a[n]), \text{ and } g(x,a), \] respectively. The recursive value iteration
-equations are also easily updated:
+<p>We still face a few barriers to actually using the HJB in an algorithm.  The first barrier
+is the minimization over $u$.  When the action set was discrete, as in the graph search
+version, we could evaluate the one-step cost plus cost-to-go for every possible action,
+and then simply take the best.  For continuous action spaces, in general we cannot rely on the
+strategy of evaluating a finite number of possible $\bu$'s to find the minimizer.</p>
 
-\begin{gather*} J^*(\bx) = \min_{a
-\in A} \left[ g(\bx,a) + J^*\left({f(\bx,a)}\right) \right], \\
- \pi^*(\bx) =
-\argmin_a \left[ g(\bx,a) + J^*\left( f(\bx,a) \right) \right].
-\end{gather*}
+<p>All is not lost.  In the quadratic cost double integrator example above, we
+were able   to solve explicitly for the minimizing $\bu$ in terms of the
+cost-to-go.  It turns out that   this strategy will actually work for a number
+of the problems we're interested in, even   when the system (which we are given)
+or cost function (which we are free to pick, but which   should be expressive)
+gets more complicated.</p>
 
-As we will discuss below, under some assumptions these will turn out to be
-sufficient conditions to demonstrate optimality; but they actually do not yield an algorithm
-directly.  This is because in practice $\hat{J}(\bx)$ has to be representable with a finite
-set of numbers, but we don't yet know anything about the potential form it must take.
-In fact, knowing the solution for even the double integrator example above, we see that
-this function might need to be non-smooth for even very simple formulations.</p>
+<p>Recall that I've already tried to convinced you that a majority of the
+systems of interest   are <em>control affine</em>, e.g. I can write \[
+f(\bx,\bu) = f_1(\bx) + f_2(\bx)\bu. \]   We can make another dramatic
+simplification by restrict ourselves to instantaneous cost functions of the form \[
+g(\bx,\bu) = g_1(\bx) + \frac{1}{2} \bu^T {\bf R} \bu, \qquad {\bf R}={\bf R}^T
+\succ 0. \] In my view, this is not very restrictive - many of the cost
+functions that I find myself choosing to write down can be expressed in this
+form.  Given these assumptions, we can write the HJB as \[ 0 = \min_{\bu} \left[
+g_1(\bx) + \frac{1}{2} \bu^T {\bf R} \bu + \pd{J}{\bx} \left[ f_1(\bx) +
+f_2(\bx)\bu \right]\right]. \]  Since this is a quadratic function in $\bu$, if
+the system does not have any constraints on $\bu$, then we can solve in closed-form
+for the minimizing $\bu$ by taking the gradient of the right-hand size:
+\[ \pd{}{\bu} \left[ \right] = 2\bu^T {\bf R} + \pd{J}{\bx} f_2(\bx) = 0, \]
+and setting it equal to zero to obtain \[ \bu^* = -{\bf R}^{-1}f_2^T(\bx) \pd{J}{\bx}^T.\]
+If there are linear constraints on the input, such as torque limits, then more generally
+this could be solved (at any particular $\bx$) as a quadratic program.</p>
+
+<p> What happens in the case where our system is not control affine or if we
+really   do need to specify an instantaneous cost function on $\bu$ that is not
+simply quadratic?   If the goal is to produce an iterative algorithm, like value
+iteration, then one   common approach is to make a quadratic approximation in
+$\bu$ of the HJB, and updating   that approximation on every iteration of the
+algorithm.  This broad approach is often referred to as <em>differential
+dynamic programming</em> (c.f. <elib>Jacobson70</elib>).   </p>
+
+</section> <!-- end solve for u -->
+
+<section data-type="sect2"><h1>Representing the cost-to-go with function approximation</h1>
+
+<p> The other major barrier to using the HJB in a value iteration algorithm is
+that  the estimated optimal cost-to-go function, $\hat{J}^*$, must somehow be
+represented with a finite set of numbers, but we don't yet know anything about
+the potential form it must take. In fact, knowing the time-to-goal solution for
+minimum-time problem with the double integrator, we see that this function
+might need to be non-smooth for even very simple dynamics and objectives.</p>
 
 <p>If we approximate $J^*$ with a finitely-parameterized function
 $\hat{J}_\balpha^*$, with parameter vector $\balpha$, then   this immediately raises
@@ -1598,38 +1646,15 @@ to represent a desired function optimally, in a least-squares sense.  For instan
 have a desired set of $N$ input-output points, $(\bx_n,J^d_n)$, then we easily can write
 down the closed form solution to \[ \minimize_\balpha \sum_n \left(\hat{J}_\balpha(\bx_n) - J^d_n \right)^2. \]</p>
 
-</section> <!-- cont states -->
+<todo> add quote from neuro-dynamic programming preface </todo>
 
-<section data-type="sect2"><h1>From discrete time to continuous time</h1>
+</section> <!-- end function approx -->
 
-<p>
-Discrete time to continuous time.  HJB.
-</p>
+<section data-type="sect2"><h1>A continuous policy iteration algorithm</h1>
 
-</section> <!-- cont time -->
+</section> <!-- end policy iteration -->
 
-<section data-type="sect2"><h1>From discrete actions to continuous actions</h1>
-
-<p>
-Discrete actions to continuous actions.  For control affine systems w/ quadratic cost and/or limits (in more than one dim?), can compute the optimal solution analytically (but only for continuous time)
-</p>
-
-</section> <!-- cont actions -->
-
-</section> <!-- end continuous dp -->
-
-<section data-type="sect1"><h1>Sufficiency Theorems</h1>
-
-<p>discrete and continuous bellman equation.  provide algorithms but also provide a means to verify optimality (opening from S12 lecture 4 notes)</p>
-
-<p>Include the viscosity equations?</p>
-
-<p>Add the double integrator optimality argument here, if I can make it fit with the sufficiency theorem.</p>
-
-</section> <!-- end hjb -->
-
-
-<section data-type="sect1"><h1>How far can we take this?  (Performance and Scaling)</h1>
+<section data-type="sect2"><h1>How far can we take this?  (Performance and Scaling)</h1>
 
 Errors in bang-bang for double integrator due to discretization.
 
@@ -1637,13 +1662,18 @@ Limited in number of dimensions.  Function approximation, but lacks convergence 
 
 </section> <!-- end scaling -->
 
+</section> <!-- end continuous DP -->
+
+<section data-type="sect1"><h1>Extensions</h1>
+
 <todo> add section on extensions.  discounting.  finite-horizon / time-varying dynamics or cost.</todo>
 
-</section>
-<!-- ***************  end of dynamic programming **************   -->
+</section> <!-- end of extensions -->
+
+</section> <!-- ***************  end of dynamic programming **************   -->
 
 
-<section data-type="chapter" class="chapter"><h1>Analytical Optimal Control</h1>
+<section data-type="chapter" class="chapter"><h1>Select Results From Analytical Optimal Control</h1>
 
 </section>
 
