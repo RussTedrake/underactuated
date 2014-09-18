@@ -1542,7 +1542,7 @@ the following sufficiency theorem:
 </div>
 </p>
 
-<p>As a tool for verifying optimality, the HJB actually surprisingly easy to work with:
+<p>As a tool for verifying optimality, the HJB equations are actually surprisingly easy to work with:
   we can verify optimality for an infinite-horizon objective without doing any integration; we simply
   have to check a derivative condition on the optimal cost-to-go function $J^*$.  Let's see this
   play out on the double integrator example.</p>
@@ -1556,12 +1556,16 @@ for this objective is $$\pi(\bx) = -q - \sqrt{3}\dot{q}.$$   To convince you
 that this is indeed optimal, I have produced   the following cost-to-go
 function: $$J(\bx) = \sqrt{3} q^2 + 2 q \dot{q} + \sqrt{3} \dot{q}.$$</p>
 
-<p>Taking \begin{gather*} \pd{J}{q} = 2\sqrt{3} q + 2\dot{q}, \qquad \pd{J}{\dot{q}} = 2q + 2\sqrt{3}\dot{q}, \end{gather*}
-  we can write \begin{align*} g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) &= q^2 + \dot{q}^2 + u^2 + (2\sqrt{3} q + 2\dot{q}) \dot{q} + (2q + 2\sqrt{3}\dot{q}) u \end{align*}
-  This is a positive quadratic function in $u$, so we can find the minimum with respect to $u$, but finding where the gradient with respect to $u$ evaluates to zero.
-  \[ \pd{}{u} \left[ g(\bx,\bu) + \pd{J}{\bx} f(\bx,\bu) \right] = 2u + 2q + 2\sqrt{3}\dot{q}. \]  Setting this equal to $0$ and
-  solving for $u$ yields: $$u^* = -q - \sqrt{3} \dot{q}.$$  Substituting $u^*$ back into the HJB reveals that
-  the right side does in fact simplify to zero.  I hope you are convinced!
+<p>Taking \begin{gather*} \pd{J}{q} = 2\sqrt{3} q + 2\dot{q}, \qquad
+\pd{J}{\dot{q}} = 2q + 2\sqrt{3}\dot{q}, \end{gather*}   we can write
+\begin{align*} g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) &= q^2 + \dot{q}^2 + u^2 +
+(2\sqrt{3} q + 2\dot{q}) \dot{q} + (2q + 2\sqrt{3}\dot{q}) u \end{align*}   This
+is a positive quadratic function in $u$, so we can find the minimum with respect
+to $u$ by finding where the gradient with respect to $u$ evaluates to zero.   \[
+\pd{}{u} \left[ g(\bx,\bu) + \pd{J}{\bx} f(\bx,\bu) \right] = 2u + 2q +
+2\sqrt{3}\dot{q}. \]  Setting this equal to $0$ and   solving for $u$ yields:
+$$u^* = -q - \sqrt{3} \dot{q}.$$  Substituting $u^*$ back into the HJB reveals
+that   the right side does in fact simplify to zero.  I hope you are convinced!
 </div>
 
 <p>Note that evaluating the HJB for the time-to-go of the minimum-time
@@ -1600,7 +1604,7 @@ g_1(\bx) + \frac{1}{2} \bu^T {\bf R} \bu + \pd{J}{\bx} \left[ f_1(\bx) +
 f_2(\bx)\bu \right]\right]. \]  Since this is a quadratic function in $\bu$, if
 the system does not have any constraints on $\bu$, then we can solve in closed-form
 for the minimizing $\bu$ by taking the gradient of the right-hand size:
-\[ \pd{}{\bu} \left[ \right] = 2\bu^T {\bf R} + \pd{J}{\bx} f_2(\bx) = 0, \]
+\[ \pd{}{\bu} = 2\bu^T {\bf R} + \pd{J}{\bx} f_2(\bx) = 0, \]
 and setting it equal to zero to obtain \[ \bu^* = -{\bf R}^{-1}f_2^T(\bx) \pd{J}{\bx}^T.\]
 If there are linear constraints on the input, such as torque limits, then more generally
 this could be solved (at any particular $\bx$) as a quadratic program.</p>
@@ -1658,9 +1662,11 @@ down the closed form solution to \[ \minimize_\balpha \sum_n \left(\hat{J}_\balp
 
 <section data-type="sect2"><h1>How far can we take this?  (Performance and Scaling)</h1>
 
+<todo>
 Errors in bang-bang for double integrator due to discretization.
 
 Limited in number of dimensions.  Function approximation, but lacks convergence results.
+</todo>
 
 </section> <!-- end scaling -->
 
