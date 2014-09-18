@@ -1129,9 +1129,195 @@ throughout this book.</p>
 
 <section data-type="chapter" class="chapter"><h1>Acrobots, Cart-Poles, and Quadrotors</h1>
 
+<p> A great deal of work in the control of underactuated systems has been   done
+in the context of low-dimensional model systems.  These model   systems capture
+the essence of the problem without introducing all of   the complexity that is
+often involved in more real-world examples. In   this chapter we will focus on
+two of the most well-known and   well-studied model systems--the Acrobot and the
+Cart-Pole-- and on one that has become the most popular--the Quadrotor.  These
+systems are trivially underactuated, having less actuators than degrees of freedom.
+
+<section data-type="sect1"><h1>The Acrobot</h1>
+
+<p>
+The Acrobot is a planar two-link robotic arm in the vertical plane
+(working against gravity), with an actuator at the elbow, but no
+actuator at the shoulder.  It was first
+described in detail in <elib>Murray91</elib>.  The companion system,
+with an actuator at the shoulder but not at the elbow, is known as the
+Pendubot<elib>Spong97</elib>.  The Acrobot is so named because of its
+resemblence to a gymnist (or acrobat) on a parallel bar, who controls
+his/her motion predominantly by effort at the waist (and not effort at the
+wrist).  The most common control task studied for the acrobot is the
+swing-up task, in which the system must use the elbow (or waist)
+torque to move the system into a vertical configuration then balance.
+</p>
+
+<figure>
+<img width="40%" src="figures/acrobot.svg"/>
+<figcaption>The Acrobot.  <a href="http://groups.csail.mit.edu/locomotion/drake/movies/acrobot_swingup.swf">Click here for an animation of the swing-up task</a> or <a href="http://youtu.be/FeCwtvrD76I">here to see the real robot</a>.</figcaption>
+</figure>
+
+<p>
+The Acrobot is representative of the primary challenge in
+underactuated robots.  In order to swing up and balance the entire
+system, the controller must reason about and exploit the
+state-dependent coupling between the actuated degree of freedom and
+the un-actuated degree of freedom.  It is also an important system
+because, as we will see, it closely resembles one of the simplest
+models of a walking robot.</p>
+
+<section data-type="sect2"><h1>Equations of Motion</h1>
+
+<p>
+Figure 3.1 illustrates the model parameters used in our
+analysis.  $\theta_1$ is the shoulder joint angle, $\theta_2$ is the
+elbow (relative) joint angle, and we will use $\bq =
+[\theta_1,\theta_2]^T$, $\bx = [\bq,\dot\bq]^T$.  The zero state is
+the with both links pointed directly down.  The moments of inertia,
+$I_1,I_2$ are taken about the pivots<!--<elib>Spong95</elib> uses the
+center of mass, which differs only by an extra term in each inertia
+from the parallel axis theorem.-->.  The task is to stabilize the
+unstable fixed point $\bx = [\pi,0,0,0]^T$.</p>
+
+<p>
+We will derive the equations of motion for the Acrobot using the
+method of Lagrange.  The kinematics are given by:
+\begin{equation}
+\bx_1 = \begin{bmatrix} l_1 s_1 \\ -l_1 c_1
+  \end{bmatrix}, \quad \bx_2 = \bx_1 + \begin{bmatrix} l_2 s_{1+2} \\ - l_2
+    c_{1+2} \end{bmatrix} .
+\end{equation}
+The energy <!--\footnote{The complicated expression for $T_2$ comes from
+  $T_2 = \frac{1}{2} m_2 v_{c2}^2 + \frac{1}{2}I_{c2} (\dot{q}_1 +
+  \dot{q}_2)^2$, where $v_{c2}$ is the velocity of the center of mass
+  of the second link and $I_{c2} = I_2 - m_2 l_{c2}^2$ is the moment
+  of inertia about that point.  Use $c_1 c_{1+2} + s_1 s_{1+2} =
+  c_2$ to simplify.}--> is given by:
+\begin{gather}
+T = T_1 + T_2, \quad T_1 = \frac{1}{2} I_1 \dot{q}_1^2 \\
+T_2 = \frac{1}{2} ( m_2 l_1^2 + I_2 + 2 m_2 l_1 l_{c2} c_2 )
+\dot{q}_1^2 + \frac{1}{2} I_2 \dot{q}_2^2 + (I_2 + m_2 l_1 l_{c2} c_2
+) \dot{q}_1 \dot{q}_2 \\
+% from expanding sum of point masses
+U = -m_1 g l_{c1} c_1 - m_2 g (l_1 c_1 + l_{c2} c_{1+2})
+\end{gather}
+Entering these quantities into the Lagrangian yields the equations of
+motion:
+\begin{gather}
+(I_1 + I_2 + m_2 l_1^2 + 2m_2 l_1 l_{c2} c_2) \ddot{q}_1 + (I_2 + m_2
+  l_1 l_{c2} c_2)\ddot{q}_2 - 2m_2 l_1 l_{c2} s_2 \dot{q}_1 \dot{q}_2
+  \\ \quad -m_2 l_1 l_{c2} s_2 \dot{q}_2^2 + m_1 g l_{c1}s_1 + m_2 g
+  (l_1 s_1 + l_{c2} s_{1+2}) = 0 \\
+(I_2 + m_2 l_1 l_{c2} c_2) \ddot{q}_1 + I_2 \ddot{q}_2 + m_2 l_1
+  l_{c2} s_2 \dot{q}_1^2 + m_2 g l_{c2} s_{1+2} = \tau
+\end{gather}
+In standard, manipulator equation form, we have:
+\begin{gather}
+{\bf H}(\bq) = \begin{bmatrix} I_1 + I_2 + m_2 l_1^2 + 2m_2 l_1 l_{c2}
+  c_2 & I_2 + m_2 l_1 l_{c2} c_2 \\ I_2 + m_2 l_1 l_{c2} c_2 & I_2
+  \end{bmatrix},\label{eq:Hacrobot}\\{\bf C}(\bq,\dot{\bq}) = \begin{bmatrix} -2 m_2
+  l_1 l_{c2} s_2 \dot{q}_2 & -m_2 l_1 l_{c2} s_2 \dot{q}_2 \\ m_2 l_1
+  l_{c2} s_2 \dot{q}_1 & 0 \end{bmatrix}, \\
+{\bf G}(\bq) = \begin{bmatrix} m_1 g l_{c1}s_1 + m_2 g (l_1 s_1 + l_{c2}s_{1+2})
+\\ m_2 g l_{c2} s_{1+2} \end{bmatrix}, \quad
+  {\bf B} = \begin{bmatrix} 0 \\ 1 \end{bmatrix}.
+\end{gather}
+</p>
+<!--
+Solving directly for the accelerations, we have
+\begin{gather}
+\det({\bf H}) = I_1 I_2 + m_2 l_1^2 (1 - m_2 l_{c2}^2 c_2^2)
+\\
+\ddot{q}_1 = \frac{1}{det({\bf H})} \left[ I_2 \left( m_2 l_1 l_{c2} s_2
+  (2 \dot{q}_1 + \dot{q}_2) \dot{q}_2 - (m_1 l_{c1} + m_2 l_1) g s_1 -
+  m_2 g l_{c2} s_{1+2} \right) + (I_{c2} + m_2 l_1 l_{c2} c_2) \left( -m_2
+  l_1 l_{c2} s_2 \dot{q}_1^2 - m_2 g l_{c2} s_{1+2} \right)
+  \right]
+\end{gather} -->
+
+</section> <!-- acrobot eqs of motion -->
+
+</section> <!-- acrobot -->
+
+<section data-type="sect1"><h1>The Cart-Pole System</h1>
+
+<p> The other model system that we will investigate here is the cart-pole
+system, in which the task is to balance a simple pendulum around its   unstable
+unstable equilibrium, using only horizontal forces on the   cart.  Balancing the
+cart-pole system is used in many introductory   courses in control, including
+6.003 at MIT, because it can be   accomplished with simple linear control (e.g.
+pole placement)   techniques.  In this chapter we will consider the full
+swing-up and   balance control problem, which requires a full nonlinear control
+treatment.</p>
+
+<figure>
+  <img width="50%" src="figures/cartpole.svg"/>
+  <figcaption>The Cart-Pole System</figcaption>
+  <todo> add swing-up + balance swf</todo>
+</figure>
+
+<p> The figure shows our parameterization of the system. $x$   is the horizontal
+position of the cart, $\theta$ is the   counter-clockwise angle of the pendulum
+(zero is hanging straight   down).  We will use $\bq = [x,\theta]^T$, and $\bx =
+[\bq,\dot\bq]^T$.   The task is to stabilize the unstable fixed point at $\bx =
+[0,\pi,0,0]^T.$ </p>
+
+<section data-type="sect2"><h1>Equations of Motion</h1>
+
+<p>
+The kinematics of the system are given by
+  \begin{equation}\bx_1 = \begin{bmatrix} x \\ 0
+  \end{bmatrix}, \quad \bx_2 = \begin{bmatrix} x + l\sin\theta \\
+  -l\cos\theta \end{bmatrix}. \end{equation}
+  The energy is given by
+  \begin{align} T=& \frac{1}{2} (m_c + m_p)\dot{x}^2 + m_p
+  \dot{x}\dot\theta l \cos{\theta} + \frac{1}{2}m_p l^2 \dot\theta^2 \\
+  U =& -m_p g l \cos\theta. \end{align}
+  The Lagrangian yields the equations of motion:
+  \begin{gather}
+  (m_c + m_p)\ddot{x} + m_p l \ddot\theta \cos\theta - m_p l \dot\theta^2 \sin\theta = f \\
+  m_p l \ddot{x} \cos\theta + m_p l^2 \ddot\theta + m_p g l \sin\theta = 0
+  \end{gather}
+  In standard form, using $\bq = [x,\theta]^T$, $\bu = f$:
+  $${\bf H}(\bq)\ddot\bq + {\bf C}(\bq,\dot\bq)\dot\bq + {\bf G}(\bq) =
+  {\bf B}\bu,$$
+  where \begin{gather*}
+  {\bf H}(\bq) = \begin{bmatrix} m_c + m_p & m_p l \cos\theta \\ m_p l
+    \cos\theta & m_p l^2 \end{bmatrix}, \quad {\bf C}(\bq,\dot{\bq}) =
+  \begin{bmatrix} 0 & -m_p l \dot\theta \sin\theta \\ 0 & 0
+  \end{bmatrix}, \\
+  {\bf G}(\bq) = \begin{bmatrix} 0 \\ m_p gl \sin\theta \end{bmatrix},
+  \quad {\bf B} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}
+  \end{gather*}
+  In this case, it is particularly easy to solve directly for the accelerations:
+  \begin{align}
+  \ddot{x} =& \frac{1}{m_c + m_p \sin^2\theta}\left[ f+m_p \sin\theta (l \dot\theta^2 + g\cos\theta)\right] \label{eq:ddot_x}\\
+  \ddot{\theta} =& \frac{1}{l(m_c + m_p \sin^2\theta)} \left[ -f
+   \cos\theta - m_p l \dot\theta^2 \cos\theta \sin\theta - (m_c + m_p) g \sin\theta \right] \label{eq:ddot_theta}
+  \end{align}
+  In some of the follow analysis that follows, we will study the form of
+  the equations of motion, ignoring the details, by arbitrarily setting
+  all constants to 1:
+  \begin{gather}
+  2\ddot{x} + \ddot\theta \cos\theta - \dot\theta^2 \sin\theta = f \label{eq:simple}\\
+  \ddot{x}\cos\theta + \ddot\theta + \sin\theta = 0. \label{eq:simple2}
+  \end{gather}
+</p>
+
+</section> <!-- end eq of motion -->
+
+</section> <!-- end cart-pole -->
+
+<section data-type="sect1"><h1>Quadrotors</h1>
+
+  <p>Planar quadrotor model.</p>
+
+  <p>3D quadrotor model.</p>
+
 </section>
 
-<!-- ***************  end of acrobot/cartpole/quadrotor chapter **************   -->
+</section> <!-- ***************  end of acrobot/cartpole/quadrotor chapter **************   -->
 
 
 <section data-type="chapter" class="chapter"><h1>Walking and Running</h1>
@@ -1656,9 +1842,14 @@ down the closed form solution to \[ \minimize_\balpha \sum_n \left(\hat{J}_\balp
 
 </section> <!-- end function approx -->
 
+<todo> try just running snopt on quartic objective </todo>
+
 <section data-type="sect2"><h1>A continuous policy iteration algorithm</h1>
 
+<todo> simple (e.g. one-d example) </todo>
+
 </section> <!-- end policy iteration -->
+
 
 <section data-type="sect2"><h1>How far can we take this?  (Performance and Scaling)</h1>
 
