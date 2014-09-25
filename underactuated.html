@@ -1134,8 +1134,10 @@ in the context of low-dimensional model systems.  These model   systems capture
 the essence of the problem without introducing all of   the complexity that is
 often involved in more real-world examples. In   this chapter we will focus on
 two of the most well-known and   well-studied model systems--the Acrobot and the
-Cart-Pole-- and on one that has become the most popular--the Quadrotor.  These
-systems are trivially underactuated, having less actuators than degrees of freedom.
+Cart-Pole.  After we have developed some tools, we will see that they can be
+applied directly to other model systems; we will give a number of examples using
+Quadrotors.  All of these systems are trivially underactuated, having less
+actuators than degrees of freedom.</p>
 
 <section data-type="sect1"><h1>The Acrobot</h1>
 
@@ -1328,34 +1330,716 @@ plant=CartPolePlant();
 
 runPassive();  % simulate with force=0 (and display the results)
 </code></pre>
+</div>
 
 </section> <!-- end eq of motion -->
 
 </section> <!-- end cart-pole -->
 
-<section data-type="sect1"><h1>Quadrotors</h1>
 
-<div data-type="example"><h1>The Planar Quadrotor in MATLAB</h1>
-<p>You can experiment with the dynamics of a planar quadrotor (which actually has just two rotors) in <drake></drake> using, e.g.
-<pre><code class="matlab">
-cd(fullfile(getDrakePath,'examples','Quadrotor2D'));
 
-plant=PlanarQuadPlant();
-[H,C_times_v,G,B] = plant.manipulatorEquations()
-</code></pre>
+<section data-type="sect1"><h1>Balancing</h1>
+
+<p>
+For both the Acrobot and the Cart-Pole systems, we will begin by
+designing a linear controller which can balance the system when it
+begins in the vicinity of the unstable fixed point.  To accomplish
+this, we will linearize the nonlinear equations about the fixed point,
+examine the controllability of this linear system, then using
+linear quadratic regulator (LQR) theory to design our feedback
+controller.</p>
+
+<section data-type="sect2"><h1>Linearizing the Manipulator Equations</h1>
+
+<p>
+Although the equations of motion of both of these model systems are
+relatively tractable, the forward dynamics still involve quite a few
+nonlinear terms that must be considered in any linearization.  Let's
+consider the general problem of linearizing a system described by the
+manipulator equations.</p>
+
+<p>
+We can perform linearization around a fixed point, $(\bx^*,
+\bu^*)$, using a Taylor expansion:
+\begin{equation}
+\dot\bx = {\bf f}(\bx,\bu) \approx {\bf f}(\bx^*,\bu^*) + \left[ \pd{\bf
+  f}{\bx}\right]_{\bx=\bx^*,\bu=\bu^*} (\bx - \bx^*) + \left[ \pd{\bf
+  f}{\bu}\right]_{\bx=\bx^*,\bu=\bu^*} (\bu - \bu^*)
+\end{equation}
+Let us consider the specific problem of linearizing the manipulator
+equations around a (stable or unstable) fixed point.  In this case,
+${\bf f}(\bx^*,\bu^*)$ is zero, and we are left with the standard
+linear state-space form:
+\begin{align}
+\dot\bx =& \begin{bmatrix} \dot\bq \\ {\bf H}^{-1}(\bq) \left[ {\bf
+      B}(\bq)\bu - {\bf C}(\bq,\dot\bq)\dot\bq - {\bf G}(\bq) \right]
+      \end{bmatrix},\\
+\approx& {\bf A}_{lin} (\bx-\bx^*) + {\bf B}_{lin} (\bu - \bu^*),
+\end{align}
+where ${\bf A}_{lin}$, and ${\bf B}_{lin}$ are constant matrices.  Let us define $\bar\bx = \bx - \bx^*, \bar\bu = \bu - \bu^*$, and
+write $$\dot{\bar\bx} = {\bf A}_{lin}\bar\bx + {\bf B}_{lin}\bar\bu.$$ Evaluation of
+the Taylor expansion around a fixed point yields the following, very
+simple equations, given in block form by:
+\begin{align}
+{\bf A}_{lin} =& \begin{bmatrix} {\bf 0} & {\bf I} \\ -{\bf H}^{-1} \pd{\bf G}{\bq} + \sum_{j} {\bf H}^{-1}\pd{{\bf B}_j}{\bq} u_j  & -{\bf H}^{-1} {\bf
+  C}  \end{bmatrix}_{\bx=\bx^*,\bu=\bu^*} \\
+{\bf B}_{lin} =& \begin{bmatrix} {\bf 0} \\ {\bf H}^{-1} {\bf B}
+  \end{bmatrix}_{\bx=\bx^*, \bu=\bu^*}
+\end{align}
+where ${\bf B}_j$ is the $j$th column of ${\bf B}$.  Note that the term involving $\pd{{\bf H}^{-1}}{q_i}$ disappears
+because ${\bf B}\bu - {\bf C}\dot{\bq} - {\bf G}$ must be zero at the
+fixed point.  Many of the ${\bf C}\dot\bq$ derivatives drop out, too,
+  because $\dot{\bq}^* = 0$.  In many cases, including both
+  the Acrobot and Cart-Pole systems (but not the Quadrotors), the matrix ${\bf B}(\bq)$ is a constant,
+  so the $\pd{\bf B}{\bq}$ terms also drop out.
+</p>
+
+<div data-type="example"><h1>Linearization of the Acrobot</h1>
+
+<p>
+  Linearizing around the (unstable) upright point, we have:
+\begin{gather}
+{\bf C}(\bq,\dot\bq)_{\bx=\bx^*} = {\bf 0},\\
+\left[\pd{\bf G}{\bq}\right]_{\bx=\bx^*} = \begin{bmatrix} -g (m_1 l_{c1}
+    + m_2 l_1 + m_2 l_{c2}) & -m_2 g l_{c2} \\ -m_2 g l_{c2} & -m_2 g l_{c2}
+\end{bmatrix}
+\end{gather}
+The linear dynamics follow directly from these equations and the
+manipulator form of the Acrobot equations.</p>
+
 </div>
 
-<div data-type="example"><h1>The 3D Quadrotor in MATLAB</h1>
-<p>You can experiment with the dynamics of a full quadrotor in <drake></drake> using, e.g.
-<pre><code class="matlab">
-cd(fullfile(getDrakePath,'examples','Quadrotor'));
+<div data-type="example"><h1>Linearization of the Cart-Pole System</h1>
 
-plant=Quadrotor();
-[H,C_times_v,G,B] = plant.manipulatorEquations()
-</code></pre>
+<p>
+Linearizing around the unstable fixed point in this system, we have:
+\begin{gather}
+{\bf C}(\bq,\dot\bq)_{\bx=\bx^*} = {\bf 0},\quad
+\left[\pd{\bf G}{\bq}\right]_{\bx=\bx^*} = \begin{bmatrix} 0 & 0 \\ 0
+  & -m_p g l \end{bmatrix}
+\end{gather}
+Again, the linear dynamics follow simply.
+</p>
+
 </div>
+
+</section> <!-- end linearizing -->
+
+<section data-type="sect2"><h1>Controllability of Linear Systems</h1>
+
+<todo>improve controllability (why is \exists j \beta_{ij} \ne 0
+sufficient), and why is \alpha(\tau) > 0, and consider
+adding the controllability grammian, or a least a pointer/reference.</todo>
+
+<p>
+Consider the linear system $$\dot{\bx} = {\bf A}\bx + {\bf B}u,$$
+where $\bx$ has dimension $n$.  A system of this form is called
+<em>controllable</em> if it is possible to construct an unconstrained
+control signal which will transfer an initial state to any final state
+in a finite interval of time, $0 < t < t_f$ <elib>Ogata96</elib>.  If every
+state is controllable, then the system is said to be completely state
+controllable.  Because we can integrate this linear system in closed
+form, it is possible to derive the exact conditions of complete state
+controllability.</p>
+
+<section data-type"sect3"><h1>The special case of non-repeated eigenvalues</h1>
+
+<p>
+Let us first examine a special case, which falls short as a general
+tool but may be more useful for understanding the intuition of
+controllability.  Let's perform an eigenvalue analysis of the system
+matrix ${\bf A}$, so that: $${\bf A}{\bf v}_i = \lambda_i {\bf v}_i,$$
+where $\lambda_i$ is the $i$th eigenvalue, and ${\bf v}_i$ is the
+corresponding (right) eigenvector.  There will be $n$ eigenvalues for
+the $n \times n$ matrix ${\bf A}$.  Collecting the (column) eigenvectors into
+the matrix ${\bf V}$ and the eigenvalues into a diagonal matrix ${\bf
+ \Lambda}$, we have $${\bf A}{\bf V} = {\bf V}{\bf \Lambda}.$$
+Here comes our primary assumption: let us assume that each of these
+$n$ eigenvalues takes on a distinct value (no repeats).  With this
+assumption, it can be shown that the eigenvectors ${\bf v}_i$ form a
+linearly independent basis set, and therefore ${\bf V}^{-1}$ is
+well-defined.</p>
+
+<p>
+We can continue our eigenmodal analysis of the linear system by
+defining the modal coordinates, ${\bf r}$ with: $$\bx = {\bf V}{\bf
+  r},\quad \text{or}\quad {\bf r} = {\bf V}^{-1}\bx.$$  In modal
+coordinates, the dynamics of the linear system are given by $$\dot{\bf
+  r} = {\bf V}^{-1} {\bf A} {\bf V} {\bf r} + {\bf V}^{-1} {\bf B} \bu
+= {\bf \Lambda} {\bf r} + {\bf V}^{-1}{\bf B} \bu.$$  This illustrates
+the power of modal analysis; in modal coordinates, the dynamics
+diagonalize yeilding independent linear equations: $$\dot{r}_i =
+\lambda_i r_i + \sum_j \beta_{ij} u_j,\quad {\bf \beta} = {\bf V}^{-1}
+       {\bf B}.$$</p>
+
+<p>
+Now the concept of controllability becomes clear.  Input $j$ can
+influence the dynamics in modal coordinate $i$ if and only if ${\bf
+  \beta}_{ij} \neq 0$.  In the special case of non-repeated
+eigenvalues, having control over each individual eigenmode is
+sufficient to (in finite-time) regulate all of the
+eigenmodes<elib>Ogata96</elib>.
+Therefore, we say that the system is controllable if and only if
+$$\forall i, \exists j \text{ such that }\beta_{ij} \neq 0.$$ Note a
+linear feedback to change the eigenvalues of the eigenmodes is not
+sufficient to accomplish our goal of getting to the goal in finite
+time.  In fact, the open-loop control to reach the goal is easily
+obtained with a final-value LQR problem, and (for ${\bf
+  R}={\bf I}$) is actually a simple function of the controllability
+Grammian<elib>Chen98a</elib>.</p>
 
 </section>
+
+<section data-type="sect3"><h1>A general solution</h1>
+
+<p>
+A more general solution to the controllability issue, which removes
+our assumption about the eigenvalues, can be obtained by examining the
+time-domain solution of the linear equations.  The solution of this
+system is $$\bx(t) = e^{{\bf A}t} \bx(0) + \int_0^{t} e^{{\bf A}(t -
+\tau)} {\bf B} u(\tau) d\tau.$$ Without loss of generality, lets
+consider the that the final state of the system is zero.  Then we
+have: $$\bx(0) = - \int_0^{t_f} e^{-{\bf A}\tau}{\bf B}u(\tau)
+d\tau.$$ You might be wondering what we mean by $e^{{\bf A}t}$; a
+scalar raised to the power of a matrix..?  Recall that $e^{z}$ is
+actually defined by a convergent infinite sum: $$e^{z} =1 + z +
+\frac{1}{2} x^2 + \frac{1}{6} z^3 + ... .$$ The notation $e^{{\bf
+A}t}$ uses the same definition: $$e^{{\bf A}t} = {\bf I} + {\bf A}t +
+\frac{1}{2}({\bf A}t)^2 + \frac{1}{6}({\bf A}t)^3 + ... .$$ Not
+surprisingly, this has many special forms.  For instance, $e^{{\bf
+A}t} = {\bf V}e^{{\bf\Lambda}t}{\bf V}^{-1},$ where ${\bf A} = {\bf V
+\Lambda V}^{-1}$ is the eigenvalue decomposition of ${\bf A}$
+\cite{Strang98}.  The particular form we will use here is
+$$e^{-{\bf A}\tau} = \sum_{k=0}^{n-1} \alpha_k(\tau) {\bf A}^k.$$ This
+is a particularly surprising form, because the infinite sum above is
+represented by this finite sum; the derivation uses Sylvester's
+Theorem\cite{Ogata96,Chen98a}.  Then
+we have, \begin{align*} \bx(0) =& - \sum_{k=0}^{n-1} {\bf A}^k {\bf B}
+\int_0^{t_f} \alpha_k(\tau) u(\tau) d\tau \\ =& -\sum_{k=0}^{n-1} {\bf
+A}^k {\bf B} w_k \text{, where } w_k = \int_0^{t_f} \alpha_k(\tau)
+u(\tau) d\tau \\ =& - \begin{bmatrix} {\bf B} & {\bf AB} & {\bf
+A}^2{\bf B} & \cdots & {\bf A}^{n-1}{\bf B} \end{bmatrix}_{n \times n}
+\begin{bmatrix} w_0 \\ w_1 \\ w_2 \\ \vdots \\ w_{n-1} \end{bmatrix}
+\end{align*}
+The matrix containing the vectors ${\bf B}$, ${\bf AB}$, ... ${\bf
+A}^{n-1}{\bf B}$ is called the controllability matrix.  In order for
+the system to be complete-state controllable, for every initial
+condition $\bx(0)$, we must be able to find the corresponding vector
+${\bf w}$.  This is only possible when the columns of the
+controllability matrix are linearly independent.  Therefore, the
+condition of controllability is that this controllability matrix is
+full rank.</p>
+
+<p>
+Although we only treated the case of a scalar $u$, it is possible to
+extend the analysis to a vector $\bu$ of size $m$, yielding the
+condition $$\text{rank} \begin{bmatrix} {\bf B} & {\bf AB} & {\bf
+A}^2{\bf B} & \cdots & {\bf A}^{n-1}{\bf B} \end{bmatrix}_{n \times
+(nm)} = n.$$ In Matlab (using the control systems toolbox),
+you can obtain the controllability matrix using <code>Cm = ctrb(A,B)</code>,
+and evaluate its rank with <code>rank(Cm)</code>.</p>
+
+</section>
+
+<section data-type="sect3"><h1>Controllability vs. Underactuated</h1>
+
+<p>
+Analysis of the controllability of both the Acrobot and Cart-Pole
+systems reveals that the linearized dynamics about the upright are, in
+fact, controllable.  This implies that the linearized system, if
+started away from the zero state, can be returned to the zero state in
+finite time.  This is potentially surprising - after all the systems
+are underactuated.  For example, it is interesting and surprising that
+the Acrobot can balance itself in the upright position without having
+a shoulder motor.</p>
+
+<p>
+The controllability of these model systems demonstrates an extremely
+important, point: \emph{An underactuated system is not necessarily
+an uncontrollable system.}  Underactuated systems cannot follow
+arbitrary trajectories, but that does not imply that they cannot
+arrive at arbitrary points in state space.  However, the trajectory
+required to place the system into a particular state may be arbitrarly
+complex.</p>
+
+<p>
+The controllability analysis presented here is for LTI systems.  A
+comparable analysis exists for linear time-varying (LTV) systems.  One
+would like to find a comparable analysis for controllability that
+would apply to nonlinear systems, but I do not know of any general
+tools for solving this problem.</p>
+
+</section>
+
+</section> <!-- end controllability -->
+
+<section data-type="sect2"><h1>LQR Feedback</h1>
+
+<p>
+Controllability tells us that a trajectory to the fixed point exists,
+but does not tell us which one we should take or what control inputs
+cause it to occur?  Why not?  There are potentially infinitely many
+solutions.  We have to pick one.</p>
+
+<p>
+The tools for controller design in linear systems are very advanced.
+In particular, as we describe in \ref{ex:inf_lqr}, one can easily design
+an optimal feedback controller for a regulation task like balancing,
+so long as we are willing to define optimality in terms of a quadratic
+cost function: $$J(\bx_0) = \int_0^\infty \left[ \bx(t)^T {\bf Q} \bx(t) +
+\bu(t) {\bf R} \bu(t) \right]dt, \quad \bx(0)=\bx_0, {\bf Q}={\bf Q}^T>0, {\bf
+R}={\bf R}^T>0.$$ The linear feedback matrix ${\bf K}$ used as
+$$\bu(t) = - {\bf K}\bx(t),$$ is the so-called optimal linear
+quadratic regulator (LQR).  Even without understanding the detailed
+derivation, we can quickly become practioners of LQR.  Conveniently,
+Matlab has a function, \verb'K = lqr(A,B,Q,R)'. Therefore, to use LQR,
+one simply needs to obtain the linearized system dynamics and to
+define the symmetric positive-definite cost matrices, ${\bf Q}$ and
+${\bf R}$.  In their most common form, ${\bf Q}$ and ${\bf R}$ are
+positive diagonal matrices, where the entries $Q_{ii}$ penalize the
+relative errors in state variable $x_i$ compared to the other state
+variables, and the entries $R_{ii}$ penalize actions in $u_i$.</p>
+
+<p>
+Analysis of the close-loop response with LQR feedback shows that the
+task is indeed completed - and in an impressive manner.  Often times
+the state of the system has to move violently away from the origin in
+order to ultimately reach the origin.  Further inspection reveals the
+(linearized) closed-loop dynamics have right-half plane zeros - the
+system in non-minimum phase (acrobot had 3 right-half zeros, cart-pole
+had 1).</p>
+
+<todo>Include trajectory example plots here</todo>
+
+<p>
+Note that LQR, although it is optimal for the linearized system, is
+not necessarily the best linear control solution for maximizing basin
+of attraction of the fixed-point.  The theory of \emph{robust
+control}(e.g., \cite{Zhou97}), which explicitly takes into account the differences between the
+linearized model and the nonlinear model, will produce controllers
+which outperform our LQR solution in this regard.</p>
+
+</section>
+
+</section> <!-- end balancing -->
+
+
+
+\section{Partial Feedback Linearization}
+\nocite{Spong97}
+
+In the introductory chapters, we made the point that the underactuated
+systems are not feedback linearizable.  At least not completely.
+Although we cannot linearize the full dynamics of the system, it is
+still possible to linearize a portion of the system dynamics.  The
+technique is called \emph{partial feedback linearization}.
+
+Consider the cart-pole example.  The dynamics of the cart are effected
+by the motions of the pendulum.  If we know the model, then it seems
+quite reasonable to think that we could create a feedback controller
+which would push the cart in exactly the way necessary to counter-act
+the dynamic contributions from the pendulum - thereby linearizing the
+cart dynamics.  What we will see, which is potentially more
+surprising, is that we can also use a feedback law for the cart to
+feedback linearize the dynamics of the passive pendulum joint.
+
+We'll use the term \emph{collocated} partial feedback linearization to
+describe a controller which linearizes the dynamics of the actuated
+joints.  What's more surprising is that it is often possible to
+achieve \emph{noncollocated} partial feedback linearization - a
+controller which linearizes the dynamics of the unactuated joints.
+The treatment presented here follows from \cite{Spong94a}.
+
+\subsection{PFL for the Cart-Pole System}
+
+\subsubsection{Collocated}
+
+Starting from equations \ref{eq:simple} and \ref{eq:simple2}, we have
+\begin{gather*}
+\ddot\theta = -\ddot{x}c - s \\
+% \ddot\theta = -\frac{1}{l} (\ddot{x} c + g s)
+\ddot{x}(2-c^2) - sc - \dot\theta^2 s = f
+\end{gather*}
+Therefore, applying the feedback control law
+\begin{equation}
+f = (2 - c^2) \ddot{x}^d - sc - \dot\theta^2 s
+% f = (m_c + m_p) u + m_p (u c + g s) c - m_p l \dot\theta^2 s
+\end{equation}
+results in
+\begin{align*}
+\ddot{x} =& \ddot{x}^d \\ \ddot{\theta} =& -\ddot{x}^dc - s,
+\end{align*}
+which are valid globally.
+
+
+\subsubsection{Non-collocated}
+
+Starting again from equations \ref{eq:simple} and \ref{eq:simple2}, we have
+\begin{gather*}
+\ddot{x} = -\frac{\ddot\theta + s}{c} \\
+\ddot\theta(c - \frac{2}{c}) - 2 \tan\theta - \dot\theta^2 s = f
+\end{gather*}
+Applying the feedback control law \begin{equation} f = (c - \frac{2}{c})
+\ddot\theta^d - 2 \tan\theta - \dot\theta^2 s \end{equation} results in
+\begin{align*} \ddot\theta =& \ddot\theta^d \\ \ddot{x} =& -\frac{1}{c} \ddot\theta^d -
+\tan\theta. \end{align*} Note that this expression is only valid when
+$\cos\theta \neq 0$.  This is not surprising, as we know that the
+force cannot create a torque when the beam is perfectly horizontal.
+
+\subsection{General Form}
+
+For systems that are trivially underactuated (torques on some joints,
+no torques on other joints), we can, without loss of generality,
+reorganize the joint coordinates in any underactuated system described
+by the manipulator equations into the form:
+\begin{align}
+{\bf H}_{11} \ddot{\bq}_1 + {\bf H}_{12} \ddot{\bq}_2 + {\bf \phi}_1 = 0, \label{eq:passive_dyn}\\
+{\bf H}_{21} \ddot{\bq}_1 + {\bf H}_{22} \ddot{\bq}_2 + {\bf \phi}_2 =
+{\bf \tau}, \label{eq:active_dyn}
+\end{align}
+with $\bq \in \Re^n$, $\bq_1 \in \Re^m$, $\bq_2 \in \Re^l$, $l=n-m$.
+$\bq_1$ represents all of the passive joints, and $\bq_2$ represents
+all of the actuated joints, and the $\phi$ terms capture all of the
+Coriolis and gravitational terms, and $${\bf H}(\bq) =
+\begin{bmatrix} {\bf H}_{11} & {\bf H}_{12} \\ {\bf H}_{21} & {\bf
+    H}_{22} \end{bmatrix}.$$
+Fortunately, because ${\bf H}$ is uniformly positive definite, ${\bf H}_{11}$
+and ${\bf H}_{22}$ are also positive definite.  % uniformly means for all \bq
+
+\subsubsection{Collocated linearization}
+
+Performing the same substitutions into the full manipulator equations,
+we get:
+\begin{gather}
+\ddot\bq_1 = -{\bf H}_{11}^{-1} \left[ {\bf H}_{12} \ddot\bq_2 + {\bf \phi}_1
+  \right] \\
+({\bf H}_{22} - {\bf H}_{21} {\bf H}_{11}^{-1} {\bf H}_{12})
+  \ddot\bq_2 + {\bf \phi_2} - {\bf H}_{21} {\bf H}_{11}^{-1} {\bf
+  \phi}_1 = {\bf \tau}
+\end{gather}
+It can be easily shown that the matrix $({\bf H}_{22} - {\bf H}_{21}
+{\bf H}_{11}^{-1} {\bf H}_{12})$ is invertible\cite{Spong94a}; we can
+see from inspection that it is symmetric.  PFL follows naturally, and
+is valid globally.
+
+\subsubsection{Non-collocated linearization}
+\begin{gather}
+\ddot\bq_2 = -{\bf H}_{12}^+ \left[ {\bf H}_{11} \ddot\bq_1 + {\bf \phi}_1
+  \right] \\
+({\bf H}_{21} - {\bf H}_{22} {\bf H}_{12}^+ {\bf H}_{11})
+  \ddot\bq_1 + {\bf \phi_2} - {\bf H}_{22} {\bf H}_{12}^+ {\bf
+  \phi}_1 = {\bf \tau}
+\end{gather}
+
+Where ${\bf H}_{12}^+$ is a Moore-Penrose pseudo-inverse.  This
+inverse provides a unique solution when the rank of ${\bf H}_{12}$
+equals $l$, the number of passive degrees of freedom in the system (it
+cannot be more, since the matrix only has $l$ rows).  This rank
+condition is sometimes called the property of ``Strong Inertial
+Coupling''.  It is state dependent.  Global Strong Inertial Coupling
+if every state is coupled.
+
+\subsubsection{Task Space Linearization}
+
+In general, we can define some combination of active and passive
+joints that we would like to control.  This combination is sometimes
+called a ``task space''.  % cite some task space refs here?
+Consider an output function of the form, $${\bf y} = {\bf
+f}(\bq),$$ with ${\bf y} \in \Re^p$, which defines the task space.  Define
+${\bf J}_1 = \frac{\partial {\bf f}}{\partial \bq_1}$, ${\bf J}_2 =
+\frac{\partial {\bf f}}{\partial \bq_2}$, ${\bf J} = [{\bf J}_1,{\bf J}_2]$.
+
+\begin{theorem}[Task Space PFL]
+If the actuated joints are commanded so that
+ \begin{equation} \ddot\bq_2 = \bar{\bf J}^+ \left [{\bf v} -
+    \dot{\bf J}\dot\bq + {\bf J}_1 {\bf H}_{11}^{-1}{\bf \phi}_1 \right],  \label{eq:q2cmd} \end{equation}
+where $\bar{{\bf J}} = {\bf J}_2 - {\bf J}_1 {\bf H}_{11}^{-1} {\bf H}_{12}.$
+and $\bar{\bf J}^+$ is the right Moore-Penrose pseudo-inverse, $$\bar{\bf J}^+
+= \bar{\bf J}^T (\bar{\bf J} \bar{\bf J}^T)^{-1},$$ then we have \begin{equation} \ddot{\bf y} = {\bf v}.\end{equation}
+subject to
+\begin{equation}\text{rank}\left(\bar{{\bf J}} \right) = p, \label{eq:rank_condition}\end{equation}
+\end{theorem}
+
+\begin{proof}
+Differentiating the output function we have
+\begin{gather*}
+\dot{\bf y} = {\bf J} \dot\bq \\
+\ddot{\bf y} = \dot{\bf J} \dot\bq + {\bf J}_1 \ddot\bq_1 + {\bf J}_2 \ddot\bq_2.
+\end{gather*}
+Solving \ref{eq:passive_dyn} for the dynamics of the unactuated joints
+we have:
+\begin{equation}
+\ddot\bq_1 = - {\bf H}_{11}^{-1} ({\bf H}_{12} \ddot\bq_2 + {\bf \phi}_1)  \label{eq:q1cmd}
+\end{equation}
+Substituting, we have
+\begin{align}
+\ddot{\bf y} =& \dot{\bf J} \dot\bq - {\bf J}_1 {\bf H}_{11}^{-1}({\bf
+  H}_{12}\ddot\bq_2 + {\bf \phi}_1) + {\bf J}_2 \ddot\bq_2 \\
+=& \dot{\bf J} \dot\bq + \bar{{\bf J}} \ddot\bq_2 - {\bf J}_1 {\bf H}_{11}^{-1}{\bf \phi}_1 \\
+=& {\bf v}
+\end{align}
+Note that the last line required the rank condition
+($\ref{eq:rank_condition}$) on $\bar{\bf J}$ to ensure that the rows
+of $\bar{{\bf J}}$ are linearly independent, allowing $\bar{\bf J}
+\bar{\bf J}^+ = {\bf I}$.
+\end{proof}
+
+In order to execute a task space trajectory one could command $${\bf
+v} = \ddot{\bf y}^d + {\bf K}_d (\dot{\bf y}^d - \dot{\bf y}) + {\bf K}_p ({\bf y}^d -{\bf y}).$$ Assuming the internal dynamics are stable, this yields
+converging error dynamics, $({\bf y}_d - {\bf y})$, when ${\bf K}_p,{\bf K}_d
+> 0$\cite{Slotine90}.  For a position control robot, the
+acceleration command of ($\ref{eq:q2cmd}$) suffices. Alternatively, a
+torque command follows by substituting ($\ref{eq:q2cmd}$) and
+($\ref{eq:q1cmd}$) into ($\ref{eq:active_dyn}$).
+
+\begin{example}[End-point trajectory following with the Cart-Pole system]
+
+Consider the task of trying to track a desired kinematic trajectory
+with the endpoint of pendulum in the cart-pole system.  With one
+actuator and kinematic constraints, we might be hard-pressed to track
+a trajectory in both the horizontal and vertical coordinates.  But we
+can at least try to track a trajectory in the vertical position of the
+end-effector.
+
+  Using the task-space PFL derivation, we have:
+\begin{gather*}
+y = f(\bq) = -l \cos\theta \\
+\dot{y} = l \dot\theta \sin\theta
+\end{gather*}
+If we define a desired trajectory:
+$$y^d(t) = \frac{l}{2} + \frac{l}{4} \sin(t),$$
+then the task-space controller is easily implemented using the
+derivation above.
+
+% add results here?
+\end{example}
+
+\subsubsection{Collocated and Non-Collocated PFL from Task Space derivation}
+
+The task space derivation above provides a convenient generalization
+of the partial feedback linearization (PFL) \cite{Spong94a}, which
+emcompasses both the collocated and non-collocated results.  If we
+choose ${\bf y} = \bq_2$ (collocated), then we have $${\bf J}_1 = 0, {\bf J}_2 =
+{\bf I}, \dot{\bf J} = 0, \bar{\bf J} = {\bf I}, \bar{\bf J}^+ = {\bf I}.$$ From this, the command
+in ($\ref{eq:q2cmd}$) reduces to $\ddot\bq_2 = v$. The torque command
+is then
+$$ \tau = - {\bf H}_{21} {\bf H}_{11}^{-1} ({\bf H}_{12} v + {\bf \phi}_1) +
+{\bf H}_{22} v + {\bf \phi}_2,$$ and the rank condition
+($\ref{eq:rank_condition}$) is always met.
+
+If we choose ${\bf y} = \bq_1$ (non-collocated), we have $${\bf J}_1 =
+{\bf I}, {\bf J}_2
+= 0, \dot{\bf J} = 0, \bar{{\bf J}}=-{\bf H}_{11}^{-1}{\bf H}_{12}.$$ The rank
+condition ($\ref{eq:rank_condition}$) requires that
+$\text{rank}({\bf H}_{12}) = l$, in which case we can write
+$\bar{{\bf J}}^+=-{\bf H}_{12}^+{\bf H}_{11}$, reducing the rank condition to
+precisely the ``Strong Inertial Coupling'' condition described in
+\cite{Spong94a}. Now the command in ($\ref{eq:q2cmd}$) reduces to
+\begin{equation}
+\ddot\bq_2 = -{\bf H}_{12}^+ \left [ {\bf H}_{11}{\bf v} + {\bf \phi}_1 \right] \label{eq:q2ddnonco}
+\end{equation}
+The torque command is found by substituting $\ddot\bq_1 = v$ and
+($\ref{eq:q2ddnonco}$) into ($\ref{eq:active_dyn}$), yielding the same
+results as in \cite{Spong94a}.
+
+\section{Swing-Up Control}
+
+\subsection{Energy Shaping}
+
+Recall the phase portraits that we used to understand the dynamics of
+the undamped, unactuated, simple pendulum ($u=b=0$) in section
+\ref{s:pend:orbits}.  The orbits of this phase plot were defined by
+countours of constant energy.  One very special orbit, known as a
+\emph{homoclinic} orbit, is the orbit which passes through the
+unstable fixed point.  In fact, visual inspection will reveal that any
+state that lies on this homoclinic orbit must pass into the unstable
+fixed point.  Therefore, if we seek to design a nonlinear feedback
+control policy which drives the simple pendulum from any initial
+condition to the unstable fixed point, a very reasonable strategy
+would be to use actuation to regulate the energy of the pendulum to
+place it on this homoclinic orbit, then allow the system dynamics to
+carry us to the unstable fixed point.
+
+This idea turns out to be a bit more general than just for the simple
+pendulum. As we will see, we can use similar concepts of `energy
+shaping' to produce swing-up controllers for the acrobot and cart-pole
+systems.  It's important to note that it only takes one actuator to
+change the total energy of a system.
+
+Although a large variety of swing-up controllers have been proposed
+for these model
+systems\cite{Fantoni02,Araki05,Xin04,Spong94,Mahindrakar05,Berkemeier99,Murray91,Lai06},
+the energy shaping controllers tend to be the most natural to derive
+and perhaps the most well-known.
+
+
+\subsection{Simple Pendulum} \label{s:pend_energy_shaping}
+
+Recall the equations of motion for the undamped simple pendulum were given
+by $$ml^2 \ddot\theta + mgl\sin\theta = u.$$  The total energy of the
+simple pendulum is given by $$E = \frac{1}{2} m l^2 \dot\theta^2 -
+mgl\cos\theta.$$  To understand how to control the energy, observe
+that \begin{align*} \dot{E} =& ml^2\dot\theta \ddot\theta + \dot\theta
+  mgl\sin\theta \\ =& \dot\theta \left[ u - mgl\sin\theta \right] +
+  \dot\theta mgl\sin\theta \\ =& u\dot\theta. \end{align*}
+In words, adding energy to the system is simple - simply apply torque
+in the same direction as $\dot\theta$.  To remove energy, simply apply
+torque in the opposite direction (e.g., damping).
+
+To drive the system to the homoclinic orbit, we must regulate the
+energy of the system to a particular desired energy, $$E^d = mgl.$$ If
+we define $\tilde{E} = E - E^d$, then we have $$\dot{\tilde{E}} =
+\dot{E} = u\dot\theta.$$ If we apply a feedback controller of the
+form $$u = -k \dot\theta \tilde{E},\quad k>0,$$ then the resulting
+error dynamics are $$\dot{\tilde{E}} = - k \dot\theta^2 \tilde{E}.$$
+These error dynamics imply an exponential convergence: $$\tilde{E}
+\rightarrow 0,$$ except for states where $\dot\theta=0$.  The
+essential property is that when $E>E^d$, we should remove energy from
+the system (damping) and when $E<E^d$, we should add energy (negative
+damping).  Even if the control actions are bounded, the convergence is
+easily preserved.
+
+This is a nonlinear controller that will push all system trajectories
+to the unstable equilibrium.  But does it make the unstable
+equilibrium locally stable?  \emph{No.}  Small perturbations may cause
+the system to drive all of the way around the circle in order to once
+again return to the unstable equilibrium.  For this reason, one
+trajectories come into the vicinity of our swing-up controller, we
+prefer to switch to our LQR balancing controller to performance to
+complete the task.
+
+\subsection{Cart-Pole}
+
+Having thought about the swing-up problem for the simple pendulum,
+let's try to apply the same ideas to the cart-pole system.  The basic
+idea, from \cite{Chung95}, is to use collocated PFL to simplify the
+dynamics, use energy shaping to regulate the pendulum to it's
+homoclinic orbit, then to add a few terms to make sure that the cart
+stays near the origin.  The collocated PFL (when all parameters
+are set to 1) left us with:
+\begin{gather}
+\ddot{x} = u \\
+\ddot\theta = - u c - s
+%\ddot\theta = -\frac{1}{l}( u c + g s )
+\end{gather}
+The energy \emph{of the pendulum} (a unit mass, unit length, simple
+pendulum in unit gravity) is given by: $$E(\bx) = \frac{1}{2}
+\dot\theta^2 - \cos\theta.$$
+% E = \frac{1}{2}ml^2\dot\theta^2 - mgl\cos\theta
+The desired
+energy, equivalent to the energy at the desired fixed-point, is
+$$E^d = 1.$$
+% E^d = m_p g l
+Again defining $\tilde{E}(\bx) = E(\bx) - E^d$, we now observe
+that
+\begin{align*}
+\dot{\tilde{E}}(\bx) =& \dot{E}(\bx) = \dot\theta \ddot\theta +
+\dot\theta s \\
+% \dot\tilde{E} = ml^2 \dot\theta \ddot\theta + mgl s
+=& \dot\theta [ -uc - s] + \dot\theta s \\
+% - ml \dot\theta [ u c + g s ] + mgl s
+=& - u\dot\theta \cos\theta.
+% - ml u \dot\theta c
+\end{align*}
+Therefore, if we design a controller of the form
+$$u = k \dot\theta\cos\theta \tilde{E},\quad k>0$$
+the result is
+$$\dot{\tilde{E}} = - k \dot\theta^2 \cos^2\theta \tilde{E}.$$  % times ml
+This guarantees that $| \tilde{E} |$ is
+non-increasing, but isn't quite enough to guarantee that it will go
+to zero.  For example, if $\theta = \dot\theta = 0$, the system will
+never move.  However, if we have that $$\int_0^t \dot\theta^2(t')
+\cos^2 \theta(t') dt' \rightarrow \infty,\quad \text{as } t
+\rightarrow \infty,$$ then we have $\tilde{E}(t) \rightarrow 0$. This
+condition is satisfied for all but the most trivial trajectories.
+
+Now we must return to the full system dynamics (which includes the
+cart).  \cite{Chung95} and \cite{Spong96} use the simple pendulum
+energy controller with an addition PD controller designed to regulate
+the cart: $$\ddot{x}^d = k_E \dot\theta \cos\theta \tilde{E} - k_p x -
+k_d \dot{x}.$$ \cite{Chung95} provided a proof of convergence for this
+controller with some nominal parameters.
+
+\begin{figure}
+\hfill
+\includegraphics[width=.7\textwidth]{figures/cartpole_swingup_phase.pdf}
+\hfill\
+\caption{Cart-Pole Swingup: Example phase plot of the pendulum subsystem using
+  energy shaping control.  The controller drives the system to the
+  homoclinic orbit, then switches to an LQR balancing controller near
+  the top.}
+\end{figure}
+
+\subsection{Acrobot}
+
+Swing-up control for the acrobot can be accomplished in much the same
+way.  \cite{Spong94} - pump energy.  Clean and simple.  No proof.
+Slightly modified version (uses arctan instead of sat) in \cite{Spong95}.
+Clearest presentation in \cite{Spong96}.
+
+Use collocated PFL.  ($\ddot{q}_2 = \ddot{q}_2^d$).
+$$E(\bx) = \frac{1}{2}\dot\bq^T{\bf H}\dot{\bq} + U(\bx).$$
+$$ E_d = U(\bx^*).$$
+$$\bar{u} = \dot{q}_1 \tilde{E}.$$
+$$\ddot{x}^d  = - k_1 q_2 - k_2 \dot{q}_2 + k_3 \bar{u},$$
+
+Extra PD terms prevent proof of asymptotic convergence to homoclinic
+orbit.  Proof of another energy-based controller in \cite{Xin04}.
+
+<section data-type="sect2"><h1>Discussion</h1>
+
+<p>
+The energy shaping controller for swing-up presented here are pretty
+faithful representatives from the field of nonlinear underactuated
+control.  Typically these control derivations require some clever
+tricks for simplifying or canceling out terms in the nonlinear
+equations, then some clever Lyapunov function to prove stability.  In
+these cases, PFL was used to simplify the equations, and therefore the
+controller design.</p>
+
+<p>
+These controllers are important, representative, and relevant.  But
+clever tricks with nonlinear equations seem to be fundamentally
+limited.  Most of the rest of the material presented in this book will
+emphasize more general computational approaches to formulating and
+solving these and other control problems.
+</p>
+
+<section data-type="sect1"><h1>Other Model Systems</h1>
+
+<p>
+The acrobot and cart-pole systems are just two of the model systems
+used heavily in underactuated control research.  Other examples include:
+<ul>
+  <li>Pendubot</li>
+  <li>Inertia wheel pendulum</li>
+  <li>Furata pendulum (horizontal rotation and vertical pendulum)</li>
+  <li>Hovercraft</li>
+  <li>Planar VTOL</li>
+</ul>
+</p>
+
+
+<div data-type="example"><h1>LQR for a Quadrotors</h1>
+
+<p>LQR works essentially out of the box for Quadrotors, if linearized around
+  a nominal fixed point (where the non-zero thrust from the propellors is balancing
+  gravity).  We have a few Quadrotor models in <drake></drake>.  You should
+  start with the Planar Quadrotor (technically a bi-rotor):
+<pre><code class="matlab">
+cd(fullfile(getDrakePath,'examples','Quadrotor2D'));
+runLQR();
+</code></pre>
+but you can also do this with a full 3D quadrotor model:
+<pre><code class="matlab">
+cd(fullfile(getDrakePath,'examples','Quadrotor'));
+runLQR();
+</code></pre>
+Make sure that you take a minute to look at the code which runs during these
+examples.  Can you set the $Q$ and $R$ matrices differently, to improve the performance?
+</p>
+</div>
+
 
 </section> <!-- ***************  end of acrobot/cartpole/quadrotor chapter **************   -->
 
