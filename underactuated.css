@@ -133,12 +133,24 @@ appendix {
 [data-type="definition"] h1:after {
   content: ")";
 }
-[data-type="definition"],[data-type="theorem"] h1 {
+[data-type="definition"] h1 {
   display: inline;
   font-size: 16px;
   font-variant: normal;
 }
-[data-type="definition"],[data-type="theorem"] {
+[data-type="theorem"] h1 {
+  display: inline;
+  font-size: 16px;
+  font-variant: normal;
+}
+[data-type="definition"] {
+  border: 1px solid;
+  border-radius: 10px;
+  background-color: rgb(242,242,242); /* light gray */
+  margin: 10px;
+  padding: 5px;
+}
+[data-type="theorem"] {
   border: 1px solid;
   border-radius: 10px;
   background-color: rgb(242,242,242); /* light gray */

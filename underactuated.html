@@ -1236,6 +1236,19 @@ Solving directly for the accelerations, we have
   \right]
 \end{gather} -->
 
+<div data-type="example"><h1>The Acrobot in MATLAB</h1>
+<p>You can experiment with the Acrobot dynamics in <drake></drake> using, e.g.
+<pre><code class="matlab">
+cd(fullfile(getDrakePath,'examples','Acrobot'));
+
+plant=AcrobotPlant();
+[H,C_times_v,G,B] = plant.manipulatorEquations()
+
+runPassive();  % simulate with torque=0 (and display the results)
+</code></pre>
+
+</div>
+
 </section> <!-- acrobot eqs of motion -->
 
 </section> <!-- acrobot -->
@@ -1305,15 +1318,42 @@ The kinematics of the system are given by
   \end{gather}
 </p>
 
+<div data-type="example"><h1>The Cart-Pole System in MATLAB</h1>
+<p>You can experiment with the Cart-Pole dynamics in <drake></drake> using, e.g.
+<pre><code class="matlab">
+cd(fullfile(getDrakePath,'examples','CartPole'));
+
+plant=CartPolePlant();
+[H,C_times_v,G,B] = plant.manipulatorEquations()
+
+runPassive();  % simulate with force=0 (and display the results)
+</code></pre>
+
 </section> <!-- end eq of motion -->
 
 </section> <!-- end cart-pole -->
 
 <section data-type="sect1"><h1>Quadrotors</h1>
 
-  <p>Planar quadrotor model.</p>
+<div data-type="example"><h1>The Planar Quadrotor in MATLAB</h1>
+<p>You can experiment with the dynamics of a planar quadrotor (which actually has just two rotors) in <drake></drake> using, e.g.
+<pre><code class="matlab">
+cd(fullfile(getDrakePath,'examples','Quadrotor2D'));
 
-  <p>3D quadrotor model.</p>
+plant=PlanarQuadPlant();
+[H,C_times_v,G,B] = plant.manipulatorEquations()
+</code></pre>
+</div>
+
+<div data-type="example"><h1>The 3D Quadrotor in MATLAB</h1>
+<p>You can experiment with the dynamics of a full quadrotor in <drake></drake> using, e.g.
+<pre><code class="matlab">
+cd(fullfile(getDrakePath,'examples','Quadrotor'));
+
+plant=Quadrotor();
+[H,C_times_v,G,B] = plant.manipulatorEquations()
+</code></pre>
+</div>
 
 </section>
 
