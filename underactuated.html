@@ -1157,7 +1157,7 @@ torque to move the system into a vertical configuration then balance.
 
 <figure>
 <img width="40%" src="figures/acrobot.svg"/>
-<figcaption>The Acrobot.  <a href="http://groups.csail.mit.edu/locomotion/drake/movies/acrobot_swingup.swf">Click here for an animation of the swing-up task</a> or <a href="http://youtu.be/FeCwtvrD76I">here to see the real robot</a>.</figcaption>
+<figcaption>The Acrobot.  <a href="http://groups.csail.mit.edu/locomotion/drake/movies/acrobot_swingup.swf">Click here for an animation of the swing-up task</a> or <a href="http://youtu.be/FeCwtvrD76I">here to see a real robot</a>.</figcaption>
 </figure>
 
 <p>
@@ -1268,7 +1268,7 @@ treatment.</p>
 
 <figure>
   <img width="50%" src="figures/cartpole.svg"/>
-  <figcaption>The Cart-Pole System</figcaption>
+  <figcaption>The Cart-Pole System.  Click <a href="http://youtu.be/Bzq96V1yN5k">here to see a real robot</a>.</figcaption>
   <todo> add swing-up + balance swf</todo>
 </figure>
 
@@ -1427,20 +1427,18 @@ Again, the linear dynamics follow simply.
 
 <section data-type="sect2"><h1>Controllability of Linear Systems</h1>
 
-<todo>improve controllability (why is \exists j \beta_{ij} \ne 0
-sufficient), and why is \alpha(\tau) > 0, and consider
-adding the controllability grammian, or a least a pointer/reference.</todo>
+<p>   <div data-type="definition"><h1>Controllability</h1>     A control system
+of the form $$\dot{\bx} = {\bf f}(\bx,\bu)$$ is called   <em>controllable</em>
+if it is possible to construct an unconstrained   input signal, $\bu(t)$, $t \in
+[0,t_f],$ which will move the system from any initial state to any final state
+in a finite interval of time, $0 < t < t_f$ <elib>Ogata96</elib>. </div></p>
 
 <p>
-Consider the linear system $$\dot{\bx} = {\bf A}\bx + {\bf B}u,$$
-where $\bx$ has dimension $n$.  A system of this form is called
-<em>controllable</em> if it is possible to construct an unconstrained
-control signal which will transfer an initial state to any final state
-in a finite interval of time, $0 < t < t_f$ <elib>Ogata96</elib>.  If every
-state is controllable, then the system is said to be completely state
-controllable.  Because we can integrate this linear system in closed
-form, it is possible to derive the exact conditions of complete state
-controllability.</p>
+For the linear system $$\dot{\bx} = {\bf A}\bx + {\bf B}u,$$
+we can integrate this linear system in closed
+form, it is possible to derive the exact conditions of
+controllability.  In particular, for linear systems it is sufficient to demonstrate
+that there exists a control input which drives any initial condition to the origin. </p>
 
 <section data-type"sect3"><h1>The special case of non-repeated eigenvalues</h1>
 
@@ -1480,13 +1478,7 @@ eigenvalues, having control over each individual eigenmode is
 sufficient to (in finite-time) regulate all of the
 eigenmodes<elib>Ogata96</elib>.
 Therefore, we say that the system is controllable if and only if
-$$\forall i, \exists j \text{ such that }\beta_{ij} \neq 0.$$ Note a
-linear feedback to change the eigenvalues of the eigenmodes is not
-sufficient to accomplish our goal of getting to the goal in finite
-time.  In fact, the open-loop control to reach the goal is easily
-obtained with a final-value LQR problem, and (for ${\bf
-  R}={\bf I}$) is actually a simple function of the controllability
-Grammian<elib>Chen98a</elib>.</p>
+$$\forall i, \exists j \text{ such that }\beta_{ij} \neq 0.$$</p>
 
 </section>
 
@@ -1509,11 +1501,11 @@ A}t}$ uses the same definition: $$e^{{\bf A}t} = {\bf I} + {\bf A}t +
 surprisingly, this has many special forms.  For instance, $e^{{\bf
 A}t} = {\bf V}e^{{\bf\Lambda}t}{\bf V}^{-1},$ where ${\bf A} = {\bf V
 \Lambda V}^{-1}$ is the eigenvalue decomposition of ${\bf A}$
-\cite{Strang98}.  The particular form we will use here is
+<elib>Strang98</elib>.  The particular form we will use here is
 $$e^{-{\bf A}\tau} = \sum_{k=0}^{n-1} \alpha_k(\tau) {\bf A}^k.$$ This
 is a particularly surprising form, because the infinite sum above is
 represented by this finite sum; the derivation uses Sylvester's
-Theorem\cite{Ogata96,Chen98a}.  Then
+Theorem <elib>Ogata96</elib>,<elib>Chen98a</elib>.  Then
 we have, \begin{align*} \bx(0) =& - \sum_{k=0}^{n-1} {\bf A}^k {\bf B}
 \int_0^{t_f} \alpha_k(\tau) u(\tau) d\tau \\ =& -\sum_{k=0}^{n-1} {\bf
 A}^k {\bf B} w_k \text{, where } w_k = \int_0^{t_f} \alpha_k(\tau)
@@ -1523,8 +1515,8 @@ A}^2{\bf B} & \cdots & {\bf A}^{n-1}{\bf B} \end{bmatrix}_{n \times n}
 \end{align*}
 The matrix containing the vectors ${\bf B}$, ${\bf AB}$, ... ${\bf
 A}^{n-1}{\bf B}$ is called the controllability matrix.  In order for
-the system to be complete-state controllable, for every initial
-condition $\bx(0)$, we must be able to find the corresponding vector
+the system to be controllable, for every initial
+condition $\bx(0)$ we must be able to find the corresponding vector
 ${\bf w}$.  This is only possible when the columns of the
 controllability matrix are linearly independent.  Therefore, the
 condition of controllability is that this controllability matrix is
@@ -1555,8 +1547,8 @@ a shoulder motor.</p>
 
 <p>
 The controllability of these model systems demonstrates an extremely
-important, point: \emph{An underactuated system is not necessarily
-an uncontrollable system.}  Underactuated systems cannot follow
+important, point: <em>An underactuated system is not necessarily
+an uncontrollable system.</em>  Underactuated systems cannot follow
 arbitrary trajectories, but that does not imply that they cannot
 arrive at arbitrary points in state space.  However, the trajectory
 required to place the system into a particular state may be arbitrarly
@@ -1568,6 +1560,14 @@ comparable analysis exists for linear time-varying (LTV) systems.  One
 would like to find a comparable analysis for controllability that
 would apply to nonlinear systems, but I do not know of any general
 tools for solving this problem.</p>
+
+<p>Note that a
+linear feedback to change the eigenvalues of the eigenmodes is not
+sufficient to accomplish our goal of getting to the goal in finite
+time.  In fact, the open-loop control to reach the goal is easily
+obtained with a final-value LQR problem, and (for ${\bf
+  R}={\bf I}$) is actually a simple function of the controllability
+Grammian<elib>Chen98a</elib>.</p>
 
 </section>
 
