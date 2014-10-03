@@ -17,6 +17,27 @@
       }
 
       function revealChapters() {
+        // generate table of contents
+        {
+
+          var i;
+
+          var toc = "<h1>Table of Contents</h1>\n<ul>\n<li>Preface</li>\n";
+          var chapters = document.getElementsByClassName("chapter");
+          for (i = 0; i < chapters.length; i++) {
+            var titles=chapters[i].getElementsByTagName("h1");
+            toc = toc+"<li>Chapter " + (i+1) + ": " + titles[0].innerHTML + "</li>\n";
+          }
+          var app = document.getElementsByTagName("appendix");
+          var chapters = app[0].getElementsByClassName("chapter");
+          for (i = 0; i < chapters.length; i++) {
+            var titles=chapters[i].getElementsByTagName("h1");
+            toc = toc+"<li>Appendix " + (i+1) + ": " + titles[0].innerHTML + "</li>\n";
+          }
+          toc = toc + "</ul>\n";
+          document.getElementById("table_of_contents").innerHTML = toc;
+        }
+
         var chapter = getParameterByName("chapter");
         if (chapter) {
           chapter = Number(chapter);
@@ -51,6 +72,7 @@
           chapters[i].style.display = "inline";
           chapters[i].style.counterReset = "chapter " + i;
         }
+
       }
       </script>
 
@@ -132,8 +154,7 @@
 
 <div id="debug_output"></div>
 
-<div id="table_of_contents"></div>
-<todo>generate table of contents (w/ javascript?)</todo>
+<section id="table_of_contents"></section>
 
 
 <section id="preface">
@@ -2758,7 +2779,7 @@ Consider
 </div>
 
 <p>
-Notice that the system analyzed above, $\dot{\bx}=f(\bx)$, did not have any control inputs.  
+Notice that the system analyzed above, $\dot{\bx}=f(\bx)$, did not have any control inputs.
 Therefore, Lyapunov analysis is used to study either the passive dynamics of a system
 or the dynamics of a closed-loop system (system + control in feedback).  We will see
 generalizations of the Lyapunov functions to input-output systems later in the text.
