@@ -2660,10 +2660,116 @@ Limited in number of dimensions.  Function approximation, but lacks convergence 
 
 
 <section data-type="chapter" class="chapter"><h1>Select Results From Analytical Optimal Control</h1>
+<todo> consider renaming this to LQR, or linear optimal control?</todo>
+
+<todo> add LQR derivation here</todo>
 
 </section>
 
 <!-- ***************  end of analytical optimal control **************   -->
+
+<section data-type="chapter" class="chapter"><h1>Lyapunov Analysis</h1>
+
+<p>Optimal control provides a powerful framework for formulating control problems
+using the language of optimization.  But solving optimal control problems for
+nonlinear systems is hard!  In many cases, we don't really care about finding
+the <em>optimal</em> controller, but would be satisfied with any controller that
+is guaranteed to accomplish the specified task.  In many cases, we still
+formulate these problems using computational tools from optimization, and in
+this chapter we'll learn about tools that can provide guaranteed control
+solutions for systems that are beyond the complexity for which we can find
+the optimal feedback.</p>
+
+<p>There are many excellent books on Lyapunov analysis; for instance
+  <elib>Slotine90</elib> is an excellent and very readable reference and <elib>Khalil01</elib>
+can provide a rigorous treatment.  In this chapter I will summarize (without proof) some of the key theorems
+from this classical treatment of Lyapunov, but then introduce a number of numerical
+algorithms for Lyapunov analysis... many of which are new enough that they have
+not yet appeared in any mainstream textbooks.</p>
+
+
+<section data-type="sect1"><h1>Lyapunov Functions</h1>
+
+<p>Let's start
+with our favorite simple example. </p>
+
+<div data-type="example"><h1>Stability of the Damped Pendulum</h1>
+
+<p>
+<center><img width="25%" src="figures/simple_pend.svg"/></center></p>
+
+<p>Recall that the equations of motion of the
+damped simple pendulum are given by \[ ml^2 \ddot{\theta} + mgl\sin\theta = -b\dot{\theta}, \]
+which I've written with the damping on the right-hand side to remind us that
+it is an external torque that we've modeled.</p>
+
+<p>These equations represent a simple
+second-order differential equation; in chapter 2 we discussed at some length
+what was known about the solutions to this differential equation--even without
+damping the equation for $\theta(t)$ as a function of $\theta(0)$, $\dot{theta}(0$
+involves elliptic integrals of the first kind, and with damping we don't even
+have that.  Since we couldn't provide a solution analytically, in chapter 2
+we resorted to a graphical analysis, and confirmed the intuition that there
+are fixed points in the system (at $\theta = k\pi$ for every integer $k$) and that
+the fixed points at $\theta = 2\pi k$ are asympotitically stable with a large basin of
+attraction.  The graphical analysis gave us this intuition, but can we actually
+prove this stability property?  In a way that might also work for much more
+complicated systems?</p>
+
+<p>One route forward was from looking at the total system energy (kinetic + potential),
+  which we can write down: \[ E(\theta,\dot{\theta}) = ml^2\dot{\theta}^2 - mgl \cos\theta. \]
+Recall that the contours of this energy function are the orbits of the undamped
+pendulum.  <center><img width="50%" src="figures/pend_undamped_phase.svg"/></center>
+A natural route to proving the stability of the downward fixed points is by arguing
+that energy decreases for the damped pendulum (with $b>0$) and so the system will
+eventually come to rest at the minimum energy, $E = -mgl\cos\theta$, which
+happens at $\theta=2\pi k$.  Let's make that argument precise.
+</p>
+
+<p>Evaluating the time derivative of the energy reveals \[ \frac{d}{dt} E = - b\dot\theta^2 \le 0. \]
+This is sufficient to demonstrate that the energy will never increase, but it
+doesn't actually prove that the energy will converge to the minimum.  To take
+that extra step, we must observe that for most of the states with $\dot{E} = 0$, which
+for $b>0$ is the manifold where $\dot\theta=0$, the system can't actually remain
+in that state, but will rather pass through and enter another region where
+it continues to lose energy.  In fact, the fixed points are the only subset of this
+$\dot{E}=0$ manifold where the system can stay on the manifold.  Therefore, unless
+the system is at a fixed point, it will in fact dissipate energy.  And therefore
+we can conclude that as $t\rightarrow \infty$, the system will indeed come to rest in a fixed point with an energy
+less than or equal to the initial energy in the system, $E(0)$.</p>
+
+</div>
+
+<p>This is an important example.  It demonstrated that we could use a relatively simple
+function, the system energy, to describe something about the long-term dynamics
+of the pendulum even though the actual trajectories of the system are (analytically)
+very complex.  It also demonstrated one of the subtleties of using an energy-like function
+to prove asympototic stability.</p>
+
+<p>Lyapunov functions generalize this notion of an energy function to more general
+  systems, which might not be stable in the sense of some mechanical energy.  If
+  I can find any positive function, call it $V(\bx)$, that gets smaller over
+  time as the system evolves, then I can potentially use $V$ to make a statement
+  about the long-term behavior of the system.  $V$ is called a <em>Lyapunov function</em>.
+  Let's give the first theorem.
+
+<div data-type="theorem"><h1>Lyapunov analysis for global asymptotic stability</h1>
+Consider
+</div>
+
+<p>
+Notice that the system analyzed above, $\dot{\bx}=f(\bx)$, did not have any control inputs.  
+Therefore, Lyapunov analysis is used to study either the passive dynamics of a system
+or the dynamics of a closed-loop system (system + control in feedback).  We will see
+generalizations of the Lyapunov functions to input-output systems later in the text.
+</p>
+
+</section>  <!-- end Lyapunov functions -->
+
+
+</section>
+
+<!-- ***************  end of verification **************   -->
 
 <section data-type="chapter" class="chapter"><h1>Trajectory Optimization</h1>
 
@@ -2677,11 +2783,6 @@ Limited in number of dimensions.  Function approximation, but lacks convergence 
 
 <!-- ***************  end of feasible motion planning **************   -->
 
-<section data-type="chapter" class="chapter"><h1>Verification</h1>
-
-</section>
-
-<!-- ***************  end of verification **************   -->
 
 <section data-type="chapter" class="chapter"><h1>Robust Control, Stochastic Control, and Planning Under Uncertainty</h1>
 
