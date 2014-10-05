@@ -22,17 +22,22 @@
 
           var i;
 
-          var toc = "<h1>Table of Contents</h1>\n<ul>\n<li>Preface</li>\n";
+          var toc = "<h1>Table of Contents</h1>\n<ul>\n<li><a href=#preface>Preface</a></li>\n";
           var chapters = document.getElementsByClassName("chapter");
-          for (i = 0; i < chapters.length; i++) {
-            var titles=chapters[i].getElementsByTagName("h1");
-            toc = toc+"<li>Chapter " + (i+1) + ": " + titles[0].innerHTML + "</li>\n";
-          }
           var app = document.getElementsByTagName("appendix");
-          var chapters = app[0].getElementsByClassName("chapter");
+          var start_appendix = chapters.length - app[0].getElementsByClassName("chapter").length;
           for (i = 0; i < chapters.length; i++) {
             var titles=chapters[i].getElementsByTagName("h1");
-            toc = toc+"<li>Appendix " + (i+1) + ": " + titles[0].innerHTML + "</li>\n";
+            if (!chapters[i].id) {
+              chapters[i].id = "chap"+i;
+            }
+            toc = toc + "<li><a href=#"+chapters[i].id+">";
+            if (i>= start_appendix) {
+              toc = toc + "Appendix " + (i+1-start_appendix);
+            } else {
+              toc = toc + "Chapter " + (i+1);
+            }
+            toc = toc + ": " + titles[0].innerHTML + "</a></li>\n";
           }
           toc = toc + "</ul>\n";
           document.getElementById("table_of_contents").innerHTML = toc;
@@ -227,7 +232,7 @@ throughout the text.  </p>
 
 </section> <!-- end preface -->
 
-<section data-type="chapter" class="chapter">
+<section data-type="chapter" class="chapter" id="ch:intro">
 <h1>Fully-actuated vs Underactuated Systems</h1>
 
 <p>Robots today move far too conservatively, and accomplish only a fraction of
@@ -751,7 +756,8 @@ most of the material and references required for the course. </p>
 
 </section> <!-- end chapter -->
 
-<section data-type="chapter" class="chapter"><h1>The Simple Pendulum</h1>
+<section data-type="chapter" class="chapter" id="ch:pend">
+<h1>The Simple Pendulum</h1>
 
 <section data-type="sect1"><h1>Introduction</h1>
 
@@ -1148,7 +1154,8 @@ throughout this book.</p>
 
  <!-- ***************  end of pendulum chapter **************   -->
 
-<section data-type="chapter" class="chapter"><h1>Acrobots, Cart-Poles, and Quadrotors</h1>
+<section data-type="chapter" class="chapter" id="ch:modelsys">
+  <h1>Acrobots, Cart-Poles, and Quadrotors</h1>
 
 <p> A great deal of work in the control of underactuated systems has been   done
 in the context of low-dimensional model systems.  These model   systems capture
