@@ -2829,7 +2829,7 @@ to find the optimal cost-to-go, $J^*(\bx)$, then it can also serve as a
 Lyapunov function so long as $\forall \bx, g(\bx,\bu^*(\bx))>0$</p>
 
 
-<section div-type="sect2"><h1>Lyapunov analysis for linear systems</h1>
+<section data-type="sect2"><h1>Lyapunov analysis for linear systems</h1>
 
 <p>Let's take a moment to see how things play out for linear systems.</p>
 
@@ -2864,7 +2864,7 @@ $${\bf PA} + {\bf A}^T{\bf P} = - {\bf Q},$$ for any ${\bf Q}={\bf Q}^T\succ 0$.
 
 </section> <!-- lyapunov for linear -->
 
-<section div-type="sect2"><h1>Lyapunov analysis for local stability</h1>
+<section data-type="sect2"><h1>Lyapunov analysis for local stability</h1>
 
 <p>Recall that we defined three separate notions for stability of a fixed-point
   of a nonlinear system: stability i.s.L., asymptotic stability, and exponential
@@ -2873,7 +2873,7 @@ $${\bf PA} + {\bf A}^T{\bf P} = - {\bf Q},$$ for any ${\bf Q}={\bf Q}^T\succ 0$.
 <div data-type="theorem"><h1>Local stability in the sense of Lyapunov
 (i.s.L.)</h1>   <p>     Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous
 and a fixed point $\bx^*$.     If we can produce a scalar function $V(\bx)$ with
-continuous derivatives for      which in some ball, $\cal{B}$, around $\bx^*$ we
+continuous derivatives for      which in some ball, ${\cal B}$, around $\bx^*$ we
 have $V(\bx-\bx^*) \succ 0$ and $\dot{V}(\bx-\bx^*) \preceq 0$, then the fixed
 point $\bx^*$ is locally stable i.s.L. (e.g. for every $\epsilon>0$ there exists
 a $\delta>0$  such that $||\bx(0)-\bx^*|| < \delta$ implies that $\forall t>0,
@@ -2901,7 +2901,7 @@ a $\delta$-ball which is completley contained within that sub-level set.</p>
 
 <div data-type="theorem"><h1>Local asymptotic stability</h1>   <p>     Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous
 and a fixed point $\bx^*$.     If we can produce a scalar function $V(\bx)$ with
-continuous derivatives for      which in some ball, $\cal{B}$, around $\bx^*$ we
+continuous derivatives for      which in some ball, ${\cal B}$, around $\bx^*$ we
 have $V(\bx-\bx^*) \succ 0$ and $\dot{V}(\bx-\bx^*) \prec 0$, then the fixed
 point $\bx^*$ is locally asymptotically stable.</p>
 </div>
@@ -2912,7 +2912,7 @@ point $\bx^*$ is locally asymptotically stable.</p>
 
 <div data-type="theorem"><h1>Local exponential stability</h1>   <p>     Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous
 and a fixed point $\bx^*$.     If we can produce a scalar function $V(\bx)$ with
-continuous derivatives for      which in some ball, $\cal{B}$, around $\bx^*$ we
+continuous derivatives for      which in some ball, ${\cal B}$, around $\bx^*$ we
 have $V(\bx-\bx^*) \succ 0$ and $\dot{V}(\bx-\bx^*) \preceq -\epsilon V(\bx)$, then the fixed
 point $\bx^*$ is locally exponentially stable.</p>
 </div>
@@ -2924,7 +2924,7 @@ point $\bx^*$ is locally exponentially stable.</p>
 
 </section> <!-- local stability -->
 
-<section div-type="sect2"><h1>LaSalle's Invariance Principle</h1>
+<section data-type="sect2"><h1>LaSalle's Invariance Principle</h1>
 
 <p>Perhaps you noticed the disconnect between the statements above and the argument
   that we made for the stability of the pendulum.  In the pendulum example,
@@ -2937,10 +2937,48 @@ point $\bx^*$ is locally exponentially stable.</p>
   known as LaSalle's Theorem.</p>
 
 <div data-type="theorem"><h1>LaSalle's Theorem</h1>
+
+  <p>Given a system $\dot{\bx} =
+f(\bx)$ with $f$ continuous. If we can produce a scalar function $V(\bx)$ with
+continuous derivatives for which we have
+$V(\bx) \succ 0$, $\dot{V}(\bx) \preceq 0$, and $V(\bx)\rightarrow \infty$
+as $||\bx||\rightarrow \infty$, then $\bx$ will converge to the largest invariant
+set where $\dot{V}(\bx) = 0$.</p>
 </div>
 
+<p>To be clear, an <em>invariant set</em>, ${\cal G}$, of the dynamical systemis a set
+for which $\bx(0)\in{\cal G} \Rightarrow \forall t>0, \bx(t) \in {\cal G}$.  In other words,
+once you enter the set you never leave.  The "largest invariant set" need not be connected;
+in fact for the pendulum example each fixed point is an invariant set, so the largest
+invariant set is the <em>union</em> of all the fixed points of the system.</p>
 
 </section> <!-- lasalle -->
+
+<section data-type="sect2"><h1>Lyapunov functions for estimating regions of attraction</h1>
+
+<p>There is another very important connection between Lypaunov functions and the
+concept of an invariant set: <em>any sub-level set of a Lyapunov function is
+also an invariant set</em>.
+
+<div data-type="theorem"><h1>Lyapunov invariant set and region of attraction theorem</h1>
+
+<p>Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous, if we can find a
+scalar function $V(\bx) \succ 0$ and a sub-level set $${\cal G}: \{ \bx | V(\bx)
+\le \rho \}$$ on which $$\forall \bx \in {\cal G}, \dot{V}(\bx) \preceq 0,$$ then
+${\cal G}$ is an invariant set.  By LaSalle, $\bx$ will converge to the
+largest invariant subset of ${\cal G}$ on which $\dot{V}=0$.<p>
+
+<p>Furthermore, if $\dot{V}(\bx) \prec 0$ in ${\cal G}$, then the origin is locally
+  asymptotically stable and the set ${\cal G}$ is inside the region of attraction
+  of this fixed point.  Alternatively, if $\dot{V}(\bx) \preceq 0$ in ${\cal G}$
+  and $\bx = 0$ is the only invariant subset of ${\cal G}$ where $\dot{V}=0$, then
+  the origin is asympotically stable and the set ${\cal G}$ is inside the region of
+  attraction of this fixed point.
+</p>
+
+</div>
+
+</section>  <!-- end ROA -->
 
 </section>  <!-- end Lyapunov functions -->
 
@@ -3016,7 +3054,7 @@ $m_1,m_2$, respectively, the kinematics of this system are:
 \end{eqnarray*}
 
 Note that $s_1$ is shorthand for $\sin(q_1)$, $c_{1+2}$ is shorthand for
-$\cos(q_1+q_2)$, etc. From this we can easily write the kinetic and potential
+$\cos(q_1+q_2)$, etc. From this we can write the kinetic and potential
 energy:
 
 \begin{align*}
