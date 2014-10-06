@@ -48,6 +48,7 @@
         if (chapter) {
           chapter = Number(chapter);
           document.getElementById("preface").style.display = "none";
+          document.getElementById("table_of_contents").style.display = "none";
           var chapters = document.getElementsByClassName("chapter");
           var i;
           //document.getElementById("debug_output").innerHTML="displaying only chapter " + chapter + " of " + chapters.length;
@@ -65,6 +66,7 @@
         if (appendix) {
           var app = document.getElementsByTagName("appendix");
           document.getElementById("preface").style.display = "none";
+          document.getElementById("table_of_contents").style.display = "none";
           var chapters = document.getElementsByClassName("chapter");
           var i;
           for (i = 0; i < chapters.length; i++) {
@@ -129,7 +131,7 @@
     <h1>Underactuated Robotics</h1>
     <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p>
   	<p data-type="author"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
-    <p data-type="copyright">&copy; Russ Tedrake, 2014</p>
+    <p data-type="copyright">&copy; Russ Tedrake, 2014<br><a href="tocite.html">How to cite these notes</a></p>
   </header>
 </section>
 <div style="display:none"> <!-- definitions for mathjax -->
@@ -2880,7 +2882,7 @@ a $\delta>0$  such that $||\bx(0)-\bx^*|| < \delta$ implies that $\forall t>0,
 
 <todo> add a picture of the delta and epsilon balls? </todo>
 
-<p>Note that in the definition above, we required only that $\dot{V}\preceq 0$.
+<p>Note that in the statement above, we required only that $\dot{V}\preceq 0$.
 The intuition here is pretty clean--given this negative semi-definiteness,   we
 know that $V$ will be non-increasing.  Therefore, in order to stay in the
 $\epsilon$-ball we have to start with a value of $V$ such that an entire
@@ -2888,7 +2890,57 @@ $\epsilon$-ball we have to start with a value of $V$ such that an entire
 must be contained within the $\epsilon$-ball.  We can accomplish this by choosing
 a $\delta$-ball which is completley contained within that sub-level set.</p>
 
+<p>You should also note that when the stability argument is confined to a statement
+  about local stability (or stability over a bounded region), then the requirement
+  that the function be radially unbounded also disappears, as we no longer have
+  to worry about the behavior at infinity.</p>
+
+<p>I suspect that you are not surprised to see that we can demonstrate stability
+  <em>in the sense of Lyapunov</em> using a Lyapunov function. But it turns out that
+  we can also use Lyapunov functions to demonstrate the other forms of stability, too.</p>
+
+<div data-type="theorem"><h1>Local asymptotic stability</h1>   <p>     Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous
+and a fixed point $\bx^*$.     If we can produce a scalar function $V(\bx)$ with
+continuous derivatives for      which in some ball, $\cal{B}$, around $\bx^*$ we
+have $V(\bx-\bx^*) \succ 0$ and $\dot{V}(\bx-\bx^*) \prec 0$, then the fixed
+point $\bx^*$ is locally asymptotically stable.</p>
+</div>
+
+<p>Note that the only change compared to the argument for stability i.s.L. was the
+  stronger requirement here that $\dot{V}$ had to be negative definite (instead of just
+  negative semi-definite).</p>
+
+<div data-type="theorem"><h1>Local exponential stability</h1>   <p>     Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous
+and a fixed point $\bx^*$.     If we can produce a scalar function $V(\bx)$ with
+continuous derivatives for      which in some ball, $\cal{B}$, around $\bx^*$ we
+have $V(\bx-\bx^*) \succ 0$ and $\dot{V}(\bx-\bx^*) \preceq -\epsilon V(\bx)$, then the fixed
+point $\bx^*$ is locally exponentially stable.</p>
+</div>
+
+<p> The exponential condition is implied by the fact that $\forall t>0, V(\bx(t)) \le V(\bx(0)) e^{-\epsilon t}$.</p>
+
+<p>There are many variations on these arguments that can be applied for local stability,
+  stability over a bounded region, or global stability. </p>
+
 </section> <!-- local stability -->
+
+<section div-type="sect2"><h1>LaSalle's Invariance Principle</h1>
+
+<p>Perhaps you noticed the disconnect between the statements above and the argument
+  that we made for the stability of the pendulum.  In the pendulum example,
+  using the mechanical energy resulted in a Lyapunov function that was only
+  negative semi-definite, but we eventually argued that the fixed points were
+  asymptotically stable.  That took a little extra work, involving an argument
+  about the fact that the fixed points were the only place that the system could
+  stay with $\dot{V}=0$; every other state with $\dot{V}=0$ was only transient.
+  We can formalize this idea for the more general Lyapunov function statements--it is
+  known as LaSalle's Theorem.</p>
+
+<div data-type="theorem"><h1>LaSalle's Theorem</h1>
+</div>
+
+
+</section> <!-- lasalle -->
 
 </section>  <!-- end Lyapunov functions -->
 
