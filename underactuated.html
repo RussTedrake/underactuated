@@ -2793,11 +2793,22 @@ then the origin $(\bx = 0)$ is globally asymptotically stable (G.A.S.).</p>
 
 </div>
 
+<p>Note that for the sequel we will use the notation $V \succ 0$ to denote a
+<em>positive-definite function</em>, meaning that $V(0)=0$ and $V(\bx)>0$ for
+all $\bx\ne0$ (and $V \prec 0$ for negative-definite functions).</p>
+
 <p>This is perhaps the simplest of the Lyapunov theorems, since $\dot{V}$ is strictly
 decreasing everywhere except at the origin.  The last condition, on the behavior
 as $||\bx|| \rightarrow \infty$ is known as "radially unbounded",
 and is required to make sure that trajectories cannot diverge to infinity even
 as $V$ decreases; it is only required for global stability analysis.</p>
+
+<p>
+Notice that the system analyzed above, $\dot{\bx}=f(\bx)$, did not have any control inputs.
+Therefore, Lyapunov analysis is used to study either the passive dynamics of a system
+or the dynamics of a closed-loop system (system + control in feedback).  We will see
+generalizations of the Lyapunov functions to input-output systems later in the text.
+</p>
 
 <p> At this point, you might be wondering if there is any relationship between
 Lyapunov functions and the cost-to-go functions that we discussed in the context
@@ -2812,15 +2823,72 @@ gradient for every $\bx$; that's very difficult and involves solving
 a potentially high-dimensional partial differential equation.  By contrast, Lyapunov analysis
 is asking for much less - any function which is going downhill (at any rate) for
 all states.  This iscan be much easier!  Also note that if we do manage
-to find the optimal cost-to-go, $J^*(\bx)$, then it can serve as an ideal
-Lyapunov function so long as $\forall x, g(\bx,\bu^*(\bx))>0$</p>
+to find the optimal cost-to-go, $J^*(\bx)$, then it can also serve as a
+Lyapunov function so long as $\forall \bx, g(\bx,\bu^*(\bx))>0$</p>
 
-<p>
-Notice that the system analyzed above, $\dot{\bx}=f(\bx)$, did not have any control inputs.
-Therefore, Lyapunov analysis is used to study either the passive dynamics of a system
-or the dynamics of a closed-loop system (system + control in feedback).  We will see
-generalizations of the Lyapunov functions to input-output systems later in the text.
-</p>
+
+<section div-type="sect2"><h1>Lyapunov analysis for linear systems</h1>
+
+<p>Let's take a moment to see how things play out for linear systems.</p>
+
+<div data-type="theorem"><h1>Lyapunov analysis for stable linear systems</h1>
+
+<p>Imagine you
+have a linear system, $\dot\bx = {\bf A}\bx$, and can find a Lyapunov function
+$$V(\bx) = \bx^T {\bf P} \bx, \quad {\bf P} = {\bf P^T} \succ 0,$$ which also
+satisfies
+$$\dot{V}(\bx) = \bx^T {\bf PA} \bx + \bx^T {\bf A}^T {\bf P}\bx \prec 0.$$
+Then the original is globally asymptotically stable.</p>
+</div>
+
+<p>Note that the radially-unbounded condition is satisfied by ${\bf P} \succ 0$,
+and that the derivative condition is equivalent to the matrix condition
+$${\bf PA} +  {\bf A}^T {\bf P} \prec 0.$$</p>
+
+<p>For stable linear systems the existence of a quadratic Lyapunov function
+is actually a necessary (as well as sufficient) condition. Furthermore,
+a Lyapunov function can be always be found by finding the positive-definite
+solution to the matrix Lyapunov equation
+$${\bf PA} + {\bf A}^T{\bf P} = - {\bf Q},$$ for any ${\bf Q}={\bf Q}^T\succ 0$.</p>
+
+<todo> add an example here. double integrator? re-analyze the LQR output? </todo>
+
+<p>This is a very powerful result - for nonlinear systems it can be potentially
+  difficult to find a Lyapunov function, but for linear systems it is straight-forward.
+  In fact, this results is often used to propose candidates for non-linear systems,
+  e.g., by linearizing the equations and solving a local linear Lyapunov function
+  or by proposing nonlinear Lyapunov functions which match their linear counterparts
+  in the vicinity of a fixed point.</p>
+
+</section> <!-- lyapunov for linear -->
+
+<section div-type="sect2"><h1>Lyapunov analysis for local stability</h1>
+
+<p>Recall that we defined three separate notions for stability of a fixed-point
+  of a nonlinear system: stability i.s.L., asymptotic stability, and exponential
+  stability.  We can use Lyapunov functions to demonstrate each of these, in turn.</p>
+
+<div data-type="theorem"><h1>Local stability in the sense of Lyapunov
+(i.s.L.)</h1>   <p>     Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous
+and a fixed point $\bx^*$.     If we can produce a scalar function $V(\bx)$ with
+continuous derivatives for      which in some ball, $\cal{B}$, around $\bx^*$ we
+have $V(\bx-\bx^*) \succ 0$ and $\dot{V}(\bx-\bx^*) \preceq 0$, then the fixed
+point $\bx^*$ is locally stable i.s.L. (e.g. for every $\epsilon>0$ there exists
+a $\delta>0$  such that $||\bx(0)-\bx^*|| < \delta$ implies that $\forall t>0,
+||\bx(t) - \bx^*|| < \epsilon$.)</p>
+</div>
+
+<todo> add a picture of the delta and epsilon balls? </todo>
+
+<p>Note that in the definition above, we required only that $\dot{V}\preceq 0$.
+The intuition here is pretty clean--given this negative semi-definiteness,   we
+know that $V$ will be non-increasing.  Therefore, in order to stay in the
+$\epsilon$-ball we have to start with a value of $V$ such that an entire
+<em>sub-level set</em>, $\{\bx | V(\bx)\le\rho\}$ with $\rho$ a positive constant,
+must be contained within the $\epsilon$-ball.  We can accomplish this by choosing
+a $\delta$-ball which is completley contained within that sub-level set.</p>
+
+</section> <!-- local stability -->
 
 </section>  <!-- end Lyapunov functions -->
 
