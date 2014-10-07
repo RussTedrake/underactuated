@@ -2786,11 +2786,11 @@ that is non-increasing (instead of strictly decreasing) to prove asympototic sta
 
 <div data-type="theorem"><h1>Lyapunov analysis for global asymptotic stability</h1>
 
-<p>Given a system $\dot{\bx} = f(\bx)$, with $f$ continuous, if I can produve a scalar,
+<p>Given a system $\dot{\bx} = f(\bx)$, with $f$ continuous, if I can produce a scalar,
   continuously-differentiable function
 $V(\bx)$, such that \begin{gather*} V(\bx) > 0, \forall \bx \ne 0 \quad V(0) = 0 \\
 \dot{V}(\bx) = \pd{V}{\bx} f(\bx) < 0, \forall \bx \ne 0 \quad \dot{V}(0) = 0, \text{ and} \\
-V(\bx) \rightarrow 0 \text{ whenever } ||x||\rightarrow \infty,\end{gather*}
+V(\bx) \rightarrow \infty \text{ whenever } ||x||\rightarrow \infty,\end{gather*}
 then the origin $(\bx = 0)$ is globally asymptotically stable (G.A.S.).</p>
 
 </div>
@@ -2824,7 +2824,7 @@ words, in optimal control we must find a cost-to-go function which matches this
 gradient for every $\bx$; that's very difficult and involves solving
 a potentially high-dimensional partial differential equation.  By contrast, Lyapunov analysis
 is asking for much less - any function which is going downhill (at any rate) for
-all states.  This iscan be much easier!  Also note that if we do manage
+all states.  This can be much easier!  Also note that if we do manage
 to find the optimal cost-to-go, $J^*(\bx)$, then it can also serve as a
 Lyapunov function so long as $\forall \bx, g(\bx,\bu^*(\bx))>0$</p>
 
@@ -2874,7 +2874,7 @@ $${\bf PA} + {\bf A}^T{\bf P} = - {\bf Q},$$ for any ${\bf Q}={\bf Q}^T\succ 0$.
 (i.s.L.)</h1>   <p>     Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous
 and a fixed point $\bx^*$.     If we can produce a scalar function $V(\bx)$ with
 continuous derivatives for      which in some ball, ${\cal B}$, around $\bx^*$ we
-have $V(\bx-\bx^*) \succ 0$ and $\dot{V}(\bx-\bx^*) \preceq 0$, then the fixed
+have $V(\bx-\bx^*) > 0$ and $\dot{V}(\bx-\bx^*) \leq 0$, then the fixed
 point $\bx^*$ is locally stable i.s.L. (e.g. for every $\epsilon>0$ there exists
 a $\delta>0$  such that $||\bx(0)-\bx^*|| < \delta$ implies that $\forall t>0,
 ||\bx(t) - \bx^*|| < \epsilon$.)</p>
@@ -2902,7 +2902,7 @@ a $\delta$-ball which is completley contained within that sub-level set.</p>
 <div data-type="theorem"><h1>Local asymptotic stability</h1>   <p>     Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous
 and a fixed point $\bx^*$.     If we can produce a scalar function $V(\bx)$ with
 continuous derivatives for      which in some ball, ${\cal B}$, around $\bx^*$ we
-have $V(\bx-\bx^*) \succ 0$ and $\dot{V}(\bx-\bx^*) \prec 0$, then the fixed
+have $V(\bx-\bx^*) > 0$ and $\dot{V}(\bx-\bx^*) < 0$, then the fixed
 point $\bx^*$ is locally asymptotically stable.</p>
 </div>
 
@@ -2913,7 +2913,7 @@ point $\bx^*$ is locally asymptotically stable.</p>
 <div data-type="theorem"><h1>Local exponential stability</h1>   <p>     Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous
 and a fixed point $\bx^*$.     If we can produce a scalar function $V(\bx)$ with
 continuous derivatives for      which in some ball, ${\cal B}$, around $\bx^*$ we
-have $V(\bx-\bx^*) \succ 0$ and $\dot{V}(\bx-\bx^*) \preceq -\epsilon V(\bx)$, then the fixed
+have $V(\bx-\bx^*) > 0$ and $\dot{V}(\bx-\bx^*) \leq -\epsilon V(\bx)$, then the fixed
 point $\bx^*$ is locally exponentially stable.</p>
 </div>
 
@@ -2941,7 +2941,7 @@ point $\bx^*$ is locally exponentially stable.</p>
   <p>Given a system $\dot{\bx} =
 f(\bx)$ with $f$ continuous. If we can produce a scalar function $V(\bx)$ with
 continuous derivatives for which we have
-$V(\bx) \succ 0$, $\dot{V}(\bx) \preceq 0$, and $V(\bx)\rightarrow \infty$
+$V \succ 0$, $\dot{V} \preceq 0$, and $V(\bx)\rightarrow \infty$
 as $||\bx||\rightarrow \infty$, then $\bx$ will converge to the largest invariant
 set where $\dot{V}(\bx) = 0$.</p>
 </div>
@@ -2963,14 +2963,14 @@ also an invariant set</em>.
 <div data-type="theorem"><h1>Lyapunov invariant set and region of attraction theorem</h1>
 
 <p>Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous, if we can find a
-scalar function $V(\bx) \succ 0$ and a sub-level set $${\cal G}: \{ \bx | V(\bx)
-\le \rho \}$$ on which $$\forall \bx \in {\cal G}, \dot{V}(\bx) \preceq 0,$$ then
+scalar function $V \succ 0$ and a sub-level set $${\cal G}: \{ \bx | V(\bx)
+\le \rho \}$$ on which $$\forall \bx \in {\cal G}, \dot{V}(\bx) \le 0,$$ then
 ${\cal G}$ is an invariant set.  By LaSalle, $\bx$ will converge to the
 largest invariant subset of ${\cal G}$ on which $\dot{V}=0$.<p>
 
-<p>Furthermore, if $\dot{V}(\bx) \prec 0$ in ${\cal G}$, then the origin is locally
+<p>Furthermore, if $\dot{V}(\bx) < 0$ in ${\cal G}$, then the origin is locally
   asymptotically stable and the set ${\cal G}$ is inside the region of attraction
-  of this fixed point.  Alternatively, if $\dot{V}(\bx) \preceq 0$ in ${\cal G}$
+  of this fixed point.  Alternatively, if $\dot{V}(\bx) \le 0$ in ${\cal G}$
   and $\bx = 0$ is the only invariant subset of ${\cal G}$ where $\dot{V}=0$, then
   the origin is asympotically stable and the set ${\cal G}$ is inside the region of
   attraction of this fixed point.
