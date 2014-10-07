@@ -2786,11 +2786,11 @@ that is non-increasing (instead of strictly decreasing) to prove asympototic sta
 
 <div data-type="theorem"><h1>Lyapunov analysis for global asymptotic stability</h1>
 
-<p>Given a system $\dot{\bx} = f(\bx)$, with $f$ continuous, if I can produve a scalar,
+<p>Given a system $\dot{\bx} = f(\bx)$, with $f$ continuous, if I can produce a scalar,
   continuously-differentiable function
 $V(\bx)$, such that \begin{gather*} V(\bx) > 0, \forall \bx \ne 0 \quad V(0) = 0 \\
 \dot{V}(\bx) = \pd{V}{\bx} f(\bx) < 0, \forall \bx \ne 0 \quad \dot{V}(0) = 0, \text{ and} \\
-V(\bx) \rightarrow 0 \text{ whenever } ||x||\rightarrow \infty,\end{gather*}
+V(\bx) \rightarrow \infty \text{ whenever } ||x||\rightarrow \infty,\end{gather*}
 then the origin $(\bx = 0)$ is globally asymptotically stable (G.A.S.).</p>
 
 </div>
@@ -2824,7 +2824,7 @@ words, in optimal control we must find a cost-to-go function which matches this
 gradient for every $\bx$; that's very difficult and involves solving
 a potentially high-dimensional partial differential equation.  By contrast, Lyapunov analysis
 is asking for much less - any function which is going downhill (at any rate) for
-all states.  This iscan be much easier!  Also note that if we do manage
+all states.  This can be much easier!  Also note that if we do manage
 to find the optimal cost-to-go, $J^*(\bx)$, then it can also serve as a
 Lyapunov function so long as $\forall \bx, g(\bx,\bu^*(\bx))>0$</p>
 
