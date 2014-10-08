@@ -1791,7 +1791,7 @@ we get:
   \phi}_1 = {\bf \tau}
 \end{gather}
 It can be easily shown that the matrix $({\bf H}_{22} - {\bf H}_{21}
-{\bf H}_{11}^{-1} {\bf H}_{12})$ is invertible\cite{Spong94a}; we can
+{\bf H}_{11}^{-1} {\bf H}_{12})$ is invertible<elib>Spong94a</elib>; we can
 see from inspection that it is symmetric.  PFL follows naturally, and
 is valid globally.</p>
 
@@ -1924,7 +1924,7 @@ condition ($\ref{eq:rank_condition}$) requires that
 $\text{rank}({\bf H}_{12}) = l$, in which case we can write
 $\bar{{\bf J}}^+=-{\bf H}_{12}^+{\bf H}_{11}$, reducing the rank condition to
 precisely the ``Strong Inertial Coupling'' condition described in
-\cite{Spong94a}. Now the command in ($\ref{eq:q2cmd}$) reduces to
+<elib>Spong94a</elib>. Now the command in ($\ref{eq:q2cmd}$) reduces to
 \begin{equation}
 \ddot\bq_2 = -{\bf H}_{12}^+ \left [ {\bf H}_{11}{\bf v} + {\bf \phi}_1 \right] \label{eq:q2ddnonco}
 \end{equation}
@@ -2062,11 +2062,11 @@ Now we return to the full system dynamics (which includes the
 cart).  <elib>Chung95</elib> and <elib>Spong96</elib> use the simple pendulum
 energy controller with an addition PD controller designed to regulate
 the cart: $$\ddot{x}^d = k_E \dot\theta \cos\theta \tilde{E} - k_p x -
-k_d \dot{x}.$$ \cite{Chung95} provided a proof of convergence for this
+k_d \dot{x}.$$ <elib>Chung95</elib> provided a proof of convergence for this
 controller with some nominal parameters.</p>
 
 <figure>
-\includegraphics[width=.7\textwidth]{figures/cartpole_swingup_phase.pdf}
+<img width="70%" src="figures/cartpole_swingup_phase.svg"/>
 
 <figcaption>Cart-Pole Swingup: Example phase plot of the pendulum subsystem using
   energy shaping control.  The controller drives the system to the
@@ -2988,6 +2988,32 @@ largest invariant subset of ${\cal G}$ on which $\dot{V}=0$.<p>
 <!-- ***************  end of verification **************   -->
 
 <section data-type="chapter" class="chapter"><h1>Trajectory Optimization</h1>
+
+<p>So far I've argued that optimal control is a powerful framework for specifying
+  complex behaviors with simple objective functions, letting the dynamics and
+  constraints on the system shape the resulting feedback controller (and vice versa!).
+  But the computational tools that we've provided so far have been limited in
+  some important ways.  The numerical approaches to dynamic programming which
+  involve putting a mesh over the state space do not scale well to systems with
+  state dimension more than four or five.  Linearization around a nominal operating
+  point (or trajectory) allowed us to solve for locally optimal control policies
+  (e.g. using LQR) for even very high-dimensional systems, but the effectiveness
+  of the resulting controllers is limited to the region of state space where the linearization
+  is a good approximation of the nonlinear dynamics.  The computational
+  tools for Lyapunov analysis from the last chapter can provide, among other things,
+  an effective way to compute estimates of those regions.  But we have not
+  yet provided any real computational tools for approximate optimal control
+  that work for high-dimensional systems beyond the linearization around a goal.
+  That is precisely the goal for this chapter.</p>
+
+<p>The big change that is going to allow us to scale to high-dimensional systems
+  is that we are going to give up the goal of solving for the optimal feedback
+  controller for the entire state space, and instead attempt to find an optimal
+  control solution that is valid from only a single initial condition.  Instead
+  of representing this as a feedback control function, we can represent this
+  solution as a <em>trajectory</em>, $\bx(\cdot), \bu(\cdot)$, typically
+  defined over a finite interval.</p>
+
 
 </section>
 
