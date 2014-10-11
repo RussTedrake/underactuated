@@ -131,7 +131,7 @@
 <body data-type="book" class="book" id="htmlbook" onload="myMacros(); revealChapters();">
 <section data-type="titlepage" class="titlepage">
   <header>
-    <h1>Underactuated Robotics</h1>
+    <h1><a href="underactuated.html" style="text-decoration:none;">Underactuated Robotics</a></h1>
     <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p>
   	<p data-type="author"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
     <p data-type="copyright">&copy; Russ Tedrake, 2014<br><a href="tocite.html">How to cite these notes</a></p>
@@ -3106,7 +3106,10 @@ and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
   exploit sparsity in the problem (e.g., if the constraints in a sparse way on the decision variables).
   Nowadays, we make heaviest use of SNOPT <elib>Gill06</elib>, which now
   comes bundled with the precompiled distributions of <drake></drake>, but also support
-  <code>fmincon</code> from the Optimization Toolbox in MATLAB.</p>
+  <code>fmincon</code> from the Optimization Toolbox in MATLAB.  Note that while I do
+  advocate using these tools, you do not need to use them as a black box.  In many
+  cases you can improve the optimization performance by understanding and selecting non-default
+  configuration parameters.</p>
 
 
 </section> <!-- nonlinear optimization -->
