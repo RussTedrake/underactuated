@@ -32,10 +32,11 @@
               chapters[i].id = "chap"+(i+1);
             }
 //            toc = toc + "<li><a href=#"+chapters[i].id+">";
-            toc = toc + "<li><a href=underactuated.html?chapter="+(i+1)+">";
             if (i>= start_appendix) {
-              toc = toc + "Appendix " + (i+1-start_appendix);
+              toc = toc + "<li><a href=underactuated.html?appendix="+(i+1-start_appendix)+">";
+              toc = toc + "Appendix " + String.fromCharCode(64 + i+1-start_appendix);
             } else {
+              toc = toc + "<li><a href=underactuated.html?chapter="+(i+1)+">";
               toc = toc + "Chapter " + (i+1);
             }
             toc = toc + ": " + titles[0].innerHTML + "</a></li>\n";
