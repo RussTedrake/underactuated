@@ -3015,6 +3015,89 @@ largest invariant subset of ${\cal G}$ on which $\dot{V}=0$.<p>
   defined over a finite interval.</p>
 
 
+<section data-type="sect1"><h1>Problem Formulation</h1>
+
+<p>Given an initial condition, $\bx_0$,   and an input trajectory $u(t)$ defined
+over a finite interval, $t\in[t_0,t_f]$,   we can compute the long-term
+(finite-horizon) cost of executing that trajectory   using the standard
+additive-cost optimal control objective, \[ J_{\bu(\cdot)}(\bx_0) =
+\int_{t_0}^{t_f} g(\bx(t),\bu(t)) dt. \]  We will write the trajectory optimization
+problem as \begin{align*}
+  \minimize_{u(\cdot)} \quad & \int_{t_0}^{t_f} g(\bx(t),\bu(t)) dt \\
+  \subjto \quad
+  & \forall t, \dot{\bx}(t) = f(\bx(t),\bu(t)), \\
+  & \bx(t_0) = \bx_0. \\
+  \end{align*}
+Some trajectory optimization problems may also include additional constraints,
+such as collision avoidance ($\bx$ can not cause the robot to be inside an
+obstacle) or input limits (e.g. $\bu_{min} \le \bu \le \bu_{max}$ ), which
+can be defined for all time or some subset of the trajectory.</p>
+
+<p> As written, the optimization above is an optimization over continuous
+  trajectories.  In order to formulate this as a numerical optimization, we must
+  parameterize it with a finite set of numbers.  Perhaps not surprisingly, there are
+  many different ways to write down this parameterization, with a variety
+  of different properties in terms of speed, robustness, and accuracy of the results.
+  We will outline just a few of the most popular below.
+</p>
+
+</section>
+
+<section data-type="sect1"><h1>Computational Tools for Nonlinear Optimization</h1>
+
+<p>Before we dive in, we need to take a moment to understand the optimization tools
+  that we will be using.  In the graph-search dynamic programming algorithm,
+  we magically were able to provide an iterative algorithm that was known to
+  converge to optimal cost-to-go function.  With LQR we were able to solve
+  the optimization problem in closed-form.  In the Lyapunov analysis chapter,
+  we were able to formulate a very specific kind of optimization problem--a
+  semi-definite program (or SDP)--which is a subset of convex optimization,
+  and relied on custom solvers like SeDuMi or Mosek to solve the problems for us.
+  Convex optimization is a hugely important subset of nonlinear optimization,
+  in which we can guarantee that the optimization has no "local minima".
+  In this chapter we won't be so lucky, the optimizations that we formulate
+  may have local minima and the solution techniques will at best only guarantee
+  that they give a locally optimal solution.</p>
+
+<p>The generic formulation of a nonlinear optimization problem is     \[ \min_z
+c(z) \quad \subjto \quad {\bf \phi}(z) \le 0, \]     where $z$ is a vector
+of <em>decision variables</em>, $g$ is a scalar
+<em>objective function</em> and $\phi$ is a vector     of <em>constraints</em>.  Note that,
+although we write $\phi \le 0$, this formulation     captures positivity
+constraints on the decision variables (simply mulitply the constraint by $-1$)
+and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
+</p>
+
+<p>The picture that you should have in your head is a nonlinear, potentially non-convex
+  objective function defined over (multi-dimensional) $z$, with a subset of
+  possible $z$ values satisfying the constraints.
+  <figure>
+    <img width="80%" src="figures/nonlinear_optimization_w_minima.svg"/>
+    <figcaption>One-dimensional cartoon of a nonlinear optimization problem.  The
+      red dots represent local minima.  The blue dot represents the optimal solution.</figcaption>
+  </figure>
+  Note that minima can be the result of the objective function having zero-derivative
+  <em>or</em> due to the a sloped objective up against a constraint.</p>
+
+</section> <!-- nonlinear optimization -->
+
+
+<section data-type="sect1"><h1>Direct Transcription</h1>
+
+<p>In our graph-search dynamic programming algorithms, we discretized the dynamics
+  of the system on a mesh spread across the state space.  This does not scale
+  to high-dimensional systems, and it was difficult to bound the errors
+  due to the discretization.  If we instead restrict ourselves to optimizing
+  only a single initial condition, then a different discretization scheme emerges:
+  we can discretize the state and input trajectories <em>over time</em>.  Let
+  us start by representing the finite-time trajectories, $\bx(t)$ and $\bu(t)$ $\forall t\in[t_0,t_f]$
+  by their values at a series of <em>knot points</em>, $t_0,t_1,t_2,t_3$, calling
+  the values at those knot points $\bx_0,...,\bx_N$ and $\bu_0,...,\bu_N$, respectively.</p>
+
+<p>Then perhaps the simplest mapping of the "trajectory optimization"
+
+</section>
+
 </section>
 
 <!-- ***************  end of trajectory optimization **************   -->
@@ -3185,6 +3268,14 @@ Construction Set".
 </section> <!-- end deriving -->
 
 </section> <!-- end robot dynamics chapter -->
+
+<section data-type="chapter" class="chapter"><h1>Optimization Preliminaries</h1>
+
+<p>nonlinear optimization.  convex optimization.  linear program.  quadratic
+program.  (QCQP? SOCP?).  semi-definite program.   sums-of-squares optimization.
+mixed-integer optimization.  actually show the optimization hierarchy in drake and work through it.</p>
+
+<p>solution techniques/solvers.  gradient descent.  SQP.  interior point.  homotopy. </p>
 
 <section data-type="chapter" class="chapter"><h1>Machine Learning Preliminaries</h1>
 
