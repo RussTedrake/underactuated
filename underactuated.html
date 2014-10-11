@@ -3015,7 +3015,12 @@ largest invariant subset of ${\cal G}$ on which $\dot{V}=0$.<p>
   control solution that is valid from only a single initial condition.  Instead
   of representing this as a feedback control function, we can represent this
   solution as a <em>trajectory</em>, $\bx(\cdot), \bu(\cdot)$, typically
-  defined over a finite interval.</p>
+  defined over a finite interval.  In our graph-search dynamic programming algorithms, we discretized the dynamics
+    of the system on a mesh spread across the state space.  This does not scale
+    to high-dimensional systems, and it was difficult to bound the errors
+    due to the discretization.  If we instead restrict ourselves to optimizing
+    only a single initial condition, then a different discretization scheme emerges:
+    we can discretize the state and input trajectories <em>over time</em>.</p>
 
 
 <section data-type="sect1"><h1>Problem Formulation</h1>
@@ -3043,6 +3048,7 @@ can be defined for all time or some subset of the trajectory.</p>
   of different properties in terms of speed, robustness, and accuracy of the results.
   We will outline just a few of the most popular below.
 </p>
+<!--  -->
 
 </section>
 
@@ -3082,26 +3088,61 @@ and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
   Note that minima can be the result of the objective function having zero-derivative
   <em>or</em> due to the a sloped objective up against a constraint.</p>
 
+<p>Numerical methods for solving these optimization problems require an initial guess, $\hat{z}$,
+  and proceed by trying to move down the objective function to a minima.  Common approaches
+  include <em>gradient descent</em>, in which the gradient of the objective function is computed or estimated, or
+  second-order methods such as <em>sequential quadratic programming (SQP)</em> which attempts to make a local quadratic approximation of the objective function
+  and local linear approximations of the constraints and solves a quadratic program on each iteration to jump
+  directly to the minimum of the local approximation.
+
+<todo> add more details here </todo>
+
 </section> <!-- nonlinear optimization -->
 
 
 <section data-type="sect1"><h1>Direct Transcription</h1>
 
-<p>In our graph-search dynamic programming algorithms, we discretized the dynamics
-  of the system on a mesh spread across the state space.  This does not scale
-  to high-dimensional systems, and it was difficult to bound the errors
-  due to the discretization.  If we instead restrict ourselves to optimizing
-  only a single initial condition, then a different discretization scheme emerges:
-  we can discretize the state and input trajectories <em>over time</em>.  Let
+<p> Let
   us start by representing the finite-time trajectories, $\bx(t)$ and $\bu(t)$ $\forall t\in[t_0,t_f]$,
   by their values at a series of <em>knot points</em>, $t_0,t_1,t_2,t_3$, and denoting
   the values at those knot points $\bx_0,...,\bx_N$ and $\bu_0,...,\bu_N$, respectively.</p>
 
 <p>Then perhaps the simplest mapping of the trajectory optimization problem onto
-  a nonlinear program is fix the knot points at even intervals, $dt$, to make $(\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1})$ the decision variables
-  (remember $\bx_0$ is given; and $u_{N}$ would have no cost nor constraints in the formulation below), and use the naive discretization
-  \begin{align*} \minimize_{\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1} &\sum_{n=0}^N g(\bx_n,\bu_n)dt \\
-  & \bx_{n+1} = \bx_n + dt f(\bx_n,\bu_n), \quad \forall n\in [0,N-1] \end{align*}
+  a nonlinear program is fix the knot points at even intervals, $dt$, and use
+  Euler integration to write \begin{align*} \minimize_{\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1}}
+  & \sum_{n=0}^N g(\bx_n,\bu_n)dt \\
+  & \bx_{n+1} = \bx_n + f(\bx_n,\bu_n)dt, \quad \forall n\in [0,N-1]. \end{align*}
+  Note that the decision variables here are $(\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1})$, because
+$\bx_0$ is given, and $\bu_{N}$ does not appear in the cost nor any of the constraints.  It is
+easy to generalize this approach to higher order integration schemes or to add additional
+constraints to $\bx$ and/or $\bu$. Also note that this formulation does not actually benefit
+from the additive cost structure, so more general cost formulations are also possible.</p>
+
+<div data-type="example"><h1>Direct Transcription for the Double Integrator</h1>
+
+We have implemented an optimization class hierarchy in Drake which makes it easy to try
+out these algorithms.  Watching the way that they perform on our simple problems is a very
+nice way to gain intuition.  Here is some simple code to solve the (time-discretized) minimum-time problem
+for the double integrator.
+
+<pre><code class="matlab">
+% note: requires Drake ver >= 0.9.7
+
+cd(fullfile(getDrakePath,'examples'));
+DoubleIntegrator.runDirtran;
+
+% make sure you take a look at the code!
+edit('DoubleIntegrator.runDirtran')
+</code></pre>
+
+<p>Nothing compares to running it yourself, and poking around in the code.  But you can also click <a target="_blank" href="figures/dirtran_mintime_double_integrator.swf">here</a> to watch the result.
+I hope that you recognize the parabolic trajectory from the initial condition up to the
+switching surface, and then the second parabolic trajectory down to the origin.  You should
+also notice that the transition between $u=1$ and $u=-1$ is imperfect, due to the discretization
+error.  As an exercise, try increasing the number of knot points (the variable <code>N</code> in the code)
+to see if you can get a sharper response, like <a target="_blank" href="figures/dirtran_mintime_double_integrator_fine.swf">this.</a></p>
+
+</div>
 
 </section>
 
