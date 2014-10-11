@@ -3095,9 +3095,19 @@ and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
   include <em>gradient descent</em>, in which the gradient of the objective function is computed or estimated, or
   second-order methods such as <em>sequential quadratic programming (SQP)</em> which attempts to make a local quadratic approximation of the objective function
   and local linear approximations of the constraints and solves a quadratic program on each iteration to jump
-  directly to the minimum of the local approximation.
+  directly to the minimum of the local approximation.</p>
 
-<todo> add more details here </todo>
+<p>When I started out, I was of the opinion that there is nothing difficult about
+  implementing gradient descent or even a second-order method, and I wrote all
+  of the solvers myself.  I now realize that I was wrong.  The commercial solvers
+  available for nonlinear programming are substantially higher performance than
+  anything I wrote myself, with a substantial number of tricks, subtleties, and parameter
+  choices that can make a huge difference in practice.  Some of these solvers can
+  exploit sparsity in the problem (e.g., if the constraints in a sparse way on the decision variables).
+  Nowadays, we make heaviest use of SNOPT <elib>Gill06</elib>, which now
+  comes bundled with the precompiled distributions of <drake></drake>, but also support
+  <code>fmincon</code> from the Optimization Toolbox in MATLAB.</p>
+
 
 </section> <!-- nonlinear optimization -->
 
@@ -3146,7 +3156,20 @@ to see if you can get a sharper response, like <a target="_blank" href="figures/
 
 </div>
 
-</section>
+</section> <!-- end dirtran -->
+
+<section data-type="sect1"><h1>Direct Collocation</h1>
+
+</section> <!-- end dircol -->
+
+
+<section data-type="sect1"><h1>Shooting Methods</h1>
+
+</section> <!-- end shooting -->
+
+<section data-type="sect1"><h1>Pontraygin's Minimum Principle</h1>
+
+</section> <!-- end pontryagin -->
 
 </section>
 
