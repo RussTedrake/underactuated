@@ -812,11 +812,11 @@ case ($b = u = 0$) involves elliptic integrals of the first kind; there is
 relatively little intuition to be gained here. </p>
 
 <p> This is in stark contrast to the case of linear systems, where much of
-our understanding comes from being able to explictly integrate the equations.
+our understanding comes from being able to explicitly integrate the equations.
 For instance, for a simple linear system we have $$\dot{q} = a q \quad
 \rightarrow \quad q(t) = q(0) e^{at},$$ and we can immediately understand that
 the long-term behavior of the system is a (stable) decaying exponential if
-$a<0$, an (unstable) growing expontential if $a>0$, and that the system does
+$a<0$, an (unstable) growing exponential if $a>0$, and that the system does
 nothing if $a=0$. Here we are with certainly one of the simplest nonlinear
 systems we can imagine, and we can't even solve this system? </p>
 
@@ -1145,7 +1145,7 @@ portraits again, you can now visualize the control problem.  Via feedback, you
 are allowed to change the direction of the vector field at each point, but only
 by a fixed amount.  Clearly, if the maximum torque is small (smaller than
 $mgl$), then there are some states which cannot be driven directly to the goal,
-but must pump up energy to reach the goal.  Futhermore, if the torque-limit is
+but must pump up energy to reach the goal.  Furthermore, if the torque-limit is
 too severe and the system has damping, then it may be impossible to swing up to
 the top.  The existence of a solution, and number of pumps required to reach the
 top, is a non-trivial function of the initial conditions and the
@@ -3049,9 +3049,8 @@ can be defined for all time or some subset of the trajectory.</p>
   parameterize it with a finite set of numbers.  Perhaps not surprisingly, there are
   many different ways to write down this parameterization, with a variety
   of different properties in terms of speed, robustness, and accuracy of the results.
-  We will outline just a few of the most popular below.
-</p>
-<!--  -->
+  We will outline just a few of the most popular below.  I would recommend <elib>Betts98+Betts01</elib>
+  for additional details.</p>
 
 </section>
 
@@ -3115,8 +3114,9 @@ and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
 
 </section> <!-- nonlinear optimization -->
 
+<section data-type="sect1"><h1>Trajectory optimization as a nonlinear program</h1>
 
-<section data-type="sect1"><h1>Direct Transcription</h1>
+<section data-type="sect2"><h1>Direct Transcription</h1>
 
 <p> Let
   us start by representing the finite-time trajectories, $\bx(t)$ and $\bu(t)$ $\forall t\in[t_0,t_f]$,
@@ -3130,9 +3130,9 @@ and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
   & \bx_{n+1} = \bx_n + f(\bx_n,\bu_n)dt, \quad \forall n\in [0,N-1]. \end{align*}
   Note that the decision variables here are $(\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1})$, because
 $\bx_0$ is given, and $\bu_{N}$ does not appear in the cost nor any of the constraints.  It is
-easy to generalize this approach to higher order integration schemes or to add additional
-constraints to $\bx$ and/or $\bu$. Also note that this formulation does not actually benefit
-from the additive cost structure, so more general cost formulations are also possible.</p>
+easy to generalize this approach to add additional
+costs or constraints on $\bx$ and/or $\bu$. (Note that this formulation does not actually benefit
+from the additive cost structure, so more general cost formulations are also possible.)</p>
 
 <div data-type="example"><h1>Direct Transcription for the Double Integrator</h1>
 
@@ -3160,21 +3160,74 @@ to see if you can get a sharper response, like <a target="_blank" href="figures/
 
 </div>
 
+<p>If you take a moment to think about what the direct transcription algorithm
+is doing,   you will see that by satisfying the dynamic constraints, the
+optimization is effectively   solving the (Euler approximation of the)
+differential equation.  But instead of marching   forward through time, it is
+minimizing the inconsistency at each of the knot points simultaneously.   While
+it's easy enough to generalize the constraints to use higher-order integration
+schemes,   paying attention to the trade-off between the number of times the
+constraint must be evaluated   vs the density of the knot points in time, if the
+goal is to obtain smooth $\bx$ trajectory   solutions then another approach
+quickly emerges: the approach taken by the so-called <em>collocation methods</em>.</p>
+
 </section> <!-- end dirtran -->
 
-<section data-type="sect1"><h1>Direct Collocation</h1>
+<section data-type="sect2"><h1>Direct Collocation</h1>
+
+<p> In direct collocation (c.f., <elib>Hargraves87</elib>), both the input
+trajectory and the state trajectory are   represented explicitly as piecewise
+polynomial functions.  In particular, the sweet   spot for this algorithm is
+taking $\bu(t)$ to be a first-order polynomial -- allowing it to   be completely
+defined by the values at the knot points -- and $\bx(t)$ to be a Hermite   cubic
+polynomial -- completely defined by the values and derivatives at the knot
+points.  The state derivatives at the knot points are given as a function of
+$\bx$ and $\bu$ by the plant dynamics, so the entire spline   is completely defined by
+the values of $\bx$ and $\bu$ at the knot points.  To add the additional constraint
+that $\bx_{n+1}$ is dynamically consistent with $\bx_{n}$ and $\bu_{n}$, we add an
+additional set of constraints that the derivative at a set of <em>collocation points</em>
+also matches the plant dynamics.  For the special case of cubic polynomial state trajectories and piecewise linear input
+trajectories, the derivative at the midpoint of each segment is particularly easy to compute,
+making it the natural choice.</p>
+
+<figure>
+  <img width="80%" src="figures/dircol.svg">
+  <figcaption>Cubic spline parameters used in the direct collocation method.</figcaption>
+</figure>
+
+<p>Once again, direct collocation effectively integrates the equations of motion
+by satisfying the constraints of the optimization -- this time producing a
+third-order approximation of the dynamics with effectively two evaluations of
+the plant dynamics per segment.  <elib>Hargraves87</elib> claims, without proof,
+that as the break points are brought closer together, the trajectory will
+converge to a true solution of the differential equation.  Once again it is very
+natural to add additional terms to the cost function or additional input/state
+constraints.  I personally find it very nice to explicitly account for the
+parametric encoding of the trajectory in the solution technique.</p>
 
 </section> <!-- end dircol -->
 
 
-<section data-type="sect1"><h1>Shooting Methods</h1>
+<section data-type="sect2"><h1>Shooting Methods</h1>
 
 </section> <!-- end shooting -->
+
+<section data-type="sect2"><h1>Advantages and Disadvantages</h1>
+
+</section> <!-- end pros/cons -->
+
+</section> <!-- end three algorithms -->
+
 
 <section data-type="sect1"><h1>Pontraygin's Minimum Principle</h1>
 
 </section> <!-- end pontryagin -->
 
+<section data-type="sect1"><h1>Trajectory Stabilization w/ Time-varying LQR</h1>
+
+</section>
+
+<section data-type="sect1"><h1>Iterative LQR and Differential Dynamic Programming</h1>
 </section>
 
 <!-- ***************  end of trajectory optimization **************   -->
