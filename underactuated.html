@@ -3097,6 +3097,15 @@ and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
   and local linear approximations of the constraints and solves a quadratic program on each iteration to jump
   directly to the minimum of the local approximation.</p>
 
+<p>While not strictly required, these algorithms can often benefit a great deal from having
+  the gradients of the objective and constraints computed explicitly; the alternative is
+  to obtain them from numerical differentiation.  Beyond pure speed considerations, I strongly
+  prefer to compute the gradients explicitly because it can help avoid numerical accuracy issues
+  that can creep in with finite difference methods.  The desire to calculate these gradients will
+  be a major theme in the discussion below, and we have gone to great lengths
+  to provide explicit gradients of our provided functions and automatic differentiation of user-provided
+  functions in <drake></drake>.</p>
+
 <p>When I started out, I was of the opinion that there is nothing difficult about
   implementing gradient descent or even a second-order method, and I wrote all
   of the solvers myself.  I now realize that I was wrong.  The commercial solvers
@@ -3132,14 +3141,17 @@ and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
 $\bx_0$ is given, and $\bu_{N}$ does not appear in the cost nor any of the constraints.  It is
 easy to generalize this approach to add additional
 costs or constraints on $\bx$ and/or $\bu$. (Note that this formulation does not actually benefit
-from the additive cost structure, so more general cost formulations are also possible.)</p>
+from the additive cost structure, so more general cost formulations are also possible.)  Computing
+the gradients of the objective and constraints is essentially as simple as computing the
+gradients of $g()$ and $f()$.
+</p>
 
 <div data-type="example"><h1>Direct Transcription for the Double Integrator</h1>
 
-We have implemented an optimization class hierarchy in Drake which makes it easy to try
+<p>We have implemented an optimization class hierarchy in Drake which makes it easy to try
 out these algorithms.  Watching the way that they perform on our simple problems is a very
 nice way to gain intuition.  Here is some simple code to solve the (time-discretized) minimum-time problem
-for the double integrator.
+for the double integrator.</p>
 
 <pre><code class="matlab">
 % note: requires Drake ver >= 0.9.7
@@ -3202,13 +3214,37 @@ the plant dynamics per segment.  <elib>Hargraves87</elib> claims, without proof,
 that as the break points are brought closer together, the trajectory will
 converge to a true solution of the differential equation.  Once again it is very
 natural to add additional terms to the cost function or additional input/state
-constraints.  I personally find it very nice to explicitly account for the
+constraints, and very easy to calculate the gradients of the objective and constraints.   I personally find it very nice to explicitly account for the
 parametric encoding of the trajectory in the solution technique.</p>
+
+<div data-type="example"><h1>Direct Collocation for the Double Integrator</h1>
+
+<p>Direct collocation also easily solves the minimum-time problem for the double integrator.  The performance is similar to direct transcription, but the convergence is visibly different.  Try it for yourself:</p>
+
+<pre><code class="matlab">
+% note: requires Drake ver >= 0.9.7
+
+cd(fullfile(getDrakePath,'examples'));
+DoubleIntegrator.runDircol;
+
+% make sure you take a look at the code!
+edit('DoubleIntegrator.runDircol')
+</code></pre>
+
+</div>
 
 </section> <!-- end dircol -->
 
 
 <section data-type="sect2"><h1>Shooting Methods</h1>
+
+<p>In the methods described above, by asking the optimization package
+  to perform the numerical integration of the equations of motion, we are effectively
+  over-parameterizing the problem.  In fact, the optimization is perfectly well defined
+  if we restrict the decision variables to $\bu_0,...,\bu_{N-1}$ only--we can
+  compute $\bx_1,...,\bx_{N}$ ourselves by knowing $\bx_0$, and $\bu(\cdot)$.  This
+  is exactly the approach taken in the shooting methods.</p>
+
 
 </section> <!-- end shooting -->
 
