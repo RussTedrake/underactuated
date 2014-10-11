@@ -81,6 +81,7 @@ appendix {
   counter-reset:theorem;
   counter-reset:algorithm;
   counter-reset:figure;
+  display:none;
 }
 [data-type="sect1"] {
   counter-increment:sect1;
