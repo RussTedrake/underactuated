@@ -3246,9 +3246,80 @@ edit('DoubleIntegrator.runDircol')
   is exactly the approach taken in the shooting methods.</p>
 
 
+<section data-type="sect3"><h1>Computing gradients</h1>
+
+<p>Again, providing gradients of the objectives and constraints to the solver is not
+  strictly required -- most solvers will obtain them from finite differences if they
+  are not provided -- but I feel strongly that the solvers are faster and more robust when
+  exact gradients are provided.  Now that we have removed the $\bx$ decision variables
+  from the program, we have to take a little extra care to compute the gradients.  This
+  is still easily accomplished using the chain rule.  For example, taking the Euler
+  integration scheme, we would have
+  \[ \pd{J}{\bu_i} = \pd{g(\bx[i],\bu_i)}{\bu} + \sum_{n=i+1}^N \pd{g(\bx[n],\bu_n)}{\bx} \pd{\bx[n]}{\bu_i}, \]
+  where the gradient of the state with respect to the inputs can be computed
+  during the "forward simulation",
+  \[ \pd{\bx[n+1]}{\bu_i} = \pd{\bx[n]}{\bu_i} + \left( \pd{f(\bx[n],\bu_n)}{\bx} \pd{\bx[n]}{\bu_i}
+  + \pd{f(\bx[n],\bu_n)}{\bu} \pd{\bu_n}{\bu_i} \right) dt,  \]
+  where the last term is zero when $i\ne n$.  These simulation gradients can
+  also be used in the chain rule to provide the gradients of any constraints. Note
+  that there are a lot of terms to keep around here, on the order of (state dim) $\times$ (control dim) $\times$ (number of timesteps).
+  Ouch.</p>
+
+</section>  <!-- gradients -->
+
+<section data-type="sect3"><h1>The special case of unconstrained optimization</h1>
+
+<p>If no constraints are present, and the only gradients we need to compute are the
+  gradients of the objective, then a surprisingly efficient algorithm emerges.  <i>description of the adjoint equations coming asap</i></p>
+
+<todo>adjoint equations here</todo>
+
+<p>For this reason, advocates of the shooting methods often use penalty methods
+  instead of enforcing hard constraints; instead of telling the solver about
+  the constraint explicitly, you simply add an additional term to the cost function
+  which gives a large penalty commesurate with the amount by which the constraint
+  is violated. These are not quite as accurate and can be harder to tune (you'd
+  like the cost to be high compared to other costs, but making it too high can
+  lead to numerical conditioning issues), but they can be made to work.</p>
+
+</section>
+
 </section> <!-- end shooting -->
 
-<section data-type="sect2"><h1>Advantages and Disadvantages</h1>
+<section data-type="sect2"><h1>Discussion</h1>
+
+<section data-type="sect3"><h1>Solver performance</h1>
+
+<p>Numerical conditioning.  Tail wagging the dog.  Sparse constraints. </p>
+
+</section>
+
+<section data-type="sect3"><h1>Providing an initial guess</h1>
+
+<p>to avoid local minima.  direct transcription and collocation can take
+  an initial guess in $\bx$, too.</p>
+</section>
+
+
+<section data-type="sect3"><h1>Accuracy of numerical integration</h1>
+
+  <p>One potential complaint about the direct transcription and collocation
+  algorithms is that we tend to use simplistic numerical integration methods and
+  often fix the integration timestep (e.g. by choosing Euler integration and
+  selecting a $dt$); it is difficult to bound the resulting integration errors
+  in the solution.  One tantalizing possibility in the shooting methods is that
+  the forward integration could be accomplished by more sophisticated methods,
+  like variable-step integration.  But I must say that I have not had much
+  success with this approach, because while the numerical accuracy of any one
+  function evaluation might be improved, these integration schemes do not
+  necessarily give smooth outputs as you make incremental changes to the initial
+  conditions and control (changing $\bu_2$ by $\epsilon$ could result in taking
+  a different number of steps in the integration scheme).  This lack of
+  smoothness can wreak havoc on the convergence of the optimization.
+  If numerical accuracy is a premium, then I think you will have more success
+  by imposing consistency constraints (e.g. as in the Runge-Kutta 4th order simulation
+  with 5th order error checking method) as addition constraints on the
+  state vector; shooting methods do not have any particular advantage here.</p>
 
 </section> <!-- end pros/cons -->
 
@@ -3257,6 +3328,9 @@ edit('DoubleIntegrator.runDircol')
 
 <section data-type="sect1"><h1>Pontraygin's Minimum Principle</h1>
 
+<p>Necessary conditions for optimality in continuous time.  Follows directly from the adjoint
+  equation derivation</p>
+
 </section> <!-- end pontryagin -->
 
 <section data-type="sect1"><h1>Trajectory Stabilization w/ Time-varying LQR</h1>
@@ -3264,6 +3338,10 @@ edit('DoubleIntegrator.runDircol')
 </section>
 
 <section data-type="sect1"><h1>Iterative LQR and Differential Dynamic Programming</h1>
+</section>
+
+<section data-type="sect1"><h1>Case Study: A glider that can land on a perch like a bird</h1>
+
 </section>
 
 <!-- ***************  end of trajectory optimization **************   -->
@@ -3449,6 +3527,8 @@ program.  (QCQP? SOCP?).  semi-definite program.   sums-of-squares optimization.
 mixed-integer optimization.  actually show the optimization hierarchy in drake and work through it.</p>
 
 <p>solution techniques/solvers.  gradient descent.  SQP.  interior point.  homotopy. </p>
+
+<p>Lagrange Multipliers</p>
 
 </section> <!-- end optimization chapter -->
 
