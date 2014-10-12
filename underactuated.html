@@ -2995,7 +2995,7 @@ largest invariant subset of ${\cal G}$ on which $\dot{V}=0$.<p>
 
 <section data-type="chapter" class="chapter"><h1>Trajectory Optimization</h1>
 
-<p>So far I've argued that optimal control is a powerful framework for specifying
+<p>I've argued that optimal control is a powerful framework for specifying
   complex behaviors with simple objective functions, letting the dynamics and
   constraints on the system shape the resulting feedback controller (and vice versa!).
   But the computational tools that we've provided so far have been limited in
@@ -3059,8 +3059,9 @@ can be defined for all time or some subset of the trajectory.</p>
 <p>Before we dive in, we need to take a moment to understand the optimization tools
   that we will be using.  In the graph-search dynamic programming algorithm,
   we magically were able to provide an iterative algorithm that was known to
-  converge to optimal cost-to-go function.  With LQR we were able to solve
-  the optimization problem in closed-form.  In the Lyapunov analysis chapter,
+  converge to optimal cost-to-go function.  With LQR we were able to reduce
+  the problem to a matrix Riccati equation, for which we have scalable numerical methods
+  to solve.  In the Lyapunov analysis chapter,
   we were able to formulate a very specific kind of optimization problem--a
   semi-definite program (or SDP)--which is a subset of convex optimization,
   and relied on custom solvers like SeDuMi or Mosek to solve the problems for us.
@@ -3110,7 +3111,7 @@ and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
   implementing gradient descent or even a second-order method, and I wrote all
   of the solvers myself.  I now realize that I was wrong.  The commercial solvers
   available for nonlinear programming are substantially higher performance than
-  anything I wrote myself, with a substantial number of tricks, subtleties, and parameter
+  anything I wrote myself, with a number of tricks, subtleties, and parameter
   choices that can make a huge difference in practice.  Some of these solvers can
   exploit sparsity in the problem (e.g., if the constraints in a sparse way on the decision variables).
   Nowadays, we make heaviest use of SNOPT <elib>Gill06</elib>, which now
@@ -3129,13 +3130,13 @@ and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
 
 <p> Let
   us start by representing the finite-time trajectories, $\bx(t)$ and $\bu(t)$ $\forall t\in[t_0,t_f]$,
-  by their values at a series of <em>knot points</em>, $t_0,t_1,t_2,t_3$, and denoting
-  the values at those knot points $\bx_0,...,\bx_N$ and $\bu_0,...,\bu_N$, respectively.</p>
+  by their values at a series of <em>break points</em>, $t_0,t_1,t_2,t_3$, and denoting
+  the values at those points (aka the <em>knot points</em>) $\bx_0,...,\bx_N$ and $\bu_0,...,\bu_N$, respectively.</p>
 
 <p>Then perhaps the simplest mapping of the trajectory optimization problem onto
-  a nonlinear program is fix the knot points at even intervals, $dt$, and use
+  a nonlinear program is to fix the break points at even intervals, $dt$, and use
   Euler integration to write \begin{align*} \minimize_{\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1}}
-  & \sum_{n=0}^N g(\bx_n,\bu_n)dt \\
+  & \sum_{n=0}^{N-1} g(\bx_n,\bu_n)dt \\
   & \bx_{n+1} = \bx_n + f(\bx_n,\bu_n)dt, \quad \forall n\in [0,N-1]. \end{align*}
   Note that the decision variables here are $(\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1})$, because
 $\bx_0$ is given, and $\bu_{N}$ does not appear in the cost nor any of the constraints.  It is
@@ -3148,7 +3149,7 @@ gradients of $g()$ and $f()$.
 
 <div data-type="example"><h1>Direct Transcription for the Double Integrator</h1>
 
-<p>We have implemented an optimization class hierarchy in Drake which makes it easy to try
+<p>We have implemented an optimization class hierarchy in <drake></drake> which makes it easy to try
 out these algorithms.  Watching the way that they perform on our simple problems is a very
 nice way to gain intuition.  Here is some simple code to solve the (time-discretized) minimum-time problem
 for the double integrator.</p>
@@ -3248,39 +3249,60 @@ edit('DoubleIntegrator.runDircol')
 
 <section data-type="sect3"><h1>Computing gradients</h1>
 
-<p>Again, providing gradients of the objectives and constraints to the solver is not
-  strictly required -- most solvers will obtain them from finite differences if they
-  are not provided -- but I feel strongly that the solvers are faster and more robust when
-  exact gradients are provided.  Now that we have removed the $\bx$ decision variables
-  from the program, we have to take a little extra care to compute the gradients.  This
-  is still easily accomplished using the chain rule.  For example, taking the Euler
-  integration scheme, we would have
-  \[ \pd{J}{\bu_i} = \pd{g(\bx[i],\bu_i)}{\bu} + \sum_{n=i+1}^N \pd{g(\bx[n],\bu_n)}{\bx} \pd{\bx[n]}{\bu_i}, \]
-  where the gradient of the state with respect to the inputs can be computed
-  during the "forward simulation",
-  \[ \pd{\bx[n+1]}{\bu_i} = \pd{\bx[n]}{\bu_i} + \left( \pd{f(\bx[n],\bu_n)}{\bx} \pd{\bx[n]}{\bu_i}
-  + \pd{f(\bx[n],\bu_n)}{\bu} \pd{\bu_n}{\bu_i} \right) dt,  \]
-  where the last term is zero when $i\ne n$.  These simulation gradients can
-  also be used in the chain rule to provide the gradients of any constraints. Note
-  that there are a lot of terms to keep around here, on the order of (state dim) $\times$ (control dim) $\times$ (number of timesteps).
-  Ouch.</p>
+<p>Again, providing gradients of the objectives and constraints to the solver is
+not   strictly required -- most solvers will obtain them from finite differences
+if they   are not provided -- but I feel strongly that the solvers are faster
+and more robust when   exact gradients are provided.  Now that we have removed
+the $\bx$ decision variables   from the program, we have to take a little extra
+care to compute the gradients.  This   is still easily accomplished using the
+chain rule.  To be concise (and slightly more general),   let us define
+$\bx[n+1]=f_d(\bx[n],\bu[n])$ as the discrete-time approximation of the
+continuous dynamics; for example, the forward Euler integration scheme used
+above would give   $f_d(\bx[n],\bu[n]) = \bx[n]+f(\bx[n],\bu[n])dt.$  Then we
+have   \[ \pd{J}{\bu_i} = \sum_{n=0}^{N-1} \left( \pd{g(\bx[n],\bu[n])}{\bx}
+\pd{\bx[n]}{\bu_i} + \pd{g(\bx[n],\bu[n])}{\bu_i} \right), \]   where the
+gradient of the state with respect to the inputs can be computed   during the
+"forward simulation",   \[ \pd{\bx[n+1]}{\bu_i} = \pd{f_d(\bx[n],\bu[n])}{\bx}
+\pd{\bx[n]}{\bu_i} + \pd{f_d(\bx[n],\bu[n])}{\bu_i}.  \]   These simulation
+gradients can   also be used in the chain rule to provide the gradients of any
+constraints.  Note that
+there are a lot of terms to keep around here, on the order of (state dim)
+$\times$ (control dim) $\times$ (number of timesteps).   Ouch.  Note also that many of these terms are zero; for instance with the Euler
+integration scheme above $\pd{\bu[n]}{\bu_i} = 0$ if $i\ne n$.</p>
 
 </section>  <!-- gradients -->
 
-<section data-type="sect3"><h1>The special case of unconstrained optimization</h1>
+<section data-type="sect3"><h1>The special case of optimization without state constraints</h1>
 
-<p>If no constraints are present, and the only gradients we need to compute are the
-  gradients of the objective, then a surprisingly efficient algorithm emerges.  <i>description of the adjoint equations coming asap</i></p>
+<p>By solving for $\bx(\cdot)$ ourselves, we've removed a large number of constraints from the
+  optimization.  If no additional state constraints are present, and the only gradients we need to compute are the
+  gradients of the objective, then a surprisingly efficient algorithm emerges.  I'll give the steps here without derivation,
+  but will derive it in the Pontryagin section below:
+  <ol>
+    <li>Simulate forward: $$\bx[n+1] = f_d(\bx[n],\bu_n),$$ from  $\bx[0] = \bx_0$</li>
+    <li>Calculate backwards: $$\lambda[n-1] = \pd{g(\bx[n],\bu[n])}{\bx}^T + \pd{f(\bx[n],\bu[n])}{\bx}^T \lambda[n],$$ from $\lambda[N-1]=0$</li>
+    <li>Extract the gradients: $$\pd{J}{\bu[n]} = \pd{g(\bx[n],\bu[n])}{\bu} + \lambda[n]^T \pd{f(\bx[n],\bu[n])}{\bu},$$ with $\pd{J}{\bu_i} = \sum_n \pd{J}{\bu[n]}\pd{\bu[n]}{\bu_i}$.</li>
+  </ol>
+  Here $\lambda[n]$ is a vector the same size as $\bx[n]$ which has an interpretation as
+  $\lambda[n]=\pd{J}{\bx[n+1]}^T$.  The equation governing $\lambda$ is known as the <em>adjoint</em>
+  equation, and it represents a dramatic efficient improvement over calculating the
+  huge number of simulation gradients described above. In case you are interested,
+  the adjoint equation is known as the <em>backpropagation algorithm</em> in the neural
+  networks literature and it is one of the primary reasons that training neural networks
+  became so popular in the 1980's; super fast GPU implementations of this algorithm are
+  also one of the reasons that <em>deep learning</em> is incredibly popular right now (the
+  availability of massive training databases is perhaps the other main reason).
+</p>
 
-<todo>adjoint equations here</todo>
 
-<p>For this reason, advocates of the shooting methods often use penalty methods
-  instead of enforcing hard constraints; instead of telling the solver about
-  the constraint explicitly, you simply add an additional term to the cost function
-  which gives a large penalty commesurate with the amount by which the constraint
-  is violated. These are not quite as accurate and can be harder to tune (you'd
-  like the cost to be high compared to other costs, but making it too high can
-  lead to numerical conditioning issues), but they can be made to work.</p>
+<p>To take advantage of this efficiency, advocates of the shooting methods often
+use penalty methods   instead of enforcing hard state constraints; instead of
+telling the solver about   the constraint explicitly, you simply add an
+additional term to the cost function   which gives a large penalty commesurate
+with the amount by which the constraint   is violated. These are not quite as
+accurate and can be harder to tune (you'd   like the cost to be high compared to
+other costs, but making it too high can   lead to numerical conditioning
+issues), but they can work.</p>
 
 </section>
 
@@ -3321,6 +3343,8 @@ edit('DoubleIntegrator.runDircol')
   with 5th order error checking method) as addition constraints on the
   state vector; shooting methods do not have any particular advantage here.</p>
 
+</section> <!-- end accuracy -->
+
 </section> <!-- end pros/cons -->
 
 </section> <!-- end three algorithms -->
@@ -3341,10 +3365,9 @@ edit('DoubleIntegrator.runDircol')
 </section>
 
 <section data-type="sect1"><h1>Case Study: A glider that can land on a perch like a bird</h1>
-
 </section>
 
-<!-- ***************  end of trajectory optimization **************   -->
+</section> <!-- ***************  end of trajectory optimization **************   -->
 
 <section data-type="chapter" class="chapter"><h1>Feasible Motion Planning</h1>
 
@@ -3517,6 +3540,11 @@ Construction Set".
 
 
 </section> <!-- end deriving -->
+
+<todo> frictional contact </todo>
+
+<todo> numerical integration </todo>
+
 
 </section> <!-- end robot dynamics chapter -->
 
