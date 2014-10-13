@@ -3093,8 +3093,14 @@ design a feedback law.</p>
 
 </section> <!-- end finite horizon -->
 
+<section data-type="sect1"><h1>Transverse LQR</h1>
 
-</section> <!-- ***************  end of analytical optimal control **************   -->
+<todo>finite-horizon but also for periodic solutions.</todo>
+
+</section>
+
+
+</section> <!-- ***************  end of LQR **************   -->
 
 <section data-type="chapter" class="chapter"><h1>Lyapunov Analysis</h1>
 
@@ -3760,14 +3766,145 @@ are often the most expensive part). </p>
 
 <section data-type="sect1"><h1>Pontraygin's Minimum Principle</h1>
 
-<p>Necessary conditions for optimality in continuous time.  Follows directly from the adjoint
-  equation derivation</p>
+<p>The tools that we've been developing for numerical trajectory optimization
+  are closely tied to theorems from (analytical) optimal control.  Let us take
+  one section to appreciate those connections.</p>
+
+<p>What precisely does it mean for a trajectory, $\bx(\cdot),\bu(\cdot)$, to be
+locally optimal?  It means that if I were to perturb that trajectory in any way
+(e.g. change $\bu_3$ by $\epsilon$), then I would either incur higher cost in
+my objective function or violate a constraint.  For an unconstrained optimization,
+a <em>necessary condition</em> for local optimality is that the gradient of the
+objective at the solution be exactly zero.  Of course the gradient can also vanish
+at local maxima or saddle points, but it certainly must vanish at local minima.
+We can generalize this argument to constrained optimization using <em>Lagrange multipliers</em>.
+</p>
+
+<section data-type="sect2"><h1>Constrained optimization with Lagrange multipliers</h1>
+
+<p>Given the equality-constrained optimization problem $$\minimize_\bz g(\bz)
+\quad \subjto \quad {\bf \phi}(\bz) = 0,$$ where ${\bf \phi}$ is a vector.
+Define a vector $\lambda$ of Lagrange multipliers, the same size as $\phi$, and
+the scalar Lagrangian function, $$L(\bz,{\bf \lambda}) = g(\bz) + \lambda^T\phi(\bz).$$
+A necessary condition for $\bz^*$ to be an optimal value of the constrained optimization
+is that the gradients of $L$ vanish with respect to both $\bz$ and $\lambda$:
+$$\pd{L}{\bz} = 0, \quad \pd{L}{\lambda} = 0.$$  Note that $\pd{L}{\lambda} = \phi(\bz)$, so
+requiring this to be zero is equivalent to requiring the constraints to be satisfied.</p>
+
+<div data-type="example"><h1>Optimization on the unit circle</h1>
+
+<p>Consider the following optimization:
+$$\min_{x,y} x+y, \quad \subjto \quad x^2 + y^2 = 1.$$
+The level sets of $x+y$ are straight lines with slope $-1$, and
+the constraint requires that the solution lives on the unit circle.<p>
+<figure>
+  <img width="80%" src="figures/lagrange_multipliers_unit_circle.svg"/>
+</figure>
+<p>Simply by inspection, we can determine that the optimal solution should be $x=y=-\frac{\sqrt{2}}{2}.$
+Let's make sure we can obtain the same result using Lagrange multipliers.
+</p>
+
+<p>Formulating $$L = x+y+\lambda(x^2+y^2-1),$$ we can take the derivatives and solve
+  \begin{align*}
+  \pd{L}{x} = 1 + 2\lambda x = 0 \quad & \Rightarrow & \lambda = -\frac{1}{2x}, \\
+  \pd{L}{y} = 1 + 2\lambda y = 1 - \frac{y}{x} = 0 \quad & \Rightarrow & y = x,\\
+  \pd{L}{\lambda} = x^2+y^2-1 = 2x^2 -1 = 0 \quad & \Rightarrow & x = \pm \frac{1}{\sqrt{2}}.
+  \end{align*}
+Given the two solutions which satisfy the necessary conditions, the negative solution
+is clearly the minimizer of the objective.</p>
+</div>
+
+</section>
+
+<section data-type="sect2"><h1>Lagrange multiplier derivation of the adjoint equations</h1>
+
+<p>Let us use Lagrange multiplizers to derive the necessary conditions for our constrained
+  trajectory optimization problem in discrete time
+  \begin{align*} \minimize_{\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1}} & \sum_{n=0}^{N-1} g(\bx[n],\bu[n]),\\
+  \subjto \quad & \bx[n+1] = f_d(\bx[n],\bu[n]). \end{align*}
+  Formulate the Lagrangian, \[ L(\bx[\cdot],\bu[\cdot],\lambda[\cdot]) = \sum_{n=0}^{N-1} g(\bx[n],\bu[n]) +
+  \sum_{n=0}^{N-1} \lambda^T[n] \left(f_d(\bx[n],\bu[n]) - \bx[n+1]\right), \]
+  and set the derivatives to zero to obtain the adjoint equation method described for the shooting
+  algorithm above:
+  \begin{gather*} \forall n\in[0,N-1], \pd{L}{\lambda[n]} = f_d(\bx[n],\bu[n]) - \bx[n+1] = 0 \Rightarrow \bx[n+1] = f(\bx[n],\bu[n]) \\
+    \forall n\in[0,N-1], \pd{L}{\bx[n]} = \pd{g(\bx[n],\bu[n])}{\bx} + \lambda^T[n] \pd{f_d(\bx[n],\bu[n])}{\bx} - \lambda^T[n-1] = 0 \\
+    \quad \Rightarrow \lambda[n-1] = \pd{g(\bx[n],\bu[n])}{\bx}^T + \pd{f_d(\bx[n],\bu[n])}{\bx}^T \lambda[n]. \\
+    \pd{L}{\bx[N]} = -\lambda[N-1] = 0 \Rightarrow \lambda[N-1] = 0 \\
+    \forall n\in[0,N-1], \pd{L}{\bu[n]} = \pd{g(\bx[n],\bu[n])}{\bu} + \lambda^T[n] \pd{f_d(\bx[n],\bu[n])}{\bu} = 0.
+  \end{gather*}
+  Therefore, if we are given an initial condition $\bx_0$ and an input trajectory $\bu[\cdot]$, we
+  can verify that it satisfies the necessary conditions for optimality by simulating the
+  system forward in time to solve for $\bx[\cdot]$, solving the adjoint equation backwards in time
+  to solve for $\lambda[\cdot]$, and verifying that $\pd{L}{\bu[n]} = 0$ for all $n$. The fact
+  that $\pd{J}{\bu} = \pd{L}{\bu}$ when $\pd{L}{\bx} = 0$ and $\pd{L}{\lambda} = 0$ follows
+  from some basic results in the calculus of variations.</p>
+
+</section>
+
+<section data-type="sect2"><h1>Necessary conditions for optimality in continuous time</h1>
+
+<p>You won't be suprised to hear that these necessary conditions have an
+analogue in continuous time. I'll state it here without derivation.  Given the
+initial conditions, $\bx_0$, a continuous dynamics, $\dot\bx = f(\bx,\bu)$, and
+the instantaneous cost $g(\bx,\bu)$, for a trajectory $\bx(\cdot),\bu(\cdot)$
+defined over $t\in[t_0,t_f]$  to  be optimal is must satisfy the conditions that
+\begin{align*} \forall t\in[t_0,t_f],\quad & \dot{\bx} = f(\bx,\bu), \quad &\bx(0)=\bx_0\\
+\forall t\in[t_0,t_f],\quad & -\dot\lambda = \pd{g}{\bx}^T + \pd{f}{\bx}^T \lambda, \quad &\lambda(T) = 0\\
+\forall t\in[t_0,t_f],\quad & \pd{g}{\bu} + \lambda\pd{f}{\bu} = 0.&
+\end{align*}</p>
+
+In fact the statement can be generalized even beyond this to the case where $\bu$ has constraints.
+The result is known as Pontryagin's minimum principle -- giving <em>necessary conditions</em>
+for a trajectory to be optimal.
+
+<div data-type="theorem"><h1>Pontragin's Minimum Principle</h1>
+
+<p>Adapted from <elib>Bertsekas00a</elib>. Given the
+initial conditions, $\bx_0$, a continuous dynamics, $\dot\bx = f(\bx,\bu)$, and
+the instantaneous cost $g(\bx,\bu)$, for a trajectory $\bx^*(\cdot),\bu^*(\cdot)$
+defined over $t\in[t_0,t_f]$  to  be optimal is must satisfy the conditions that
+\begin{align*} \forall t\in[t_0,t_f],\quad & \dot{\bx}^* = f(\bx^*,\bu^*), \quad &\bx^*(0)=\bx_0\\
+\forall t\in[t_0,t_f],\quad & -\dot\lambda = \pd{g}{\bx}^T + \pd{f}{\bx}^T \lambda, \quad &\lambda(T) = 0\\
+\forall t\in[t_0,t_f],\quad & u^* = \argmin_{\bu\in{\cal U}} \left[ g(\bx^*,\bu) + \lambda f(\bx^*,\bu) \right].&
+\end{align*}</p>
+</div>
+
+<todo> mention the Hamiltonian </todo>
 
 </section> <!-- end pontryagin -->
 
-<section data-type="sect1"><h1>Trajectory Stabilization w/ Time-varying LQR</h1>
+<section data-type="sect1"><h1>Trajectory optimization as a convex optimization</h1>
+
+<section data-type="sect2"><h1>Linear systems with convex linear constraints</h1>
+
+<p>An important special case.  Linear/Quadratic objectives results in an LP/QP $\Rightarrow$ Convex optimization.</p>
 
 </section>
+
+<section data-type="sect2"><h1>Differential Flatness</h1>
+
+</section>
+
+<section data-type="sect2"><h1>Mixed-integer convex optimization for non-convex constraints</h1>
+
+</section>
+
+</section>
+
+<section data-type="sect1"><h1>Local Feedback Design</h1>
+
+<p>Once we have obtained a locally optimal trajectory from trajectory optimization, there is still work to do...</p>
+
+<section data-type="sect2"><h1>Model-predictive control</h1>
+
+</section>
+
+<section data-type="sect2"><h1>Time-varying LQR</h1>
+
+
+</section>
+
+</section> <!-- end feedback design -->
 
 <section data-type="sect1"><h1>Iterative LQR and Differential Dynamic Programming</h1>
 </section>
@@ -3777,7 +3914,7 @@ are often the most expensive part). </p>
 
 </section> <!-- ***************  end of trajectory optimization **************   -->
 
-<section data-tyep="chapter" class="chapter"><h1>Planning and Control for Hybrid Systems</h1>
+<section data-tyep="chapter" class="chapter"><h1>Planning and Control through Contact</h1>
 
 </section>
 
