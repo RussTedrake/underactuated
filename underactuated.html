@@ -3874,7 +3874,7 @@ defined over $t\in[t_0,t_f]$  to  be optimal is must satisfy the conditions that
   referred to as the Hamiltonian of the optimal control problem,
   $$H(\bx,\bu,\lambda,t) = g(\bx,\bu) + \lambda^T f(\bx,\bu).$$
   It is distinct from, but inspired by, the Hamiltonian of classical mechanics.  Remembering
-  that $\lambda$ has an interpretation as $\pd{J}{\bx}$, you should also recognize it
+  that $\lambda$ has an interpretation as $\pd{J}{\bx}^T$, you should also recognize it
   from the HJB.
   </p>
 
@@ -3898,7 +3898,7 @@ defined over $t\in[t_0,t_f]$  to  be optimal is must satisfy the conditions that
 
 </section>
 
-<section data-type="sect1"><h1>Local Feedback Design</h1>
+<section data-type="sect1"><h1>Local Trajectory Feedback Design</h1>
 
 <p>Once we have obtained a locally optimal trajectory from trajectory optimization, there is still work to do...</p>
 
@@ -3907,6 +3907,9 @@ defined over $t\in[t_0,t_f]$  to  be optimal is must satisfy the conditions that
 </section>
 
 <section data-type="sect2"><h1>Time-varying LQR</h1>
+
+<p>Take $\bar\bx(t) = \bx(t) - \bx_0(t)$, and $\bar\bu(t) = \bu(t)-\bu_0(t)$, then
+apply finite-horizon LQR (see the LQR chapter).</p>
 
 
 </section>
