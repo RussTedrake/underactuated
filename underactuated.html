@@ -2158,9 +2158,82 @@ used heavily in underactuated control research.  Other examples include:
 
 <section data-type="chapter" class="chapter"><h1>Walking and Running</h1>
 
+<p>Practical legged locomotion is one of the fundamental unsolved
+problems in robotics.  Many challenges are in mechanical design - a
+walking robot must carry all of it's actuators and power, making it
+difficult to carry ideal force/torque - controlled actuators.  But
+many of the unsolved problems are because walking robots are
+underactuated control systems. </p>
+
+<p>In this chapter we'll introduce some of the simple models of walking
+robots, the control problems that result, and a very brief summary of
+some of the control solutions described in the literature.  Compared
+to the robots that we have studied so far, our investigations of
+legged locomotion will require additional tools for thinking about
+limit cycle dynamics and dealing with impacts.</p>
+
+
+<section data-type="sect1"><h1>Limit Cycles</h1>
+
+<p>
+A limit cycle is an asymptotically stable or unstable periodic
+orbit\footnote{marginally-stable orbits, such as the closed-orbits of
+  the undamped simple pendulum, are typically not called limit
+  cycles.}.  One of the simplest models of limit cycle behavior is the
+Van der Pol oscillator.  Let's examine that first...</p>
+
+<div data-type="example"><h1>Van der Pol Oscillator</h1>
+
+<p>$$\ddot{q} + \mu (q^2 - 1)\dot{q} + q = 0$$
+One can think of this system as almost a simple spring-mass-damper
+system, except that it has nonlinear damping.  In particular, the
+velocity term dissipates energy when $|q|>1$, and adds energy when
+$|q|<1$.  Therefore, it is not terribly surprising to see that the
+system settles into a stable oscillation from almost any initial
+conditions (the exception is the state $q=0,\dot{q}=0$).  This can be
+seem nicely in the phase portrait in Figure~\ref{f:vdp}(left).</p>
+
+<figure>
+  <!--
+  \hfill
+\includegraphics[width=.4\textwidth]{figures/vanderPol_phase.pdf}
+\hfill
+\includegraphics[width=.4\textwidth]{figures/vanderPol_time.pdf}
+\hfill\
+\caption{System trajectories of the Van der Pol oscillator with $\mu
+  =.2$. (Left) phase portrait.  (Right) time domain.}
+\label{f:vdp}
+  -->
+</figure>
+
+<p>However, if we plot system trajectories in the time domain, then a
+slightly different picture emerges (see Figure~\ref{f:vdp}(right)).
+Although the phase portrait clearly reveals that all trajectories
+converge to the same orbit, the time domain plot reveals that these
+trajectories do not necessarily synchronize in time.</p>
+</div> <!-- end of example? -->
+
+<p>The Van der Pol oscillator clearly demonstrates what we would think of
+as a stable limit cycle, but also exposes the subtlety in defining
+this limit cycle stability.  Neighboring trajectories do not
+necessarily converge on a stable limit cycle.  In contrast, defining
+the stability of a particular trajectory (parameterized by time) is
+relatively easy.</p>
+
+<p>
+Let's make a few quick points about the existence of closed-orbits.
+If we can define a closed region of phase space which does not contain
+any fixed points, then it must contain a
+closed-orbit\cite{Strogatz94}.  By closed, I mean that any trajectory
+which enters the region will stay in the region (this is the
+Poincare-Bendixson Theorem).  It's also interesting to note that
+gradient potential fields (e.g. Lyapunov functions) cannot have a
+closed-orbit\cite{Strogatz94}, and consquently Lyapunov analysis
+cannot be applied to limit cycle stability without some modification.</p>
+
 </section>
 
-<!-- ***************  end of walking and running **************   -->
+</section> <!-- ***************  end of walking and running **************   -->
 
 <section data-type="chapter" class="chapter"><h1>Manipulation</h1>
 
@@ -2541,7 +2614,7 @@ on continuous dynamical systems.  We'll explore those extensions in this section
 <section data-type="sect2"><h1>The Hamilton-Jacobi-Bellman Equation</h1>
 
 <p>
-It's important to note that the value iteration equations, equations (\ref{eq:value_update}) and (\ref{eq:policy_update}),
+It's important to understand that the value iteration equations, equations (\ref{eq:value_update}) and (\ref{eq:policy_update}),
 are more than just an algorithm.  They are also sufficient conditions for optimality:
 if we can produce a $J^*$ and $\pi^*$ which satisfy these equations, then $\pi^*$ must
 be an optimal controller.  There are an analagous set of conditions for the continuous
@@ -2634,7 +2707,7 @@ this could be solved (at any particular $\bx$) as a quadratic program.</p>
 <p> What happens in the case where our system is not control affine or if we
 really   do need to specify an instantaneous cost function on $\bu$ that is not
 simply quadratic?   If the goal is to produce an iterative algorithm, like value
-iteration, then one   common approach is to make a quadratic approximation in
+iteration, then one   common approach is to make a (positive-definite) quadratic approximation in
 $\bu$ of the HJB, and updating   that approximation on every iteration of the
 algorithm.  This broad approach is often referred to as <em>differential
 dynamic programming</em> (c.f. <elib>Jacobson70</elib>).   </p>
@@ -2745,7 +2818,13 @@ This equation can be solved for ${\bf S}$ numerically with the Riccati recursion
 </section> <!-- ***************  end of dynamic programming **************   -->
 
 
-<section data-type="chapter" class="chapter"><h1>Linear Quadratic Regulators</h1>
+<section data-type="chapter" class="chapter" id="ch:lqr"><h1>Linear Quadratic Regulators</h1>
+
+<p>While solving the dynamic programming problem for continuous systems is very hard
+  in general, there are a few very important special case where the solutions are
+  very accessible. Most of these involve variants on the
+  case of linear dynamics and quadratic cost.  The simplest case, called the linear quadratic
+  regulator (LQR), is formulated as stabilizing a time-invariant linear system to the origin.</p>
 
 <p>The linear quadratic regulator is likely the most important and
 influential result in optimal control theory to date.  In this chapter we will derive
@@ -2753,25 +2832,44 @@ the basic algorithm and a variety of useful extensions.</p>
 
 <section data-type="sect1"><h1>Basic Derivation</h1>
 
-<p>Consider a linear time-invariant system in state-space form,
-$$\dot{\bx} = {\bf A}\bx + {\bf B}\bu,$$ with the
-infinite-horizon cost function given by $$J = \int_0^\infty \left[ \bx^T {\bf Q}
-\bx + \bu^T {\bf R} \bu \right] dt, \quad {\bf Q} = {\bf Q}^T \ge {\bf 0}, {\bf R}
-= {\bf R}^T > 0.$$ Since we know that the optimal value function
-cannot depend on time in the infinite-horizon case, we will guess the
-form: $$J^*(\bx) = \bx^T {\bf S} \bx.$$ This yields the optimal policy
-$$\bu^* = \pi^*(\bx) = - {\bf R}^{-1} {\bf B}^T {\bf S} \bx = - {\bf
-  K} \bx.$$ In fact, this
-form can also be marched through the HJB and verified.  The solution,
-not surprisingly, is the steady-state solution of the Riccati equation
-described in the finite-horizon problem.  Setting $\dot{\bf S}(t) =
-0$, we have
-$$0 = {\bf S} {\bf A} + {\bf A}^T {\bf S} - {\bf
-S} {\bf B} {\bf R}^{-1} {\bf B}^T {\bf S} + {\bf Q}.$$ Note that
-this equation is not linear in ${\bf S}$, and therefore solving the
-equation is non-trivial (but well understood).  Both the optimal
-policy and optimal value function are available from MATLAB by calling \\
-\centerline{\url{[K,S] = lqr(A,B,Q,R)}.}</p>
+<p>Consider a linear time-invariant system in state-space form, $$\dot{\bx} =
+{\bf A}\bx + {\bf B}\bu,$$ with the infinite-horizon cost function given by $$J =
+\int_0^\infty \left[ \bx^T {\bf Q} \bx + \bu^T {\bf R} \bu \right] dt, \quad
+{\bf Q} = {\bf Q}^T \ge {\bf 0}, {\bf R} = {\bf R}^T > 0.$$  Our goal is to find
+the optimal cost-to-go function $J^*(\bx)$ which satisfies the HJB: $$\forall
+\bx, \quad 0 = \min_\bu \left[ \bx^T {\bf Q} \bx + \bu^T {\bf R} \bu +
+\pd{J^*}{\bx} \left( {\bf A}\bx + {\bf B}\bu \right) \right].$$</p>
+
+<p> There is one magic step here -- it is well known that for this problem the
+optimal cost-to-go   function is quadratic.  This is easy to verify.  Let us choose
+the form:
+$$J^*(\bx) = \bx^T {\bf S} \bx, \quad {\bf S} = {\bf S}^T \succeq 0.$$ The gradient of
+this function is $$\pd{J^*}{\bx} = 2 \bx^T {\bf S}.$$</p>
+
+<p> Since we have guaranteed, by construction, that the terms inside the $\min$ are
+  quadratic and convex (because ${\bf R} \succ 0$), we can take the minimum explicitly
+  by finding the solution where the gradient of those terms vanishes:
+  $$\pd{}{\bu} = 2\bu^T {\bf R} + 2 \bx^T {\bf S} {\bf B} = 0.$$
+This yields the optimal policy $$\bu^* =
+\pi^*(\bx) = - {\bf R}^{-1} {\bf B}^T {\bf S} \bx = - {\bf   K} \bx.$$</p>
+
+<p>Inserting this back into the HJB and simplifying yields
+$$0 = \bx^T \left[ {\bf Q} - {\bf S B R}^{-1}{\bf B}^T{\bf S} + 2{\bf SA} \right]\bx.$$
+All of the terms here are symmetric except for the $2{\bf SA}$, but since
+$\bx^T{\bf SA}\bx = \bx^T{\bf A}^T{\bf S}\bx$, we can write
+$$0 = \bx^T \left[ {\bf Q} - {\bf S B R}^{-1}{\bf B}^T{\bf S} + {\bf SA} + {\bf A}^T{\bf S} \right]\bx.$$
+and since this condition must hold for all $\bx$, it is sufficient to consider
+the matrix equation
+$$0 = {\bf S}
+{\bf A} + {\bf A}^T {\bf S} - {\bf S} {\bf B} {\bf R}^{-1} {\bf B}^T {\bf S} +
+{\bf Q}.$$ This is extremely important equation is a version of the <em>algebraic Riccati equation</em>.
+Note that it is quadratic in ${\bf S}$, making it's solution non-trivial,
+but it is well known that the equation has a single positive-definite solution if and only
+if the system is controllable and
+there are good numerical methods for finding that solution, even in high-dimensional
+problems.  Both the optimal
+policy and optimal cost-to-go function are available from MATLAB's Control Systems Toolbox by calling <code>
+[K,S] = lqr(A,B,Q,R)</code>.</p>
 
 <p>It is worth examining the form of the optimal policy more closely.
 Since the value function represents cost-to-go, it would be sensible
@@ -2793,17 +2891,40 @@ complicated function of the dynamics and cost.</p>
 trivial linear system: $$\ddot{q} = u.$$</p>
 </div>-->
 
+<section data-type="sect2"><h1>Local stabilization of nonlinear systems</h1>
+
+<p>LQR is extremely relevant to us even though our primary interest is in
+  nonlinear dynamics, because it can provide a local approximation of the
+  optimal control solution for the nonlinear system.  Given the nonlinear
+  system $\dot{\bx} = f(\bx,\bu)$, and a stabilizable operating point, $(\bx_0,\bu_0)$, with
+  $f(\bx_0,\bu_0) = 0$.  We can define a relative coordinate system
+  $$\bar\bx = \bx - \bx_0, \quad \bar\bu = \bu - \bu_0,$$ and observe that
+  $$\dot{\bar\bx} = \dot{\bx} = f(\bx,\bu),$$ which we can approximate with a
+  first-order Taylor expansion to $$\dot{\bar\bx} \approx f(\bx_0,\bu_0) + \pd{f(\bx_0,\bu_0)}{\bx} (\bx - \bx_0)
+   + \pd{f(\bx_0,\bu_0)}{\bu} (\bu - \bu_0) = {\bf A}\bar{\bx} + {\bf B}\bar\bu.$$</p>
+
+<p>Similarly, we can define a quadratic cost function in the error coordinates,
+  or take a (positive-definite) second-order approximation of a nonlinear cost function about the operating
+  point (linear and constant terms in the cost function can be easily
+  incorporated into the derivation by parameterizing a full quadratic form for $J^*$, as seen
+  in the Linear Quadratic Tracking derivation below).</p>
+
+<p>The resulting controller takes the form $\bar\bu^* = -{\bf K}\bar\bx$ or
+  $$\bu^* = \bu_0 - {\bf K} (\bx - \bx_0).$$</p>
+
+
 </section>
+
+</section> <!-- end basic derivation -->
 
 <section data-type="sect1"><h1>Finite-horizon formulations</h1>
 
-<section data-type="sect2"><h1>The HJB for Finite-Horizon Problems</h1>
+Recall that the cost-to-go for finite-horizon problems
+is time-dependent, and therefore the HJB sufficiency condition requires
+an additional term for $\pd{J^*}{t}$.
+$$ \forall \bx, \forall t\in[t_0,t_f],\quad 0 = \min_\bu \left[ g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) + \pd{J^*}{t} \right]. $$
 
-$$ 0 = \min_u \left[ g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) + \pd{J}{t} \right] $$
-
-</section>
-
-<section data-type="sect2"><h1>The Linear Quadratic Regulator (LQR)</h1>
+<section data-type="sect2"><h1>Finite-horizon LQR</h1>
 
 <p>
     Consider
@@ -2833,28 +2954,37 @@ $$\pd{J^*}{\bx} = 2 \bx^T {\bf S}(t), \quad \pd{J*}{t} = \bx^T
 \dot{\bf S}(t) \bx,$$ and therefore
 \begin{gather*}
 \bu^* = \pi^*(\bx,t) = - {\bf R}^{-1} {\bf B}^T {\bf S}(t) \bx \\
-0 = \bx^T \left[ {\bf Q} - {\bf S}(t) {\bf B} {\bf R}^{-1} {\bf B}^T
-{\bf S}(t) + 2 {\bf S}(t) {\bf A} + \dot{\bf S}(t) \right] \bx.
-\end{gather*}
-All of the matrices here are symmetric, except for ${\bf S}(t){\bf
-A}$.  But since $\bx^T {\bf S}(t) {\bf A} \bx = \bx^T {\bf A}^T {\bf
-S}(t) \bx$, we can equivalently write the symmetric form (which we assumed):
-$$0 = \bx^T \left[ {\bf Q} - {\bf S}(t) {\bf B} {\bf R}^{-1} {\bf B}^T {\bf
+0 = \bx^T \left[ {\bf Q} - {\bf S}(t) {\bf B} {\bf R}^{-1} {\bf B}^T {\bf
 S}(t) + {\bf S}(t) {\bf A} + {\bf A}^T {\bf S}(t) + \dot{\bf S}(t)
-\right] \bx.$$  Therefore, ${\bf S}(t)$ must satisfy the condition
-(known as the continuous time Riccati equation):
-$$\dot{\bf S}(t) = -{\bf S}(t) {\bf A} - {\bf A}^T {\bf S}(t) + {\bf
-S}(t) {\bf B} {\bf R}^{-1} {\bf B}^T {\bf S}(t) - {\bf Q},$$ and the
+\right] \bx.\end{gather*}  Therefore, ${\bf S}(t)$ must satisfy the condition
+(known as the continuous-time <em>differential Riccati equation</em>):
+$$-\dot{\bf S}(t) = {\bf S}(t) {\bf A} + {\bf A}^T {\bf S}(t) - {\bf
+S}(t) {\bf B} {\bf R}^{-1} {\bf B}^T {\bf S}(t) + {\bf Q},$$ and the
 terminal condition $${\bf S}(T) = {\bf Q}_f.$$ Since we were able to
 satisfy the HJB with the minimizing policy, we have met the
 sufficiency condition, and have found the optimal policy and optimal
 cost-to-go function.</p>
 
-<p>
-The dependence on time in both the value function and the feedback
-policy might surprise readers who have used LQR before.  The more
-common usage is actually the infinite-horizon version of the problem,
-which we will develop in Example~\ref{ex:inf_lqr}.</p>
+<p>Note that the infinite-horizon LQR solution described in the prequel is exactly
+  the steady-state solution of this equation, defined by $\dot{\bf S}(t) = 0$.
+  Indeed, for controllable systems this equation is stable (backwards in time),
+  and as expected the finite-horizon solution converges on the infinite-horizon
+  solution as the horizon time limits to infinity. </p>
+
+</section>
+
+<section data-type="sect2"><h1>Time-varying LQR</h1>
+
+<p>The derivation above holds even if the dynamics are given by
+  $$\dot{\bx} = {\bf A}(t)\bx + {\bf B(t)}\bu.$$  Similarly, the cost functions
+  ${\bf Q}$ and ${\bf R}$ can also be time-varying.  This is quite surprising,
+  as the class of time-varying linear systems is a quite general class of systems.
+  It requires essentially no assumptions on how the time-dependence enters, except
+  perhaps that if ${\bf A}$ or ${\bf B}$ is discontinuous in time then one
+  would have to use the proper techniques to accurately integrate the differential equation.
+  As we will see in the next chapter, one of the most powerful applications involves
+  linearizing around a nominal trajectory of a nonlinear system and using LQR
+  to provide a trajectory controller.</p>
 
 </section>
 
@@ -3646,6 +3776,12 @@ are often the most expensive part). </p>
 </section>
 
 </section> <!-- ***************  end of trajectory optimization **************   -->
+
+<section data-tyep="chapter" class="chapter"><h1>Planning and Control for Hybrid Systems</h1>
+
+</section>
+
+<!-- ***************  end of hybrid systems **************   -->
 
 <section data-type="chapter" class="chapter"><h1>Feasible Motion Planning</h1>
 
