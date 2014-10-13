@@ -2552,7 +2552,7 @@ Equation \ref{eq:HJB} is known as the <em>Hamilton-Jacobi-Bellman</em> (HJB) equ
 of these equations as the limit of a discrete-time approximation of the dynamics, and also gives
 the following sufficiency theorem:
 <div data-type="theorem"><h1>HJB Sufficiency Theorem</h1>
-<p>The following statement is adapted from Proposition 3.2.1 of <elib>Bertsekas05</elib>.  Suppose $J(\bx)$ is a solution
+<p>The following statement is adapted from Proposition 3.2.1 of <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}˙=f(\bx,\bu)$ and an inifinite-horizon additive cost $\int_0^\infty g(\bx,\bu)dt$.  Suppose $J(\bx)$ is a solution
   to the HJB equation; that is $J$ is continuously differentiable in $\bx$ and is such that
   \[ 0 = \min_{u\in U} \left[ g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx. \]
    Suppose also that $\pi^*(\bx)$ attains the minimum in the equation for all $\bx$.  Further
@@ -2703,19 +2703,268 @@ Limited in number of dimensions.  Function approximation, but lacks convergence 
 
 <todo> add section on extensions.  discounting.  finite-horizon / time-varying dynamics or cost.</todo>
 
+
+<!--
+\section{Infinite-Horizon Discounted Problems}
+
+
+\subsection{The Hamilton-Jacobi-Bellman Equation}
+
+\subsection{Examples}
+
+\begin{example}[Linear Quadratic Regulator]
+\begin{gather*}
+\dot{\bx} = f(\bx,\bu) \\
+g(\bx,\bu) = \frac{1}{2} \bx^T {\bf Q} \bx + \frac{1}{2} \bu^T {\bf R}
+\bu, {\bf Q} = {\bf Q}^T > 0, {\bf R}={\bf R}^T>0 \\
+J^\pi(\bx_0) = \int_0^\infty e^{-\frac{t}{\tau}} g(\bx(t),\bu(t)) dt,\quad
+\bx(0) = \bx_0\\
+\frac{1}{\tau} J^*(\bx) = \min_\bu \left[ g(\bx,\bu) + \frac{\partial
+J^*}{\partial \bx}^T \dot{\bx} \right] \\
+\frac{\partial}{\partial \bu} = {\bf R}\bu + {\bf B}^T \frac{\partial J^*}{\partial \bx} =
+0 \\
+u = -{\bf R}^{-1} {\bf B}^T \frac{\partial J^*}{\partial \bx}
+\end{gather*}
+
+Now assume $J^*(x) = \frac{1}{2} \bx^T {\bf S} \bx$, with ${\bf
+  S}={\bf S}^T>0$.
+\begin{gather*}
+\frac{\partial J^*}{\partial \bx} = {\bf S}\bx \\
+\frac{1}{2\tau} J^*(x) = \frac{1}{2} \bx^T {\bf Q} \bx - \frac{1}{2}
+\bx^T {\bf S B
+R}^{-1} {\bf B}^T {\bf S} \bx + \bx^T {\bf S A} \bx \\
+\frac{1}{\tau} {\bf S} = {\bf Q} - {\bf SBR}^{-1}{\bf B}^T {\bf S} +
+2{\bf SA}
+\end{gather*}
+This equation can be solved for ${\bf S}$ numerically with the Riccati recursion.
+\end{example}
+-->
+
 </section> <!-- end of extensions -->
 
 </section> <!-- ***************  end of dynamic programming **************   -->
 
 
 <section data-type="chapter" class="chapter"><h1>Linear Quadratic Regulators</h1>
-<todo> consider renaming this to LQR, or linear optimal control?</todo>
 
-<todo> add LQR derivation here</todo>
+<p>The linear quadratic regulator is likely the most important and
+influential result in optimal control theory to date.  In this chapter we will derive
+the basic algorithm and a variety of useful extensions.</p>
+
+<section data-type="sect1"><h1>Basic Derivation</h1>
+
+<p>Consider a linear time-invariant system in state-space form,
+$$\dot{\bx} = {\bf A}\bx + {\bf B}\bu,$$ with the
+infinite-horizon cost function given by $$J = \int_0^\infty \left[ \bx^T {\bf Q}
+\bx + \bu^T {\bf R} \bu \right] dt, \quad {\bf Q} = {\bf Q}^T \ge {\bf 0}, {\bf R}
+= {\bf R}^T > 0.$$ Since we know that the optimal value function
+cannot depend on time in the infinite-horizon case, we will guess the
+form: $$J^*(\bx) = \bx^T {\bf S} \bx.$$ This yields the optimal policy
+$$\bu^* = \pi^*(\bx) = - {\bf R}^{-1} {\bf B}^T {\bf S} \bx = - {\bf
+  K} \bx.$$ In fact, this
+form can also be marched through the HJB and verified.  The solution,
+not surprisingly, is the steady-state solution of the Riccati equation
+described in the finite-horizon problem.  Setting $\dot{\bf S}(t) =
+0$, we have
+$$0 = {\bf S} {\bf A} + {\bf A}^T {\bf S} - {\bf
+S} {\bf B} {\bf R}^{-1} {\bf B}^T {\bf S} + {\bf Q}.$$ Note that
+this equation is not linear in ${\bf S}$, and therefore solving the
+equation is non-trivial (but well understood).  Both the optimal
+policy and optimal value function are available from MATLAB by calling \\
+\centerline{\url{[K,S] = lqr(A,B,Q,R)}.}</p>
+
+<p>It is worth examining the form of the optimal policy more closely.
+Since the value function represents cost-to-go, it would be sensible
+to move down this landscape as quickly as possible.  Indeed, $-{\bf
+S}\bx$ is in the direction of steepest descent of the value function.
+However, not all directions are possible to achieve in state-space.
+$-{\bf B}^T {\bf S} \bx$ represents precisely the projection of the
+steepest descent onto the control space, and is the steepest descent
+achievable with the control inputs $\bu$.  Finally, the pre-scaling by
+the matrix ${\bf R}^{-1}$ biases the direction of descent to account
+for relative weightings that we have placed on the different control
+inputs.  Note that although this interpretation is straight-forward,
+the slope that we are descending (in the value function, ${\bf S}$) is a
+complicated function of the dynamics and cost.</p>
+
+<!--<div data-type="example"><h1>LQR for the Double Integrator</h1>
+
+<p>Let's use the LQR result to solve for the optimal regulator of our
+trivial linear system: $$\ddot{q} = u.$$</p>
+</div>-->
 
 </section>
 
-<!-- ***************  end of analytical optimal control **************   -->
+<section data-type="sect1"><h1>Finite-horizon formulations</h1>
+
+<section data-type="sect2"><h1>The HJB for Finite-Horizon Problems</h1>
+
+$$ 0 = \min_u \left[ g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) + \pd{J}{t} \right] $$
+
+</section>
+
+<section data-type="sect2"><h1>The Linear Quadratic Regulator (LQR)</h1>
+
+<p>
+    Consider
+systems governed by an LTI state-space equation of the form
+$$\dot{\bx} = {\bf A}\bx + {\bf B}\bu,$$ and a finite-horizon cost
+function with
+\begin{gather*}
+h(\bx) = \bx^T {\bf Q}_f \bx,\quad {\bf Q}_f = {\bf Q}_f^T \ge {\bf 0}
+\\ g(\bx,\bu,t) = \bx^T {\bf Q} \bx + \bu^T {\bf R} \bu, \quad {\bf Q} =
+   {\bf Q}^T \ge 0, {\bf R}={\bf R}^T>0
+\end{gather*}
+Writing the HJB, we have
+$$ 0 = \min_\bu \left[\bx^T {\bf Q} \bx +
+\bu^T {\bf R}\bu + \pd{J^*}{\bx} \left({\bf A} \bx + {\bf B} \bu
+\right) + \pd{J^*}{t} \right]. $$  Due to the positive definite
+quadratic form on $\bu$, we can find the minimum by setting the
+gradient to zero:
+\begin{gather*}
+\pd{}{\bu} = 2 \bu^T {\bf R} + \pd{J^*}{\bx} {\bf B}  = 0 \\
+\bu^* = \pi^*(\bx,t) = - \frac{1}{2}{\bf R}^{-1} {\bf B}^T \pd{J^*}{\bx}^T
+\end{gather*}
+In order to proceed, we need to investigate a particular form for the
+cost-to-go function, $J^*(\bx,t)$.  Let's try a solution of the form:
+$$J^*(\bx,t) = \bx^T {\bf S}(t) \bx, \quad {\bf S}(t) = {\bf S}^T(t) >
+{\bf 0}.$$ In this case we have
+$$\pd{J^*}{\bx} = 2 \bx^T {\bf S}(t), \quad \pd{J*}{t} = \bx^T
+\dot{\bf S}(t) \bx,$$ and therefore
+\begin{gather*}
+\bu^* = \pi^*(\bx,t) = - {\bf R}^{-1} {\bf B}^T {\bf S}(t) \bx \\
+0 = \bx^T \left[ {\bf Q} - {\bf S}(t) {\bf B} {\bf R}^{-1} {\bf B}^T
+{\bf S}(t) + 2 {\bf S}(t) {\bf A} + \dot{\bf S}(t) \right] \bx.
+\end{gather*}
+All of the matrices here are symmetric, except for ${\bf S}(t){\bf
+A}$.  But since $\bx^T {\bf S}(t) {\bf A} \bx = \bx^T {\bf A}^T {\bf
+S}(t) \bx$, we can equivalently write the symmetric form (which we assumed):
+$$0 = \bx^T \left[ {\bf Q} - {\bf S}(t) {\bf B} {\bf R}^{-1} {\bf B}^T {\bf
+S}(t) + {\bf S}(t) {\bf A} + {\bf A}^T {\bf S}(t) + \dot{\bf S}(t)
+\right] \bx.$$  Therefore, ${\bf S}(t)$ must satisfy the condition
+(known as the continuous time Riccati equation):
+$$\dot{\bf S}(t) = -{\bf S}(t) {\bf A} - {\bf A}^T {\bf S}(t) + {\bf
+S}(t) {\bf B} {\bf R}^{-1} {\bf B}^T {\bf S}(t) - {\bf Q},$$ and the
+terminal condition $${\bf S}(T) = {\bf Q}_f.$$ Since we were able to
+satisfy the HJB with the minimizing policy, we have met the
+sufficiency condition, and have found the optimal policy and optimal
+cost-to-go function.</p>
+
+<p>
+The dependence on time in both the value function and the feedback
+policy might surprise readers who have used LQR before.  The more
+common usage is actually the infinite-horizon version of the problem,
+which we will develop in Example~\ref{ex:inf_lqr}.</p>
+
+</section>
+
+<section data-type="sect2"><h1>Linear Quadratic Optimal Tracking</h1>
+
+<p>For completeness, we consider a slightly more general form of the
+linear quadratic regulator.  The standard LQR derivation attempts to
+drive the system to zero.  Consider now the problem:
+\begin{gather*}
+\dot{\bx} = {\bf A}\bx + {\bf B}\bu \\ h(\bx) = (\bx - \bx^d(T))^T
+    {\bf Q}_f (\bx - \bx^d(T)),
+\quad {\bf Q}_f = {\bf Q}_f^T \ge 0 \\ g(\bx,\bu,t) = (\bx - \bx^d(t))^T
+{\bf Q} (\bx - \bx^d(t)) + (\bu - \bu^d(t))^T {\bf R} (\bu - \bu^d(t)),\\ {\bf Q} = {\bf
+Q}^T \ge 0, {\bf R}={\bf R}^T>0
+\end{gather*}
+Now, guess a solution
+\begin{gather*}
+J^*(\bx,t) = \bx^T {\bf S_2}(t) \bx + \bx^T {\bf s_1}(t) + s_0(t), \quad {\bf S_2}(t) = {\bf S_2}^T(t) >
+{\bf 0}.
+\end{gather*}
+In this case, we have
+$$\pd{J^*}{\bx} = 2 \bx^T {\bf S_2}(t) + {\bf s_1}^T(t),\quad
+\pd{J^*}{t} = \bx^T \dot{\bf S_2}(t) \bx + \bx^T \dot{\bf s_1}(t) + \dot{s_0}(t).$$
+Using the HJB,
+$$ 0 = \min_\bu \left[(\bx - \bx^d(t))^T {\bf Q} (\bx - \bx^d(t)) +
+(\bu - \bu^d(t))^T {\bf R} (\bu - \bu^d(t)) + \pd{J^*}{\bx} \left({\bf A} \bx + {\bf B} \bu
+\right) + \pd{J^*}{t} \right], $$
+we have
+\begin{gather*}
+\pd{}{\bu} = 2 (\bu - \bu^d(t))^T{\bf R} + (2\bx^T{\bf S_2}(t) +
+{\bf s_1}^T(t)){\bf B} = 0,\\
+\bu^*(t) =  \bu^d(t) - {\bf R}^{-1} {\bf B}^T\left[{\bf S_2}(t)\bx + \frac{1}{2}{\bf s_1}(t)\right]
+\end{gather*}
+The HJB can be satisfied by integrating backwards
+\begin{align*}
+-\dot{\bf S_2}(t) =& {\bf Q} - {\bf S_2}(t) {\bf B} {\bf R}^{-1} {\bf
+B}^T {\bf S_2}(t) + {\bf S_2}(t) {\bf A} + {\bf A}^T {\bf S_2}(t)\\
+-\dot{\bf s_1}(t) =& -2 {\bf Q} \bx^d(t) + \left[{\bf A}^T - {\bf S}_2
+  {\bf B} {\bf R}^{-1} {\bf B}^T \right]{\bf s_1}(t) + 2{\bf
+  S_2}(t) {\bf B} \bu^d(t)\\
+-\dot{s_0}(t) =&  \bx^d(t)^T {\bf Q} \bx^d(t) - \frac{1}{4} {\bf
+  s_1}^T(t) {\bf B} {\bf R}^{-1} {\bf B}^T {\bf s_1}(t) + {\bf
+  s_1}(t)^T {\bf B} \bu^d(t),
+\end{align*}
+from the final conditions
+\begin{align*}
+{\bf S_2}(T) =& {\bf Q}_f\\
+{\bf s_1}(T) =& -2 {\bf Q}_f \bx^d(T) \\
+s_0(T) =& \left[\bx^d(T)\right]^T {\bf Q}_f \left[ \bx^d(T) \right].
+\end{align*}
+Notice that the solution for ${\bf S_2}$ is the same as the simpler
+LQR derivation, and is symmetric (as we assumed).  Note also that $s_0(t)$
+has no effect on control (even indirectly), and so can often be
+ignored.</p>
+
+<p>A quick observation about the quadratic form, which might be helpful
+in debugging.  We know that $J(x,t)$ must be uniformly positive.  This
+is true iff ${\bf S}_2>0$ and $s_0 > \frac{1}{4} {\bf s}_1^T {\bf
+S}_2^{-1} {\bf s}_1$, which comes from evaluating the function at
+$x_{min}$ defined by $\pd{}{x} = 0$.</p>
+
+<todo>test this on an example, get my notation consistent (s(t)^T vs s^T(t), etc.</todo>
+</section>
+
+<section data-type="sect2"><h1>Minimum-time Linear Quadratic Regulator</h1>
+
+\begin{gather*}
+\dot{\bx} = {\bf A}\bx + {\bf B}\bu \\
+h(\bx) = \bx^T {\bf Q}_f \bx,
+\quad {\bf Q}_f = {\bf Q}_f^T \ge 0 \\
+g(\bx,\bu,t) = 1 + \bx^T {\bf Q} \bx + \bu {\bf R} \bu,\\
+{\bf Q} = {\bf
+Q}^T \ge 0, {\bf R}={\bf R}^T>0
+\end{gather*}
+
+</section>
+
+<section data-type="sect2"><h1>Linear Final Boundary Value Problems</h1>
+
+<p>
+The finite-horizon LQR formulation can be used to impose a strict
+final boundary value condition by setting an infinite ${\bf Q}_f$.
+% ${\bf Q}_f = \infty {\bf I}$.. is this the correct $Q_f$?
+However, integrating the Riccati equation backwards from an infinite
+initial condition isn't very practical.  To get around this, let us
+consider solving for ${\bf P}(t) = {\bf S}(t)^{-1}$.  Using the matrix
+relation $\frac{d {\bf
+S}^{-1}}{dt} = - {\bf S}^{-1} \frac{d {\bf S}}{dt} {\bf S}^{-1}$, we
+have:
+$$-\dot{\bf P}(t) = - {\bf P}(t){\bf Q P}(t) + {\bf B R}^{-1} {\bf B}
+- {\bf A P}(t) - {\bf P}(t){\bf A}^T,$$ with the final conditions $${\bf P}(T) = 0.$$
+This Riccati equation can be integrated backwards in time for a
+solution.  </p>
+
+
+<p>
+  It is very interesting, and powerful, to note that, if one chooses
+${\bf Q} = 0$, therefore imposing no position cost on the trajectory
+before time $T$, then this inverse Riccati equation becomes a linear
+ODE which can be solved explicitly.
+% add explicit solution here
+These relationships are used in the
+derivation of the controllability Grammian, but here we use them to
+design a feedback law.</p>
+</section>
+
+</section> <!-- end finite horizon -->
+
+
+</section> <!-- ***************  end of analytical optimal control **************   -->
 
 <section data-type="chapter" class="chapter"><h1>Lyapunov Analysis</h1>
 
