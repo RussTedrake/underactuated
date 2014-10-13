@@ -3865,11 +3865,18 @@ the instantaneous cost $g(\bx,\bu)$, for a trajectory $\bx^*(\cdot),\bu^*(\cdot)
 defined over $t\in[t_0,t_f]$  to  be optimal is must satisfy the conditions that
 \begin{align*} \forall t\in[t_0,t_f],\quad & \dot{\bx}^* = f(\bx^*,\bu^*), \quad &\bx^*(0)=\bx_0\\
 \forall t\in[t_0,t_f],\quad & -\dot\lambda = \pd{g}{\bx}^T + \pd{f}{\bx}^T \lambda, \quad &\lambda(T) = 0\\
-\forall t\in[t_0,t_f],\quad & u^* = \argmin_{\bu\in{\cal U}} \left[ g(\bx^*,\bu) + \lambda f(\bx^*,\bu) \right].&
+\forall t\in[t_0,t_f],\quad & u^* = \argmin_{\bu\in{\cal U}} \left[ g(\bx^*,\bu) + \lambda^T f(\bx^*,\bu) \right].&
 \end{align*}</p>
+
 </div>
 
-<todo> mention the Hamiltonian </todo>
+<p>Note that the terms which are minimized in the final line of the theorem are commonly
+  referred to as the Hamiltonian of the optimal control problem,
+  $$H(\bx,\bu,\lambda,t) = g(\bx,\bu) + \lambda^T f(\bx,\bu).$$
+  It is distinct from, but inspired by, the Hamiltonian of classical mechanics.  Remembering
+  that $\lambda$ has an interpretation as $\pd{J}{\bx}$, you should also recognize it
+  from the HJB.
+  </p>
 
 </section> <!-- end pontryagin -->
 
