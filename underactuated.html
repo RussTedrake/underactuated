@@ -26,13 +26,24 @@
           var chapters = document.getElementsByClassName("chapter");
           var app = document.getElementsByTagName("appendix");
           var start_appendix = chapters.length - app[0].getElementsByClassName("chapter").length;
+          var current_part = chapters[0].parentNode;
+          var part_number = 1;
           for (i = 0; i < chapters.length; i++) {
             var titles=chapters[i].getElementsByTagName("h1");
             if (!chapters[i].id) {
               chapters[i].id = "chap"+(i+1);
             }
 //            toc = toc + "<li><a href=#"+chapters[i].id+">";
-            if (i>= start_appendix) {
+            if (chapters[i].parentNode != current_part) {
+              current_part = chapters[i].parentNode;
+              part_number += 1;
+              if (current_part.className=="part") {
+                toc = toc + "<p style=\"margin-bottom: 0px; text-decoration: underline; font-variant: small-caps;\"><b>" + current_part.getAttribute("title") + "</b></p>\n";
+              }
+            }
+
+//            toc = toc + chapters[i].parentNode.tagName.toLowerCase();
+            if (chapters[i].parentNode.tagName.toLowerCase() == "appendix") {
               toc = toc + "<li><a href=underactuated.html?appendix="+(i+1-start_appendix)+">";
               toc = toc + "Appendix " + String.fromCharCode(64 + i+1-start_appendix);
             } else {
@@ -765,6 +776,10 @@ most of the material and references required for the course. </p>
 
 </section> <!-- end chapter -->
 
+
+<div class="part" title="Model Systems">
+
+
 <section data-type="chapter" class="chapter" id="ch:pend">
 <h1>The Simple Pendulum</h1>
 
@@ -1090,7 +1105,6 @@ complete trajectory.</p>
   http://mathworld.wolfram.com/EllipticIntegraloftheFirstKind.html -->
 
 
-</div>
 </section>
 
 </section> <!-- end of undamped pend -->
@@ -1159,9 +1173,7 @@ throughout this book.</p>
 </section>
 
 
-</section>
-
- <!-- ***************  end of pendulum chapter **************   -->
+</section> <!-- ***************  end of pendulum chapter **************   -->
 
 <section data-type="chapter" class="chapter" id="ch:modelsys">
   <h1>Acrobots, Cart-Poles, and Quadrotors</h1>
@@ -2158,17 +2170,17 @@ used heavily in underactuated control research.  Other examples include:
 
 <section data-type="chapter" class="chapter"><h1>Model Systems with Fluid Dynamics</h1>
 
-</section>
-
-<!-- ***************  end of fluid dynamics **************   -->
+</section> <!-- ***************  end of fluid dynamics **************   -->
 
 <section data-type="chapter" class="chapter"><h1>Model Systems with Stochasticity</h1>
 
-</section>
+</section> <!-- ***************  end of stochasticity **************   -->
 
-<!-- ***************  end of stochasticity **************   -->
 
-<!-- START PART II:  Nonlinear Planning and Control -->
+</div> <!-- end of Part: model systems -->
+
+
+<div class="part" title="Nonlinear Planning and Control">
 
 <section data-type="chapter" class="chapter"><h1>Dynamic Programming</h1>
 
@@ -3284,8 +3296,8 @@ integration scheme above $\pd{\bu[n]}{\bu_i} = 0$ if $i\ne n$.</p>
     <li>Extract the gradients: $$\pd{J}{\bu[n]} = \pd{g(\bx[n],\bu[n])}{\bu} + \lambda[n]^T \pd{f(\bx[n],\bu[n])}{\bu},$$ with $\pd{J}{\bu_i} = \sum_n \pd{J}{\bu[n]}\pd{\bu[n]}{\bu_i}$.</li>
   </ol>
   Here $\lambda[n]$ is a vector the same size as $\bx[n]$ which has an interpretation as
-  $\lambda[n]=\pd{J}{\bx[n+1]}^T$.  The equation governing $\lambda$ is known as the <em>adjoint</em>
-  equation, and it represents a dramatic efficient improvement over calculating the
+  $\lambda[n]=\pd{J}{\bx[n+1]}^T$.  The equation governing $\lambda$ is known as the <em>adjoint
+  equation</em>, and it represents a dramatic efficient improvement over calculating the
   huge number of simulation gradients described above. In case you are interested,
   the adjoint equation is known as the <em>backpropagation algorithm</em> in the neural
   networks literature and it is one of the primary reasons that training neural networks
@@ -3310,9 +3322,19 @@ issues), but they can work.</p>
 
 <section data-type="sect2"><h1>Discussion</h1>
 
+<p>Although the decision about which algorithm is best may depend on the
+situation,   in our work we have come to favor the direct
+collocation method (and occasionally direct   transcription) for most of our
+work.  There are a number of arguments for and   against each approach; I will
+try to discuss a few of them here.</p>
+
 <section data-type="sect3"><h1>Solver performance</h1>
 
-<p>Numerical conditioning.  Tail wagging the dog.  Sparse constraints. </p>
+<p>Numerical conditioning.  Tail wagging the dog.</p>
+
+<p>Sparse constraints.  Potential for
+parallel evaluation of the constraints (computing the dynamics and their derivatives
+are often the most expensive part). </p>
 
 </section>
 
@@ -3320,6 +3342,13 @@ issues), but they can work.</p>
 
 <p>to avoid local minima.  direct transcription and collocation can take
   an initial guess in $\bx$, too.</p>
+</section>
+
+<section data-type="sect3"><h1>Implicit dynamics</h1>
+
+<p>Another potential advantage of the direct transcription and collocation methods
+  is that the dynamics constraints can be written in implicit form.</p>
+
 </section>
 
 
@@ -3395,10 +3424,29 @@ issues), but they can work.</p>
 
 <!-- ***************  end of planning under uncertainty **************   -->
 
+</div> <!-- end of Part II : Nonlinear Planning and Control -->
+
 <!-- START OF PART III - Estimation and Learning -->
+<div class="part" title="Estimation and Learning">
+
+<section data-type="chapter" class="chapter"><h1>System Identification</h1>
+
+</section>
+
+<section data-type="chapter" class="chapter"><h1>State Estimation</h1>
+
+</section>
+
+<section data-type="chapter" class="chapter"><h1>Reinforcement Learning</h1>
+
+<todo> model-free value methods, model-free policy search, actor-critic methods </todo>
+
+</section>
 
 
-<appendix>
+</div> <!-- end of part III -->
+
+<appendix class="part" title="Appendix">
 
 <section data-type="chapter" class="chapter" id="ch:manipulator"><h1>Robot Dynamics</h1>
 
