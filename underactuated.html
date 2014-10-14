@@ -2166,20 +2166,22 @@ many of the unsolved problems are because walking robots are
 underactuated control systems. </p>
 
 <p>In this chapter we'll introduce some of the simple models of walking
-robots, the control problems that result, and a very brief summary of
+and robots, the control problems that result, and a very brief summary of
 some of the control solutions described in the literature.  Compared
 to the robots that we have studied so far, our investigations of
 legged locomotion will require additional tools for thinking about
 limit cycle dynamics and dealing with impacts.</p>
+
+<todo> search and replace Poincare and Poincar\'e for Poincar&eacute;</todo>
 
 
 <section data-type="sect1"><h1>Limit Cycles</h1>
 
 <p>
 A limit cycle is an asymptotically stable or unstable periodic
-orbit\footnote{marginally-stable orbits, such as the closed-orbits of
+orbit&dagger;<sidenote>&dagger; Marginally-stable orbits, such as the closed-orbits of
   the undamped simple pendulum, are typically not called limit
-  cycles.}.  One of the simplest models of limit cycle behavior is the
+  cycles.</sidenote>.  One of the simplest models of limit cycle behavior is the
 Van der Pol oscillator.  Let's examine that first...</p>
 
 <div data-type="example"><h1>Van der Pol Oscillator</h1>
@@ -2191,23 +2193,20 @@ velocity term dissipates energy when $|q|>1$, and adds energy when
 $|q|<1$.  Therefore, it is not terribly surprising to see that the
 system settles into a stable oscillation from almost any initial
 conditions (the exception is the state $q=0,\dot{q}=0$).  This can be
-seem nicely in the phase portrait in Figure~\ref{f:vdp}(left).</p>
+seem nicely in the phase portrait below.</p>
 
 <figure>
-  <!--
-  \hfill
-\includegraphics[width=.4\textwidth]{figures/vanderPol_phase.pdf}
-\hfill
-\includegraphics[width=.4\textwidth]{figures/vanderPol_time.pdf}
-\hfill\
-\caption{System trajectories of the Van der Pol oscillator with $\mu
-  =.2$. (Left) phase portrait.  (Right) time domain.}
-\label{f:vdp}
-  -->
+<table width="100%"><tr><td width="50%">
+  <img width="100%" src="figures/vanderPol_phase.svg"/>
+</td><td width="50%">
+  <img width="100%" src="figures/vanderPol_time.svg"/>
+</td></tr></table>
+<figcaption>System trajectories of the Van der Pol oscillator with $\mu
+  =.2$. (Left) phase portrait.  (Right) time domain.</figcaption>
 </figure>
 
-<p>However, if we plot system trajectories in the time domain, then a
-slightly different picture emerges (see Figure~\ref{f:vdp}(right)).
+<p>However, as you can see from the plot of system trajectories in the time domain, then a
+slightly different picture emerges.
 Although the phase portrait clearly reveals that all trajectories
 converge to the same orbit, the time domain plot reveals that these
 trajectories do not necessarily synchronize in time.</p>
@@ -2224,14 +2223,107 @@ relatively easy.</p>
 Let's make a few quick points about the existence of closed-orbits.
 If we can define a closed region of phase space which does not contain
 any fixed points, then it must contain a
-closed-orbit\cite{Strogatz94}.  By closed, I mean that any trajectory
+closed-orbit<elib>Strogatz94</elib>.  By closed, I mean that any trajectory
 which enters the region will stay in the region (this is the
 Poincare-Bendixson Theorem).  It's also interesting to note that
 gradient potential fields (e.g. Lyapunov functions) cannot have a
-closed-orbit\cite{Strogatz94}, and consquently Lyapunov analysis
+closed-orbit<elib>Strogatz94</elib>, and consquently Lyapunov analysis
 cannot be applied to limit cycle stability without some modification.</p>
 
 </section>
+
+<section data-type="sect1"><h1>Poincar&eacute; Maps</h1>
+
+<p>
+  One definition for the stability of a limit cycle uses the method of
+  Poincar\'e.  Let's consider an $n$ dimensional dynamical system,
+  $\dot{\bx} = {\bf f}(\bx).$ Define an $n-1$ dimensional <em>surface
+  of section</em>, $S$.  We will also require that $S$ is tranverse to the
+  flow (i.e., all trajectories starting on $S$ flow through $S$, not
+  parallel to it).  The Poincar\'e map (or return map) is a mapping from
+  $S$ to itself:  $$\bx_p[n+1] = {\bf P}(\bx_p[n]),$$ where $\bx_p[n]$
+  is the state of the system at the $n$th crossing of the surface of
+  section. Note that we will use the notation $\bx_p$ to distinguish the
+  state of the discrete-time system from the continuous time system;
+  they are related by $\bx_p[n] = \bx(t_c[n])$, where $t_c[n]$ is the
+  time of the $n$th crossing of $S$.</p>
+
+<div data-type="example"><h1>Return map for the Van der Pol Oscillator</h1>
+
+<p>Since the full system is two dimensional, the return map dynamics are
+  one dimensional.  One dimensional maps, like one dimensional flows,
+  are amenable to graphical analysis.  To define a Poincare section for
+  the Van der Pol oscillator, let $S$ be the line segment where $\dot{q}
+  = 0, q > 0$.</p>
+
+
+<figure>
+<table><tr><td>
+  <img width="100%" src="figures/vanderPol_section.svg" />
+</td><td>
+  <img width="100%" src="figures/vanderPol_retmap.svg" />
+</td></tr></table>
+<figcaption>(Left) Phase plot with the surface of section, $S$ drawn with
+    a black dashed line.  (Right) The resulting Poincare first-return
+    map (blue), and the line of slope one (red).</figcaption>
+</figure>
+</div>
+
+<p>  If ${\bf P}(\bx_p)$ exists for all $\bx_p$, then this method turns the
+  stability analysis for a limit cycle into the stability analysis of a
+  fixed point on a discrete map.  In practice it is often difficult or
+  impossible to find ${\bf P}$ analytically, but it can be obtained
+  quite reasonably numerically.  Once ${\bf P}$ is obtained, we can
+  infer local limit cycle stability with an eigenvalue analysis.  There will
+  always be a single eigenvalue of 1 - corresponding to perturbations
+  along the limit cycle which do not change the state of first return.
+  The limit cycle is considered locally exponentially stable if all
+  remaining eigenvalues, $\lambda_i$, have magnitude less than one,
+  $|\lambda_i|<1$.</p>
+
+<p>  In fact, it is often possible to infer more global stability
+  properties of the return map by examining, ${\bf P}$.
+  <elib>Koditschek91<elib> describes some of the stability properties known
+  for <em>unimodal</em> maps.</p>
+
+<p>  A particularly graphical method for understanding the dynamics of a
+  one-dimensional iterated map is with the staircase method.  Sketch the
+  Poincare map and also the line of slope one.  Fixed points are the
+  crossings with the unity line.  Asymptotically stable if $|\lambda| <
+  1$.  Unlike one dimensional flows, one dimensional
+  maps can have oscillations (happens whenever $\lambda < 0$).</p>
+
+<todo>[insert staircase diagram of van der Pol oscillator return map here]</todo>
+
+</section> <!-- end of Poincare -->
+
+<section data-type="sect1"><h1>Simple Models of Walking</h1>
+
+<section data-type="sect2"><h1>The Ballistic Walker</h1>
+
+<p>One of the earliest models of walking was proposed by
+McMahon<elib>McMahon80</elib>, who argued that humans use a mostly ballistic
+(passive) gait.  COM trajectory looks like a pendulum (roughly walking
+by vaulting).  EMG activity in stance legs is high, but EMG in swing
+leg is very low, except for very beginning and end of swing.  Proposed
+a three-link "ballistic walker" model, which models a single swing
+phase (but not transitions to the next swing nor stability).
+Interestingly, in recent years the field has developed a considerably
+deeper appreciation for the role of compliance during walking;
+simple walking-by-vaulting models are starting to fall out of favor.</p>
+
+<p>McGeer<elib>McGeer90</elib> followed up with a series of walking machines,
+called ``passive dynamic walkers''.  The walking machine by Collins
+and Ruina<elib>Collins01</elib> is the most impressive passive walker to
+date.</p>
+
+</section> <!-- end of ballistic walker -->
+
+<section data-type="sect2"><h1>The Rimless Wheel</h1>
+
+</section> <!-- end rimless wheel -->
+
+</section> <!-- end of walking -->
 
 </section> <!-- ***************  end of walking and running **************   -->
 
@@ -3736,6 +3828,19 @@ are often the most expensive part). </p>
 
 </section>
 
+<section data-type="sect3"><h1>Variations in the problem formulation</h1>
+
+<p>There are number of useful variations to the problem formulations I've presented above.
+By far the most common is the addition of a terminal cost, e.g.: $$\min \quad h(\bx[N]) + \sum_{n=0}^{N-1} g(\bx[n],\bu[n]).$$
+These terms are easily added to the cost function in the any of methods, and the adjoint equations
+of the shooting method simply require the a modified terminal condition $$\lambda[N-1] = \pd{h(\bx[N])}{\bx}$$ when computing the gradients.</p>
+
+<p>Another common modification is including the spacing of the breakpoints as additional
+  decision variables.  This is particularly easy in the direct transcription and collocation methods,
+  and can also be worked into the shooting methods.  Typically we add a lower-bound on the time-step
+  so that they don't all vanish to zero.</p>
+
+</section>
 
 <section data-type="sect3"><h1>Accuracy of numerical integration</h1>
 
@@ -3755,7 +3860,7 @@ are often the most expensive part). </p>
   If numerical accuracy is a premium, then I think you will have more success
   by imposing consistency constraints (e.g. as in the Runge-Kutta 4th order simulation
   with 5th order error checking method) as addition constraints on the
-  state vector; shooting methods do not have any particular advantage here.</p>
+  time-steps; shooting methods do not have any particular advantage here.</p>
 
 </section> <!-- end accuracy -->
 
