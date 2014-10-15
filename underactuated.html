@@ -20,7 +20,7 @@
         // generate table of contents
         {
 
-          var i;
+          var i,j;
 
           var toc = "<h1>Table of Contents</h1>\n<ul>\n<li><a href=#preface>Preface</a></li>\n";
           var chapters = document.getElementsByClassName("chapter");
@@ -50,7 +50,18 @@
               toc = toc + "<li><a href=underactuated.html?chapter="+(i+1)+">";
               toc = toc + "Chapter " + (i+1);
             }
-            toc = toc + ": " + titles[0].innerHTML + "</a></li>\n";
+            toc = toc + ": " + titles[0].innerHTML + "</a>\n";
+
+            toc += "<ul>\n";
+            var sections = chapters[i].getElementsByTagName("section");
+            for (j=0; j<sections.length; j++) {
+              if (sections[j].getAttribute("data-type")=="sect1") {
+                toc += "<li>" + sections[j].getElementsByTagName("h1")[0].innerHTML + "</li>\n";
+              }
+            }
+            toc += "</ul>\n"
+
+            toc += "</li>\n";
           }
           toc = toc + "</ul>\n";
           document.getElementById("table_of_contents").innerHTML = toc;
