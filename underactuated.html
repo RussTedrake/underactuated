@@ -1307,7 +1307,7 @@ runPassive();  % simulate with torque=0 (and display the results)
 <section data-type="sect1"><h1>The Cart-Pole System</h1>
 
 <p> The other model system that we will investigate here is the cart-pole
-system, in which the task is to balance a simple pendulum around its   unstable
+system, in which the task is to balance a simple pendulum around its
 unstable equilibrium, using only horizontal forces on the   cart.  Balancing the
 cart-pole system is used in many introductory   courses in control, including
 6.003 at MIT, because it can be   accomplished with simple linear control (e.g.
@@ -2206,6 +2206,114 @@ date.</p>
 </section> <!-- end of ballistic walker -->
 
 <section data-type="sect2"><h1>The Rimless Wheel</h1>
+
+<figure>
+<img width="40%" src="figures/rimlessWheel.svg"/>
+<figcaption>The rimless wheel. The orientation of the stance leg,
+$\theta$, is measured clockwise from the vertical axis. </figcaption>
+</figure>
+
+<p>The most elementary model of passive dynamic walking, first used in
+the context of walking by <elib>McGeer90</elib>, is the rimless wheel.  This
+simplified system has rigid legs and only a point mass at the hip as
+illustrated in the figure above.  To further simplify the
+analysis, we make the following modeling assumptions:
+<ul>
+<li> Collisions with ground are inelastic and impulsive (only angular
+momentum is conserved around the point of collision).</li>
+<li> The stance foot acts as a pin joint and does not slip.</li>
+<li> The transfer of support at the time of contact is instantaneous
+(no double support phase).</li>
+<li> $0 \le \gamma < \frac{\pi}{2}$, $0 < \alpha < \frac{\pi}{2}$, $l > 0$.</li>
+</ul>
+Note that the coordinate system used here is slightly different than
+for the simple pendulum ($\theta=0$ is at the top, and the sign of
+$\theta$ has changed).</p> <todo> update the coordinates (here and in drake)</todo>
+
+<p>
+The most comprehensive analysis of the rimless wheel was done by
+<elib>Coleman98a</elib>.</p>
+
+
+<section data-type="sect3"><h1>Stance Dynamics</h1>
+
+<p>The dynamics of the system when one leg is on the ground are given by
+$$\ddot\theta = \frac{g}{l}\sin(\theta).$$ If we assume that the
+system is started in a configuration directly after a transfer of
+support ($\theta(0^+) = \gamma-\alpha$), then forward walking occurs when
+the system has an initial velocity, $\dot\theta(0^+) > \omega_1$,
+where $$\omega_1 = \sqrt{ 2 \frac{g}{l} \left[ 1 - \cos \left
+(\gamma-\alpha \right) \right]}.$$ $\omega_1$ is the threshold at
+which the system has enough kinetic energy to vault the mass over the
+stance leg and take a step.  This threshold is zero for $\gamma =
+\alpha$ and does not exist for $\gamma > \alpha$.  The next foot
+touches down when $\theta(t) = \gamma+\alpha$, at which point the conversion
+of potential energy into kinetic energy yields the velocity
+$$\dot\theta(t^-) = \sqrt{ \dot\theta^2(0^+) + 4\frac{g}{l}
+\sin\alpha \sin\gamma }.$$ $t^-$ denotes the time immediately before
+the collision.</p>
+
+</section>
+
+<section data-type="sect3"><h1>Foot Collision</h1>
+
+<figure>
+  <img width="50%" src="figures/rimlessWheel_collision.svg"/>
+  <figcaption>Angular momentum is conserved around the point of impact</figcaption>
+</figure>
+
+<p>
+The angular momentum around the point of collision at time $t$ just
+before the next foot collides with the ground is $$L(t^-) =
+-ml^2\dot\theta(t^-) \cos(2\alpha).$$ The angular momentum at the same
+point immediately after the collision is $$L(t^+) =
+-ml^2\dot\theta(t^+).$$ Assuming angular momentum is conserved, this
+collision causes an instantaneous loss of velocity:
+$$\dot\theta(t^+) = \dot\theta(t^-) \cos(2\alpha).$$</p>
+
+<section data-type="sect3"><h1>Forward simulation</h1>
+
+<p>Given the stance dynamics, the collision detection logic ($\theta = \gamma \pm \alpha$),
+  and the collision update, we can numerical simulate this simple model.  Doing
+  so reveals something remarkable... the wheel starts rolling, but then one of two things
+  happens: it either runs out of energy and stands still, or it quickly falls
+  into a stable periodic solution.  Convergence to this stable periodic solution
+  appears to happen from a huge range of initial conditions.  Try it yourself.</p>
+
+<div data-type="example"><h1>Numerical simulation of the rimless wheel</h1>
+
+<pre><code class="matlab">
+cd(fullfile(getDrakePath,'examples','RimlessWheel'));
+RimlessWheelPlant.run();
+</code></pre>
+
+Optionally you can specify the intiial conditions.  Here are a few good values to try.  (You can
+either run the code yourself or click on the links below to see the animation).
+<ul>
+  <li><a href="figures/rimlessWheel_w0_5.swf"><code>RimlessWheelPlant.run(5)</code></a></li>
+  <li><a href="figures/rimlessWheel_w0_10.swf"><code>RimlessWheelPlant.run(10)</code></a></li>
+  <li><a href="figures/rimlessWheel_w0_0.95.swf"><code>RimlessWheelPlant.run(.95)</code></a></li>
+  <li><a href="figures/rimlessWheel_w0_-5.swf"><code>RimlessWheelPlant.run(-5)</code></a></li>
+  <li><a href="figures/rimlessWheel_w0_-4.8.swf"><code>RimlessWheelPlant.run(-4.8)</code></a></li>
+</ul>
+
+</div>
+
+<p>One of the fantastic things about the rimless wheel is that the dynamics are exactly
+  the undamped simple pendulum that we've thought so much about.  So you will recognize the phase
+  portraits of the system below - they are centered around the unstable fixed point
+  of the simple pendulum.  Phase plots of the trajectories from the various initial conditions
+  recommended above are plotted below.</p>
+
+<figure>
+ <img width="80%" src="figures/rimlessWheel_phase1.svg"/>
+ <img width="80%" src="figures/rimlessWheel_phase2.svg"/>
+ <img width="80%" src="figures/rimlessWheel_phase3.svg"/>
+ <img width="80%" src="figures/rimlessWheel_phase4.svg"/>
+ <figcaption>Phase portrait trajectories of the rimless wheel]{Phase
+   portrait trajectories of the rimless wheel
+ ($m=1,l=1,g=9.8,\alpha=\pi/8,\gamma=0.08$).</figcaption>
+</figure>
 
 </section> <!-- end rimless wheel -->
 
@@ -3872,7 +3980,7 @@ of the shooting method simply require the a modified terminal condition $$\lambd
   with 5th order error checking method) as addition constraints on the
   time-steps; shooting methods do not have any particular advantage here.
 
-<todo>reference DMOC</todo>  
+<todo>reference DMOC</todo>
 
   </p>
 
@@ -4242,7 +4350,7 @@ Construction Set".
 
 <todo> frictional contact </todo>
 
-<todo> numerical integration </todo>
+<todo> numerical integration.  discrete-time approximations of continuous systems (lots of edx people had trouble with this.  some found: http://web.mit.edu/10.001/Web/Course_Notes/Differential_Equations_Notes/node3.html) </todo>
 
 
 </section> <!-- end robot dynamics chapter -->
