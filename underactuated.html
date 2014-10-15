@@ -72,7 +72,7 @@
             } else {
               chapters[i].style.display = "inline";
 //              document.getElementById("debug_output").innerHTML="got here";
-              chapters[i].style.counterReset = "chapter " + i;
+              chapters[i].style.counterReset = "chapter " + i + " sect1 example_counter theorem algorithm figure";
               MathJax.Hub.Queue(["Typeset",MathJax.Hub,chapters[i]]);
             }
           }
@@ -91,7 +91,7 @@
           var chapters = app[0].getElementsByClassName("chapter");
           i = Number(appendix)-1;
           chapters[i].style.display = "inline";
-          chapters[i].style.counterReset = "chapter " + i;
+          chapters[i].style.counterReset = "chapter " + i + " sect1 example_counter theorem algorithm figure";
           MathJax.Hub.Queue(["Typeset",MathJax.Hub,chapters[i]]);
         }
 
@@ -2859,7 +2859,7 @@ input limits) to the origin   using a quadratic cost: $$ g(\bx,\bu) = q^2 +
 \dot{q}^2 + u^2. $$  I claim   (without derivation) that the optimal controller
 for this objective is $$\pi(\bx) = -q - \sqrt{3}\dot{q}.$$   To convince you
 that this is indeed optimal, I have produced   the following cost-to-go
-function: $$J(\bx) = \sqrt{3} q^2 + 2 q \dot{q} + \sqrt{3} \dot{q}.$$</p>
+function: $$J(\bx) = \sqrt{3} q^2 + 2 q \dot{q} + \sqrt{3} \dot{q}^2.$$</p>
 
 <p>Taking \begin{gather*} \pd{J}{q} = 2\sqrt{3} q + 2\dot{q}, \qquad
 \pd{J}{\dot{q}} = 2q + 2\sqrt{3}\dot{q}, \end{gather*}   we can write

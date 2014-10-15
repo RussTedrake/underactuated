@@ -66,8 +66,7 @@ em { color: rgb(153,51,51); /* mit red */ }
 
 /* Counters */
 body {
-  counter-reset:chapter;
-  counter-reset:definition;
+  counter-reset:chapter definition;
 }
 
 appendix {
@@ -76,11 +75,7 @@ appendix {
 
 [data-type="chapter"] {
   counter-increment:chapter;
-  counter-reset:sect1;
-  counter-reset:example;
-  counter-reset:theorem;
-  counter-reset:algorithm;
-  counter-reset:figure;
+  counter-reset: sect1 example_counter theorem algorithm figure;
   display:none;
 }
 [data-type="sect1"] {
@@ -97,7 +92,7 @@ appendix {
   counter-increment:theorem;
 }
 [data-type="example"] {
-  counter-increment:example;
+  counter-increment:example_counter;
 }
 [data-type="algorithm"] {
   counter-increment:algorithm;
@@ -160,7 +155,7 @@ appendix {
 }
 
 [data-type="example"] h1:before {
-  content: "Example " counter(chapter) "." counter(example) " (";
+  content: "Example " counter(chapter) "." counter(example_counter) " (";
 }
 [data-type="algorithm"] h1:before {
   content: "Algorithm " counter(chapter) "." counter(algorithm) " (";
