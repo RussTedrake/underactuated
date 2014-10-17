@@ -2349,7 +2349,7 @@ Van der Pol oscillator.  Let's examine that first...</p>
 
 <div data-type="example"><h1>Van der Pol Oscillator</h1>
 
-<p>$$\ddot{q} + \mu (q^2 - 1)\dot{q} + q = 0$$
+<p>$$\ddot{q} + \mu (q^2 - 1)\dot{q} + q = 0, \quad \mu>0$$
 One can think of this system as almost a simple spring-mass-damper
 system, except that it has nonlinear damping.  In particular, the
 velocity term dissipates energy when $|q|>1$, and adds energy when
@@ -4173,7 +4173,21 @@ limit cycle stability.  The simple models of </p>
 
 <p>Just add periodicity constraints.  Even if there are no inputs (system is passive).</p>
 
-<todo> example: van der pol </todo>
+<div data-type="example"><h1>Finding the limit cycle of the Van der Pol oscillator</h1>
+
+<p>Recall the dynamics of the Van der Pol oscillator given by
+  $$\ddot{q} + \mu (q^2 - 1) \dot{q} + q = 0, \quad \mu>0,$$
+  which exhibited a stable limit cycle.</p>
+
+<p>Formulate the direct collocation optimization:
+  \begin{align*}
+    \find_{\bx_0,...,\bx_N,dt} \quad \\
+    \subjto \quad    & q_0 = 0, \quad q_N = 0, \\
+    & \dot{q}_0 = \dot{q}_N, \quad \dot{q}_0 > 0, \\
+    & \text{collocation dynamic constraints}
+  \end{align*}
+</p>
+</div>
 
 <todo> example: simplest flapping robot </todo>
 
@@ -4266,14 +4280,14 @@ circle.   In cartesian coordinates, the dynamics are   \begin{align*}
 <p>If we take the
 transverse coordinates to be the polar coordinates,   shifted so that $x_\perp$
 is zero on the unit circle, \begin{align*}\tau =& \text{atan2}(-x_2,x_1) \\
-x_\perp =& \sqrt{x_1^2+x_2^2}-1, \end{align*}   then the simple transverse
+x_\perp =& \sqrt{x_1^2+x_2^2}-1, \end{align*} which is valid when $x_\perp>-1$, then the simple transverse
 dynamics are revealed:   \begin{align*}     \dot\tau =& 1 \\     \dot{x}_\perp =&
 -\alpha x_\perp.   \end{align*}   Taking a Lyapunov candidate $V(x_\perp,\tau) =
-x_\perp^2$, we can verify that $$\dot{V} = -2 \alpha x_\perp^2 \prec 0, \quad \forall x_\perp, \|x_\perp\| < 1.$$
-The limit on the magnitude of $x_\perp$ comes from the singularlity in the map:
-$\bx \rightarrow \tau$.  Therefore, we can only verify states inside the circle of
-radius 2 (with the exception of the fixed point at the origin) will converge to the limit cycle.  In
-fact, we know that all initial conditions except the fixed point at the origin will converge.</p>
+x_\perp^2$, we can verify that $$\dot{V} = -2 \alpha x_\perp^2 \prec 0, \quad \forall x_\perp > -1.$$
+This demonstrates that the limit cycle is locally asyptotically stable, and furthermore that the invariant open-set $V<1$ is inside the region of attraction
+of that limit cycle. In fact, we know that all $x_\perp>-1$ are in the region of attraction
+that limit cycle, but this is not proven by the Lyapunov argument above.
+</p>
 
 </div>
 
