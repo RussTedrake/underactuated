@@ -2029,8 +2029,8 @@ form $$u = -k \dot\theta \tilde{E},\quad k>0,$$ then the resulting
 error dynamics are $$\dot{\tilde{E}} = - k \dot\theta^2 \tilde{E}.$$
 These error dynamics imply an exponential convergence: $$\tilde{E}
 \rightarrow 0,$$ except for states where $\dot\theta=0$.  The
-essential property is that when $E>E^d$, we should remove energy from
-the system (damping) and when $E<E^d$, we should add energy (negative
+essential property is that when $E > E^d$, we should remove energy from
+the system (damping) and when $E < E^d$, we should add energy (negative
 damping).  Even if the control actions are bounded, the convergence is
 easily preserved.</p>
 
@@ -2124,7 +2124,7 @@ Use collocated PFL.  ($\ddot{q}_2 = \ddot{q}_2^d$).
 $$E(\bx) = \frac{1}{2}\dot\bq^T{\bf H}\dot{\bq} + U(\bx).$$
 $$ E_d = U(\bx^*).$$
 $$\bar{u} = \dot{q}_1 \tilde{E}.$$
-$$\ddot{x}^d  = - k_1 q_2 - k_2 \dot{q}_2 + k_3 \bar{u},$$</p>
+$$\ddot{q}_2^d  = - k_1 q_2 - k_2 \dot{q}_2 + k_3 \bar{u},$$</p>
 
 <p>
 Extra PD terms prevent proof of asymptotic convergence to homoclinic
@@ -4284,8 +4284,8 @@ x_\perp =& \sqrt{x_1^2+x_2^2}-1, \end{align*} which is valid when $x_\perp>-1$, 
 dynamics are revealed:   \begin{align*}     \dot\tau =& 1 \\     \dot{x}_\perp =&
 -\alpha x_\perp.   \end{align*}   Taking a Lyapunov candidate $V(x_\perp,\tau) =
 x_\perp^2$, we can verify that $$\dot{V} = -2 \alpha x_\perp^2 \prec 0, \quad \forall x_\perp > -1.$$
-This demonstrates that the limit cycle is locally asyptotically stable, and furthermore that the invariant open-set $V<1$ is inside the region of attraction
-of that limit cycle. In fact, we know that all $x_\perp>-1$ are in the region of attraction
+This demonstrates that the limit cycle is locally asyptotically stable, and furthermore that the invariant open-set $V < 1$ is inside the region of attraction
+of that limit cycle. In fact, we know that all $x_\perp > -1$ are in the region of attraction
 that limit cycle, but this is not proven by the Lyapunov argument above.
 </p>
 
