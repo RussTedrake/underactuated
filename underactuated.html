@@ -52,14 +52,24 @@
             }
             toc = toc + ": " + titles[0].innerHTML + "</a>\n";
 
-            toc += "<ul>\n";
             var sections = chapters[i].getElementsByTagName("section");
+            var level=0;
             for (j=0; j<sections.length; j++) {
               if (sections[j].getAttribute("data-type")=="sect1") {
-                toc += "<li>" + sections[j].getElementsByTagName("h1")[0].innerHTML + "</li>\n";
-              }
+                while (level<1) { toc += "<ul>\n"; level += 1; }
+                while (level>1) { toc += "</ul>\n"; level -= 1; }
+              } else if (sections[j].getAttribute("data-type")=="sect2") {
+                while (level<2) { toc += "<ul>\n"; level += 1; }
+                while (level>2) { toc += "</ul>\n"; level -= 1; }
+              } /*
+              else if (sections[j].getAttribute("data-type")=="sect3") {
+                while (level<3) { toc += "<ul>\n"; level += 1; }
+                while (level>3) { toc += "</ul>\n"; level -= 1; }
+              } */
+              else { continue; }
+              toc += "<li>" + sections[j].getElementsByTagName("h1")[0].innerHTML + "</li>\n";
             }
-            toc += "</ul>\n"
+            while (level>0) { toc += "</ul>\n"; level -= 1; }
 
             toc += "</li>\n";
           }
@@ -279,7 +289,7 @@ extraordinary performance in terms of speed, efficiency, or robustness.</p>
 <p>Let's start with some examples, and some videos.</p>
 
 <section data-type="sect2">
-<h1>Honda's ASIMO vs. Passive Dynamic Walkers</h1>
+<h1>Honda's ASIMO vs. passive dynamic walkers</h1>
 
 <p> The world of robotics changed when, in late 1996, Honda Motor Co. announced
 that they had been working for nearly 15 years (behind closed doors) on walking
@@ -817,7 +827,7 @@ torque input, $u(t)$: $$Q = -b\dot\theta(t) + u(t).$$ </p>
 
 </section>
 
-<section data-type="sect1"><h1>Nonlinear Dynamics w/ a Constant Torque</h1>
+<section data-type="sect1"><h1>Nonlinear dynamics with a constant torque</h1>
 
 <p> Let us first consider the dynamics of the pendulum if it is driven in a
 particular simple way: a torque which does not vary with time: \begin{equation}
@@ -851,7 +861,7 @@ system, then there are a number of techniques we can apply.  In this chapter, we
 will start by investigating graphical solution methods. These methods are
 described beautifully in a book by Steve Strogatz<elib>Strogatz94</elib>.
 
-<section data-type="sect2"><h1>The Overdamped Pendulum</h1>
+<section data-type="sect2"><h1>The overdamped pendulum</h1>
 
 <p> Let's start by studying a special case -- intuitively when $b \gg ml^2$, but
 to get the units right we actually need to include a fundamental time constant,
@@ -998,7 +1008,7 @@ instability with $\theta \rightarrow \pm \infty$. </p>
 
 </section> <!-- end of overdamped pend -->
 
-<section data-type="sect2"><h1>The Undamped Pendulum w/ Zero Torque</h1>
+<section data-type="sect2"><h1>The undamped pendulum with zero torque</h1>
 
 <p> Consider again the system $$ml^2 \ddot\theta = u_0 - mgl \sin\theta -
 b\dot\theta,$$ this time with $b = 0$.  This time the system dynamics are truly
@@ -1021,7 +1031,7 @@ Some of them are stable i.s.L., none are asymptotically stable.
 
 <figure> <img width="80%" src="figures/pend_undamped_phase.svg"/> </figure> </p>
 
-<section data-type="sect3"><h1>Orbit Calculations</h1>
+<section data-type="sect3"><h1>Orbit calculations</h1>
 
 <p> You might wonder how we drew the black countour lines in the figure above.  We could
 have obtained them by simulating the system numerically, but those lines can be
@@ -1049,7 +1059,7 @@ you can verify that differentiating this equation with respect to time indeed
 results in the equations of motion.</p>
 
 </section>
-<section data-type="sect3"><h1>Trajectory Calculations</h1>
+<section data-type="sect3"><h1>Trajectory calculations</h1>
 
 <p> For completeness, I'll include what it would take to solve for $\theta(t)$,
 even thought it cannot be accomplished using elementary functions.  Feel free to
@@ -1120,7 +1130,7 @@ complete trajectory.</p>
 
 </section> <!-- end of undamped pend -->
 
-<section data-type="sect2"><h1>The Undamped Pendulum w/ a Constant Torque</h1>
+<section data-type="sect2"><h1>The undamped pendulum with a constant torque</h1>
 
 <p> Now what happens if we add a constant torque?  If you visualize the
 bifurcation diagram, you'll see that the fixed points come together, towards $q =
@@ -1131,7 +1141,7 @@ unstable, and one is stable.</p>
 
 </section> <!-- undamped constant torque -->
 
-<section data-type="sect2"><h1>The Damped Pendulum</h1>
+<section data-type="sect2"><h1>The damped pendulum</h1>
 
 <p>
 Now let's add damping back.  You can still add torque to move the fixed points
@@ -1155,7 +1165,7 @@ like you to think about control system design.  And we'll give you your first so
 
 </section> <!-- end of constant torque -->
 
-<section data-type="sect1"><h1>The Torque-limited Simple Pendulum</h1>
+<section data-type="sect1"><h1>The torque-limited simple pendulum</h1>
 
 <p>
 The simple pendulum is fully actuated.  Given enough torque, we can
@@ -1229,7 +1239,7 @@ the un-actuated degree of freedom.  It is also an important system
 because, as we will see, it closely resembles one of the simplest
 models of a walking robot.</p>
 
-<section data-type="sect2"><h1>Equations of Motion</h1>
+<section data-type="sect2"><h1>Equations of motion</h1>
 
 <p>
 Figure 3.1 illustrates the model parameters used in our
@@ -1315,7 +1325,7 @@ runPassive();  % simulate with torque=0 (and display the results)
 
 </section> <!-- acrobot -->
 
-<section data-type="sect1"><h1>The Cart-Pole System</h1>
+<section data-type="sect1"><h1>The Cart-Pole system</h1>
 
 <p> The other model system that we will investigate here is the cart-pole
 system, in which the task is to balance a simple pendulum around its
@@ -1328,7 +1338,7 @@ treatment.</p>
 
 <figure>
   <img width="50%" src="figures/cartpole.svg"/>
-  <figcaption>The Cart-Pole System.  Click <a href="http://youtu.be/Bzq96V1yN5k">here to see a real robot</a>.</figcaption>
+  <figcaption>The Cart-Pole system.  Click <a href="http://youtu.be/Bzq96V1yN5k">here to see a real robot</a>.</figcaption>
   <todo> add swing-up + balance swf</todo>
 </figure>
 
@@ -1338,7 +1348,7 @@ position of the cart, $\theta$ is the   counter-clockwise angle of the pendulum
 [\bq,\dot\bq]^T$.   The task is to stabilize the unstable fixed point at $\bx =
 [0,\pi,0,0]^T.$ </p>
 
-<section data-type="sect2"><h1>Equations of Motion</h1>
+<section data-type="sect2"><h1>Equations of motion</h1>
 
 <p>
 The kinematics of the system are given by
@@ -1409,7 +1419,7 @@ examine the controllability of this linear system, then using
 linear quadratic regulator (LQR) theory to design our feedback
 controller.</p>
 
-<section data-type="sect2"><h1>Linearizing the Manipulator Equations</h1>
+<section data-type="sect2"><h1>Linearizing the manipulator equations</h1>
 
 <p>
 Although the equations of motion of both of these model systems are
@@ -1485,7 +1495,7 @@ Again, the linear dynamics follow simply.
 
 </section> <!-- end linearizing -->
 
-<section data-type="sect2"><h1>Controllability of Linear Systems</h1>
+<section data-type="sect2"><h1>Controllability of linear systems</h1>
 
 <p>   <div data-type="definition"><h1>Controllability</h1>     A control system
 of the form $$\dot{\bx} = {\bf f}(\bx,\bu)$$ is called   <em>controllable</em>
@@ -1601,7 +1611,7 @@ Grammian<elib>Chen98a</elib>.</p>
 
 </section>
 
-<section data-type="sect3"><h1>Controllability vs. Underactuated</h1>
+<section data-type="sect3"><h1>Controllability vs. underactuated</h1>
 
 <p>
 Analysis of the controllability of both the Acrobot and Cart-Pole
@@ -1631,7 +1641,7 @@ often be referred to by the synonym of "reachability" analysis.</p>
 
 </section> <!-- end controllability -->
 
-<section data-type="sect2"><h1>LQR Feedback</h1>
+<section data-type="sect2"><h1>LQR feedback</h1>
 
 <p>
 Controllability tells us that a trajectory to the fixed point exists,
@@ -1715,7 +1725,7 @@ which outperform our LQR solution in this regard.</p>
 
 </section> <!-- end balancing -->
 
-<section data-type="sect1"><h1>Partial Feedback Linearization</h1>
+<section data-type="sect1"><h1>Partial feedback linearization</h1>
 
 <p>
 In the introductory chapters, we made the point that the underactuated
@@ -1786,7 +1796,7 @@ force cannot create a torque when the beam is perfectly horizontal.</p>
 
 </section> <!-- end PFL for the cart-pole -->
 
-<section data-type="sect2"><h1>General Form</h1>
+<section data-type="sect2"><h1>General form</h1>
 
 <p>
 For systems that are trivially underactuated (torques on some joints,
@@ -1847,7 +1857,7 @@ if every state is coupled.</p>
 
 </section>
 
-<section data-type="sect3"><h1>Task Space Partial Feedback Linearization</h1>
+<section data-type="sect3"><h1>Task-space partial feedback linearization</h1>
 
 <p>
 In general, we can define some combination of active and passive
@@ -1929,10 +1939,6 @@ derivation above.</p>
 <todo>add results here</todo>
 </div> <!-- end example-->
 
-</section> <!-- task space pfl -->
-
-<section data-type="sect3"><h1>Collocated and Non-Collocated PFL from Task Space derivation</h1>
-
 <p>
 The task space derivation above provides a convenient generalization
 of the partial feedback linearization (PFL) <elib>Spong94a</elib>, which
@@ -1961,14 +1967,14 @@ The torque command is found by substituting $\ddot\bq_1 = v$ and
 ($\ref{eq:q2ddnonco}$) into ($\ref{eq:active_dyn}$), yielding the same
 results as in <elib>Spong94a</elib>.</p>
 
-</section>
+</section> <!-- task space PFL -->
 </section>
 </section>
 
 
-<section data-type="sect1"><h1>Swing-Up Control</h1>
+<section data-type="sect1"><h1>Swing-up control</h1>
 
-<section data-type="sect2"><h1>Energy Shaping</h1>
+<section data-type="sect2"><h1>Energy shaping</h1>
 
 <p>
 Recall the phase portraits that we used to understand the dynamics of
@@ -2000,7 +2006,7 @@ and perhaps the most well-known.</p>
 
 </section>
 
-<section data-type="sect2" id="s:pend_energy_shaping"><h1>Simple Pendulum</h1>
+<section data-type="sect2" id="s:pend_energy_shaping"><h1>Simple pendulum</h1>
 
 <p>
 Recall the equations of motion for the undamped simple pendulum were given
@@ -2149,7 +2155,7 @@ solving these and other control problems.
 
 </section>
 
-<section data-type="sect1"><h1>Other Model Systems</h1>
+<section data-type="sect1"><h1>Other model systems</h1>
 
 <p>
 The acrobot and cart-pole systems are just two of the model systems
@@ -2708,7 +2714,7 @@ focus on additive cost problems and their solution via <em>dynamic programming</
 
 </section> <!-- control design as an optimization -->
 
-<section data-type="sect1"><h1>Optimal Control as Graph Search</h1>
+<section data-type="sect1"><h1>Optimal control as graph search</h1>
 
 <p> For systems with continuous states and continuous actions, dynamic
 programming is a set of theoretical ideas surrounding additive cost optimal
@@ -2824,7 +2830,7 @@ Again, you can easily try different cost functions by editing the code yourself.
 
 </section> <!-- end of graph search -->
 
-<section data-type="sect1"><h1>Continuous Dynamic Programming</h1>
+<section data-type="sect1"><h1>Continuous dynamic programming</h1>
 
 <p>
 I find the graph search algorithm extremely satisfying as a first step, but also
@@ -3270,7 +3276,7 @@ $x_{min}$ defined by $\pd{}{x} = 0$.</p>
 <todo>test this on an example, get my notation consistent (s(t)^T vs s^T(t), etc.</todo>
 </section>
 
-<section data-type="sect2"><h1>Minimum-time Linear Quadratic Regulator</h1>
+<section data-type="sect2"><h1>Minimum-time LQR</h1>
 
 \begin{gather*}
 \dot{\bx} = {\bf A}\bx + {\bf B}\bu \\
@@ -3313,12 +3319,6 @@ design a feedback law.</p>
 </section>
 
 </section> <!-- end finite horizon -->
-
-<section data-type="sect1"><h1>Transverse LQR</h1>
-
-<todo>finite-horizon but also for periodic solutions.</todo>
-
-</section>
 
 
 </section> <!-- ***************  end of LQR **************   -->
@@ -4116,6 +4116,7 @@ defined over $t\in[t_0,t_f]$  to  be optimal is must satisfy the conditions that
   from the HJB.
   </p>
 
+</section>
 </section> <!-- end pontryagin -->
 
 <section data-type="sect1"><h1>Trajectory optimization as a convex optimization</h1>
@@ -4162,7 +4163,153 @@ apply finite-horizon LQR (see the LQR chapter).</p>
 
 </section> <!-- ***************  end of trajectory optimization **************   -->
 
-<section data-tyep="chapter" class="chapter"><h1>Planning and Control through Contact</h1>
+<section data-type="chapter" class="chapter"><h1>Algorithms for Limit Cycles</h1>
+
+<p>The discussion of walking and running robots in Chapter 4 motivated the notion of
+limit cycle stability.  The simple models of </p>
+
+
+<section data-type="sect1"><h1>Trajectory optimization</h1>
+
+<p>Just add periodicity constraints.  Even if there are no inputs (system is passive).</p>
+
+<todo> example: van der pol </todo>
+
+<todo> example: simplest flapping robot </todo>
+
+</section> <!-- end trajectory optimization -->
+
+<section data-type="sect1"><h1>Lyapunov analysis</h1>
+
+<p>Recall the important distinction between stability of a trajectory in time
+and   stability of a limit cycle was that the limit cycle does not converge in
+phase --   trajectories near the cycle converge to the cycle, but trajectories
+on the cycle   may not converge with each other.  This is type of stability,
+also known as <em>orbital   stability</em> can be written as stability to the
+manifold described by cycle   $\bx^*(t)$, \[ \min_\tau || x(t) - x^*(\tau) ||
+\rightarrow 0.\] In the case of limit cycles, this manifold is a periodic
+solution with $\bx^*(t+t_{period}) = \bx^*(t)$.   Depending on exactly how that
+convergence happens, we can define orbital stability in the sense of Lyapunov,
+asympotitic orbital stability, exponential orbital stability, or even
+finite-time orbital stability.</p>
+
+<p>In order to prove that a system is orbitally stable (locally, over a region, or globally),
+or to analyze the region of attraction of a limit cycle, we can use a Lyapunov function.
+In particular, we would like to consider Lyapunov functions which have the
+form cartooned below;  they vanish to zero everywhere along the cycle, and are
+strictly positive everywhere away from the cycle.
+
+<figure><img src="figures/limitCycleLyapunovCartoon.svg"/><figcaption>Cartoon of a Lyapunov
+function which vanishes on a limit cycle, and is strictly positive definite everywhere else.
+(a small segment has been removed solely for the purposes of visualization).</figcaption></figure>
+
+<section data-type="sect2"><h1>Transverse coordinates</h1>
+
+How can we parameterize this class of functions?  For arbitrary cycles this could be
+very difficult in the original coordinates.  For simple cycles like in the cartoon,
+one could imagine using polar coordinates.  More generally, we will define a new
+coordinate system relative to the orbit, with coordinates
+<ul>
+  <li>$\tau$ - the phase along the orbit</li>
+  <li>$\bx_\perp(\tau)$ - the remaining coordinates, linearly independent from $\tau$.</li>
+</ul>
+Given a state $\bx$ in the original coordinates, we must define a smooth mapping $\bx \rightarrow (\tau, \bx_\perp)$
+to this new coordinate system.  For example, for a simple ring oscillator we might have:
+<figure><img width="80%" src="figures/transverseCoordinates.svg"/><figcaption>A moving coordinate system
+  along the limit cycle.</figcaption></figure>
+In general, for an $n$-dimensional state space, $\tau$ will always be a scalar, and $\bx_\perp$ will
+be an $(n-1)$-dimensional vector defining the remaining coordinates relative to $\bx^*(\tau)$.
+In fact,
+although we use the notation $\bx_\perp$ the coordinate system need not be strictly orthogonal
+to the orbit, but must simply be <em>transversal</em> (not parallel).
+The value of this construction for Lyapunov analysis was proposed in <elib>Hauser94</elib> and
+has been extended nicely to control design in <elib>Shiraiv08</elib> and for region of attraction
+estimation in <elib>Manchester10b</elib>.  A particular numerical strategy for defining the
+transversal coordinates is given in <elib>Manchester10a</elib>.
+</p>
+
+<p>Having defined the smooth mapping $\bx \rightarrow (\tau,\bx_\perp)$, we can
+  always rewrite the dynamics in this new coordinate system:
+  \begin{gather*}
+  \dot{\tau} = f_1(\bx_\perp,\tau) \\
+  \dot\bx_\perp = f_2(\bx_\perp,\tau)
+  \end{gather*}
+</p>
+
+
+<div data-type="theorem"><h1>A Lyapunov theorem for orbital stability</h1>
+
+<p>For a dynamical system $\dot\bx = f(\bx)$ with $f$ continuous, a continuous periodic solution
+  $\bx^*(\tau)$, and a smooth mapping $\bx \rightarrow (\tau,\bx_\perp)$ where $\bx_\perp$ vanishes
+  on $\bx^*$, then for some $n-1$ dimensional ball ${\cal B}$ around the origin,
+  if I can produce
+  a $V(\bx_\perp,\tau)$ such that
+  \begin{gather*}
+    \forall \tau, V(0,\tau) = 0, \\
+    \forall \tau, \forall \bx_\perp \in {\cal B}, \bx_\perp \ne 0, V(\bx_\perp,\tau) > 0,
+  \end{gather*}
+  with
+  \begin{gather*}
+    \forall \tau, \dot{V}(0,\tau) = 0, \\
+    \forall \tau, \forall \bx_\perp \in {\cal B}, \bx_\perp \ne 0, \dot{V}(\bx_\perp,\tau) < 0,
+  \end{gather*}
+  then the solution $\bx^*(t)$ is <em>locally orbitally asymptotically stable</em>.
+</div>
+
+<p>Let's compare this approach with the approach that we used in the chapter on walking
+  robots, where we used a Poincare map analysis to investigate limit cycle stability.
+In transverse coordinates approach, there is an additional burden to construct the coordinate system
+along the entire trajectory, instead of only at a single surface of section.  In fact,
+the transverse coordinates approach is sometimes referred to as a "moving Poincare section".
+But the reward for this extra work is that we can check a condition that only involves
+the instantaneous dynamics, $f(\bx)$, as opposed to having to integrate the dynamics
+over an entire cycle to generate the discrete Poincare map, $\bx_p[n+1] = P(\bx_p[n])$.
+While computing $P$ in closed-form happened to be possible for the simple rimless wheel
+model, it is rarely possible for more complex models.  As we will see below,
+this approach will also be more compatible with designing continuous feedback controller that
+stabilize the limit cycle.</p>
+
+</section> <!-- end transverse -->
+
+<section data-type="sect2"><h1>Transverse linearization</h1>
+
+<p>In the case of Lyapunov analysis around a fixed point, there was an important
+  special case: for stable linear systems, we actually have a recipe for constructing a Lyapunov
+  function.  As a result, for nonlinear systems, we often found it convenient to begin our
+  search by linearizing around the fixed point and using the Lyapunov candidate for
+  the linear system as an initial guess.  That same approach can be extended to limit cycle
+  analysis.</p>
+
+</section>
+
+<section data-type="sect2"><h1>Region of attraction estimation using sums-of-squares</h1>
+
+</section>
+
+</section> <!-- end lyapunov -->
+
+<section data-type="sect1"><h1>Feedback design</h1>
+
+<section data-type="sect2"><h1>Orbital stabilization for non-periodic trajectories</h1>
+
+</section>
+
+</section> <!-- end feedback -->
+
+
+
+</section> <!-- end limit cycles -->
+
+<section data-type="chapter" class="chapter"><h1>Planning and Control through Contact</h1>
+
+<section data-type="sect1"><h1>The hybrid system's approach</h1>
+
+  <p>Transverse stabilization is more natural than full LQR
+
+</section>
+
+<section data-type="sect1"><h1>The measure differential inclusions appraoch</h1>
+</section>
 
 </section>
 
