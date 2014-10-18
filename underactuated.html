@@ -2200,9 +2200,7 @@ limit cycle dynamics and dealing with impacts.</p>
 </section> <!-- state of the art -->
 
 
-<section data-type="sect1"><h1>Simple Models of Walking</h1>
-
-<section data-type="sect2"><h1>The Ballistic Walker</h1>
+<section data-type="sect1"><h1>The Ballistic Walker</h1>
 
 <p>One of the earliest models of walking was proposed by
 McMahon<elib>McMahon80</elib>, who argued that humans use a mostly ballistic
@@ -2222,7 +2220,7 @@ date.</p>
 
 </section> <!-- end of ballistic walker -->
 
-<section data-type="sect2"><h1>The Rimless Wheel</h1>
+<section data-type="sect1"><h1>The Rimless Wheel</h1>
 
 <figure>
 <img width="40%" src="figures/rimlessWheel.svg"/>
@@ -2252,7 +2250,7 @@ The most comprehensive analysis of the rimless wheel was done by
 <elib>Coleman98a</elib>.</p>
 
 
-<section data-type="sect3"><h1>Stance Dynamics</h1>
+<section data-type="sect2"><h1>Stance Dynamics</h1>
 
 <p>The dynamics of the system when one leg is on the ground are given by
 $$\ddot\theta = \frac{g}{l}\sin(\theta).$$ If we assume that the
@@ -2272,7 +2270,7 @@ the collision.</p>
 
 </section>
 
-<section data-type="sect3"><h1>Foot Collision</h1>
+<section data-type="sect2"><h1>Foot Collision</h1>
 
 <figure>
   <img width="50%" src="figures/rimlessWheel_collision.svg"/>
@@ -2288,7 +2286,9 @@ point immediately after the collision is $$L(t^+) =
 collision causes an instantaneous loss of velocity:
 $$\dot\theta(t^+) = \dot\theta(t^-) \cos(2\alpha).$$</p>
 
-<section data-type="sect3"><h1>Forward simulation</h1>
+</section>
+
+<section data-type="sect2"><h1>Forward simulation</h1>
 
 <p>Given the stance dynamics, the collision detection logic ($\theta = \gamma \pm \alpha$),
   and the collision update, we can numerical simulate this simple model.  Doing
@@ -2332,10 +2332,12 @@ either run the code yourself or click on the links below to see the animation).
  ($m=1,l=1,g=9.8,\alpha=\pi/8,\gamma=0.08$).</figcaption>
 </figure>
 
+<p>Take a minute to make sure you can follow these trajectories through state space for each
+  of the initial conditions.  It's non-trivial, but worth the effort.</p>
+
+</section> <!-- end of forward simulation -->
+
 </section> <!-- end rimless wheel -->
-
-</section> <!-- end of walking -->
-
 
 
 <section data-type="sect1"><h1>Limit Cycles</h1>
@@ -2432,13 +2434,13 @@ cannot be applied to limit cycle stability without some modification.</p>
 </figure>
 </div>
 
-<p>  If ${\bf P}(\bx_p)$ exists for all $\bx_p$, then this method turns the
+<p>  If ${\bf P}(\bx_p)$ exists for all $\bx_p \in S$, then this method turns the
   stability analysis for a limit cycle into the stability analysis of a
   fixed point on a discrete map.  In practice it is often difficult or
   impossible to find ${\bf P}$ analytically, but it can be obtained
   quite reasonably numerically.  Once ${\bf P}$ is obtained, we can
   infer local limit cycle stability with an eigenvalue analysis.  There will
-  always be a single eigenvalue of 1 - corresponding to perturbations
+  always be a single eigenvalue of 0 - corresponding to perturbations
   along the limit cycle which do not change the state of first return.
   The limit cycle is considered locally exponentially stable if all
   remaining eigenvalues, $\lambda_i$, have magnitude less than one,
@@ -2459,6 +2461,217 @@ cannot be applied to limit cycle stability without some modification.</p>
 <todo>[insert staircase diagram of van der Pol oscillator return map here]</todo>
 
 </section> <!-- end of Poincare -->
+
+<section data-type="sect1"><h1>Analysis of the Rimless Wheel</h1>
+
+<section data-type="sect2"><h1>Poincare Map</h1>
+
+<p>We can now derive the angular velocity at the beginning of each
+stance phase as a function of the angular velocity of the previous
+stance phase. First, we will handle the case where $\gamma \le
+\alpha$ and $\dot\theta_n^+ > \omega_1$.  The ``step-to-step return
+map'', factoring losses from a single collision, the resulting map is:
+$$\dot\theta^{+}_{n+1} = \cos(2\alpha) \sqrt{
+({\dot\theta_n}^{+})^{2} + 4\frac{g}{l}\sin\alpha \sin\gamma}.$$
+where the $\dot{\theta}^{+}$ indicates the velocity just
+<em>after</em> the energy loss at impact has occurred.</p>
+
+<p>Using the same analysis for the remaining cases, we can complete the
+return map.  The threshold for taking a step in the opposite
+direction is
+$$\omega_2 = - \sqrt{2 \frac{g}{l} [1 - \cos(\alpha + \gamma)]}.$$
+For $\omega_2 < \dot\theta_n^{+} < \omega_1,$ we have
+$$\dot\theta_{n+1}^{+} = -\dot\theta_n^{+} \cos(2\alpha).$$ Finally, for
+$\dot\theta_n^{+} < \omega_2$, we have $$\dot\theta_{n+1}^{+} = -
+\cos(2\alpha)\sqrt{(\dot\theta_n^{+})^2 - 4 \frac{g}{l} \sin\alpha
+\sin\gamma}.$$</p>
+
+<p>Notice that the return map is undefined for $\dot\theta_n = \{
+\omega_1, \omega_2 \}$, because from these configurations, the wheel
+will end up in the (unstable) equilibrium point where $\theta = 0$
+and $\dot\theta = 0$, and will therefore never return to the map.</p>
+
+<p>This return map blends smoothly into the case where $\gamma >
+\alpha$. In this regime, $$\dot\theta_{n+1}^{+} = \begin{cases}
+\cos(2\alpha) \sqrt{(\dot\theta_n^{+})^2 + 4 \frac{g}{l}
+\sin\alpha \sin\gamma}, & \text{ } 0 \le \dot\theta_n^{+} \\
+-\dot\theta_n^{+}
+\cos(2\alpha), & \text{ } \omega_2 < \dot\theta_n^{+} < 0 \\
+-\cos(2\alpha) \sqrt{(\dot\theta_n^{+})^2 - 4\frac{g}{l} \sin\alpha
+\sin\gamma}, & \dot\theta_n^{+} \le w_2
+\end{cases}.$$ Notice that the formerly undefined points at
+$\{\omega_1,\omega_2\}$ are now well-defined transitions with
+$\omega_1 = 0$, because it is kinematically impossible to have the
+wheel statically balancing on a single leg.</p>
+
+</section> <!-- poincare map -->
+
+<section data-type="sect2"><h1>Fixed Points and Stability</h1>
+
+<p>For a fixed point, we require that $\dot\theta_{n+1}^{+} =
+\dot\theta_n^{+} = \omega^*$.  Our system has two possible fixed
+points, depending on the parameters: $$ \omega_{stand}^* = 0,~~~
+\omega_{roll}^* = \cot(2 \alpha) \sqrt{4 \frac{g}{l}
+\sin\alpha\sin\gamma}.$$ The limit cycle plotted above illustrates a state-space
+trajectory in the vicinity of the rolling fixed point.
+$\omega_{stand}^*$ is a fixed point whenever $\gamma < \alpha$.
+$\omega_{roll}^*$ is a fixed point whenever $\omega_{roll}^* >
+\omega_1$.  It is interesting to view these bifurcations in terms of
+$\gamma$.  For small $\gamma$, $\omega_{stand}$ is the only fixed
+point, because energy lost from collisions with the ground is not
+compensated for by gravity.  As we increase $\gamma$, we obtain a
+stable rolling solution, where the collisions with the ground
+exactly balance the conversion of gravitational potential to kinetic
+energy. As we increase $\gamma$ further to $\gamma > \alpha$, it
+becomes impossible for the center of mass of the wheel to be inside
+the support polygon, making standing an unstable configuration.</p>
+
+<figure>
+<img width="100%" src="figures/rw_retmap.svg"/>
+<figcaption>Limit cycle trajectory of the rimless wheel]{Limit cycle
+trajectory of the rimless wheel
+  ($m=1,l=1,g=9.8,\alpha=\pi/8,\gamma=0.15$).  All hatched regions converge
+  to the rolling fixed point, $\omega_{roll}^*$; the white regions converge to
+  zero velocity ($\omega_{stand}^*$).</figcaption>
+</figure>
+
+</section>
+
+</section> <!-- end RW analysis -->
+
+<section data-type="sect1"><h1>The Compass Gait</h1>
+
+<p>The rimless wheel models only the dynamics of the stance leg, and
+simply assumes that there will always be a swing leg in position at
+the time of collision.  To remove this assumption, we take away all
+but two of the spokes, and place a pin joint at the hip.  To model
+the dynamics of swing, we add point masses to each of the legs.  For
+actuation, we first consider the case where there is a torque
+source at the hip - resulting in swing dynamics equivalent to an
+Acrobot (although in a different coordinate frame).</p>
+
+<figure>
+<img width="45%" src="figures/compassGait.svg"/>
+<figcaption>The compass gait</figcaption>
+</figure>
+
+<p>In addition to the modeling assumptions used for the rimless wheel,
+we also assume that the swing leg retracts in order to clear the
+ground without disturbing the position of the mass of that leg. This
+model, known as the compass gait, is well studied in the literature
+using numerical methods <elib>Goswami99+Spong03</elib>, but relatively
+little is known about it analytically.</p>
+
+<p>The state of this robot can be described by 4 variables:
+$\theta_{st},\theta_{sw},\dot\theta_{st}$, and $\dot\theta_{sw}$.
+The abbreviation $st$ is shorthand for the stance leg and $sw$ for
+the swing leg. Using $\bq = [ \theta_{sw}, \theta_{st} ]^T$ and $\bu =
+\tau$, we can
+write the dynamics as $${\bf H}(\bq)\ddot\bq + {\bf
+C}(\bq,\dot\bq)\dot\bq + {\bf G}(\bq) = {\bf B}\bu,$$ with \begin{gather*}
+{\bf H} = \begin{bmatrix}
+mb^2~~ & ~~-mlb\cos(\theta_{st}-\theta_{sw}) \\
+-mlb\cos(\theta_{st}-\theta_{sw})~~ & ~~(m_h+m)l^2 + ma^2
+\end{bmatrix} \\
+{\bf C} = \begin{bmatrix} 0~~ &  ~~mlb\sin(\theta_{st}-\theta_{sw})\dot\theta_{st} \\ mlb\sin(\theta_{st}-\theta_{sw})\dot\theta_{sw}~~ & ~~0 \end{bmatrix} \\
+{\bf G} = \begin{bmatrix} mbg\sin(\theta_{sw}) \\ -(m_hl + ma +
+ml)g\sin(\theta_{st}) \end{bmatrix},\\
+{\bf B} = \begin{bmatrix} 1 \\ -1 \end{bmatrix}
+\end{gather*}
+and $l=a+b$.  These equations come straight out of
+<elib>Goswami96a</elib>.</p>
+
+<p>The foot collision is an instantaneous change of velocity governed
+by the conservation of angular momentum around the point of impact:
+$${\bf Q}^+(\alpha) \dot{\bq}^+ = {\bf Q}^-(\alpha)\dot{\bq}^-,$$
+where \begin{gather*} {\bf Q}^-(\alpha) = \begin{bmatrix} -mab~~ &
+~~-mab + (m_hl^2 + 2mal)
+\cos(2\alpha)\\ 0~~ & ~~-mab \end{bmatrix} \\
+{\bf Q}^+(\alpha) = \begin{bmatrix} mb(b - l\cos(2\alpha))~~ &
+~~ml(l-b\cos(2\alpha) + ma^2 + m_hl^2 \\ mb^2~~ &
+~~-mbl\cos(2\alpha)
+\end{bmatrix}
+\end{gather*}
+and $\alpha = \frac{\theta_{sw} - \theta_{st}}{2}$.</p>
+
+<p>Numerical integration of these equations reveals a stable limit
+cycle, plotted below.  The cycle
+is composed of a swing phase (top) and a stance phase (bottom),
+punctuated by two instantaneous changes in velocity which correspond
+to the ground collisions.  The dependence of this limit cycle on the
+system parameters has been studied extensively in <elib>Goswami96a</elib>.</p>
+
+<figure>
+<img width="80%" src="figures/compassGaitLimitCycle.svg"/>
+<figcaption>Limit cycle
+trajectory of the compass gait.
+  ($m=5$kg,$m_h=10$kg,$a=b=0.5$m,$\phi=0.03$deg.
+  $\bx(0)=[0,0,2,-0.4]^T$).  $\theta_{lPitch}$ is the pitch angle of
+  the left leg, which is recovered from $\theta_{st}$ and
+  $\theta_{sw}$ in the simulation with some simple book-keeping.</figcaption>
+</figure>
+
+<p>The basin of attraction of the stable limit cycle is a narrow band
+of states surrounding the steady state trajectory.  Although the
+simplicity of this model makes it analytically attractive, this lack
+of stability makes it difficult to implement on a physical device.</p>
+
+</section>
+
+<section data-type="sect1"><h1>The Kneed Walker</h1>
+
+<p>To achieve a more anthropomorphic gait, as well as to acquire better
+foot clearance and ability to walk on rough terrain, we want to
+model a walker that includes knee<elib>Hsu07</elib>. For this, we model each leg as
+two links with a point mass each.</p>
+
+<figure>
+<img width="60%" src="figures/kneedwalker.svg"/>
+<figcaption>The Kneed Walker</figcaption>
+</figure>
+
+<p>At the beginning of each step, the system is modeled as a three-link
+pendulum, like the ballistic
+walker<elib>McMahon80+Mochon80+Spong03</elib>. The stance leg is the one
+in front, and it is the first link of a pendulum, with two point
+masses. The swing leg has two links, with the joint between them
+unconstrained until knee-strike. Given appropriate mass
+distributions and initial conditions, the swing leg bends the knee
+and swings forward. When the swing leg straightens out (the lower
+and upper length are aligned), knee-strike occurs. The knee-strike
+is modeled as a discrete inelastic collision, conserving angular
+momentum and changing velocities instantaneously.</p>
+
+<p>After this collision, the knee is locked and we switch to the
+compass gait model with a different mass distribution. In other
+words, the system becomes a two-link pendulum. Again, the
+heel-strike is modeled as an inelastic collision. After the
+collision, the legs switch instantaneously. After heel-strike then,
+we switch back to the ballistic walker's three-link pendulum
+dynamics. This describes a full step cycle of the kneed walker,
+which is shown above.</p>
+
+<figure>
+<img width="100%" src="figures/kwcycle1.svg"/>
+<figcaption>Limit cycle trajectory for kneed walker</figcaption>
+</figure>
+
+<p>By switching between the dynamics of the continuous three-link and
+two-link pendulums with the two discrete collision events, we
+characterize a full point-feed kneed walker walking cycle. After
+finding appropriate parameters for masses and link lengths, a stable
+gait is found. As with the compass gait's limit cycle, there is a
+swing phase (top) and a stance phase (bottom). In addition to the
+two heel-strikes, there are two more instantaneous velocity changes
+from the knee-strikes as marked in the figure. This
+limit cycle is traversed clockwise.</p>
+
+<figure>
+  <img width="90%" src="figures/kwLimitCycle.svg"/>
+<figcaption>Limit cycle (phase portrait) of the kneed walker</figcaption>
+</figure>
+
+</section>
 
 </section> <!-- ***************  end of walking and running **************   -->
 
