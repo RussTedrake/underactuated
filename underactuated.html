@@ -4379,12 +4379,37 @@ apply finite-horizon LQR (see the LQR chapter).</p>
 <section data-type="chapter" class="chapter"><h1>Algorithms for Limit Cycles</h1>
 
 <p>The discussion of walking and running robots in Chapter 4 motivated the notion of
-limit cycle stability.  The simple models of </p>
+limit cycle stability.  Linear systems are not capable of producing stable limit cycle
+behavior, so this rich topic is unique to nonlinear systems design and analysis.  Furthermore,
+the
+tools that are required to design, stabilize, and verify limit cycles will have
+applicability beyond simple periodic motions.</p>
+
+<p>The first natural question we must ask is, given a system $\dot{\bx} = f(\bx)$, or a control
+  system $\dot{x} = f(\bx,\bu)$, how do we go about finding periodic solutions
+  which may be passively stable, open-loop stable, or stabilized with closed-loop feedback?
+  It turns out that the trajectory optimization tools that we developed in the
+  last chapter are very well suited to this task.</p>
 
 
 <section data-type="sect1"><h1>Trajectory optimization</h1>
 
-<p>Just add periodicity constraints.  Even if there are no inputs (system is passive).</p>
+<p>I introduced the trajectory optimization tools as means for optimizing a single
+  trajectory of the system from a particular known initial condition.  But they
+  can be used in a slightly different way, too -- in some formulations we might
+  choose to have the initial conditions as one of the decision variables.  In
+  fact, the simplest formulation for finding a periodic solution is to leave
+  the entire trajectory as a decision variable, but to add <em>periodicity constraints</em>
+  enforcing that the intial conditions and the final conditions match.  Some
+  care is needed here; if you're not careful then these constraints will all
+  be met if the entire trajectory remains at a fixed point in the system.  In
+  the example below, we constrain that the initial and final conditions lie on
+  the surface of section that we used before, and additionally constrain that
+  the velocity at the initial/final points is non-zero (to avoid the fixed point solution).</p>
+
+<p>Note that although we introduced trajectory optimization as searching over control
+  inputs $\bu$, this formulation is now rich enough that it solves an important
+  problem even for passive systems -- with no control input at all.</p>
 
 <div data-type="example"><h1>Finding the limit cycle of the Van der Pol oscillator</h1>
 
@@ -4400,6 +4425,25 @@ limit cycle stability.  The simple models of </p>
     & \text{collocation dynamic constraints}
   \end{align*}
 </p>
+
+<p>Try it yourself: <pre><code class="matlab">
+cd(fullfile(getDrakePath,'examples'));
+VanDerPol.runDircol();
+</code></pre>
+
+<a href="figures/vanDerPolDircol.swf">Click here to see an animation of the
+result.</a>  The red dots are the initial and final conditions (which appear as
+one dot once the constraints are satified).  As always, make sure that you take
+a look at the code.  Poke around.  Try changing some things.</p>
+
+<p>One of the things that you should notice in the code is that I provide an initial
+  guess for the solver.  In most of the examples so far I've been able to avoid
+  doing that--the solver takes small random numbers as a default initial guess and
+  solves from there.  But for this problem, I found that it was getting stuck in a
+  local minima.  Adding the initial guess that the solution moves around a circle in
+  state space was enough.
+</p>
+
 </div>
 
 <todo> example: simplest flapping robot </todo>
