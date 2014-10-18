@@ -84,8 +84,6 @@
           chapter = Number(chapter);
           document.getElementById("preface").style.display = "none";
           document.getElementById("table_of_contents").style.display = "none";
-          var chapters = document.getElementsByClassName("chapter");
-          var i;
           //document.getElementById("debug_output").innerHTML="displaying only chapter " + chapter + " of " + chapters.length;
           for (i = 0; i < chapters.length; i++) {
             if ((i+1) != chapter) {
@@ -93,27 +91,17 @@
             } else {
               chapters[i].style.display = "inline";
 //              document.getElementById("debug_output").innerHTML="got here";
-              chapters[i].style.counterReset = "chapter " + i + " sect1 example_counter theorem algorithm figure";
+              var display_num = i;
+              if (i>=start_appendix) {
+                display_num=i-start_appendix;
+              }
+              chapters[i].style.counterReset = "chapter " + display_num + " sect1 example_counter theorem algorithm figure";
               MathJax.Hub.Queue(["Typeset",MathJax.Hub,chapters[i]]);
+              if ((i+1)<chapters.length) {
+                chapters[i].innerHTML += "<p style=\"text-align:right;\"><a href=underactuated.html?chapter=" + (i+2) + ">Next chapter</p>";
+              }
             }
           }
-        }
-
-        var appendix = getParameterByName("appendix");
-        if (appendix) {
-          var app = document.getElementsByTagName("appendix");
-          document.getElementById("preface").style.display = "none";
-          document.getElementById("table_of_contents").style.display = "none";
-          var chapters = document.getElementsByClassName("chapter");
-          var i;
-          for (i = 0; i < chapters.length; i++) {
-            chapters[i].style.display = "none";
-          }
-          var chapters = app[0].getElementsByClassName("chapter");
-          i = Number(appendix)-1;
-          chapters[i].style.display = "inline";
-          chapters[i].style.counterReset = "chapter " + i + " sect1 example_counter theorem algorithm figure";
-          MathJax.Hub.Queue(["Typeset",MathJax.Hub,chapters[i]]);
         }
 
       }
@@ -227,7 +215,13 @@ machine learning.</p>
 Although the material in the book comes from many sources, the
 presentation is targeted very specifically at a handful of robotics
 problems.  Concepts are introduced only when and if they can help
-progress the capabilities we are trying to develop.  I
+progress the capabilities we are trying to develop.  Many of the disciplines
+that I am drawing from are traditionally very rigorous, to the point where
+the basic ideas can be hard to penetrate for someone that is new to the field.
+I've made a conscious effort in these notes to keep a very informal,
+conversational tone even when introducing these rigorous topics, and to reference
+the most powerful theorems but only to prove them when that proof would
+add particular insights without distracting from the mainstream presentation.  I
 hope that the result is a broad but reasonably self-contained and
 readable manuscript that will be of use to any enthusiastic roboticist.</p>
 
@@ -270,6 +264,8 @@ throughout the text.  </p>
 
 
 </section>
+
+<p style="text-align:right;"><a href="underactuated.html?chapter=1">First chapter</a></p>
 
 </section> <!-- end preface -->
 
@@ -580,7 +576,7 @@ use to study as our simplest model of walking later in the class. </p>
 
 </div>
 
-<p>The matrix ${\bf f}_2$ is equation \ref{eq:f1_plus_f2} always has dim$[\bq]$
+<p>The matrix ${\bf f}_2$ in equation \ref{eq:f1_plus_f2} always has dim$[\bq]$
 rows, and dim$[\bu]$ columns. Therefore, as in the example, one of the most
 common cases for underactuation, which trivially implies that ${\bf f}_2$ is not
 full row rank, is dim$[\bu] < $ dim$[\bq]$.  This is the case when a robot has
@@ -720,7 +716,7 @@ cannot be integrated into constraint on position--the car can get to any
 configuration $(x,y,\theta)$, it just can't move directly sideways--so they are
 nonholonomic constraints. </div>
 
-Contrast the wheel robot example with a robot on train tracks.  The train tracks
+Contrast the wheeled robot example with a robot on train tracks.  The train tracks
 would represent a holonomic constraint: if the system was written down in the
 $(x,y,\theta)$ coordinates then the differential track constraints could be
 integrated resulting in a description of the system in a reduced coordinate
@@ -790,7 +786,7 @@ state-of-the-art.</p>
 
 <p> The target audience for the class includes both computer science and
 mechanical/aero students pursuing research in robotics.  Although I assume a
-comfort with linear algebra, ODEs, and MATLAB, the course notes will provide
+comfort with linear algebra, ODEs, and MATLAB, the course notes aim to provide
 most of the material and references required for the course. </p>
 
 </section>
