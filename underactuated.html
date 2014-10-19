@@ -3873,8 +3873,52 @@ can see that the fixed point at the origin is still stable, but the <em>robust r
 
 <section data-type="sect1"><h1>Lyapunov analysis with convex optimization</h1>
 
+<p>Once of the primary limitations in Lyapunov analysis as I have presented it so far is that it is potentially very difficult to come up with suitable
+Lyapunov function candidates for interesting systems, especially for underactuated systems. ("Underactuated" is almost synonymous with "interesting" in my vocabulary.)  Even if somebody were to give me a 
+Lyapunov candidate for a general nonlinear system, the Lyapunov conditions can be difficult to check -- for instance, how would I check that $\dot{V}$ is strictly negative for all $\bx$ except the origin if $\dot{V}$ is some
+arbitrarily complicated nonlinear function over a vector $\bx$?</p>
 
+<p>In the remainder of this chapter, we'll look at some computational approoaches to verifying the Lyapunov conditions, and even to searching
+for the description of the Lyapunov functions themselves.</p>
+  
+<p>If you're imagining numerical algorithms to check the Lyapunov conditions for complicated Lyapunov functions and complicated dynamics, the first thought is probably that we can evaluate $V$ and $\dot{V}$ at a large number of sample points and check whether $V$ is positive and $\dot{V}$ is negative.  That does work, and could potentially be combined with some smoothness or regularity assumptions to generalize beyond the sample points.  But in many cases we will be able to do better -- providing optimization algorithms that will rigorously check these conditions <em>for all $\bx$</em> without dense sampling; these will also give us additional leverage in formulating the search for Lyapunov functions.  </p>  
 
+<section data-type="sect2"><h1>Semi-definite programming</h1>
+
+<p>Many of these algorithms will rely on a particularly important type of optimization known as <em>semi-definite programming</em> (SDP).  Semidefinite programming is a subset of convex optimization (see the optimization background in the appendix) -- an extremely important class of problems for which we can produce efficient algorithms that are guaranteed find the global optima solution (up to a numerical tolerance and barring any numerical difficulties).</p>
+
+</section>
+
+<section data-type="sect2"><h1>Common Lyapunov analysis for linear systems</h1>
+
+</section>
+  
+<section data-type="sect2"><h1>Sums-of-squares optimization</h1>
+
+</section>
+  
+<section data-type="sect2"><h1>Lyapunov analysis for polynomial systems</h1>  
+</section>
+  
+<section data-type="sect2"><h1>Region of attraction estimation for polynomial systems</h1>
+  
+  <section data-type="sect3"><h1>The S-procedure</h1>
+    
+  </section>
+    
+  <section data-type="sect3"><h1>Seeding the optimization with linear analysis</h1>
+
+<p>LQR gives the cost-to-go.  Otherwise, use a Lyapunov equation.</p>
+
+</section>
+
+</section>
+
+<section data-type="sect2"><h1>Rigid-body dynamics are polynomial</h1>  
+    
+</section>
+  
+  
 </section> <!-- end convex -->
 
 </section>
@@ -4555,8 +4599,8 @@ to the orbit, but must simply be <em>transversal</em> (not parallel). Having def
   \dot{\tau} = f_1(\bx_\perp,\tau) \\
   \dot\bx_\perp = f_2(\bx_\perp,\tau).
   \end{gather*}
-The value of this construction for Lyapunov analysis was proposed in <elib>Hauser94</elib> and
-has been extended nicely to control design in <elib>Shiraiv08</elib> and for region of attraction
+The value of this construction for Lyapunov analysis was proposed in <elib>Hauser94a</elib> and
+has been extended nicely to control design in <elib>Shiriaev08</elib> and for region of attraction
 estimation in <elib>Manchester10b</elib>.  A particular numerical strategy for defining the
 transversal coordinates is given in <elib>Manchester10a</elib>.
 
