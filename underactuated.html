@@ -3615,7 +3615,7 @@ that is non-increasing (instead of strictly decreasing) to prove asympototic sta
   I can find any positive function, call it $V(\bx)$, that gets smaller over
   time as the system evolves, then I can potentially use $V$ to make a statement
   about the long-term behavior of the system.  $V$ is called a <em>Lyapunov function</em>.
-  Let's give the first theorem.
+  Let's give the first theorem.</p>
 
 <div data-type="theorem"><h1>Lyapunov analysis for global asymptotic stability</h1>
 
@@ -3684,7 +3684,7 @@ $${\bf PA} +  {\bf A}^T {\bf P} \prec 0.$$</p>
 is actually a necessary (as well as sufficient) condition. Furthermore,
 a Lyapunov function can be always be found by finding the positive-definite
 solution to the matrix Lyapunov equation
-$${\bf PA} + {\bf A}^T{\bf P} = - {\bf Q},$$ for any ${\bf Q}={\bf Q}^T\succ 0$.</p>
+\begin{equation}{\bf PA} + {\bf A}^T{\bf P} = - {\bf Q},\label{eq:algebraic_lyapunov} \end{equation} for any ${\bf Q}={\bf Q}^T\succ 0$.</p>
 
 <todo> add an example here. double integrator? re-analyze the LQR output? </todo>
 
@@ -3791,7 +3791,8 @@ invariant set is the <em>union</em> of all the fixed points of the system.</p>
 
 <p>There is another very important connection between Lypaunov functions and the
 concept of an invariant set: <em>any sub-level set of a Lyapunov function is
-also an invariant set</em>.
+also an invariant set</em>.  This gives us the ability to use sub-level sets
+of a Lyapunov function as approximations of the region of attraction for nonlinear systems.</p>
 
 <div data-type="theorem"><h1>Lyapunov invariant set and region of attraction theorem</h1>
 
@@ -3811,10 +3812,70 @@ largest invariant subset of ${\cal G}$ on which $\dot{V}=0$.<p>
 
 </div>
 
+<div data-type="example"><h1>Region of attraction for a one-dimensional system</h1>
+
+<p> Consider the first-order, one-dimensional system $\dot{x} = -x + x^3.$  We can quickly understand this system using our tools for graphical analysis.</p>  
+<figure>
+  <img width="80%" src="figures/xcubed.svg"/>
+</figure>
+<p>In the vicinity of the origin, $\dot{x}$ looks like $-x$, and as we move away it looks increasingly like $x^3$.  There are three fixed points of the system, with two unstable and only one (at the origin) that is stable.  In fact, we can deduce visually that the region of attraction to the stable fixed point at the origin is $\bx \in (-1,1)$.  Let's see if we can demonstrate this with a Lyapunov argument.</p>
+
+<p>First, let us linearize the dynamics about the origin and use the Lyapunov equation for linear systems to find a candidate $V(\bx)$.  Since the linearization is $\dot{x} = -x$, if we take ${\bf Q}=1$, then we 
+find ${\bf P}=\frac{1}{2}$ is the positive definite solution to the algebraic Lyapunov equation (\ref{eq:algebraic_lyapunov}).  Proceeding with
+$$V(\bx) = \frac{1}{2} x^2,$$ we have $$\dot{V} = x (-x + x^3) = -x^2 + x^4.$$  This function is zero at the origin, negative for $|x| < 1$, and positive for $|x| > 1$.  Therefore we can conclude that the sub-level set 
+$V < \frac{1}{2}$ is invariant and the set $x \in (-1,1)$ is inside the region of attraction of the nonlinear system.  In fact, this estimate is tight.</p>
+
+</div>
+
 </section>  <!-- end ROA -->
+  
+<section data-type="sect2"><h1>Robustness analysis using "common Lyapunov functions"</h1>  
+  
+<p>While we will defer most discussions on robustness analysis until later in the notes, there is a simple and powerful idea that can be presented now: the idea of a <em>common Lyapunov function</em>.  Imagine that you have a model of a dynamical system but that you are uncertain about some of the parameters.  For example, you have a model of a quadrotor, and are fairly confident about the mass and lengths (both of which are easy to measure), but are not confident about the moment of inertia.  One approach to robustness analysis is to define a bounded uncertainty, which could take
+the form of $$\dot{\bx} = f_\alpha(\bx), \quad \alpha_{min} \le \alpha \le \alpha_{max},$$ with $\alpha$ a vector of uncertain parameters in your model.  Richer specifications of the uncertainty bounds are also possible, but this will serve for our examples.</p>
+
+<p>In standard Lyapunov analysis, we are searching for a function that goes downhill for all $\bx$ to make statements about the long-term dynamics of the system.  In common Lyapunov analysis, we can make many similar statements about the long-term dynamics of an uncertain system if we can find a single Lyapunov function that goes downhill <em>for all possible values of $\alpha$</em>.  If we can find such a function, then we can use it to make statements with all of the variations we've discussed (local, regional, or global; in the sense of Lyapunov, asymptotic, or exponential).</p>
+  
+<div data-type="example"><h1>A one-dimensional system with gain uncertainty</h1>
+
+<p>Let's consider the same one-dimensional example used above, but add
+an uncertain parameter into the dynamics.  In particular, consider the system: $$\bx = -x + \alpha x^3, \quad \frac{3}{4} < \alpha < \frac{3}{2}.$$  Plotting the
+graph of the one-dimensional dynamics for a few values of $\alpha$, we
+can see that the fixed point at the origin is still stable, but the <em>robust region of attraction</em> to this fixed point (shaded in blue below) is smaller than the region of attraction for the system with $\alpha=1$.</p>
+
+<figure>
+  <img width="80%" src="figures/xcubed_gain_uncertainty.svg"/>
+</figure>
+  
+<p>Taking the same Lyapunov candidate as above, $V = \frac{1}{2} x^2$, we have $$\dot{V} = -x^2 + \alpha x^4.$$  This function is zero at the origin, and negative for all $\alpha$ whenever $x^2 > \alpha x^4$, or $$|x| < \frac{1}{\sqrt{\alpha_{max}}} = \sqrt{\frac{2}{3}}.$$ Therefore, we can conclude that $|x| < \sqrt{\frac{2}{3}}$ is inside the robust region of attraction of the uncertain system.</p>  
+</div>
+
+<p>Not all forms of uncertainty are as simple to deal with as the gain uncertainty in that example.  For many forms of uncertainty, we might not even know the location of the fixed points of the uncertain system.  In this case, we can often still use common Lyapunov functions to give some guarantees about the system, such as guarantees of <em>robust set invariance</em>.  For instance, if you have uncertain parameters on a quadrotor model, you might be ok with the quadrotor stabilizing to a pitch of $0.01$ radians, but you would like to guarantee that it definitely does not flip over and crash into the ground.</p>
+
+  <div data-type="example"><h1>A one-dimensional system with additive uncertainty</h1>
+    
+    <p>Now consider the system: $$\bx = -x + x^3 + \alpha, \quad -\frac{1}{4} < \alpha < \frac{1}{4}.$$  Plotting the
+      graph of the one-dimensional dynamics for a few values of $\alpha$, this time we
+      can see that the fixed point is not necessarily at the origin;  the location of the fixed point moves depending on the value of $\alpha$.  But we should be able to guarantee that the uncertain system will stay near the origin if it starts near the origin, using an invariant set argument.</p>
+    
+    <figure>
+      <img width="80%" src="figures/xcubed_additive_uncertainty.svg"/>
+    </figure>
+    
+    <p>Taking the same Lyapunov candidate as above, $V = \frac{1}{2} x^2$, we have $$\dot{V} = -x^2 + x^4 + \alpha x.$$ This Lyapunov function allows us to easily verify, for instance, that $V \le \frac{1}{3}$ is a <em>robust invariant set</em>, because whenever $V = \frac{1}{3}$, we have $$\forall \alpha \in [\alpha_{min},\alpha_{max}],\quad \dot{V}(x,\alpha) < 0.$$  Therefore $V$ can never start at less than one-third and cross over to greater than one-third.  To see this, see that $$ V=\frac{1}{3} \quad \Rightarrow \quad x = \pm \sqrt{\frac{2}{3}} \quad \Rightarrow \quad \dot{V} = -\frac{2}{9} \pm \alpha \sqrt{\frac{2}{3}} < 0, \forall \alpha \in \left[-\frac{1}{4},\frac{1}{4} \right]. $$  Note that not all sub-level sets of this invariant set are invariant.  For instance $V < \frac{1}{32}$ does not satisfy this condition, and by visual inspection we can see that it is in fact not robustly invariant.
+  </div>
+  
+<todo>robust quadrotor example</todo>  
+  
+</section> <!-- end common lyap -->
 
 </section>  <!-- end Lyapunov functions -->
 
+<section data-type="sect1"><h1>Lyapunov analysis with convex optimization</h1>
+
+
+
+</section> <!-- end convex -->
 
 </section>
 
