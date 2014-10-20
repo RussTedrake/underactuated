@@ -3816,7 +3816,7 @@ largest invariant subset of ${\cal G}$ on which $\dot{V}=0$.<p>
 
 <p> Consider the first-order, one-dimensional system $\dot{x} = -x + x^3.$  We can quickly understand this system using our tools for graphical analysis.</p>
 <figure>
-  <img width="80%" src="figures/CubicPolynomialExample.svg"/>
+  <img width="80%" src="figures/cubicPolynomialExample.svg"/>
 </figure>
 <p>In the vicinity of the origin, $\dot{x}$ looks like $-x$, and as we move away it looks increasingly like $x^3$.  There are three fixed points of the system, with two unstable and only one (at the origin) that is stable.  In fact, we can deduce visually that the region of attraction to the stable fixed point at the origin is $\bx \in (-1,1)$.  Let's see if we can demonstrate this with a Lyapunov argument.</p>
 
@@ -3844,7 +3844,7 @@ graph of the one-dimensional dynamics for a few values of $\alpha$, we
 can see that the fixed point at the origin is still stable, but the <em>robust region of attraction</em> to this fixed point (shaded in blue below) is smaller than the region of attraction for the system with $\alpha=1$.</p>
 
 <figure>
-  <img width="80%" src="figures/CubicPolynomialExample_gain_uncertainty.svg"/>
+  <img width="80%" src="figures/cubicPolynomialExample_gain_uncertainty.svg"/>
 </figure>
 
 <p>Taking the same Lyapunov candidate as above, $V = \frac{1}{2} x^2$, we have $$\dot{V} = -x^2 + \alpha x^4.$$  This function is zero at the origin, and negative for all $\alpha$ whenever $x^2 > \alpha x^4$, or $$|x| < \frac{1}{\sqrt{\alpha_{max}}} = \sqrt{\frac{2}{3}}.$$ Therefore, we can conclude that $|x| < \sqrt{\frac{2}{3}}$ is inside the robust region of attraction of the uncertain system.</p>
@@ -3859,7 +3859,7 @@ can see that the fixed point at the origin is still stable, but the <em>robust r
       can see that the fixed point is not necessarily at the origin;  the location of the fixed point moves depending on the value of $\alpha$.  But we should be able to guarantee that the uncertain system will stay near the origin if it starts near the origin, using an invariant set argument.</p>
 
     <figure>
-      <img width="80%" src="figures/CubicPolynomialExample_additive_uncertainty.svg"/>
+      <img width="80%" src="figures/cubicPolynomialExample_additive_uncertainty.svg"/>
     </figure>
 
     <p>Taking the same Lyapunov candidate as above, $V = \frac{1}{2} x^2$, we have $$\dot{V} = -x^2 + x^4 + \alpha x.$$ This Lyapunov function allows us to easily verify, for instance, that $V \le \frac{1}{3}$ is a <em>robust invariant set</em>, because whenever $V = \frac{1}{3}$, we have $$\forall \alpha \in [\alpha_{min},\alpha_{max}],\quad \dot{V}(x,\alpha) < 0.$$  Therefore $V$ can never start at less than one-third and cross over to greater than one-third.  To see this, see that $$ V=\frac{1}{3} \quad \Rightarrow \quad x = \pm \sqrt{\frac{2}{3}} \quad \Rightarrow \quad \dot{V} = -\frac{2}{9} \pm \alpha \sqrt{\frac{2}{3}} < 0, \forall \alpha \in \left[-\frac{1}{4},\frac{1}{4} \right]. $$  Note that not all sub-level sets of this invariant set are invariant.  For instance $V < \frac{1}{32}$ does not satisfy this condition, and by visual inspection we can see that it is in fact not robustly invariant.
