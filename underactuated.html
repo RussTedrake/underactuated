@@ -3885,12 +3885,20 @@ for the description of the Lyapunov functions themselves.</p>
 
 <section data-type="sect2"><h1>Semi-definite programming</h1>
 
-<p>Many of these algorithms will rely on a particularly important type of optimization known as <em>semi-definite programming</em> (SDP).  Semidefinite programming is a subset of convex optimization (see the optimization background in the appendix) -- an extremely important class of problems for which we can produce efficient algorithms that are guaranteed find the global optima solution (up to a numerical tolerance and barring any numerical difficulties).</p>
+<p>Many of these algorithms will rely on a particularly important type of optimization known as <em>semi-definite programming</em> (SDP).  Semidefinite programming is a subset of convex optimization -- an extremely important class of problems for which we can produce efficient algorithms that are guaranteed find the global optima solution (up to a numerical tolerance and barring any numerical difficulties).  If you don't know much about convex optimization or want a quick refresher, please take a few minutes to read the optimization preliminaries in the appendix.</p>
 
-</section>
+<p>The main requirement for this section is to appreciate that it is possible to formulate
+efficient optimization problems where the constraints include specifying that one or more matrices are positive semi-definite (PSD).  These matrices must be formed from a linear combination of the decision variables.  For a trivial example, the optimization $$\min_a a,\quad \subjto \begin{bmatrix} a & 0 \\ 0 & 1 \end{bmatrix} \succ 0,$$ returns $a = 0$ (up to numerical tolerances).</p>
 
-<section data-type="sect2"><h1>Common Lyapunov analysis for linear systems</h1>
+<p>The value in this is immediate for linear systems.  For example, we can formulate the search
+for a Lyapunov function for the linear system $\dot\bx = {\bf A} \bx$ by using the 
+parameters ${\bf p}$ to populate a symmetric matrix ${\bf P}$ and then write the SDP: \[
+\find_{\bf p} \quad  \subjto \quad {\bf P} \succ 0, \quad {\bf PA} + {\bf A}^T {\bf P} \prec 0.\]</p>
+  
+<div data-type="example"><h1>Common Lyapunov analysis for linear systems</h1>
 
+</div>
+  
 </section>
   
 <section data-type="sect2"><h1>Sums-of-squares optimization</h1>
