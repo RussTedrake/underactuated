@@ -3911,7 +3911,7 @@ linear systems.</p>
 <p>
 You can try this example for yourself in <drake></drake>.
 <pre><code class="matlab">
-cd(getDrakePath,'examples');
+cd(fullfile(getDrakePath,'examples'));
 commonLyapunovForLinearSystems;
 </code></pre>
 As always, make sure that you open up the code and take a look.  
@@ -3940,14 +3940,54 @@ generate the SDP problem for you, without having to think about what terms shoul
   
 <section data-type="sect2"><h1>Lyapunov analysis for polynomial systems</h1>  
   
-<p>Now we can see that it may possible to generalize the optimization approach using SDP to search for Lyapunov functions for linear systems to searching for Lyapunov functions for at least the polynomial systems. </p>  
-  
+  <p>Now we can see that it may possible to generalize the optimization approach using SDP to search for Lyapunov functions for linear systems to searching for Lyapunov functions for at least the polynomial systems: $\dot\bx = f(\bx),$ where $f$ is a vector-valued polynomial function.  If we parameterize a <em>fixed-degree</em> Lyapunov candidate as a polynomial with unknown coefficients, e.g., \[ V_\alpha(\bx) = \alpha_0 + \alpha_1 x_1 + \alpha_2 x_2 + \alpha_3 x_1x_2 + \alpha_4 x_1^2 + ..., \] then the time-derivative of $V$ is also a polynomial, and I can formulate the optimization: \begin{align*} \find_\alpha, \quad \subjto \quad& V_\alpha(\bx) \sos \\ & -\dot{V}_\alpha(\bx) = -\pd{V_\alpha}{\bx} f(\bx) \sos. \end{align*}  Because this is a convex optimization, the solver will return a solution if one exists.  
+However, there are a handful of gaps which make the existence of this solution a sufficient condition (for proving that every sub-level set of $V$ is an invariant set of $f$) instead of a necessary one.  First, there is no guarantee that a stable polynomial system can be verified using a polynomial Lyapunov function (of any degree, and in fact there are known counter-examples <todo>add ref</todo>) and here we are only searching over a fixed-degree polynomial.  Second, even if a polynomial Lyapunov function does exist, there is a gap between the SOS polynomials and the positive polynomials.  
+  </p>  
+
+<p>Despite these caveats, many people have found this formulation to be surprisingly effective in practice.  Intuitively, I think that this is because there is relatively a lot of flexibility in the Lyapunov conditions -- if you can find one function which is a Lyapunov function for the system, then there are also many "nearby" functions which will satisfy the same constraints.</p>
+
+<todo>example of SOS for global verification, e.g. using the example from Parrilo00 p.88</todo>
+
 </section>
   
 <section data-type="sect2"><h1>Region of attraction estimation for polynomial systems</h1>
+
+<p>Now we have arrived at the tool that I beleive can be a work-horse for many serious robotics applications.  Most of our robots are not actually globally stable (that's not because they are robots -- if you push me hard enough, I will fall down, too), which means that understanding the regions where a particular controller can be guaranteed to work can be of critical importance.</p>
   
+<p>Sums-of-squares optimization effectively gives us an oracle which we can ask: is this polynomial positive for all $\bx$?  To use this for regional analysis, we have to figure out how to modify our questions to the oracle so that the oracle will say "yes" or "no" when we ask if a function is positive over a certain region which is a subset of $\Re^n$.  That trick is called the S-procedure.  It is closely related to the Lagrange multipliers from constrained optimization, and has deep connections to "Positivstellensatz" from algebraic geometry.</p>
+
   <section data-type="sect3"><h1>The S-procedure</h1>
+
+<p>
+  Consider a scalar polynomial, $p(\bx)$, and a semi-algebraic set $g(\bx) \preceq 0$, where $g$ is a vector of polynomials.  If I can find a polynomial "multiplier", $\lambda(\bx)$ such that \[ p(\bx) + \lambda^T(\bx) g(\bx) \sos, \quad \text{and} \quad \lambda(\bx) \sos, \] then this is sufficient to demonstrate that $$p(\bx)\ge 0 \quad \forall \bx \in \{ g(\bx) \le 0 \}.$$  To convince yourself, observe that when $g(\bx) \le 0$, it is only harder to be positive but when $g(\bx) > 0$, it is possible for the combined function to be SOS even if $p(\bx)$ is negative.</p>
+  </section>
+  
+  <section data-type="sect3"><h1>Basic region of attraction formulation</h1>
     
+  <div data-type="example"><h1>Region of attraction for the one-dimensional cubic system</h1>
+    
+    <p>Let's return to our example from above:
+    \[ \dot{x} = -x + x^3 \]
+    and try to use SOS optimization to demonstrate that the region of attraction of the 
+    fixed point at the origin is $x \in (-1,1)$, using the Lyapunov candidate $V = x^2.$
+    </p>
+    
+    <p>First, define the multiplier polynomial, \[ \lambda(x) = c_1 + c_2 x + c_3 x^2 + c_4 x^3 + c_5 x^4. \]  Then define the optimization \begin{align*} \find_{\bf c} \quad & \\  \subjto \quad& - \dot{V}(x) - \lambda(x) (1-V(x)) \sos \\
+      & \lambda(x) \sos \end{align*}
+    </p>
+    
+    <p>Try it yourself:
+    <pre><code class="matlab">
+    cd(fullfile(getDrakePath,'examples'));
+    edit XCubed.sosExample()
+    XCubed.sosExample;
+    </code></pre></p>
+  </div>  
+    
+  <todo> lots of variations, complexity.  we've packaged it into an ROA call. XCubed.run()</todo>
+    
+  <todo> van der pol example</todo>
+
   </section>
     
   <section data-type="sect3"><h1>Seeding the optimization with linear analysis</h1>
