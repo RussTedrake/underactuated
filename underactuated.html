@@ -180,7 +180,7 @@
   \newcommand{\argmin}{\operatorname{\textrm{argmin}}}
   \newcommand{\sgn}{\operatorname{\textrm{sgn}}}
   \newcommand{\trace}{\operatorname{\textrm{tr}}}
-  \newcommand{\sos}{\text{is SOS}}
+  \newcommand{\sos}{\text{ is SOS}}
   \]
 </div>
 
@@ -3888,20 +3888,53 @@ for the description of the Lyapunov functions themselves.</p>
 <p>Many of these algorithms will rely on a particularly important type of optimization known as <em>semi-definite programming</em> (SDP).  Semidefinite programming is a subset of convex optimization -- an extremely important class of problems for which we can produce efficient algorithms that are guaranteed find the global optima solution (up to a numerical tolerance and barring any numerical difficulties).  If you don't know much about convex optimization or want a quick refresher, please take a few minutes to read the optimization preliminaries in the appendix.</p>
 
 <p>The main requirement for this section is to appreciate that it is possible to formulate
-efficient optimization problems where the constraints include specifying that one or more matrices are positive semi-definite (PSD).  These matrices must be formed from a linear combination of the decision variables.  For a trivial example, the optimization $$\min_a a,\quad \subjto \begin{bmatrix} a & 0 \\ 0 & 1 \end{bmatrix} \succ 0,$$ returns $a = 0$ (up to numerical tolerances).</p>
+efficient optimization problems where the constraints include specifying that one or more matrices are positive semi-definite (PSD).  These matrices must be formed from a linear combination of the decision variables.  For a trivial example, the optimization $$\min_a a,\quad \subjto \begin{bmatrix} a & 0 \\ 0 & 1 \end{bmatrix} \succeq 0,$$ returns $a = 0$ (up to numerical tolerances).</p>
 
 <p>The value in this is immediate for linear systems.  For example, we can formulate the search
 for a Lyapunov function for the linear system $\dot\bx = {\bf A} \bx$ by using the 
 parameters ${\bf p}$ to populate a symmetric matrix ${\bf P}$ and then write the SDP: \[
-\find_{\bf p} \quad  \subjto \quad {\bf P} \succ 0, \quad {\bf PA} + {\bf A}^T {\bf P} \prec 0.\]</p>
+\find_{\bf p} \quad  \subjto \quad {\bf P} \succeq 0, \quad {\bf PA} + {\bf A}^T {\bf P} \preceq 0.\]  Note that you would probably never use that particular formulation, 
+since there specialized algorithms for solving the simple Lyapunov equation which are more efficient and more numerically stable.  But the SDP formulation does provide something new -- we can now easily formulate the search for a common Lyapunov function for uncertain
+linear systems.</p>
   
 <div data-type="example"><h1>Common Lyapunov analysis for linear systems</h1>
 
-</div>
+<p>Suppose you have a system governed by the equations $\dot\bx = {\bf A}\bx$, where the matrix ${\bf A}$ is unknown, but it's uncertain elements can be bounded.  There are a number of ways to write down this uncertainty set; let us choose to write this by describing ${\bf A}$ as the affine combination of a number of known matrices, $${\bf A} = \sum_{i} \beta_i {\bf A}_i, \quad \sum_i \beta_i = 1, \quad \forall i, \beta_i > 0.$$  This is just one way to specify the uncertainty; geometrically it is describing a polygon of uncertain parameters (in the space of elements of ${\bf A}$ with each ${\bf A}_i$ as one of the vertices in the polygon. 
+<figure>
+  <img width="50%" src="figures/affine_combination_of_matrices.svg"/>
+</figure></p>
+
+  <p>Now we can formulate the search for a common Lyapunov function using \[
+    \find_{\bf p} \quad  \subjto \quad {\bf P} \succeq 0,  \quad \forall_i, {\bf PA}_i + {\bf A}_i^T {\bf P} \preceq 0.\]  The solver will then return a matrix ${\bf P}$ which
+ satisfies all of the constraints, or return saying "problem is infeasible".  It can easily be verified that if ${\bf P}$ satisfies the Lyapunov condition at all of the vertices, then it satisfies the condition for every ${\bf A}$ in the set:  \[ {\bf P}(\sum_i \beta_i {\bf A}_i) + (\sum_i \beta_i {\bf A}_i)^T {\bf P} = \sum_i \beta_i ({\bf P A}_i + {\bf A}_i^T {\bf P}) \preceq 0, \] since $\forall i$, $\beta_i > 0$.  Note that, unlike the simple Lyapunov equation for a known linear system, this condition being satisfied is a sufficient but not a necessary condition -- it is possible that the set of uncertain matrices ${\bf A}$ is robustly stable, but that this stability cannot be demonstrated with a common quadratic Lyapunov function.</p>
   
+<p>
+You can try this example for yourself in <drake></drake>.
+<pre><code class="matlab">
+cd(getDrakePath,'examples');
+commonLyapunovForLinearSystems;
+</code></pre>
+As always, make sure that you open up the code and take a look.  
+</p>  
+</div>
+
+<p>The examples above are very important because they establish a connection between
+Lyapunov functions and (convex) optimization.  But so far we've only demonstrated this 
+connection for linear systems, were the PSD matrices provide a magical recipe for establishing the positivity of the (quadratic) functions for all $\bx$.  Is there 
+any hope of extending this type of analysis to more general nonlinear systems?  Surprisingly, it turns out that there is.</p>
+
 </section>
   
 <section data-type="sect2"><h1>Sums-of-squares optimization</h1>
+  
+  <p>Surprisingly, it turns out that in the same way that we can using SDP to search over the positive quadratic equations, we can generalize this to search over the positive polynomial equations.  To be clear, for quadratic equations we have \[ {\bf P}\succeq 0 \quad \Rightarrow \quad \bx^T {\bf P} \bx \ge 0, \quad \forall \bx. \]  It turns out that 
+    we can generalize this to \[ {\bf P}\succeq 0 \quad \Rightarrow \quad {\bf m}^T(\bx) {\bf P} {\bf m}(\bx) \ge 0, \quad \forall \bx, \] where ${\bf m}(\bx)$ is a vector of polynomial equations, typically chosen as a vector of <em>monomials</em> (polynomials with only one term).  It turns out that the set of positive polynomials parameterized in this way is exactly the set of polynomials that can be written as a <em>sum of squares</em><elib>Parrilo00</elib>.  While it is known that not all positive polynomials can be written in this form, much is known about the gap (and papers have been written about trying to find polynomials which are uniformly positive but not sums of squares).  For our purposes this gap is very small; we should remember that it exists but not worry about it too much for now.</p>
+
+<p>Even better, there is quite a bit that is known about how to choose the terms in ${\bf m}(\bx)$.  For example, if you give me the polynomial \[ p(x) = 2 - 4x + 5x^2 \] and ask if it is positive for all real $x$, I can convince you that it is by producing the sums-of-squares factorization \[ p(x) = 1 + (1-2x)^2 + x^2, \] and I know that I can formulate the problem without needing any monomials of degree greater than 1 (the square-root of the degree of $p$) in my monomial vector.  In practice what this means
+for us is that people have authored optimization front-ends which take a high-level specification with constraints on the positivity of polynomials and they automatically
+generate the SDP problem for you, without having to think about what terms should appear in ${\bf m}(\bx)$, (c.f. <elib>Prajna04</elib>).  This class of optimization problems is called Sums-of-Squares (SOS) optimization.</p>
+
+<p>We will write optimizations using sums-of-squares constraints as \[ p(\bx) \sos \] as shorthand for the constraint that $p(\bx) \ge 0$ for all $\bx$, as demonstrated by finding a sums-of-squares decomposition.</p>
 
 </section>
   
