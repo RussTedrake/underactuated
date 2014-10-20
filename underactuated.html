@@ -3939,6 +3939,9 @@ generate the SDP problem for you, without having to think about what terms shoul
 </section>
   
 <section data-type="sect2"><h1>Lyapunov analysis for polynomial systems</h1>  
+  
+<p>Now we can see that it may possible to generalize the optimization approach using SDP to search for Lyapunov functions for linear systems to searching for Lyapunov functions for at least the polynomial systems. </p>  
+  
 </section>
   
 <section data-type="sect2"><h1>Region of attraction estimation for polynomial systems</h1>
@@ -3949,7 +3952,7 @@ generate the SDP problem for you, without having to think about what terms shoul
     
   <section data-type="sect3"><h1>Seeding the optimization with linear analysis</h1>
 
-<p>LQR gives the cost-to-go.  Otherwise, use a Lyapunov equation.</p>
+<p>LQR gives the cost-to-go which can be used as the Lyapunov candidate.  Otherwise, use a Lyapunov equation.  You may not even need to search for a better Lyapunov function, but rather just ask the question: what is the largest region of attraction that can be demonstrated for the nonlinear system using the Lyapunov function from linear analysis?</p>
 
 </section>
 
@@ -3957,8 +3960,13 @@ generate the SDP problem for you, without having to think about what terms shoul
 
 <section data-type="sect2"><h1>Rigid-body dynamics are polynomial</h1>  
     
-</section>
+  <p>Coming soon... For a nice explanation of how rigid-body kinematics are polynomial, see <elib>Wampler11</elib>.  Looking at the Lagrangian, you can see that if the kinematics are polynomial, then the dynamics will be, too.</p>    
   
+  <p>In practice, you can also Taylor approximate any smooth nonlinear function using polynomials.  This can be an effective strategy in practice, because you can limit the degrees of the polynomial, and because in many cases it is possible to provide conservative bounds on the errors due to the approximation.</p>
+    
+</section>
+
+<todo> implicit dynamics formulations.  global analysis of the pendulum example, ... </todo>
   
 </section> <!-- end convex -->
 
