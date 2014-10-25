@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 
 <html xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://www.w3.org/1999/xhtml HTMLBook/schema/htmlbook.xsd"
@@ -899,7 +899,7 @@ between three types of local stability:
 <ul>
 
 <li>Locally stable <em>in the sense of Lyapunov</em> (i.s.L.).  A fixed point, $x^*$ is
-locally stable i.s.L. if for every small $\epsilon$, I can produce a $\delta$
+locally stable i.s.L. if for every small $\epsilon > 0$, I can produce a $\delta > 0$
 such that if $\| x(0) - x^* \| < \delta$ then $\forall t$ $\| x(t) - x^*\| <
 \epsilon$.  In words, this means that for any ball of size $\epsilon$ around the
 fixed point, I can create a ball of size $\delta$ which guarantees that if the
@@ -3746,7 +3746,7 @@ point $\bx^*$ is locally asymptotically stable.</p>
 <div data-type="theorem"><h1>Local exponential stability</h1>   <p>     Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous
 and a fixed point $\bx^*$.     If we can produce a scalar function $V(\bx)$ with
 continuous derivatives for      which in some ball, ${\cal B}$, around $\bx^*$ we
-have $V(\bx-\bx^*) \succ 0$ and $\dot{V}(\bx-\bx^*) \preceq -\epsilon V(\bx-\bx^*)$, then the fixed
+have $V(\bx-\bx^*) \succ 0$ and $\dot{V}(\bx-\bx^*) \preceq -\epsilon V(\bx-\bx^*)$ for a scalar $\epsilo > 0$, then the fixed
 point $\bx^*$ is locally exponentially stable.</p>
 </div>
 
