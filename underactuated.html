@@ -2674,7 +2674,62 @@ limit cycle is traversed clockwise.</p>
 <section data-type="chapter" class="chapter"><h1>Highly-articulated Legged Robots</h1>
 
 <p>The passive dynamic walkers and hopping robots described in the last capture the fundamental dynamics of legged locomotion -- dynamics which are fundamentally nonlinear and punctuated by impulsive events impulsive due to making and breaking contact with the environment.  But if you start reading the literature on humanoid robots, or many-legged robots like quadrupeds, then you will find a quite different set of ideas taking center stage: ideas like the "zero-moment point" and footstep planning.  The goal of this chapter is to penetrate that world.</p>
+  
+<p>I'd like to start the discussion with a model that might seem quite far from the world of legged robots, but I think it's a very useful way to think about the problem.</p>
 
+<section data-type="sect1"><h1>A thought experiment</h1>
+
+<section data-type="sect2"><h1>A hovercraft model</h1>
+
+<figure><img width="70%" src="figures/hovercraft.svg"/></figure>
+
+<p>Imagine you have a flying vehicle modeled as a single rigid body in a gravity field with some number of force "thrusters" attached.  We'll describe the configuration of the vehicle by its orientation, $\theta$ and the location of its center of mass $(x,z)$.  The vector from the center of mass to thruster $i$ is given by $r_i$, yielding the equations
+of motion:
+\begin{align*}
+m\ddot{x} =& \sum_i F_{i,x},\\
+m\ddot{z} =& \sum_i F_{i,z} - mg,\\
+I\ddot\theta =& \sum_i \left[ r_i \times F_i \right]_y,
+\end{align*}
+where I've used $F_{i,x}$ to represent the component of the force in the $x$ direction and have taken just the $y$-axis component of the cross product on the last line.
+</p>
+  
+<p>Our goal is to move the hovercraft to a desired position/orientation and to keep it there.  If we take the inputs to be $F_i$, then the dynamics are affine (linear plus a constant term).  As such, we 
+can stabilize a stabilizable fixed point using a change of coordinates plus LQR or even plan/track a desired trajectory using time-varying LQR.  If I were to add additional linear constraints, for instance constraining $F_{min} \le F_i \le F_{max}$, then I can still use linear model-predictive control (MPC) to plan and stabilize a desired motion. By most accounts,
+this is a relatively easy control problem. (Note that it would be considerably harder if my control input or input constraints depend on the orientation, $\theta$, but we don't need that here yet).</p>
+
+  <p>Now imagine that you just a small number of thrusters (let's say two) each with severe input constraints.  To make things more interesting, let us say that you're allowed to move the thrusters, so $\dot{r}_i$ becomes an additional control input, but with some important limitations:  you have to turn the thrusters off when they are moving (e.g. $|F_i||\dot{r}_i| = 0$) and there is a limit to how quickly you can move the thrusters $|\dot{r}|_i \le v_{max}$.  This problem is a now lot more difficult, due especially to
+  the fact that constraints of the form $u_1 u_2 = 0$ are non-convex.
+    <center><img width="25%" src="figures/complementarityConstraint.svg"/></center>
+    I find this a very useful thought exercise; somehow our controller needs to make an effectively discrete decision to turn off a thruster and move it.  The framework of optimal control should support this - you are sacrificing a short-term loss of control authority for the long-term benefit of having the thruster positioned where you would like, but we haven't developed tools yet that deal well with this discrete plus continuous
+decision making.  We'll need to address that here.
+  </p>
+
+<p>Unfortunately, although the problem is already difficult, we need to continue to add constraints.  Now let's say additionally, that the thrusters can only be turned on in certain locations, as cartooned here:
+  <center><img width="60%" src="figures/hovercraftCartesianConstraints.svg"/></center>
+The union of these regions need not form a convex set.  Furthermore, these locations could be specified in the robot frame, but may also be specified in the world frame, which I'll call $p_i$: $$p_i = r_i - \begin{bmatrix} x \\ 0 \\ z \end{bmatrix}.$$  This problem still feels like it should be tractable, but it's definitely getting hard.</p>
+
+</section>
+<section data-type="sect2"><h1>Robots with (massless) legs</h1>
+
+<p>In my view, the hovercraft problem above is a central component of the walking problem.  If we consider a walking robot with massless legs, then the feet are exactly like movable thrusters.  As above, they are highly constrained - they can only produce force when they are touching the ground, and (typically) they can only produce forces in certain directions, for instance as described by a "friction cone" (you can push on the ground but not pull on the ground, and with Coulumb friction the forces tangential to the ground must be smaller than the forces normal to the ground, as described by a coefficient of friction, e.g. $|F_{\parallel}| < \mu |F_{\perp}|$).</p>
+  
+<figure><img width="50%" src="figures/hovercraftLegs.svg"/></figure>
+
+  <p>The constraints on where you can put your feet / thrusters will depend on the kinematics of your leg, and the speed at which you can move them will depend on the full dynamics of the leg -- these are difficult constraints to deal with.  But the actual dynamics of the rigid body are actually still affine, and still simple!</p>
+  
+</section>
+<section data-type="sect2"><h1>Capturing the full robot dynamics</h1>
+  
+<p>We don't actually need to have massless legs for this discussion to make sense.
+If we use the coordinates $x,z$ to describe the location of the center of mass of the
+entire robot, and the mass to represent the entire mass of the robot, then those equations
+remain unchanged.  The center of mass is a configuration dependent point, and does not have an orientation, but one important generalization of the orientation dynamics is given by the centroidal momentum matrix, $A(\bq)$, where $A(\bq)\ddot{\bq}$ captures the rate of change of the angular momentum of the robot around the center of mass <elib>Orin13</elib>.</p>
+
+
+</section>
+  
+</section> <!-- end thought experiment -->
+  
 </section> <!-- ** end highly-articulated legged robots ** -->
 
 <section data-type="chapter" class="chapter"><h1>Manipulation</h1>
