@@ -2674,7 +2674,7 @@ limit cycle is traversed clockwise.</p>
 <section data-type="chapter" class="chapter"><h1>Highly-articulated Legged Robots</h1>
 
 <p>The passive dynamic walkers and hopping robots described in the last capture the fundamental dynamics of legged locomotion -- dynamics which are fundamentally nonlinear and punctuated by impulsive events impulsive due to making and breaking contact with the environment.  But if you start reading the literature on humanoid robots, or many-legged robots like quadrupeds, then you will find a quite different set of ideas taking center stage: ideas like the "zero-moment point" and footstep planning.  The goal of this chapter is to penetrate that world.</p>
-  
+
 <p>I'd like to start the discussion with a model that might seem quite far from the world of legged robots, but I think it's a very useful way to think about the problem.</p>
 
 <section data-type="sect1"><h1>A thought experiment</h1>
@@ -2692,8 +2692,8 @@ I\ddot\theta =& \sum_i \left[ r_i \times F_i \right]_y,
 \end{align*}
 where I've used $F_{i,x}$ to represent the component of the force in the $x$ direction and have taken just the $y$-axis component of the cross product on the last line.
 </p>
-  
-<p>Our goal is to move the hovercraft to a desired position/orientation and to keep it there.  If we take the inputs to be $F_i$, then the dynamics are affine (linear plus a constant term).  As such, we 
+
+<p>Our goal is to move the hovercraft to a desired position/orientation and to keep it there.  If we take the inputs to be $F_i$, then the dynamics are affine (linear plus a constant term).  As such, we
 can stabilize a stabilizable fixed point using a change of coordinates plus LQR or even plan/track a desired trajectory using time-varying LQR.  If I were to add additional linear constraints, for instance constraining $F_{min} \le F_i \le F_{max}$, then I can still use linear model-predictive control (MPC) to plan and stabilize a desired motion. By most accounts,
 this is a relatively easy control problem. (Note that it would be considerably harder if my control input or input constraints depend on the orientation, $\theta$, but we don't need that here yet).</p>
 
@@ -2712,23 +2712,23 @@ The union of these regions need not form a convex set.  Furthermore, these locat
 <section data-type="sect2"><h1>Robots with (massless) legs</h1>
 
 <p>In my view, the hovercraft problem above is a central component of the walking problem.  If we consider a walking robot with massless legs, then the feet are exactly like movable thrusters.  As above, they are highly constrained - they can only produce force when they are touching the ground, and (typically) they can only produce forces in certain directions, for instance as described by a "friction cone" (you can push on the ground but not pull on the ground, and with Coulumb friction the forces tangential to the ground must be smaller than the forces normal to the ground, as described by a coefficient of friction, e.g. $|F_{\parallel}| < \mu |F_{\perp}|$).</p>
-  
+
 <figure><img width="50%" src="figures/hovercraftLegs.svg"/></figure>
 
   <p>The constraints on where you can put your feet / thrusters will depend on the kinematics of your leg, and the speed at which you can move them will depend on the full dynamics of the leg -- these are difficult constraints to deal with.  But the actual dynamics of the rigid body are actually still affine, and still simple!</p>
-  
+
 </section>
 <section data-type="sect2"><h1>Capturing the full robot dynamics</h1>
-  
+
 <p>We don't actually need to have massless legs for this discussion to make sense.
 If we use the coordinates $x,z$ to describe the location of the center of mass of the
 entire robot, and the mass to represent the entire mass of the robot, then those equations
 remain unchanged.  The center of mass is a configuration dependent point, and does not have an orientation, but one important generalization of the orientation dynamics is given by the centroidal momentum matrix, $A(\bq)$, where $A(\bq)\dot{\bq}$ captures the angular momentum of the robot around the center of mass <elib>Orin13</elib>. Note that the center of mass dynamics are still affine -- even for a big complicated humanoid -- but the centroidal momentum dynamics are complex and nonlinear.</p>
 
 </section>
-  
+
 </section> <!-- end thought experiment -->
-  
+
 </section> <!-- ** end highly-articulated legged robots ** -->
 
 <section data-type="chapter" class="chapter"><h1>Manipulation</h1>
@@ -3808,7 +3808,7 @@ point $\bx^*$ is locally asymptotically stable.</p>
 <div data-type="theorem"><h1>Local exponential stability</h1>   <p>     Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous
 and a fixed point $\bx^*$.     If we can produce a scalar function $V(\bx)$ with
 continuous derivatives for      which in some ball, ${\cal B}$, around $\bx^*$ we
-have $V(\bx-\bx^*) \succ 0$ and $\dot{V}(\bx-\bx^*) \preceq -\epsilon V(\bx-\bx^*)$ for a scalar $\epsilo > 0$, then the fixed
+have $V(\bx-\bx^*) \succ 0$ and $\dot{V}(\bx-\bx^*) \preceq -\epsilon V(\bx-\bx^*)$ for a scalar $\epsilon > 0$, then the fixed
 point $\bx^*$ is locally exponentially stable.</p>
 </div>
 
@@ -3841,7 +3841,7 @@ as $||\bx||\rightarrow \infty$, then $\bx$ will converge to the largest invarian
 set where $\dot{V}(\bx) = 0$.</p>
 </div>
 
-<p>To be clear, an <em>invariant set</em>, ${\cal G}$, of the dynamical systemis a set
+<p>To be clear, an <em>invariant set</em>, ${\cal G}$, of the dynamical system is a set
 for which $\bx(0)\in{\cal G} \Rightarrow \forall t>0, \bx(t) \in {\cal G}$.  In other words,
 once you enter the set you never leave.  The "largest invariant set" need not be connected;
 in fact for the pendulum example each fixed point is an invariant set, so the largest
@@ -3880,7 +3880,7 @@ largest invariant subset of ${\cal G}$ on which $\dot{V}=0$.<p>
 <figure>
   <img width="80%" src="figures/cubicPolynomialExample.svg"/>
 </figure>
-<p>In the vicinity of the origin, $\dot{x}$ looks like $-x$, and as we move away it looks increasingly like $x^3$.  There are three fixed points of the system, with two unstable and only one (at the origin) that is stable.  In fact, we can deduce visually that the region of attraction to the stable fixed point at the origin is $\bx \in (-1,1)$.  Let's see if we can demonstrate this with a Lyapunov argument.</p>
+<p>In the vicinity of the origin, $\dot{x}$ looks like $-x$, and as we move away it looks increasingly like $x^3$.  There is a stable fixed point at the origin and unstable fixed points at $\pm 1$.  In fact, we can deduce visually that the region of attraction to the stable fixed point at the origin is $\bx \in (-1,1)$.  Let's see if we can demonstrate this with a Lyapunov argument.</p>
 
 <p>First, let us linearize the dynamics about the origin and use the Lyapunov equation for linear systems to find a candidate $V(\bx)$.  Since the linearization is $\dot{x} = -x$, if we take ${\bf Q}=1$, then we
 find ${\bf P}=\frac{1}{2}$ is the positive definite solution to the algebraic Lyapunov equation (\ref{eq:algebraic_lyapunov}).  Proceeding with
@@ -3940,7 +3940,7 @@ Lyapunov function candidates for interesting systems, especially for underactuat
 Lyapunov candidate for a general nonlinear system, the Lyapunov conditions can be difficult to check -- for instance, how would I check that $\dot{V}$ is strictly negative for all $\bx$ except the origin if $\dot{V}$ is some
 arbitrarily complicated nonlinear function over a vector $\bx$?</p>
 
-<p>In the remainder of this chapter, we'll look at some computational approoaches to verifying the Lyapunov conditions, and even to searching
+<p>In the remainder of this chapter, we'll look at some computational approaches to verifying the Lyapunov conditions, and even to searching
 for the description of the Lyapunov functions themselves.</p>
 
 <p>If you're imagining numerical algorithms to check the Lyapunov conditions for complicated Lyapunov functions and complicated dynamics, the first thought is probably that we can evaluate $V$ and $\dot{V}$ at a large number of sample points and check whether $V$ is positive and $\dot{V}$ is negative.  That does work, and could potentially be combined with some smoothness or regularity assumptions to generalize beyond the sample points.  But in many cases we will be able to do better -- providing optimization algorithms that will rigorously check these conditions <em>for all $\bx$</em> without dense sampling; these will also give us additional leverage in formulating the search for Lyapunov functions.  </p>
