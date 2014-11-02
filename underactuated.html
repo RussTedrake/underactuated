@@ -2707,7 +2707,7 @@ decision making.  We'll need to address that here.
 
 <p>Unfortunately, although the problem is already difficult, we need to continue to add constraints.  Now let's say additionally, that the thrusters can only be turned on in certain locations, as cartooned here:
   <center><img width="60%" src="figures/hovercraftCartesianConstraints.svg"/></center>
-The union of these regions need not form a convex set.  Furthermore, these locations could be specified in the robot frame, but may also be specified in the world frame, which I'll call $p_i$: $$p_i = r_i - \begin{bmatrix} x \\ 0 \\ z \end{bmatrix}.$$  This problem still feels like it should be tractable, but it's definitely getting hard.</p>
+The union of these regions need not form a convex set.  Furthermore, these locations could be specified in the robot frame, but may also be specified in the world frame, which I'll call ${\bf p}_i$: $${\bf p}_i = {\bf r}_i - \begin{bmatrix} x \\ 0 \\ z \end{bmatrix}.$$  This problem still feels like it should be tractable, but it's definitely getting hard.</p>
 
 </section>
 <section data-type="sect2"><h1>Robots with (massless) legs</h1>
@@ -2764,10 +2764,61 @@ the center of pressure is a "zero-moment point" (ZMP) -- a property that we will
   <section data-type="sect2"><h1>An aside: the zero-moment point derivation</h1>
     
     <p>The zero-moment point (ZMP) is discussed very frequently in the current literature
-      on legged robots.  It also has an unfortunate tendency to be surrounded by some confusion; number of people have defined the ZMP is slightly different ways (see e.g. <elib>Goswami99</elib> for a summary).  Therefore, it makes sense to provide a simple derivation here.</p>
+      on legged robots.  It also has an unfortunate tendency to be surrounded by some confusion; a number of people have defined the ZMP is slightly different ways (see e.g. <elib>Goswami99</elib> for a summary).  Therefore, it makes sense to provide a simple derivation here.</p>
+    
+    <p>First let us recall that for rigid body systems I can always summarize the
+      contributions from many external forces as a single <i>wrench</i> (force and torque) on the object -- this is simply because the $F_i$ terms enter our equations of motion linearly.  Specifically, given any point in space, $r$, in coordinates relative to $(x,z)$: 
+    <figure><img width="70%" src="figures/zmp_derivation.svg"/></figure>
+<todo>update diagram to have r instead of p</todo>
+
+I can re-write the equations of motion as     
+\begin{align*}
+m\ddot{x} =& \sum_i F_{i,x} = F_{net,x},\\
+m\ddot{z} =& \sum_i F_{i,z} - mg = F_{net,z},\\
+I\ddot\theta =& \sum_i \left[ r_i \times F_i \right]_y = ({\bf r} \times {\bf F}_{net})_y + \tau_{net}, 
+\end{align*}    
+where ${\bf F}_{net} = \sum_i {\bf F}_i$ and the value of $\tau_{net}$ depends on the location ${\bf r}$.  For some choices of ${\bf r}$, we can make $\tau_{net}=0$.  Examining 
+    \[ 
+    ({\bf r} \times {\bf F}_{net})_y = r_z F_{net,x} - r_x F_{net,z} = \left(\sum_i {\bf r}_i \times {\bf F}_i\right)_y, \] we can see that when $F_{net,z} > 0$ there is an entire line of solutions, $r_x = a r_z + b$, including one that will intercept the terrain.  For walking robots, it is this point on the ground from which the external wrench can be described by a single force vector (and no moment) that is the famous "zero-moment point" (ZMP).     Substituting the back in to replace $F_{net}$, we can see that 
+    \[ r_x = \frac{r_z m \ddot{x} - I \ddot\theta}{m\ddot{z} + mg}. \] 
+    If we assume that $\ddot{z}=\ddot{theta}=0$ and replace the relative coordinates with the global coordinates ${\bf r} = {\bf p} - [x,0,z]^T$, then we arrive at precisely the equation presented above.</p>
+
+<p>Furthermore, since 
+    \[\left(\sum_i {\bf r}_i \times {\bf F}_i\right)_y = \sum_i \left( r_{i,z} F_{i,x} - r_{i,x} F_{i,z} \right), \] and for <i>flat terrain</i> we have \[ r_z F_{net,x} = \sum_i r_{i,z} F_{i,x}, \] then we can see that this ZMP is exactly the CoP: \[ r_x = \frac{\sum_i r_{i,x} F_{i,z}}{ F_{net,z} }. \] 
+    </p>
+    
+    <p>In three dimensions, we solve for the point on the ground where $\tau_{net,y} = \tau_{net,x} = 0$, but allow $\tau_{net,z} \ne 0$ to extract the analogous equations in the $y$-axis:  \[ r_y = \frac{r_z m \ddot{y} - I \ddot\theta}{m\ddot{z} + mg}. \] </p>    
+    
+  </section>
+</section>
+
+  <section data-type="sect1"><h1>ZMP planning</h1>
+    
+    <figure><img width="80%" src="figures/zmp_planning.svg"/></figure>
+    
+    <section data-type="sect2"><h1>From a CoM plan to a whole-body plan</h1></section>
+  </section>
+
+
+  <section data-type="sect1"><h1>Whole-Body Control</h1>
+    
+    <p>Coming soon.  For a description of our approach with Atlas, see <elib>Kuindersma13+Kuindersma14</elib>.</p>
     
   </section>
 
+  <section data-type="sect1"><h1>Footstep planning and push recovery</h1>
+    
+    <p>Coming soon.  For a description of our approach with Atlas, see <elib>Deits14a+Kuindersma14</elib>.  For nice geometric insights on push recovery, see <elib>Koolen12</elib>.</p>
+    
+  </section>
+  
+  <section data-type="sect1"><h1>Beyond ZMP planning</h1>
+    
+    <p>Coming soon.  For a description of our approach with Atlas, see <elib>Dai14+Kuindersma14</elib>.</p>
+    
+  </section>
+  
+  
 </section> <!-- ** end highly-articulated legged robots ** -->
 
 <section data-type="chapter" class="chapter"><h1>Manipulation</h1>
