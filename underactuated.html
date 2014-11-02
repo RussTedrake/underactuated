@@ -2677,12 +2677,13 @@ limit cycle is traversed clockwise.</p>
 
 <p>I'd like to start the discussion with a model that might seem quite far from the world of legged robots, but I think it's a very useful way to think about the problem.</p>
 
-<section data-type="sect1"><h1>A thought experiment</h1>
+<section data-type="sect1"><h1>Center of Mass Dynamics</h1>
 
 <section data-type="sect2"><h1>A hovercraft model</h1>
 
 <figure><img width="70%" src="figures/hovercraft.svg"/></figure>
-
+<todo>flip the directions of the force vector in the image</todo>
+  
 <p>Imagine you have a flying vehicle modeled as a single rigid body in a gravity field with some number of force "thrusters" attached.  We'll describe the configuration of the vehicle by its orientation, $\theta$ and the location of its center of mass $(x,z)$.  The vector from the center of mass to thruster $i$ is given by $r_i$, yielding the equations
 of motion:
 \begin{align*}
@@ -2721,13 +2722,51 @@ The union of these regions need not form a convex set.  Furthermore, these locat
 <section data-type="sect2"><h1>Capturing the full robot dynamics</h1>
 
 <p>We don't actually need to have massless legs for this discussion to make sense.
-If we use the coordinates $x,z$ to describe the location of the center of mass of the
-entire robot, and the mass to represent the entire mass of the robot, then those equations
-remain unchanged.  The center of mass is a configuration dependent point, and does not have an orientation, but one important generalization of the orientation dynamics is given by the centroidal momentum matrix, $A(\bq)$, where $A(\bq)\dot{\bq}$ captures the angular momentum of the robot around the center of mass <elib>Orin13</elib>. Note that the center of mass dynamics are still affine -- even for a big complicated humanoid -- but the centroidal momentum dynamics are complex and nonlinear.</p>
+If we use the coordinates $x,z$ to describe the location of the center of mass (CoM) of the
+entire robot, and $m$ to represent the entire mass of the robot, then the first two equations
+remain unchanged.  The center of mass is a configuration dependent point, and does not have an orientation, but one important generalization of the orientation dynamics is given by the centroidal momentum matrix, $A(\bq)$, where $A(\bq)\dot{\bq}$ captures the linear and angular momentum of the robot around the center of mass <elib>Orin13</elib>. Note that the center of mass dynamics are still affine -- even for a big complicated humanoid -- but the centroidal momentum dynamics are nonlinear.</p>
 
 </section>
 
-</section> <!-- end thought experiment -->
+<section data-type="sect2"><h1>Impact dynamics</h1>
+  
+<p>In the previous chapter we devoted relatively a lot of attention to dynamics of impact, characterized for instance by a guard the reset dynamics in a hybrid dynamical system.  In those models we used impulsive ground-reaction forces (these forces are instantaneously infinite, but doing finite work) in order to explain the discontinuous change in velocity required to avoid penetration with the ground.  This story can be extended naturally to the dynamics of the center of mass.<p>
+  
+<p>For an articulated robot, though, there a number of possible strategies for the legs which can effect the dynamics of the center of mass.  For example, if the robot hits the ground with a stiff leg like the rimless wheel, then the angular momentum about the point of collision will be conserved, but any momentum going into the ground will be lost.  However, if the robot has a spring leg and a massless toe like the SLIP model, then no energy need be lost.</p>
+  
+<p>One strategy that many highly-articulated legged robots use is to keep their center of mass at a constant height, $$z = c \quad \Rightarrow \quad \dot{z} = \ddot{z} = 0,$$  and minimize their angular momentum abount the center of mass.  Using this strategy, if the swinging foot lands roughly below the center of mass, then even with a stiff leg there is no energy dissipated in the collision - all of the momentum is conserved.  This often (but does not always) justify ignoring the impacts in the center of mass dynamics of the system.</p>
+  
+</section>
+
+</section> <!-- end COM dynamics -->
+  
+<section data-type="sect1"><h1>The special case of flat terrain</h1>
+    
+<p>While not the only important case, it is extremely common for our robots to be walking over flat, or nearly flat terrain.  In this situation, even if the robot is touching the ground in a number of places (e.g., two heels and two toes), the constraints on the center of mass dynamics can be summarized very efficiently.</p>
+  
+<figure>
+  <img width="80%" src="figures/flat_terrain.svg"/>
+  <figcaption>External forces acting on a robot pushing on a flat ground</figcaption>
+</figure>    
+
+<p>First, on flat terrain $F_{i,z}$ represents the force that is normal to the surface at contact point $i$.  If we assume that the robot can ony push on the ground (and not pull), then this implies $$\forall i, F_{i,z} \ge 0 \Rightarrow \sum_i F_{i,z} \ge 0 \Rightarrow \ddot{z} \ge -g.$$  In other words, if I cannot pull on the ground, then my center of mass cannot accelerate towards the ground faster than gravity.</p>
+
+<p>Furthermore, if we use a Coloumb model of friction on the ground, with friction coefficient $\mu$, then $$\forall i, |F_{i,x}| \le \mu F_{i,z} \Rightarrow \sum_i |F_{i,x}| \le \mu \sum_i F_z \Rightarrow |\ddot{x}| \le \mu (\ddot{z} + g).$$  For instance, if I keep my center of mass at a constant height, then $\ddot{z}=0$ and $|\ddot{x}| \le \mu g$; this is a nice reminder of just how important friction is if you want to be able to move around in the world.</p>
+  
+<p>Even better, let us define the "center of pressure" (CoP) as the point on the ground where $$x_{cop} = \frac{\sum_i p_{i,x} F_{i,z}}{\sum_i F_{i,z}},$$ and since all $p_{i,z}$ are equal on flat terrain, $z_{cop}$ is just the height of the terrain.  It turns out that
+the center of pressure is a "zero-moment point" (ZMP) -- a property that we will demonstrate below -- and moment-balance equation gives us a very important relationship between the location of the CoP and the dynamics of the CoM: \[ (m\ddot{z} + mg) (x_{cop} - x) = (z_{cop} - z) m\ddot{x} - I\ddot\theta. \]  If we use the strategy proposed above for ignoring collision dynamics, $\ddot{z} = \ddot{\theta} = 0$, then we have $z_{cop} - z$ is a constant height $h$, and the result is a the famous "ZMP equations":
+\[ \ddot{x} = -\frac{g}{h} (x_{cop}-x). \]  So the location of the center of pressure completely determines the acceleration of the center of mass, and vice versa!  What's more, this relationship is affine -- a property that we can exploit in a number of ways.  </p>
+
+<p>
+  As an example, we can easily relate constraints on the CoP to constraints on $\ddot{x}$.
+  It is easy to verify from the definition that the CoP must live inside the <a href="http://en.wikipedia.org/wiki/Convex_hull">convex hull</a> of the ground contact points.  Therefore, if we use the $\ddot{z}=\ddot\theta=0$ strategy, then this directly implies strict bounds on the possible accelerations of the center of mass given the locations of the ground contacts.</p>  
+  
+  <section data-type="sect2"><h1>An aside: the zero-moment point derivation</h1>
+    
+    <p>The zero-moment point (ZMP) is discussed very frequently in the current literature
+      on legged robots.  It also has an unfortunate tendency to be surrounded by some confusion; number of people have defined the ZMP is slightly different ways (see e.g. <elib>Goswami99</elib> for a summary).  Therefore, it makes sense to provide a simple derivation here.</p>
+    
+  </section>
 
 </section> <!-- ** end highly-articulated legged robots ** -->
 
