@@ -2734,7 +2734,7 @@ remain unchanged.  The center of mass is a configuration dependent point, and do
   
 <p>For an articulated robot, though, there a number of possible strategies for the legs which can effect the dynamics of the center of mass.  For example, if the robot hits the ground with a stiff leg like the rimless wheel, then the angular momentum about the point of collision will be conserved, but any momentum going into the ground will be lost.  However, if the robot has a spring leg and a massless toe like the SLIP model, then no energy need be lost.</p>
   
-<p>One strategy that many highly-articulated legged robots use is to keep their center of mass at a constant height, $$z = c \quad \Rightarrow \quad \dot{z} = \ddot{z} = 0,$$  and minimize their angular momentum abount the center of mass.  Using this strategy, if the swinging foot lands roughly below the center of mass, then even with a stiff leg there is no energy dissipated in the collision - all of the momentum is conserved.  This often (but does not always) justify ignoring the impacts in the center of mass dynamics of the system.</p>
+<p>One strategy that many highly-articulated legged robots use is to keep their center of mass at a constant height, $$z = c \quad \Rightarrow \quad \dot{z} = \ddot{z} = 0,$$  and minimize their angular momentum abount the center of mass (here $\ddot\theta=0$).  Using this strategy, if the swinging foot lands roughly below the center of mass, then even with a stiff leg there is no energy dissipated in the collision - all of the momentum is conserved.  This often (but does not always) justify ignoring the impacts in the center of mass dynamics of the system.</p>
   
 </section>
 
