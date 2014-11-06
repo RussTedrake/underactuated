@@ -2683,7 +2683,7 @@ limit cycle is traversed clockwise.</p>
 
 <figure><img width="70%" src="figures/hovercraft.svg"/></figure>
 <todo>flip the directions of the force vector in the image</todo>
-  
+
 <p>Imagine you have a flying vehicle modeled as a single rigid body in a gravity field with some number of force "thrusters" attached.  We'll describe the configuration of the vehicle by its orientation, $\theta$ and the location of its center of mass $(x,z)$.  The vector from the center of mass to thruster $i$ is given by $r_i$, yielding the equations
 of motion:
 \begin{align*}
@@ -2712,7 +2712,7 @@ The union of these regions need not form a convex set.  Furthermore, these locat
 </section>
 <section data-type="sect2"><h1>Robots with (massless) legs</h1>
 
-<p>In my view, the hovercraft problem above is a central component of the walking problem.  If we consider a walking robot with massless legs, then the feet are exactly like movable thrusters.  As above, they are highly constrained - they can only produce force when they are touching the ground, and (typically) they can only produce forces in certain directions, for instance as described by a "friction cone" (you can push on the ground but not pull on the ground, and with Coulumb friction the forces tangential to the ground must be smaller than the forces normal to the ground, as described by a coefficient of friction, e.g. $|F_{\parallel}| < \mu |F_{\perp}|$).</p>
+<p>In my view, the hovercraft problem above is a central component of the walking problem.  If we consider a walking robot with massless legs, then the feet are exactly like movable thrusters.  As above, they are highly constrained - they can only produce force when they are touching the ground, and (typically) they can only produce forces in certain directions, for instance as described by a "friction cone" (you can push on the ground but not pull on the ground, and with Coulomb friction the forces tangential to the ground must be smaller than the forces normal to the ground, as described by a coefficient of friction, e.g. $|F_{\parallel}| < \mu |F_{\perp}|$).</p>
 
 <figure><img width="50%" src="figures/hovercraftLegs.svg"/></figure>
 
@@ -2729,96 +2729,96 @@ remain unchanged.  The center of mass is a configuration dependent point, and do
 </section>
 
 <section data-type="sect2"><h1>Impact dynamics</h1>
-  
+
 <p>In the previous chapter we devoted relatively a lot of attention to dynamics of impact, characterized for instance by a guard the reset dynamics in a hybrid dynamical system.  In those models we used impulsive ground-reaction forces (these forces are instantaneously infinite, but doing finite work) in order to explain the discontinuous change in velocity required to avoid penetration with the ground.  This story can be extended naturally to the dynamics of the center of mass.<p>
-  
+
 <p>For an articulated robot, though, there a number of possible strategies for the legs which can effect the dynamics of the center of mass.  For example, if the robot hits the ground with a stiff leg like the rimless wheel, then the angular momentum about the point of collision will be conserved, but any momentum going into the ground will be lost.  However, if the robot has a spring leg and a massless toe like the SLIP model, then no energy need be lost.</p>
-  
+
 <p>One strategy that many highly-articulated legged robots use is to keep their center of mass at a constant height, $$z = c \quad \Rightarrow \quad \dot{z} = \ddot{z} = 0,$$  and minimize their angular momentum abount the center of mass (here $\ddot\theta=0$).  Using this strategy, if the swinging foot lands roughly below the center of mass, then even with a stiff leg there is no energy dissipated in the collision - all of the momentum is conserved.  This often (but does not always) justify ignoring the impacts in the center of mass dynamics of the system.</p>
-  
+
 </section>
 
 </section> <!-- end COM dynamics -->
-  
+
 <section data-type="sect1"><h1>The special case of flat terrain</h1>
-    
+
 <p>While not the only important case, it is extremely common for our robots to be walking over flat, or nearly flat terrain.  In this situation, even if the robot is touching the ground in a number of places (e.g., two heels and two toes), the constraints on the center of mass dynamics can be summarized very efficiently.</p>
-  
+
 <figure>
   <img width="80%" src="figures/flat_terrain.svg"/>
   <figcaption>External forces acting on a robot pushing on a flat ground</figcaption>
-</figure>    
+</figure>
 
 <p>First, on flat terrain $F_{i,z}$ represents the force that is normal to the surface at contact point $i$.  If we assume that the robot can ony push on the ground (and not pull), then this implies $$\forall i, F_{i,z} \ge 0 \Rightarrow \sum_i F_{i,z} \ge 0 \Rightarrow \ddot{z} \ge -g.$$  In other words, if I cannot pull on the ground, then my center of mass cannot accelerate towards the ground faster than gravity.</p>
 
-<p>Furthermore, if we use a Coloumb model of friction on the ground, with friction coefficient $\mu$, then $$\forall i, |F_{i,x}| \le \mu F_{i,z} \Rightarrow \sum_i |F_{i,x}| \le \mu \sum_i F_z \Rightarrow |\ddot{x}| \le \mu (\ddot{z} + g).$$  For instance, if I keep my center of mass at a constant height, then $\ddot{z}=0$ and $|\ddot{x}| \le \mu g$; this is a nice reminder of just how important friction is if you want to be able to move around in the world.</p>
-  
+<p>Furthermore, if we use a Coulomb model of friction on the ground, with friction coefficient $\mu$, then $$\forall i, |F_{i,x}| \le \mu F_{i,z} \Rightarrow \sum_i |F_{i,x}| \le \mu \sum_i F_z \Rightarrow |\ddot{x}| \le \mu (\ddot{z} + g).$$  For instance, if I keep my center of mass at a constant height, then $\ddot{z}=0$ and $|\ddot{x}| \le \mu g$; this is a nice reminder of just how important friction is if you want to be able to move around in the world.</p>
+
 <p>Even better, let us define the "center of pressure" (CoP) as the point on the ground where $$x_{cop} = \frac{\sum_i p_{i,x} F_{i,z}}{\sum_i F_{i,z}},$$ and since all $p_{i,z}$ are equal on flat terrain, $z_{cop}$ is just the height of the terrain.  It turns out that
 the center of pressure is a "zero-moment point" (ZMP) -- a property that we will demonstrate below -- and moment-balance equation gives us a very important relationship between the location of the CoP and the dynamics of the CoM: \[ (m\ddot{z} + mg) (x_{cop} - x) = (z_{cop} - z) m\ddot{x} - I\ddot\theta. \]  If we use the strategy proposed above for ignoring collision dynamics, $\ddot{z} = \ddot{\theta} = 0$, then we have $z_{cop} - z$ is a constant height $h$, and the result is a the famous "ZMP equations":
 \[ \ddot{x} = -\frac{g}{h} (x_{cop}-x). \]  So the location of the center of pressure completely determines the acceleration of the center of mass, and vice versa!  What's more, this relationship is affine -- a property that we can exploit in a number of ways.  </p>
 
 <p>
   As an example, we can easily relate constraints on the CoP to constraints on $\ddot{x}$.
-  It is easy to verify from the definition that the CoP must live inside the <a href="http://en.wikipedia.org/wiki/Convex_hull">convex hull</a> of the ground contact points.  Therefore, if we use the $\ddot{z}=\ddot\theta=0$ strategy, then this directly implies strict bounds on the possible accelerations of the center of mass given the locations of the ground contacts.</p>  
-  
+  It is easy to verify from the definition that the CoP must live inside the <a href="http://en.wikipedia.org/wiki/Convex_hull">convex hull</a> of the ground contact points.  Therefore, if we use the $\ddot{z}=\ddot\theta=0$ strategy, then this directly implies strict bounds on the possible accelerations of the center of mass given the locations of the ground contacts.</p>
+
   <section data-type="sect2"><h1>An aside: the zero-moment point derivation</h1>
-    
+
     <p>The zero-moment point (ZMP) is discussed very frequently in the current literature
       on legged robots.  It also has an unfortunate tendency to be surrounded by some confusion; a number of people have defined the ZMP is slightly different ways (see e.g. <elib>Goswami99</elib> for a summary).  Therefore, it makes sense to provide a simple derivation here.</p>
-    
+
     <p>First let us recall that for rigid body systems I can always summarize the
-      contributions from many external forces as a single <i>wrench</i> (force and torque) on the object -- this is simply because the $F_i$ terms enter our equations of motion linearly.  Specifically, given any point in space, $r$, in coordinates relative to $(x,z)$: 
+      contributions from many external forces as a single <i>wrench</i> (force and torque) on the object -- this is simply because the $F_i$ terms enter our equations of motion linearly.  Specifically, given any point in space, $r$, in coordinates relative to $(x,z)$:
     <figure><img width="70%" src="figures/zmp_derivation.svg"/></figure>
 <todo>update diagram to have r instead of p</todo>
 
-I can re-write the equations of motion as     
+I can re-write the equations of motion as
 \begin{align*}
 m\ddot{x} =& \sum_i F_{i,x} = F_{net,x},\\
 m\ddot{z} =& \sum_i F_{i,z} - mg = F_{net,z},\\
-I\ddot\theta =& \sum_i \left[ r_i \times F_i \right]_y = ({\bf r} \times {\bf F}_{net})_y + \tau_{net}, 
-\end{align*}    
-where ${\bf F}_{net} = \sum_i {\bf F}_i$ and the value of $\tau_{net}$ depends on the location ${\bf r}$.  For some choices of ${\bf r}$, we can make $\tau_{net}=0$.  Examining 
-    \[ 
-    ({\bf r} \times {\bf F}_{net})_y = r_z F_{net,x} - r_x F_{net,z} = \left(\sum_i {\bf r}_i \times {\bf F}_i\right)_y, \] we can see that when $F_{net,z} > 0$ there is an entire line of solutions, $r_x = a r_z + b$, including one that will intercept the terrain.  For walking robots, it is this point on the ground from which the external wrench can be described by a single force vector (and no moment) that is the famous "zero-moment point" (ZMP).     Substituting the back in to replace $F_{net}$, we can see that 
-    \[ r_x = \frac{r_z m \ddot{x} - I \ddot\theta}{m\ddot{z} + mg}. \] 
+I\ddot\theta =& \sum_i \left[ r_i \times F_i \right]_y = ({\bf r} \times {\bf F}_{net})_y + \tau_{net},
+\end{align*}
+where ${\bf F}_{net} = \sum_i {\bf F}_i$ and the value of $\tau_{net}$ depends on the location ${\bf r}$.  For some choices of ${\bf r}$, we can make $\tau_{net}=0$.  Examining
+    \[
+    ({\bf r} \times {\bf F}_{net})_y = r_z F_{net,x} - r_x F_{net,z} = \left(\sum_i {\bf r}_i \times {\bf F}_i\right)_y, \] we can see that when $F_{net,z} > 0$ there is an entire line of solutions, $r_x = a r_z + b$, including one that will intercept the terrain.  For walking robots, it is this point on the ground from which the external wrench can be described by a single force vector (and no moment) that is the famous "zero-moment point" (ZMP).     Substituting the back in to replace $F_{net}$, we can see that
+    \[ r_x = \frac{r_z m \ddot{x} - I \ddot\theta}{m\ddot{z} + mg}. \]
     If we assume that $\ddot{z}=\ddot{theta}=0$ and replace the relative coordinates with the global coordinates ${\bf r} = {\bf p} - [x,0,z]^T$, then we arrive at precisely the equation presented above.</p>
 
-<p>Furthermore, since 
-    \[\left(\sum_i {\bf r}_i \times {\bf F}_i\right)_y = \sum_i \left( r_{i,z} F_{i,x} - r_{i,x} F_{i,z} \right), \] and for <i>flat terrain</i> we have \[ r_z F_{net,x} = \sum_i r_{i,z} F_{i,x}, \] then we can see that this ZMP is exactly the CoP: \[ r_x = \frac{\sum_i r_{i,x} F_{i,z}}{ F_{net,z} }. \] 
+<p>Furthermore, since
+    \[\left(\sum_i {\bf r}_i \times {\bf F}_i\right)_y = \sum_i \left( r_{i,z} F_{i,x} - r_{i,x} F_{i,z} \right), \] and for <i>flat terrain</i> we have \[ r_z F_{net,x} = \sum_i r_{i,z} F_{i,x}, \] then we can see that this ZMP is exactly the CoP: \[ r_x = \frac{\sum_i r_{i,x} F_{i,z}}{ F_{net,z} }. \]
     </p>
-    
-    <p>In three dimensions, we solve for the point on the ground where $\tau_{net,y} = \tau_{net,x} = 0$, but allow $\tau_{net,z} \ne 0$ to extract the analogous equations in the $y$-axis:  \[ r_y = \frac{r_z m \ddot{y} - I \ddot\theta}{m\ddot{z} + mg}. \] </p>    
-    
+
+    <p>In three dimensions, we solve for the point on the ground where $\tau_{net,y} = \tau_{net,x} = 0$, but allow $\tau_{net,z} \ne 0$ to extract the analogous equations in the $y$-axis:  \[ r_y = \frac{r_z m \ddot{y} - I \ddot\theta}{m\ddot{z} + mg}. \] </p>
+
   </section>
 </section>
 
   <section data-type="sect1"><h1>ZMP planning</h1>
-    
+
     <figure><img width="80%" src="figures/zmp_planning.svg"/></figure>
-    
+
     <section data-type="sect2"><h1>From a CoM plan to a whole-body plan</h1></section>
   </section>
 
 
   <section data-type="sect1"><h1>Whole-Body Control</h1>
-    
+
     <p>Coming soon.  For a description of our approach with Atlas, see <elib>Kuindersma13+Kuindersma14</elib>.</p>
-    
+
   </section>
 
   <section data-type="sect1"><h1>Footstep planning and push recovery</h1>
-    
+
     <p>Coming soon.  For a description of our approach with Atlas, see <elib>Deits14a+Kuindersma14</elib>.  For nice geometric insights on push recovery, see <elib>Koolen12</elib>.</p>
-    
+
   </section>
-  
+
   <section data-type="sect1"><h1>Beyond ZMP planning</h1>
-    
+
     <p>Coming soon.  For a description of our approach with Atlas, see <elib>Dai14+Kuindersma14</elib>.</p>
-    
+
   </section>
-  
-  
+
+
 </section> <!-- ** end highly-articulated legged robots ** -->
 
 <section data-type="chapter" class="chapter"><h1>Manipulation</h1>
@@ -4990,7 +4990,7 @@ Coming soon.  If you are interested, see <elib>Manchester10a+Manchester10b</elib
 
 <!-- ***************  end of hybrid systems **************   -->
 
-<section data-type="chapter" class="chapter"><h1>Feasible Motion Planning</h1>
+<section data-type="chapter" class="chapter"><h1>Motion Planning as Search</h1>
 
 </section>
 
