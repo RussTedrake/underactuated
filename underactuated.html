@@ -4992,6 +4992,79 @@ Coming soon.  If you are interested, see <elib>Manchester10a+Manchester10b</elib
 
 <section data-type="chapter" class="chapter"><h1>Motion Planning as Search</h1>
 
+<p>The term "motion planning" is a hopelessly general term which almost certainly
+  encompasses the dynamic programming, feedback design, and trajectory optimization
+  algorithms that we have already discussed.  However, there are a number of algorithms
+  and ideas that we have not yet discussed which have grown from the idea of formulating
+  motion planning as a search problem -- for instance searching for a path from a start
+  to a goal in a graph which is too large solve completely with dynamic programming.  
+  Some, but certainly not all, of these algorithms sacrifice optimality in order to
+  find any path if it exists, and the notion of a planner being "complete" -- guaranteed to find 
+  a path if one exists -- is highly valued.  This is precisely our goal for this chapter,
+  to add some additional tools that will be able to provide some form of solutions for our
+  most geometrically complex, highly non-convex, robot control problems.</p>
+  
+<p><elib>LaValle06</elib> is a very nice book on planning algorithms in general and on 
+  motion planning algorithms in particular.  Compared to other planning problems,
+  <em>motion planning</em> typically refers to problems where the planning domain is continuous 
+  (e.g. continuous state space, continuous action space), but many motion planning
+algorithms trace their origins back to ideas in discrete domains (e.g., graph search).</p>  
+
+
+<section data-type="sect1"><h1>Artificial Intelligence as Search</h1>
+
+<p>A long history...  some people feel that the route to creating intelligent machines
+is to collect large ontogolies of knowledge, and then perform very efficient search.  
+(The more modern view of AI is focused instead on machine learning, the right answer 
+probably involves pieces of both.)  Samuels checker players, Deep Blue playing chess, theorem 
+proving, Cyc, IBM Watson,...</p>
+
+<p>One of the key ideas is the use of "heuristics" to guide the search.  "Is it possible to find
+  and optimal path from the start to a goal without visiting every node?".  $A^*$.  Admissable heuristics.
+Example: google maps.</p>
+  
+<p>Online planning.  $D^*$, $D^*$-Lite.</p>
+
+</section>
+  
+<section data-type="sect1"><h1>Randomized motion planning</h1>
+  
+<section data-type="sect2"><h1>Rapidly-Exploring Random Trees (RRTs)</h1>
+
+</section>
+
+<section data-type="sect2"><h1>RRTs for robots with dynamics</h1>
+
+</section>
+  
+<section data-type="sect2"><h1>Variations and extensions</h1>
+
+<p>Multi-query planning with PRMs, ...
+</p>
+  
+<p>RRT*, RRT-sharp, RRTx,...  </p>  
+  
+<p>Complexity bounds and dispersion limits</p>
+  
+</section>
+
+<section data-type="sect2"><h1>Discussion</h1>
+
+<p>Not sure yet whether randomness is fundamental here, or whether is a temporary "crutch"
+until we understand geometric and dynamic planning better.</p>
+
+</section>
+</section>
+  
+<section data-type="sect1"><h1>Decomposition methods</h1>
+  
+<p>Cell decomposition...</p>
+
+<p>Mixed-integer planning.</p>  
+
+<p>Approximate decompositions for complex environments (e.g. IRIS)</p>
+  
+</section>
 </section>
 
 <!-- ***************  end of feasible motion planning **************   -->
