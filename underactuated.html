@@ -5036,7 +5036,7 @@ Example: google maps.</p>
   
 <p>If you remember how we introduced dynamic programming initially as a graph search,
 you'll remember that there were some challenges in discretizing the state space.  Let's assume
-that we have discretized the contontinuous space into some finite set of discrete nodes
+that we have discretized the continuous space into some finite set of discrete nodes
 in our graph.  Even if 
 we are willing to discretize the action space for the robot (this might be even be acceptable 
 in practice), we had a problem where discrete actions from one node in the graph, integrated
@@ -5091,6 +5091,7 @@ in a continuous state and action space:</p>
   It can be shown that this algorithm is, in fact, probabilistically complete.  However,
   without strong heuristics to guide the selection of the nodes scheduled for expansion, 
   it can be extremely inefficient.  For a simple example, consider the system $\bx[n] = \bu[n]$ with $\bx \in \Re^2$ and $\bu_i \in [-1,1]$. 
+  We'll start at the origin and put the goal region as $\forall i, 15 \le x_i \le 20$. 
   Try it yourself:
   
   <pre><code class="matlab">
@@ -5099,24 +5100,39 @@ for i=2:size(T.parent,2)
   T.parent(i) = randi(i-1);
   x_rand = T.node(:,T.parent(i));
   u_rand = 2*rand(2,1)-1;
-  T.node(:,i) = x_rand+u_rand;
+  x_new = x_rand+u_rand;
+  if (15<=x_new(1) && x_new(1)<=20 && 15<=x_new(2) && x_new(2)<=20)
+    disp('Success!'); break;
+  end
+  T.node(:,i) = x_new;
 end
 clf;
 line([T.node(1,T.parent(2:end));T.node(1,2:end)],[T.node(2,T.parent(2:end));T.node(2,2:end)],'Color','k');
-axis(20*[-1,1,-1,1]);
+patch([15,15,20,20],[15,20,20,15],'g')
+axis([-10,25,-10,25]);
   </code></pre>
-  After expaning 1000 nodes, the tree is basically a mess of node points all right on top of
+  Again, this algorithm <em>is</em> probabilistically complete.  But after expanding 1000 nodes, the tree is basically a mess of node points all right on top of
   each other: 
   <figure>
     <img width="70%" src="figures/random_tree.svg"></img>
   </figure>
-  It seems that, to make randomized algorithms effective, we are going to need some 
-  some of heuristic for encouraging the nodes to spread out and explore the space.
+  We're nowhere close to the goal yet, and it's not exactly a hard problem.  
 </p>
   
 </div>  
 
+<p>
+While the idea of generating a tree of feasible points has clear advantages, we have lost
+the ability to cross off a node (and therefore a region of space) once it has been explored.  
+It seems that, to make randomized algorithms effective, we are going to at the very least need some 
+some of heuristic for encouraging the nodes to spread out and explore the space.
+</p>
+
 <section data-type="sect2"><h1>Rapidly-Exploring Random Trees (RRTs)</h1>
+
+<figure>
+  <img width="70%" src="figures/rrt.svg"/>
+</figure>
 
 </section>
 
