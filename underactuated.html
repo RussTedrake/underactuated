@@ -5125,7 +5125,7 @@ axis([-10,25,-10,25]);
 While the idea of generating a tree of feasible points has clear advantages, we have lost
 the ability to cross off a node (and therefore a region of space) once it has been explored.  
 It seems that, to make randomized algorithms effective, we are going to at the very least need some 
-some of heuristic for encouraging the nodes to spread out and explore the space.
+form of heuristic for encouraging the nodes to spread out and explore the space.
 </p>
 
 <section data-type="sect2"><h1>Rapidly-Exploring Random Trees (RRTs)</h1>
@@ -5134,6 +5134,17 @@ some of heuristic for encouraging the nodes to spread out and explore the space.
   <img width="70%" src="figures/rrt.svg"/>
 </figure>
 
+  <figure>
+    <img width="90%" src="figures/rrt_basic.svg"/>
+    <figcaption>(<a href="figures/rrt_basic.swf">Click here to watch the animation</a>)</figcaption>
+  </figure>
+  
+  <figure>
+    <img width="90%" src="figures/rrt_voronoi.svg"/>
+    <figcaption>(<a href="figures/rrt_voronoi.swf">Click here to watch the animation</a>)</figcaption>
+</figure>
+  
+  
 </section>
 
 <section data-type="sect2"><h1>RRTs for robots with dynamics</h1>
