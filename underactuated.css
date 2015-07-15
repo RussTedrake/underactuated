@@ -44,13 +44,6 @@ a:not(.image) {
   margin-top: 0px;
 }
 
-[data-type="author"] {
-  font-size: 18px;
-}
-[data-type="copyright"] {
-  font-size: 14px;
-  text-align: right;
-}
 
 sidenote {
 float: right; margin-right: -170px;

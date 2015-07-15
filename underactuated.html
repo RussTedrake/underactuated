@@ -154,8 +154,12 @@
   <header>
     <h1><a href="underactuated.html" style="text-decoration:none;">Underactuated Robotics</a></h1>
     <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p>
-  	<p data-type="author"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
-    <p data-type="copyright">&copy; Russ Tedrake, 2014<br><a href="tocite.html">How to cite these notes</a></p>
+  	<p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
+    <p style="font-size: 14px; text-align: right;">
+      &copy; Russ Tedrake, 2014<br/>
+      <a href="tocite.html">How to cite these notes</a><br/>
+      <a href="underactuated.html">Table of contents</a>
+    </p>
   </header>
 </section>
 <div style="display:none" id="mathjax_setup"> <!-- definitions for mathjax -->
@@ -5405,6 +5409,23 @@ mixed-integer optimization.  actually show the optimization hierarchy in drake a
 </section> <!-- end function approximation -->
 
 </section> <!-- end machine learning -->
+
+<section data-type="chapter" class="chapter"><h1>Drake</h1>
+
+<center><img src="https://groups.csail.mit.edu/locomotion/drake/logo_w_text.jpg" width="80%"/></center>
+
+<section data-type="sect1"><h1>What is <drake></drake>?</h1>
+
+<!---<img src="https://raw.github.com/wiki/RobotLocomotion/drake/images/logo_w_text.jpg" width="80%"/>-->
+
+<p>
+Drake ("dragon" in Middle English) is a toolbox maintained by the <a href="http://groups.csail.mit.edu/locomotion/">Robot Locomotion Group</a> at the MIT Computer Science and Artificial Intelligence Lab (CSAIL) which contains implementations of many of the ideas from these notes.  It was designed with the goal of rapidly prototyping advanced control ideas, but has also been optimized (in places) for performance -- it provides the complete planning and control backend for <a href="http://drc.mit.edu">MIT's entry into the DARPA Robotics Challenge</a>.  </p>
+
+<p>
+  Drake is implemented using a hierarchy of MATLAB classes which are designed to expose and exploit available structure in input-output dynamical systems.  While some algorithms are available for general nonlinear systems, specialized algorithms are available for polynomial dynamical systems, linear dynamical systems, etc.; many of those algorithms operate <em>symbolically</em> on the governing equations.  The toolbox does a lot of work behind the scenes to make sure that, for instance, feedback or cascade combinations of polynomial systems remain polynomial.  The toolbox also provides a parser that reads Universal Robot Description Format (URDF) files which makes it easy to define and start working with rigid-body dynamical systems.  Drake uses the Simulink solvers for simulation of dynamical systems, and connects with a number of external tools to facilitate design and analysis.  
+</p>
+
+</section>
 
 </appendix>
 
