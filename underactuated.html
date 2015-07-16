@@ -21,6 +21,7 @@
         {
 
           var i,j;
+          var current_chapter = getParameterByName("chapter");
 
           var toc = "<h1>Table of Contents</h1>\n<ul>\n<li><a href=#preface>Preface</a></li>\n";
           var chapters = document.getElementsByClassName("chapter");
@@ -28,6 +29,10 @@
           var start_appendix = chapters.length - app[0].getElementsByClassName("chapter").length;
           var current_part = chapters[0].parentNode;
           var part_number = 1;
+
+          var drake_chapter = chapters.length;
+          var list_of_drake_examples = "";
+
           for (i = 0; i < chapters.length; i++) {
             var titles=chapters[i].getElementsByTagName("h1");
             if (!chapters[i].id) {
@@ -43,14 +48,16 @@
             }
 
 //            toc = toc + chapters[i].parentNode.tagName.toLowerCase();
+            var chapter_link = "";
             if (chapters[i].parentNode.tagName.toLowerCase() == "appendix") {
-              toc = toc + "<li><a href=underactuated.html?chapter="+(i+1)+">";
-              toc = toc + "Appendix " + String.fromCharCode(64 + i+1-start_appendix);
+              chapter_link = "<li><a href=underactuated.html?chapter="+(i+1)+">";
+              chapter_link += "Appendix " + String.fromCharCode(64 + i+1-start_appendix);
             } else {
-              toc = toc + "<li><a href=underactuated.html?chapter="+(i+1)+">";
-              toc = toc + "Chapter " + (i+1);
+              chapter_link = "<li><a href=underactuated.html?chapter="+(i+1)+">";
+              chapter_link += "Chapter " + (i+1);
             }
-            toc = toc + ": " + titles[0].innerHTML + "</a>\n";
+            chapter_link += ": " + titles[0].innerHTML + "</a>\n";
+            toc += chapter_link;
 
             var sections = chapters[i].getElementsByTagName("section");
             var level=0;
@@ -72,6 +79,22 @@
             while (level>0) { toc += "</ul>\n"; level -= 1; }
 
             toc += "</li>\n";
+
+            if (current_chapter && Number(current_chapter)==drake_chapter) { // then I'm writing the drake example list, too
+              var examples = chapters[i].getElementsByClassName("drake");
+              if (examples.length>0) {
+                list_of_drake_examples += chapter_link + "<ul>";
+                for (j=0; j<examples.length; j++) {
+                  var name = examples[j].getElementsByTagName("h1");
+                  if (name.length>0) {
+                    list_of_drake_examples += "<li>"+name[0].innerHTML+"</li>";
+                  }
+                }
+                list_of_drake_examples += "</ul>\n";
+              }
+
+            }
+
           }
           toc = toc + "</ul>\n";
           document.getElementById("table_of_contents").innerHTML = toc;
@@ -79,14 +102,13 @@
 
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"mathjax_setup"]);
 
-        var chapter = getParameterByName("chapter");
-        if (chapter) {
-          chapter = Number(chapter);
+        if (current_chapter) {
+          current_chapter = Number(current_chapter);
           document.getElementById("preface").style.display = "none";
           document.getElementById("table_of_contents").style.display = "none";
           //document.getElementById("debug_output").innerHTML="displaying only chapter " + chapter + " of " + chapters.length;
           for (i = 0; i < chapters.length; i++) {
-            if ((i+1) != chapter) {
+            if ((i+1) != current_chapter) {
               chapters[i].style.display = "none";
             } else {
               chapters[i].style.display = "inline";
@@ -110,7 +132,12 @@
               chapters[i].innerHTML = nav + chapters[i].innerHTML + nav;
             }
           }
+          if (current_chapter == drake_chapter) {
+            // then i'm in the drake appendix, so render the list of drake examples
+            document.getElementById("list_of_drake_examples").innerHTML = "<ul>" + list_of_drake_examples + "</ul>";
+          }
         }
+
 
       }
       </script>
@@ -271,7 +298,7 @@ cp/acro -> walking ...  with chapter numbers associated.</todo>
 All of the examples and algorithms in this book, plus many more, are
 now available as a part of our open-source software project:
 <drake></drake>.  I will give pointers to these examples
-throughout the text.  </p>
+throughout the text, and provide an introduction to the software in the appendix.  </p>
 
 
 </section>
@@ -493,7 +520,7 @@ cannot accelerate the state of the robot in arbitrary directions.  As a
 consequence, unlike fully-actuated systems, underactuated system cannot be
 commanded to follow arbitrary trajectories.  </p>
 
-<div data-type="example"><h1>Robot Manipulators</h1>
+<div data-type="example" class="drake"><h1>Robot Manipulators</h1>
 
 <figure>
 <img style="width:250px;" src="figures/simple_double_pend.svg"/>
@@ -643,7 +670,7 @@ a number of strong results which generalize this idea to the case where ${\bf
 f}_1$ and ${\bf f}_2$ are estimated, rather than known (e.g,
 <elib>Slotine90</elib>).</p>
 
-<div data-type="example"><h1>Feedback-Cancellation Double Pendulum</h1>
+<div data-type="example" class="drake"><h1>Feedback-Cancellation Double Pendulum</h1>
 
 <p> Let's say that we would like our simple double pendulum to act like a simple
 single pendulum (with damping), whose dynamics are given by: \begin{align*}
@@ -1315,7 +1342,7 @@ Solving directly for the accelerations, we have
   \right]
 \end{gather} -->
 
-<div data-type="example"><h1>The Acrobot in MATLAB</h1>
+<div data-type="example" class="drake"><h1>The Acrobot in MATLAB</h1>
 <p>You can experiment with the Acrobot dynamics in <drake></drake> using, e.g.
 <pre><code class="matlab">
 cd(fullfile(getDrakePath,'examples','Acrobot'));
@@ -1397,7 +1424,7 @@ The kinematics of the system are given by
   \end{gather}
 </p>
 
-<div data-type="example"><h1>The Cart-Pole System in MATLAB</h1>
+<div data-type="example" class="drake"><h1>The Cart-Pole System in MATLAB</h1>
 <p>You can experiment with the Cart-Pole dynamics in <drake></drake> using, e.g.
 <pre><code class="matlab">
 cd(fullfile(getDrakePath,'examples','CartPole'));
@@ -1674,7 +1701,7 @@ the entries $Q_{ii}$ penalize the relative errors in state variable $x_i$
 compared to the other state variables, and the entries $R_{ii}$ penalize actions
 in $u_i$.</p>
 
-<div data-type="example"><h1>LQR for the Acrobot and Cart-Pole</h1>
+<div data-type="example" class="drake"><h1>LQR for the Acrobot and Cart-Pole</h1>
 
 Take a minute to play around with the LQR controller for the Acrobot
 <pre><code class="matlab">
@@ -1701,7 +1728,7 @@ order to ultimately reach the origin.  Further inspection reveals the
 has 1).</p>
 
 
-<div data-type="example"><h1>LQR for a Quadrotors</h1>
+<div data-type="example" class="drake"><h1>LQR for a Quadrotors</h1>
 
 <p>LQR works essentially out of the box for Quadrotors, if linearized around
   a nominal fixed point (where the non-zero thrust from the propellors is balancing
@@ -2304,7 +2331,7 @@ $$\dot\theta(t^+) = \dot\theta(t^-) \cos(2\alpha).$$</p>
   into a stable periodic solution.  Convergence to this stable periodic solution
   appears to happen from a huge range of initial conditions.  Try it yourself.</p>
 
-<div data-type="example"><h1>Numerical simulation of the rimless wheel</h1>
+<div data-type="example" class="drake"><h1>Numerical simulation of the rimless wheel</h1>
 
 <pre><code class="matlab">
 cd(fullfile(getDrakePath,'examples','RimlessWheel'));
@@ -3130,7 +3157,7 @@ policy, $a = \pi^*(s)$: \begin{equation} \pi^*(s_i) = \argmin_a \left[ g(s_i,a) 
 J^*\left( f(s_i,a) \right) \right]. \label{eq:policy_update} \end{equation}
 It's a simple algorithm, but playing with an example can help our intuition.</p>
 
-<div data-type="example"><h1>Grid World</h1>
+<div data-type="example" class="drake"><h1>Grid World</h1>
 
 <p>Imagine a robot living in a grid (finite state) world.  Wants to get to the goal
 location.  Possibly has to negotiate cells with obstacles.  Actions
@@ -3158,7 +3185,7 @@ Graph approximation of a continuous state space.
 
 Stochastic shortest path.
 
-<div data-type="example"><h1>Dynamic Programming for the Double Integrator</h1>
+<div data-type="example" class="drake"><h1>Dynamic Programming for the Double Integrator</h1>
 
 <p>You can run value iteration for the double integrator (using barycentric interpolation to interpolate between nodes) in <drake></drake> using:
 <pre><code class="matlab">
@@ -3187,7 +3214,7 @@ solution for the double integrator, we can apply this same algorithm to any numb
 of dynamical systems virtually without modification.  Let's apply it now to the simple
 pendulum, which was intractable analytically.</p>
 
-<div data-type="example"><h1>Dynamic Programming for the Simple Pendulum</h1>
+<div data-type="example" class="drake"><h1>Dynamic Programming for the Simple Pendulum</h1>
 
 <p>You can run value iteration for the simple pendulum (using barycentric interpolation to interpolate between nodes) in <drake></drake> using:
 <pre><code class="matlab">
@@ -4060,7 +4087,7 @@ parameters ${\bf p}$ to populate a symmetric matrix ${\bf P}$ and then write the
 since there specialized algorithms for solving the simple Lyapunov equation which are more efficient and more numerically stable.  But the SDP formulation does provide something new -- we can now easily formulate the search for a common Lyapunov function for uncertain
 linear systems.</p>
 
-<div data-type="example"><h1>Common Lyapunov analysis for linear systems</h1>
+<div data-type="example" class="drake"><h1>Common Lyapunov analysis for linear systems</h1>
 
 <p>Suppose you have a system governed by the equations $\dot\bx = {\bf A}\bx$, where the matrix ${\bf A}$ is unknown, but it's uncertain elements can be bounded.  There are a number of ways to write down this uncertainty set; let us choose to write this by describing ${\bf A}$ as the affine combination of a number of known matrices, $${\bf A} = \sum_{i} \beta_i {\bf A}_i, \quad \sum_i \beta_i = 1, \quad \forall i, \beta_i > 0.$$  This is just one way to specify the uncertainty; geometrically it is describing a polygon of uncertain parameters (in the space of elements of ${\bf A}$ with each ${\bf A}_i$ as one of the vertices in the polygon.
 <figure>
@@ -4127,7 +4154,7 @@ However, there are a handful of gaps which make the existence of this solution a
 
   <section data-type="sect3"><h1>Basic region of attraction formulation</h1>
 
-  <div data-type="example"><h1>Region of attraction for the one-dimensional cubic system</h1>
+  <div data-type="example" class="drake"><h1>Region of attraction for the one-dimensional cubic system</h1>
 
     <p>Let's return to our example from above:
     \[ \dot{x} = -x + x^3 \]
@@ -4150,7 +4177,7 @@ However, there are a handful of gaps which make the existence of this solution a
   <p>While the example above only verifies that the one-sub-level set of the pre-specified Lyapunov candidate is negative (certifying the ROA that we already understood), we can generalize the optimization to allow us to search for the largest sub-level set (with the objective using a convex approximation for volume).  We can even search for the coefficients of the Lyapunov function using an iteration of convex optimizations.  There are a number of variations and nuances in the various formulations, and
   some basic rescaling tricks that can help make the numerics of the problem better for the solvers. In <drake></drake>, we have packaged all of these up into a <code>regionOfAttraction</code> method that is defined for objects of type <code>PolynomialSystem</code>. This makes it as simple as, for instance:
 
-<div data-type="example"><h1>Searching for the region of attraction</h1>
+<div data-type="example" class="drake"><h1>Searching for the region of attraction</h1>
   <p>
   <pre><code class="matlab">
   cd(fullfile(getDrakePath,'examples'));
@@ -4177,7 +4204,7 @@ However, there are a handful of gaps which make the existence of this solution a
   Remember that although we have tried to make it convenient to call these functions, they are not a black box.  I highly recommend opening up the <code>regionOfAttraction</code> method and understanding how it works.
   </p>
 
-  <div data-type="example"><h1>Region of attraction for the time-reversed Van der Pol oscillator</h1>
+  <div data-type="example" class="drake"><h1>Region of attraction for the time-reversed Van der Pol oscillator</h1>
 
     <pre><code class="matlab">
      cd(fullfile(getDrakePath,'examples'));
@@ -4366,7 +4393,7 @@ the gradients of the objective and constraints is essentially as simple as compu
 gradients of $g()$ and $f()$.
 </p>
 
-<div data-type="example"><h1>Direct Transcription for the Double Integrator</h1>
+<div data-type="example" class="drake"><h1>Direct Transcription for the Double Integrator</h1>
 
 <p>We have implemented an optimization class hierarchy in <drake></drake> which makes it easy to try
 out these algorithms.  Watching the way that they perform on our simple problems is a very
@@ -4437,7 +4464,7 @@ natural to add additional terms to the cost function or additional input/state
 constraints, and very easy to calculate the gradients of the objective and constraints.   I personally find it very nice to explicitly account for the
 parametric encoding of the trajectory in the solution technique.</p>
 
-<div data-type="example"><h1>Direct Collocation for the Double Integrator</h1>
+<div data-type="example" class="drake"><h1>Direct Collocation for the Double Integrator</h1>
 
 <p>Direct collocation also easily solves the minimum-time problem for the double integrator.  The performance is similar to direct transcription, but the convergence is visibly different.  Try it for yourself:</p>
 
@@ -4799,7 +4826,7 @@ applicability beyond simple periodic motions.</p>
   inputs $\bu$, this formulation is now rich enough that it solves an important
   problem even for passive systems -- with no control input at all.</p>
 
-<div data-type="example"><h1>Finding the limit cycle of the Van der Pol oscillator</h1>
+<div data-type="example" class="drake"><h1>Finding the limit cycle of the Van der Pol oscillator</h1>
 
 <p>Recall the dynamics of the Van der Pol oscillator given by
   $$\ddot{q} + \mu (q^2 - 1) \dot{q} + q = 0, \quad \mu>0,$$
@@ -5084,7 +5111,7 @@ find that solution with probability 1 as the number of samples goes to infinity.
 complete algorithm for finding a path from the a starting state to some goal region with
 in a continuous state and action space:</p>
 
-<div data-type="example"><h1>Planning with a Random Tree</h1>
+<div data-type="example" class="drake"><h1>Planning with a Random Tree</h1>
 
 <p>Let us denote the data structure which contains the tree as ${\cal T}$.  The algorithm is very simple:
   <ul>
@@ -5471,19 +5498,17 @@ Like SimMechanics, <drake></drake> provides a number of tools for working specif
 
 </section>
 
-<section data-type="sect1"><h1>Conceptual overview</h1>
+<section data-type="sect1"><h1>Modeling Input-Ouput Dynamical Systems</h1>
 
-<p>
-The fundamental object in <drake></drake> is a dynamical system.  Robots, 
-controllers, state estimators, etc. are all instances of dynamical
-systems.  Algorithms in <drake></drake> operate on dynamical systems.  This
-chapter introduces what you need to know to instantiate the dynamical
-systems that you are interested in, and to simulate and visualize
-their outputs.</p>  
-
-<section data-type="sect2"><h1>Modeling Input-Ouput Dynamical Systems</h1>
-
-<p>
+  <p>
+    The fundamental object in <drake></drake> is a dynamical system.  Robots, 
+    controllers, state estimators, etc. are all instances of dynamical
+    systems.  Algorithms in <drake></drake> operate on dynamical systems.  This
+    chapter introduces what you need to know to instantiate the dynamical
+    systems that you are interested in, and to simulate and visualize
+    their outputs.</p>  
+  
+  <p>
 Dynamical systems in <drake></drake> are represented by their dynamics in
 state-space form, with $x$ denoting the state vector.  In addition,
 every dynamical system can have an input vector, $u$, and an output
@@ -5495,7 +5520,7 @@ vector $y$. </p>
 As we will see, dynamical systems in <drake></drake> can be instantiated in a
 number of different ways.  A system can be described by a small block of MATLAB or C++ code deriving from our <code>DrakeSystem</code> class interface, or -- in the case of rigid-body systems -- even by simple XML file (see the section below on the URDF format) that can be parsed by our existing class implementations.</p>
 
-<section data-type="sect3"><h1>Writing your own dynamics in MATLAB</h1>
+<section data-type="sect2"><h1>Writing your own dynamics in MATLAB</h1>
 
 <p>
 In this section, we will describe how you can write your own dynamics class in MATLAB by deriving from the <code>DrakeSystem</code> interface class.</p>
@@ -5510,7 +5535,7 @@ In <drake></drake>, you can instantiate a system of this form where $f()$
 and $g()$ are anything that you can write into a MATLAB function.
 This is accomplished by deriving from the <code>DrakeSystem</code> class, defining the size of the input, state, and output vectors in the constructor, and overloading the <code>dynamics</code> and <code>output</code> methods, as illustrated by the following example:
 
-<div data-type="example"><h1>A simple continuous-time system</h1>
+<div data-type="example" class="drake"><h1>A simple continuous-time system</h1>
 <p>Consider the system \begin{gather*}\dot{x} = -x + x^3,\\ y = x.\end{gather*}  This system has zero inputs, one (continuous) state variable, and one output.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/examples/SimpleCTExample.m">code</a>:
 <pre><code class="matlab">
 classdef SimpleCTExample < DrakeSystem
@@ -5545,7 +5570,7 @@ y[n] = g(n,x,u),
 \end{gather*}
 can be implemented by deriving from <code>DrakeSystem</code> and defining the <code>update</code> and <code>output</code> methods, as seen in the following example.</p>
 
-<div data-type="example"><h1>A simple discrete-time system</h1>
+<div data-type="example" class="drake"><h1>A simple discrete-time system</h1>
 <p>
 Consider the system \begin{gather*}x[n+1] = x^3[n],\\ y[n] = x[n].\end{gather*}  This system has zero inputs, one (discrete) state variable, and one output.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/examples/SimpleDTExample.m">code</a>:
 <pre><code class="matlab">
@@ -5595,7 +5620,7 @@ more information.  Note that currently <drake></drake> only supports a
 single DT sample time for each individual <code>DrakeSystem</code> (but multiple systems can be combined with different sampling times). </p>
 <!--  since it there is there is only a single update method published by the drakesystem class.  -->
 
-<div data-type="example"><h1>A mixed discrete- and continuous-time example</h1>
+<div data-type="example" class="drake"><h1>A mixed discrete- and continuous-time example</h1>
 <p>
   Consider the system \begin{gather*}x_1(t+t') = x_1^3(t), \quad \forall
   t \in \{0,1,2,..\}, \forall t' \in (0,1], \\\dot{x}_2 =
@@ -5683,7 +5708,7 @@ The output of a <code>HybridDrakeSystem</code> is the output
 of the active mode.</p>
 
 
-<div data-type="example"><h1>The bouncing ball: a hybrid system example</h1>
+<div data-type="example" class="drake"><h1>The bouncing ball: a hybrid system example</h1>
 
 <p>The dynamics of a vertically bouncing ball can be described by a
   <code>HybridDrakeSystem</code> with a single continuous mode to model
@@ -5786,7 +5811,7 @@ Stochastic models can be implemented in <drake></drake> by deriving from
 <code>stochasticDynamics</code>, <code>stochasticUpdate</code>, and
 <code>stochasticOutput</code> methods. </p> 
 
-<div data-type="example"><h1>A simple continuous-time stochastic system</h1>
+<div data-type="example" class="drake"><h1>A simple continuous-time stochastic system</h1>
 
 <p>Consider the system \begin{gather*}\dot{x} = -x + w,\\ y = x.\end{gather*}  This system has zero inputs, one (continuous) state variable, and one output.  It can be implemented in <drake></drake> using the following code:</p>
 <pre><code class="matlab">
@@ -5821,7 +5846,7 @@ end
 <p><b>Important Special Cases</b>.
 There are many special cases of dynamical systems with structure in the
 dynamics which can be exploited by our algorithms.  Special cases of
-dynamical systems implemented in Drake include
+dynamical systems implemented in <drake></drake> include
 <ul>
   <li>Second-order systems, given by $\ddot{q} = f(t,q,\dot{q},u),$ $y
   = g(t,q,\dot{q},u)$, and $\phi_1(q)=0$ and $\phi_2(q,\dot{q})=0$.</li>
@@ -5858,7 +5883,12 @@ polynomialsystem}
 %<section data-type="sect4"><h1>{Providing User Gradients}
 -->
 
-<p><b>Existing Simulink Models/Blocks</b>.
+<section data-type="sect2"><h1>Describing a rigid-body system with URDF</h1>
+
+  <p> URDF = Universal Robot Description Format.  Details coming soon. </p>
+</section>
+
+<section data-type="sect2"><h1>Using Existing Simulink models/blocks</h1>.
   Although most users of Drake never open a Simulink GUI, <drake></drake>
 is built on top of the MATLAB Simulink engine.  As such, <drake></drake>
 systems can be used in any Simulink model, and any existing Simulink
@@ -5867,10 +5897,11 @@ single (vector) input and single (vector) output can be used with the
 <drake></drake> infrastructure.</p>
 
 <!--\todo{Example of using a simulink model} -->
+</section>
 
 </section>
 
-<section data-type="sect3"><h1>Combinations of Systems</h1>
+<section data-type="sect2"><h1>Combinations of Systems</h1>
 
 <figure>
   <center><img style="width:250px;" src="figures/feedback_system.svg"/></center>
@@ -5900,7 +5931,7 @@ but it wouldn't be hard.}--></p>
 -->
 </section>
 
-<section data-type="sect3"><h1>Coordinate frames</h1>
+<section data-type="sect2"><h1>Coordinate frames</h1>
 
 <p>Every dynamical system in Drake has a number of coordinate frames
 associated with it, including frames which describe the inputs, states,
@@ -5932,7 +5963,7 @@ the output, you may want to evaluate the trajectory at any snapshot in time
 using <code>eval</code>, plot the output using <code>fnplt</code>, or hand the
 trajectory to a visualizer (described below).</p>
 
-<div data-type="example">
+<div data-type="example" class="drake"><h1>Simulating the simple systems and plotting the results</h1>
 <p>Use the following code to instantiate the <code>SimpleCTExample</code>,
 simulate it, and plot the results:
 <pre><code class="matlab">
@@ -5994,7 +6025,7 @@ For <code>DrakeSystems</code>, you can optionally use the MATLAB's <code>ode45</
 suite of solvers using the method <code>simulateODE</code>, which can also
 understand (most of) the Simulink solver parameters.</p>
 
-<section data-type="sect3"><h1>Visualization</h1>
+<section data-type="sect2"><h1>Visualization</h1>
 
 <p>Visualizers are dynamical systems, too.</p>
 
@@ -6004,7 +6035,6 @@ understand (most of) the Simulink solver parameters.</p>
 
 <p>Cascading.   Use the realtime block.</p>
 
-</section>
 
 <section data-type="sect3"><h1>Outputing to a movie format</h1>
 
@@ -6023,14 +6053,19 @@ specify a filename with no extension, then you will be prompted with the
 output formats supported by your current visualizer.</p>
 
 </section>
+</section>
 
 </section>
 
-<section data-type="sect1"><h1>Listing of code examples throughout this text</h1>
+<section data-type="sect1"><h1>Listing of <drake></drake> examples throughout this text</h1>
 
 <p>The best overview we have for the remaining capabilities in <drake></drake> are the main chapters of these notes.  For convenience, here is a list of software examples that are sprinkled throughout the text:</p>
 
-  <div id="list_of_drake_examples">Coming soon!</div>
+  <div id="list_of_drake_examples"><center>Coming soon!</center></div>
+
+</section>
+
+<p> Again, please engage us on the forums on the <drake></drake> website, <a href="http://drake.mit.edu">http://drake.mit.edu</a> if you have questions or find any problems with these examples.  And please make sure you search the existing issues first.</p>
 
 </section>
 
