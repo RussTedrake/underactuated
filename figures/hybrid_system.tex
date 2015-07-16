@@ -1,0 +1,48 @@
+\documentclass[tikz]{standalone}  % run pdflatex then pdf2svg
+%\documentclass[tikz,convert={outfile=input_output_system.svg}]{standalone}  % then run w/ -shell-escape to let standalong convert it for me
+\begin{document}
+\usetikzlibrary{shapes,arrows}
+\tikzstyle{block} = [draw, fill=blue!20, rectangle, 
+    minimum height=3em, minimum width=6em]
+\tikzstyle{sum} = [draw, fill=blue!20, circle, node distance=1cm]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{tikzpicture}[auto, node distance=6cm,>=latex']
+  \node [block, rectangle, rounded corners, align=center, fill=red!20] (mode1)
+    {$\dot{x} = f_1(t,x,u)$ \\ $y=g_1(t,x,u)$};
+    \node [block, rectangle, rounded corners, align=center,
+    fill=red!20, right
+    of=mode1] (mode2) {$\dot{x} = f_2(t,x,u)$ \\ $y = g_2(t,x,u)$};
+    \path [->] (mode1) 
+        edge [out=20, in=160] 
+        node [above] {$\phi_a(t,x^-,u) \le 0$} 
+        node [below] {$x^+ = \Delta_a (t,x^-,u)$} 
+        (mode2);
+    \path [->] (mode2) 
+        edge [out=200, in=340] 
+        node [above] {$\phi_b(t,x^-,u) \le 0$} 
+        node [below] {$x^+ = \Delta_b (t,x^-,u)$} 
+        (mode1);
+
+    \begin{pgfonlayer}{background}
+      \path (mode1.west |- mode1.north)+(-.4,.9) node(topleft) {}; 
+      \path (mode2.east |- mode2.south)+(.4,-.9) node(bottomright) {};
+      \path[fill=blue!20, draw=black]
+        (topleft) rectangle (bottomright);
+      \path (mode1.west)+(-1.5,0) node(input1) {};
+      \path (mode1.west)+(-.28,0) node(input2) {};
+      \path (mode2.east)+(.28,0) node(output1) {};
+      \path (mode2.east)+(1.5,0) node(output2) {};
+      \draw[->] (input1) -- node{$u$} (input2);
+      \draw[->] (output1) -- node{$y$} (output2);
+    \end{pgfonlayer}
+
+\end{tikzpicture}
+
+\end{document}
+
+
+\end{document}

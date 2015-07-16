@@ -1,0 +1,24 @@
+\documentclass[tikz]{standalone}  % run pdflatex then pdf2svg
+%\documentclass[tikz,convert={outfile=input_output_system.svg}]{standalone}  % then run w/ -shell-escape to let standalong convert it for me
+\begin{document}
+\usetikzlibrary{shapes,arrows}
+\tikzstyle{block} = [draw, fill=blue!20, rectangle, 
+    minimum height=3em, minimum width=6em]
+\tikzstyle{sum} = [draw, fill=blue!20, circle, node distance=1cm]
+\tikzstyle{pinstyle} = [pin edge={to-,thin,black}]
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
+
+\begin{tikzpicture}[auto, node distance=2cm,>=latex']
+  \node (input) {};
+  \node [block, right of=input] (system) {System};
+  \draw [->] (input) -- node {$u$} (system);
+  \node [right of=system] (output) {};
+  \draw [->] (system) -- node {$y$} (output);
+\end{tikzpicture}
+
+\end{document}
+
+
+\end{document}
