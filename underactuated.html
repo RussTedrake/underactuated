@@ -21,7 +21,6 @@
         {
 
           var i,j;
-          var current_chapter = getParameterByName("chapter");
 
           var toc = "<h1>Table of Contents</h1>\n<ul>\n<li><a href=#preface>Preface</a></li>\n";
           var chapters = document.getElementsByClassName("chapter");
@@ -30,7 +29,10 @@
           var current_part = chapters[0].parentNode;
           var part_number = 1;
 
+          var current_chapter = getParameterByName("chapter");
           var drake_chapter = chapters.length;
+          if (current_chapter.toLowerCase() == "drake")
+            current_chapter = drake_chapter;
           var list_of_drake_examples = "";
 
           for (i = 0; i < chapters.length; i++) {
