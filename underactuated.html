@@ -6067,8 +6067,69 @@ output formats supported by your current visualizer.</p>
 
 </section>
 
+<section data-type="sect1"><h1>External interfaces</h1>
+
+<p>
+This section explains the most common ways that we interface <drake></drake>
+with real robots - using simple network protocols.  Typically one or
+more instances of (desktop) MATLAB are up running methods/systems in <drake></drake> as
+nodes in a planning/estimation/control network.  However we are rapidly porting the more mature functionality down into C++ so that it is available as a library or for stand-alone applications.</p>
+
+<section data-type="sect2"><h1>Lightweight Communications and Marshalling (LCM)</h1>
+
+<p>LCM is a simple, elegant, and efficient network protocol developed at
+MIT during the DARPA Urban Challenge
+(<a href="http://lcm-proj.github.io/">http://lcm-proj.github.io/</a>) <elib>Huang10</elib>.  For <drake></drake>, we
+primarily interact with LCM via the MATLAB/Java interface and
+lcm-java.  For some high-performance applications, we write custom C mex function which send and receive LCM messages.</p>
+
+<section data-type="sect3"><h1>LCM Coders</h1>
+
+<p>LCM passes messages defined in an lcmtype file which can describe an
+almost arbitrary data structure.  Drake traffics primarily in signals,
+which are (timestamped) vectors of doubles.  To convert between the two, we define
+an <code>LCMCoder</code> class which defines how to <code>encode</code> a double
+as the rich data structure and <code>decode</code> the data structure back
+into a double.</p>
+
+<p>You can implement your <code>LCMCoder</code> directly in MATLAB or in Java.
+The <code>LCMCoderFromType</code> class can also construct one
+automatically using Java reflection -- it simply concatenates the
+elements of the structure into a double vector in the order that they
+appear in the lcmtype file.</p>  
+ 
+</section>
+<section data-type="sect3"><h1>LCM Coordinate Frames</h1>
+
+<p>Any coordinate frame can be associated with an <code>LCMCoder</code> by deriving
+from the <code>LCMCoordinateFrame</code> class.</p>
+
+<p>In order to use any <code>DynamicalSystem</code> as a node in the LCM
+network, simply call <code>runLCM(sys,...)</code> instead of
+<code>simulate(sys,...)</code> -- this will automatically attach LCM input blocks
+and LCM output blocks on any input/output frames of the system that
+are of type <code>LCMCoordinateFrame</code>, and then simulate the system.
+The <code>runLCM</code> method takes a number of optional arguments
+allowing you to refine this interaction.</p>
+
+</section>
+
+</section>
+<section data-type="sect2"><h1>Interfacing with ROS</h1>
+
+<p>The <a href="http://ros.org">Robot Operating System (ROS)</a> is an immensely popular suite of tools for robotics research.  Nodes in the ROS network communicate with a very similar message passing system to LCM -- one primary different is that ROS is based on TCP/IP and a server/client network configuration, where LCM is based on all-to-all multicast UDP.  Typically when we need Drake to act as a node in a ROS network (or to subscribe to ROS messages), we send and receive LCM messages and have a thin "ROS-LCM translator" app that connects the two networks.</p>
+
+<p>With the MathWork's <a href=http://www.mathworks.com/hardware-support/robot-operating-system.html>recently announced support for ROS</a>, implementing something like a ROSCoordinateFrame is now on our short-term todo list.</p>
+
+
+</section>
+</section>
+
+<section data-type="sect1"><h1>The online community</h1>
+
 <p> Again, please engage us on the forums on the <drake></drake> website, <a href="http://drake.mit.edu">http://drake.mit.edu</a> if you have questions or find any problems with these examples.  And please make sure you search the existing issues first.</p>
 
+</section>
 </section>
 
 </section>
