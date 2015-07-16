@@ -97,9 +97,17 @@
               }
               chapters[i].style.counterReset = "chapter " + display_num + " sect1 example_counter theorem algorithm figure";
               MathJax.Hub.Queue(["Typeset",MathJax.Hub,chapters[i]]);
-              if ((i+1)<chapters.length) {
-                chapters[i].innerHTML += "<p style=\"text-align:right;\"><a href=underactuated.html?chapter=" + (i+2) + ">Next chapter</p>";
+              var nav = "\n<table style=\"width:100%;\"><tr style=\"width:100%\">";
+              nav += "<td style=\"width:33%;text-align:left;\">";
+              if (i>0) {
+                nav+="<a href=underactuated.html?chapter=" + (i) + ">Previous chapter</a>";
               }
+              nav += "</td><td style=\"width:33%;text-align:center;\"><a href=underactuated.html>Table of contents</a></td><td style=\"width:33%;text-align:right;\">";
+              if ((i+1)<chapters.length) {
+                nav += "<a href=underactuated.html?chapter=" + (i+2) + ">Next chapter</a>";
+              }
+              nav += "</td></tr></table>\n";
+              chapters[i].innerHTML = nav + chapters[i].innerHTML + nav;
             }
           }
         }
@@ -158,7 +166,6 @@
     <p style="font-size: 14px; text-align: right;">
       &copy; Russ Tedrake, 2014<br/>
       <a href="tocite.html">How to cite these notes</a><br/>
-      <a href="underactuated.html">Table of contents</a>
     </p>
   </header>
 </section>
