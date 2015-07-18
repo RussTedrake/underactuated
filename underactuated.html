@@ -3762,7 +3762,7 @@ it is an external torque that we've modeled.</p>
 <p>These equations represent a simple
 second-order differential equation; in chapter 2 we discussed at some length
 what was known about the solutions to this differential equation--even without
-damping the equation for $\theta(t)$ as a function of $\theta(0)$, $\dot{theta}(0$
+damping the equation for $\theta(t)$ as a function of $\theta(0)$, $\dot{\theta}(0)$
 involves elliptic integrals of the first kind, and with damping we don't even
 have that.  Since we couldn't provide a solution analytically, in chapter 2
 we resorted to a graphical analysis, and confirmed the intuition that there
@@ -4065,7 +4065,7 @@ can see that the fixed point at the origin is still stable, but the <em>robust r
 
 <section data-type="sect1"><h1>Lyapunov analysis with convex optimization</h1>
 
-<p>Once of the primary limitations in Lyapunov analysis as I have presented it so far is that it is potentially very difficult to come up with suitable
+<p>One of the primary limitations in Lyapunov analysis as I have presented it so far is that it is potentially very difficult to come up with suitable
 Lyapunov function candidates for interesting systems, especially for underactuated systems. ("Underactuated" is almost synonymous with "interesting" in my vocabulary.)  Even if somebody were to give me a
 Lyapunov candidate for a general nonlinear system, the Lyapunov conditions can be difficult to check -- for instance, how would I check that $\dot{V}$ is strictly negative for all $\bx$ except the origin if $\dot{V}$ is some
 arbitrarily complicated nonlinear function over a vector $\bx$?</p>
@@ -4132,7 +4132,7 @@ generate the SDP problem for you, without having to think about what terms shoul
 
 <section data-type="sect2"><h1>Lyapunov analysis for polynomial systems</h1>
 
-  <p>Now we can see that it may possible to generalize the optimization approach using SDP to search for Lyapunov functions for linear systems to searching for Lyapunov functions for at least the polynomial systems: $\dot\bx = f(\bx),$ where $f$ is a vector-valued polynomial function.  If we parameterize a <em>fixed-degree</em> Lyapunov candidate as a polynomial with unknown coefficients, e.g., \[ V_\alpha(\bx) = \alpha_0 + \alpha_1 x_1 + \alpha_2 x_2 + \alpha_3 x_1x_2 + \alpha_4 x_1^2 + ..., \] then the time-derivative of $V$ is also a polynomial, and I can formulate the optimization: \begin{align*} \find_\alpha, \quad \subjto \quad& V_\alpha(\bx) \sos \\ & -\dot{V}_\alpha(\bx) = -\pd{V_\alpha}{\bx} f(\bx) \sos. \end{align*}  Because this is a convex optimization, the solver will return a solution if one exists.
+  <p>Now we can see that it may be possible to generalize the optimization approach using SDP to search for Lyapunov functions for linear systems to searching for Lyapunov functions for at least the polynomial systems: $\dot\bx = f(\bx),$ where $f$ is a vector-valued polynomial function.  If we parameterize a <em>fixed-degree</em> Lyapunov candidate as a polynomial with unknown coefficients, e.g., \[ V_\alpha(\bx) = \alpha_0 + \alpha_1 x_1 + \alpha_2 x_2 + \alpha_3 x_1x_2 + \alpha_4 x_1^2 + ..., \] then the time-derivative of $V$ is also a polynomial, and I can formulate the optimization: \begin{align*} \find_\alpha, \quad \subjto \quad& V_\alpha(\bx) \sos \\ & -\dot{V}_\alpha(\bx) = -\pd{V_\alpha}{\bx} f(\bx) \sos. \end{align*}  Because this is a convex optimization, the solver will return a solution if one exists.
 However, there are a handful of gaps which make the existence of this solution a sufficient condition (for proving that every sub-level set of $V$ is an invariant set of $f$) instead of a necessary one.  First, there is no guarantee that a stable polynomial system can be verified using a polynomial Lyapunov function (of any degree, and in fact there are known counter-examples <todo>add ref</todo>) and here we are only searching over a fixed-degree polynomial.  Second, even if a polynomial Lyapunov function does exist, there is a gap between the SOS polynomials and the positive polynomials.
   </p>
 
@@ -4144,7 +4144,7 @@ However, there are a handful of gaps which make the existence of this solution a
 
 <section data-type="sect2"><h1>Region of attraction estimation for polynomial systems</h1>
 
-<p>Now we have arrived at the tool that I beleive can be a work-horse for many serious robotics applications.  Most of our robots are not actually globally stable (that's not because they are robots -- if you push me hard enough, I will fall down, too), which means that understanding the regions where a particular controller can be guaranteed to work can be of critical importance.</p>
+<p>Now we have arrived at the tool that I believe can be a work-horse for many serious robotics applications.  Most of our robots are not actually globally stable (that's not because they are robots -- if you push me hard enough, I will fall down, too), which means that understanding the regions where a particular controller can be guaranteed to work can be of critical importance.</p>
 
 <p>Sums-of-squares optimization effectively gives us an oracle which we can ask: is this polynomial positive for all $\bx$?  To use this for regional analysis, we have to figure out how to modify our questions to the oracle so that the oracle will say "yes" or "no" when we ask if a function is positive over a certain region which is a subset of $\Re^n$.  That trick is called the S-procedure.  It is closely related to the Lagrange multipliers from constrained optimization, and has deep connections to "Positivstellensatz" from algebraic geometry.</p>
 
