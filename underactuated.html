@@ -4306,8 +4306,8 @@ can be defined for all time or some subset of the trajectory.</p>
 
 <p>Before we dive in, we need to take a moment to understand the optimization tools
   that we will be using.  In the graph-search dynamic programming algorithm,
-  we magically were able to provide an iterative algorithm that was known to
-  converge to optimal cost-to-go function.  With LQR we were able to reduce
+  we were magically able to provide an iterative algorithm that was known to
+  converge to the optimal cost-to-go function.  With LQR we were able to reduce
   the problem to a matrix Riccati equation, for which we have scalable numerical methods
   to solve.  In the Lyapunov analysis chapter,
   we were able to formulate a very specific kind of optimization problem--a
@@ -4337,7 +4337,7 @@ and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
       red dots represent local minima.  The blue dot represents the optimal solution.</figcaption>
   </figure>
   Note that minima can be the result of the objective function having zero-derivative
-  <em>or</em> due to the a sloped objective up against a constraint.</p>
+  <em>or</em> due to a sloped objective up against a constraint.</p>
 
 <p>Numerical methods for solving these optimization problems require an initial guess, $\hat{z}$,
   and proceed by trying to move down the objective function to a minima.  Common approaches
@@ -4715,7 +4715,7 @@ is clearly the minimizer of the objective.</p>
 analogue in continuous time. I'll state it here without derivation.  Given the
 initial conditions, $\bx_0$, a continuous dynamics, $\dot\bx = f(\bx,\bu)$, and
 the instantaneous cost $g(\bx,\bu)$, for a trajectory $\bx(\cdot),\bu(\cdot)$
-defined over $t\in[t_0,t_f]$  to  be optimal is must satisfy the conditions that
+defined over $t\in[t_0,t_f]$  to  be optimal it must satisfy the conditions that
 \begin{align*} \forall t\in[t_0,t_f],\quad & \dot{\bx} = f(\bx,\bu), \quad &\bx(0)=\bx_0\\
 \forall t\in[t_0,t_f],\quad & -\dot\lambda = \pd{g}{\bx}^T + \pd{f}{\bx}^T \lambda, \quad &\lambda(T) = 0\\
 \forall t\in[t_0,t_f],\quad & \pd{g}{\bu} + \lambda\pd{f}{\bu} = 0.&
