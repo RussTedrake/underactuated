@@ -2225,8 +2225,6 @@ to the robots that we have studied so far, our investigations of
 legged locomotion will require additional tools for thinking about
 limit cycle dynamics and dealing with impacts.</p>
 
-<todo> search and replace Poincare and Poincar\'e for Poincar&eacute;</todo>
-
 <section data-type="sect1"><h1>Why is walking so hard?</h1>
 
 </section> <!-- walking is hard -->
@@ -2363,9 +2361,8 @@ either run the code yourself or click on the links below to see the animation).
  <img width="80%" src="figures/rimlessWheel_phase2.svg"/>
  <img width="80%" src="figures/rimlessWheel_phase3.svg"/>
  <img width="80%" src="figures/rimlessWheel_phase4.svg"/>
- <figcaption>Phase portrait trajectories of the rimless wheel]{Phase
-   portrait trajectories of the rimless wheel
- ($m=1,l=1,g=9.8,\alpha=\pi/8,\gamma=0.08$).</figcaption>
+ <figcaption>Phase portrait trajectories of the rimless wheel
+ ($m=1$, $l=1$, $g=9.8$, $\alpha=\pi/8$, $\gamma=0.08$).</figcaption>
 </figure>
 
 <p>Take a minute to make sure you can follow these trajectories through state space for each
@@ -2394,7 +2391,7 @@ velocity term dissipates energy when $|q|>1$, and adds energy when
 $|q|<1$.  Therefore, it is not terribly surprising to see that the
 system settles into a stable oscillation from almost any initial
 conditions (the exception is the state $q=0,\dot{q}=0$).  This can be
-seem nicely in the phase portrait below.</p>
+seen nicely in the phase portrait below.</p>
 
 <figure>
 <table width="100%"><tr><td width="50%">
@@ -2411,7 +2408,7 @@ slightly different picture emerges.
 Although the phase portrait clearly reveals that all trajectories
 converge to the same orbit, the time domain plot reveals that these
 trajectories do not necessarily synchronize in time.</p>
-</div> <!-- end of example? -->
+</div> <!-- end of VdP example -->
 
 <p>The Van der Pol oscillator clearly demonstrates what we would think of
 as a stable limit cycle, but also exposes the subtlety in defining
@@ -2426,7 +2423,7 @@ If we can define a closed region of phase space which does not contain
 any fixed points, then it must contain a
 closed-orbit<elib>Strogatz94</elib>.  By closed, I mean that any trajectory
 which enters the region will stay in the region (this is the
-Poincare-Bendixson Theorem).  It's also interesting to note that
+Poincar&eacute-Bendixson Theorem).  It's also interesting to note that
 gradient potential fields (e.g. Lyapunov functions) cannot have a
 closed-orbit<elib>Strogatz94</elib>, and consquently Lyapunov analysis
 cannot be applied to limit cycle stability without some modification.</p>
@@ -2437,11 +2434,11 @@ cannot be applied to limit cycle stability without some modification.</p>
 
 <p>
   One definition for the stability of a limit cycle uses the method of
-  Poincar\'e.  Let's consider an $n$ dimensional dynamical system,
+  Poincar&eacute.  Let's consider an $n$ dimensional dynamical system,
   $\dot{\bx} = {\bf f}(\bx).$ Define an $n-1$ dimensional <em>surface
   of section</em>, $S$.  We will also require that $S$ is tranverse to the
   flow (i.e., all trajectories starting on $S$ flow through $S$, not
-  parallel to it).  The Poincar\'e map (or return map) is a mapping from
+  parallel to it).  The Poincar&eacute map (or return map) is a mapping from
   $S$ to itself:  $$\bx_p[n+1] = {\bf P}(\bx_p[n]),$$ where $\bx_p[n]$
   is the state of the system at the $n$th crossing of the surface of
   section. Note that we will use the notation $\bx_p$ to distinguish the
@@ -2453,7 +2450,7 @@ cannot be applied to limit cycle stability without some modification.</p>
 
 <p>Since the full system is two dimensional, the return map dynamics are
   one dimensional.  One dimensional maps, like one dimensional flows,
-  are amenable to graphical analysis.  To define a Poincare section for
+  are amenable to graphical analysis.  To define a Poincar&eacute section for
   the Van der Pol oscillator, let $S$ be the line segment where $\dot{q}
   = 0, q > 0$.</p>
 
@@ -2465,7 +2462,7 @@ cannot be applied to limit cycle stability without some modification.</p>
   <img width="100%" src="figures/vanderPol_retmap.svg" />
 </td></tr></table>
 <figcaption>(Left) Phase plot with the surface of section, $S$ drawn with
-    a black dashed line.  (Right) The resulting Poincare first-return
+    a black dashed line.  (Right) The resulting Poincar&eacute first-return
     map (blue), and the line of slope one (red).</figcaption>
 </figure>
 </div>
@@ -2489,7 +2486,7 @@ cannot be applied to limit cycle stability without some modification.</p>
 
 <p>  A particularly graphical method for understanding the dynamics of a
   one-dimensional iterated map is with the staircase method.  Sketch the
-  Poincare map and also the line of slope one.  Fixed points are the
+  Poincar&eacute map and also the line of slope one.  Fixed points are the
   crossings with the unity line.  Asymptotically stable if $|\lambda| <
   1$.  Unlike one dimensional flows, one dimensional
   maps can have oscillations (happens whenever $\lambda < 0$).</p>
@@ -2500,7 +2497,7 @@ cannot be applied to limit cycle stability without some modification.</p>
 
 <section data-type="sect1"><h1>Analysis of the Rimless Wheel</h1>
 
-<section data-type="sect2"><h1>Poincare Map</h1>
+<section data-type="sect2"><h1>Poincar&eacute Map</h1>
 
 <p>We can now derive the angular velocity at the beginning of each
 stance phase as a function of the angular velocity of the previous
@@ -4966,13 +4963,13 @@ that limit cycle, but this is not proven by the Lyapunov argument above.
 </div>
 
 <p>Let's compare this approach with the approach that we used in the chapter on walking
-  robots, where we used a Poincare map analysis to investigate limit cycle stability.
+  robots, where we used a Poincar&eacute map analysis to investigate limit cycle stability.
 In transverse coordinates approach, there is an additional burden to construct the coordinate system
 along the entire trajectory, instead of only at a single surface of section.  In fact,
-the transverse coordinates approach is sometimes referred to as a "moving Poincare section".
+the transverse coordinates approach is sometimes referred to as a "moving Poincar&eacute section".
 But the reward for this extra work is that we can check a condition that only involves
 the instantaneous dynamics, $f(\bx)$, as opposed to having to integrate the dynamics
-over an entire cycle to generate the discrete Poincare map, $\bx_p[n+1] = P(\bx_p[n])$.
+over an entire cycle to generate the discrete Poincar&eacute map, $\bx_p[n+1] = P(\bx_p[n])$.
 While computing $P$ in closed-form happened to be possible for the simple rimless wheel
 model, it is rarely possible for more complex models.  As we will see below,
 this approach will also be more compatible with designing continuous feedback controller that
