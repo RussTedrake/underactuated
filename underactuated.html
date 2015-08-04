@@ -2735,7 +2735,7 @@ where I've used $F_{i,x}$ to represent the component of the force in the $x$ dir
 can stabilize a stabilizable fixed point using a change of coordinates plus LQR or even plan/track a desired trajectory using time-varying LQR.  If I were to add additional linear constraints, for instance constraining $F_{min} \le F_i \le F_{max}$, then I can still use linear model-predictive control (MPC) to plan and stabilize a desired motion. By most accounts,
 this is a relatively easy control problem. (Note that it would be considerably harder if my control input or input constraints depend on the orientation, $\theta$, but we don't need that here yet).</p>
 
-  <p>Now imagine that you just a small number of thrusters (let's say two) each with severe input constraints.  To make things more interesting, let us say that you're allowed to move the thrusters, so $\dot{r}_i$ becomes an additional control input, but with some important limitations:  you have to turn the thrusters off when they are moving (e.g. $|F_i||\dot{r}_i| = 0$) and there is a limit to how quickly you can move the thrusters $|\dot{r}|_i \le v_{max}$.  This problem is a now lot more difficult, due especially to
+  <p>Now imagine that you just a small number of thrusters (let's say two) each with severe input constraints.  To make things more interesting, let us say that you're allowed to move the thrusters, so $\dot{r}_i$ becomes an additional control input, but with some important limitations:  you have to turn the thrusters off when they are moving (e.g. $|F_i||\dot{r}_i| = 0$) and there is a limit to how quickly you can move the thrusters $|\dot{r}|_i \le v_{max}$.  This problem is now a lot more difficult, due especially to
   the fact that constraints of the form $u_1 u_2 = 0$ are non-convex.
     <center><img width="25%" src="figures/complementarityConstraint.svg"/></center>
     I find this a very useful thought exercise; somehow our controller needs to make an effectively discrete decision to turn off a thruster and move it.  The framework of optimal control should support this - you are sacrificing a short-term loss of control authority for the long-term benefit of having the thruster positioned where you would like, but we haven't developed tools yet that deal well with this discrete plus continuous
@@ -2767,9 +2767,9 @@ remain unchanged.  The center of mass is a configuration dependent point, and do
 
 <section data-type="sect2"><h1>Impact dynamics</h1>
 
-<p>In the previous chapter we devoted relatively a lot of attention to dynamics of impact, characterized for instance by a guard the reset dynamics in a hybrid dynamical system.  In those models we used impulsive ground-reaction forces (these forces are instantaneously infinite, but doing finite work) in order to explain the discontinuous change in velocity required to avoid penetration with the ground.  This story can be extended naturally to the dynamics of the center of mass.<p>
+<p>In the previous chapter we devoted relatively a lot of attention to dynamics of impact, characterized for instance by a guard that resets dynamics in a hybrid dynamical system.  In those models we used impulsive ground-reaction forces (these forces are instantaneously infinite, but doing finite work) in order to explain the discontinuous change in velocity required to avoid penetration with the ground.  This story can be extended naturally to the dynamics of the center of mass.<p>
 
-<p>For an articulated robot, though, there a number of possible strategies for the legs which can effect the dynamics of the center of mass.  For example, if the robot hits the ground with a stiff leg like the rimless wheel, then the angular momentum about the point of collision will be conserved, but any momentum going into the ground will be lost.  However, if the robot has a spring leg and a massless toe like the SLIP model, then no energy need be lost.</p>
+<p>For an articulated robot, though, there are a number of possible strategies for the legs which can effect the dynamics of the center of mass.  For example, if the robot hits the ground with a stiff leg like the rimless wheel, then the angular momentum about the point of collision will be conserved, but any momentum going into the ground will be lost.  However, if the robot has a spring leg and a massless toe like the SLIP model, then no energy need be lost.</p>
 
 <p>One strategy that many highly-articulated legged robots use is to keep their center of mass at a constant height, $$z = c \quad \Rightarrow \quad \dot{z} = \ddot{z} = 0,$$  and minimize their angular momentum abount the center of mass (here $\ddot\theta=0$).  Using this strategy, if the swinging foot lands roughly below the center of mass, then even with a stiff leg there is no energy dissipated in the collision - all of the momentum is conserved.  This often (but does not always) justify ignoring the impacts in the center of mass dynamics of the system.</p>
 
@@ -3444,7 +3444,7 @@ This equation can be solved for ${\bf S}$ numerically with the Riccati recursion
 <section data-type="chapter" class="chapter" id="ch:lqr"><h1>Linear Quadratic Regulators</h1>
 
 <p>While solving the dynamic programming problem for continuous systems is very hard
-  in general, there are a few very important special case where the solutions are
+  in general, there are a few very important special cases where the solutions are
   very accessible. Most of these involve variants on the
   case of linear dynamics and quadratic cost.  The simplest case, called the linear quadratic
   regulator (LQR), is formulated as stabilizing a time-invariant linear system to the origin.</p>
@@ -3485,8 +3485,8 @@ and since this condition must hold for all $\bx$, it is sufficient to consider
 the matrix equation
 $$0 = {\bf S}
 {\bf A} + {\bf A}^T {\bf S} - {\bf S} {\bf B} {\bf R}^{-1} {\bf B}^T {\bf S} +
-{\bf Q}.$$ This is extremely important equation is a version of the <em>algebraic Riccati equation</em>.
-Note that it is quadratic in ${\bf S}$, making it's solution non-trivial,
+{\bf Q}.$$ This extremely important equation is a version of the <em>algebraic Riccati equation</em>.
+Note that it is quadratic in ${\bf S}$, making its solution non-trivial,
 but it is well known that the equation has a single positive-definite solution if and only
 if the system is controllable and
 there are good numerical methods for finding that solution, even in high-dimensional
