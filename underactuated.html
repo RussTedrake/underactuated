@@ -1887,8 +1887,8 @@ where ${\bf H}_{12}^+$ is a Moore-Penrose pseudo-inverse.  This
 inverse provides a unique solution when the rank of ${\bf H}_{12}$
 equals $l$, the number of passive degrees of freedom in the system (it
 cannot be more, since the matrix only has $l$ rows).  This rank
-condition is sometimes called the property of ``Strong Inertial
-Coupling''.  It is state dependent.  Global Strong Inertial Coupling
+condition is sometimes called the property of "Strong Inertial
+Coupling".  It is state dependent.  Global Strong Inertial Coupling
 if every state is coupled.</p>
 
 </section>
@@ -1898,7 +1898,7 @@ if every state is coupled.</p>
 <p>
 In general, we can define some combination of active and passive
 joints that we would like to control.  This combination is sometimes
-called a ``task space''.  % cite some task space refs here?
+called a "task space".  % cite some task space refs here?
 Consider an output function of the form, $${\bf y} = {\bf
 f}(\bq),$$ with ${\bf y} \in \Re^p$, which defines the task space.  Define
 ${\bf J}_1 = \frac{\partial {\bf f}}{\partial \bq_1}$, ${\bf J}_2 =
@@ -1994,7 +1994,7 @@ If we choose ${\bf y} = \bq_1$ (non-collocated), we have $${\bf J}_1 =
 condition ($\ref{eq:rank_condition}$) requires that
 $\text{rank}({\bf H}_{12}) = l$, in which case we can write
 $\bar{{\bf J}}^+=-{\bf H}_{12}^+{\bf H}_{11}$, reducing the rank condition to
-precisely the ``Strong Inertial Coupling'' condition described in
+precisely the "Strong Inertial Coupling" condition described in
 <elib>Spong94a</elib>. Now the command in ($\ref{eq:q2cmd}$) reduces to
 \begin{equation}
 \ddot\bq_2 = -{\bf H}_{12}^+ \left [ {\bf H}_{11}{\bf v} + {\bf \phi}_1 \right] \label{eq:q2ddnonco}
@@ -2248,7 +2248,7 @@ deeper appreciation for the role of compliance during walking;
 simple walking-by-vaulting models are starting to fall out of favor.</p>
 
 <p>McGeer<elib>McGeer90</elib> followed up with a series of walking machines,
-called ``passive dynamic walkers''.  The walking machine by Collins
+called "passive dynamic walkers".  The walking machine by Collins
 and Ruina<elib>Collins01</elib> is the most impressive passive walker to
 date.</p>
 
@@ -2502,8 +2502,8 @@ cannot be applied to limit cycle stability without some modification.</p>
 <p>We can now derive the angular velocity at the beginning of each
 stance phase as a function of the angular velocity of the previous
 stance phase. First, we will handle the case where $\gamma \le
-\alpha$ and $\dot\theta_n^+ > \omega_1$.  The ``step-to-step return
-map'', factoring losses from a single collision, the resulting map is:
+\alpha$ and $\dot\theta_n^+ > \omega_1$.  The "step-to-step return
+map", factoring losses from a single collision, the resulting map is:
 $$\dot\theta^{+}_{n+1} = \cos(2\alpha) \sqrt{
 ({\dot\theta_n}^{+})^{2} + 4\frac{g}{l}\sin\alpha \sin\gamma}.$$
 where the $\dot{\theta}^{+}$ indicates the velocity just
@@ -2710,7 +2710,7 @@ limit cycle is traversed clockwise.</p>
 
 <section data-type="chapter" class="chapter"><h1>Highly-articulated Legged Robots</h1>
 
-<p>The passive dynamic walkers and hopping robots described in the last capture the fundamental dynamics of legged locomotion -- dynamics which are fundamentally nonlinear and punctuated by impulsive events impulsive due to making and breaking contact with the environment.  But if you start reading the literature on humanoid robots, or many-legged robots like quadrupeds, then you will find a quite different set of ideas taking center stage: ideas like the "zero-moment point" and footstep planning.  The goal of this chapter is to penetrate that world.</p>
+<p>The passive dynamic walkers and hopping robots described in the last chapter capture the fundamental dynamics of legged locomotion -- dynamics which are fundamentally nonlinear and punctuated by impulsive events due to making and breaking contact with the environment.  But if you start reading the literature on humanoid robots, or many-legged robots like quadrupeds, then you will find a quite different set of ideas taking center stage: ideas like the "zero-moment point" and footstep planning.  The goal of this chapter is to penetrate that world.</p>
 
 <p>I'd like to start the discussion with a model that might seem quite far from the world of legged robots, but I think it's a very useful way to think about the problem.</p>
 
@@ -5669,14 +5669,14 @@ These two types of constraints are handled quite differently.</p>
   Input constraints are designed to act in the same way that an actuator limit might work for a mechanical system.  These act as a saturation nonlinearity system attached to the input, where for each element: $$y_i = \begin{cases} u_{max,i} & \text{if } u_i > u_{max,i} \\ u_{min,i} & \text{if } u_i < u_{min,i} \\ u_i & \text{otherwise.}\end{cases}$$  The advantage of using the input limits instead of implementing the saturation in your own code is that the discontinuity associated with hitting or leaving a saturation is communicated to the solver correctly, allowing for more efficient and accurate simulations.  Input constraints are set by calling the <code>setInputLimits</code> method.</p>
 
 <p>
-  State constraints are additional information that you are providing to the solver and analysis routines.  They should be read as ``this dynamical system will only ever visit states described by $\phi(x)=0$''.  Evaluating the dynamics at a vector $x$ for which $\phi(x) \ne 0$ may lead to an undefined or non-sensible output.   Telling <drake></drake> about this constraint will allow it to select initial conditions which satisfy the constraint, simulate the system more accurately (with the constraint imposed), and restrict attention during analysis to the manifold defined by the constraints.  However, \emph{the state constraints function should not be used to enforce an additional constraint that is not already imposed on the system by the governing equations.}.  The state constraint should be simply announcing a property that the system already has, if simulated accurately.   Examples might include a passive system with a known total energy, or a four-bar linkage in a rigid body whos dynamics are written as a kinematic tree + constraint forces.   State constraints are implemented by overloading the <code>stateConstraints</code> method \emph{and} by calling <code>setNumStateConstraints</code> to tell the solver what to expect in that method.</p>
+  State constraints are additional information that you are providing to the solver and analysis routines.  They should be read as "this dynamical system will only ever visit states described by $\phi(x)=0$".  Evaluating the dynamics at a vector $x$ for which $\phi(x) \ne 0$ may lead to an undefined or non-sensible output.   Telling <drake></drake> about this constraint will allow it to select initial conditions which satisfy the constraint, simulate the system more accurately (with the constraint imposed), and restrict attention during analysis to the manifold defined by the constraints.  However, \emph{the state constraints function should not be used to enforce an additional constraint that is not already imposed on the system by the governing equations.}.  The state constraint should be simply announcing a property that the system already has, if simulated accurately.   Examples might include a passive system with a known total energy, or a four-bar linkage in a rigid body whos dynamics are written as a kinematic tree + constraint forces.   State constraints are implemented by overloading the <code>stateConstraints</code> method \emph{and} by calling <code>setNumStateConstraints</code> to tell the solver what to expect in that method.</p>
  
 <!--implement example of passive pendulum with and without state constraints, showing the additional accuracy.-->
 
 <p><b>Hybrid (Event-Driven) Systems.</b>
 <drake></drake> supports systems that are modeled as smooth, discrete- or
 continuous- time systems which transition between discrete modes based
-on some event.  Simulink calls these models ``State Machines''.  Examples include a walking robot model which undergoes a
+on some event.  Simulink calls these models "State Machines".  Examples include a walking robot model which undergoes a
 discrete impulsive collision event (and possibly a change to a
 different model) when a foot hits the ground, or the switching
 controller for swinging up the underactuated double pendulum (Acrobot)
@@ -6015,7 +6015,7 @@ makes use of a number of Simulink's advanced features.  For example,
 input limits can cause discontinuities in the derivative of a
 continuous time system, which can potenially lead to inaccuracy and inefficiency
 in simulation with variable-step solvers; <drake></drake> avoids this by
-registering ``zero-crossings'' for each input saturation which allow
+registering "zero-crossings" for each input saturation which allow
 the solver to handle the derivative discontinuity event explicitly,
 without reducing the step-size to achieve the accuracy tolerance.  You
 can change the Simulink solver parameters using the
