@@ -1887,8 +1887,8 @@ where ${\bf H}_{12}^+$ is a Moore-Penrose pseudo-inverse.  This
 inverse provides a unique solution when the rank of ${\bf H}_{12}$
 equals $l$, the number of passive degrees of freedom in the system (it
 cannot be more, since the matrix only has $l$ rows).  This rank
-condition is sometimes called the property of ``Strong Inertial
-Coupling''.  It is state dependent.  Global Strong Inertial Coupling
+condition is sometimes called the property of "Strong Inertial
+Coupling".  It is state dependent.  Global Strong Inertial Coupling
 if every state is coupled.</p>
 
 </section>
@@ -1898,7 +1898,7 @@ if every state is coupled.</p>
 <p>
 In general, we can define some combination of active and passive
 joints that we would like to control.  This combination is sometimes
-called a ``task space''.  % cite some task space refs here?
+called a "task space".  % cite some task space refs here?
 Consider an output function of the form, $${\bf y} = {\bf
 f}(\bq),$$ with ${\bf y} \in \Re^p$, which defines the task space.  Define
 ${\bf J}_1 = \frac{\partial {\bf f}}{\partial \bq_1}$, ${\bf J}_2 =
@@ -1994,7 +1994,7 @@ If we choose ${\bf y} = \bq_1$ (non-collocated), we have $${\bf J}_1 =
 condition ($\ref{eq:rank_condition}$) requires that
 $\text{rank}({\bf H}_{12}) = l$, in which case we can write
 $\bar{{\bf J}}^+=-{\bf H}_{12}^+{\bf H}_{11}$, reducing the rank condition to
-precisely the ``Strong Inertial Coupling'' condition described in
+precisely the "Strong Inertial Coupling" condition described in
 <elib>Spong94a</elib>. Now the command in ($\ref{eq:q2cmd}$) reduces to
 \begin{equation}
 \ddot\bq_2 = -{\bf H}_{12}^+ \left [ {\bf H}_{11}{\bf v} + {\bf \phi}_1 \right] \label{eq:q2ddnonco}
@@ -2075,7 +2075,7 @@ This is a nonlinear controller that will push all system trajectories
 to the unstable equilibrium.  But does it make the unstable
 equilibrium locally stable?  <em>No.</em>  Small perturbations may cause
 the system to drive all of the way around the circle in order to once
-again return to the unstable equilibrium.  For this reason, one
+again return to the unstable equilibrium.  For this reason, once
 trajectories come into the vicinity of our swing-up controller, we
 prefer to switch to our LQR balancing controller to performance to
 complete the task.</p>
@@ -2213,7 +2213,7 @@ used heavily in underactuated control research.  Other examples include:
 
 <p>Practical legged locomotion is one of the fundamental unsolved
 problems in robotics.  Many challenges are in mechanical design - a
-walking robot must carry all of it's actuators and power, making it
+walking robot must carry all of its actuators and power, making it
 difficult to carry ideal force/torque - controlled actuators.  But
 many of the unsolved problems are because walking robots are
 underactuated control systems. </p>
@@ -2248,7 +2248,7 @@ deeper appreciation for the role of compliance during walking;
 simple walking-by-vaulting models are starting to fall out of favor.</p>
 
 <p>McGeer<elib>McGeer90</elib> followed up with a series of walking machines,
-called ``passive dynamic walkers''.  The walking machine by Collins
+called "passive dynamic walkers".  The walking machine by Collins
 and Ruina<elib>Collins01</elib> is the most impressive passive walker to
 date.</p>
 
@@ -2325,7 +2325,7 @@ $$\dot\theta(t^+) = \dot\theta(t^-) \cos(2\alpha).$$</p>
 <section data-type="sect2"><h1>Forward simulation</h1>
 
 <p>Given the stance dynamics, the collision detection logic ($\theta = \gamma \pm \alpha$),
-  and the collision update, we can numerical simulate this simple model.  Doing
+  and the collision update, we can numerically simulate this simple model.  Doing
   so reveals something remarkable... the wheel starts rolling, but then one of two things
   happens: it either runs out of energy and stands still, or it quickly falls
   into a stable periodic solution.  Convergence to this stable periodic solution
@@ -2338,7 +2338,7 @@ cd(fullfile(getDrakePath,'examples','RimlessWheel'));
 RimlessWheelPlant.run();
 </code></pre>
 
-Optionally you can specify the intiial conditions.  Here are a few good values to try.  (You can
+Optionally you can specify the intial conditions.  Here are a few good values to try.  (You can
 either run the code yourself or click on the links below to see the animation).
 <ul>
   <li><a href="figures/rimlessWheel_w0_5.swf"><code>RimlessWheelPlant.run(5)</code></a></li>
@@ -2502,8 +2502,8 @@ cannot be applied to limit cycle stability without some modification.</p>
 <p>We can now derive the angular velocity at the beginning of each
 stance phase as a function of the angular velocity of the previous
 stance phase. First, we will handle the case where $\gamma \le
-\alpha$ and $\dot\theta_n^+ > \omega_1$.  The ``step-to-step return
-map'', factoring losses from a single collision, the resulting map is:
+\alpha$ and $\dot\theta_n^+ > \omega_1$.  The "step-to-step return
+map", factoring losses from a single collision, the resulting map is:
 $$\dot\theta^{+}_{n+1} = \cos(2\alpha) \sqrt{
 ({\dot\theta_n}^{+})^{2} + 4\frac{g}{l}\sin\alpha \sin\gamma}.$$
 where the $\dot{\theta}^{+}$ indicates the velocity just
@@ -2710,7 +2710,7 @@ limit cycle is traversed clockwise.</p>
 
 <section data-type="chapter" class="chapter"><h1>Highly-articulated Legged Robots</h1>
 
-<p>The passive dynamic walkers and hopping robots described in the last capture the fundamental dynamics of legged locomotion -- dynamics which are fundamentally nonlinear and punctuated by impulsive events impulsive due to making and breaking contact with the environment.  But if you start reading the literature on humanoid robots, or many-legged robots like quadrupeds, then you will find a quite different set of ideas taking center stage: ideas like the "zero-moment point" and footstep planning.  The goal of this chapter is to penetrate that world.</p>
+<p>The passive dynamic walkers and hopping robots described in the last chapter capture the fundamental dynamics of legged locomotion -- dynamics which are fundamentally nonlinear and punctuated by impulsive events due to making and breaking contact with the environment.  But if you start reading the literature on humanoid robots, or many-legged robots like quadrupeds, then you will find a quite different set of ideas taking center stage: ideas like the "zero-moment point" and footstep planning.  The goal of this chapter is to penetrate that world.</p>
 
 <p>I'd like to start the discussion with a model that might seem quite far from the world of legged robots, but I think it's a very useful way to think about the problem.</p>
 
@@ -2735,7 +2735,7 @@ where I've used $F_{i,x}$ to represent the component of the force in the $x$ dir
 can stabilize a stabilizable fixed point using a change of coordinates plus LQR or even plan/track a desired trajectory using time-varying LQR.  If I were to add additional linear constraints, for instance constraining $F_{min} \le F_i \le F_{max}$, then I can still use linear model-predictive control (MPC) to plan and stabilize a desired motion. By most accounts,
 this is a relatively easy control problem. (Note that it would be considerably harder if my control input or input constraints depend on the orientation, $\theta$, but we don't need that here yet).</p>
 
-  <p>Now imagine that you just a small number of thrusters (let's say two) each with severe input constraints.  To make things more interesting, let us say that you're allowed to move the thrusters, so $\dot{r}_i$ becomes an additional control input, but with some important limitations:  you have to turn the thrusters off when they are moving (e.g. $|F_i||\dot{r}_i| = 0$) and there is a limit to how quickly you can move the thrusters $|\dot{r}|_i \le v_{max}$.  This problem is a now lot more difficult, due especially to
+  <p>Now imagine that you just a small number of thrusters (let's say two) each with severe input constraints.  To make things more interesting, let us say that you're allowed to move the thrusters, so $\dot{r}_i$ becomes an additional control input, but with some important limitations:  you have to turn the thrusters off when they are moving (e.g. $|F_i||\dot{r}_i| = 0$) and there is a limit to how quickly you can move the thrusters $|\dot{r}|_i \le v_{max}$.  This problem is now a lot more difficult, due especially to
   the fact that constraints of the form $u_1 u_2 = 0$ are non-convex.
     <center><img width="25%" src="figures/complementarityConstraint.svg"/></center>
     I find this a very useful thought exercise; somehow our controller needs to make an effectively discrete decision to turn off a thruster and move it.  The framework of optimal control should support this - you are sacrificing a short-term loss of control authority for the long-term benefit of having the thruster positioned where you would like, but we haven't developed tools yet that deal well with this discrete plus continuous
@@ -2767,9 +2767,9 @@ remain unchanged.  The center of mass is a configuration dependent point, and do
 
 <section data-type="sect2"><h1>Impact dynamics</h1>
 
-<p>In the previous chapter we devoted relatively a lot of attention to dynamics of impact, characterized for instance by a guard the reset dynamics in a hybrid dynamical system.  In those models we used impulsive ground-reaction forces (these forces are instantaneously infinite, but doing finite work) in order to explain the discontinuous change in velocity required to avoid penetration with the ground.  This story can be extended naturally to the dynamics of the center of mass.<p>
+<p>In the previous chapter we devoted relatively a lot of attention to dynamics of impact, characterized for instance by a guard that resets dynamics in a hybrid dynamical system.  In those models we used impulsive ground-reaction forces (these forces are instantaneously infinite, but doing finite work) in order to explain the discontinuous change in velocity required to avoid penetration with the ground.  This story can be extended naturally to the dynamics of the center of mass.<p>
 
-<p>For an articulated robot, though, there a number of possible strategies for the legs which can effect the dynamics of the center of mass.  For example, if the robot hits the ground with a stiff leg like the rimless wheel, then the angular momentum about the point of collision will be conserved, but any momentum going into the ground will be lost.  However, if the robot has a spring leg and a massless toe like the SLIP model, then no energy need be lost.</p>
+<p>For an articulated robot, though, there are a number of possible strategies for the legs which can effect the dynamics of the center of mass.  For example, if the robot hits the ground with a stiff leg like the rimless wheel, then the angular momentum about the point of collision will be conserved, but any momentum going into the ground will be lost.  However, if the robot has a spring leg and a massless toe like the SLIP model, then no energy need be lost.</p>
 
 <p>One strategy that many highly-articulated legged robots use is to keep their center of mass at a constant height, $$z = c \quad \Rightarrow \quad \dot{z} = \ddot{z} = 0,$$  and minimize their angular momentum abount the center of mass (here $\ddot\theta=0$).  Using this strategy, if the swinging foot lands roughly below the center of mass, then even with a stiff leg there is no energy dissipated in the collision - all of the momentum is conserved.  This often (but does not always) justify ignoring the impacts in the center of mass dynamics of the system.</p>
 
@@ -2791,7 +2791,7 @@ remain unchanged.  The center of mass is a configuration dependent point, and do
 <p>Furthermore, if we use a Coulomb model of friction on the ground, with friction coefficient $\mu$, then $$\forall i, |F_{i,x}| \le \mu F_{i,z} \Rightarrow \sum_i |F_{i,x}| \le \mu \sum_i F_z \Rightarrow |\ddot{x}| \le \mu (\ddot{z} + g).$$  For instance, if I keep my center of mass at a constant height, then $\ddot{z}=0$ and $|\ddot{x}| \le \mu g$; this is a nice reminder of just how important friction is if you want to be able to move around in the world.</p>
 
 <p>Even better, let us define the "center of pressure" (CoP) as the point on the ground where $$x_{cop} = \frac{\sum_i p_{i,x} F_{i,z}}{\sum_i F_{i,z}},$$ and since all $p_{i,z}$ are equal on flat terrain, $z_{cop}$ is just the height of the terrain.  It turns out that
-the center of pressure is a "zero-moment point" (ZMP) -- a property that we will demonstrate below -- and moment-balance equation gives us a very important relationship between the location of the CoP and the dynamics of the CoM: \[ (m\ddot{z} + mg) (x_{cop} - x) = (z_{cop} - z) m\ddot{x} - I\ddot\theta. \]  If we use the strategy proposed above for ignoring collision dynamics, $\ddot{z} = \ddot{\theta} = 0$, then we have $z_{cop} - z$ is a constant height $h$, and the result is a the famous "ZMP equations":
+the center of pressure is a "zero-moment point" (ZMP) -- a property that we will demonstrate below -- and moment-balance equation gives us a very important relationship between the location of the CoP and the dynamics of the CoM: \[ (m\ddot{z} + mg) (x_{cop} - x) = (z_{cop} - z) m\ddot{x} - I\ddot\theta. \]  If we use the strategy proposed above for ignoring collision dynamics, $\ddot{z} = \ddot{\theta} = 0$, then we have $z_{cop} - z$ is a constant height $h$, and the result is the famous "ZMP equations":
 \[ \ddot{x} = -\frac{g}{h} (x_{cop}-x). \]  So the location of the center of pressure completely determines the acceleration of the center of mass, and vice versa!  What's more, this relationship is affine -- a property that we can exploit in a number of ways.  </p>
 
 <p>
@@ -3444,7 +3444,7 @@ This equation can be solved for ${\bf S}$ numerically with the Riccati recursion
 <section data-type="chapter" class="chapter" id="ch:lqr"><h1>Linear Quadratic Regulators</h1>
 
 <p>While solving the dynamic programming problem for continuous systems is very hard
-  in general, there are a few very important special case where the solutions are
+  in general, there are a few very important special cases where the solutions are
   very accessible. Most of these involve variants on the
   case of linear dynamics and quadratic cost.  The simplest case, called the linear quadratic
   regulator (LQR), is formulated as stabilizing a time-invariant linear system to the origin.</p>
@@ -3485,8 +3485,8 @@ and since this condition must hold for all $\bx$, it is sufficient to consider
 the matrix equation
 $$0 = {\bf S}
 {\bf A} + {\bf A}^T {\bf S} - {\bf S} {\bf B} {\bf R}^{-1} {\bf B}^T {\bf S} +
-{\bf Q}.$$ This is extremely important equation is a version of the <em>algebraic Riccati equation</em>.
-Note that it is quadratic in ${\bf S}$, making it's solution non-trivial,
+{\bf Q}.$$ This extremely important equation is a version of the <em>algebraic Riccati equation</em>.
+Note that it is quadratic in ${\bf S}$, making its solution non-trivial,
 but it is well known that the equation has a single positive-definite solution if and only
 if the system is controllable and
 there are good numerical methods for finding that solution, even in high-dimensional
@@ -5669,14 +5669,14 @@ These two types of constraints are handled quite differently.</p>
   Input constraints are designed to act in the same way that an actuator limit might work for a mechanical system.  These act as a saturation nonlinearity system attached to the input, where for each element: $$y_i = \begin{cases} u_{max,i} & \text{if } u_i > u_{max,i} \\ u_{min,i} & \text{if } u_i < u_{min,i} \\ u_i & \text{otherwise.}\end{cases}$$  The advantage of using the input limits instead of implementing the saturation in your own code is that the discontinuity associated with hitting or leaving a saturation is communicated to the solver correctly, allowing for more efficient and accurate simulations.  Input constraints are set by calling the <code>setInputLimits</code> method.</p>
 
 <p>
-  State constraints are additional information that you are providing to the solver and analysis routines.  They should be read as ``this dynamical system will only ever visit states described by $\phi(x)=0$''.  Evaluating the dynamics at a vector $x$ for which $\phi(x) \ne 0$ may lead to an undefined or non-sensible output.   Telling <drake></drake> about this constraint will allow it to select initial conditions which satisfy the constraint, simulate the system more accurately (with the constraint imposed), and restrict attention during analysis to the manifold defined by the constraints.  However, \emph{the state constraints function should not be used to enforce an additional constraint that is not already imposed on the system by the governing equations.}.  The state constraint should be simply announcing a property that the system already has, if simulated accurately.   Examples might include a passive system with a known total energy, or a four-bar linkage in a rigid body whos dynamics are written as a kinematic tree + constraint forces.   State constraints are implemented by overloading the <code>stateConstraints</code> method \emph{and} by calling <code>setNumStateConstraints</code> to tell the solver what to expect in that method.</p>
+  State constraints are additional information that you are providing to the solver and analysis routines.  They should be read as "this dynamical system will only ever visit states described by $\phi(x)=0$".  Evaluating the dynamics at a vector $x$ for which $\phi(x) \ne 0$ may lead to an undefined or non-sensible output.   Telling <drake></drake> about this constraint will allow it to select initial conditions which satisfy the constraint, simulate the system more accurately (with the constraint imposed), and restrict attention during analysis to the manifold defined by the constraints.  However, \emph{the state constraints function should not be used to enforce an additional constraint that is not already imposed on the system by the governing equations.}.  The state constraint should be simply announcing a property that the system already has, if simulated accurately.   Examples might include a passive system with a known total energy, or a four-bar linkage in a rigid body whos dynamics are written as a kinematic tree + constraint forces.   State constraints are implemented by overloading the <code>stateConstraints</code> method \emph{and} by calling <code>setNumStateConstraints</code> to tell the solver what to expect in that method.</p>
  
 <!--implement example of passive pendulum with and without state constraints, showing the additional accuracy.-->
 
 <p><b>Hybrid (Event-Driven) Systems.</b>
 <drake></drake> supports systems that are modeled as smooth, discrete- or
 continuous- time systems which transition between discrete modes based
-on some event.  Simulink calls these models ``State Machines''.  Examples include a walking robot model which undergoes a
+on some event.  Simulink calls these models "State Machines".  Examples include a walking robot model which undergoes a
 discrete impulsive collision event (and possibly a change to a
 different model) when a foot hits the ground, or the switching
 controller for swinging up the underactuated double pendulum (Acrobot)
@@ -6015,7 +6015,7 @@ makes use of a number of Simulink's advanced features.  For example,
 input limits can cause discontinuities in the derivative of a
 continuous time system, which can potenially lead to inaccuracy and inefficiency
 in simulation with variable-step solvers; <drake></drake> avoids this by
-registering ``zero-crossings'' for each input saturation which allow
+registering "zero-crossings" for each input saturation which allow
 the solver to handle the derivative discontinuity event explicitly,
 without reducing the step-size to achieve the accuracy tolerance.  You
 can change the Simulink solver parameters using the
