@@ -340,8 +340,8 @@ with the look and feel of ASIMO's movements [watch the asimo video below now].
 
 <figure>
   <video width="80%" controls>
-    <source src="http://world.honda.com/ASIMO/technology/2011/intelligence/video02/movie640w.mp4" type="video/mp4"/>
     <source src="figures/walking_while_avoiding_people.ogg" type="video/ogg"/>
+    <source src="http://world.honda.com/ASIMO/technology/2011/intelligence/video02/movie640w.mp4" type="video/mp4"/>
   </video><br/>
 <!--
 <object name="kaltura_player_1409562873" id="kaltura_player_1409562873" type="application/x-shockwave-flash" allowScriptAccess="always" allowNetworking="all" allowFullScreen="true" height="300" width="100%" data="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151?autoPlay=false"><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="allowFullScreen" value="true" /><param name="bgcolor" value="#000000" /><param name="movie" value="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151"/><param name="flashVars" value=""/><a href="http://corp.kaltura.com">video platform</a><a href="http://corp.kaltura.com/video_platform/video_management">video management</a><a href="http://corp.kaltura.com/solutions/video_solution">video solutions</a><a href="http://corp.kaltura.com/video_platform/video_publishing">video player</a></object>
@@ -5455,7 +5455,7 @@ mixed-integer optimization.  actually show the optimization hierarchy in drake a
 Drake ("dragon" in Middle English) is a toolbox maintained by the <a href="http://groups.csail.mit.edu/locomotion/">Robot Locomotion Group</a> at the MIT Computer Science and Artificial Intelligence Lab (CSAIL) which contains implementations of many of the ideas from these notes.  It was designed with the goal of rapidly prototyping advanced control ideas, but has also been optimized (in places) for performance -- it provides the complete planning and control backend for most of our research robots, including <a href="http://drc.mit.edu">MIT's entry into the DARPA Robotics Challenge</a>, and now has users from academia and industry around the world.  </p>
 
 <p>
-  <drake></drake> is implemented using a hierarchy of software classes (in MATLAB and C++) which are designed to expose and exploit available structure in input-output dynamical systems.  While some algorithms are available for general nonlinear systems, specialized algorithms are available for polynomial dynamical systems, linear dynamical systems, ..., and especially rigid-body mechanical systems; many of those algorithms operate <em>symbolically</em> on the governing equations.  The toolbox does a lot of work behind the scenes to make sure that, for instance, feedback or cascade combinations of polynomial systems remain polynomial.  Another major focus is on numerical-optimization-based design and analysis -- for instance, in addition to providing a full rigid-body dynamics engine the software also provides analytical gradients for those dynamics.  <drake></drake> parses a number of robot description formats (such as "URDF"), uses the Simulink solvers for simulation of dynamical systems, and connects with a number of external tools to facilitate design and analysis.  
+  <drake></drake> is implemented using a hierarchy of software classes (in MATLAB and C++) which are designed to expose and exploit available structure in input-output dynamical systems.  While some algorithms are available for general nonlinear systems, specialized algorithms are available for polynomial dynamical systems, linear dynamical systems, ..., and especially rigid-body mechanical systems; many of those algorithms operate <em>symbolically</em> on the governing equations.  The toolbox does a lot of work behind the scenes to make sure that, for instance, feedback or cascade combinations of polynomial systems remain polynomial.  Another major focus is on numerical-optimization-based design and analysis -- for instance, in addition to providing a full rigid-body dynamics engine the software also provides analytical gradients for those dynamics.  <drake></drake> parses a number of robot description formats (such as "URDF"), uses the Simulink solvers for simulation of dynamical systems, and connects with a number of external tools to facilitate design and analysis.
 </p>
 
 <section data-type="sect2"><h1>Relative to Simulink and SimMechanics</h1>
@@ -5463,7 +5463,7 @@ Drake ("dragon" in Middle English) is a toolbox maintained by the <a href="http:
 <p>Roughly speaking, MATLAB's Simulink provides a very nice interface for describing dynamical systems (as S-Functions), a graphical interface for combining these systems in very nontrivial ways, and a number of powerful solvers for simulating the resulting systems.  For simulation analysis, it provides everything we need.   However the S-Function abstraction which makes Simulink powerful also hides some of the detailed structure available in the equations governing a dynamical system; for the purposes of control design and analysis I would like to be able to declare that a particular system is governed by analytic equations, or polynomial equations, or even linear equations, and for many of the tools it is important to be able to manipulate these equations symbolically.</p>
 
 <p>
-You can think of <drake></drake> as a layer built on top of the Simulink engine which allows you to defined structured dynamical systems.  Every dynamical system in <drake></drake> can be simulated using the Simulink engine, but <drake></drake> also provides a number of tools for analysis and controller design which take advantage of the system structure.  While it is possible to use the Simulink GUI with <drake></drake>, the standard workflow makes use of command-line methods which provide a restricted set of tools for combining systems in ways that, whenever possible, preserve the structure in the equations.  
+You can think of <drake></drake> as a layer built on top of the Simulink engine which allows you to defined structured dynamical systems.  Every dynamical system in <drake></drake> can be simulated using the Simulink engine, but <drake></drake> also provides a number of tools for analysis and controller design which take advantage of the system structure.  While it is possible to use the Simulink GUI with <drake></drake>, the standard workflow makes use of command-line methods which provide a restricted set of tools for combining systems in ways that, whenever possible, preserve the structure in the equations.
 </p>
 
 <p>
@@ -5500,13 +5500,13 @@ Like SimMechanics, <drake></drake> provides a number of tools for working specif
 <section data-type="sect1"><h1>Modeling Input-Ouput Dynamical Systems</h1>
 
   <p>
-    The fundamental object in <drake></drake> is a dynamical system.  Robots, 
+    The fundamental object in <drake></drake> is a dynamical system.  Robots,
     controllers, state estimators, etc. are all instances of dynamical
     systems.  Algorithms in <drake></drake> operate on dynamical systems.  This
     chapter introduces what you need to know to instantiate the dynamical
     systems that you are interested in, and to simulate and visualize
-    their outputs.</p>  
-  
+    their outputs.</p>
+
   <p>
 Dynamical systems in <drake></drake> are represented by their dynamics in
 state-space form, with $x$ denoting the state vector.  In addition,
@@ -5541,7 +5541,7 @@ classdef SimpleCTExample < DrakeSystem
   methods
     function obj = SimpleCTExample()
       % call the parent class constructor:
-      obj = obj@DrakeSystem(...  
+      obj = obj@DrakeSystem(...
          1, ... % number of continuous states
          0, ... % number of discrete states
          0, ... % number of inputs
@@ -5577,7 +5577,7 @@ classdef SimpleDTExample < DrakeSystem
   methods
     function obj = SimpleDTExample()
       % call the parent class constructor:
-      obj = obj@DrakeSystem(...  
+      obj = obj@DrakeSystem(...
          0, ... % number of continuous states
          1, ... % number of discrete states
          0, ... % number of inputs
@@ -5592,7 +5592,7 @@ classdef SimpleDTExample < DrakeSystem
       y=x;
     end
   end
-end  
+end
 </code></pre>
 </p>
 </div>
@@ -5630,7 +5630,7 @@ classdef SimpleMixedCTDTExample < DrakeSystem
   methods
     function obj = SimpleMixedCTDTExample()
       % call the parent class constructor:
-      obj = obj@DrakeSystem(...  
+      obj = obj@DrakeSystem(...
          1, ... % number of continuous states
          1, ... % number of discrete states
          0, ... % number of inputs
@@ -5670,7 +5670,7 @@ These two types of constraints are handled quite differently.</p>
 
 <p>
   State constraints are additional information that you are providing to the solver and analysis routines.  They should be read as "this dynamical system will only ever visit states described by $\phi(x)=0$".  Evaluating the dynamics at a vector $x$ for which $\phi(x) \ne 0$ may lead to an undefined or non-sensible output.   Telling <drake></drake> about this constraint will allow it to select initial conditions which satisfy the constraint, simulate the system more accurately (with the constraint imposed), and restrict attention during analysis to the manifold defined by the constraints.  However, \emph{the state constraints function should not be used to enforce an additional constraint that is not already imposed on the system by the governing equations.}.  The state constraint should be simply announcing a property that the system already has, if simulated accurately.   Examples might include a passive system with a known total energy, or a four-bar linkage in a rigid body whos dynamics are written as a kinematic tree + constraint forces.   State constraints are implemented by overloading the <code>stateConstraints</code> method \emph{and} by calling <code>setNumStateConstraints</code> to tell the solver what to expect in that method.</p>
- 
+
 <!--implement example of passive pendulum with and without state constraints, showing the additional accuracy.-->
 
 <p><b>Hybrid (Event-Driven) Systems.</b>
@@ -5716,7 +5716,7 @@ of the active mode.</p>
   accompished with the following two classes (which can be found in the <a href="https://github.com/RobotLocomotion/drake/tree/master/examples/BouncingBall"><code>examples/BouncingBall</code> directory</a>):
 <pre><code class="matlab">
 classdef BallFlightPhasePlant < DrakeSystem
-  
+
   methods
     function obj = BallFlightPhasePlant()
       obj = obj@DrakeSystem(...
@@ -5727,11 +5727,11 @@ classdef BallFlightPhasePlant < DrakeSystem
         false, ... % not direct feedthrough
         true); % time invariant
     end
-    
+
     function xdot = dynamics(obj,t,x,u)
       xdot = [x(2); -obj.g];  % qddot = -g; x=[q,qdot]
     end
-    
+
     function y = output(obj,t,x,u)
       y = x(1); % height of the ball
     end
@@ -5741,23 +5741,23 @@ classdef BallFlightPhasePlant < DrakeSystem
     g = 9.81;  % gravity
   end
 end
-</code></pre>  
+</code></pre>
 
 <pre><code class="matlab">
 classdef BallPlant < HybridDrakeSystem
-  
+
   methods
     function obj = BallPlant()
       obj = obj@HybridDrakeSystem(...
         0, ...  % number of inputs
         1);     % number of outputs
-      
+
       % create flight mode system
       sys = BallFlightPhasePlant();
       obj = setInputFrame(obj,sys.getInputFrame);
       obj = setOutputFrame(obj,sys.getOutputFrame);
       [obj,flight_mode] = addMode(obj,sys);  % add the single mode
-      
+
       g1=inline('x(1)-obj.r','obj','t','x','u');  % q-r<=0
       g2=inline('x(2)','obj','t','x','u'); % qdot<=0
       obj = addTransition(obj, ...
@@ -5770,19 +5770,19 @@ classdef BallPlant < HybridDrakeSystem
 
     function [xn,m,status] = collisionDynamics(obj,m,t,x,u)
       xn = [x(1); -obj.cor*x(2)];      % qdot = -cor*qdot
-      
+
       if (xn(2)<0.01) status = 1; % stop simulating if ball has stopped
       else status = 0; end
-    end          
-    
+    end
+
   end
-  
+
   properties
     r = 1;  % radius of the ball
     cor = .8;  % coefficient of restitution
   end
 end
-</code></pre>  
+</code></pre>
 </p>
 </div>
 
@@ -5792,10 +5792,10 @@ end
 systems.  This includes continuous-time stochastic models of the
 form \begin{gather*} \dot{x}(t) = f(t,x(t),u(t),w(t)) \\ y(t) =
   g(t,x(t),u(t),w(t)), \end{gather*} where $w(t)$ is the vector output of a random
-process which generates Gaussian white noise.  
+process which generates Gaussian white noise.
 It also supports discrete-time models of the
 form \begin{gather*}
-x[n+1] = f(n,x[n],u[n],w[n]) \\ y[n] = g(n,x[n],u[n],w[n]), \end{gather*} where 
+x[n+1] = f(n,x[n],u[n],w[n]) \\ y[n] = g(n,x[n],u[n],w[n]), \end{gather*} where
 $w[n]$ is Gaussian i.i.d. noise, and mixed continuous- and
 discrete-time systems as described above.  These are quite general models, since
 nearly any distribution can be approximated by a white noise input
@@ -5807,7 +5807,7 @@ white noise signal.  </p>
 Stochastic models can be implemented in <drake></drake> by deriving from
 <code>StochastiDrakeSystem</code> and implementing the
 <code>stochasticDynamics</code>, <code>stochasticUpdate</code>, and
-<code>stochasticOutput</code> methods. </p> 
+<code>stochasticOutput</code> methods. </p>
 
 <div data-type="example" class="drake"><h1>A simple continuous-time stochastic system</h1>
 
@@ -5815,7 +5815,7 @@ Stochastic models can be implemented in <drake></drake> by deriving from
 <pre><code class="matlab">
 classdef LinearGaussianExample < StochasticDrakeSystem
 
-  methods 
+  methods
     function obj = LinearGaussianExample
       obj = obj@StochasticDrakeSystem(...
         1, ... % number of continuous states
@@ -5825,7 +5825,7 @@ classdef LinearGaussianExample < StochasticDrakeSystem
         false, ...  % not direct feedthrough
         true, ...   % time invariant
         1, ... % number of noise inputs
-        .01);  % time constant of w(t) 
+        .01);  % time constant of w(t)
     end
 
     function xcdot = stochasticDynamics(obj,t,x,u,w)
@@ -5852,7 +5852,7 @@ dynamical systems implemented in <drake></drake> include
   equations, \begin{gather*}H(q)\ddot{q} + C(q,\dot{q})\dot{q} + G(q) = Bu + \pd{\phi_1}{q}^T
   \lambda_1 + \pd{\phi_2}{\dot{q}}^T \lambda_2\\ \phi_1(q) = 0, \quad
   \phi_2(q,\dot{q})=0\end{gather*} where $\lambda_1$ and $\lambda_2$
-are forces defined implicitly by the constraints.</li>   
+are forces defined implicitly by the constraints.</li>
 <li> (Rational) polynomial systems, given by $e(x)\dot{x} =
   f(t,x,u)$, $y = g(t,x,u)$, subject to $\phi(x)=0$, where $e(), f(),
   g(),$ and $\phi()$ are all polynomial. </li>
@@ -5861,7 +5861,7 @@ are forces defined implicitly by the constraints.</li>
 x_d[n+1] = A_d x + B_d u, \\
 y = Cx + Du,
 \end{gather*}
-and $\phi(x)=\{\}$.</li> 
+and $\phi(x)=\{\}$.</li>
 </ul>
 These special cases are implemented by classes derived from <code>DrakeSystem</code>.
 You should always attempt to derive from the deepest class in the hierarchy that
@@ -5936,7 +5936,7 @@ but it wouldn't be hard.}--></p>
 associated with it, including frames which describe the inputs, states,
 and outputs of the system.  These coordinate frames provide extra
 information about the vector signals, including a name for each
-element.  
+element.
 Must match to allow combination.  Hybrid modes automatically inherit the input and output coordinate
 frame of the hybrid system; the hybrid system does not have a
 coordinate frame for the state.</p>
@@ -5989,7 +5989,7 @@ fnplt(traj);
 </td></tr></table>
 <figcaption>Simulation of <code>SimpleCTSystem</code> (left) and
   <code>SimpleDTSystem</code> (right).</figcaption>
-</figure>  
+</figure>
 </div>
 
 <p>The <code>simulate</code> method sets the input, $u$, to the
@@ -6019,7 +6019,7 @@ registering "zero-crossings" for each input saturation which allow
 the solver to handle the derivative discontinuity event explicitly,
 without reducing the step-size to achieve the accuracy tolerance.  You
 can change the Simulink solver parameters using the
-<code>setSimulinkParam</code> method.  
+<code>setSimulinkParam</code> method.
 For <code>DrakeSystems</code>, you can optionally use the MATLAB's <code>ode45</code>
 suite of solvers using the method <code>simulateODE</code>, which can also
 understand (most of) the Simulink solver parameters.</p>
@@ -6039,16 +6039,16 @@ understand (most of) the Simulink solver parameters.</p>
 
 <p>
 There are a number of options for creating a movie file from your simulation,
-depending on which Visualizer you used.  Given a trajectory, <code>traj</code>, 
-and a Visualizer object, <code>v</code>, use 
+depending on which Visualizer you used.  Given a trajectory, <code>traj</code>,
+and a Visualizer object, <code>v</code>, use
 <pre><code class="matlab">
 playbackMovie(v,traj);
 </code></pre>
 </p>
 
 <p>If you specify an extension in your filename when you are prompted,
-then playbackMovie will attempt to write in the specified format.  If you 
-specify a filename with no extension, then you will be prompted with the 
+then playbackMovie will attempt to write in the specified format.  If you
+specify a filename with no extension, then you will be prompted with the
 output formats supported by your current visualizer.</p>
 
 </section>
@@ -6093,8 +6093,8 @@ into a double.</p>
 The <code>LCMCoderFromType</code> class can also construct one
 automatically using Java reflection -- it simply concatenates the
 elements of the structure into a double vector in the order that they
-appear in the lcmtype file.</p>  
- 
+appear in the lcmtype file.</p>
+
 </section>
 <section data-type="sect3"><h1>LCM Coordinate Frames</h1>
 
