@@ -955,7 +955,7 @@ some positive constants $C$ and $\alpha$.</li>
 
 </ul>
 
-An initial condition near a fixed point that is stable in the sense of Lyapunov
+<p>An initial condition near a fixed point that is stable in the sense of Lyapunov
 may never reach the fixed point (but it won't diverge), near an asymptotically
 stable fixed point will reach the fixed point as $t \rightarrow \infty$, and
 near an exponentially stable fixed point will reach the fixed point with a
@@ -1546,7 +1546,7 @@ form, it is possible to derive the exact conditions of
 controllability.  In particular, for linear systems it is sufficient to demonstrate
 that there exists a control input which drives any initial condition to the origin. </p>
 
-<section data-type"sect3"><h1>The special case of non-repeated eigenvalues</h1>
+<section data-type="sect3"><h1>The special case of non-repeated eigenvalues</h1>
 
 <p>
 Let us first examine a special case, which falls short as a general
@@ -4882,7 +4882,7 @@ finite-time orbital stability.</p>
 or to analyze the region of attraction of a limit cycle, we can use a Lyapunov function.
 In particular, we would like to consider Lyapunov functions which have the
 form cartooned below;  they vanish to zero everywhere along the cycle, and are
-strictly positive everywhere away from the cycle.
+strictly positive everywhere away from the cycle.</p>
 
 <figure><img src="figures/limitCycleLyapunovCartoon.svg"/><figcaption>Cartoon of a Lyapunov
 function which vanishes on a limit cycle, and is strictly positive everywhere else.
@@ -4890,15 +4890,15 @@ function which vanishes on a limit cycle, and is strictly positive everywhere el
 
 <section data-type="sect2"><h1>Transverse coordinates</h1>
 
-How can we parameterize this class of functions?  For arbitrary cycles this could be
+<p>How can we parameterize this class of functions?  For arbitrary cycles this could be
 very difficult in the original coordinates.  For simple cycles like in the cartoon,
 one could imagine using polar coordinates.  More generally, we will define a new
-coordinate system relative to the orbit, with coordinates
+coordinate system relative to the orbit, with coordinates</p>
 <ul>
   <li>$\tau$ - the phase along the orbit</li>
   <li>$\bx_\perp(\tau)$ - the remaining coordinates, linearly independent from $\tau$.</li>
 </ul>
-Given a state $\bx$ in the original coordinates, we must define a smooth mapping $\bx \rightarrow (\tau, \bx_\perp)$
+<p>Given a state $\bx$ in the original coordinates, we must define a smooth mapping $\bx \rightarrow (\tau, \bx_\perp)$
 to this new coordinate system.  For example, for a simple ring oscillator we might have:
 <figure><img width="80%" src="figures/transverseCoordinates.svg"/><figcaption>A moving coordinate system
   along the limit cycle.</figcaption></figure>
@@ -4936,7 +4936,7 @@ transversal coordinates is given in <elib>Manchester10a</elib>.
     \forall \tau, \dot{V}(0,\tau) = 0, \\
     \forall \tau, \forall \bx_\perp \in {\cal B}, \bx_\perp \ne 0, \dot{V}(\bx_\perp,\tau) < 0,
   \end{gather*}
-  then the solution $\bx^*(t)$ is <em>locally orbitally asymptotically stable</em>.
+  then the solution $\bx^*(t)$ is <em>locally orbitally asymptotically stable</em>.</p>
 </div>
 
 <div data-type="example"><h1>Simple ring oscillator</h1> <p> Perhaps the
@@ -5151,7 +5151,7 @@ axis([-10,25,-10,25]);
   Again, this algorithm <em>is</em> probabilistically complete.  But after expanding 1000 nodes, the tree is basically a mess of node points all right on top of
   each other:
   <figure>
-    <img width="70%" src="figures/random_tree.svg"></img>
+    <img width="70%" src="figures/random_tree.svg">
   </figure>
   We're nowhere close to the goal yet, and it's not exactly a hard problem.
 </p>
@@ -5535,7 +5535,7 @@ and $g()$ are anything that you can write into a MATLAB function.
 This is accomplished by deriving from the <code>DrakeSystem</code> class, defining the size of the input, state, and output vectors in the constructor, and overloading the <code>dynamics</code> and <code>output</code> methods, as illustrated by the following example:
 
 <div data-type="example" class="drake"><h1>A simple continuous-time system</h1>
-<p>Consider the system \begin{gather*}\dot{x} = -x + x^3,\\ y = x.\end{gather*}  This system has zero inputs, one (continuous) state variable, and one output.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/examples/SimpleCTExample.m">code</a>:
+<p>Consider the system \begin{gather*}\dot{x} = -x + x^3,\\ y = x.\end{gather*}  This system has zero inputs, one (continuous) state variable, and one output.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/examples/SimpleCTExample.m">code</a>:</p>
 <pre><code class="matlab">
 classdef SimpleCTExample < DrakeSystem
   methods
@@ -5557,7 +5557,7 @@ classdef SimpleCTExample < DrakeSystem
     end
   end
 end
-</code></pre></p>
+</code></pre>
 </div>
 
 
@@ -5964,12 +5964,12 @@ trajectory to a visualizer (described below).</p>
 
 <div data-type="example" class="drake"><h1>Simulating the simple systems and plotting the results</h1>
 <p>Use the following code to instantiate the <code>SimpleCTExample</code>,
-simulate it, and plot the results:
+simulate it, and plot the results:</p>
 <pre><code class="matlab">
 sys = SimpleCTExample;
 traj = simulate(sys, [0 10], .99);
 fnplt(traj);
-</pre></code></p>
+</code></pre>
 
 <p>The arguments passed to <code>simulate</code> set the initial time to $t_0=0$,
 final time to $t_f=5$, and initial condition to $x_0=.99$.  The code looks the same for the <code>SimpleDTExample</code>:
