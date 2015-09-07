@@ -507,24 +507,24 @@ f}_2(\bq,\dot{\bq},t)\bu \label{eq:f1_plus_f2}.\end{equation} </div>
 We can now define two useful, mutually exclusive properties of such a system at a
 given state and time.
 
-<div data-type="definition"><h1>Fully-Actuated</h1> A control system described
+<div data-type="definition"><h1>Fully-Actuated</h1> A dynamical system described
 by equation \ref{eq:f1_plus_f2} is fully-actuated in state
 $(\bq,\dot{\bq})$ at time $t$ if it is able to command an instantaneous acceleration in an
 arbitrary direction in $\bq$: \begin{equation} \textrm{rank}\left[{\bf f}_2
 (\bq,\dot{\bq},t)\right] = \dim\left[\bq\right].\end{equation} </div>
 
-<div data-type="definition"><h1>Underactuated</h1> A control system described by
+<div data-type="definition"><h1>Underactuated</h1> A dynamical system described by
 equation \ref{eq:f1_plus_f2} is underactuated in state
 $(\bq,\dot{\bq})$ at time $t$ if it is not able to command an instantaneous acceleration
 in an arbitrary direction in $\bq$: \begin{equation} \textrm{rank}\left[{\bf
 f}_2(\bq,\dot{\bq},t)\right] < \dim\left[\bq\right].
 \label{eq:underactuated_def}\end{equation} </div>
 
-<p>Notice that whether or not a control system is underactuated may depend on
+<p>Notice that whether or not a dynamical system is underactuated may depend on
 the state of the system and on time explicitly, although for most systems (including all of the systems
 in this book) underactuation is a global property of the system.</p>
 
-<p> In words, underactuated control systems are those in which the control input
+<p> In words, underactuated systems are those in which the control input
 cannot accelerate the configuration of the robot in arbitrary directions.  As a
 consequence, unlike fully-actuated systems, underactuated system cannot be
 commanded to follow arbitrary trajectories.  </p>
@@ -639,7 +639,7 @@ aerodynamic effects). I am underactuated.</p>
 <p>For completeness, let's generalize the definition of underactuation to
 systems beyond the second-order control affine systems.
 
-<div data-type="definition"> <h1>Underactuated Control System</h1> An $n$th-order control system described by
+<div data-type="definition"> <h1>Underactuated System</h1> An $n$th-order dynamical system described by
 the equations \begin{equation} \frac{d^n{\bf q}}{dt^n} = {\bf f}({\bf q}, ...,
 \frac{d^{n-1} {\bf q}}{dt^{n-1}}, t, {\bf u}) \end{equation} is fully actuated
 in state ${\bf x} = ({\bf q}, ..., \frac{d^{n-1} {\bf q}}{dt^{n-1}})$ and time
@@ -823,7 +823,7 @@ object has extra DOFs.</li>
 
 </ul>
 
-<p> Even fully-actuated and otherwise unconstrained control systems can be
+<p> Even control systems for fully-actuated and otherwise unconstrained systems can be
 improved using the lessons from underactuated systems, particularly if there is
 a need to increase the efficiency of their motions or reduce the complexity of
 their designs.</p>
@@ -1548,9 +1548,9 @@ Again, the linear dynamics follow simply.
 
 <section data-type="sect2"><h1>Controllability of linear systems</h1>
 
-<p>   <div data-type="definition"><h1>Controllability</h1>     A control system
+<p>   <div data-type="definition"><h1>Controllability</h1>     A system
 of the form $$\dot{\bx} = {\bf f}(\bx,\bu)$$ is called   <em>controllable</em>
-if it is possible to construct an unconstrained   input signal, $\bu(t)$, $t \in
+if it is possible to construct an unconstrained input signal, $\bu(t)$, $t \in
 [0,t_f],$ which will move the system from any initial state to any final state
 in a finite interval of time, $0 < t < t_f$ <elib>Ogata96</elib>. </div></p>
 
@@ -1648,7 +1648,7 @@ Although we only treated the case of a scalar $u$, it is possible to
 extend the analysis to a vector $\bu$ of size $m$, yielding the
 condition $$\text{rank} \begin{bmatrix} {\bf B} & {\bf AB} & {\bf
 A}^2{\bf B} & \cdots & {\bf A}^{n-1}{\bf B} \end{bmatrix}_{n \times
-(nm)} = n.$$ In Matlab (using the control systems toolbox),
+(nm)} = n.$$ In Matlab (using the Control Systems Toolbox),
 you can obtain the controllability matrix using <code>Cm = ctrb(A,B)</code>,
 and evaluate its rank with <code>rank(Cm)</code>.</p>
 
@@ -2231,7 +2231,7 @@ problems in robotics.  Many challenges are in mechanical design - a
 walking robot must carry all of its actuators and power, making it
 difficult to carry ideal force/torque - controlled actuators.  But
 many of the unsolved problems are because walking robots are
-underactuated control systems. </p>
+underactuated systems. </p>
 
 <p>In this chapter we'll introduce some of the simple models of walking
 and robots, the control problems that result, and a very brief summary of
