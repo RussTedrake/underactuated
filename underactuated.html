@@ -556,7 +556,7 @@ it, make sure you've installed <drake></drake>, then open MATLAB and run
 <code>drake</code> directory, then try the following lines (one at a time) from
 the MATLAB command line:
 
-<pre><code class="matlab">
+<pre><code class="matlab" id="double_pendulum_simulation">
 % a platform independent way to cd into the example directory
 cd(fullfile(getDrakePath,'examples','SimpleDoublePendulum'));
 
@@ -1346,14 +1346,16 @@ Solving directly for the accelerations, we have
 
 <div data-type="example" class="drake"><h1>The Acrobot in MATLAB</h1>
 <p>You can experiment with the Acrobot dynamics in <drake></drake> using, e.g.
-<pre><code class="matlab">
+<pre id="acrobot_passive">
+<code class="matlab" testfile="test_acrobot_passive">
 cd(fullfile(getDrakePath,'examples','Acrobot'));
 
 plant=AcrobotPlant();
 [H,C_times_v,G,B] = plant.manipulatorEquations()
 
 runPassive();  % simulate with torque=0 (and display the results)
-</code></pre>
+</code>
+</pre>
 
 </div>
 
@@ -1428,7 +1430,7 @@ The kinematics of the system are given by
 
 <div data-type="example" class="drake"><h1>The Cart-Pole System in MATLAB</h1>
 <p>You can experiment with the Cart-Pole dynamics in <drake></drake> using, e.g.
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="test_cart_pole_passive">
 cd(fullfile(getDrakePath,'examples','CartPole'));
 
 plant=CartPolePlant();
