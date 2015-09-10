@@ -21,10 +21,10 @@ class CodeExample(object):
     def path(self):
         return os.path.join(self.folder(), self.filename())
 
-    def appendToFile(self, dir=os.path.abspath(os.path.curdir)):
+    def writeToFile(self, dir=os.path.abspath(os.path.curdir)):
         if not os.path.exists(os.path.join(dir, self.folder())):
             os.mkdir(os.path.join(dir, self.folder()))
-        with open(os.path.join(dir, self.path()), 'a') as f:
+        with open(os.path.join(dir, self.path()), 'w') as f:
             if not self.code.lstrip().startswith("classdef"):
                 f.write("function {:s}\n".format(self.name))
             f.write(self.code)
@@ -77,26 +77,24 @@ def collect_examples(soup):
     examples = parse_examples(soup.find_all("code"), chapter_numbers, appendix_numbers)
     return examples
 
-def extract_and_write_examples(textbook_html_file, destination_dir, build_folder='textbook_build'):
+def extract_and_write_examples(textbook_html_file, destination_dir):
     """
     Extract all the matlab code snippets which have a 'testfile' attribute
     and write them to the appropriate files within destination_dir.
-
-    WARNING: this will overwrite all the contents of destination_dir/textbook_build.
     """
-    build_path = os.path.abspath(os.path.join(destination_dir, build_folder))
+    build_path = os.path.abspath(destination_dir)
     if os.path.exists(build_path):
         shutil.rmtree(build_path)
     os.makedirs(build_path)
 
     soup = BeautifulSoup(open(textbook_html_file), "html5lib")
     for example in collect_examples(soup):
-        example.appendToFile(build_path)
+        example.writeToFile(build_path)
 
 if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description="Extract all the examples labeled with a 'testfile' attribute, and use them to create unit tests.")
     parser.add_argument("textbook_html_file", type=str, nargs=1)
-    parser.add_argument("destination_dir", type=str, nargs="?", default=os.path.curdir)
+    parser.add_argument("destination_dir", type=str, nargs="?", default=os.path.join(os.path.curdir, 'textbook_build'))
     args = parser.parse_args()
     extract_and_write_examples(args.textbook_html_file[0], args.destination_dir)
