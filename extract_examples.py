@@ -18,6 +18,17 @@ the Drake unitTest system.
 
 Usage:
     python extract_examples.py --help
+
+Requirements:
+    python (2.7)
+    Beautiful Soup 4:
+        sudo apt-get install python-bs4
+        OR
+        pip install beautifulsoup4
+    html5lib:
+        sudo apt-get install python-html5lib
+        OR
+        pip install html5lib
 """
 
 class CodeExample(object):
