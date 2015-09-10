@@ -556,7 +556,7 @@ it, make sure you've installed <drake></drake>, then open MATLAB and run
 <code>drake</code> directory, then try the following lines (one at a time) from
 the MATLAB command line:
 
-<pre><code class="matlab" id="double_pendulum_simulation">
+<pre><code class="matlab" testfile="testDoublePendulumManipulator">
 % a platform independent way to cd into the example directory
 cd(fullfile(getDrakePath,'examples','SimpleDoublePendulum'));
 
@@ -588,7 +588,7 @@ visualizer.playback(trajectory);
 supports a high-level description format for describing robots.  We could have
 alternatively done: </p>
 
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testDoublePendulumUrdf">
 cd(fullfile(getDrakePath,'examples','SimpleDoublePendulum'));
 
 % construct the robot from a URDF high-level description file
@@ -693,7 +693,7 @@ would not have been any more difficult if the robot had 100 joints. </p>
 <div data-type="drake"><h1>MATLAB Example</h1> You can find scripts which
 implement both of these examples in <drake></drake>:
 
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testDoublePendulumSim">
 cd(fullfile(getDrakePath,'examples','SimpleDoublePendulum'));
 runSimplePend;    % feedback linearization to simulate a pendulum
 runSimplePendInv; % and a gravity-inverted pendulum
@@ -870,7 +870,7 @@ particular simple way: a torque which does not vary with time: \begin{equation}
 ml^2 \ddot\theta + b\dot\theta + mgl \sin\theta = u_0. \end{equation}
 You can experiment with this system in <drake></drake> using
 
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testOpenSystem">
 cd(fullfile(getDrakePath,'examples','Pendulum'));
 open_system('constantTorqueDemo');
 % hit play to start the simulation, and click on the boxes
@@ -1347,7 +1347,7 @@ Solving directly for the accelerations, we have
 <div data-type="example" class="drake"><h1>The Acrobot in MATLAB</h1>
 <p>You can experiment with the Acrobot dynamics in <drake></drake> using, e.g.
 <pre id="acrobot_passive">
-<code class="matlab" testfile="test_acrobot_passive">
+<code class="matlab" testfile="testAcrobotPassive">
 cd(fullfile(getDrakePath,'examples','Acrobot'));
 
 plant=AcrobotPlant();
@@ -1430,7 +1430,7 @@ The kinematics of the system are given by
 
 <div data-type="example" class="drake"><h1>The Cart-Pole System in MATLAB</h1>
 <p>You can experiment with the Cart-Pole dynamics in <drake></drake> using, e.g.
-<pre><code class="matlab" testfile="test_cart_pole_passive">
+<pre><code class="matlab" testfile="testCartPolePassive">
 cd(fullfile(getDrakePath,'examples','CartPole'));
 
 plant=CartPolePlant();
@@ -1708,12 +1708,12 @@ in $u_i$.</p>
 <div data-type="example" class="drake"><h1>LQR for the Acrobot and Cart-Pole</h1>
 
 Take a minute to play around with the LQR controller for the Acrobot
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testAcrobotLqr">
 cd(fullfile(getDrakePath,'examples','Acrobot'));
 runLQR();
 </code></pre>
 and Cart-Pole
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testCartPoleLqr">
 cd(fullfile(getDrakePath,'examples','CartPole'));
 runLQR();
 </code></pre>
@@ -1738,12 +1738,12 @@ has 1).</p>
   a nominal fixed point (where the non-zero thrust from the propellors is balancing
   gravity).  We have a few Quadrotor models in <drake></drake>.  You should
   start with the Planar Quadrotor (technically a bi-rotor):
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testQuadrotor2dLqr">
 cd(fullfile(getDrakePath,'examples','Quadrotor2D'));
 runLQR();
 </code></pre>
 but you can also do this with a full 3D quadrotor model:
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testQuadrotorLqr">
 cd(fullfile(getDrakePath,'examples','Quadrotor'));
 runLQR();
 </code></pre>
@@ -2335,7 +2335,7 @@ $$\dot\theta(t^+) = \dot\theta(t^-) \cos(2\alpha).$$</p>
 
 <div data-type="example" class="drake"><h1>Numerical simulation of the rimless wheel</h1>
 
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testRimlessWheelRun">
 cd(fullfile(getDrakePath,'examples','RimlessWheel'));
 RimlessWheelPlant.run();
 </code></pre>
@@ -3174,7 +3174,7 @@ are to move up, down, left, right, or do nothing.  <elib>Sutton98</elib></p>
 <todo>insert value iteration animation for min time and quadratic cost</todo>
 
 <p>You can experiment with the grid world example in <drake></drake> using
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testGridWorldValueIteration">
 cd(fullfile(getDrakePath,'examples'));
 GridWorld.runValueIteration();
 </code></pre>
@@ -3189,7 +3189,7 @@ Stochastic shortest path.
 <div data-type="example" class="drake"><h1>Dynamic Programming for the Double Integrator</h1>
 
 <p>You can run value iteration for the double integrator (using barycentric interpolation to interpolate between nodes) in <drake></drake> using:
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testDoubleIntegratorValueIteration">
 cd(fullfile(getDrakePath,'examples'));
 DoubleIntegrator.runValueIteration();
 </code></pre>
@@ -3218,7 +3218,7 @@ pendulum, which was intractable analytically.</p>
 <div data-type="example" class="drake"><h1>Dynamic Programming for the Simple Pendulum</h1>
 
 <p>You can run value iteration for the simple pendulum (using barycentric interpolation to interpolate between nodes) in <drake></drake> using:
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testPendulumValueIteration">
 cd(fullfile(getDrakePath,'examples','Pendulum'));
 runValueIteration();
 </code></pre>
@@ -4101,7 +4101,7 @@ linear systems.</p>
 
 <p>
 You can try this example for yourself in <drake></drake>.
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testCommonLyapunovForLinearSystems">
 cd(fullfile(getDrakePath,'examples'));
 commonLyapunovForLinearSystems;
 </code></pre>
@@ -4168,9 +4168,9 @@ However, there are a handful of gaps which make the existence of this solution a
     </p>
 
     <p>Try it yourself:
-    <pre><code class="matlab">
+    <pre><code class="matlab" testfile="testCubicPolynomialSos">
     cd(fullfile(getDrakePath,'examples'));
-    edit CubicPolynomialExample.sosExample()
+    open CubicPolynomialExample.sosExample()
     CubicPolynomialExample.sosExample;
     </code></pre></p>
   </div>
@@ -4180,7 +4180,7 @@ However, there are a handful of gaps which make the existence of this solution a
 
 <div data-type="example" class="drake"><h1>Searching for the region of attraction</h1>
   <p>
-  <pre><code class="matlab">
+  <pre><code class="matlab" testfile="testCubicPolynomialRoa">
   cd(fullfile(getDrakePath,'examples'));
 
   % create a new CubicPolynomialExample object
@@ -4207,7 +4207,7 @@ However, there are a handful of gaps which make the existence of this solution a
 
   <div data-type="example" class="drake"><h1>Region of attraction for the time-reversed Van der Pol oscillator</h1>
 
-    <pre><code class="matlab">
+    <pre><code class="matlab" testfile="testVanDerPol">
      cd(fullfile(getDrakePath,'examples'));
      VanDerPol.run();
     </code></pre>
@@ -4401,7 +4401,7 @@ out these algorithms.  Watching the way that they perform on our simple problems
 nice way to gain intuition.  Here is some simple code to solve the (time-discretized) minimum-time problem
 for the double integrator.</p>
 
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testDoubleIntegratorDirtran">
 % note: requires Drake ver >= 0.9.7
 
 cd(fullfile(getDrakePath,'examples'));
@@ -4469,7 +4469,7 @@ parametric encoding of the trajectory in the solution technique.</p>
 
 <p>Direct collocation also easily solves the minimum-time problem for the double integrator.  The performance is similar to direct transcription, but the convergence is visibly different.  Try it for yourself:</p>
 
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testDoubleIntegratorDircol">
 % note: requires Drake ver >= 0.9.7
 
 cd(fullfile(getDrakePath,'examples'));
@@ -4842,7 +4842,7 @@ applicability beyond simple periodic motions.</p>
   \end{align*}
 </p>
 
-<p>Try it yourself: <pre><code class="matlab">
+<p>Try it yourself: <pre><code class="matlab" testfile="testVanDerPolDircol">
 cd(fullfile(getDrakePath,'examples'));
 VanDerPol.runDircol();
 </code></pre>
@@ -5133,7 +5133,7 @@ in a continuous state and action space:</p>
   We'll start at the origin and put the goal region as $\forall i, 15 \le x_i \le 20$.
   Try it yourself:
 
-  <pre><code class="matlab">
+  <pre><code class="matlab" testfile="testRandomTree">
 T = struct('parent',zeros(1,1000),'node',zeros(2,1000));  % pre-allocate memory for the "tree"
 for i=2:size(T.parent,2)
   T.parent(i) = randi(i-1);
@@ -5538,7 +5538,7 @@ This is accomplished by deriving from the <code>DrakeSystem</code> class, defini
 
 <div data-type="example" class="drake"><h1>A simple continuous-time system</h1>
 <p>Consider the system \begin{gather*}\dot{x} = -x + x^3,\\ y = x.\end{gather*}  This system has zero inputs, one (continuous) state variable, and one output.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/examples/SimpleCTExample.m">code</a>:</p>
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="SimpleCTExample">
 classdef SimpleCTExample < DrakeSystem
   methods
     function obj = SimpleCTExample()
@@ -5574,7 +5574,7 @@ can be implemented by deriving from <code>DrakeSystem</code> and defining the <c
 <div data-type="example" class="drake"><h1>A simple discrete-time system</h1>
 <p>
 Consider the system \begin{gather*}x[n+1] = x^3[n],\\ y[n] = x[n].\end{gather*}  This system has zero inputs, one (discrete) state variable, and one output.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/examples/SimpleDTExample.m">code</a>:
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="SimpleDTExample">
 classdef SimpleDTExample < DrakeSystem
   methods
     function obj = SimpleDTExample()
@@ -5627,7 +5627,7 @@ single DT sample time for each individual <code>DrakeSystem</code> (but multiple
   t \in \{0,1,2,..\}, \forall t' \in (0,1], \\\dot{x}_2 =
   -x_2(t) + x_2^3(t), \end{gather*} which is the combination of the
 previous two examples into a single system.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/examples/SimpleMixedCTDTExample.m">code</a>:
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="SimpleMixedCTDTExample">
 classdef SimpleMixedCTDTExample < DrakeSystem
   methods
     function obj = SimpleMixedCTDTExample()
@@ -5716,7 +5716,7 @@ of the active mode.</p>
   the flight of the ball through the air and a discrete collision
   event at the moment that the ball hit the ground. This can be
   accompished with the following two classes (which can be found in the <a href="https://github.com/RobotLocomotion/drake/tree/master/examples/BouncingBall"><code>examples/BouncingBall</code> directory</a>):
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="BallFlightPhasePlant">
 classdef BallFlightPhasePlant < DrakeSystem
 
   methods
@@ -5745,7 +5745,7 @@ classdef BallFlightPhasePlant < DrakeSystem
 end
 </code></pre>
 
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="BallPlant">
 classdef BallPlant < HybridDrakeSystem
 
   methods
@@ -5814,7 +5814,7 @@ Stochastic models can be implemented in <drake></drake> by deriving from
 <div data-type="example" class="drake"><h1>A simple continuous-time stochastic system</h1>
 
 <p>Consider the system \begin{gather*}\dot{x} = -x + w,\\ y = x.\end{gather*}  This system has zero inputs, one (continuous) state variable, and one output.  It can be implemented in <drake></drake> using the following code:</p>
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="LinearGaussianExample">
 classdef LinearGaussianExample < StochasticDrakeSystem
 
   methods
@@ -5967,7 +5967,7 @@ trajectory to a visualizer (described below).</p>
 <div data-type="example" class="drake"><h1>Simulating the simple systems and plotting the results</h1>
 <p>Use the following code to instantiate the <code>SimpleCTExample</code>,
 simulate it, and plot the results:</p>
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testSimpleCTExample">
 sys = SimpleCTExample;
 traj = simulate(sys, [0 10], .99);
 fnplt(traj);
@@ -5975,7 +5975,7 @@ fnplt(traj);
 
 <p>The arguments passed to <code>simulate</code> set the initial time to $t_0=0$,
 final time to $t_f=5$, and initial condition to $x_0=.99$.  The code looks the same for the <code>SimpleDTExample</code>:
-<pre><code class="matlab">
+<pre><code class="matlab" testfile="testSimpleDTExample">
 sys = SimpleDTExample;
 traj = simulate(sys, [0 10], .99);
 fnplt(traj);
