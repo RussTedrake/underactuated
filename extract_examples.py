@@ -4,6 +4,22 @@ import re
 import shutil
 import os
 
+
+"""
+extract_examples: pull all the Matlab code examples out of a textbook html
+file, and create matching unit tests.
+
+This script will attempt to extract every <code> element which has a
+"testfile=" attribute. For each matching element, it will create a
+corresponding file using the "testfile" as the filename. Matlab scripts will
+be wrapped as functions, while class definitions will be preserved exactly.
+The result should be a set of classes and functions suitable for testing using
+the Drake unitTest system.
+
+Usage:
+    python extract_examples.py --help
+"""
+
 class CodeExample(object):
     extension_map = {"matlab": ".m"}
     def __init__(self, name, code, chapter_title, language="matlab"):
@@ -95,6 +111,6 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description="Extract all the examples labeled with a 'testfile' attribute, and use them to create unit tests.")
     parser.add_argument("textbook_html_file", type=str, nargs=1)
-    parser.add_argument("destination_dir", type=str, nargs="?", default=os.path.join(os.path.curdir, 'textbook_build'))
+    parser.add_argument("destination_dir", type=str, nargs="?", default=os.path.join(os.path.curdir, 'textbook_build'), help="where to put the resulting unit tests (default: ./textbook_build)")
     args = parser.parse_args()
     extract_and_write_examples(args.textbook_html_file[0], args.destination_dir)
