@@ -25,6 +25,8 @@ class CodeExample(object):
         if not os.path.exists(os.path.join(dir, self.folder())):
             os.mkdir(os.path.join(dir, self.folder()))
         with open(os.path.join(dir, self.path()), 'a') as f:
+            if not self.code.lstrip().startswith("classdef"):
+                f.write("function {:s}\n".format(self.name))
             f.write(self.code)
             f.write("\n")
 
@@ -87,7 +89,7 @@ def extract_and_write_examples(textbook_html_file, destination_dir, build_folder
         shutil.rmtree(build_path)
     os.makedirs(build_path)
 
-    soup = BeautifulSoup(open(textbook_html_file))
+    soup = BeautifulSoup(open(textbook_html_file), "html5lib")
     for example in collect_examples(soup):
         example.appendToFile(build_path)
 
