@@ -355,7 +355,7 @@ quality and versatility of ASIMO's movements.  Now take a second look. Although
 the motions are very smooth, there is something a little unnatural about ASIMO's
 gait.  It feels a little like an astronaut encumbered by a heavy space suit.  In
 fact this is a reasonable analogy... ASIMO is walking a bit like somebody that
-is unfamiliar with his/her dynamics.  It's control system is using high-gain
+is unfamiliar with his/her dynamics.  Its control system is using high-gain
 feedback, and therefore considerable joint torque, to cancel out the natural
 dynamics of the machine and strictly follow a desired trajectory. This control
 approach comes with a stiff penalty.  ASIMO uses roughly 20 times the energy
@@ -448,7 +448,7 @@ outside our building can be seen diving through a chain-link fence to grab a
 bite of food. </p>
 
 <p> Although many impressive statistics about avian flight have been recorded,
-our understanding is partially limited by experimental accessibility - it's is
+our understanding is partially limited by experimental accessibility - it is
 quite difficult to carefully measure birds (and the surrounding airflow) during
 their most impressive maneuvers without disturbing them.  The dynamics of a
 swimming fish are closely related, and can be more convenient to study.
@@ -491,7 +491,7 @@ the dynamics of their machines in the context of control. </p>
 <h1>Definitions</h1>
 
 <p> According to Newton, the dynamics of mechanical systems are second order ($F =
-ma$).  Their state is given by a vector of positions, $\bq$, and a vector of
+ma$).  Their state is given by a vector of positions, $\bq$ (also known as the configuration vector), and a vector of
 velocities, $\dot{\bq}$, and (possibly) time. The general form for a
 second-order controllable dynamical system is: $$\ddot{\bq} = {\bf
 f}(\bq,\dot{\bq},\bu,t),$$ where $\bu$ is the control vector.  As we will see,
@@ -501,24 +501,25 @@ commanded torque, so let's consider a slightly constrained form:
 f}_2(\bq,\dot{\bq},t)\bu \label{eq:f1_plus_f2}.\end{equation} </p>
 
 <div data-type="definition"><h1>Fully-Actuated</h1> A control system described
-by equation \ref{eq:f1_plus_f2} is fully-actuated in configuration
-$(\bq,\dot{\bq},t)$ if it is able to command an instantaneous acceleration in an
+by equation \ref{eq:f1_plus_f2} is fully-actuated in state
+$(\bq,\dot{\bq})$ at time $t$ if it is able to command an instantaneous acceleration in an
 arbitrary direction in $\bq$: \begin{equation} \textrm{rank}\left[{\bf f}_2
 (\bq,\dot{\bq},t)\right] = \dim\left[\bq\right].\end{equation} </div>
 
 <div data-type="definition"><h1>Underactuated</h1> A control system described by
-equation \ref{eq:f1_plus_f2} is underactuated in configuration
-$(\bq,\dot{\bq},t)$ if it is not able to command an instantaneous acceleration
+equation \ref{eq:f1_plus_f2} is underactuated in state
+$(\bq,\dot{\bq})$ at time $t$ if it is not able to command an instantaneous acceleration
 in an arbitrary direction in $\bq$: \begin{equation} \textrm{rank}\left[{\bf
 f}_2(\bq,\dot{\bq},t)\right] < \dim\left[\bq\right].
 \label{eq:underactuated_def}\end{equation} </div>
 
 <p>Notice that whether or not a control system is underactuated may depend on
-the state of the system, although for most systems (including all of the systems
-in this book) underactuation is a global property of the system.</p>
+the state of the system or even on time, although for most systems (including all of the systems
+in this book) underactuation is a global property of the system.  We will refer to a system as
+underactuated if it is underactuated in <i>any</i> state or time.</p>
 
 <p> In words, underactuated control systems are those in which the control input
-cannot accelerate the state of the robot in arbitrary directions.  As a
+cannot accelerate the configuration of the robot in arbitrary directions.  As a
 consequence, unlike fully-actuated systems, underactuated system cannot be
 commanded to follow arbitrary trajectories.  </p>
 
@@ -568,7 +569,9 @@ visualizer = DoublePendVisualizer(plant);
 visualizer.inspector();  % (optional) simple gui to examine the joints
 
 % simulate the robot from time=0 to time=5 seconds from random
-% initial conditions taken from a Gaussian distribution (using randn)
+% initial conditions taken from a Gaussian distribution (using randn).
+% note that the first simulation you run will take longer because
+% simulink needs to be started
 trajectory = simulate(plant, [0 5], randn(4,1));
 
 % play back the simulation using the cpu clock to get the timing right
@@ -622,7 +625,7 @@ common cases for underactuation, which trivially implies that ${\bf f}_2$ is not
 full row rank, is dim$[\bu] < $ dim$[\bq]$.  This is the case when a robot has
 joints with no motors. But this is not the only case.  The human body, for
 instance, has an incredible number of actuators (muscles), and in many cases has
-multiple muscles per joint; despite having more actuators that position
+multiple muscles per joint; despite having more actuators than position
 variables, when I jump through the air, there is no combination of muscle inputs
 that can change the ballistic trajectory of my center of mass (barring
 aerodynamic effects).  My control system is underactuated.</p>
@@ -635,7 +638,7 @@ Equations</h1> An $n$th-order control differential equation control described by
 the equations \begin{equation} \frac{d^n{\bf q}}{dt^n} = f({\bf q}, ...,
 \frac{d^{n-1} {\bf q}}{dt^{n-1}}, t, {\bf u}) \end{equation} is fully actuated
 in state ${\bf x} = ({\bf q}, ..., \frac{d^{n-1} {\bf q}}{dt^{n-1}})$ and time
-$t$ if the resulting map $f$ is surjective: for every $\frac{d^n{\bf q}}{dt^n} $
+$t$ if the resulting map ${\bf f}$ is surjective: for every $\frac{d^n{\bf q}}{dt^n} $
 there exists a ${\bf u}$ which produces the desired response.  Otherwise it is
 underactuated. </div>
 
@@ -644,10 +647,10 @@ condition for underactuation.  This definition can also be extended to
 discrete-time systems and/or differential inclusions. </p>
 
 <p>A quick note about notation.  When describing the dynamics of rigid-body
-systems in this class, I will use $\bq$ for positions, $\dot{\bq}$ for
-velocities, and use $\bx$ for the full state ($\bx = [\bq,\dot{\bq}]^T$).  There
+systems in this class, I will use $\bq$ for configurations (positions), $\dot{\bq}$ for
+velocities, and use $\bx$ for the full state ($\bx = [\bq^T,\dot{\bq}^T]^T$).  There
 is an important limitation to this convention, described in the Appendix<!--
-ch:robot_dynamics -->, but it will keep the notes more clean. Unless otherwise
+ch:robot_dynamics -->, but it will keep the notes cleaner. Unless otherwise
 noted, vectors are always treated as column vectors. Vectors and matrices are
 bold (scalars are not). </p>
 
@@ -655,7 +658,7 @@ bold (scalars are not). </p>
 
 <p> Fully-actuated systems are dramatically easier to control than underactuated
 systems.  The key observation is that, for fully-actuated systems with known
-dynamics (e.g., ${\bf f}_1$ and ${\bf f}_2$ are known), it is possible to use
+dynamics (e.g., ${\bf f}_1$ and ${\bf f}_2$ are known for a second-order control-affine system), it is possible to use
 feedback to effectively change a nonlinear control problem into a linear control
 problem.  The field of linear control is incredibly advanced, and there are many
 well-known solutions for controlling linear systems. </p>
@@ -664,7 +667,7 @@ well-known solutions for controlling linear systems. </p>
 rank, it is invertible.  Consider the nonlinear feedback law: $$\bu = {\bf
 \pi}(\bq,\dot\bq,t) = {\bf f}_2^{-1}(\bq,\dot\bq,t) \left[ \bu' - {\bf
 f}_1(\bq,\dot\bq,t) \right],$$ where $\bu'$ is some additional control input.
-Applying this feedback controller to equation~\ref{eq:f1_plus_f2} results in the
+Applying this feedback controller to equation \ref{eq:f1_plus_f2} results in the
 linear, decoupled, second-order system: $$\ddot{\bq} = \bu'.$$ In other words,
 if ${\bf f}_1$ and ${\bf f}_2$ are known and ${\bf f}_2$ is invertible, then we
 say that the system is "feedback equivalent" to $\ddot{\bq} = \bu'$.  There are
@@ -712,16 +715,16 @@ complicates feedback controller design. </p>
 
 <p> Although the dynamic constraints due to missing actuators certainly embody
 the spirit of this course, many of the systems we care about could be subject to
-other dynamic constraints, as well.  For example, the actuators on our machines
+other dynamic constraints as well.  For example, the actuators on our machines
 may only be mechanically capable of producing some limited amount of torque, or
-their may be a physical obstacle in the free space which we cannot permit our
+there may be a physical obstacle in the free space with which we cannot permit our
 robot to come into contact with. </p>
 
 <div data-type="definition"><h1>Input and State Constraints</h1> A dynamical
 system described by $\dot{\bx} = {\bf f}(\bx,\bu,t)$ may be subject to one or
 more constraints described by ${\bf \phi}(\bx,\bu,t)\le0$. </div>
 
-<p>In practice it can useful to separate out constraints which depend only on
+<p>In practice it can be useful to separate out constraints which depend only on
 the input, e.g. $\phi(\bu)\le0$, such as actuator limits, as they can often be
 easier to handle than state constraints.  An obstacle in the environment might
 manifest itself as one or more constraints that depend only on position, e.g.
@@ -737,41 +740,44 @@ control design in similar ways to having an insufficient number of actuators,
 (i.e., the robot cannot follow arbitrary trajectories), and often require
 similar tools to find a control solution.</p>
 
-<section data-type="sect2"><h1>Nonholonomic constraints</h1>
+<p data-type="sect2"><h1>Nonholonomic constraints</h1>
 
-<p> You might have heard of the term "nonholonomic system" (e.g.
+<p> You might have heard of the term "nonholonomic system" (see e.g.
 <elib>Bloch03</elib>), and be thinking about how nonholonomy relates to
-underactuation.  Briefly, a nonholonomic constraint is a constraint on the
-derivatives of the system which cannot be integrated into a constraint on the
-positions of the system.  An automobile or traditional wheeled robot provides a
-canonical example:
+underactuation.  Briefly, a nonholonomic constraint is a constraint
+of the form $\phi({\bf q}, {\bf \dot{q}}, t) = 0$, which cannot be
+integrated into a constraint of the form $\phi({\bf q}, t) = 0$ (a holonomic constraint).
+A nonholonomic constraint does not restrain the possible configurations of
+the system, but rather the manner in which those configurations can be reached.
+While a holonomic constraint reduces the number of degrees of freedom of a system by one,
+a nonholonomic constraint does not.  An automobile or traditional wheeled robot provides a
+canonical example:</p>
 
 <div data-type="example"><h1>Wheeled robot</h1> Consider a simple model of a
-wheeled robot who's configuration is described by its Cartesian position $x,y$
+wheeled robot whose configuration is described by its Cartesian position $x,y$
 and its orientation, $\theta$, so ${\bf q} = \begin{bmatrix} x, y, \theta
-\end{bmatrix}^T$.  The system is subject to differential constraints that
-prevent side-slip, e.g., \begin{gather*} \dot{x} = v \cos\theta \\ \dot{y} = v
-\sin\theta \\ v = \sqrt{\dot{x}^2 + \dot{y}^2} \end{gather*} These constraints
-cannot be integrated into constraint on position--the car can get to any
-configuration $(x,y,\theta)$, it just can't move directly sideways--so they are
-nonholonomic constraints. </div>
+\end{bmatrix}^T$.  The system is subject to a differential constraint that
+prevents side-slip, \begin{gather*} \dot{x} = v \cos\theta \\ \dot{y} = v
+\sin\theta \\ v = \sqrt{\dot{x}^2 + \dot{y}^2} \end{gather*} or equivalently,
+\[\dot{y} \cos \theta - \dot x \sin \theta = 0.\] This constraint
+cannot be integrated into a constraint on configuration&mdash;the car can get to any
+configuration $(x,y,\theta)$, it just can't move directly sideways&mdash;so this is a
+nonholonomic constraint. </div>
 
-Contrast the wheeled robot example with a robot on train tracks.  The train tracks
-would represent a holonomic constraint: if the system was written down in the
-$(x,y,\theta)$ coordinates then the differential track constraints could be
-integrated resulting in a description of the system in a reduced coordinate
-system--train tracks are holonomic constraints. </p>
+<p>Contrast the wheeled robot example with a robot on train tracks.  The train tracks
+correspond to a holonomic constraint: the track constraint can be written directly in
+terms of the configuration ${\bf q}$ of the system, without using the velocity ${\bf \dot{q}}$.
+Even though the track constraint could also be written as a differential constraint
+on the velocity, it would be possible to integrate this constraint to obtain
+a constraint on configuration. The track restrains the possible configurations of the system.</p>
 
-<p> A nonholomic constraint like the no-side-slip constraint on the wheeled
+
+<p> A nonholonomic constraint like the no-side-slip constraint on the wheeled
 vehicle certainly results in an underactuated system.  The converse is not
-necessarily true--the double pendulum system which is missing an actuator is
-underactauted but would not typically be called a nonholonmic system.  However,
-while the definition of a nonholonomic constraint is clear, in my view the
-definition used in the literature for a "nonholonomic system" is more
-ambiguous&dagger;<sidenote>&dagger; Why, for instance, are the Lagrangian
-equations of motion for the double pendulum--clearly non-integrable-- not
-considered nonholonomic constraints?</sidenote>, and we'll generally avoid using
-the term. </p>
+necessarily true&mdash;the double pendulum system which is missing an actuator is
+underactuated but would not typically be called a nonholonomic system.  Note that
+the Lagrangian equations of motion are a constraint of the form \[{\bf \phi}({\bf q},{\bf \dot{q}},{\bf \ddot{q}},t) =  0,\]
+so do not qualify as a nonholonomic constraint.</p>
 
 </section>
 </section>
@@ -779,7 +785,7 @@ the term. </p>
 <section data-type="sect1"><h1>Underactuated robotics</h1>
 
 <p> The control of underactuated systems is an open and interesting problem in
-controls - although there are a number of special cases where underactuated
+controls.  Although there are a number of special cases where underactuated
 systems have been controlled, there are relatively few general principles.  Now
 here's the rub... most of the interesting problems in robotics are
 underactuated: </p>
@@ -799,7 +805,7 @@ DOF.  And this is already a simplification, as the true state of the system
 should really include the (infinite-dimensional) state of the flow.</li>
 
 <li> Robot manipulation is (often) underactuated.  Consider a fully-actuated
-robotic arm.  When this arm is manipulating an object w/ degrees of freedom
+robotic arm.  When this arm is manipulating an object with degrees of freedom
 (even a brick has six), it can become underactuated.  If force closure is
 achieved, and maintained, then we can think of the system as fully-actuated,
 because the degrees of freedom of the object are constrained to match the
@@ -808,7 +814,7 @@ object has extra DOFs.</li>
 
 </ul>
 
-<p> Even fully-actuated and otherwise unconstrained control systems can be
+<p> Even control systems for fully-actuated and otherwise unconstrained systems can be
 improved using the lessons from underactuated systems, particularly if there is
 a need to increase the efficiency of their motions or reduce the complexity of
 their designs.</p>
@@ -819,7 +825,7 @@ their designs.</p>
 
 <p> This course is based on the observation that there are new computational
 tools from optimization theory, control theory, motion planning, and even
-machine learning which be used to design feedback control for underactuated
+machine learning which can be used to design feedback control for underactuated
 systems.  The goal of this class is to develop these tools in order to design
 robots that are more dynamic and more agile than the current
 state-of-the-art.</p>
@@ -1633,7 +1639,7 @@ Although we only treated the case of a scalar $u$, it is possible to
 extend the analysis to a vector $\bu$ of size $m$, yielding the
 condition $$\text{rank} \begin{bmatrix} {\bf B} & {\bf AB} & {\bf
 A}^2{\bf B} & \cdots & {\bf A}^{n-1}{\bf B} \end{bmatrix}_{n \times
-(nm)} = n.$$ In Matlab (using the control systems toolbox),
+(nm)} = n.$$ In Matlab (using the Control Systems Toolbox),
 you can obtain the controllability matrix using <code>Cm = ctrb(A,B)</code>,
 and evaluate its rank with <code>rank(Cm)</code>.</p>
 
