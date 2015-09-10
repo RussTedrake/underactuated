@@ -4170,9 +4170,14 @@ However, there are a handful of gaps which make the existence of this solution a
     <p>Try it yourself:
     <pre><code class="matlab" testfile="testCubicPolynomialSos">
     cd(fullfile(getDrakePath,'examples'));
-    open CubicPolynomialExample.sosExample()
     CubicPolynomialExample.sosExample;
     </code></pre></p>
+
+    <p> To see the code that sets up the optimization, try:
+    <pre><code class="matlab">
+    edit('CubicPolynomialExample.sosExample')
+    </code></pre></p>
+
   </div>
 
   <p>While the example above only verifies that the one-sub-level set of the pre-specified Lyapunov candidate is negative (certifying the ROA that we already understood), we can generalize the optimization to allow us to search for the largest sub-level set (with the objective using a convex approximation for volume).  We can even search for the coefficients of the Lyapunov function using an iteration of convex optimizations.  There are a number of variations and nuances in the various formulations, and
@@ -4406,10 +4411,13 @@ for the double integrator.</p>
 
 cd(fullfile(getDrakePath,'examples'));
 DoubleIntegrator.runDirtran;
+</code></pre>
 
-% make sure you take a look at the code!
+Make sure you take a look at the code:
+<pre><code class="matlab">
 edit('DoubleIntegrator.runDirtran')
 </code></pre>
+
 
 <p>Nothing compares to running it yourself, and poking around in the code.  But you can also click <a target="_blank" href="figures/dirtran_mintime_double_integrator.swf">here</a> to watch the result.
 I hope that you recognize the parabolic trajectory from the initial condition up to the
@@ -4474,8 +4482,10 @@ parametric encoding of the trajectory in the solution technique.</p>
 
 cd(fullfile(getDrakePath,'examples'));
 DoubleIntegrator.runDircol;
+</code></pre>
 
-% make sure you take a look at the code!
+Make sure you take a look at the code:
+<pre><code class="matlab">
 edit('DoubleIntegrator.runDircol')
 </code></pre>
 
