@@ -905,13 +905,13 @@ described beautifully in a book by Steve Strogatz<elib>Strogatz94</elib>.
 
 <section data-type="sect2"><h1>The overdamped pendulum</h1>
 
-<p> Let's start by studying a special case -- intuitively when $b \gg ml^2$, but
-to get the units right we actually need to include a fundamental time constant,
-so $\frac{b}{ml^2} \sqrt\frac{g}{l} \gg 1$. This is the case of heavy damping,
+<p> Let's start by studying a special case -- intuitively when $b\dot\theta \gg ml^2\ddot\theta$ --
+which via <a href="https://en.wikipedia.org/wiki/Dimensionless_quantity">dimensional analysis</a> (inserting a fundamental time constant to cancel units)
+occurs when $\frac{b}{ml^2} \sqrt\frac{g}{l} \gg 1$. This is the case of heavy damping,
 for instance if the pendulum was moving in molasses.  In this case, the damping
 term dominates the acceleration term, and we have: $$ml^2 \ddot\theta +
 b\dot\theta \approx b\dot\theta = u_0 - mgl\sin\theta.$$ In other words, in the
-case of heavy damping, the system looks approximately first-order. This is a
+case of heavy damping, the system looks approximately first order. This is a
 general property of heavily damped systems, such as fluids at very low Reynolds
 number. </p>
 
