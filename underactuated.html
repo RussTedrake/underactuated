@@ -906,8 +906,9 @@ described beautifully in a book by Steve Strogatz<elib>Strogatz94</elib>.
 <section data-type="sect2"><h1>The overdamped pendulum</h1>
 
 <p> Let's start by studying a special case -- intuitively when $b\dot\theta \gg ml^2\ddot\theta$ --
-which via <a href="https://en.wikipedia.org/wiki/Dimensionless_quantity">dimensional analysis</a> (inserting a fundamental time constant to cancel units)
-occurs when $\frac{b}{ml^2} \sqrt\frac{g}{l} \gg 1$. This is the case of heavy damping,
+which via <a href="https://en.wikipedia.org/wiki/Dimensionless_quantity">dimensional analysis</a>
+(using the characteristic time constant $\sqrt{\frac{l}{g}}$ to match units)
+occurs when $b \sqrt\frac{g}{l} \gg ml^2$. This is the case of heavy damping,
 for instance if the pendulum was moving in molasses.  In this case, the damping
 term dominates the acceleration term, and we have: $$ml^2 \ddot\theta +
 b\dot\theta \approx b\dot\theta = u_0 - mgl\sin\theta.$$ In other words, in the
@@ -953,7 +954,7 @@ system is started inside the $\delta$ ball then it will remain inside the
 $\epsilon$ ball for all of time.</li>
 
 <li>Locally <em>asymptotically stable</em>.  A fixed point is locally asymptotically
-stable if it is stable i.s.L. and $x(0) = x^* + \epsilon$ implies that $\lim_{t\rightarrow \infty} x(t) = x^*$.</li>
+stable if $x(0) = x^* + \epsilon$ implies that $\lim_{t\rightarrow \infty} x(t) = x^*$.</li>
 
 <li>Locally <em>exponentially stable</em>.  A fixed point is locally exponentially stable
 if $x(0) = x^* + \epsilon$ implies that $\| x(t) - x^* \| < Ce^{-\alpha t}$, for
