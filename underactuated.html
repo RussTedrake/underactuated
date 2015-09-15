@@ -519,9 +519,7 @@ in this book) underactuation is a global property of the system.  We will refer 
 underactuated if it is underactuated in <i>any</i> state or time.</p>
 
 <p> In words, underactuated control systems are those in which the control input
-cannot accelerate the configuration of the robot in arbitrary directions.  As a
-consequence, unlike fully-actuated systems, underactuated system cannot be
-commanded to follow arbitrary trajectories.  </p>
+cannot accelerate the configuration of the robot in arbitrary directions.  </p>
 
 <div data-type="example" class="drake"><h1>Robot Manipulators</h1>
 
@@ -737,7 +735,7 @@ linear system \[ \ddot{x} = u, \quad |u| \le 1. \] By our definition, this
 system is underactuated.  For example, there is no $u$ which can produce the
 acceleration $\ddot{x} = 2$. </div> Input and state constraints can complicate
 control design in similar ways to having an insufficient number of actuators,
-(i.e., the robot cannot follow arbitrary trajectories), and often require
+(i.e., further limiting the set of the feasible trajectories), and often require
 similar tools to find a control solution.</p>
 
 <p data-type="sect2"><h1>Nonholonomic constraints</h1>
@@ -1100,6 +1098,9 @@ you can verify that differentiating this equation with respect to time indeed
 results in the equations of motion.</p>
 
 </section>
+
+<!--  these are correct, but take away from the flow.  move to an appendix?
+
 <section data-type="sect3"><h1>Trajectory calculations</h1>
 
 <p> For completeness, I'll include what it would take to solve for $\theta(t)$,
@@ -1133,6 +1134,7 @@ F\left(\phi(t),k_2\right) - F\left(\phi(0),k_2\right) \right],\quad
 k_2 = \frac{1}{k_1}.\end{gather*} The inverse of $F$ is given by the
 Jacobi elliptic functions (sn,cn,...), yielding:
 <!-- http://en.wikipedia.org/wiki/Jacobi%27s_elliptic_functions -->
+<!--
 \begin{gather*}\sin(\phi(t)) = \text{sn}\left(t
   \sqrt{\frac{mgl}{I}} + F\left(\phi(0),k_2\right),k_2 \right) \\
 \theta(t) = 2\sin^{-1} \left[ k_2 \text{sn}\left(t
@@ -1167,9 +1169,12 @@ complete trajectory.</p>
   http://mathworld.wolfram.com/EllipticIntegraloftheFirstKind.html -->
 
 
-</section>
+<!--</section> -->
+
 
 </section> <!-- end of undamped pend -->
+
+
 
 <section data-type="sect2"><h1>The undamped pendulum with a constant torque</h1>
 
@@ -1181,6 +1186,13 @@ unstable, and one is stable.</p>
 <!-- todo: find a way to add an animation or something in here.  do a matlab demo in class -->
 
 </section> <!-- undamped constant torque -->
+
+<p>Before we continue, let me know give you the promised example of a system that is asympotitcally stable, but not stable i.s.L..
+We can accomplish this with a very pendulum-like example (written here in polar coordinates):</p>
+<div data-type="example"><h1>Asympototically stable, but not Lyapunov stable</h1>
+   The system \[ \dot{r} = r(1-r) \\ \dot\theta = \sin^2 (\frac{\theta}{2}) \] is asympotically stable to $x^* = [1,0]^T$, but is not stable i.s.L.
+</div>
+<p>Take a minute to draw the vector field of this (you can draw each coordinate independently, if it helps) to make sure you understand.  Note that to wrap-around rotation is convenient but not essential -- we could have written the same dynamical system in cartesian coordinates without wrapping.</p>
 
 <section data-type="sect2"><h1>The damped pendulum</h1>
 
