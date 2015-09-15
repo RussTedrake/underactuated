@@ -1210,6 +1210,15 @@ Now let's add damping back.  You can still add torque to move the fixed points
   <figcaption>Phase diagram for the damped pendulum</figcaption>
 </figure>
 
+<p> With damping, the downright fixed point of the pendulum now becomes asymptotically stable (in addition to stable i.s.L.).
+  Is it also exponentially stable?  How can we tell?  One technique is to linearize the system at the fixed point.  A smooth, time-invariant, nonlinear
+  system that is locally exponentially stable <i>must</i> have a stable linearization, and
+  conversely having a stable linearization implies local exponential stability of the nonlinear system<elib>Slotine90+Hauser94a</elib>.   It's worth noting that having an unstable linearization
+  also implies that the system is locally unstable, but if the linearization is marginally stable that one cannot conclude whether the nonlinear system
+  is asympotitcally stable, stable i.s.L., or unstable (only that it is not exponentially stable)<elib>Slotine90</elib>.
+</p>
+
+
 <p> Here's a thought exercise.  If $u$ is no longer a constant, but a function
 $\pi(q,\dot{q})$, then how would you choose $\pi$ to stabilize the vertical
 position.  Feedback linearization is the trivial solution, for example: $$u =
