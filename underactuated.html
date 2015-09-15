@@ -876,8 +876,11 @@ You can experiment with this system in <drake></drake> using
 <pre><code class="matlab">
 cd(fullfile(getDrakePath,'examples','Pendulum'));
 open_system('constantTorqueDemo');
-% hit play to start the simulation, and click on the boxes
-% labeled as 'slider' to control the torque and damping
+% hit play to start the simulation, and click on the boxes labeled as
+% 'slider' to control the torque and damping.
+% if you get an error about not keeping up with real time, then
+% double-click on the realtime block and reduce the realtime factor
+% (e.g. to .5).
 </code></pre>
 
 These are relatively simple differential equations, so if I give you $\theta(0)$ and
@@ -963,14 +966,15 @@ may never reach the fixed point (but it won't diverge), near an asymptotically
 stable fixed point will reach the fixed point as $t \rightarrow \infty$, and
 near an exponentially stable fixed point will reach the fixed point with a
 bounded rate.  An exponentially stable fixed point is also an asymptotically
-stable fixed point, and an asymptotically stable fixed point is also stable (by
-definition<!-- see
+stable fixed point, but the converse is not true.  Asympotic stability and Lyapunov stability, however, are distinct notions --
+it is actually possible to have a system that is asymptotically stable but not stable i.s.L.&dagger;<sidenote>&dagger; we can't
+see that in one dimension so will have to hold that example for a moment</sidenote>.  <!-- imagine a pendulum that converges to the top from clockwise, but for counter-clockwise it travels all of the way around before getting back to the fixed point.  (asymptotically stable, but not isL).  To avoid wrap-around coordinate issues, use the x position of the endpoint.  see exercise 1.14 in
 http://books.google.com/books?id=ByCCAwAAQBAJ&pg=PA6&lpg=PA6&dq=locally+attractive+but+not++lyapunov+stable&source=bl&ots=BLlwzfFryl&sig=lDXX4oFzIhXEH7do-4llBXU3NKo&hl=en&sa=X&ei=tqEVVKDEGoqYyATh84G4Cw&ved=0CDkQ6AEwAw#v=onepage&q=locally%20attractive%20but%20not%20%20lyapunov%20stable&f=false
-for a counter-example -->) but the converse of these is not necessarily
-true. Interestingly, it is also possible to have nonlinear systems that converge
-(or diverge) in finite-time; a so-called <em>finite-time stability</em>.  We
+for a counter-example .  -->  Systems which are stable i.s.L. but not asympotitically stable are easy to construct (e.g. $\dot{x} = 0$). Interestingly, it is also possible to have nonlinear systems that converge
+(or diverge) in finite-time; a so-called <em>finite-time stability</em>; we
 will see examples of this later in the book, but it is a difficult topic to
-penetrate with graphical analysis.</p>
+penetrate with graphical analysis.  Rigorous nonlinear system analysis is rich with
+subtleties and surprises.</p>
 
 <p> Our graph of $\dot{x}$ vs. $x$ can be used to convince ourselves of i.s.L.
 and asymptotic stability by visually inspecting $\dot{x}$ in the vicinity of a
