@@ -1285,7 +1285,7 @@ actuator at the shoulder.  It was first
 described in detail in <elib>Murray91</elib>.  The companion system,
 with an actuator at the shoulder but not at the elbow, is known as the
 Pendubot<elib>Spong97</elib>.  The Acrobot is so named because of its
-resemblence to a gymnist (or acrobat) on a parallel bar, who controls
+resemblence to a gymnast (or acrobat) on a parallel bar, who controls
 his/her motion predominantly by effort at the waist (and not effort at the
 wrist).  The most common control task studied for the acrobot is the
 swing-up task, in which the system must use the elbow (or waist)
@@ -1302,7 +1302,7 @@ The Acrobot is representative of the primary challenge in
 underactuated robots.  In order to swing up and balance the entire
 system, the controller must reason about and exploit the
 state-dependent coupling between the actuated degree of freedom and
-the un-actuated degree of freedom.  It is also an important system
+the unactuated degree of freedom.  It is also an important system
 because, as we will see, it closely resembles one of the simplest
 models of a walking robot.</p>
 
@@ -1312,7 +1312,7 @@ models of a walking robot.</p>
 Figure 3.1 illustrates the model parameters used in our
 analysis.  $\theta_1$ is the shoulder joint angle, $\theta_2$ is the
 elbow (relative) joint angle, and we will use $\bq =
-[\theta_1,\theta_2]^T$, $\bx = [\bq,\dot\bq]^T$.  The zero state is
+[\theta_1,\theta_2]^T$, $\bx = [\bq,\dot\bq]^T$.  The zero configuration is
 the with both links pointed directly down.  The moments of inertia,
 $I_1,I_2$ are taken about the pivots<!--<elib>Spong95</elib> uses the
 center of mass, which differs only by an extra term in each inertia
@@ -1603,7 +1603,7 @@ coordinates, the dynamics of the linear system are given by $$\dot{\bf
   r} = {\bf V}^{-1} {\bf A} {\bf V} {\bf r} + {\bf V}^{-1} {\bf B} \bu
 = {\bf \Lambda} {\bf r} + {\bf V}^{-1}{\bf B} \bu.$$  This illustrates
 the power of modal analysis; in modal coordinates, the dynamics
-diagonalize yeilding independent linear equations: $$\dot{r}_i =
+diagonalize yielding independent linear equations: $$\dot{r}_i =
 \lambda_i r_i + \sum_j \beta_{ij} u_j,\quad {\bf \beta} = {\bf V}^{-1}
        {\bf B}.$$</p>
 
@@ -1612,7 +1612,7 @@ Now the concept of controllability becomes clear.  Input $j$ can
 influence the dynamics in modal coordinate $i$ if and only if ${\bf
   \beta}_{ij} \neq 0$.  In the special case of non-repeated
 eigenvalues, having control over each individual eigenmode is
-sufficient to (in finite-time) regulate all of the
+sufficient to (in finite time) regulate all of the
 eigenmodes<elib>Ogata96</elib>.
 Therefore, we say that the system is controllable if and only if
 $$\forall i, \exists j \text{ such that }\beta_{ij} \neq 0.$$</p>
@@ -1635,14 +1635,15 @@ actually defined by a convergent infinite sum: $$e^{z} =1 + z +
 \frac{1}{2} x^2 + \frac{1}{6} z^3 + ... .$$ The notation $e^{{\bf
 A}t}$ uses the same definition: $$e^{{\bf A}t} = {\bf I} + {\bf A}t +
 \frac{1}{2}({\bf A}t)^2 + \frac{1}{6}({\bf A}t)^3 + ... .$$ Not
-surprisingly, this has many special forms.  For instance, $e^{{\bf
+surprisingly, this has many special forms.  For instance, if ${\bf A}$
+is diagonalizable, $e^{{\bf
 A}t} = {\bf V}e^{{\bf\Lambda}t}{\bf V}^{-1},$ where ${\bf A} = {\bf V
 \Lambda V}^{-1}$ is the eigenvalue decomposition of ${\bf A}$
 <elib>Strang98</elib>.  The particular form we will use here is
 $$e^{-{\bf A}\tau} = \sum_{k=0}^{n-1} \alpha_k(\tau) {\bf A}^k.$$ This
 is a particularly surprising form, because the infinite sum above is
 represented by this finite sum; the derivation uses Sylvester's
-Theorem <elib>Ogata96</elib>,<elib>Chen98a</elib>.  Then
+Theorem <elib>Ogata96</elib>, <elib>Chen98a</elib>.  Then
 we have, \begin{align*} \bx(0) =& - \sum_{k=0}^{n-1} {\bf A}^k {\bf B}
 \int_0^{t_f} \alpha_k(\tau) u(\tau) d\tau \\ =& -\sum_{k=0}^{n-1} {\bf
 A}^k {\bf B} w_k \text{, where } w_k = \int_0^{t_f} \alpha_k(\tau)
@@ -1696,7 +1697,7 @@ important, point: <em>An underactuated system is not necessarily
 an uncontrollable system.</em>  Underactuated systems cannot follow
 arbitrary trajectories, but that does not imply that they cannot
 arrive at arbitrary points in state space.  However, the trajectory
-required to place the system into a particular state may be arbitrarly
+required to place the system into a particular state may be arbitrarily
 complex.</p>
 
 <p> The controllability analysis presented here is for linear time-invariant
@@ -1725,7 +1726,7 @@ define optimality in terms of a quadratic cost function: $$J(\bx_0) =
 \quad \bx(0)=\bx_0, {\bf Q}={\bf Q}^T>0, {\bf R}={\bf R}^T>0.$$ The linear
 feedback matrix ${\bf K}$ used as $$\bu(t) = - {\bf K}\bx(t),$$ is the so-called
 optimal linear quadratic regulator (LQR).  Even without understanding the
-detailed derivation, we can quickly become practioners of LQR.  Conveniently,
+detailed derivation, we can quickly become practitioners of LQR.  Conveniently,
 Matlab has a function, <code>K = lqr(A,B,Q,R)</code>. Therefore, to use LQR, one
 simply needs to obtain the linearized system dynamics and to define the
 symmetric positive-definite cost matrices, ${\bf Q}$ and ${\bf R}$.  In their
@@ -1754,7 +1755,7 @@ examples.  Can you set the ${\bf Q}$ and ${\bf R}$ matrices differently, to impr
 
 <p>
 Simulation of the closed-loop response with LQR feedback shows that the
-task is indeed completed - and in an impressive manner.  Often times
+task is indeed completed - and in an impressive manner.  Oftentimes
 the state of the system has to move violently away from the origin in
 order to ultimately reach the origin.  Further inspection reveals the
 (linearized) closed-loop dynamics are in fact non-minimum phase (acrobot has 3 right-half zeros, cart-pole
@@ -1919,8 +1920,8 @@ inverse provides a unique solution when the rank of ${\bf H}_{12}$
 equals $l$, the number of passive degrees of freedom in the system (it
 cannot be more, since the matrix only has $l$ rows).  This rank
 condition is sometimes called the property of "Strong Inertial
-Coupling".  It is state dependent.  Global Strong Inertial Coupling
-if every state is coupled.</p>
+Coupling".  It is state dependent. A system has Global Strong Inertial Coupling
+if it exhibits Strong Inertial Coupling in every state.</p>
 
 </section>
 
@@ -1929,7 +1930,7 @@ if every state is coupled.</p>
 <p>
 In general, we can define some combination of active and passive
 joints that we would like to control.  This combination is sometimes
-called a "task space".  % cite some task space refs here?
+called a "task space". <todo>cite some task space refs here?</todo>
 Consider an output function of the form, $${\bf y} = {\bf
 f}(\bq),$$ with ${\bf y} \in \Re^p$, which defines the task space.  Define
 ${\bf J}_1 = \frac{\partial {\bf f}}{\partial \bq_1}$, ${\bf J}_2 =
@@ -2119,7 +2120,7 @@ complete the task.</p>
 Having thought about the swing-up problem for the simple pendulum,
 let's try to apply the same ideas to the cart-pole system.  The basic
 idea, from <elib>Chung95</elib>, is to use collocated PFL to simplify the
-dynamics, use energy shaping to regulate the pendulum to it's
+dynamics, use energy shaping to regulate the pendulum to its
 homoclinic orbit, then to add a few terms to make sure that the cart
 stays near the origin.  The collocated PFL (when all parameters
 are set to 1) left us with:
@@ -2150,7 +2151,7 @@ that
 Therefore, if we design a controller of the form
 $$u = k \dot\theta\cos\theta \tilde{E},\quad k>0$$
 the result is
-$$\dot{\tilde{E}} = - k \dot\theta^2 \cos^2\theta \tilde{E}.$$  % times ml
+$$\dot{\tilde{E}} = - k \dot\theta^2 \cos^2\theta \tilde{E}.$$  <!-- times ml -->
 This guarantees that $| \tilde{E} |$ is
 non-increasing, but isn't quite enough to guarantee that it will go
 to zero.  For example, if $\theta = \dot\theta = 0$, the system will
@@ -2202,8 +2203,8 @@ orbit.  Proof of another energy-based controller in <elib>Xin04</elib>.</p>
 <section data-type="sect2"><h1>Discussion</h1>
 
 <p>
-The energy shaping controller for swing-up presented here are pretty
-faithful representatives from the field of nonlinear underactuated
+The energy shaping controller for swing-up presented here is a pretty
+faithful representative from the field of nonlinear underactuated
 control.  Typically these control derivations require some clever
 tricks for simplifying or canceling out terms in the nonlinear
 equations, then some clever Lyapunov function to prove stability.  In
