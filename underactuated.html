@@ -3281,7 +3281,7 @@ Equation \ref{eq:HJB} is known as the <em>Hamilton-Jacobi-Bellman</em> (HJB) equ
 of these equations as the limit of a discrete-time approximation of the dynamics, and also gives
 the following sufficiency theorem:
 <div data-type="theorem"><h1>HJB Sufficiency Theorem</h1>
-<p>The following statement is adapted from Proposition 3.2.1 of <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}˙=f(\bx,\bu)$ and an inifinite-horizon additive cost $\int_0^\infty g(\bx,\bu)dt$.  Suppose $J(\bx)$ is a solution
+<p>The following statement is adapted from Proposition 3.2.1 of <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}=f(\bx,\bu)$ and an inifinite-horizon additive cost $\int_0^\infty g(\bx,\bu)dt$.  Suppose $J(\bx)$ is a solution
   to the HJB equation; that is $J$ is continuously differentiable in $\bx$ and is such that
   \[ 0 = \min_{u\in U} \left[ g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx. \]
    Suppose also that $\pi^*(\bx)$ attains the minimum in the equation for all $\bx$.  Further
@@ -3311,12 +3311,13 @@ function: $$J(\bx) = \sqrt{3} q^2 + 2 q \dot{q} + \sqrt{3} \dot{q}^2.$$</p>
 \pd{J}{\dot{q}} = 2q + 2\sqrt{3}\dot{q}, \end{gather*}   we can write
 \begin{align*} g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) &= q^2 + \dot{q}^2 + u^2 +
 (2\sqrt{3} q + 2\dot{q}) \dot{q} + (2q + 2\sqrt{3}\dot{q}) u \end{align*}   This
-is a positive quadratic function in $u$, so we can find the minimum with respect
+is a convex quadratic function in $u$, so we can find the minimum with respect
 to $u$ by finding where the gradient with respect to $u$ evaluates to zero.   \[
 \pd{}{u} \left[ g(\bx,\bu) + \pd{J}{\bx} f(\bx,\bu) \right] = 2u + 2q +
 2\sqrt{3}\dot{q}. \]  Setting this equal to $0$ and   solving for $u$ yields:
-$$u^* = -q - \sqrt{3} \dot{q}.$$  Substituting $u^*$ back into the HJB reveals
-that   the right side does in fact simplify to zero.  I hope you are convinced!
+$$u^* = -q - \sqrt{3} \dot{q},$$ thereby confirming that our policy $\pi$ is in
+fact the minimizer.  Substituting $u^*$ back into the HJB reveals
+that the right side does in fact simplify to zero.  I hope you are convinced!
 </div>
 
 <p>Note that evaluating the HJB for the time-to-go of the minimum-time
@@ -3347,16 +3348,16 @@ gets more complicated.</p>
 systems of interest   are <em>control affine</em>, e.g. I can write \[
 f(\bx,\bu) = f_1(\bx) + f_2(\bx)\bu. \]   We can make another dramatic
 simplification by restrict ourselves to instantaneous cost functions of the form \[
-g(\bx,\bu) = g_1(\bx) + \frac{1}{2} \bu^T {\bf R} \bu, \qquad {\bf R}={\bf R}^T
+g(\bx,\bu) = g_1(\bx) + \bu^T {\bf R} \bu, \qquad {\bf R}={\bf R}^T
 \succ 0. \] In my view, this is not very restrictive - many of the cost
 functions that I find myself choosing to write down can be expressed in this
 form.  Given these assumptions, we can write the HJB as \[ 0 = \min_{\bu} \left[
-g_1(\bx) + \frac{1}{2} \bu^T {\bf R} \bu + \pd{J}{\bx} \left[ f_1(\bx) +
+g_1(\bx) + \bu^T {\bf R} \bu + \pd{J}{\bx} \left[ f_1(\bx) +
 f_2(\bx)\bu \right]\right]. \]  Since this is a quadratic function in $\bu$, if
 the system does not have any constraints on $\bu$, then we can solve in closed-form
 for the minimizing $\bu$ by taking the gradient of the right-hand size:
 \[ \pd{}{\bu} = 2\bu^T {\bf R} + \pd{J}{\bx} f_2(\bx) = 0, \]
-and setting it equal to zero to obtain \[ \bu^* = -{\bf R}^{-1}f_2^T(\bx) \pd{J}{\bx}^T.\]
+and setting it equal to zero to obtain \[ \bu^* = -\frac{1}{2}{\bf R}^{-1}f_2^T(\bx) \pd{J}{\bx}^T.\]
 If there are linear constraints on the input, such as torque limits, then more generally
 this could be solved (at any particular $\bx$) as a quadratic program.</p>
 
@@ -3409,13 +3410,15 @@ down the closed form solution to \[ \minimize_\balpha \sum_n \left(\hat{J}_\balp
 
 <todo> try just running snopt on quartic objective </todo>
 
+<!--
 <section data-type="sect2"><h1>A continuous policy iteration algorithm</h1>
 
 <todo> simple (e.g. one-d example) </todo>
 
-</section> <!-- end policy iteration -->
+</section> -->
+<!-- end policy iteration -->
 
-
+<!--
 <section data-type="sect2"><h1>How far can we take this?  (Performance and Scaling)</h1>
 
 <todo>
@@ -3424,7 +3427,7 @@ Errors in bang-bang for double integrator due to discretization.
 Limited in number of dimensions.  Function approximation, but lacks convergence results.
 </todo>
 
-</section> <!-- end scaling -->
+</section> --><!-- end scaling -->
 
 </section> <!-- end continuous DP -->
 
