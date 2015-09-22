@@ -502,14 +502,13 @@ f}_2(\bq,\dot{\bq},t)\bu \label{eq:f1_plus_f2}.\end{equation} </p>
 
 <div data-type="definition"><h1>Fully-Actuated</h1> A control system described
 by equation \ref{eq:f1_plus_f2} is fully-actuated in state
-$(\bq,\dot{\bq})$ at time $t$ if it is able to command an instantaneous acceleration in an
-arbitrary direction in $\bq$: \begin{equation} \textrm{rank}\left[{\bf f}_2
+$(\bq,\dot{\bq})$ at time $t$ if it is able to command any instantaneous acceleration in $\bq$: \begin{equation} \textrm{rank}\left[{\bf f}_2
 (\bq,\dot{\bq},t)\right] = \dim\left[\bq\right].\end{equation} </div>
 
 <div data-type="definition"><h1>Underactuated</h1> A control system described by
 equation \ref{eq:f1_plus_f2} is underactuated in state
-$(\bq,\dot{\bq})$ at time $t$ if it is not able to command an instantaneous acceleration
-in an arbitrary direction in $\bq$: \begin{equation} \textrm{rank}\left[{\bf
+$(\bq,\dot{\bq})$ at time $t$ if it is not able to command an arbitrary instantaneous acceleration
+in $\bq$: \begin{equation} \textrm{rank}\left[{\bf
 f}_2(\bq,\dot{\bq},t)\right] < \dim\left[\bq\right].
 \label{eq:underactuated_def}\end{equation} </div>
 
@@ -517,9 +516,6 @@ f}_2(\bq,\dot{\bq},t)\right] < \dim\left[\bq\right].
 the state of the system or even on time, although for most systems (including all of the systems
 in this book) underactuation is a global property of the system.  We will refer to a system as
 underactuated if it is underactuated in <i>any</i> state or time.</p>
-
-<p> In words, underactuated control systems are those in which the control input
-cannot accelerate the configuration of the robot in arbitrary directions.  </p>
 
 <div data-type="example" class="drake"><h1>Robot Manipulators</h1>
 
@@ -1212,10 +1208,7 @@ Now let's add damping back.  You can still add torque to move the fixed points
 
 <p> With damping, the downright fixed point of the pendulum now becomes asymptotically stable (in addition to stable i.s.L.).
   Is it also exponentially stable?  How can we tell?  One technique is to linearize the system at the fixed point.  A smooth, time-invariant, nonlinear
-  system that is locally exponentially stable <i>must</i> have a stable linearization, and
-  conversely having a stable linearization implies local exponential stability of the nonlinear system<elib>Slotine90+Hauser94a</elib>.   It's worth noting that having an unstable linearization
-  also implies that the system is locally unstable, but if the linearization is marginally stable that one cannot conclude whether the nonlinear system
-  is asympotitcally stable, stable i.s.L., or unstable (only that it is not exponentially stable)<elib>Slotine90</elib>.
+  system that is locally exponentially stable <i>must</i> have a stable linearization; we'll discuss linearization more in the next chapter.
 </p>
 
 
@@ -1561,6 +1554,15 @@ Again, the linear dynamics follow simply.
 </div>
 
 </section> <!-- end linearizing -->
+
+<!-- todo: encorporate this text (removed from Ch 2)
+
+and
+conversely having a stable linearization implies local exponential stability of the nonlinear system<elib>Slotine90+Hauser94a</elib>.   It's worth noting that having an unstable linearization
+also implies that the system is locally unstable, but if the linearization is marginally stable that one cannot conclude whether the nonlinear system
+is asympotitcally stable, stable i.s.L., or unstable (only that it is not exponentially stable)<elib>Slotine90</elib>.
+
+-->
 
 <section data-type="sect2"><h1>Controllability of linear systems</h1>
 
@@ -3031,7 +3033,7 @@ point, then hitting the brakes in order to come to a stop exactly at
 the goal.  This would be called a <em>bang-bang</em> control policy;
 these are often optimal for systems with bounded input, and it is in
 fact optimal for the double integrator, although we will not prove it
-until we have developed more tools.  <!-- leave the proof to the pontryagin notes -->.</p>
+until we have developed more tools.  <!-- leave the proof to the pontryagin notes --></p>
 
 <p>
 Let's work out the details of this bang-bang policy.  First, we can
@@ -3124,8 +3126,7 @@ real number or $\infty$.  We will call a problem specification with a finite $T$
 "finite-horizon" problem, and $T=\infty$ an "infinite-horizon"
 problem.  Problems and solutions for infinite-horizon problems tend to be more elegant, but
 care is required to make sure that the integral converges for the
-optimal controller (typically
-by having a goal state/action pair that allows the robot to accrue zero-cost).</p>
+optimal controller (typically by having an achievable goal that allows the robot to accrue zero-cost).</p>
 
 <p> At first glance, our minimum-time problem formulation for the double
 integrator does not look like an additive cost problem.  However, we can write
@@ -3136,7 +3137,7 @@ cost  $$g(x,u) = \begin{cases} 0 & \text{if } x=0, \\ 1 &
 <p>
 We will examine a number of approaches to solving optimal control
 problems throughout the next few chapters.  For the remainder of this chapter, we will
-focus on additive cost problems and their solution via <em>dynamic programming</em>.</p>
+focus on additive-cost problems and their solution via <em>dynamic programming</em>.</p>
 
 </section> <!-- end of additive cost -->
 
