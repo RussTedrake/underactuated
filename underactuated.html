@@ -3168,7 +3168,7 @@ insight is that we can find the shortest path from every node by solving
 recursively for the optimal <em>cost-to-go</em> from every node to the goal. One
 such algorithm starts by initializing an estimate $\hat{J}^*=0$ for all $s_i$,
 then proceeds with an iterative algorithm which sets \begin{equation}
-\hat{J}^*(s_i) = \min_{a \in A} \left[ g(s_i,a) +
+\hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[ g(s_i,a) +
 \hat{J}^*\left({f(s_i,a)}\right) \right]. \label{eq:value_update} \end{equation}
 In software, $\hat{J}^*$ can be represented as a vector with dimension equal to
 the number of discrete states.  This algorithm, appropriately known as <em>value
@@ -3213,9 +3213,7 @@ I recommend trying to edit the cost function and obstacles.</p>
 
 </div> <!-- end grid world -->
 
-Graph approximation of a continuous state space.
-
-Stochastic shortest path.
+<p>TODO: figure/text for graph approximation of a continuous state space.</p>
 
 <div data-type="example" class="drake"><h1>Dynamic Programming for the Double Integrator</h1>
 
@@ -3371,7 +3369,8 @@ dynamic programming</em> (c.f. <elib>Jacobson70</elib>).   </p>
 
 </section> <!-- end solve for u -->
 
-<section data-type="sect2"><h1>Representing the cost-to-go with function approximation</h1>
+<section data-type="sect2"><h1>Numerical solutions for $J^*$</h1>
+
 
 <p> The other major barrier to using the HJB in a value iteration algorithm is
 that  the estimated optimal cost-to-go function, $\hat{J}^*$, must somehow be
@@ -3380,9 +3379,28 @@ the potential form it must take. In fact, knowing the time-to-goal solution for
 minimum-time problem with the double integrator, we see that this function
 might need to be non-smooth for even very simple dynamics and objectives.</p>
 
+<p>One natural way to parameterize $\hat{J}^*$ --
+ a scalar valued-function defined over the state space -- is to define the values on a
+ mesh.  This approach then admits algorithms
+ with close ties to the relatively very advanced numerical methods used to solve
+ other partial differential equations (PDEs),
+ such as the ones that arrive in finite element modeling or fluid dynamics.
+ One important difference, however, is that our PDE lives in the dimension of the state
+ space, while many of the mesh algorithms from the other disciplines are optimized for
+  two or three dimensional space.</p>
+
+<p>A slightly more general view of the problem would describe the mesh (and the
+  associated interpolation functions) as just one form of representations for
+  <a href="https://en.wikipedia.org/wiki/Function_approximation">function approximation</a>.
+
+<todo>  (see Appendix C for a brief background on function
+  approximation) </todo>
+
+<section data-type="sect3"><h1>Representing the cost-to-go with function approximation</h1>
+
 <p>If we approximate $J^*$ with a finitely-parameterized function
 $\hat{J}_\balpha^*$, with parameter vector $\balpha$, then   this immediately raises
-many important questions:
+many important questions:</p>
 <ul>
   <li>What if the true cost-to-go function does not live in
 the prescribed function class; e.g., there does not exist an $\balpha$ which
@@ -3392,19 +3410,25 @@ be the case.)</li>
 <li>What can
 we say about it's convergence?</li>
 </ul>
-In general, many of these questions will have to go unanswered.  But there are some answers available
-for the special case of <em>linear function approximators</em> (see Appendix B for a brief background on function
-approximation).  A linear function approximator takes the form: \[ \hat{J}^*_\balpha(\bx) = \sum_i \alpha_i \psi_i(\bx) = \balpha^T {\bf\psi}(\bx), \]
+
+<todo> add quote from neuro-dynamic programming preface </todo>
+
+<p>In general, many of these questions will have to go unanswered.  But there are some answers available
+for the special case of <em>linear function approximators</em> .  A linear function approximator takes the form: \[ \hat{J}^*_\balpha(\bx) = \sum_i \alpha_i \psi_i(\bx) = \balpha^T {\bf\psi}(\bx), \]
 where ${\bf \psi}(\bx)$ is a vector of potentially nonlinear features.  Common examples of features include
 polynomials, radial basis functions, or the barycentric interpolator used above.  The distinguishing
 feature of a linear function approximator is the ability to exactly solve for $\balpha$ in order
 to represent a desired function optimally, in a least-squares sense.  For instance, if we
-have a desired set of $N$ input-output points, $(\bx_n,J^d_n)$, then we easily can write
-down the closed form solution to \[ \minimize_\balpha \sum_n \left(\hat{J}_\balpha(\bx_n) - J^d_n \right)^2. \]</p>
+have a desired set of $K$ input-output points, $(\bx_k,J^d_k)$, then we can write
+down the closed-form solution to \[ \minimize_\balpha \sum_k \left(\hat{J}_\balpha(\bx_k) - J^d_k \right)^2. \]
+This enables the iteration, sometimes referred to as <i>fitted value iteration</i>:
+\[ \balpha \Leftarrow \argmin_\balpha \sum_k \left(\hat{J}_\balpha(\bx_k) - \min_\bu \left[ g(x_k,u) + \pd{\hat{J}_\balpha(x_k)}{x} f(x_k,u) \right] \right)^2. \]
+</p>
 
-<todo> add quote from neuro-dynamic programming preface </todo>
 
 <todo> add citations for convergence results </todo>
+
+</section>
 
 </section> <!-- end function approx -->
 
@@ -3430,6 +3454,57 @@ Limited in number of dimensions.  Function approximation, but lacks convergence 
 </section> --><!-- end scaling -->
 
 </section> <!-- end continuous DP -->
+
+<section data-type="sect1"><h1>Stochastic Optimal Control</h1>
+
+<p> One of the most amazing features of the dynamic programming, additive cost
+   approach to optimal control is the relative ease with which it extends to optimizing
+   stochastic systems. </p>
+
+<section data-type="sect2"><h1>Graph search -- stochastic shortest path problems</h1>
+
+<p>For discrete systems, we can generalize our dynamics on a graph by adding action-dependent transition
+  probabilities to the edges.  This new dynamical system is known as a Markov Decision Process (MDP), and we
+  write the dynamics completely in terms of the transition probabilities \[ \Pr(s[n+1] = s' | s[n] = s, a[n] = a). \]
+  For discrete systems, this is simply a big lookup table.  The cost that we incur for any execution of
+  system is now a random variable, and so we formulate the goal of control as optimizing the expected cost, e.g.
+  \[ J^*(s[0]) = \min_{a[\cdot]} E \left[ \sum_{n=0}^\infty g(s[n],a[n]) \right]. \]  Note that there are many other potential objectives,
+  such as minimizing the worst-case error, but the expected cost is special because it preserves the
+  dynamic programming recursion:
+  \[ J^*(s) = \min_a E \left[ g(s,a) + J^*(s')\right]  = \min_a \left[ g(s,a) + \sum_{s'} \Pr(s'|s,a) J^*(s') \right].\]
+  Remarkably, if we use these optimality conditions to construct our value iteration algorithm
+  \[ \hat{J}(s) \Leftarrow \min_a \left[ g(s,a) + \sum_{s'} \Pr(s'|s,a) \hat{J}(s') \right],\]
+  then this algorithm has the same strong convergence guarantees of its counterpart for deterministic systems.  And it is essentially
+  no more expensive to compute!
+
+  </p>
+
+<section data-type="sect2"><h1>MDP approximations of deterministic, continuous-state systems</h1>
+
+<p> There is a particularly cute trick that takes advantage of the computational
+  simplicity of the discrete MDP value iteration algorithm.   Let's assume that we have discrete control inputs and discrete-time dynamics,
+  but a continuous state space.   Imagine that we use a mesh
+  to approximate the cost-to-go function over that state space with $K$ mesh points $\hat{J}(x_k)$.
+  We would like to perform the value iteration update:
+  \[ \forall k, \hat{J}^*(x_k) \Leftarrow \min_{a \in A} \left[ g(x_k,a) +
+  \hat{J}^*\left({f(x_k,a)}\right) \right], \] but must deal with the fact that $f(x_k,a)$ might not result in a next
+  state that is directly at a mesh point.  Most interpolation schemes for a mesh
+  can be written as some weighted combination of the values at nearby mesh points, e.g.
+  \[ \hat{J}^*(x) = \sum_i \beta_i \hat{J}^*(x_i), \quad \sum_i \beta_i = 1 \] with $\beta_i$ the relative weight of the $i$th mesh
+  point.  The resulting update is exactly the same as if we treated the system
+  as a discrete state MDP with $\beta_i$ representing the probability of transitioning
+  to state $x_i$!
+</p>
+
+<p> If you looked at the code powering the numerical value iteration results above, you will
+  see that we used precisely this trick -- the continuous problem is discretized into
+  the corresponding MDP and then solved as a discrete system.  This results in nice clean code,
+  but also sheds light on the impact of discretization on the solutions -- discretization error
+  here will cause a sort of diffusion corresponding to the probability of spreading across neightboring nodes.</p>
+
+</section>
+
+</section>
 
 <section data-type="sect1"><h1>Extensions</h1>
 
