@@ -3500,7 +3500,12 @@ Limited in number of dimensions.  Function approximation, but lacks convergence 
   see that we used precisely this trick -- the continuous problem is discretized into
   the corresponding MDP and then solved as a discrete system.  This results in nice clean code,
   but also sheds light on the impact of discretization on the solutions -- discretization error
-  here will cause a sort of diffusion corresponding to the probability of spreading across neightboring nodes.</p>
+  here will cause a sort of diffusion corresponding to the probability of spreading across
+  neighboring nodes.</p>
+
+  <p>Note that the update above could also be viewed as an approximation of the fitted value iteration
+    algorithm for linear function approximators described above.  It is missing a few terms, but
+    is easier to implement and remarkably, is still known to converge.</p> <todo> add citation</todo>
 
 </section>
 
