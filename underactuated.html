@@ -355,7 +355,7 @@ quality and versatility of ASIMO's movements.  Now take a second look. Although
 the motions are very smooth, there is something a little unnatural about ASIMO's
 gait.  It feels a little like an astronaut encumbered by a heavy space suit.  In
 fact this is a reasonable analogy... ASIMO is walking a bit like somebody that
-is unfamiliar with his/her dynamics.  It's control system is using high-gain
+is unfamiliar with his/her dynamics.  Its control system is using high-gain
 feedback, and therefore considerable joint torque, to cancel out the natural
 dynamics of the machine and strictly follow a desired trajectory. This control
 approach comes with a stiff penalty.  ASIMO uses roughly 20 times the energy
@@ -448,7 +448,7 @@ outside our building can be seen diving through a chain-link fence to grab a
 bite of food. </p>
 
 <p> Although many impressive statistics about avian flight have been recorded,
-our understanding is partially limited by experimental accessibility - it's is
+our understanding is partially limited by experimental accessibility - it is
 quite difficult to carefully measure birds (and the surrounding airflow) during
 their most impressive maneuvers without disturbing them.  The dynamics of a
 swimming fish are closely related, and can be more convenient to study.
@@ -491,7 +491,7 @@ the dynamics of their machines in the context of control. </p>
 <h1>Definitions</h1>
 
 <p> According to Newton, the dynamics of mechanical systems are second order ($F =
-ma$).  Their state is given by a vector of positions, $\bq$, and a vector of
+ma$).  Their state is given by a vector of positions, $\bq$ (also known as the configuration vector), and a vector of
 velocities, $\dot{\bq}$, and (possibly) time. The general form for a
 second-order controllable dynamical system is: $$\ddot{\bq} = {\bf
 f}(\bq,\dot{\bq},\bu,t),$$ where $\bu$ is the control vector.  As we will see,
@@ -501,26 +501,21 @@ commanded torque, so let's consider a slightly constrained form:
 f}_2(\bq,\dot{\bq},t)\bu \label{eq:f1_plus_f2}.\end{equation} </p>
 
 <div data-type="definition"><h1>Fully-Actuated</h1> A control system described
-by equation \ref{eq:f1_plus_f2} is fully-actuated in configuration
-$(\bq,\dot{\bq},t)$ if it is able to command an instantaneous acceleration in an
-arbitrary direction in $\bq$: \begin{equation} \textrm{rank}\left[{\bf f}_2
+by equation \ref{eq:f1_plus_f2} is fully-actuated in state
+$(\bq,\dot{\bq})$ at time $t$ if it is able to command any instantaneous acceleration in $\bq$: \begin{equation} \textrm{rank}\left[{\bf f}_2
 (\bq,\dot{\bq},t)\right] = \dim\left[\bq\right].\end{equation} </div>
 
 <div data-type="definition"><h1>Underactuated</h1> A control system described by
-equation \ref{eq:f1_plus_f2} is underactuated in configuration
-$(\bq,\dot{\bq},t)$ if it is not able to command an instantaneous acceleration
-in an arbitrary direction in $\bq$: \begin{equation} \textrm{rank}\left[{\bf
+equation \ref{eq:f1_plus_f2} is underactuated in state
+$(\bq,\dot{\bq})$ at time $t$ if it is not able to command an arbitrary instantaneous acceleration
+in $\bq$: \begin{equation} \textrm{rank}\left[{\bf
 f}_2(\bq,\dot{\bq},t)\right] < \dim\left[\bq\right].
 \label{eq:underactuated_def}\end{equation} </div>
 
 <p>Notice that whether or not a control system is underactuated may depend on
-the state of the system, although for most systems (including all of the systems
-in this book) underactuation is a global property of the system.</p>
-
-<p> In words, underactuated control systems are those in which the control input
-cannot accelerate the state of the robot in arbitrary directions.  As a
-consequence, unlike fully-actuated systems, underactuated system cannot be
-commanded to follow arbitrary trajectories.  </p>
+the state of the system or even on time, although for most systems (including all of the systems
+in this book) underactuation is a global property of the system.  We will refer to a system as
+underactuated if it is underactuated in <i>any</i> state or time.</p>
 
 <div data-type="example" class="drake"><h1>Robot Manipulators</h1>
 
@@ -568,7 +563,9 @@ visualizer = DoublePendVisualizer(plant);
 visualizer.inspector();  % (optional) simple gui to examine the joints
 
 % simulate the robot from time=0 to time=5 seconds from random
-% initial conditions taken from a Gaussian distribution (using randn)
+% initial conditions taken from a Gaussian distribution (using randn).
+% note that the first simulation you run will take longer because
+% simulink needs to be started
 trajectory = simulate(plant, [0 5], randn(4,1));
 
 % play back the simulation using the cpu clock to get the timing right
@@ -622,7 +619,7 @@ common cases for underactuation, which trivially implies that ${\bf f}_2$ is not
 full row rank, is dim$[\bu] < $ dim$[\bq]$.  This is the case when a robot has
 joints with no motors. But this is not the only case.  The human body, for
 instance, has an incredible number of actuators (muscles), and in many cases has
-multiple muscles per joint; despite having more actuators that position
+multiple muscles per joint; despite having more actuators than position
 variables, when I jump through the air, there is no combination of muscle inputs
 that can change the ballistic trajectory of my center of mass (barring
 aerodynamic effects).  My control system is underactuated.</p>
@@ -635,7 +632,7 @@ Equations</h1> An $n$th-order control differential equation control described by
 the equations \begin{equation} \frac{d^n{\bf q}}{dt^n} = f({\bf q}, ...,
 \frac{d^{n-1} {\bf q}}{dt^{n-1}}, t, {\bf u}) \end{equation} is fully actuated
 in state ${\bf x} = ({\bf q}, ..., \frac{d^{n-1} {\bf q}}{dt^{n-1}})$ and time
-$t$ if the resulting map $f$ is surjective: for every $\frac{d^n{\bf q}}{dt^n} $
+$t$ if the resulting map ${\bf f}$ is surjective: for every $\frac{d^n{\bf q}}{dt^n} $
 there exists a ${\bf u}$ which produces the desired response.  Otherwise it is
 underactuated. </div>
 
@@ -644,10 +641,10 @@ condition for underactuation.  This definition can also be extended to
 discrete-time systems and/or differential inclusions. </p>
 
 <p>A quick note about notation.  When describing the dynamics of rigid-body
-systems in this class, I will use $\bq$ for positions, $\dot{\bq}$ for
-velocities, and use $\bx$ for the full state ($\bx = [\bq,\dot{\bq}]^T$).  There
+systems in this class, I will use $\bq$ for configurations (positions), $\dot{\bq}$ for
+velocities, and use $\bx$ for the full state ($\bx = [\bq^T,\dot{\bq}^T]^T$).  There
 is an important limitation to this convention, described in the Appendix<!--
-ch:robot_dynamics -->, but it will keep the notes more clean. Unless otherwise
+ch:robot_dynamics -->, but it will keep the notes cleaner. Unless otherwise
 noted, vectors are always treated as column vectors. Vectors and matrices are
 bold (scalars are not). </p>
 
@@ -655,7 +652,7 @@ bold (scalars are not). </p>
 
 <p> Fully-actuated systems are dramatically easier to control than underactuated
 systems.  The key observation is that, for fully-actuated systems with known
-dynamics (e.g., ${\bf f}_1$ and ${\bf f}_2$ are known), it is possible to use
+dynamics (e.g., ${\bf f}_1$ and ${\bf f}_2$ are known for a second-order control-affine system), it is possible to use
 feedback to effectively change a nonlinear control problem into a linear control
 problem.  The field of linear control is incredibly advanced, and there are many
 well-known solutions for controlling linear systems. </p>
@@ -664,7 +661,7 @@ well-known solutions for controlling linear systems. </p>
 rank, it is invertible.  Consider the nonlinear feedback law: $$\bu = {\bf
 \pi}(\bq,\dot\bq,t) = {\bf f}_2^{-1}(\bq,\dot\bq,t) \left[ \bu' - {\bf
 f}_1(\bq,\dot\bq,t) \right],$$ where $\bu'$ is some additional control input.
-Applying this feedback controller to equation~\ref{eq:f1_plus_f2} results in the
+Applying this feedback controller to equation \ref{eq:f1_plus_f2} results in the
 linear, decoupled, second-order system: $$\ddot{\bq} = \bu'.$$ In other words,
 if ${\bf f}_1$ and ${\bf f}_2$ are known and ${\bf f}_2$ is invertible, then we
 say that the system is "feedback equivalent" to $\ddot{\bq} = \bu'$.  There are
@@ -712,16 +709,16 @@ complicates feedback controller design. </p>
 
 <p> Although the dynamic constraints due to missing actuators certainly embody
 the spirit of this course, many of the systems we care about could be subject to
-other dynamic constraints, as well.  For example, the actuators on our machines
+other dynamic constraints as well.  For example, the actuators on our machines
 may only be mechanically capable of producing some limited amount of torque, or
-their may be a physical obstacle in the free space which we cannot permit our
+there may be a physical obstacle in the free space with which we cannot permit our
 robot to come into contact with. </p>
 
 <div data-type="definition"><h1>Input and State Constraints</h1> A dynamical
 system described by $\dot{\bx} = {\bf f}(\bx,\bu,t)$ may be subject to one or
 more constraints described by ${\bf \phi}(\bx,\bu,t)\le0$. </div>
 
-<p>In practice it can useful to separate out constraints which depend only on
+<p>In practice it can be useful to separate out constraints which depend only on
 the input, e.g. $\phi(\bu)\le0$, such as actuator limits, as they can often be
 easier to handle than state constraints.  An obstacle in the environment might
 manifest itself as one or more constraints that depend only on position, e.g.
@@ -734,52 +731,54 @@ linear system \[ \ddot{x} = u, \quad |u| \le 1. \] By our definition, this
 system is underactuated.  For example, there is no $u$ which can produce the
 acceleration $\ddot{x} = 2$. </div> Input and state constraints can complicate
 control design in similar ways to having an insufficient number of actuators,
-(i.e., the robot cannot follow arbitrary trajectories), and often require
+(i.e., further limiting the set of the feasible trajectories), and often require
 similar tools to find a control solution.</p>
 
-<section data-type="sect2"><h1>Nonholonomic constraints</h1>
+<p data-type="sect2"><h1>Nonholonomic constraints</h1>
 
-<p> You might have heard of the term "nonholonomic system" (e.g.
+<p> You might have heard of the term "nonholonomic system" (see e.g.
 <elib>Bloch03</elib>), and be thinking about how nonholonomy relates to
-underactuation.  Briefly, a nonholonomic constraint is a constraint on the
-derivatives of the system which cannot be integrated into a constraint on the
-positions of the system.  An automobile or traditional wheeled robot provides a
-canonical example:
+underactuation.  Briefly, a nonholonomic constraint is a constraint
+of the form $\phi({\bf q}, {\bf \dot{q}}, t) = 0$, which cannot be
+integrated into a constraint of the form $\phi({\bf q}, t) = 0$ (a holonomic constraint).
+A nonholonomic constraint does not restrain the possible configurations of
+the system, but rather the manner in which those configurations can be reached.
+While a holonomic constraint reduces the number of degrees of freedom of a system by one,
+a nonholonomic constraint does not.  An automobile or traditional wheeled robot provides a
+canonical example:</p>
 
 <div data-type="example"><h1>Wheeled robot</h1> Consider a simple model of a
-wheeled robot who's configuration is described by its Cartesian position $x,y$
+wheeled robot whose configuration is described by its Cartesian position $x,y$
 and its orientation, $\theta$, so ${\bf q} = \begin{bmatrix} x, y, \theta
-\end{bmatrix}^T$.  The system is subject to differential constraints that
-prevent side-slip, e.g., \begin{gather*} \dot{x} = v \cos\theta \\ \dot{y} = v
-\sin\theta \\ v = \sqrt{\dot{x}^2 + \dot{y}^2} \end{gather*} These constraints
-cannot be integrated into constraint on position--the car can get to any
-configuration $(x,y,\theta)$, it just can't move directly sideways--so they are
-nonholonomic constraints. </div>
+\end{bmatrix}^T$.  The system is subject to a differential constraint that
+prevents side-slip, \begin{gather*} \dot{x} = v \cos\theta \\ \dot{y} = v
+\sin\theta \\ v = \sqrt{\dot{x}^2 + \dot{y}^2} \end{gather*} or equivalently,
+\[\dot{y} \cos \theta - \dot x \sin \theta = 0.\] This constraint
+cannot be integrated into a constraint on configuration&mdash;the car can get to any
+configuration $(x,y,\theta)$, it just can't move directly sideways&mdash;so this is a
+nonholonomic constraint. </div>
 
-Contrast the wheeled robot example with a robot on train tracks.  The train tracks
-would represent a holonomic constraint: if the system was written down in the
-$(x,y,\theta)$ coordinates then the differential track constraints could be
-integrated resulting in a description of the system in a reduced coordinate
-system--train tracks are holonomic constraints. </p>
+<p>Contrast the wheeled robot example with a robot on train tracks.  The train tracks
+correspond to a holonomic constraint: the track constraint can be written directly in
+terms of the configuration ${\bf q}$ of the system, without using the velocity ${\bf \dot{q}}$.
+Even though the track constraint could also be written as a differential constraint
+on the velocity, it would be possible to integrate this constraint to obtain
+a constraint on configuration. The track restrains the possible configurations of the system.</p>
 
-<p> A nonholomic constraint like the no-side-slip constraint on the wheeled
+
+<p> A nonholonomic constraint like the no-side-slip constraint on the wheeled
 vehicle certainly results in an underactuated system.  The converse is not
-necessarily true--the double pendulum system which is missing an actuator is
-underactauted but would not typically be called a nonholonmic system.  However,
-while the definition of a nonholonomic constraint is clear, in my view the
-definition used in the literature for a "nonholonomic system" is more
-ambiguous&dagger;<sidenote>&dagger; Why, for instance, are the Lagrangian
-equations of motion for the double pendulum--clearly non-integrable-- not
-considered nonholonomic constraints?</sidenote>, and we'll generally avoid using
-the term. </p>
+necessarily true&mdash;the double pendulum system which is missing an actuator is
+underactuated but would not typically be called a nonholonomic system.  Note that
+the Lagrangian equations of motion are a constraint of the form \[{\bf \phi}({\bf q},{\bf \dot{q}},{\bf \ddot{q}},t) =  0,\]
+so do not qualify as a nonholonomic constraint.</p>
 
-</section>
 </section>
 
 <section data-type="sect1"><h1>Underactuated robotics</h1>
 
 <p> The control of underactuated systems is an open and interesting problem in
-controls - although there are a number of special cases where underactuated
+controls.  Although there are a number of special cases where underactuated
 systems have been controlled, there are relatively few general principles.  Now
 here's the rub... most of the interesting problems in robotics are
 underactuated: </p>
@@ -799,7 +798,7 @@ DOF.  And this is already a simplification, as the true state of the system
 should really include the (infinite-dimensional) state of the flow.</li>
 
 <li> Robot manipulation is (often) underactuated.  Consider a fully-actuated
-robotic arm.  When this arm is manipulating an object w/ degrees of freedom
+robotic arm.  When this arm is manipulating an object with degrees of freedom
 (even a brick has six), it can become underactuated.  If force closure is
 achieved, and maintained, then we can think of the system as fully-actuated,
 because the degrees of freedom of the object are constrained to match the
@@ -808,7 +807,7 @@ object has extra DOFs.</li>
 
 </ul>
 
-<p> Even fully-actuated and otherwise unconstrained control systems can be
+<p> Even control systems for fully-actuated and otherwise unconstrained systems can be
 improved using the lessons from underactuated systems, particularly if there is
 a need to increase the efficiency of their motions or reduce the complexity of
 their designs.</p>
@@ -819,7 +818,7 @@ their designs.</p>
 
 <p> This course is based on the observation that there are new computational
 tools from optimization theory, control theory, motion planning, and even
-machine learning which be used to design feedback control for underactuated
+machine learning which can be used to design feedback control for underactuated
 systems.  The goal of this class is to develop these tools in order to design
 robots that are more dynamic and more agile than the current
 state-of-the-art.</p>
@@ -873,8 +872,11 @@ You can experiment with this system in <drake></drake> using
 <pre><code class="matlab" testfile="testOpenSystem">
 cd(fullfile(getDrakePath,'examples','Pendulum'));
 open_system('constantTorqueDemo');
-% hit play to start the simulation, and click on the boxes
-% labeled as 'slider' to control the torque and damping
+% hit play to start the simulation, and click on the boxes labeled as
+% 'slider' to control the torque and damping.
+% if you get an error about not keeping up with real time, then
+% double-click on the realtime block and reduce the realtime factor
+% (e.g. to .5).
 </code></pre>
 
 These are relatively simple differential equations, so if I give you $\theta(0)$ and
@@ -899,13 +901,14 @@ described beautifully in a book by Steve Strogatz<elib>Strogatz94</elib>.
 
 <section data-type="sect2"><h1>The overdamped pendulum</h1>
 
-<p> Let's start by studying a special case -- intuitively when $b \gg ml^2$, but
-to get the units right we actually need to include a fundamental time constant,
-so $\frac{b}{ml^2} \sqrt\frac{g}{l} \gg 1$. This is the case of heavy damping,
+<p> Let's start by studying a special case -- intuitively when $b\dot\theta \gg ml^2\ddot\theta$ --
+which via <a href="https://en.wikipedia.org/wiki/Dimensionless_quantity">dimensional analysis</a>
+(using the characteristic time constant $\sqrt{\frac{l}{g}}$ to match units)
+occurs when $b \sqrt\frac{g}{l} \gg ml^2$. This is the case of heavy damping,
 for instance if the pendulum was moving in molasses.  In this case, the damping
 term dominates the acceleration term, and we have: $$ml^2 \ddot\theta +
 b\dot\theta \approx b\dot\theta = u_0 - mgl\sin\theta.$$ In other words, in the
-case of heavy damping, the system looks approximately first-order. This is a
+case of heavy damping, the system looks approximately first order. This is a
 general property of heavily damped systems, such as fluids at very low Reynolds
 number. </p>
 
@@ -947,7 +950,7 @@ system is started inside the $\delta$ ball then it will remain inside the
 $\epsilon$ ball for all of time.</li>
 
 <li>Locally <em>asymptotically stable</em>.  A fixed point is locally asymptotically
-stable if it is stable i.s.L. and $x(0) = x^* + \epsilon$ implies that $\lim_{t\rightarrow \infty} x(t) = x^*$.</li>
+stable if $x(0) = x^* + \epsilon$ implies that $\lim_{t\rightarrow \infty} x(t) = x^*$.</li>
 
 <li>Locally <em>exponentially stable</em>.  A fixed point is locally exponentially stable
 if $x(0) = x^* + \epsilon$ implies that $\| x(t) - x^* \| < Ce^{-\alpha t}$, for
@@ -960,14 +963,15 @@ may never reach the fixed point (but it won't diverge), near an asymptotically
 stable fixed point will reach the fixed point as $t \rightarrow \infty$, and
 near an exponentially stable fixed point will reach the fixed point with a
 bounded rate.  An exponentially stable fixed point is also an asymptotically
-stable fixed point, and an asymptotically stable fixed point is also stable (by
-definition<!-- see
+stable fixed point, but the converse is not true.  Asympotic stability and Lyapunov stability, however, are distinct notions --
+it is actually possible to have a system that is asymptotically stable but not stable i.s.L.&dagger;<sidenote>&dagger; we can't
+see that in one dimension so will have to hold that example for a moment</sidenote>.  <!-- imagine a pendulum that converges to the top from clockwise, but for counter-clockwise it travels all of the way around before getting back to the fixed point.  (asymptotically stable, but not isL).  To avoid wrap-around coordinate issues, use the x position of the endpoint.  see exercise 1.14 in
 http://books.google.com/books?id=ByCCAwAAQBAJ&pg=PA6&lpg=PA6&dq=locally+attractive+but+not++lyapunov+stable&source=bl&ots=BLlwzfFryl&sig=lDXX4oFzIhXEH7do-4llBXU3NKo&hl=en&sa=X&ei=tqEVVKDEGoqYyATh84G4Cw&ved=0CDkQ6AEwAw#v=onepage&q=locally%20attractive%20but%20not%20%20lyapunov%20stable&f=false
-for a counter-example -->) but the converse of these is not necessarily
-true. Interestingly, it is also possible to have nonlinear systems that converge
-(or diverge) in finite-time; a so-called <em>finite-time stability</em>.  We
+for a counter-example .  -->  Systems which are stable i.s.L. but not asympotitically stable are easy to construct (e.g. $\dot{x} = 0$). Interestingly, it is also possible to have nonlinear systems that converge
+(or diverge) in finite-time; a so-called <em>finite-time stability</em>; we
 will see examples of this later in the book, but it is a difficult topic to
-penetrate with graphical analysis.</p>
+penetrate with graphical analysis.  Rigorous nonlinear system analysis is rich with
+subtleties and surprises.</p>
 
 <p> Our graph of $\dot{x}$ vs. $x$ can be used to convince ourselves of i.s.L.
 and asymptotic stability by visually inspecting $\dot{x}$ in the vicinity of a
@@ -1095,6 +1099,9 @@ you can verify that differentiating this equation with respect to time indeed
 results in the equations of motion.</p>
 
 </section>
+
+<!--  these are correct, but take away from the flow.  move to an appendix?
+
 <section data-type="sect3"><h1>Trajectory calculations</h1>
 
 <p> For completeness, I'll include what it would take to solve for $\theta(t)$,
@@ -1128,6 +1135,7 @@ F\left(\phi(t),k_2\right) - F\left(\phi(0),k_2\right) \right],\quad
 k_2 = \frac{1}{k_1}.\end{gather*} The inverse of $F$ is given by the
 Jacobi elliptic functions (sn,cn,...), yielding:
 <!-- http://en.wikipedia.org/wiki/Jacobi%27s_elliptic_functions -->
+<!--
 \begin{gather*}\sin(\phi(t)) = \text{sn}\left(t
   \sqrt{\frac{mgl}{I}} + F\left(\phi(0),k_2\right),k_2 \right) \\
 \theta(t) = 2\sin^{-1} \left[ k_2 \text{sn}\left(t
@@ -1162,9 +1170,12 @@ complete trajectory.</p>
   http://mathworld.wolfram.com/EllipticIntegraloftheFirstKind.html -->
 
 
-</section>
+<!--</section> -->
+
 
 </section> <!-- end of undamped pend -->
+
+
 
 <section data-type="sect2"><h1>The undamped pendulum with a constant torque</h1>
 
@@ -1177,6 +1188,13 @@ unstable, and one is stable.</p>
 
 </section> <!-- undamped constant torque -->
 
+<p>Before we continue, let me know give you the promised example of a system that is asympotitcally stable, but not stable i.s.L..
+We can accomplish this with a very pendulum-like example (written here in polar coordinates):</p>
+<div data-type="example"><h1>Asympototically stable, but not Lyapunov stable</h1>
+   The system \[ \dot{r} = r(1-r) \\ \dot\theta = \sin^2 (\frac{\theta}{2}) \] is asympotically stable to $x^* = [1,0]^T$, but is not stable i.s.L.
+</div>
+<p>Take a minute to draw the vector field of this (you can draw each coordinate independently, if it helps) to make sure you understand.  Note that to wrap-around rotation is convenient but not essential -- we could have written the same dynamical system in cartesian coordinates without wrapping.</p>
+
 <section data-type="sect2"><h1>The damped pendulum</h1>
 
 <p>
@@ -1187,6 +1205,12 @@ Now let's add damping back.  You can still add torque to move the fixed points
   <img width="90%" src="figures/pend_damped_phase.svg"/>
   <figcaption>Phase diagram for the damped pendulum</figcaption>
 </figure>
+
+<p> With damping, the downright fixed point of the pendulum now becomes asymptotically stable (in addition to stable i.s.L.).
+  Is it also exponentially stable?  How can we tell?  One technique is to linearize the system at the fixed point.  A smooth, time-invariant, nonlinear
+  system that is locally exponentially stable <i>must</i> have a stable linearization; we'll discuss linearization more in the next chapter.
+</p>
+
 
 <p> Here's a thought exercise.  If $u$ is no longer a constant, but a function
 $\pi(q,\dot{q})$, then how would you choose $\pi$ to stabilize the vertical
@@ -1254,7 +1278,7 @@ actuator at the shoulder.  It was first
 described in detail in <elib>Murray91</elib>.  The companion system,
 with an actuator at the shoulder but not at the elbow, is known as the
 Pendubot<elib>Spong97</elib>.  The Acrobot is so named because of its
-resemblence to a gymnist (or acrobat) on a parallel bar, who controls
+resemblence to a gymnast (or acrobat) on a parallel bar, who controls
 his/her motion predominantly by effort at the waist (and not effort at the
 wrist).  The most common control task studied for the acrobot is the
 swing-up task, in which the system must use the elbow (or waist)
@@ -1271,7 +1295,7 @@ The Acrobot is representative of the primary challenge in
 underactuated robots.  In order to swing up and balance the entire
 system, the controller must reason about and exploit the
 state-dependent coupling between the actuated degree of freedom and
-the un-actuated degree of freedom.  It is also an important system
+the unactuated degree of freedom.  It is also an important system
 because, as we will see, it closely resembles one of the simplest
 models of a walking robot.</p>
 
@@ -1281,7 +1305,7 @@ models of a walking robot.</p>
 Figure 3.1 illustrates the model parameters used in our
 analysis.  $\theta_1$ is the shoulder joint angle, $\theta_2$ is the
 elbow (relative) joint angle, and we will use $\bq =
-[\theta_1,\theta_2]^T$, $\bx = [\bq,\dot\bq]^T$.  The zero state is
+[\theta_1,\theta_2]^T$, $\bx = [\bq,\dot\bq]^T$.  The zero configuration is
 the with both links pointed directly down.  The moments of inertia,
 $I_1,I_2$ are taken about the pivots<!--<elib>Spong95</elib> uses the
 center of mass, which differs only by an extra term in each inertia
@@ -1533,6 +1557,15 @@ Again, the linear dynamics follow simply.
 
 </section> <!-- end linearizing -->
 
+<!-- todo: encorporate this text (removed from Ch 2)
+
+and
+conversely having a stable linearization implies local exponential stability of the nonlinear system<elib>Slotine90+Hauser94a</elib>.   It's worth noting that having an unstable linearization
+also implies that the system is locally unstable, but if the linearization is marginally stable that one cannot conclude whether the nonlinear system
+is asympotitcally stable, stable i.s.L., or unstable (only that it is not exponentially stable)<elib>Slotine90</elib>.
+
+-->
+
 <section data-type="sect2"><h1>Controllability of linear systems</h1>
 
 <p>   <div data-type="definition"><h1>Controllability</h1>     A control system
@@ -1574,7 +1607,7 @@ coordinates, the dynamics of the linear system are given by $$\dot{\bf
   r} = {\bf V}^{-1} {\bf A} {\bf V} {\bf r} + {\bf V}^{-1} {\bf B} \bu
 = {\bf \Lambda} {\bf r} + {\bf V}^{-1}{\bf B} \bu.$$  This illustrates
 the power of modal analysis; in modal coordinates, the dynamics
-diagonalize yeilding independent linear equations: $$\dot{r}_i =
+diagonalize yielding independent linear equations: $$\dot{r}_i =
 \lambda_i r_i + \sum_j \beta_{ij} u_j,\quad {\bf \beta} = {\bf V}^{-1}
        {\bf B}.$$</p>
 
@@ -1583,7 +1616,7 @@ Now the concept of controllability becomes clear.  Input $j$ can
 influence the dynamics in modal coordinate $i$ if and only if ${\bf
   \beta}_{ij} \neq 0$.  In the special case of non-repeated
 eigenvalues, having control over each individual eigenmode is
-sufficient to (in finite-time) regulate all of the
+sufficient to (in finite time) regulate all of the
 eigenmodes<elib>Ogata96</elib>.
 Therefore, we say that the system is controllable if and only if
 $$\forall i, \exists j \text{ such that }\beta_{ij} \neq 0.$$</p>
@@ -1606,14 +1639,15 @@ actually defined by a convergent infinite sum: $$e^{z} =1 + z +
 \frac{1}{2} x^2 + \frac{1}{6} z^3 + ... .$$ The notation $e^{{\bf
 A}t}$ uses the same definition: $$e^{{\bf A}t} = {\bf I} + {\bf A}t +
 \frac{1}{2}({\bf A}t)^2 + \frac{1}{6}({\bf A}t)^3 + ... .$$ Not
-surprisingly, this has many special forms.  For instance, $e^{{\bf
+surprisingly, this has many special forms.  For instance, if ${\bf A}$
+is diagonalizable, $e^{{\bf
 A}t} = {\bf V}e^{{\bf\Lambda}t}{\bf V}^{-1},$ where ${\bf A} = {\bf V
 \Lambda V}^{-1}$ is the eigenvalue decomposition of ${\bf A}$
 <elib>Strang98</elib>.  The particular form we will use here is
 $$e^{-{\bf A}\tau} = \sum_{k=0}^{n-1} \alpha_k(\tau) {\bf A}^k.$$ This
 is a particularly surprising form, because the infinite sum above is
 represented by this finite sum; the derivation uses Sylvester's
-Theorem <elib>Ogata96</elib>,<elib>Chen98a</elib>.  Then
+Theorem <elib>Ogata96</elib>, <elib>Chen98a</elib>.  Then
 we have, \begin{align*} \bx(0) =& - \sum_{k=0}^{n-1} {\bf A}^k {\bf B}
 \int_0^{t_f} \alpha_k(\tau) u(\tau) d\tau \\ =& -\sum_{k=0}^{n-1} {\bf
 A}^k {\bf B} w_k \text{, where } w_k = \int_0^{t_f} \alpha_k(\tau)
@@ -1635,7 +1669,7 @@ Although we only treated the case of a scalar $u$, it is possible to
 extend the analysis to a vector $\bu$ of size $m$, yielding the
 condition $$\text{rank} \begin{bmatrix} {\bf B} & {\bf AB} & {\bf
 A}^2{\bf B} & \cdots & {\bf A}^{n-1}{\bf B} \end{bmatrix}_{n \times
-(nm)} = n.$$ In Matlab (using the control systems toolbox),
+(nm)} = n.$$ In Matlab (using the Control Systems Toolbox),
 you can obtain the controllability matrix using <code>Cm = ctrb(A,B)</code>,
 and evaluate its rank with <code>rank(Cm)</code>.</p>
 
@@ -1667,7 +1701,7 @@ important, point: <em>An underactuated system is not necessarily
 an uncontrollable system.</em>  Underactuated systems cannot follow
 arbitrary trajectories, but that does not imply that they cannot
 arrive at arbitrary points in state space.  However, the trajectory
-required to place the system into a particular state may be arbitrarly
+required to place the system into a particular state may be arbitrarily
 complex.</p>
 
 <p> The controllability analysis presented here is for linear time-invariant
@@ -1696,7 +1730,7 @@ define optimality in terms of a quadratic cost function: $$J(\bx_0) =
 \quad \bx(0)=\bx_0, {\bf Q}={\bf Q}^T>0, {\bf R}={\bf R}^T>0.$$ The linear
 feedback matrix ${\bf K}$ used as $$\bu(t) = - {\bf K}\bx(t),$$ is the so-called
 optimal linear quadratic regulator (LQR).  Even without understanding the
-detailed derivation, we can quickly become practioners of LQR.  Conveniently,
+detailed derivation, we can quickly become practitioners of LQR.  Conveniently,
 Matlab has a function, <code>K = lqr(A,B,Q,R)</code>. Therefore, to use LQR, one
 simply needs to obtain the linearized system dynamics and to define the
 symmetric positive-definite cost matrices, ${\bf Q}$ and ${\bf R}$.  In their
@@ -1725,7 +1759,7 @@ examples.  Can you set the ${\bf Q}$ and ${\bf R}$ matrices differently, to impr
 
 <p>
 Simulation of the closed-loop response with LQR feedback shows that the
-task is indeed completed - and in an impressive manner.  Often times
+task is indeed completed - and in an impressive manner.  Oftentimes
 the state of the system has to move violently away from the origin in
 order to ultimately reach the origin.  Further inspection reveals the
 (linearized) closed-loop dynamics are in fact non-minimum phase (acrobot has 3 right-half zeros, cart-pole
@@ -1890,8 +1924,8 @@ inverse provides a unique solution when the rank of ${\bf H}_{12}$
 equals $l$, the number of passive degrees of freedom in the system (it
 cannot be more, since the matrix only has $l$ rows).  This rank
 condition is sometimes called the property of "Strong Inertial
-Coupling".  It is state dependent.  Global Strong Inertial Coupling
-if every state is coupled.</p>
+Coupling".  It is state dependent. A system has Global Strong Inertial Coupling
+if it exhibits Strong Inertial Coupling in every state.</p>
 
 </section>
 
@@ -1900,7 +1934,7 @@ if every state is coupled.</p>
 <p>
 In general, we can define some combination of active and passive
 joints that we would like to control.  This combination is sometimes
-called a "task space".  % cite some task space refs here?
+called a "task space". <todo>cite some task space refs here?</todo>
 Consider an output function of the form, $${\bf y} = {\bf
 f}(\bq),$$ with ${\bf y} \in \Re^p$, which defines the task space.  Define
 ${\bf J}_1 = \frac{\partial {\bf f}}{\partial \bq_1}$, ${\bf J}_2 =
@@ -2090,7 +2124,7 @@ complete the task.</p>
 Having thought about the swing-up problem for the simple pendulum,
 let's try to apply the same ideas to the cart-pole system.  The basic
 idea, from <elib>Chung95</elib>, is to use collocated PFL to simplify the
-dynamics, use energy shaping to regulate the pendulum to it's
+dynamics, use energy shaping to regulate the pendulum to its
 homoclinic orbit, then to add a few terms to make sure that the cart
 stays near the origin.  The collocated PFL (when all parameters
 are set to 1) left us with:
@@ -2121,7 +2155,7 @@ that
 Therefore, if we design a controller of the form
 $$u = k \dot\theta\cos\theta \tilde{E},\quad k>0$$
 the result is
-$$\dot{\tilde{E}} = - k \dot\theta^2 \cos^2\theta \tilde{E}.$$  % times ml
+$$\dot{\tilde{E}} = - k \dot\theta^2 \cos^2\theta \tilde{E}.$$  <!-- times ml -->
 This guarantees that $| \tilde{E} |$ is
 non-increasing, but isn't quite enough to guarantee that it will go
 to zero.  For example, if $\theta = \dot\theta = 0$, the system will
@@ -2173,8 +2207,8 @@ orbit.  Proof of another energy-based controller in <elib>Xin04</elib>.</p>
 <section data-type="sect2"><h1>Discussion</h1>
 
 <p>
-The energy shaping controller for swing-up presented here are pretty
-faithful representatives from the field of nonlinear underactuated
+The energy shaping controller for swing-up presented here is a pretty
+faithful representative from the field of nonlinear underactuated
 control.  Typically these control derivations require some clever
 tricks for simplifying or canceling out terms in the nonlinear
 equations, then some clever Lyapunov function to prove stability.  In
@@ -3001,7 +3035,7 @@ point, then hitting the brakes in order to come to a stop exactly at
 the goal.  This would be called a <em>bang-bang</em> control policy;
 these are often optimal for systems with bounded input, and it is in
 fact optimal for the double integrator, although we will not prove it
-until we have developed more tools.  <!-- leave the proof to the pontryagin notes -->.</p>
+until we have developed more tools.  <!-- leave the proof to the pontryagin notes --></p>
 
 <p>
 Let's work out the details of this bang-bang policy.  First, we can
@@ -3094,8 +3128,7 @@ real number or $\infty$.  We will call a problem specification with a finite $T$
 "finite-horizon" problem, and $T=\infty$ an "infinite-horizon"
 problem.  Problems and solutions for infinite-horizon problems tend to be more elegant, but
 care is required to make sure that the integral converges for the
-optimal controller (typically
-by having a goal state/action pair that allows the robot to accrue zero-cost).</p>
+optimal controller (typically by having an achievable goal that allows the robot to accrue zero-cost).</p>
 
 <p> At first glance, our minimum-time problem formulation for the double
 integrator does not look like an additive cost problem.  However, we can write
@@ -3106,7 +3139,7 @@ cost  $$g(x,u) = \begin{cases} 0 & \text{if } x=0, \\ 1 &
 <p>
 We will examine a number of approaches to solving optimal control
 problems throughout the next few chapters.  For the remainder of this chapter, we will
-focus on additive cost problems and their solution via <em>dynamic programming</em>.</p>
+focus on additive-cost problems and their solution via <em>dynamic programming</em>.</p>
 
 </section> <!-- end of additive cost -->
 
@@ -3137,7 +3170,7 @@ insight is that we can find the shortest path from every node by solving
 recursively for the optimal <em>cost-to-go</em> from every node to the goal. One
 such algorithm starts by initializing an estimate $\hat{J}^*=0$ for all $s_i$,
 then proceeds with an iterative algorithm which sets \begin{equation}
-\hat{J}^*(s_i) = \min_{a \in A} \left[ g(s_i,a) +
+\hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[ g(s_i,a) +
 \hat{J}^*\left({f(s_i,a)}\right) \right]. \label{eq:value_update} \end{equation}
 In software, $\hat{J}^*$ can be represented as a vector with dimension equal to
 the number of discrete states.  This algorithm, appropriately known as <em>value
@@ -3182,9 +3215,7 @@ I recommend trying to edit the cost function and obstacles.</p>
 
 </div> <!-- end grid world -->
 
-Graph approximation of a continuous state space.
-
-Stochastic shortest path.
+<p>TODO: figure/text for graph approximation of a continuous state space.</p>
 
 <div data-type="example" class="drake"><h1>Dynamic Programming for the Double Integrator</h1>
 
@@ -3250,7 +3281,7 @@ Equation \ref{eq:HJB} is known as the <em>Hamilton-Jacobi-Bellman</em> (HJB) equ
 of these equations as the limit of a discrete-time approximation of the dynamics, and also gives
 the following sufficiency theorem:
 <div data-type="theorem"><h1>HJB Sufficiency Theorem</h1>
-<p>The following statement is adapted from Proposition 3.2.1 of <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}˙=f(\bx,\bu)$ and an inifinite-horizon additive cost $\int_0^\infty g(\bx,\bu)dt$.  Suppose $J(\bx)$ is a solution
+<p>The following statement is adapted from Proposition 3.2.1 of <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}=f(\bx,\bu)$ and an inifinite-horizon additive cost $\int_0^\infty g(\bx,\bu)dt$.  Suppose $J(\bx)$ is a solution
   to the HJB equation; that is $J$ is continuously differentiable in $\bx$ and is such that
   \[ 0 = \min_{u\in U} \left[ g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx. \]
    Suppose also that $\pi^*(\bx)$ attains the minimum in the equation for all $\bx$.  Further
@@ -3280,12 +3311,13 @@ function: $$J(\bx) = \sqrt{3} q^2 + 2 q \dot{q} + \sqrt{3} \dot{q}^2.$$</p>
 \pd{J}{\dot{q}} = 2q + 2\sqrt{3}\dot{q}, \end{gather*}   we can write
 \begin{align*} g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) &= q^2 + \dot{q}^2 + u^2 +
 (2\sqrt{3} q + 2\dot{q}) \dot{q} + (2q + 2\sqrt{3}\dot{q}) u \end{align*}   This
-is a positive quadratic function in $u$, so we can find the minimum with respect
+is a convex quadratic function in $u$, so we can find the minimum with respect
 to $u$ by finding where the gradient with respect to $u$ evaluates to zero.   \[
 \pd{}{u} \left[ g(\bx,\bu) + \pd{J}{\bx} f(\bx,\bu) \right] = 2u + 2q +
 2\sqrt{3}\dot{q}. \]  Setting this equal to $0$ and   solving for $u$ yields:
-$$u^* = -q - \sqrt{3} \dot{q}.$$  Substituting $u^*$ back into the HJB reveals
-that   the right side does in fact simplify to zero.  I hope you are convinced!
+$$u^* = -q - \sqrt{3} \dot{q},$$ thereby confirming that our policy $\pi$ is in
+fact the minimizer.  Substituting $u^*$ back into the HJB reveals
+that the right side does in fact simplify to zero.  I hope you are convinced!
 </div>
 
 <p>Note that evaluating the HJB for the time-to-go of the minimum-time
@@ -3316,16 +3348,16 @@ gets more complicated.</p>
 systems of interest   are <em>control affine</em>, e.g. I can write \[
 f(\bx,\bu) = f_1(\bx) + f_2(\bx)\bu. \]   We can make another dramatic
 simplification by restrict ourselves to instantaneous cost functions of the form \[
-g(\bx,\bu) = g_1(\bx) + \frac{1}{2} \bu^T {\bf R} \bu, \qquad {\bf R}={\bf R}^T
+g(\bx,\bu) = g_1(\bx) + \bu^T {\bf R} \bu, \qquad {\bf R}={\bf R}^T
 \succ 0. \] In my view, this is not very restrictive - many of the cost
 functions that I find myself choosing to write down can be expressed in this
 form.  Given these assumptions, we can write the HJB as \[ 0 = \min_{\bu} \left[
-g_1(\bx) + \frac{1}{2} \bu^T {\bf R} \bu + \pd{J}{\bx} \left[ f_1(\bx) +
+g_1(\bx) + \bu^T {\bf R} \bu + \pd{J}{\bx} \left[ f_1(\bx) +
 f_2(\bx)\bu \right]\right]. \]  Since this is a quadratic function in $\bu$, if
 the system does not have any constraints on $\bu$, then we can solve in closed-form
 for the minimizing $\bu$ by taking the gradient of the right-hand size:
 \[ \pd{}{\bu} = 2\bu^T {\bf R} + \pd{J}{\bx} f_2(\bx) = 0, \]
-and setting it equal to zero to obtain \[ \bu^* = -{\bf R}^{-1}f_2^T(\bx) \pd{J}{\bx}^T.\]
+and setting it equal to zero to obtain \[ \bu^* = -\frac{1}{2}{\bf R}^{-1}f_2^T(\bx) \pd{J}{\bx}^T.\]
 If there are linear constraints on the input, such as torque limits, then more generally
 this could be solved (at any particular $\bx$) as a quadratic program.</p>
 
@@ -3339,7 +3371,8 @@ dynamic programming</em> (c.f. <elib>Jacobson70</elib>).   </p>
 
 </section> <!-- end solve for u -->
 
-<section data-type="sect2"><h1>Representing the cost-to-go with function approximation</h1>
+<section data-type="sect2"><h1>Numerical solutions for $J^*$</h1>
+
 
 <p> The other major barrier to using the HJB in a value iteration algorithm is
 that  the estimated optimal cost-to-go function, $\hat{J}^*$, must somehow be
@@ -3348,9 +3381,28 @@ the potential form it must take. In fact, knowing the time-to-goal solution for
 minimum-time problem with the double integrator, we see that this function
 might need to be non-smooth for even very simple dynamics and objectives.</p>
 
+<p>One natural way to parameterize $\hat{J}^*$ --
+ a scalar valued-function defined over the state space -- is to define the values on a
+ mesh.  This approach then admits algorithms
+ with close ties to the relatively very advanced numerical methods used to solve
+ other partial differential equations (PDEs),
+ such as the ones that arrive in finite element modeling or fluid dynamics.
+ One important difference, however, is that our PDE lives in the dimension of the state
+ space, while many of the mesh algorithms from the other disciplines are optimized for
+  two or three dimensional space.</p>
+
+<p>A slightly more general view of the problem would describe the mesh (and the
+  associated interpolation functions) as just one form of representations for
+  <a href="https://en.wikipedia.org/wiki/Function_approximation">function approximation</a>.
+
+<todo>  (see Appendix C for a brief background on function
+  approximation) </todo>
+
+<section data-type="sect3"><h1>Representing the cost-to-go with function approximation</h1>
+
 <p>If we approximate $J^*$ with a finitely-parameterized function
 $\hat{J}_\balpha^*$, with parameter vector $\balpha$, then   this immediately raises
-many important questions:
+many important questions:</p>
 <ul>
   <li>What if the true cost-to-go function does not live in
 the prescribed function class; e.g., there does not exist an $\balpha$ which
@@ -3360,31 +3412,42 @@ be the case.)</li>
 <li>What can
 we say about it's convergence?</li>
 </ul>
-In general, many of these questions will have to go unanswered.  But there are some answers available
-for the special case of <em>linear function approximators</em> (see Appendix B for a brief background on function
-approximation).  A linear function approximator takes the form: \[ \hat{J}^*_\balpha(\bx) = \sum_i \alpha_i \psi_i(\bx) = \balpha^T {\bf\psi}(\bx), \]
-where ${\bf \psi}(\bx)$ is a vector of potentially nonlinear features.  Common examples of features include
-polynomials, radial basis functions, or the barycentric interpolator used above.  The distinguishing
-feature of a linear function approximator is the ability to exactly solve for $\balpha$ in order
-to represent a desired function optimally, in a least-squares sense.  For instance, if we
-have a desired set of $N$ input-output points, $(\bx_n,J^d_n)$, then we easily can write
-down the closed form solution to \[ \minimize_\balpha \sum_n \left(\hat{J}_\balpha(\bx_n) - J^d_n \right)^2. \]</p>
 
 <todo> add quote from neuro-dynamic programming preface </todo>
 
+<p>In general, many of these questions will have to go unanswered.  But there are some answers available
+for the special case of <em>linear function approximators</em>.  A linear function approximator takes the form: \[ \hat{J}^*_\balpha(\bx) = \sum_i \alpha_i \psi_i(\bx) = \balpha^T {\bf\psi}(\bx), \]
+where ${\bf \psi}(\bx)$ is a vector of potentially nonlinear features.  Common examples of features include
+polynomials, radial basis functions, or the most interpolation schemes used on a mesh.  <!-- The distinguishing
+feature of a linear function approximator is the ability to exactly solve for $\balpha$ in order
+to represent a desired function optimally, in a least-squares sense.  For instance, if we
+have a desired set of $K$ input-output points, $(\bx_k,J^d_k)$, then we can write
+down the closed-form solution to \[ \minimize_\balpha \sum_k \left(\hat{J}_\balpha(\bx_k) - J^d_k \right)^2. \]
+Using the least squares solution in a value iteration update is sometimes referred to as <i>fitted value iteration</i>.
+In our case, we might choose to minimize, e.g., the "Bellman residual" -- the right side of the HJB which we
+hope will equal zero:
+\[ \balpha \Leftarrow \argmin_\balpha \sum_k \left( \min_\bu \left[ g(x_k,u) + \pd{\hat{J}_\balpha(x_k)}{x} f(x_k,u) \right] \right)^2. \]
+--> <!-- oops the problem above is quartic in alpha, so not simple least squares -->
+</p>
+
+
 <todo> add citations for convergence results </todo>
+
+</section>
 
 </section> <!-- end function approx -->
 
 <todo> try just running snopt on quartic objective </todo>
 
+<!--
 <section data-type="sect2"><h1>A continuous policy iteration algorithm</h1>
 
 <todo> simple (e.g. one-d example) </todo>
 
-</section> <!-- end policy iteration -->
+</section> -->
+<!-- end policy iteration -->
 
-
+<!--
 <section data-type="sect2"><h1>How far can we take this?  (Performance and Scaling)</h1>
 
 <todo>
@@ -3393,9 +3456,65 @@ Errors in bang-bang for double integrator due to discretization.
 Limited in number of dimensions.  Function approximation, but lacks convergence results.
 </todo>
 
-</section> <!-- end scaling -->
+</section> --><!-- end scaling -->
 
 </section> <!-- end continuous DP -->
+
+<section data-type="sect1"><h1>Stochastic Optimal Control</h1>
+
+<p> One of the most amazing features of the dynamic programming, additive cost
+   approach to optimal control is the relative ease with which it extends to optimizing
+   stochastic systems. </p>
+
+<section data-type="sect2"><h1>Graph search -- stochastic shortest path problems</h1>
+
+<p>For discrete systems, we can generalize our dynamics on a graph by adding action-dependent transition
+  probabilities to the edges.  This new dynamical system is known as a Markov Decision Process (MDP), and we
+  write the dynamics completely in terms of the transition probabilities \[ \Pr(s[n+1] = s' | s[n] = s, a[n] = a). \]
+  For discrete systems, this is simply a big lookup table.  The cost that we incur for any execution of
+  system is now a random variable, and so we formulate the goal of control as optimizing the expected cost, e.g.
+  \[ J^*(s[0]) = \min_{a[\cdot]} E \left[ \sum_{n=0}^\infty g(s[n],a[n]) \right]. \]  Note that there are many other potential objectives,
+  such as minimizing the worst-case error, but the expected cost is special because it preserves the
+  dynamic programming recursion:
+  \[ J^*(s) = \min_a E \left[ g(s,a) + J^*(s')\right]  = \min_a \left[ g(s,a) + \sum_{s'} \Pr(s'|s,a) J^*(s') \right].\]
+  Remarkably, if we use these optimality conditions to construct our value iteration algorithm
+  \[ \hat{J}(s) \Leftarrow \min_a \left[ g(s,a) + \sum_{s'} \Pr(s'|s,a) \hat{J}(s') \right],\]
+  then this algorithm has the same strong convergence guarantees of its counterpart for deterministic systems.  And it is essentially
+  no more expensive to compute!
+
+  </p>
+
+<section data-type="sect2"><h1>MDP approximations of deterministic, continuous-state systems</h1>
+
+<p> There is a particularly cute trick that takes advantage of the computational
+  simplicity of the discrete MDP value iteration algorithm.   Let's assume that we have discrete control inputs and discrete-time dynamics,
+  but a continuous state space.   Imagine that we use a mesh
+  to approximate the cost-to-go function over that state space with $K$ mesh points $\hat{J}(x_k)$.
+  We would like to perform the value iteration update:
+  \[ \forall k, \hat{J}^*(x_k) \Leftarrow \min_{a \in A} \left[ g(x_k,a) +
+  \hat{J}^*\left({f(x_k,a)}\right) \right], \] but must deal with the fact that $f(x_k,a)$ might not result in a next
+  state that is directly at a mesh point.  Most interpolation schemes for a mesh
+  can be written as some weighted combination of the values at nearby mesh points, e.g.
+  \[ \hat{J}^*(x) = \sum_i \beta_i \hat{J}^*(x_i), \quad \sum_i \beta_i = 1 \] with $\beta_i$ the relative weight of the $i$th mesh
+  point.  The resulting update is exactly the same as if we treated the system
+  as a discrete state MDP with $\beta_i$ representing the probability of transitioning
+  to state $x_i$!
+</p>
+
+<p> If you looked at the code powering the numerical value iteration results above, you will
+  see that we used precisely this trick -- the continuous problem is discretized into
+  the corresponding MDP and then solved as a discrete system.  This results in nice clean code,
+  but also sheds light on the impact of discretization on the solutions -- discretization error
+  here will cause a sort of diffusion corresponding to the probability of spreading across
+  neighboring nodes.</p>
+
+  <p>Note that the update above could also be viewed as an approximation of the fitted value iteration
+    algorithm for linear function approximators described above.  It is missing a few terms, but
+    is easier to implement and remarkably, is still known to converge.</p> <todo> add citation</todo>
+
+</section>
+
+</section>
 
 <section data-type="sect1"><h1>Extensions</h1>
 
