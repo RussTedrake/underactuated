@@ -122,6 +122,6 @@ if __name__ == '__main__':
     import argparse
     parser = argparse.ArgumentParser(description="Extract all the examples labeled with a 'testfile' attribute, and use them to create unit tests.")
     parser.add_argument("textbook_html_file", type=str, nargs=1)
-    parser.add_argument("destination_dir", type=str, nargs="?", default=os.path.join(os.path.curdir, 'textbook_build'), help="where to put the resulting unit tests (default: ./textbook_build)")
+    parser.add_argument("destination_dir", type=str, nargs="?", default=os.path.join(os.path.curdir, 'examples'), help="where to put the resulting unit tests (default: ./examples)")
     args = parser.parse_args()
     extract_and_write_examples(args.textbook_html_file[0], args.destination_dir)
