@@ -3414,15 +3414,18 @@ we say about it's convergence?</li>
 <todo> add quote from neuro-dynamic programming preface </todo>
 
 <p>In general, many of these questions will have to go unanswered.  But there are some answers available
-for the special case of <em>linear function approximators</em> .  A linear function approximator takes the form: \[ \hat{J}^*_\balpha(\bx) = \sum_i \alpha_i \psi_i(\bx) = \balpha^T {\bf\psi}(\bx), \]
+for the special case of <em>linear function approximators</em>.  A linear function approximator takes the form: \[ \hat{J}^*_\balpha(\bx) = \sum_i \alpha_i \psi_i(\bx) = \balpha^T {\bf\psi}(\bx), \]
 where ${\bf \psi}(\bx)$ is a vector of potentially nonlinear features.  Common examples of features include
-polynomials, radial basis functions, or the barycentric interpolator used above.  The distinguishing
+polynomials, radial basis functions, or the most interpolation schemes used on a mesh.  <!-- The distinguishing
 feature of a linear function approximator is the ability to exactly solve for $\balpha$ in order
 to represent a desired function optimally, in a least-squares sense.  For instance, if we
 have a desired set of $K$ input-output points, $(\bx_k,J^d_k)$, then we can write
 down the closed-form solution to \[ \minimize_\balpha \sum_k \left(\hat{J}_\balpha(\bx_k) - J^d_k \right)^2. \]
-This enables the iteration, sometimes referred to as <i>fitted value iteration</i>:
-\[ \balpha \Leftarrow \argmin_\balpha \sum_k \left(\hat{J}_\balpha(\bx_k) - \min_\bu \left[ g(x_k,u) + \pd{\hat{J}_\balpha(x_k)}{x} f(x_k,u) \right] \right)^2. \]
+Using the least squares solution in a value iteration update is sometimes referred to as <i>fitted value iteration</i>.
+In our case, we might choose to minimize, e.g., the "Bellman residual" -- the right side of the HJB which we
+hope will equal zero:
+\[ \balpha \Leftarrow \argmin_\balpha \sum_k \left( \min_\bu \left[ g(x_k,u) + \pd{\hat{J}_\balpha(x_k)}{x} f(x_k,u) \right] \right)^2. \]
+--> <!-- oops the problem above is quartic in alpha, so not simple least squares -->
 </p>
 
 
