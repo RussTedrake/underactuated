@@ -73,7 +73,7 @@ def find_chapter_numbers(soup):
     appendix_numbers = {}
     next_chapter = 1
     next_appendix = 1
-    for chapter in soup.find_all("section", class_="chapter"):
+    for chapter in soup.find_all("section", "chapter"):
         if chapter.find_parents("appendix"):
             appendix_numbers[chapter_name(chapter)] = next_appendix
             next_appendix += 1
@@ -87,7 +87,7 @@ def parse_examples(code_elements, chapter_numbers, appendix_numbers):
     for el in code_elements:
         if "testfile" not in el.attrs:
             continue
-        ch_name = chapter_name(el.find_parent("section", class_="chapter"))
+        ch_name = chapter_name(el.find_parent("section", "chapter"))
         if ch_name in chapter_numbers:
             chapter_title = "Chapter_{:02d}_{:s}".format(chapter_numbers[ch_name], ch_name)
         elif ch_name in appendix_numbers:
