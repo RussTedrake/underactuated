@@ -45,7 +45,7 @@
               current_part = chapters[i].parentNode;
               part_number += 1;
               if (current_part.className=="part") {
-                toc = toc + "<p style=\"margin-bottom: 0px; text-decoration: underline; font-variant: small-caps;\"><b>" + current_part.getAttribute("title") + "</b></p>\n";
+                toc = toc + "<p style=\"margin-bottom: 0; text-decoration: underline; font-variant: small-caps;\"><b>" + current_part.getAttribute("title") + "</b></p>\n";
               }
             }
 
@@ -549,7 +549,7 @@ course</a> should make it easy for you to see this   system in action.  To try
 it, make sure you've installed <drake></drake>, then open MATLAB and run
 <code>addpath_drake</code> (possibly from your <code>startup.m</code>) in the
 <code>drake</code> directory, then try the following lines (one at a time) from
-the MATLAB command line:
+the MATLAB command line:</p>
 
 <pre><code class="matlab" testfile="testDoublePendulumManipulator">
 % a platform independent way to cd into the example directory
@@ -576,7 +576,6 @@ visualizer.playback(trajectory);
 [H,C_times_v,G,B] = plant.manipulatorEquations()
 % which outputs using the abbreviations v for qdot, s1 for sin(q1), etc
 </code></pre>
-</p>
 </div>
 
 <div data-type="drake"><h1>MATLAB Example (an even simpler version)</h1>
@@ -625,7 +624,7 @@ that can change the ballistic trajectory of my center of mass (barring
 aerodynamic effects).  My control system is underactuated.</p>
 
 <p>For completeness, let's generalize the definition of underactuation to
-systems beyond the second-order control affine systems.
+systems beyond the second-order control affine systems.</p>
 
 <div data-type="definition"> <h1>Underactuated Control Differential
 Equations</h1> An $n$th-order control differential equation control described by
@@ -636,9 +635,9 @@ $t$ if the resulting map ${\bf f}$ is surjective: for every $\frac{d^n{\bf q}}{d
 there exists a ${\bf u}$ which produces the desired response.  Otherwise it is
 underactuated. </div>
 
-It is easy to see that equation \ref{eq:underactuated_def} is a sufficient
+<p>It is easy to see that equation \ref{eq:underactuated_def} is a sufficient
 condition for underactuation.  This definition can also be extended to
-discrete-time systems and/or differential inclusions. </p>
+discrete-time systems and/or differential inclusions.</p>
 
 <p>A quick note about notation.  When describing the dynamics of rigid-body
 systems in this class, I will use $\bq$ for configurations (positions), $\dot{\bq}$ for
@@ -725,11 +724,14 @@ manifest itself as one or more constraints that depend only on position, e.g.
 $\phi(\bq)\le0$.</p>
 
 <p>By our generalized definition of underactuation, we can see that input and
-state constraints can also cause a system to be underactuated. <div
-data-type="example"><h1>Input limits</h1> Consider the constrained second-order
+state constraints can also cause a system to be underactuated.</p>
+
+<div data-type="example"><h1>Input limits</h1> Consider the constrained second-order
 linear system \[ \ddot{x} = u, \quad |u| \le 1. \] By our definition, this
 system is underactuated.  For example, there is no $u$ which can produce the
-acceleration $\ddot{x} = 2$. </div> Input and state constraints can complicate
+acceleration $\ddot{x} = 2$. </div>
+
+<p>Input and state constraints can complicate
 control design in similar ways to having an insufficient number of actuators,
 (i.e., further limiting the set of the feasible trajectories), and often require
 similar tools to find a control solution.</p>
@@ -879,7 +881,7 @@ open_system('constantTorqueDemo');
 % (e.g. to .5).
 </code></pre>
 
-These are relatively simple differential equations, so if I give you $\theta(0)$ and
+<p> These are relatively simple differential equations, so if I give you $\theta(0)$ and
 $\dot\theta(0)$, then you should be able to integrate them to obtain
 $\theta(t)$... right?  Although it is possible, integrating even the simplest
 case ($b = u = 0$) involves elliptic integrals of the first kind; there is
@@ -898,6 +900,7 @@ systems we can imagine, and we can't even solve this system? </p>
 system, then there are a number of techniques we can apply.  In this chapter, we
 will start by investigating graphical solution methods. These methods are
 described beautifully in a book by Steve Strogatz<elib>Strogatz94</elib>.
+</section>
 
 <section data-type="sect2"><h1>The overdamped pendulum</h1>
 
@@ -917,9 +920,9 @@ around on itself every $2\pi$.  To be clear, let's write the system without the
 wrap-around as: \begin{equation}b\dot{x} = u_0 -
 mgl\sin{x}.\label{eq:overdamped_pend_ct}\end{equation} Our goal is to understand
 the long-term behavior of this system: to find $x(\infty)$ given $x(0)$.  Let's
-start by plotting $\dot{x}$ vs $x$ for the case when $u_0=0$:
+start by plotting $\dot{x}$ vs $x$ for the case when $u_0=0$:</p>
 
-<figure> <img width="70%" src="figures/pend_sinx.svg"/> </figure> </p>
+<figure> <img width="70%" src="figures/pend_sinx.svg"/> </figure>
 
 <p> The first thing to notice is that the system has a number of <em>fixed
 points</em> or <em>steady states</em>, which occur whenever $\dot{x} = 0$.  In
@@ -987,11 +990,11 @@ farther from the fixed points.  If we think of the dynamics of the system as a
 flow on the $x$-axis, then we know that anytime $\dot{x} > 0$, the flow is
 moving to the right, and $\dot{x} < 0$, the flow is moving to the left.  If we
 further annotate our graph with arrows indicating the direction of the flow,
-then the entire (long-term) system behavior becomes clear:
+then the entire (long-term) system behavior becomes clear:</p>
 
 <figure> <img width="70%" src="figures/pend_sinx_annotated.svg"/> </figure>
 
-For instance, we can see that any initial condition $x(0) \in (\pi,\pi)$ will
+<p> For instance, we can see that any initial condition $x(0) \in (\pi,\pi)$ will
 result in $\lim_{t\rightarrow \infty} x(t) = 0$.  This region is called the <em>basin of
 attraction</em> of the fixed point at $x^* = 0$. Basins of attraction of two
 fixed points cannot overlap, and the manifold separating two basins of
@@ -1067,9 +1070,9 @@ Let's sketch the phase portrait.  First sketch along the $\theta$-axis. The
 $x$-component of the vector field here is zero, the $y$-component is
 $-mgl\sin\theta.$ As expected, we have fixed points at $\pm \pi, ...$ Now sketch
 the rest of the vector field.  Can you tell me which fixed points are stable?
-Some of them are stable i.s.L., none are asymptotically stable.
+Some of them are stable i.s.L., none are asymptotically stable.</p>
 
-<figure> <img width="80%" src="figures/pend_undamped_phase.svg"/> </figure> </p>
+<figure> <img width="80%" src="figures/pend_undamped_phase.svg"/> </figure>
 
 <section data-type="sect3"><h1>Orbit calculations</h1>
 
@@ -1222,8 +1225,6 @@ point <em>with minimal torque effort</em>?  This is exactly the way that I would
 like you to think about control system design.  And we'll give you your first solution techniques -- using dynamic programming -- in the next lecture.</p>
 
 </section> <!-- damped pend -->
-
-</section> <!-- end of constant torque -->
 
 <section data-type="sect1"><h1>The torque-limited simple pendulum</h1>
 
@@ -1568,11 +1569,11 @@ is asympotitcally stable, stable i.s.L., or unstable (only that it is not expone
 
 <section data-type="sect2"><h1>Controllability of linear systems</h1>
 
-<p>   <div data-type="definition"><h1>Controllability</h1>     A control system
+<div data-type="definition"><h1>Controllability</h1>     A control system
 of the form $$\dot{\bx} = {\bf f}(\bx,\bu)$$ is called   <em>controllable</em>
 if it is possible to construct an unconstrained   input signal, $\bu(t)$, $t \in
 [0,t_f],$ which will move the system from any initial state to any final state
-in a finite interval of time, $0 < t < t_f$ <elib>Ogata96</elib>. </div></p>
+in a finite interval of time, $0 < t < t_f$ <elib>Ogata96</elib>. </div>
 
 <p>
 For the linear system $$\dot{\bx} = {\bf A}\bx + {\bf B}u,$$
@@ -1741,7 +1742,7 @@ in $u_i$.</p>
 
 <div data-type="example" class="drake"><h1>LQR for the Acrobot and Cart-Pole</h1>
 
-Take a minute to play around with the LQR controller for the Acrobot
+<p>Take a minute to play around with the LQR controller for the Acrobot</p>
 <pre><code class="matlab" testfile="testAcrobotLqr">
 cd(fullfile(getDrakePath,'examples','Acrobot'));
 runLQR();
@@ -1753,7 +1754,6 @@ runLQR();
 </code></pre>
 Make sure that you take a minute to look at the code which runs during these
 examples.  Can you set the ${\bf Q}$ and ${\bf R}$ matrices differently, to improve the performance?
-</p>
 </div>
 
 
@@ -1771,7 +1771,7 @@ has 1).</p>
 <p>LQR works essentially out of the box for Quadrotors, if linearized around
   a nominal fixed point (where the non-zero thrust from the propellors is balancing
   gravity).  We have a few Quadrotor models in <drake></drake>.  You should
-  start with the Planar Quadrotor (technically a bi-rotor):
+  start with the Planar Quadrotor (technically a bi-rotor):</p>
 <pre><code class="matlab" testfile="testQuadrotor2dLqr">
 cd(fullfile(getDrakePath,'examples','Quadrotor2D'));
 runLQR();
@@ -1782,7 +1782,6 @@ cd(fullfile(getDrakePath,'examples','Quadrotor'));
 runLQR();
 </code></pre>
 Try to change these ${\bf Q}$ and ${\bf R}$ costs here, too.
-</p>
 </div>
 
 <p>
@@ -2231,14 +2230,14 @@ solving these and other control problems.
 
 <p>
 The acrobot and cart-pole systems are just two of the model systems
-used heavily in underactuated control research.  Other examples include:
+used heavily in underactuated control research.  Other examples include:</p>
 <ul>
   <li>Pendubot</li>
   <li>Inertia wheel pendulum</li>
   <li>Furata pendulum (horizontal rotation and vertical pendulum)</li>
   <li>Hovercraft</li>
 </ul>
-</p>
+
 
 </section>
 
@@ -2302,7 +2301,7 @@ $\theta$, is measured clockwise from the vertical axis. </figcaption>
 the context of walking by <elib>McGeer90</elib>, is the rimless wheel.  This
 simplified system has rigid legs and only a point mass at the hip as
 illustrated in the figure above.  To further simplify the
-analysis, we make the following modeling assumptions:
+analysis, we make the following modeling assumptions:</p>
 <ul>
 <li> Collisions with ground are inelastic and impulsive (only angular
 momentum is conserved around the point of collision).</li>
@@ -2311,7 +2310,7 @@ momentum is conserved around the point of collision).</li>
 (no double support phase).</li>
 <li> $0 \le \gamma < \frac{\pi}{2}$, $0 < \alpha < \frac{\pi}{2}$, $l > 0$.</li>
 </ul>
-Note that the coordinate system used here is slightly different than
+<p>Note that the coordinate system used here is slightly different than
 for the simple pendulum ($\theta=0$ is at the top, and the sign of
 $\theta$ has changed).</p> <todo> update the coordinates (here and in drake)</todo>
 
@@ -2771,16 +2770,15 @@ where I've used $F_{i,x}$ to represent the component of the force in the $x$ dir
 can stabilize a stabilizable fixed point using a change of coordinates plus LQR or even plan/track a desired trajectory using time-varying LQR.  If I were to add additional linear constraints, for instance constraining $F_{min} \le F_i \le F_{max}$, then I can still use linear model-predictive control (MPC) to plan and stabilize a desired motion. By most accounts,
 this is a relatively easy control problem. (Note that it would be considerably harder if my control input or input constraints depend on the orientation, $\theta$, but we don't need that here yet).</p>
 
-  <p>Now imagine that you just a small number of thrusters (let's say two) each with severe input constraints.  To make things more interesting, let us say that you're allowed to move the thrusters, so $\dot{r}_i$ becomes an additional control input, but with some important limitations:  you have to turn the thrusters off when they are moving (e.g. $|F_i||\dot{r}_i| = 0$) and there is a limit to how quickly you can move the thrusters $|\dot{r}|_i \le v_{max}$.  This problem is now a lot more difficult, due especially to
-  the fact that constraints of the form $u_1 u_2 = 0$ are non-convex.
-    <center><img width="25%" src="figures/complementarityConstraint.svg"/></center>
-    I find this a very useful thought exercise; somehow our controller needs to make an effectively discrete decision to turn off a thruster and move it.  The framework of optimal control should support this - you are sacrificing a short-term loss of control authority for the long-term benefit of having the thruster positioned where you would like, but we haven't developed tools yet that deal well with this discrete plus continuous
-decision making.  We'll need to address that here.
-  </p>
+<p>Now imagine that you just a small number of thrusters (let's say two) each with severe input constraints.  To make things more interesting, let us say that you're allowed to move the thrusters, so $\dot{r}_i$ becomes an additional control input, but with some important limitations:  you have to turn the thrusters off when they are moving (e.g. $|F_i||\dot{r}_i| = 0$) and there is a limit to how quickly you can move the thrusters $|\dot{r}|_i \le v_{max}$.  This problem is now a lot more difficult, due especially to
+the fact that constraints of the form $u_1 u_2 = 0$ are non-convex.</p>
+  <center><img width="25%" src="figures/complementarityConstraint.svg"/></center>
+<p>I find this a very useful thought exercise; somehow our controller needs to make an effectively discrete decision to turn off a thruster and move it.  The framework of optimal control should support this - you are sacrificing a short-term loss of control authority for the long-term benefit of having the thruster positioned where you would like, but we haven't developed tools yet that deal well with this discrete plus continuous
+decision making.  We'll need to address that here.</p>
 
-<p>Unfortunately, although the problem is already difficult, we need to continue to add constraints.  Now let's say additionally, that the thrusters can only be turned on in certain locations, as cartooned here:
+<p>Unfortunately, although the problem is already difficult, we need to continue to add constraints.  Now let's say additionally, that the thrusters can only be turned on in certain locations, as cartooned here:</p>
   <center><img width="60%" src="figures/hovercraftCartesianConstraints.svg"/></center>
-The union of these regions need not form a convex set.  Furthermore, these locations could be specified in the robot frame, but may also be specified in the world frame, which I'll call ${\bf p}_i$: $${\bf p}_i = {\bf r}_i - \begin{bmatrix} x \\ 0 \\ z \end{bmatrix}.$$  This problem still feels like it should be tractable, but it's definitely getting hard.</p>
+<p>The union of these regions need not form a convex set.  Furthermore, these locations could be specified in the robot frame, but may also be specified in the world frame, which I'll call ${\bf p}_i$: $${\bf p}_i = {\bf r}_i - \begin{bmatrix} x \\ 0 \\ z \end{bmatrix}.$$  This problem still feels like it should be tractable, but it's definitely getting hard.</p>
 
 </section>
 <section data-type="sect2"><h1>Robots with (massless) legs</h1>
@@ -2834,17 +2832,17 @@ the center of pressure is a "zero-moment point" (ZMP) -- a property that we will
   As an example, we can easily relate constraints on the CoP to constraints on $\ddot{x}$.
   It is easy to verify from the definition that the CoP must live inside the <a href="http://en.wikipedia.org/wiki/Convex_hull">convex hull</a> of the ground contact points.  Therefore, if we use the $\ddot{z}=\ddot\theta=0$ strategy, then this directly implies strict bounds on the possible accelerations of the center of mass given the locations of the ground contacts.</p>
 
-  <section data-type="sect2"><h1>An aside: the zero-moment point derivation</h1>
+<section data-type="sect2"><h1>An aside: the zero-moment point derivation</h1>
 
-    <p>The zero-moment point (ZMP) is discussed very frequently in the current literature
-      on legged robots.  It also has an unfortunate tendency to be surrounded by some confusion; a number of people have defined the ZMP is slightly different ways (see e.g. <elib>Goswami99</elib> for a summary).  Therefore, it makes sense to provide a simple derivation here.</p>
+<p>The zero-moment point (ZMP) is discussed very frequently in the current literature
+  on legged robots.  It also has an unfortunate tendency to be surrounded by some confusion; a number of people have defined the ZMP is slightly different ways (see e.g. <elib>Goswami99</elib> for a summary).  Therefore, it makes sense to provide a simple derivation here.</p>
 
-    <p>First let us recall that for rigid body systems I can always summarize the
-      contributions from many external forces as a single <i>wrench</i> (force and torque) on the object -- this is simply because the $F_i$ terms enter our equations of motion linearly.  Specifically, given any point in space, $r$, in coordinates relative to $(x,z)$:
-    <figure><img width="70%" src="figures/zmp_derivation.svg"/></figure>
+<p>First let us recall that for rigid body systems I can always summarize the
+  contributions from many external forces as a single <i>wrench</i> (force and torque) on the object -- this is simply because the $F_i$ terms enter our equations of motion linearly.  Specifically, given any point in space, $r$, in coordinates relative to $(x,z)$:</p>
+<figure><img width="70%" src="figures/zmp_derivation.svg"/></figure>
 <todo>update diagram to have r instead of p</todo>
 
-I can re-write the equations of motion as
+<p>I can re-write the equations of motion as
 \begin{align*}
 m\ddot{x} =& \sum_i F_{i,x} = F_{net,x},\\
 m\ddot{z} =& \sum_i F_{i,z} - mg = F_{net,z},\\
@@ -2955,12 +2953,11 @@ brick moving along the x-axis on a frictionless surface, with a control
 input which provides a horizontal force, $u$.
 The task is to design a
 control system, $u = \pi(\bx,t)$, $\bx=[q,\dot{q}]^T$ to regulate this
-brick to $\bx = [0,0]^T$.
+brick to $\bx = [0,0]^T$.</p>
 <figure>
 <img width="70%" src="figures/double_integrator_brick.svg"/>
 <figcaption>The double integrator as a unit-mass brick on a frictionless surface</figcaption>
 </figure>
-</p>
 
 <p>
 In order to formulate this control design problem using optimal
@@ -2977,7 +2974,7 @@ task, e.g.:
 <li> Quadratic cost:  $\min_\pi \int_{t_0}^{\infty} \left[ \bx^T(t)
     {\bf Q} \bx(t) \right] dt,$ ${\bf Q}\succ0$.</li>
 </ul>
-where the first is a constrained optimization formulation which
+<p>where the first is a constrained optimization formulation which
 optimizes time, and the second accrues a penalty at every instance
 according to the distance that the state is away from the origin (in a
 metric space defined by the matrix ${\bf Q}$), and therefore
@@ -3048,7 +3045,7 @@ Integrating the equations, we have \begin{gather*} \ddot{q}(t) = u =
   \frac{1}{2} t^2.  \end{gather*}
 Substituting $t = \dot{q}(0) - \dot{q}$ into the solution give $\dot{q}$ reveals
 that the system orbits are parabolic arcs:
-\[ q = -\frac{1}{2} \dot{q}^2 + c_{-}, \] with $c_{-} = q(0) + \frac{1}{2}\dot{q}^2(0)$.
+\[ q = -\frac{1}{2} \dot{q}^2 + c_{-}, \] with $c_{-} = q(0) + \frac{1}{2}\dot{q}^2(0)$.</p>
 <figure>
   <img width="80%" src="figures/double_integrator_orbits.svg"/>
   <figcaption>Two solutions for the system with $u=-1$</figcaption>
@@ -3058,8 +3055,7 @@ q = q0 + qdot0(qdot-qdot0) + 1/2(qdot-qdot0)^2
   = q0 + qdot0*qdot - qdot0^2 + 1/2qdot^2 - qdot*qdot0 + 1/2qdot0^2
   = 1/2qdot^2 + (q0 - 1/2 qdot0^2)
 -->
-Similarly, the solutions for $u=1$ are $q = \frac{1}{2} \dot{q}^2 + c_{+}$, with $c_{+}=q(0)-\frac{1}{2}\dot{q}^2(0)$.
-</p>
+<p>Similarly, the solutions for $u=1$ are $q = \frac{1}{2} \dot{q}^2 + c_{+}$, with $c_{+}=q(0)-\frac{1}{2}\dot{q}^2(0)$.</p>
 
 <p> Perhaps the most important of these orbits are the ones that pass directly
 through the origin (e.g., $c_{-}=0$). Following our initial logic, if the system is going
@@ -3068,7 +3064,7 @@ on the accelerator ($u=-\text{sgn}(q)$).  If it's going faster than the
 $\dot{q}$ that we've solved for, then still the best thing to do is to brake;
 but inevitably the system will overshoot the origin and have to come back.  We
 can summarize this policy with: \[ u = \begin{cases}  +1 & \text{if } (\dot{q} < 0 \text{ and } q \le \frac{1}{2} \dot{q}^2) \text{ or } (\dot{q}\ge 0 \text{ and } q < -\frac{1}{2} \dot{q}^2) \\ 0 & \text{if } q=0 \text{
-and } \dot{q}=0 \\ -1 & \text{otherwise} \end{cases} \]
+and } \dot{q}=0 \\ -1 & \text{otherwise} \end{cases} \]</p>
 <!--This policy is cartooned in
 Figure~\ref{fig:mintime_double_int}.  %Trajectories of the system
 %executing this policy are also included - the fundamental
@@ -3086,7 +3082,7 @@ and illustrate some of the optimal solution trajectories:
 <figcaption>Solution trajectories of system using the optimal policy</figcaption>
 </figure>
 
-And for completeness, we can compute the optimal time to the goal by solving for
+<p>And for completeness, we can compute the optimal time to the goal by solving for
 the amount of time required to reach the switching surface plus the amount of
 time spent moving along the switching surface to the goal.  With a little
 algebra, you will find that the time to goal, $T(\bx)$, is given by
@@ -3103,14 +3099,13 @@ T = (qdotm-qdot0)+qdotm = 2*sqrt(-c+) - qdot0
 for u=-1, qdotm^2 = c- , qdotm = -sqrt(c-)
 T = (qdot0-qdotm)-qdotm = qdot0 + 2*sqrt(c-)
 -->
-plotted here:
+plotted here:</p>
 <figure>
 <img width="80%" src="figures/double_integrator_mintime_cost_to_go.svg"/>
 <figcaption>Time to the origin using the bang-bang policy</figcaption>
 </figure>
 Notice that the function is continuous (though not smooth), even though
 the policy is discontinous.
-</p>
 
 </div> <!-- end of example -->
 
@@ -3157,9 +3152,12 @@ controllers. Many of you will have learned it before as a tool for graph search.
 
 <p>Imagine you have a directed graph with states (or nodes) $\{s_1,s_2,...\} \in
 S$ and "actions" associated with edges labeled as $\{a_1,a_2,...\} \in A$, as in
-the following trivial example: <figure><img width="70%"
+the following trivial example:</p>
+<figure><img width="70%"
 src="figures/graph_search.svg"/><figcaption>A simple directed
-graph.</figcaption></figure> Let us also assume that each edge has an associate
+graph.</figcaption></figure>
+
+<p>Let us also assume that each edge has an associate
 weight or cost, using $g(s,a)$ to denote the cost of being in state $s$ and
 taking action $a$. Furthemore we will denote the transition "dynamics" using \[ s[n+1] =
 f(s[n],a[n]). \] For instance, in the graph above, $f(s_1,a_1) = s_2$.</p>
@@ -3211,7 +3209,7 @@ are to move up, down, left, right, or do nothing.  <elib>Sutton98</elib></p>
 cd(fullfile(getDrakePath,'examples'));
 GridWorld.runValueIteration();
 </code></pre>
-I recommend trying to edit the cost function and obstacles.</p>
+<p>I recommend trying to edit the cost function and obstacles.</p>
 
 </div> <!-- end grid world -->
 
@@ -3224,7 +3222,7 @@ I recommend trying to edit the cost function and obstacles.</p>
 cd(fullfile(getDrakePath,'examples'));
 DoubleIntegrator.runValueIteration();
 </code></pre>
-Again, you can easily try different cost functions by editing the code yourself.</p>
+<p>Again, you can easily try different cost functions by editing the code yourself.</p>
 
 </div>
 
@@ -3253,7 +3251,7 @@ pendulum, which was intractable analytically.</p>
 cd(fullfile(getDrakePath,'examples','Pendulum'));
 runValueIteration();
 </code></pre>
-Again, you can easily try different cost functions by editing the code yourself.</p>
+<p>Again, you can easily try different cost functions by editing the code yourself.</p>
 
 </div>
 
@@ -3279,7 +3277,7 @@ additive cost $\int_0^\infty g(\bx,\bu)dt$, we have:
 \begin{gather} 0 = \min_\bu \left[ g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right], \label{eq:HJB} \\ \pi^*(\bx) = \argmin_\bu \left[ g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right]. \end{gather}
 Equation \ref{eq:HJB} is known as the <em>Hamilton-Jacobi-Bellman</em> (HJB) equation.  <elib>Bertsekas05</elib> <!-- chapter 3 --> gives an informal derivation
 of these equations as the limit of a discrete-time approximation of the dynamics, and also gives
-the following sufficiency theorem:
+the following sufficiency theorem:</p>
 <div data-type="theorem"><h1>HJB Sufficiency Theorem</h1>
 <p>The following statement is adapted from Proposition 3.2.1 of <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}=f(\bx,\bu)$ and an inifinite-horizon additive cost $\int_0^\infty g(\bx,\bu)dt$.  Suppose $J(\bx)$ is a solution
   to the HJB equation; that is $J$ is continuously differentiable in $\bx$ and is such that
@@ -3289,9 +3287,8 @@ the following sufficiency theorem:
    from any state $\bx$, and that the control input trajectory, $\bu^*(t)$, obtained by evaluating
    $\pi^*$ along any solution is piecewise continuous as a function of $t$.  Then $J$ is equal
    to the optimal cost-to-go function, $J(\bx)=J^*(\bx)$ for all $\bx$, and the control trajectories
-   $\bu^*(t)$ are optimal.
+   $\bu^*(t)$ are optimal.</p>
 </div>
-</p>
 
 <p>As a tool for verifying optimality, the HJB equations are actually surprisingly easy to work with:
   we can verify optimality for an infinite-horizon objective without doing any integration; we simply
@@ -3393,10 +3390,11 @@ might need to be non-smooth for even very simple dynamics and objectives.</p>
 
 <p>A slightly more general view of the problem would describe the mesh (and the
   associated interpolation functions) as just one form of representations for
-  <a href="https://en.wikipedia.org/wiki/Function_approximation">function approximation</a>.
+  <a href="https://en.wikipedia.org/wiki/Function_approximation">function approximation</a>.</p>
 
 <todo>  (see Appendix C for a brief background on function
   approximation) </todo>
+</section>
 
 <section data-type="sect3"><h1>Representing the cost-to-go with function approximation</h1>
 
@@ -3433,9 +3431,9 @@ hope will equal zero:
 
 <todo> add citations for convergence results </todo>
 
-</section>
-
 </section> <!-- end function approx -->
+
+</section> <!-- end continuous time DP -->
 
 <todo> try just running snopt on quartic objective </todo>
 
@@ -3457,8 +3455,6 @@ Limited in number of dimensions.  Function approximation, but lacks convergence 
 </todo>
 
 </section> --><!-- end scaling -->
-
-</section> <!-- end continuous DP -->
 
 <section data-type="sect1"><h1>Stochastic Optimal Control</h1>
 
@@ -3515,8 +3511,6 @@ Limited in number of dimensions.  Function approximation, but lacks convergence 
 
 </section>
 
-</section>
-
 <section data-type="sect1"><h1>Extensions</h1>
 
 <todo> add section on extensions.  discounting.  finite-horizon / time-varying dynamics or cost.</todo>
@@ -3559,6 +3553,8 @@ This equation can be solved for ${\bf S}$ numerically with the Riccati recursion
 -->
 
 </section> <!-- end of extensions -->
+
+</section> <!-- end of stochastic optimal control -->
 
 </section> <!-- ***************  end of dynamic programming **************   -->
 
@@ -3870,8 +3866,7 @@ with our favorite simple example. </p>
 
 <div data-type="example"><h1>Stability of the Damped Pendulum</h1>
 
-<p>
-<center><img width="25%" src="figures/simple_pend.svg"/></center></p>
+<center><img width="25%" src="figures/simple_pend.svg"/></center>
 
 <p>Recall that the equations of motion of the
 damped simple pendulum are given by \[ ml^2 \ddot{\theta} + mgl\sin\theta = -b\dot{\theta}, \]
@@ -3894,8 +3889,11 @@ complicated systems?</p>
 <p>One route forward was from looking at the total system energy (kinetic + potential),
   which we can write down: \[ E(\theta,\dot{\theta}) = ml^2\dot{\theta}^2 - mgl \cos\theta. \]
 Recall that the contours of this energy function are the orbits of the undamped
-pendulum.  <center><img width="50%" src="figures/pend_undamped_phase.svg"/></center>
-A natural route to proving the stability of the downward fixed points is by arguing
+pendulum.</p>
+
+<center><img width="50%" src="figures/pend_undamped_phase.svg"/></center>
+
+<p>A natural route to proving the stability of the downward fixed points is by arguing
 that energy decreases for the damped pendulum (with $b>0$) and so the system will
 eventually come to rest at the minimum energy, $E = -mgl\cos\theta$, which
 happens at $\theta=2\pi k$.  Let's make that argument precise.
@@ -4210,23 +4208,22 @@ linear systems.</p>
 
 <div data-type="example" class="drake"><h1>Common Lyapunov analysis for linear systems</h1>
 
-<p>Suppose you have a system governed by the equations $\dot\bx = {\bf A}\bx$, where the matrix ${\bf A}$ is unknown, but it's uncertain elements can be bounded.  There are a number of ways to write down this uncertainty set; let us choose to write this by describing ${\bf A}$ as the affine combination of a number of known matrices, $${\bf A} = \sum_{i} \beta_i {\bf A}_i, \quad \sum_i \beta_i = 1, \quad \forall i, \beta_i > 0.$$  This is just one way to specify the uncertainty; geometrically it is describing a polygon of uncertain parameters (in the space of elements of ${\bf A}$ with each ${\bf A}_i$ as one of the vertices in the polygon.
+<p>Suppose you have a system governed by the equations $\dot\bx = {\bf A}\bx$, where the matrix ${\bf A}$ is unknown, but it's uncertain elements can be bounded.  There are a number of ways to write down this uncertainty set; let us choose to write this by describing ${\bf A}$ as the affine combination of a number of known matrices, $${\bf A} = \sum_{i} \beta_i {\bf A}_i, \quad \sum_i \beta_i = 1, \quad \forall i, \beta_i > 0.$$  This is just one way to specify the uncertainty; geometrically it is describing a polygon of uncertain parameters (in the space of elements of ${\bf A}$ with each ${\bf A}_i$ as one of the vertices in the polygon.</p>
 <figure>
   <img width="50%" src="figures/affine_combination_of_matrices.svg"/>
-</figure></p>
+</figure>
 
   <p>Now we can formulate the search for a common Lyapunov function using \[
     \find_{\bf p} \quad  \subjto \quad {\bf P} \succeq 0,  \quad \forall_i, {\bf PA}_i + {\bf A}_i^T {\bf P} \preceq 0.\]  The solver will then return a matrix ${\bf P}$ which
  satisfies all of the constraints, or return saying "problem is infeasible".  It can easily be verified that if ${\bf P}$ satisfies the Lyapunov condition at all of the vertices, then it satisfies the condition for every ${\bf A}$ in the set:  \[ {\bf P}(\sum_i \beta_i {\bf A}_i) + (\sum_i \beta_i {\bf A}_i)^T {\bf P} = \sum_i \beta_i ({\bf P A}_i + {\bf A}_i^T {\bf P}) \preceq 0, \] since $\forall i$, $\beta_i > 0$.  Note that, unlike the simple Lyapunov equation for a known linear system, this condition being satisfied is a sufficient but not a necessary condition -- it is possible that the set of uncertain matrices ${\bf A}$ is robustly stable, but that this stability cannot be demonstrated with a common quadratic Lyapunov function.</p>
 
 <p>
-You can try this example for yourself in <drake></drake>.
+You can try this example for yourself in <drake></drake>.</p>
 <pre><code class="matlab" testfile="testCommonLyapunovForLinearSystems">
 cd(fullfile(getDrakePath,'examples'));
 commonLyapunovForLinearSystems;
 </code></pre>
-As always, make sure that you open up the code and take a look.
-</p>
+<p>As always, make sure that you open up the code and take a look.</p>
 </div>
 
 <p>The examples above are very important because they establish a connection between
@@ -4287,16 +4284,16 @@ However, there are a handful of gaps which make the existence of this solution a
       & \lambda(x) \sos \end{align*}
     </p>
 
-    <p>Try it yourself:
+    <p>Try it yourself:</p>
     <pre><code class="matlab" testfile="testCubicPolynomialSos">
     cd(fullfile(getDrakePath,'examples'));
     CubicPolynomialExample.sosExample;
-    </code></pre></p>
+    </code></pre>
 
-    <p> To see the code that sets up the optimization, try:
+    <p> To see the code that sets up the optimization, try:</p>
     <pre><code class="matlab">
     edit('CubicPolynomialExample.sosExample')
-    </code></pre></p>
+    </code></pre>
 
   </div>
 
@@ -4327,7 +4324,7 @@ However, there are a handful of gaps which make the existence of this solution a
   The algorithm successfully found that $x \in (-1,1)$ is the region of attraction.
 </div>
 
-  Remember that although we have tried to make it convenient to call these functions, they are not a black box.  I highly recommend opening up the <code>regionOfAttraction</code> method and understanding how it works.
+  <p>Remember that although we have tried to make it convenient to call these functions, they are not a black box.  I highly recommend opening up the <code>regionOfAttraction</code> method and understanding how it works.
   </p>
 
   <div data-type="example" class="drake"><h1>Region of attraction for the time-reversed Van der Pol oscillator</h1>
@@ -4454,13 +4451,13 @@ and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
 
 <p>The picture that you should have in your head is a nonlinear, potentially non-convex
   objective function defined over (multi-dimensional) $z$, with a subset of
-  possible $z$ values satisfying the constraints.
+  possible $z$ values satisfying the constraints.</p>
   <figure>
     <img width="80%" src="figures/nonlinear_optimization_w_minima.svg"/>
     <figcaption>One-dimensional cartoon of a nonlinear optimization problem.  The
       red dots represent local minima.  The blue dot represents the optimal solution.</figcaption>
   </figure>
-  Note that minima can be the result of the objective function having zero-derivative
+  <p>Note that minima can be the result of the objective function having zero-derivative
   <em>or</em> due to a sloped objective up against a constraint.</p>
 
 <p>Numerical methods for solving these optimization problems require an initial guess, $\hat{z}$,
@@ -4660,7 +4657,7 @@ integration scheme above $\pd{\bu[n]}{\bu_i} = 0$ if $i\ne n$.</p>
     <li>Calculate backwards: $$\lambda[n-1] = \pd{g(\bx[n],\bu[n])}{\bx}^T + \pd{f(\bx[n],\bu[n])}{\bx}^T \lambda[n],$$ from $\lambda[N-1]=0$</li>
     <li>Extract the gradients: $$\pd{J}{\bu[n]} = \pd{g(\bx[n],\bu[n])}{\bu} + \lambda[n]^T \pd{f(\bx[n],\bu[n])}{\bu},$$ with $\pd{J}{\bu_i} = \sum_n \pd{J}{\bu[n]}\pd{\bu[n]}{\bu_i}$.</li>
   </ol>
-  Here $\lambda[n]$ is a vector the same size as $\bx[n]$ which has an interpretation as
+<p>Here $\lambda[n]$ is a vector the same size as $\bx[n]$ which has an interpretation as
   $\lambda[n]=\pd{J}{\bx[n+1]}^T$.  The equation governing $\lambda$ is known as the <em>adjoint
   equation</em>, and it represents a dramatic efficient improvement over calculating the
   huge number of simulation gradients described above. In case you are interested,
@@ -4793,7 +4790,7 @@ requiring this to be zero is equivalent to requiring the constraints to be satis
 <p>Consider the following optimization:
 $$\min_{x,y} x+y, \quad \subjto \quad x^2 + y^2 = 1.$$
 The level sets of $x+y$ are straight lines with slope $-1$, and
-the constraint requires that the solution lives on the unit circle.<p>
+the constraint requires that the solution lives on the unit circle.</p>
 <figure>
   <img width="80%" src="figures/lagrange_multipliers_unit_circle.svg"/>
 </figure>
@@ -4977,7 +4974,7 @@ cd(fullfile(getDrakePath,'examples'));
 VanDerPol.runDircol();
 </code></pre>
 
-<a href="figures/vanDerPolDircol.swf">Click here to see an animation of the
+<p><a href="figures/vanDerPolDircol.swf">Click here to see an animation of the
 result.</a>  The red dots are the initial and final conditions (which appear as
 one dot once the constraints are satified).  As always, make sure that you take
 a look at the code.  Poke around.  Try changing some things.</p>
@@ -5031,7 +5028,7 @@ coordinate system relative to the orbit, with coordinates</p>
   <li>$\bx_\perp(\tau)$ - the remaining coordinates, linearly independent from $\tau$.</li>
 </ul>
 <p>Given a state $\bx$ in the original coordinates, we must define a smooth mapping $\bx \rightarrow (\tau, \bx_\perp)$
-to this new coordinate system.  For example, for a simple ring oscillator we might have:
+to this new coordinate system.  For example, for a simple ring oscillator we might have:</p>
 <figure><img width="80%" src="figures/transverseCoordinates.svg"/><figcaption>A moving coordinate system
   along the limit cycle.</figcaption></figure>
 In general, for an $n$-dimensional state space, $\tau$ will always be a scalar, and $\bx_\perp$ will
@@ -5044,12 +5041,10 @@ to the orbit, but must simply be <em>transversal</em> (not parallel). Having def
   \dot{\tau} = f_1(\bx_\perp,\tau) \\
   \dot\bx_\perp = f_2(\bx_\perp,\tau).
   \end{gather*}
-The value of this construction for Lyapunov analysis was proposed in <elib>Hauser94a</elib> and
+<p>The value of this construction for Lyapunov analysis was proposed in <elib>Hauser94a</elib> and
 has been extended nicely to control design in <elib>Shiriaev08</elib> and for region of attraction
 estimation in <elib>Manchester10b</elib>.  A particular numerical strategy for defining the
-transversal coordinates is given in <elib>Manchester10a</elib>.
-
-</p>
+transversal coordinates is given in <elib>Manchester10a</elib>.</p>
 
 
 <div data-type="theorem"><h1>A Lyapunov theorem for orbital stability</h1>
@@ -5285,7 +5280,7 @@ axis([-10,25,-10,25]);
   <figure>
     <img width="70%" src="figures/random_tree.svg"/>
   </figure>
-  We're nowhere close to the goal yet, and it's not exactly a hard problem.
+  <p>We're nowhere close to the goal yet, and it's not exactly a hard problem.
 </p>
 
 </div>
@@ -5509,7 +5504,9 @@ Note that this choice of the ${\bf C}$ matrix was not unique.
 <p> The manipulator equations are very general, but they do define some
 important characteristics.  For example, $\ddot{\bq}$ is (state-dependent)
 linearly related to the control input, $\bu$.   This observation justifies the
-control-affine form of the dynamics assumed throughout the notes.</p> Note that we have
+control-affine form of the dynamics assumed throughout the notes.</p>
+
+<p>Note that we have
 chosen to use the notation of second-order systems (with $\dot{\bq}$ and
 $\ddot{\bq}$ appearing in the equations) throughout this book.  Although I
 believe it provides more clarity, there is an important limitation to this
@@ -5703,7 +5700,7 @@ can be implemented by deriving from <code>DrakeSystem</code> and defining the <c
 
 <div data-type="example" class="drake"><h1>A simple discrete-time system</h1>
 <p>
-Consider the system \begin{gather*}x[n+1] = x^3[n],\\ y[n] = x[n].\end{gather*}  This system has zero inputs, one (discrete) state variable, and one output.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/examples/SimpleDTExample.m">code</a>:
+Consider the system \begin{gather*}x[n+1] = x^3[n],\\ y[n] = x[n].\end{gather*}  This system has zero inputs, one (discrete) state variable, and one output.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/examples/SimpleDTExample.m">code</a>:</p>
 <pre><code class="matlab" testfile="SimpleDTExample">
 classdef SimpleDTExample < DrakeSystem
   methods
@@ -5726,7 +5723,6 @@ classdef SimpleDTExample < DrakeSystem
   end
 end
 </code></pre>
-</p>
 </div>
 
 
@@ -5756,7 +5752,7 @@ single DT sample time for each individual <code>DrakeSystem</code> (but multiple
   Consider the system \begin{gather*}x_1(t+t') = x_1^3(t), \quad \forall
   t \in \{0,1,2,..\}, \forall t' \in (0,1], \\\dot{x}_2 =
   -x_2(t) + x_2^3(t), \end{gather*} which is the combination of the
-previous two examples into a single system.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/examples/SimpleMixedCTDTExample.m">code</a>:
+previous two examples into a single system.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/examples/SimpleMixedCTDTExample.m">code</a>:</p>
 <pre><code class="matlab" testfile="SimpleMixedCTDTExample">
 classdef SimpleMixedCTDTExample < DrakeSystem
   methods
@@ -5785,7 +5781,6 @@ classdef SimpleMixedCTDTExample < DrakeSystem
     end
   end
 end</code></pre>
-</p>
 </div>
 
 
@@ -5821,7 +5816,7 @@ and continuous-time dynamics.<p>
 
 <center><img style="width:550px;" src="figures/hybrid_system.svg"/></center>
 
-Event-driven systems in <drake></drake> are described using the language
+<p>Event-driven systems in <drake></drake> are described using the language
 from the Hybrid Systems community.  Transitions between individual
 modes are described by a <i>guard</i> function, denoted by
 $\phi(t,x,u)$ in the figure, which triggers a transition
@@ -5915,7 +5910,6 @@ classdef BallPlant < HybridDrakeSystem
   end
 end
 </code></pre>
-</p>
 </div>
 
 
@@ -5970,13 +5964,12 @@ classdef LinearGaussianExample < StochasticDrakeSystem
   end
 end
 </code></pre>
-</p>
 </div>
 
 <p><b>Important Special Cases</b>.
 There are many special cases of dynamical systems with structure in the
 dynamics which can be exploited by our algorithms.  Special cases of
-dynamical systems implemented in <drake></drake> include
+dynamical systems implemented in <drake></drake> include</p>
 <ul>
   <li>Second-order systems, given by $\ddot{q} = f(t,q,\dot{q},u),$ $y
   = g(t,q,\dot{q},u)$, and $\phi_1(q)=0$ and $\phi_2(q,\dot{q})=0$.</li>
@@ -5995,7 +5988,7 @@ y = Cx + Du,
 \end{gather*}
 and $\phi(x)=\{\}$.</li>
 </ul>
-These special cases are implemented by classes derived from <code>DrakeSystem</code>.
+<p>These special cases are implemented by classes derived from <code>DrakeSystem</code>.
 You should always attempt to derive from the deepest class in the hierarchy that
 describes your system.  </p>
 
@@ -6112,7 +6105,7 @@ fnplt(traj);
 </code></pre>
 <!-- also use set(gca,'FontSize',20); -->
 
-<p>These generate the plots below
+<p>These generate the plots below</p>
 <figure>
   <table width="100%"><tr width="100%"><td>
     <img style="width:250px" src="figures/simple_ct_example.svg"/>
@@ -6172,11 +6165,10 @@ understand (most of) the Simulink solver parameters.</p>
 <p>
 There are a number of options for creating a movie file from your simulation,
 depending on which Visualizer you used.  Given a trajectory, <code>traj</code>,
-and a Visualizer object, <code>v</code>, use
+and a Visualizer object, <code>v</code>, use</p>
 <pre><code class="matlab">
 playbackMovie(v,traj);
 </code></pre>
-</p>
 
 <p>If you specify an extension in your filename when you are prompted,
 then playbackMovie will attempt to write in the specified format.  If you
@@ -6258,11 +6250,8 @@ allowing you to refine this interaction.</p>
 
 <p> Again, please engage us on the forums on the <drake></drake> website, <a href="http://drake.mit.edu">http://drake.mit.edu</a> if you have questions or find any problems with these examples.  And please make sure you search the existing issues first.</p>
 
-</section>
-</section>
-
-</section>
-
+</section> <!-- end chapter The online community -->
+</section> <!-- end chapter Drake -->
 
 </appendix>
 
