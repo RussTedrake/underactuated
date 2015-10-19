@@ -736,7 +736,7 @@ control design in similar ways to having an insufficient number of actuators,
 (i.e., further limiting the set of the feasible trajectories), and often require
 similar tools to find a control solution.</p>
 
-<p data-type="sect2"><h1>Nonholonomic constraints</h1>
+<section data-type="sect2"><h1>Nonholonomic constraints</h1>
 
 <p> You might have heard of the term "nonholonomic system" (see e.g.
 <elib>Bloch03</elib>), and be thinking about how nonholonomy relates to
@@ -1046,7 +1046,7 @@ exercise~\ref{p:pend_bifurcation}.-->  Finally, let's return to the original
 equations in $\theta$, instead of in $x$.  Only one point to make: because of
 the wrap-around, this system will <em>appear</em> have oscillations.  In fact,
 the graphical analysis reveals that the pendulum will turn forever whenever
-$|u_0| > mgl$, but now you understand that this is not an oscillation, but an
+$|u_0| > \frac{mgl}{b}$, but now you understand that this is not an oscillation, but an
 instability with $\theta \rightarrow \pm \infty$. </p>
 
 </section> <!-- end of overdamped pend -->
@@ -2234,7 +2234,7 @@ used heavily in underactuated control research.  Other examples include:</p>
 <ul>
   <li>Pendubot</li>
   <li>Inertia wheel pendulum</li>
-  <li>Furata pendulum (horizontal rotation and vertical pendulum)</li>
+  <li>Furuta pendulum (horizontal rotation and vertical pendulum)</li>
   <li>Hovercraft</li>
 </ul>
 
@@ -3887,7 +3887,7 @@ prove this stability property?  In a way that might also work for much more
 complicated systems?</p>
 
 <p>One route forward was from looking at the total system energy (kinetic + potential),
-  which we can write down: \[ E(\theta,\dot{\theta}) = ml^2\dot{\theta}^2 - mgl \cos\theta. \]
+  which we can write down: \[ E(\theta,\dot{\theta}) = \frac{1}{2} ml^2\dot{\theta}^2 - mgl \cos\theta. \]
 Recall that the contours of this energy function are the orbits of the undamped
 pendulum.</p>
 
@@ -3895,7 +3895,7 @@ pendulum.</p>
 
 <p>A natural route to proving the stability of the downward fixed points is by arguing
 that energy decreases for the damped pendulum (with $b>0$) and so the system will
-eventually come to rest at the minimum energy, $E = -mgl\cos\theta$, which
+eventually come to rest at the minimum energy, $E = -mgl$, which
 happens at $\theta=2\pi k$.  Let's make that argument precise.
 </p>
 
@@ -3959,9 +3959,9 @@ Lyapunov functions and the cost-to-go functions that we discussed in the context
 of dynamic programming.  After all, the cost-to-go functions also captured a
 great deal about the long-term dynamics of the system in a scalar function.  We
 can see the connection if we re-examine the HJB equation \[ 0 = \min_\bu \left[
-g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu). \right] \]Let's imagine that we can solve for
+g(\bx,\bu) + \pd{J}^*{\bx}f(\bx,\bu). \right] \]Let's imagine that we can solve for
 the optimizing $\bu^*(\bx)$, then  we are left with $ 0 = g(\bx,\bu^*) +
-\pd{J}{\bx}f(\bx,\bu^*) $ or simply \[ \dot{J}  = -g(\bx,\bu^*). \]  In other
+\pd{J}^*{\bx}f(\bx,\bu^*) $ or simply \[ \dot{J}^*  = -g(\bx,\bu^*). \]  In other
 words, in optimal control we must find a cost-to-go function which matches this
 gradient for every $\bx$; that's very difficult and involves solving
 a potentially high-dimensional partial differential equation.  By contrast, Lyapunov analysis
