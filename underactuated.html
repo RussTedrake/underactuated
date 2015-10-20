@@ -3959,9 +3959,9 @@ Lyapunov functions and the cost-to-go functions that we discussed in the context
 of dynamic programming.  After all, the cost-to-go functions also captured a
 great deal about the long-term dynamics of the system in a scalar function.  We
 can see the connection if we re-examine the HJB equation \[ 0 = \min_\bu \left[
-g(\bx,\bu) + \pd{J}^*{\bx}f(\bx,\bu). \right] \]Let's imagine that we can solve for
+g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu). \right] \]Let's imagine that we can solve for
 the optimizing $\bu^*(\bx)$, then  we are left with $ 0 = g(\bx,\bu^*) +
-\pd{J}^*{\bx}f(\bx,\bu^*) $ or simply \[ \dot{J}^*  = -g(\bx,\bu^*). \]  In other
+\pd{J^*}{\bx}f(\bx,\bu^*) $ or simply \[ \dot{J}^*  = -g(\bx,\bu^*). \]  In other
 words, in optimal control we must find a cost-to-go function which matches this
 gradient for every $\bx$; that's very difficult and involves solving
 a potentially high-dimensional partial differential equation.  By contrast, Lyapunov analysis
