@@ -1280,9 +1280,9 @@ actuator at the shoulder.  It was first
 described in detail in <elib>Murray91</elib>.  The companion system,
 with an actuator at the shoulder but not at the elbow, is known as the
 Pendubot<elib>Spong97</elib>.  The Acrobot is so named because of its
-resemblence to a gymnast (or acrobat) on a parallel bar, who controls
+resemblance to a gymnast (or acrobat) on a parallel bar, who controls
 his/her motion predominantly by effort at the waist (and not effort at the
-wrist).  The most common control task studied for the acrobot is the
+wrist).  The most common control task studied for the Acrobot is the
 swing-up task, in which the system must use the elbow (or waist)
 torque to move the system into a vertical configuration then balance.
 </p>
@@ -1445,7 +1445,7 @@ The kinematics of the system are given by
   \ddot{\theta} =& \frac{1}{l(m_c + m_p \sin^2\theta)} \left[ -f
    \cos\theta - m_p l \dot\theta^2 \cos\theta \sin\theta - (m_c + m_p) g \sin\theta \right] \label{eq:ddot_theta}
   \end{align}
-  In some of the follow analysis that follows, we will study the form of
+  In some of the analysis that follows, we will study the form of
   the equations of motion, ignoring the details, by arbitrarily setting
   all constants to 1:
   \begin{gather}
@@ -1579,7 +1579,7 @@ in a finite interval of time, $0 < t < t_f$ <elib>Ogata96</elib>. </div>
 <p>
 For the linear system $$\dot{\bx} = {\bf A}\bx + {\bf B}u,$$
 we can integrate this linear system in closed
-form, it is possible to derive the exact conditions of
+form, so it is possible to derive the exact conditions of
 controllability.  In particular, for linear systems it is sufficient to demonstrate
 that there exists a control input which drives any initial condition to the origin. </p>
 
@@ -1603,7 +1603,7 @@ well-defined.</p>
 
 <p>
 We can continue our eigenmodal analysis of the linear system by
-defining the modal coordinates, ${\bf r}$ with: $$\bx = {\bf V}{\bf
+defining the modal coordinates, ${\bf r}$, with: $$\bx = {\bf V}{\bf
   r},\quad \text{or}\quad {\bf r} = {\bf V}^{-1}\bx.$$  In modal
 coordinates, the dynamics of the linear system are given by $$\dot{\bf
   r} = {\bf V}^{-1} {\bf A} {\bf V} {\bf r} + {\bf V}^{-1} {\bf B} \bu
@@ -1720,7 +1720,7 @@ often be referred to by the synonym of "reachability" analysis.</p>
 <p>
 Controllability tells us that a trajectory to the fixed point exists,
 but does not tell us which one we should take or what control inputs
-cause it to occur?  Why not?  There are potentially infinitely many
+cause it to occur.  Why not?  There are potentially infinitely many
 solutions.  We have to pick one.</p>
 
 <p> The tools for controller design in linear systems are very advanced. In
@@ -1807,7 +1807,7 @@ still possible to linearize a portion of the system dynamics.  The
 technique is called <em>partial feedback linearization</em>.</p>
 
 <p>
-Consider the cart-pole example.  The dynamics of the cart are effected
+Consider the cart-pole example.  The dynamics of the cart are affected
 by the motions of the pendulum.  If we know the model, then it seems
 quite reasonable to think that we could create a feedback controller
 which would push the cart in exactly the way necessary to counter-act
@@ -2169,7 +2169,7 @@ Now we return to the full system dynamics (which includes the
 cart).  <elib>Chung95</elib> and <elib>Spong96</elib> use the simple pendulum
 energy controller with an addition PD controller designed to regulate
 the cart: $$\ddot{x}^d = k_E \dot\theta \cos\theta \tilde{E} - k_p x -
-k_d \dot{x}.$$ <elib>Chung95</elib> provided a proof of convergence for this
+k_d \dot{x}.$$ <elib>Chung95</elib> provides a proof of convergence for this
 controller with some nominal parameters.</p>
 
 <figure>
