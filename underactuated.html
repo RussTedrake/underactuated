@@ -1654,14 +1654,14 @@ we have, \begin{align*} \bx(0) =& - \sum_{k=0}^{n-1} {\bf A}^k {\bf B}
 \int_0^{t_f} \alpha_k(\tau) u(\tau) d\tau \\ =& -\sum_{k=0}^{n-1} {\bf
 A}^k {\bf B} w_k \text{, where } w_k = \int_0^{t_f} \alpha_k(\tau)
 u(\tau) d\tau \\ =& - \begin{bmatrix} {\bf B} & {\bf AB} & {\bf
-A}^2{\bf B} & \cdots & {\bf A}^{n-1}{\bf B} \end{bmatrix}_{n \times n}
+A}^2{\bf B} & \cdots & {\bf A}^{n-1}{\bf B} \end{bmatrix}_{n \times (nm)}
 \begin{bmatrix} w_0 \\ w_1 \\ w_2 \\ \vdots \\ w_{n-1} \end{bmatrix}
 \end{align*}
 The matrix containing the vectors ${\bf B}$, ${\bf AB}$, ... ${\bf
 A}^{n-1}{\bf B}$ is called the controllability matrix.  In order for
 the system to be controllable, for every initial
 condition $\bx(0)$ we must be able to find the corresponding vector
-${\bf w}$.  This is only possible when the columns of the
+${\bf w}$.  This is only possible when the rows of the
 controllability matrix are linearly independent.  Therefore, the
 condition of controllability is that this controllability matrix is
 full rank.</p>
