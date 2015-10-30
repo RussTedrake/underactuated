@@ -4118,7 +4118,7 @@ not yet appeared in any mainstream textbooks.</p>
 
         <div data-type="example" class="drake"><h1>Common Lyapunov analysis for linear systems</h1>
 
-            <p>Suppose you have a system governed by the equations $\dot\bx = {\bf A}\bx$, where the matrix ${\bf A}$ is unknown, but it's uncertain elements can be bounded.  There are a number of ways to write down this uncertainty set; let us choose to write this by describing ${\bf A}$ as the affine combination of a number of known matrices, $${\bf A} = \sum_{i} \beta_i {\bf A}_i, \quad \sum_i \beta_i = 1, \quad \forall i, \beta_i > 0.$$  This is just one way to specify the uncertainty; geometrically it is describing a polygon of uncertain parameters (in the space of elements of ${\bf A}$ with each ${\bf A}_i$ as one of the vertices in the polygon.</p>
+            <p>Suppose you have a system governed by the equations $\dot\bx = {\bf A}\bx$, where the matrix ${\bf A}$ is unknown, but its uncertain elements can be bounded.  There are a number of ways to write down this uncertainty set; let us choose to write this by describing ${\bf A}$ as the affine combination of a number of known matrices, $${\bf A} = \sum_{i} \beta_i {\bf A}_i, \quad \sum_i \beta_i = 1, \quad \forall i, \beta_i > 0.$$  This is just one way to specify the uncertainty; geometrically it is describing a polygon of uncertain parameters (in the space of elements of ${\bf A}$ with each ${\bf A}_i$ as one of the vertices in the polygon.</p>
             <figure>
                 <img width="50%" src="figures/affine_combination_of_matrices.svg"/>
             </figure>
@@ -4136,21 +4136,21 @@ commonLyapunovForLinearSystems;
             <p>As always, make sure that you open up the code and take a look.</p>
         </div>
 
-        <p>This example is very important because they establish a connection between
+        <p>This example is very important because it establishes a connection between
             Lyapunov functions and (convex) optimization.  But so far we've only demonstrated this
-            connection for linear systems, were the PSD matrices provide a magical recipe for establishing the positivity of the (quadratic) functions for all $\bx$.  Is there
+            connection for linear systems, where the PSD matrices provide a magical recipe for establishing the positivity of the (quadratic) functions for all $\bx$.  Is there
             any hope of extending this type of analysis to more general nonlinear systems?  Surprisingly, it turns out that there is.</p>
 
     </section>
 
     <section data-type="sect2"><h1>Sums-of-squares optimization</h1>
 
-        <p>It turns out that in the same way that we can using SDP to search over the positive quadratic equations, we can generalize this to search over the positive polynomial equations.  To be clear, for quadratic equations we have \[ {\bf P}\succeq 0 \quad \Rightarrow \quad \bx^T {\bf P} \bx \ge 0, \quad \forall \bx. \]  It turns out that
+        <p>It turns out that in the same way that we can use SDP to search over the positive quadratic equations, we can generalize this to search over the positive polynomial equations.  To be clear, for quadratic equations we have \[ {\bf P}\succeq 0 \quad \Rightarrow \quad \bx^T {\bf P} \bx \ge 0, \quad \forall \bx. \]  It turns out that
             we can generalize this to \[ {\bf P}\succeq 0 \quad \Rightarrow \quad {\bf m}^T(\bx) {\bf P} {\bf m}(\bx) \ge 0, \quad \forall \bx, \] where ${\bf m}(\bx)$ is a vector of polynomial equations, typically chosen as a vector of <em>monomials</em> (polynomials with only one term).  The set of positive polynomials parameterized in this way is exactly the set of polynomials that can be written as a <em>sum of squares</em><elib>Parrilo00</elib>.  While it is known that not all positive polynomials can be written in this form, much is known about the gap (and papers have been written about trying to find polynomials which are uniformly positive but not sums of squares).  For our purposes this gap is very small; we should remember that it exists but not worry about it too much for now.</p>
 
         <p>Even better, there is quite a bit that is known about how to choose the terms in ${\bf m}(\bx)$.  For example, if you give me the polynomial \[ p(x) = 2 - 4x + 5x^2 \] and ask if it is positive for all real $x$, I can convince you that it is by producing the sums-of-squares factorization \[ p(x) = 1 + (1-2x)^2 + x^2, \] and I know that I can formulate the problem without needing any monomials of degree greater than 1 (the square-root of the degree of $p$) in my monomial vector.  In practice what this means
             for us is that people have authored optimization front-ends which take a high-level specification with constraints on the positivity of polynomials and they automatically
-            generate the SDP problem for you, without having to think about what terms should appear in ${\bf m}(\bx)$, (c.f. <elib>Prajna04</elib>).  This class of optimization problems is called Sums-of-Squares (SOS) optimization.</p>
+            generate the SDP problem for you, without having to think about what terms should appear in ${\bf m}(\bx)$ (c.f. <elib>Prajna04</elib>).  This class of optimization problems is called Sums-of-Squares (SOS) optimization.</p>
 
         <p>We will write optimizations using sums-of-squares constraints as \[ p(\bx) \sos \] as shorthand for the constraint that $p(\bx) \ge 0$ for all $\bx$, as demonstrated by finding a sums-of-squares decomposition.</p>
 
@@ -4180,7 +4180,7 @@ l^2} \left( b \dot\theta + mgls \right) \end{bmatrix}.$$ </p>
             Now we'll formulate the feasiblity problem:
             \[
             \find_{\bf \alpha} \quad  \subjto \quad V \sos, \quad -\dot{V} \sos.\]
-            In fact, this is asking too much -- really \dot{V} only needs to be negative when $s^2+c^2=1$.  We can
+            In fact, this is asking too much -- really $\dot{V}$ only needs to be negative when $s^2+c^2=1$.  We can
             accomplish this with the so-called <i>S-procedure</i>, which we will discuss more below, and instead write
             \[
             \find_{{\bf \alpha},\lambda} \quad  \subjto \quad V \sos, \quad -\dot{V} -\lambda(\bx)(s^2+c^2-1) \sos.\]
@@ -4197,7 +4197,7 @@ l^2} \left( b \dot\theta + mgls \right) \end{bmatrix}.$$ </p>
 
             <div  style="text-align:center"><img src="figures/global_pend_V.svg" width="400px"/></div>
 
-            <p>Aha!  Not only does the optimization finds us a coefficients for the Lyapunov function which satisfy our Lyapunov
+            <p>Aha!  Not only does the optimization finds us coefficients for the Lyapunov function which satisfy our Lyapunov
             conditions, but the result looks a lot like mechanical energy.  In fact, the result is a little better than energy...
             there are some small extra terms added which prove exponential stability without having to invoke LaSalle's Thereom.</p>
 
