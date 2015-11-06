@@ -1728,7 +1728,7 @@ particular, as we describe in the linear optimal control chapter, one can easily
 design an optimal feedback controller for a regulation task like balancing, so
 long as we are willing to linearize the system around the operating point and
 define optimality in terms of a quadratic cost function: $$J(\bx_0) =
-\int_0^\infty \left[ \bx(t)^T {\bf Q} \bx(t) + \bu(t)^T {\bf R} \bu(t) \right]dt,
+\int_0^\infty \left[ \bx^T(t) {\bf Q} \bx(t) + \bu^T(t) {\bf R} \bu(t) \right]dt,
 \quad \bx(0)=\bx_0, {\bf Q}={\bf Q}^T>0, {\bf R}={\bf R}^T>0.$$ The linear
 feedback matrix ${\bf K}$ used as $$\bu(t) = - {\bf K}\bx(t),$$ is the so-called
 optimal linear quadratic regulator (LQR).  Even without understanding the
