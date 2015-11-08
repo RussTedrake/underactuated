@@ -4473,7 +4473,7 @@ can be defined for all time or some subset of the trajectory.</p>
   and relied on custom solvers like SeDuMi or Mosek to solve the problems for us.
   Convex optimization is a hugely important subset of nonlinear optimization,
   in which we can guarantee that the optimization has no "local minima".
-  In this chapter we won't be so lucky, the optimizations that we formulate
+  In this chapter we won't be so lucky; the optimizations that we formulate
   may have local minima and the solution techniques will at best only guarantee
   that they give a locally optimal solution.</p>
 
@@ -4494,7 +4494,7 @@ and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
     <figcaption>One-dimensional cartoon of a nonlinear optimization problem.  The
       red dots represent local minima.  The blue dot represents the optimal solution.</figcaption>
   </figure>
-  <p>Note that minima can be the result of the objective function having zero-derivative
+  <p>Note that minima can be the result of the objective function having zero derivative
   <em>or</em> due to a sloped objective up against a constraint.</p>
 
 <p>Numerical methods for solving these optimization problems require an initial guess, $\hat{z}$,
@@ -4519,7 +4519,7 @@ and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
   available for nonlinear programming are substantially higher performance than
   anything I wrote myself, with a number of tricks, subtleties, and parameter
   choices that can make a huge difference in practice.  Some of these solvers can
-  exploit sparsity in the problem (e.g., if the constraints in a sparse way on the decision variables).
+  exploit sparsity in the problem (e.g., if the constraints operate in a sparse way on the decision variables).
   Nowadays, we make heaviest use of SNOPT <elib>Gill06</elib>, which now
   comes bundled with the precompiled distributions of <drake></drake>, but also support
   <code>fmincon</code> from the Optimization Toolbox in MATLAB.  Note that while I do
@@ -4781,7 +4781,7 @@ of the shooting method simply require the a modified terminal condition $$\lambd
   smoothness can wreak havoc on the convergence of the optimization.
   If numerical accuracy is a premium, then I think you will have more success
   by imposing consistency constraints (e.g. as in the Runge-Kutta 4th order simulation
-  with 5th order error checking method) as addition constraints on the
+  with 5th order error checking method) as additional constraints on the
   time-steps; shooting methods do not have any particular advantage here.
 
 <todo>reference DMOC</todo>
@@ -4849,7 +4849,7 @@ is clearly the minimizer of the objective.</p>
 
 <section data-type="sect2"><h1>Lagrange multiplier derivation of the adjoint equations</h1>
 
-<p>Let us use Lagrange multiplizers to derive the necessary conditions for our constrained
+<p>Let us use Lagrange multipliers to derive the necessary conditions for our constrained
   trajectory optimization problem in discrete time
   \begin{align*} \minimize_{\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1}} & \sum_{n=0}^{N-1} g(\bx[n],\bu[n]),\\
   \subjto \quad & \bx[n+1] = f_d(\bx[n],\bu[n]). \end{align*}
@@ -4888,7 +4888,7 @@ In fact the statement can be generalized even beyond this to the case where $\bu
 The result is known as Pontryagin's minimum principle -- giving <em>necessary conditions</em>
 for a trajectory to be optimal.
 
-<div data-type="theorem"><h1>Pontragin's Minimum Principle</h1>
+<div data-type="theorem"><h1>Pontryagin's Minimum Principle</h1>
 
 <p>Adapted from <elib>Bertsekas00a</elib>. Given the
 initial conditions, $\bx_0$, a continuous dynamics, $\dot\bx = f(\bx,\bu)$, and
