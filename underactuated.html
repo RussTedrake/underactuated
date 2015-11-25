@@ -2903,6 +2903,75 @@ where ${\bf F}_{net} = \sum_i {\bf F}_i$ and the value of $\tau_{net}$ depends o
 
 <section data-type="chapter" class="chapter"><h1>Model Systems with Stochasticity</h1>
 
+<p>My goals for this chapter are to build intuition for the beautiful and rich behavior of nonlinear dynamical system
+  that are subjected to random (noise/disturbance) inputs.  So far we have focused primarily
+on systems described by \[ \dot{\bx}(t) = f(\bx(t),\bu(t)) \quad \text{or} \quad \bx[n+1] = f(\bx[n],\bu[n]). \]
+In this chapter, I would like to broaden the scope to think about
+  \[ \dot{\bx}(t) = f(\bx(t),\bu(t),\bw(t)) \quad \text{or} \quad \bx[n+1] = f(\bx[n],\bu[n],\bw[n]), \]
+where this additional input $\bw$ is the (vector) output of some random process.  In other words,
+  we can begin thinking about stochastic systems by simply understanding the dynamics of
+  our existing ODEs subjected to an additional random input.
+</p>
+
+  <p>
+    This form is extremely general as written.  $\bw(t)$ can represent time-varying random disturbances
+    (e.g. gusts of wind), or even constant model errors/uncertainty.  One thing that we are not adding, yet,
+    is measurement uncertainty.  There is a great deal of work on observability and state estimation that study
+    the question of how you can infer the true state of the system given noise sensor readings.  For this chapter we
+    are assuming perfect measurements of the full state, and are focused instead on the way that "process noise"
+    shapes the long-term dynamics of the system.
+  </p>
+
+  <p>
+    I will also stick primarily to discrete time dynamics for this chapter, simply because it is
+    easier to think about the output of a discrete-time random process, $\bw[n]$, than a $\bw(t)$.
+    But you should know that all of the ideas work in continuous time, too.  Also, most of our examples
+    will take the form of <i>additive noise</i>:
+    \[ \bx[n+1] = f(\bx[n],\bu[n]) + \bw[n], \]
+    which is a particular useful and common specialization of our general form.  And this form
+    doesn't give up much -- the disturbance on step $k$ can pass through the nonlinear function $f$ on step $k+1$
+    giving rich results -- but is often much easier to work with.
+  </p>
+
+  <section data-type="sect1"><h1>One-dimensional examples</h1>
+
+    <p>Let's start by looking at some simple examples.</p>
+
+    <div data-type="example"><h1>A Bistable System + Noise</h1>
+
+      <p>Let's consider (a time-reversed version of) one of my favorite one-dimensional systems:
+      \[ \dot{x} = x - x^3. \]
+        <todo>add plot</todo>
+        This deterministic system has stable fixed points at $x^* = \{-1,1\}$ and an unstable fixed point at $x^* = 0$.
+      </p>
+      <p>
+      A reasonable discrete-time approximation of these dynamics, now with additive noise, is
+      \[ x[n+1] = x[n] + h (x[n] - x[n]^3 + w[n]). \]
+      When $w[n]=0$, this system has the same fixed points and stability properties as the continuous time system.
+      But let's examine the system when $w[n]$ is instead the result of a <i>zero-mean Gaussian white noise process</i>, defined by:
+      \begin{gather*}
+      \forall n, E\left[ w[n] \right] = 0,\\
+      E\left[ w[i]w[j] \right] = \begin{cases} \sigma^2, & \text{ if } i=j,\\ 0, & \text{ otherwise.} \end{cases}
+      \end{gather*}
+      Here $\sigma$ is the standard deviation of the Gaussian.
+      </p>
+      <todo>single simulation trace</todo>
+    </div>
+
+    <todo>
+    <p>Given x[0], what is the long-term behavior of the system?  e.g. x[\infty]? Wrong question.  Can start to think about the right
+    question if we plot the results of many simulations simultaneously.</p>
+    </todo>
+
+    <todo>particle simulation</todo>
+    <todo>histogram animation</todo>
+
+    <p>$x[n]$ is now a random variable. the trajectories of this system do not converge nor exhibit any form of stability that we've introduced so far.  but as you can see in the simulations, the <i>distribution</i> of this random variable is actually very well behaved.  This is the key idea for this chapter.</p>
+
+    <p>Let us use $p_n(x)$ to denote the <a href="https://en.wikipedia.org/wiki/Probability_density_function">probability density function</a> over the random variable $x$ at time $n$.</p>
+
+  </section>
+
 </section> <!-- ***************  end of stochasticity **************   -->
 
 
