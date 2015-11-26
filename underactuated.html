@@ -3065,7 +3065,8 @@ where this additional input $\bw$ is the (vector) output of some random process.
         p_{n+1}(x) =& \frac{1}{\sqrt{2 \pi \sigma^2}}\frac{1}{\sqrt{2 \pi \sigma_n^2}} \int_{-\infty}^\infty e^{-\frac{(x-ax')^2}{2\sigma^2}} e^{-\frac{(x')^2}{2\sigma_n^2}} dx',\\
         =& \frac{1}{\sqrt{2 \pi (\sigma^2+a^2 \sigma_n^2)}} e^{-\frac{x^2}{2(\sigma^2 + a^2 \sigma_n^2)}}.
         \end{align*}
-        The result is another mean-zero Gaussian with $\sigma_{n+1}^2 = \sigma^2 + a^2 \sigma_n^2$.
+        The result is another mean-zero Gaussian with $\sigma_{n+1}^2 = \sigma^2 + a^2 \sigma_n^2$.  This
+        result generalizes to the multi-variate case, too, and might be familiar to you e.g. from the process update of the <a href="https://en.wikipedia.org/wiki/Kalman_filter">Kalman filter</a>.
       </p>
       <p>Taking it a step further, we can see that a stationary distribution for this sytem
       is given by a mean-zero Gaussian with \[ \sigma_*^2 = \frac{\sigma}{1-a^2}. \]
@@ -3079,7 +3080,7 @@ where this additional input $\bw$ is the (vector) output of some random process.
     </p>
 
     <p>Given how rich the dynamics can be for deterministic nonlinear systems, you can probably imagine
-      that the possible long-term dynamics of the probability are also extremely rich.  If we simple flip the
+      that the possible long-term dynamics of the probability are also extremely rich.  If we simply flip the
     signs in the dynamics we examined above, we'll get our next example:</p>
 
     <div data-type="example"><h1>The Cubic Example + Noise</h1>
