@@ -3046,14 +3046,37 @@ where this additional input $\bw$ is the (vector) output of some random process.
     the dynamics of the trajectories, we need to start thinking about the dynamics of the distribution.</p>
 
     <div data-type="example"><h1>The Linear Gaussian System</h1>
-
+      <p>Let's consider the one-dimensional linear system with additive noise:
+        \[ x[n+1] = a x[n] + w[n]. \]
+        When $w[n]=0$, the system is stable (to the origin) for $-1 < a < 1$.  Let's make sure
+        that we can understand the dynamics of the master equation for the case when $w[n]$ is
+        Gaussian white noise with standard deviation $\sigma$.
+      </p>
+      <p>First, recall that the probability density function of a Gaussian with mean $\mu$ is given by
+      \[ p(w) = \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(w-\mu)^2}{2\sigma^2}}. \]
+        When conditioned on $x[n]$, the distribution given by the dynamics subjected to mean-zero Gaussian white noise
+        is simply another Gaussian, with the mean given by $ax[n]$:
+        \[ p(x[n+1]|x[n]) = \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(x[n+1]-ax[n])^2}{2\sigma^2}}, \]
+        yeilding the master equation
+        \[ p_{n+1}(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \int_{-\infty}^\infty e^{-\frac{(x-ax')^2}{2\sigma^2}} p_n(x') dx'. \]
+      </p>
+      <p>Now here's the magic.  Let's push a distribution, $p_n(x)$, which is zero-mean, with standard deviation $\sigma_n$, through the master equation:
+        \begin{align*}
+        p_{n+1}(x) =& \frac{1}{\sqrt{2 \pi \sigma^2}}\frac{1}{\sqrt{2 \pi \sigma_n^2}} \int_{-\infty}^\infty e^{-\frac{(x-ax')^2}{2\sigma^2}} e^{-\frac{(x')^2}{2\sigma_n^2}} dx',\\
+        =& \frac{1}{\sqrt{2 \pi (\sigma^2+a^2 \sigma_n^2)}} e^{-\frac{x^2}{2(\sigma^2 + a^2 \sigma_n^2)}}.
+        \end{align*}
+        The result is another mean-zero Gaussian with $\sigma_{n+1}^2 = \sigma^2 + a^2 \sigma_n^2$.
+      </p>
+      <p>Taking it a step further, we can see that a stationary distribution for this sytem
+      is given by a mean-zero Gaussian with \[ \sigma_*^2 = \frac{\sigma}{1-a^2}. \]
+      Note that this distribution is well defined when $-1 < a < 1$ (only when the system is stable).</p>
     </div>
 
-    <p>The stationary distribution of this system reflects a balance between two in the governing
-    equations: the stability of the deterministic system is bringing trajectories together (making the
-    distribution tighter), but the noise in the system is forcing trajectories apart (making the distribution broader).
-    If you increase the standard deviation of the noise, then you will see that the stationary
-    distribution will get broader.</p>
+    <p>The stationary distribution of the linear Gaussian system reveals the fundamental and general balance between two terms
+      in the governing
+    equations of any stochastic dynamical system: the stability of the deterministic system is bringing trajectories together
+      (smaller $a$ means faster convergence of the deterministic system and results in a more narrow distribution), but the noise in the system is forcing trajectories apart (larger $\sigma$ means larger noise and results in a wider distribution).
+    </p>
 
     <p>Given how rich the dynamics can be for deterministic nonlinear systems, you can probably imagine
       that the possible long-term dynamics of the probability are also extremely rich.  If we simple flip the
