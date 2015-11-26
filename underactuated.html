@@ -114,6 +114,30 @@
               chapters[i].style.display = "none";
             } else {
               chapters[i].style.display = "inline";
+
+              // load images/videos for this chapter only
+              var images = chapters[i].getElementsByTagName("img");
+              for (j=0; j<images.length; j++) {
+                if (images[j].hasAttribute("data-src")) {
+                  images[j].setAttribute("src",images[j].getAttribute("data-src"));
+                }
+              }
+              // load images/videos for this chapter only
+              var videos = chapters[i].getElementsByTagName("video");
+              for (j=0; j<videos.length; j++) {
+                if (videos[j].hasAttribute("data-src")) {
+                  videos[j].setAttribute("src",videos[j].getAttribute("data-src"));
+                }
+                var extra_sources = videos[j].getElementsByTagName("source");
+                for (k=0; k<extra_sources.length; k++) {
+                  if (extra_sources[k].hasAttribute("data-src")) {
+                    extra_sources[k].setAttribute("src", extra_sources[k].getAttribute("data-src"));
+                  }
+                }
+              }
+
+
+
 //              document.getElementById("debug_output").innerHTML="got here";
               var display_num = i;
               if (i>=start_appendix) {
@@ -340,8 +364,8 @@ with the look and feel of ASIMO's movements [watch the asimo video below now].
 
 <figure>
   <video width="80%" controls>
-    <source src="figures/walking_while_avoiding_people.ogg" type="video/ogg"/>
-    <source src="http://world.honda.com/ASIMO/technology/2011/intelligence/video02/movie640w.mp4" type="video/mp4"/>
+    <source data-src="figures/walking_while_avoiding_people.ogg" type="video/ogg"/>
+    <source data-src="http://world.honda.com/ASIMO/technology/2011/intelligence/video02/movie640w.mp4" type="video/mp4"/>
   </video><br/>
 <!--
 <object name="kaltura_player_1409562873" id="kaltura_player_1409562873" type="application/x-shockwave-flash" allowScriptAccess="always" allowNetworking="all" allowFullScreen="true" height="300" width="100%" data="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151?autoPlay=false"><param name="allowScriptAccess" value="always" /><param name="allowNetworking" value="all" /><param name="allowFullScreen" value="true" /><param name="bgcolor" value="#000000" /><param name="movie" value="http://www.kaltura.com/index.php/kwidget/wid/1_bybwc53n/uiconf_id/8700151"/><param name="flashVars" value=""/><a href="http://corp.kaltura.com">video platform</a><a href="http://corp.kaltura.com/video_platform/video_management">video management</a><a href="http://corp.kaltura.com/solutions/video_solution">video solutions</a><a href="http://corp.kaltura.com/video_platform/video_publishing">video player</a></object>
@@ -368,15 +392,15 @@ and cannot walk on unmodelled or uneven terrain. </p>
 <figure>
 <p>
   <video width="80%" controls title="If your browser cannot play this video, then download it using the link below.">
-    <source src="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_angle.mpg" type="video/mp4"/>
-    <source src="figures/passive_angle.ogg" type="video/ogg"/>
+    <source data-src="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_angle.mpg" type="video/mp4"/>
+    <source data-src="figures/passive_angle.ogg" type="video/ogg"/>
   </video><br/>
   <a href="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_angle.mpg">Download the video</a>
 </p>
 <p>
   <video width="80%" controls title="If your browser cannot play this video, then download it using the link below.">
-    <source src="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_behind.mpg" type="video/mp4">
-    <source src="figures/passive_behind.ogg" type="video/ogg"/>
+    <source data-src="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_behind.mpg" type="video/mp4">
+    <source data-src="figures/passive_behind.ogg" type="video/ogg"/>
   </video><br/>
   <a href="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_behind.mpg">Download the video</a>
 </p>
@@ -520,7 +544,7 @@ underactuated if it is underactuated in <i>any</i> state or time.</p>
 <div data-type="example" class="drake"><h1>Robot Manipulators</h1>
 
 <figure>
-<img style="width:250px;" src="figures/simple_double_pend.svg"/>
+<img style="width:250px;" data-src="figures/simple_double_pend.svg"/>
 <todo>make this image spring to life with a matlab movie<</todo>
 <figcaption>Simple double pendulum</figcaption>
 </figure>
@@ -854,7 +878,7 @@ introduce most of the concepts from nonlinear dynamics that we will use in this
 text, but tractable enough for us to (mostly) understand in the next few pages.
 </p>
 
-<figure> <img width="30%" src="figures/simple_pend.svg"/> <figcaption>The simple
+<figure> <img width="30%" data-src="figures/simple_pend.svg"/> <figcaption>The simple
 pendulum</figcaption> </figure>
 
 <p> The Lagrangian derivation of the equations of motion (as described in the
@@ -923,7 +947,7 @@ mgl\sin{x}.\label{eq:overdamped_pend_ct}\end{equation} Our goal is to understand
 the long-term behavior of this system: to find $x(\infty)$ given $x(0)$.  Let's
 start by plotting $\dot{x}$ vs $x$ for the case when $u_0=0$:</p>
 
-<figure> <img width="70%" src="figures/pend_sinx.svg"/> </figure>
+<figure> <img width="70%" data-src="figures/pend_sinx.svg"/> </figure>
 
 <p> The first thing to notice is that the system has a number of <em>fixed
 points</em> or <em>steady states</em>, which occur whenever $\dot{x} = 0$.  In
@@ -993,7 +1017,7 @@ moving to the right, and $\dot{x} < 0$, the flow is moving to the left.  If we
 further annotate our graph with arrows indicating the direction of the flow,
 then the entire (long-term) system behavior becomes clear:</p>
 
-<figure> <img width="70%" src="figures/pend_sinx_annotated.svg"/> </figure>
+<figure> <img width="70%" data-src="figures/pend_sinx_annotated.svg"/> </figure>
 
 <p> For instance, we can see that any initial condition $x(0) \in (\pi,\pi)$ will
 result in $\lim_{t\rightarrow \infty} x(t) = 0$.  This region is called the <em>basin of
@@ -1017,7 +1041,7 @@ plotted below for a few values of $w$.  It's convenient to note that $\tanh(z)
 point.  For $w > 1$ the system has three fixed points : two stable and one
 unstable.
 
-<figure> <img width="80%" src="figures/pend_autapse.svg"/> </figure>
+<figure> <img width="80%" data-src="figures/pend_autapse.svg"/> </figure>
 
 These equations are not arbitrary - they are actually a model for one of the
 simplest neural networks, and one of the simplest model of persistent
@@ -1038,7 +1062,7 @@ fixed points and dashed lines indicating unstable fixed points, as seen in the
 figure:</p>
 
 <figure> <todo>bifurcation diagram asymptotes to $x^* = 1$</todo> <img
-width="80%" src="figures/pend_autapse_bifurcation.svg"/> <figcaption>Bifurcation
+width="80%" data-src="figures/pend_autapse_bifurcation.svg"/> <figcaption>Bifurcation
 diagram of the nonlinear autapse.</figcaption> </figure>
 
 <p> Our pendulum equations also have a (saddle-node) bifurcation when we change
@@ -1073,7 +1097,7 @@ $-mgl\sin\theta.$ As expected, we have fixed points at $\pm \pi, ...$ Now sketch
 the rest of the vector field.  Can you tell me which fixed points are stable?
 Some of them are stable i.s.L., none are asymptotically stable.</p>
 
-<figure> <img width="80%" src="figures/pend_undamped_phase.svg"/> </figure>
+<figure> <img width="80%" data-src="figures/pend_undamped_phase.svg"/> </figure>
 
 <section data-type="sect3"><h1>Orbit calculations</h1>
 
@@ -1206,7 +1230,7 @@ Now let's add damping back.  You can still add torque to move the fixed points
 (in the same way).</p>
 
 <figure>
-  <img width="90%" src="figures/pend_damped_phase.svg"/>
+  <img width="90%" data-src="figures/pend_damped_phase.svg"/>
   <figcaption>Phase diagram for the damped pendulum</figcaption>
 </figure>
 
@@ -1288,7 +1312,7 @@ torque to move the system into a vertical configuration then balance.
 </p>
 
 <figure>
-<img width="40%" src="figures/acrobot.svg"/>
+<img width="40%" data-src="figures/acrobot.svg"/>
 <figcaption>The Acrobot.  <a href="http://groups.csail.mit.edu/locomotion/drake/movies/acrobot_swingup.swf">Click here for an animation of the swing-up task</a> or <a href="http://youtu.be/FeCwtvrD76I">here to see a real robot</a>.</figcaption>
 </figure>
 
@@ -1401,7 +1425,7 @@ swing-up and   balance control problem, which requires a full nonlinear control
 treatment.</p>
 
 <figure>
-  <img width="50%" src="figures/cartpole.svg"/>
+  <img width="50%" data-src="figures/cartpole.svg"/>
   <figcaption>The Cart-Pole system.  Click <a href="http://youtu.be/Bzq96V1yN5k">here to see a real robot</a>.</figcaption>
   <todo> add swing-up + balance swf</todo>
 </figure>
@@ -2173,7 +2197,7 @@ k_d \dot{x}.$$ <elib>Chung95</elib> provides a proof of convergence for this
 controller with some nominal parameters.</p>
 
 <figure>
-<img width="70%" src="figures/cartpole_swingup_phase.svg"/>
+<img width="70%" data-src="figures/cartpole_swingup_phase.svg"/>
 
 <figcaption>Cart-Pole Swingup: Example phase plot of the pendulum subsystem using
   energy shaping control.  The controller drives the system to the
@@ -2293,7 +2317,7 @@ date.</p>
 <section data-type="sect1"><h1>The Rimless Wheel</h1>
 
 <figure>
-<img width="40%" src="figures/rimlessWheel.svg"/>
+<img width="40%" data-src="figures/rimlessWheel.svg"/>
 <figcaption>The rimless wheel. The orientation of the stance leg,
 $\theta$, is measured clockwise from the vertical axis. </figcaption>
 </figure>
@@ -2343,7 +2367,7 @@ the collision.</p>
 <section data-type="sect2"><h1>Foot Collision</h1>
 
 <figure>
-  <img width="50%" src="figures/rimlessWheel_collision.svg"/>
+  <img width="50%" data-src="figures/rimlessWheel_collision.svg"/>
   <figcaption>Angular momentum is conserved around the point of impact</figcaption>
 </figure>
 
@@ -2393,10 +2417,10 @@ either run the code yourself or click on the links below to see the animation).
   recommended above are plotted below.</p>
 
 <figure>
- <img width="80%" src="figures/rimlessWheel_phase1.svg"/>
- <img width="80%" src="figures/rimlessWheel_phase2.svg"/>
- <img width="80%" src="figures/rimlessWheel_phase3.svg"/>
- <img width="80%" src="figures/rimlessWheel_phase4.svg"/>
+ <img width="80%" data-src="figures/rimlessWheel_phase1.svg"/>
+ <img width="80%" data-src="figures/rimlessWheel_phase2.svg"/>
+ <img width="80%" data-src="figures/rimlessWheel_phase3.svg"/>
+ <img width="80%" data-src="figures/rimlessWheel_phase4.svg"/>
  <figcaption>Phase portrait trajectories of the rimless wheel
  ($m=1$, $l=1$, $g=9.8$, $\alpha=\pi/8$, $\gamma=0.08$).</figcaption>
 </figure>
@@ -2431,9 +2455,9 @@ seen nicely in the phase portrait below.</p>
 
 <figure>
 <table width="100%"><tr><td width="50%">
-  <img width="100%" src="figures/vanderPol_phase.svg"/>
+  <img width="100%" data-src="figures/vanderPol_phase.svg"/>
 </td><td width="50%">
-  <img width="100%" src="figures/vanderPol_time.svg"/>
+  <img width="100%" data-src="figures/vanderPol_time.svg"/>
 </td></tr></table>
 <figcaption>System trajectories of the Van der Pol oscillator with $\mu
   =.2$. (Left) phase portrait.  (Right) time domain.</figcaption>
@@ -2493,9 +2517,9 @@ cannot be applied to limit cycle stability without some modification.</p>
 
 <figure>
 <table><tr><td>
-  <img width="100%" src="figures/vanderPol_section.svg" />
+  <img width="100%" data-src="figures/vanderPol_section.svg" />
 </td><td>
-  <img width="100%" src="figures/vanderPol_retmap.svg" />
+  <img width="100%" data-src="figures/vanderPol_retmap.svg" />
 </td></tr></table>
 <figcaption>(Left) Phase plot with the surface of section, $S$, drawn with
     a black dashed line.  (Right) The resulting Poincar&eacute first-return
@@ -2596,7 +2620,7 @@ becomes impossible for the center of mass of the wheel to be inside
 the support polygon, making standing an unstable configuration.</p>
 
 <figure>
-<img width="100%" src="figures/rw_retmap.svg"/>
+<img width="100%" data-src="figures/rw_retmap.svg"/>
 <figcaption>Limit cycle trajectory of the rimless wheel ($m=1,l=1,g=9.8,\alpha=\pi/8,\gamma=0.15$).  All hatched regions converge
   to the rolling fixed point, $\omega_{roll}^*$; the white regions converge to
   zero velocity ($\omega_{stand}^*$).</figcaption>
@@ -2618,7 +2642,7 @@ source at the hip - resulting in swing dynamics equivalent to an
 Acrobot (although in a different coordinate frame).</p>
 
 <figure>
-<img width="45%" src="figures/compassGait.svg"/>
+<img width="45%" data-src="figures/compassGait.svg"/>
 <figcaption>The compass gait</figcaption>
 </figure>
 
@@ -2669,7 +2693,7 @@ to the ground collisions.  The dependence of this limit cycle on the
 system parameters has been studied extensively in <elib>Goswami96a</elib>.</p>
 
 <figure>
-<img width="80%" src="figures/compassGaitLimitCycle.svg"/>
+<img width="80%" data-src="figures/compassGaitLimitCycle.svg"/>
 <figcaption>Limit cycle
 trajectory of the compass gait.
   ($m=5$kg,$m_h=10$kg,$a=b=0.5$m,$\phi=0.03$deg.
@@ -2693,7 +2717,7 @@ model a walker that includes knee<elib>Hsu07</elib>. For this, we model each leg
 two links with a point mass each.</p>
 
 <figure>
-<img width="60%" src="figures/kneedwalker.svg"/>
+<img width="60%" data-src="figures/kneedwalker.svg"/>
 <figcaption>The Kneed Walker</figcaption>
 </figure>
 
@@ -2719,7 +2743,7 @@ dynamics. This describes a full step cycle of the kneed walker,
 which is shown above.</p>
 
 <figure>
-<img width="100%" src="figures/kwcycle1.svg"/>
+<img width="100%" data-src="figures/kwcycle1.svg"/>
 <figcaption>Limit cycle trajectory for kneed walker</figcaption>
 </figure>
 
@@ -2734,7 +2758,7 @@ from the knee-strikes as marked in the figure. This
 limit cycle is traversed clockwise.</p>
 
 <figure>
-  <img width="90%" src="figures/kwLimitCycle.svg"/>
+  <img width="90%" data-src="figures/kwLimitCycle.svg"/>
 <figcaption>Limit cycle (phase portrait) of the kneed walker</figcaption>
 </figure>
 
@@ -2752,7 +2776,7 @@ limit cycle is traversed clockwise.</p>
 
 <section data-type="sect2"><h1>A hovercraft model</h1>
 
-<figure><img width="70%" src="figures/hovercraft.svg"/></figure>
+<figure><img width="70%" data-src="figures/hovercraft.svg"/></figure>
 <todo>flip the directions of the force vector in the image</todo>
 
 <p>Imagine you have a flying vehicle modeled as a single rigid body in a gravity field with some number of force "thrusters" attached.  We'll describe the configuration of the vehicle by its orientation, $\theta$ and the location of its center of mass $(x,z)$.  The vector from the center of mass to thruster $i$ is given by $r_i$, yielding the equations
@@ -2771,12 +2795,12 @@ this is a relatively easy control problem. (Note that it would be considerably h
 
 <p>Now imagine that you just a small number of thrusters (let's say two) each with severe input constraints.  To make things more interesting, let us say that you're allowed to move the thrusters, so $\dot{r}_i$ becomes an additional control input, but with some important limitations:  you have to turn the thrusters off when they are moving (e.g. $|F_i||\dot{r}_i| = 0$) and there is a limit to how quickly you can move the thrusters $|\dot{r}|_i \le v_{max}$.  This problem is now a lot more difficult, due especially to
 the fact that constraints of the form $u_1 u_2 = 0$ are non-convex.</p>
-  <center><img width="25%" src="figures/complementarityConstraint.svg"/></center>
+  <center><img width="25%" data-src="figures/complementarityConstraint.svg"/></center>
 <p>I find this a very useful thought exercise; somehow our controller needs to make an effectively discrete decision to turn off a thruster and move it.  The framework of optimal control should support this - you are sacrificing a short-term loss of control authority for the long-term benefit of having the thruster positioned where you would like, but we haven't developed tools yet that deal well with this discrete plus continuous
 decision making.  We'll need to address that here.</p>
 
 <p>Unfortunately, although the problem is already difficult, we need to continue to add constraints.  Now let's say additionally, that the thrusters can only be turned on in certain locations, as cartooned here:</p>
-  <center><img width="60%" src="figures/hovercraftCartesianConstraints.svg"/></center>
+  <center><img width="60%" data-src="figures/hovercraftCartesianConstraints.svg"/></center>
 <p>The union of these regions need not form a convex set.  Furthermore, these locations could be specified in the robot frame, but may also be specified in the world frame, which I'll call ${\bf p}_i$: $${\bf p}_i = {\bf r}_i - \begin{bmatrix} x \\ 0 \\ z \end{bmatrix}.$$  This problem still feels like it should be tractable, but it's definitely getting hard.</p>
 
 </section>
@@ -2784,7 +2808,7 @@ decision making.  We'll need to address that here.</p>
 
 <p>In my view, the hovercraft problem above is a central component of the walking problem.  If we consider a walking robot with massless legs, then the feet are exactly like movable thrusters.  As above, they are highly constrained - they can only produce force when they are touching the ground, and (typically) they can only produce forces in certain directions, for instance as described by a "friction cone" (you can push on the ground but not pull on the ground, and with Coulomb friction the forces tangential to the ground must be smaller than the forces normal to the ground, as described by a coefficient of friction, e.g. $|F_{\parallel}| < \mu |F_{\perp}|$).</p>
 
-<figure><img width="50%" src="figures/hovercraftLegs.svg"/></figure>
+<figure><img width="50%" data-src="figures/hovercraftLegs.svg"/></figure>
 
   <p>The constraints on where you can put your feet / thrusters will depend on the kinematics of your leg, and the speed at which you can move them will depend on the full dynamics of the leg -- these are difficult constraints to deal with.  But the actual dynamics of the rigid body are actually still affine, and still simple!</p>
 
@@ -2815,7 +2839,7 @@ remain unchanged.  The center of mass is a configuration dependent point, and do
 <p>While not the only important case, it is extremely common for our robots to be walking over flat, or nearly flat terrain.  In this situation, even if the robot is touching the ground in a number of places (e.g., two heels and two toes), the constraints on the center of mass dynamics can be summarized very efficiently.</p>
 
 <figure>
-  <img width="80%" src="figures/flat_terrain.svg"/>
+  <img width="80%" data-src="figures/flat_terrain.svg"/>
   <figcaption>External forces acting on a robot pushing on a flat ground</figcaption>
 </figure>
 
@@ -2838,7 +2862,7 @@ the center of pressure is a "zero-moment point" (ZMP) -- a property that we will
 
 <p>First let us recall that for rigid body systems I can always summarize the
   contributions from many external forces as a single <i>wrench</i> (force and torque) on the object -- this is simply because the $F_i$ terms enter our equations of motion linearly.  Specifically, given any point in space, $r$, in coordinates relative to $(x,z)$:</p>
-<figure><img width="70%" src="figures/zmp_derivation.svg"/></figure>
+<figure><img width="70%" data-src="figures/zmp_derivation.svg"/></figure>
 <todo>update diagram to have r instead of p</todo>
 
 <p>I can re-write the equations of motion as
@@ -2864,7 +2888,7 @@ where ${\bf F}_{net} = \sum_i {\bf F}_i$ and the value of $\tau_{net}$ depends o
 
   <section data-type="sect1"><h1>ZMP planning</h1>
 
-    <figure><img width="80%" src="figures/zmp_planning.svg"/></figure>
+    <figure><img width="80%" data-src="figures/zmp_planning.svg"/></figure>
 
     <section data-type="sect2"><h1>From a CoM plan to a whole-body plan</h1></section>
   </section>
@@ -3023,7 +3047,7 @@ The task is to design a
 control system, $u = \pi(\bx,t)$, $\bx=[q,\dot{q}]^T$ to regulate this
 brick to $\bx = [0,0]^T$.</p>
 <figure>
-<img width="70%" src="figures/double_integrator_brick.svg"/>
+<img width="70%" data-src="figures/double_integrator_brick.svg"/>
 <figcaption>The double integrator as a unit-mass brick on a frictionless surface</figcaption>
 </figure>
 
@@ -3115,7 +3139,7 @@ Substituting $t = \dot{q}(0) - \dot{q}$ into the solution give $\dot{q}$ reveals
 that the system orbits are parabolic arcs:
 \[ q = -\frac{1}{2} \dot{q}^2 + c_{-}, \] with $c_{-} = q(0) + \frac{1}{2}\dot{q}^2(0)$.</p>
 <figure>
-  <img width="80%" src="figures/double_integrator_orbits.svg"/>
+  <img width="80%" data-src="figures/double_integrator_orbits.svg"/>
   <figcaption>Two solutions for the system with $u=-1$</figcaption>
 </figure>
 <!-- t = qdot - qdot0,
@@ -3140,13 +3164,13 @@ Figure~\ref{fig:mintime_double_int}.  %Trajectories of the system
 %possible toward the switching surface, then rides the switching
 %surface in to the origin. -->
 <figure>
-<img width="80%" src="figures/double_integrator_mintime_policy.svg"/>
+<img width="80%" data-src="figures/double_integrator_mintime_policy.svg"/>
 <figcaption>Candidate optimal (bang-bang) policy for the minimum-time
   double integrator problem.</figcaption>
 </figure>
 and illustrate some of the optimal solution trajectories:
 <figure>
-<img width="80%" src="figures/double_integrator_mintime_orbits.svg"/>
+<img width="80%" data-src="figures/double_integrator_mintime_orbits.svg"/>
 <figcaption>Solution trajectories of system using the optimal policy</figcaption>
 </figure>
 
@@ -3169,7 +3193,7 @@ T = (qdot0-qdotm)-qdotm = qdot0 + 2*sqrt(c-)
 -->
 plotted here:</p>
 <figure>
-<img width="80%" src="figures/double_integrator_mintime_cost_to_go.svg"/>
+<img width="80%" data-src="figures/double_integrator_mintime_cost_to_go.svg"/>
 <figcaption>Time to the origin using the bang-bang policy</figcaption>
 </figure>
 Notice that the function is continuous (though not smooth), even though
@@ -3222,7 +3246,7 @@ controllers. Many of you will have learned it before as a tool for graph search.
 S$ and "actions" associated with edges labeled as $\{a_1,a_2,...\} \in A$, as in
 the following trivial example:</p>
 <figure><img width="70%"
-src="figures/graph_search.svg"/><figcaption>A simple directed
+data-src="figures/graph_search.svg"/><figcaption>A simple directed
 graph.</figcaption></figure>
 
 <p>Let us also assume that each edge has an associate
@@ -3265,7 +3289,7 @@ are to move up, down, left, right, or do nothing.  <elib>Sutton98</elib></p>
 
 <figure>
   <a href="figures/gridworld_mintime.swf">
-    <img width="80%" src="figures/gridworld_mintime.svg" />
+    <img width="80%" data-src="figures/gridworld_mintime.svg" />
   </a>
   <figcaption>The one-step cost for the grid-world minimum-time problem. The goal state has a cost of zero, the obstacles have a cost of 10, and every other state has a cost of 1. <em>Click the image to watch the value iteration algorithm in action.</em></figcaption>
 </figure>
@@ -3934,7 +3958,7 @@ not yet appeared in any mainstream textbooks.</p>
 
     <div data-type="example"><h1>Stability of the Damped Pendulum</h1>
 
-    <center><img width="25%" src="figures/simple_pend.svg"/></center>
+    <center><img width="25%" data-src="figures/simple_pend.svg"/></center>
 
     <p>Recall that the equations of motion of the
     damped simple pendulum are given by \[ ml^2 \ddot{\theta} + mgl\sin\theta = -b\dot{\theta}, \]
@@ -3959,7 +3983,7 @@ not yet appeared in any mainstream textbooks.</p>
     Recall that the contours of this energy function are the orbits of the undamped
     pendulum.</p>
 
-    <center><img width="50%" src="figures/pend_undamped_phase.svg"/></center>
+    <center><img width="50%" data-src="figures/pend_undamped_phase.svg"/></center>
 
     <p>A natural route to proving the stability of the downward fixed points is by arguing
     that energy decreases for the damped pendulum (with $b>0$) and so the system will
@@ -4189,7 +4213,7 @@ not yet appeared in any mainstream textbooks.</p>
 
             <p>Suppose you have a system governed by the equations $\dot\bx = {\bf A}\bx$, where the matrix ${\bf A}$ is unknown, but its uncertain elements can be bounded.  There are a number of ways to write down this uncertainty set; let us choose to write this by describing ${\bf A}$ as the affine combination of a number of known matrices, $${\bf A} = \sum_{i} \beta_i {\bf A}_i, \quad \sum_i \beta_i = 1, \quad \forall i, \beta_i > 0.$$  This is just one way to specify the uncertainty; geometrically it is describing a polygon of uncertain parameters (in the space of elements of ${\bf A}$ with each ${\bf A}_i$ as one of the vertices in the polygon.</p>
             <figure>
-                <img width="50%" src="figures/affine_combination_of_matrices.svg"/>
+                <img width="50%" data-src="figures/affine_combination_of_matrices.svg"/>
             </figure>
 
             <p>Now we can formulate the search for a common Lyapunov function using \[
@@ -4264,7 +4288,7 @@ l^2} \left( b \dot\theta + mgls \right) \end{bmatrix}.$$ </p>
                 ("spot" was "systems polynomial optimization toolbox" written by Prof. Alex Megretski, and this is just a slightly leaner implementation)
             to construct the SDP from the description as a SOS program.  The result is a Lyapunov function that looks familiar (visualized as a countour plot here):</p>
 
-            <div  style="text-align:center"><img src="figures/global_pend_V.svg" width="400px"/></div>
+            <div  style="text-align:center"><img data-src="figures/global_pend_V.svg" width="400px"/></div>
 
             <p>Aha!  Not only does the optimization finds us coefficients for the Lyapunov function which satisfy our Lyapunov
             conditions, but the result looks a lot like mechanical energy.  In fact, the result is a little better than energy...
@@ -4312,7 +4336,7 @@ of a Lyapunov function as approximations of the region of attraction for nonline
 
     <p> Consider the first-order, one-dimensional system $\dot{x} = -x + x^3.$  We can quickly understand this system using our tools for graphical analysis.</p>
     <figure>
-      <img width="80%" src="figures/cubicPolynomialExample.svg"/>
+      <img width="80%" data-src="figures/cubicPolynomialExample.svg"/>
     </figure>
     <p>In the vicinity of the origin, $\dot{x}$ looks like $-x$, and as we move away it looks increasingly like $x^3$.  There is a stable fixed point at the origin and unstable fixed points at $\pm 1$.  In fact, we can deduce visually that the region of attraction to the stable fixed point at the origin is $\bx \in (-1,1)$.  Let's see if we can demonstrate this with a Lyapunov argument.</p>
 
@@ -4338,7 +4362,7 @@ of a Lyapunov function as approximations of the region of attraction for nonline
     can see that the fixed point at the origin is still stable, but the <em>robust region of attraction</em> to this fixed point (shaded in blue below) is smaller than the region of attraction for the system with $\alpha=1$.</p>
 
     <figure>
-      <img width="80%" src="figures/cubicPolynomialExample_gain_uncertainty.svg"/>
+      <img width="80%" data-src="figures/cubicPolynomialExample_gain_uncertainty.svg"/>
     </figure>
 
     <p>Taking the same Lyapunov candidate as above, $V = \frac{1}{2} x^2$, we have $$\dot{V} = -x^2 + \alpha x^4.$$  This function is zero at the origin, and negative for all $\alpha$ whenever $x^2 > \alpha x^4$, or $$|x| < \frac{1}{\sqrt{\alpha_{max}}} = \sqrt{\frac{2}{3}}.$$ Therefore, we can conclude that $|x| < \sqrt{\frac{2}{3}}$ is inside the robust region of attraction of the uncertain system.</p>
@@ -4353,7 +4377,7 @@ of a Lyapunov function as approximations of the region of attraction for nonline
           can see that the fixed point is not necessarily at the origin;  the location of the fixed point moves depending on the value of $\alpha$.  But we should be able to guarantee that the uncertain system will stay near the origin if it starts near the origin, using an invariant set argument.</p>
 
         <figure>
-          <img width="80%" src="figures/cubicPolynomialExample_additive_uncertainty.svg"/>
+          <img width="80%" data-src="figures/cubicPolynomialExample_additive_uncertainty.svg"/>
         </figure>
 
         <p>Taking the same Lyapunov candidate as above, $V = \frac{1}{2} x^2$, we have $$\dot{V} = -x^2 + x^4 + \alpha x.$$ This Lyapunov function allows us to easily verify, for instance, that $V \le \frac{1}{3}$ is a <em>robust invariant set</em>, because whenever $V = \frac{1}{3}$, we have $$\forall \alpha \in [\alpha_{min},\alpha_{max}],\quad \dot{V}(x,\alpha) < 0.$$  Therefore $V$ can never start at less than one-third and cross over to greater than one-third.  To see this, see that $$ V=\frac{1}{3} \quad \Rightarrow \quad x = \pm \sqrt{\frac{2}{3}} \quad \Rightarrow \quad \dot{V} = -\frac{2}{9} \pm \alpha \sqrt{\frac{2}{3}} < 0, \forall \alpha \in \left[-\frac{1}{4},\frac{1}{4} \right]. $$  Note that not all sub-level sets of this invariant set are invariant.  For instance $V < \frac{1}{32}$ does not satisfy this condition, and by visual inspection we can see that it is in fact not robustly invariant.
@@ -4559,7 +4583,7 @@ and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
   objective function defined over (multi-dimensional) $z$, with a subset of
   possible $z$ values satisfying the constraints.</p>
   <figure>
-    <img width="80%" src="figures/nonlinear_optimization_w_minima.svg"/>
+    <img width="80%" data-src="figures/nonlinear_optimization_w_minima.svg"/>
     <figcaption>One-dimensional cartoon of a nonlinear optimization problem.  The
       red dots represent local minima.  The blue dot represents the optimal solution.</figcaption>
   </figure>
@@ -4682,7 +4706,7 @@ trajectories, the derivative at the midpoint of each segment is particularly eas
 making it the natural choice.</p>
 
 <figure>
-  <img width="80%" src="figures/dircol.svg">
+  <img width="80%" data-src="figures/dircol.svg">
   <figcaption>Cubic spline parameters used in the direct collocation method.</figcaption>
 </figure>
 
@@ -4898,7 +4922,7 @@ $$\min_{x,y} x+y, \quad \subjto \quad x^2 + y^2 = 1.$$
 The level sets of $x+y$ are straight lines with slope $-1$, and
 the constraint requires that the solution lives on the unit circle.</p>
 <figure>
-  <img width="80%" src="figures/lagrange_multipliers_unit_circle.svg"/>
+  <img width="80%" data-src="figures/lagrange_multipliers_unit_circle.svg"/>
 </figure>
 <p>Simply by inspection, we can determine that the optimal solution should be $x=y=-\frac{\sqrt{2}}{2}.$
 Let's make sure we can obtain the same result using Lagrange multipliers.
@@ -5119,7 +5143,7 @@ In particular, we would like to consider Lyapunov functions which have the
 form cartooned below;  they vanish to zero everywhere along the cycle, and are
 strictly positive everywhere away from the cycle.</p>
 
-<figure><img src="figures/limitCycleLyapunovCartoon.svg"/><figcaption>Cartoon of a Lyapunov
+<figure><img data-src="figures/limitCycleLyapunovCartoon.svg"/><figcaption>Cartoon of a Lyapunov
 function which vanishes on a limit cycle, and is strictly positive everywhere else.
 (a small segment has been removed solely for the purposes of visualization).</figcaption></figure>
 
@@ -5135,7 +5159,7 @@ coordinate system relative to the orbit, with coordinates</p>
 </ul>
 <p>Given a state $\bx$ in the original coordinates, we must define a smooth mapping $\bx \rightarrow (\tau, \bx_\perp)$
 to this new coordinate system.  For example, for a simple ring oscillator we might have:</p>
-<figure><img width="80%" src="figures/transverseCoordinates.svg"/><figcaption>A moving coordinate system
+<figure><img width="80%" data-src="figures/transverseCoordinates.svg"/><figcaption>A moving coordinate system
   along the limit cycle.</figcaption></figure>
 In general, for an $n$-dimensional state space, $\tau$ will always be a scalar, and $\bx_\perp$ will
 be an $(n-1)$-dimensional vector defining the remaining coordinates relative to $\bx^*(\tau)$.
@@ -5179,7 +5203,7 @@ circle.   In cartesian coordinates, the dynamics are   \begin{align*}
 \dot{x}_2 =& -x_1 -\alpha x_2 \left( 1 - \frac{1}{\sqrt{x_1^2+x_2^2}}\right),
 \end{align*}   where $\alpha$ is a positive scalar gain.</p>
 
-<figure><img width=80% src="figures/ringOscillator.svg"/><figcaption>Vector field of the ring oscillator</figcaption></figure>
+<figure><img width=80% data-src="figures/ringOscillator.svg"/><figcaption>Vector field of the ring oscillator</figcaption></figure>
 
 <p>If we take the
 transverse coordinates to be the polar coordinates,   shifted so that $x_\perp$
@@ -5384,7 +5408,7 @@ axis([-10,25,-10,25]);
   Again, this algorithm <em>is</em> probabilistically complete.  But after expanding 1000 nodes, the tree is basically a mess of node points all right on top of
   each other:
   <figure>
-    <img width="70%" src="figures/random_tree.svg"/>
+    <img width="70%" data-src="figures/random_tree.svg"/>
   </figure>
   <p>We're nowhere close to the goal yet, and it's not exactly a hard problem.
 </p>
@@ -5401,16 +5425,16 @@ form of heuristic for encouraging the nodes to spread out and explore the space.
 <section data-type="sect2"><h1>Rapidly-Exploring Random Trees (RRTs)</h1>
 
 <figure>
-  <img width="70%" src="figures/rrt.svg"/>
+  <img width="70%" data-src="figures/rrt.svg"/>
 </figure>
 
   <figure>
-    <img width="90%" src="figures/rrt_basic.svg"/>
+    <img width="90%" data-src="figures/rrt_basic.svg"/>
     <figcaption>(<a href="figures/rrt_basic.swf">Click here to watch the animation</a>)</figcaption>
   </figure>
 
   <figure>
-    <img width="90%" src="figures/rrt_voronoi.svg"/>
+    <img width="90%" data-src="figures/rrt_voronoi.svg"/>
     <figcaption>(<a href="figures/rrt_voronoi.swf">Click here to watch the animation</a>)</figcaption>
 </figure>
 
@@ -5533,7 +5557,7 @@ crank to generate equations of motion. </p>
 <div data-type="example"><h1>Simple Double Pendulum</h1>
 
 <figure>
-  <img style="width:250px;" src="figures/simple_double_pend.svg"/>
+  <img style="width:250px;" data-src="figures/simple_double_pend.svg"/>
   <figcaption>Simple double pendulum</figcaption>
 </figure>
 
@@ -5687,11 +5711,11 @@ mixed-integer optimization.  actually show the optimization hierarchy in drake a
 
 <section data-type="chapter" class="chapter"><h1>Drake</h1>
 
-<center><img src="https://groups.csail.mit.edu/locomotion/drake/logo_w_text.jpg" width="80%"/></center>
+<center><img data-src="https://groups.csail.mit.edu/locomotion/drake/logo_w_text.jpg" width="80%"/></center>
 
 <section data-type="sect1"><h1>What is <drake></drake>?</h1>
 
-<!---<img src="https://raw.github.com/wiki/RobotLocomotion/drake/images/logo_w_text.jpg" width="80%"/>-->
+<!---<img data-src="https://raw.github.com/wiki/RobotLocomotion/drake/images/logo_w_text.jpg" width="80%"/>-->
 
 <p>
 Drake ("dragon" in Middle English) is a toolbox maintained by the <a href="http://groups.csail.mit.edu/locomotion/">Robot Locomotion Group</a> at the MIT Computer Science and Artificial Intelligence Lab (CSAIL) which contains implementations of many of the ideas from these notes.  It was designed with the goal of rapidly prototyping advanced control ideas, but has also been optimized (in places) for performance -- it provides the complete planning and control backend for most of our research robots, including <a href="http://drc.mit.edu">MIT's entry into the DARPA Robotics Challenge</a>, and now has users from academia and industry around the world.  </p>
@@ -5755,7 +5779,7 @@ state-space form, with $x$ denoting the state vector.  In addition,
 every dynamical system can have an input vector, $u$, and an output
 vector $y$. </p>
 
-<center><img style="width:250px;" src="figures/input_output_system.svg"/></center>
+<center><img style="width:250px;" data-src="figures/input_output_system.svg"/></center>
 
 <p>
 As we will see, dynamical systems in <drake></drake> can be instantiated in a
@@ -5927,7 +5951,7 @@ hybrid system is illustrated in the figure below.  Note that the internal
 mode dynamics could also have discrete-time dynamics or mixed discrete-
 and continuous-time dynamics.<p>
 
-<center><img style="width:550px;" src="figures/hybrid_system.svg"/></center>
+<center><img style="width:550px;" data-src="figures/hybrid_system.svg"/></center>
 
 <p>Event-driven systems in <drake></drake> are described using the language
 from the Hybrid Systems community.  Transitions between individual
@@ -6141,11 +6165,11 @@ single (vector) input and single (vector) output can be used with the
 <section data-type="sect2"><h1>Combinations of Systems</h1>
 
 <figure>
-  <center><img style="width:250px;" src="figures/feedback_system.svg"/></center>
+  <center><img style="width:250px;" data-src="figures/feedback_system.svg"/></center>
   <figcaption>Feedback combination</figcaption>
 </figure>
 <figure>
-  <center><img style="width:300px;" src="figures/cascade_system.svg"/></center>
+  <center><img style="width:300px;" data-src="figures/cascade_system.svg"/></center>
   <figcaption>Cascade combination</figcaption>
 </figure>
 
@@ -6221,9 +6245,9 @@ fnplt(traj);
 <p>These generate the plots below</p>
 <figure>
   <table width="100%"><tr width="100%"><td>
-    <img style="width:250px" src="figures/simple_ct_example.svg"/>
+    <img style="width:250px" data-src="figures/simple_ct_example.svg"/>
   </td><td>
-  <img style="width:250px" src="figures/simple_dt_example.svg"/>
+  <img style="width:250px" data-src="figures/simple_dt_example.svg"/>
 </td></tr></table>
 <figcaption>Simulation of <code>SimpleCTSystem</code> (left) and
   <code>SimpleDTSystem</code> (right).</figcaption>
