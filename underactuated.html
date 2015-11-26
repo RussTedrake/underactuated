@@ -2979,7 +2979,23 @@ where this additional input $\bw$ is the (vector) output of some random process.
       \end{gather*}
       Here $\sigma$ is the standard deviation of the Gaussian.
       </p>
-      <todo>single simulation trace</todo>
+      <p>When you simulate this system for small values of $\sigma$, you will see trajectories move roughly towards one of the two
+      fixed points (for the deterministic system), but every step is modified by the noise.  In fact, even if the trajectory were to
+      arrive exactly at what was once a fixed point, it is almost surely going to move again on the very next step.  In fact,
+      if we plot many runs of the simulation from different initial conditions all on the same plot,
+      we will see something like the figure below.</p>
+      <figure>
+        <img width="80%" data-src="figures/cubic_bistable_particles_time.svg"/>
+        <figcaption>Simulation of the bistable system with noise from many initial conditions.</figcaption>
+      </figure>
+
+      <p>You can run this example yourself</p>
+      <pre><code class="matlab" testfile="testCartPoleLqr">
+        cd(fullfile(getDrakePath,'examples','test'));
+        options.time_reversed = true;
+        simpleCTParticleDemo(options);
+      </code></pre>
+
     </div>
 
     <todo>
