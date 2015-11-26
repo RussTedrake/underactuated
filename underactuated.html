@@ -2957,7 +2957,7 @@ where this additional input $\bw$ is the (vector) output of some random process.
     giving rich results -- but is often much easier to work with.
   </p>
 
-  <section data-type="sect1"><h1>One-dimensional examples</h1>
+  <section data-type="sect1"><h1>The Master Equation</h1>
 
     <p>Let's start by looking at some simple examples.</p>
 
@@ -2986,31 +2986,135 @@ where this additional input $\bw$ is the (vector) output of some random process.
       we will see something like the figure below.</p>
       <figure>
         <img width="80%" data-src="figures/cubic_bistable_particles_time.svg"/>
-        <figcaption>Simulation of the bistable system with noise from many initial conditions.</figcaption>
+        <figcaption>Simulation of the bistable system with noise ($\sigma = 0.01$) from many initial conditions.</figcaption>
       </figure>
 
       <p>You can run this example yourself</p>
-      <pre><code class="matlab" testfile="testCartPoleLqr">
+      <pre><code class="matlab" testfile="simpleCTParticleDemo">
         cd(fullfile(getDrakePath,'examples','test'));
-        options.time_reversed = true;
+        options.plot_histogram = false;
+        options.time_reversed_system = true;
         simpleCTParticleDemo(options);
       </code></pre>
 
+      <p>During any individual simulation, the state jumps around randomly for all time, and could even transition from the vicinity of one fixed point to the other fixed point.  Another way to visualize this output is to animate a histogram of the particles over time.</p>
+
+      <figure>
+          <img width="80%" data-src="figures/cubic_bistable_histogram.svg"/>
+          <figcaption>Histogram of the states of the bistable system with noise ($\sigma = 0.01$) after simulating from random initial conditions until $t=30$.
+          <br/><a href="figures/cubic_bistable_histogram.swf">Click here to see the animation</a></figcaption>
+        </figure>
+      <pre><code class="matlab" testfile="simpleCTParticleDemoHist">
+        cd(fullfile(getDrakePath,'examples','test'));
+        options.plot_histogram = true;
+        options.time_reversed_system = true;
+        simpleCTParticleDemo(options);
+      </code></pre>
     </div>
 
-    <todo>
-    <p>Given x[0], what is the long-term behavior of the system?  e.g. x[\infty]? Wrong question.  Can start to think about the right
-    question if we plot the results of many simulations simultaneously.</p>
-    </todo>
+    <p>Let's take a moment to appreciate the implications of what we've just observed.
+      Every time that we've analyzed a system to date, we've asked questions like "given x[0], what is the long-term behavior of the system, $\lim_{n\rightarrow\infty} x[n]$?",
+      but now $x[n]$ is a <i>random variable</i>. The trajectories of this system do not converge, and the system does not exhibit any form of stability that we've introduced so far.
+      </p>
 
-    <todo>particle simulation</todo>
-    <todo>histogram animation</todo>
+    <p>All is not lost.  If you watch the animation closely, you might notice the <i>distribution</i> of this random variable is actually very well behaved.  This is the key idea for this chapter.</p>
 
-    <p>$x[n]$ is now a random variable. the trajectories of this system do not converge nor exhibit any form of stability that we've introduced so far.  but as you can see in the simulations, the <i>distribution</i> of this random variable is actually very well behaved.  This is the key idea for this chapter.</p>
+    <p>Let us use $p_n(x)$ to denote the <a href="https://en.wikipedia.org/wiki/Probability_density_function">probability density function</a> over the random variable $x$ at time $n$.
+      Note that this density function must satisfy \[ \int_{-\infty}^\infty p_n(x) dx = 1.\]
+      It is actually possible to write the <i>dynamics of the probability density</i> with the simple relation
+      \[ p_{n+1}(x) = \int_{-\infty}^\infty p(x|x') p_n(x') dx', \]
+      where $p(x|x')$ encodes the stochastic dynamics as a conditional distribution of the next state (here $x$) as a function
+      of the current state (here $x'$).  Dynamical systems that can be encoded in this way are known as <i>continuous-state Markov Processes</i>,
+      and the governing equation above is often referred to as the "<a href="https://en.wikipedia.org/wiki/Master_equation">master equation</a>" for the stochastic process.  In fact this update is even linear(!) ; a fact that can enable
+      closed-form solutions to some impressive long-term statistics, like mean time to failure or first passage times<elib>Byl08a</elib>.
+      Unfortunately, it is often difficult to perform the integral in closed form, so we must often resort to
+      discretation or numerical analysis.
+    </p>
 
-    <p>Let us use $p_n(x)$ to denote the <a href="https://en.wikipedia.org/wiki/Probability_density_function">probability density function</a> over the random variable $x$ at time $n$.</p>
+    <p>The slightly more general form of the master equation, which works for multivariable distributions
+    with state-domain ${\cal X}$, and systems with control inputs $\bu$, is \[ p_n(\bx) = \int_{\cal X} p(\bx|\bx',\bu) p_n(\bx') d\bx'. \]
+    This is a (continuous-state) Markov Decision Process.</p>
 
-  </section>
+    </section>
+
+    <section data-type="sect1"><h1>Stationary Distributions</h1>
+
+    <p>In the example above, the histogram is our numerical approximation of the probability density. If you simulate
+    it a few times, you will probably believe that, although the individual trajectories of the system
+    <i>do not</i> converge, the probability distribution actually <i>does</i> converge to what's known
+    as a <i>stationary distribution</i> -- a fixed point of the master equation.  Instead of thinking about
+    the dynamics of the trajectories, we need to start thinking about the dynamics of the distribution.</p>
+
+    <div data-type="example"><h1>The Linear Gaussian System</h1>
+
+    </div>
+
+    <p>The stationary distribution of this system reflects a balance between two in the governing
+    equations: the stability of the deterministic system is bringing trajectories together (making the
+    distribution tighter), but the noise in the system is forcing trajectories apart (making the distribution broader).
+    If you increase the standard deviation of the noise, then you will see that the stationary
+    distribution will get broader.</p>
+
+    <p>Given how rich the dynamics can be for deterministic nonlinear systems, you can probably imagine
+      that the possible long-term dynamics of the probability are also extremely rich.  If we simple flip the
+    signs in the dynamics we examined above, we'll get our next example:</p>
+
+    <div data-type="example"><h1>The Cubic Example + Noise</h1>
+
+      <p>Now let's consider the discrete-time approximation of
+        \[ \dot{x} = -x + x^3, \]
+        again with additive noise:
+        \[ x[n+1] = x[n] + h (-x[n] + x[n]^3 + w[n]). \]
+        With $w[n]=0$, the system has only a single stable fixed point (at the origin),
+        whose deterministic region of attraction is given by $x \in (-1,1)$.  If we again simulate
+        the system from a set of random initial conditions and plot the histogram, we will
+        see something like the figure below.
+      </p>
+      <figure>
+        <img width="80%" data-src="figures/cubic_histogram.svg"/>
+        <figcaption>Histogram of the states of the bistable system with noise ($\sigma = 0.01$) after simulating from random initial conditions until $t=30$.
+          <br/><a href="figures/cubic_histogram.swf">Click here to see the animation</a></figcaption>
+      </figure>
+      <p>Be sure to watch the animation (or run the simulation):</p>
+      <pre><code class="matlab" testfile="simpleCTParticleDemoHist2">
+        cd(fullfile(getDrakePath,'examples','test'));
+        options.plot_histogram = true;
+        options.time_reversed_system = false;
+        simpleCTParticleDemo(options);
+      </code></pre>
+      <p>Now try increasing the noise covariance:</p>
+      <pre><code class="matlab" testfile="simpleCTParticleDemoHist3">
+        cd(fullfile(getDrakePath,'examples','test'));
+        options.plot_histogram = true;
+        options.time_reversed_system = false;
+        options.noise_covariance = 2;
+        simpleCTParticleDemo(options);
+      </code></pre>
+      <p style="text-align:center"><a href="figures/cubic_histogram_more_noise.swf">Click here to see the animation</a></p>
+      <p>What is the stationary distribution for this system?  In fact, there isn't one.  Although
+      we initially collect probability density around the stable fixed point, you should notice a slow
+      leak -- on every step there is some probability of transitioning past unstable fixed points and
+      getting driven by the unstable dynamics off towards infinity.  If we run the simulation long enough,
+      there won't be any probability density left at $x=0$.</p>
+      </div>
+
+      <div data-type="example"><h1>The Stochastic Van der Pol Oscillator</h1>
+
+      </div>
+
+    </section>
+
+    <section data-type="sect1"><h1>Analysis</h1>
+
+    </section>
+
+    <section data-type="sect1"><h1>Extended Example: The Rimless Wheel on Rough Terrain</h1>
+
+    </section>
+
+    <section data-type="sect1"><h1>Control Design (a preview)</h1>
+
+    </section>
 
 </section> <!-- ***************  end of stochasticity **************   -->
 
