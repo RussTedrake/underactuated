@@ -3124,15 +3124,48 @@ where this additional input $\bw$ is the (vector) output of some random process.
 
       <div data-type="example"><h1>The Stochastic Van der Pol Oscillator</h1>
 
+        <p>One more example; this is a fun one.  Let's think about one of the simplest examples
+        that we had for a system that demonstrates limit cycle stability -- the Van der Pol oscillator -- but
+        now we'll add Gaussian white noise,
+        $$\ddot{q} + (q^2 - 1)\dot{q} + q = w(t),$$
+        Here's the question: if we
+          start with a small set of initial conditions centered around one point on the limit cycle,
+          then what is the long-term behavior of this distribution?
+        </p>
+        <figure>
+          <img width="80%" data-src="figures/vanderpol_particles.svg"/>
+          <figcaption>Randomly sampled initial conditions pictured with the stable limit cycle
+          of the Van der Pol oscillator.</figcaption>
+        </figure>
+
+        <p>Since the long-term behavior of the deterministic system is periodic, it would
+        be very logical to think that the state distribution for this stochastic system
+        would fall into a stable periodic solution, too.  But think about it a little more,
+        and then watch the animation (or run the simulation yourself).</p>
+      <pre><code class="matlab" testfile="vanderpol_particlesim">
+        cd(fullfile(getDrakePath,'examples'));
+        VanDerPol.particleDemo();
+      </code></pre>
+      <p style="text-align:center"><a href="figures/vanderpol_particles.swf">Click here to see the animation</a></p>
+
+      <p>The explanation is simple: the periodic solution of the system is only <i>orbitally stable</i>; there
+      is no stability along the limit cycle.  So any disturbances that push the particles along the limit
+      cycle will go unchecked.  Eventually, the distribution will "mix" along the entire cycle.
+      Perhaps surprisingly, this system that has a limit cycle stability when $w=0$ eventually
+      reaches a stationary distribution (fixed point) in the master equation.</p>
       </div>
 
     </section>
 
     <section data-type="sect1"><h1>Analysis</h1>
 
+      <p>Coming soon.  Discretize, then closed form solutions using the transition matrix.  Finite-time verification with sums of squares.</p>
+
     </section>
 
     <section data-type="sect1"><h1>Extended Example: The Rimless Wheel on Rough Terrain</h1>
+
+      <p>Coming soon.  Read the paper <elib>Byl08f</elib> and/or watch the <a href="https://youtu.be/TaaJgvjYBQc">video</a>.</p>
 
     </section>
 
