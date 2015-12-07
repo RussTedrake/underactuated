@@ -2873,12 +2873,12 @@ I\ddot\theta =& \sum_i \left[ r_i \times F_i \right]_y = ({\bf r} \times {\bf F}
 \end{align*}
 where ${\bf F}_{net} = \sum_i {\bf F}_i$ and the value of $\tau_{net}$ depends on the location ${\bf r}$.  For some choices of ${\bf r}$, we can make $\tau_{net}=0$.  Examining
     \[
-    ({\bf r} \times {\bf F}_{net})_y = r_z F_{net,x} - r_x F_{net,z} = \left(\sum_i {\bf r}_i \times {\bf F}_i\right)_y, \] we can see that when $F_{net,z} > 0$ there is an entire line of solutions, $r_x = a r_z + b$, including one that will intercept the terrain.  For walking robots, it is this point on the ground from which the external wrench can be described by a single force vector (and no moment) that is the famous "zero-moment point" (ZMP).     Substituting the back in to replace $F_{net}$, we can see that
+    ({\bf r} \times {\bf F}_{net})_y = r_z F_{net,x} - r_x F_{net,z} = \left[ r_i \times F_i \right]_y, \] we can see that when $F_{net,z} > 0$ there is an entire line of solutions, $r_x = a r_z + b$, including one that will intercept the terrain.  For walking robots, it is this point on the ground from which the external wrench can be described by a single force vector (and no moment) that is the famous "zero-moment point" (ZMP).     Substituting the back in to replace $F_{net}$, we can see that
     \[ r_x = \frac{r_z m \ddot{x} - I \ddot\theta}{m\ddot{z} + mg}. \]
     If we assume that $\ddot{z}=\ddot{theta}=0$ and replace the relative coordinates with the global coordinates ${\bf r} = {\bf p} - [x,0,z]^T$, then we arrive at precisely the equation presented above.</p>
 
 <p>Furthermore, since
-    \[\left(\sum_i {\bf r}_i \times {\bf F}_i\right)_y = \sum_i \left( r_{i,z} F_{i,x} - r_{i,x} F_{i,z} \right), \] and for <i>flat terrain</i> we have \[ r_z F_{net,x} = \sum_i r_{i,z} F_{i,x}, \] then we can see that this ZMP is exactly the CoP: \[ r_x = \frac{\sum_i r_{i,x} F_{i,z}}{ F_{net,z} }. \]
+    \[\left[ r_i \times F_i \right]_y = \sum_i \left( r_{i,z} F_{i,x} - r_{i,x} F_{i,z} \right), \] and for <i>flat terrain</i> we have \[ r_z F_{net,x} = \sum_i r_{i,z} F_{i,x}, \] then we can see that this ZMP is exactly the CoP: \[ r_x = \frac{\sum_i r_{i,x} F_{i,z}}{ F_{net,z} }. \]
     </p>
 
     <p>In three dimensions, we solve for the point on the ground where $\tau_{net,y} = \tau_{net,x} = 0$, but allow $\tau_{net,z} \ne 0$ to extract the analogous equations in the $y$-axis:  \[ r_y = \frac{r_z m \ddot{y} - I \ddot\theta}{m\ddot{z} + mg}. \] </p>
