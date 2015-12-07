@@ -4941,16 +4941,17 @@ chain rule.  To be concise (and slightly more general),   let us define
 $\bx[n+1]=f_d(\bx[n],\bu[n])$ as the discrete-time approximation of the
 continuous dynamics; for example, the forward Euler integration scheme used
 above would give   $f_d(\bx[n],\bu[n]) = \bx[n]+f(\bx[n],\bu[n])dt.$  Then we
-have   \[ \pd{J}{\bu_i} = \sum_{n=0}^{N-1} \left( \pd{g(\bx[n],\bu[n])}{\bx}
-\pd{\bx[n]}{\bu_i} + \pd{g(\bx[n],\bu[n])}{\bu_i} \right), \]   where the
+have   \[ \pd{J}{\bu_k} = \sum_{n=0}^{N-1} \left( \pd{g(\bx[n],\bu[n])}{\bx[n]}
+\pd{\bx[n]}{\bu_k} + \pd{g(\bx[n],\bu[n])}{\bu_k} \right), \]   where the
 gradient of the state with respect to the inputs can be computed   during the
-"forward simulation",   \[ \pd{\bx[n+1]}{\bu_i} = \pd{f_d(\bx[n],\bu[n])}{\bx}
-\pd{\bx[n]}{\bu_i} + \pd{f_d(\bx[n],\bu[n])}{\bu_i}.  \]   These simulation
+"forward simulation",   \[ \pd{\bx[n+1]}{\bu_k} = \pd{f_d(\bx[n],\bu[n])}{\bx[n]}
+\pd{\bx[n]}{\bu_k} + \pd{f_d(\bx[n],\bu[n])}{\bu_k}.  \]   These simulation
 gradients can   also be used in the chain rule to provide the gradients of any
 constraints.  Note that
 there are a lot of terms to keep around here, on the order of (state dim)
 $\times$ (control dim) $\times$ (number of timesteps).   Ouch.  Note also that many of these terms are zero; for instance with the Euler
-integration scheme above $\pd{\bu[n]}{\bu_i} = 0$ if $i\ne n$.</p>
+integration scheme above $\pd{\bu[n]}{\bu_k} = 0$ if $k\ne n$.  (If this looks like I'm mixing two notations here,
+recall that I'm using $\bu_k$ to represent the decision variable and $\bu[n]$ to represent the input used in the $n$th step of the simulation.)</p>
 
 </section>  <!-- gradients -->
 
@@ -4962,8 +4963,8 @@ integration scheme above $\pd{\bu[n]}{\bu_i} = 0$ if $i\ne n$.</p>
   but will derive it in the Pontryagin section below:
   <ol>
     <li>Simulate forward: $$\bx[n+1] = f_d(\bx[n],\bu_n),$$ from  $\bx[0] = \bx_0$</li>
-    <li>Calculate backwards: $$\lambda[n-1] = \pd{g(\bx[n],\bu[n])}{\bx}^T + \pd{f(\bx[n],\bu[n])}{\bx}^T \lambda[n],$$ from $\lambda[N-1]=0$</li>
-    <li>Extract the gradients: $$\pd{J}{\bu[n]} = \pd{g(\bx[n],\bu[n])}{\bu} + \lambda[n]^T \pd{f(\bx[n],\bu[n])}{\bu},$$ with $\pd{J}{\bu_i} = \sum_n \pd{J}{\bu[n]}\pd{\bu[n]}{\bu_i}$.</li>
+    <li>Calculate backwards: $$\lambda[n-1] = \pd{g(\bx[n],\bu[n])}{\bx[n]}^T + \pd{f(\bx[n],\bu[n])}{\bx[n]}^T \lambda[n],$$ from $\lambda[N-1]=0$</li>
+    <li>Extract the gradients: $$\pd{J}{\bu[n]} = \pd{g(\bx[n],\bu[n])}{\bu[n]} + \lambda[n]^T \pd{f(\bx[n],\bu[n])}{\bu[n]},$$ with $\pd{J}{\bu_k} = \sum_n \pd{J}{\bu[n]}\pd{\bu[n]}{\bu_k}$.</li>
   </ol>
 <p>Here $\lambda[n]$ is a vector the same size as $\bx[n]$ which has an interpretation as
   $\lambda[n]=\pd{J}{\bx[n+1]}^T$.  The equation governing $\lambda$ is known as the <em>adjoint
@@ -5026,7 +5027,7 @@ are often the most expensive part). </p>
 <p>There are number of useful variations to the problem formulations I've presented above.
 By far the most common is the addition of a terminal cost, e.g.: $$\min \quad h(\bx[N]) + \sum_{n=0}^{N-1} g(\bx[n],\bu[n]).$$
 These terms are easily added to the cost function in the any of methods, and the adjoint equations
-of the shooting method simply require the a modified terminal condition $$\lambda[N-1] = \pd{h(\bx[N])}{\bx}$$ when computing the gradients.</p>
+of the shooting method simply require the a modified terminal condition $$\lambda[N-1] = \pd{h(\bx[N])}{\bx[N]}$$ when computing the gradients.</p>
 
 <p>Another common modification is including the spacing of the breakpoints as additional
   decision variables.  This is particularly easy in the direct transcription and collocation methods,
