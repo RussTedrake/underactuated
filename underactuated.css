@@ -215,6 +215,17 @@ appendix [data-type="sect3"] h1:before {
   content: "";
 }
 
+appendix [data-type="theorem"] h1:before {
+  content: "Theorem " counter(chapter, upper-alpha) "." counter(theorem) " - ";
+}
+
+appendix [data-type="example"] h1:before {
+  content: "Example " counter(chapter, upper-alpha) "." counter(example_counter) " (";
+}
+appendix [data-type="algorithm"] h1:before {
+  content: "Algorithm " counter(chapter, upper-alpha) "." counter(algorithm) " (";
+}
+
 appendix figcaption:before {
   content: "Figure " counter(chapter, upper-alpha) "." counter(figure) " - ";
 }
