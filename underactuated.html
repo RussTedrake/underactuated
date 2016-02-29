@@ -5841,6 +5841,114 @@ C}(\bq,\bv)\bv + {\bf G}(\bq) = {\bf B}(\bq) \bu, \] which is not necessarily a
 second-order system.  See <elib>Duindam06</elib> for a nice discussion of this
 topic.</p>
 
+  <section data-type="sect2"><h1>Bilateral Position Constraints</h1>
+
+    <p>Consider constraint equation $$\phi(q) = 0.$$  These arise, for
+    instance, when the system has a closed kinematic chain.
+    The (floating base) equations of motion can be written
+    $$H(q)\ddot{q} + C(q,\dot{q}) = B u + J(q)^T \lambda,$$
+    where $J(q) = \pd{\phi}{q}$ and $\lambda$ is the constraint force.</p>
+
+    <p>To solve for $\lambda$, observe that when the constraint is imposed,
+    $\phi(q)=0$ and therefor $\dot{\phi}=0$ and $\ddot{\phi}=0$.  Writing
+    this out, we have \begin{gather*}\dot{\phi} = J(q)\dot{q}=0,\\
+    \ddot{\phi} = J(q) \ddot{q} + \dot{J}(q) \dot{q} = 0.\end{gather*}
+    Inserting the dynamics and solving for $\lambda$ yields $$\lambda =- (J
+    H^{-1} J^T)^+ (J H^{-1} (Bu - C) + \dot{J}\dot{q}).$$ The
+    $^+$ notation refers to a Moore-Penrose pseudo-inverse.  In most cases, there
+    are less constraints than degrees of freedom, in which case the
+    inverse has a unique solution (and the traditional inverse could have
+    been used).  But the pseudo-inverse also works in cases where the
+    system is over-constrained.</p>
+
+    <p>For numerical stability, one might like to add a restoring force to
+    this constraint in the event that the constraint is not satisfied to
+    numerical precision.  To accomplish this, we can implement $$\ddot\phi =
+    -\frac{2}{\epsilon} \dot\phi(q) - \frac{1}{\epsilon^2} \phi(q).$$
+    Carrying this through
+    yields
+    \begin{gather*}
+    \lambda =- (J
+    H^{-1} J^T)^+ (J H^{-1} (Bu - C) + (\dot{J} + \frac{2}{\epsilon}
+    J)\dot{q} + \frac{1}{\epsilon^2} \phi).
+    \end{gather*}</p>
+
+  </section>
+
+  <section data-type="sect2"><h1>Bilateral Velocity Constraints</h1>
+
+    <p>Consider the constraint equation
+    $$\psi(q,\dot{q}) = 0,$$
+    where $\pd{\psi}{\dot{q}} \ne 0.$  These are less common, but arise
+    when, for instance, a joint is driven through a prescribed motion.
+    Here, the manipulator equations are given by $$H(q)\ddot{q} + C = B u
+    + \pd{\psi}{\dot{q}}^T \lambda.$$
+    To solve for $\lambda$, we take $$\dot{\psi} = \pd{\psi}{q} \dot{q} +
+    \pd{\psi}{\dot{q}}\ddot{q} = 0,$$ which yields
+    $$\lambda = - \left( \pd{\psi}{\dot{q}} H^{-1} \pd{\psi}{\dot{q}}
+    \right)^+ \left[ \pd{\psi}{\dot{q}} H^{-1} (Bu - C) + \pd{\psi}{q}
+    \dot{q} \right].$$</p>
+
+    <p>Again, for numerical stability, we ask instead for $\dot{\psi} =
+    -\frac{1}{\epsilon} \psi$, which yields
+    $$\lambda = - \left( \pd{\psi}{\dot{q}} H^{-1} \pd{\psi}{\dot{q}}
+    \right)^+ \left[ \pd{\psi}{\dot{q}} H^{-1} (Bu - C) + \pd{\psi}{q}
+    \dot{q} + \frac{1}{\epsilon} \psi \right].$$</p>
+  </section>
+
+  <section data-type="sect2"><h1>Impulsive Collisions</h1>
+
+    <p>Now let $\phi(q)$ indicate the relative (signed) distance between two rigid bodies.
+      The collision event is described by the
+    zero-crossings (from positive to negative) of $\phi$.
+      Let us start by assuming frictionless collisions, allowing us to write $$H\ddot{q} + C = Bu + J^T \lambda,$$
+    where $\lambda \ge 0$ is now a (scalar) coefficient of the impulsive force that is
+    well-defined when integrated over the time of the collision (denoted
+    $t_c^-$ to $t_c^+$).  Integrate both sides of the equation
+    over that (instantaneous) interval:
+    \begin{align*}\int_{t_c^-}^{t_c^+} dt\left[  H \ddot{q} + C \right] =
+    \int_{t_c^-}^{t_c^+} dt \left[ Bu + J^T \lambda \right]
+    \end{align*}
+    Since $q$ and $u$ are constants over this interval, we are left
+    with
+    $$H\dot{q}^+ - H\dot{q}^- = J^T \int_{t_c^-}^{t_c^+} \lambda dt,$$
+    where $\dot{q}^+$ is short-hand
+    for $\dot{q}(t_c^+)$.  Multiplying both sides by $J H^{-1}$, we have
+    $$ J \dot{q}^+ - J\dot{q}^- = J H^{-1} J^T \int_{t_c^-}^{t_c^+} \lambda dt.$$
+    After the collision, we have
+    $\dot\phi^+ = -e \dot\phi^-$, with $0 \le e \le 1$ denoting the
+      <a href="https://en.wikipedia.org/wiki/Coefficient_of_restitution">coefficient of restitution</a>, yielding:
+      $$ J \dot{q}^+ - J\dot{q}^- = -(1+e)J\dot{q}^-,$$
+      and therefore
+    $$\int_{t_c^-}^{t_c^+} \lambda dt = - (1+e)\left[ J H^{-1} J^T \right]^+
+    J \dot{q}^-.$$  Substituting this back in above results in
+    $$\dot{q}^+ = \left[ I - (1+e)H^{-1} J^T \left[ J H^{-1} J^T \right]^+ J
+    \right] \dot{q}^-.$$</p>
+
+    <p>We can add friction at the contact.  Rigid bodies will almost always experience
+      contact at only a point, so we typically ignore torsional friction <elib>Featherstone06</elib>, and model only tangential friction by extending $J$ to include the two
+      vectors that span the tangential coordinates at the contact, written in joint coordinates (c.f. <elib>Stewart96</elib>).
+      Then $\lambda$ becomes a Cartesian force vector, but the equations above remain unchanged.
+      If $\lambda$ is restricted to a friction cone, as in Coulomb friction, in general we have to solve an optimization.
+    </p>
+
+  </section>
+
+  <section data-type="sect2"><h1>Hybrid Dynamics</h1>
+    <p>
+    We can put the bilateral constraint equations and the impulsive collision equations together
+    to implement a hybrid model for unilateral constraints of the form
+    $$\phi(q) \ge 0.$$
+    At every moment, some subset of the contacts are active, and can be treated as a bilateral constraint ($\phi_i=0$).
+    The guards of the hybrid model are when an inactive constraint becomes active ($\phi_i>0 \rightarrow \phi_i=0$), or when
+    an active constraint becomes inactive ($\lambda_i>0 \rightarrow \lambda_i=0$).
+    Note that collision events will (almost always) only result in new active constraints when $e=0$, e.g.
+    we have pure inelastic collisions.</p>
+
+    <p>If the contact involves Coulomb friction, then the transitions between sticking and sliding can be modeled
+    as additional hybrid guards, or can be solved efficiently as a complementarity problem <elib>Steward96</elib>.</p>
+  </section>
+
 </section>
 
 <section data-type="sect1"><h1>Recursive Rigid-Body Dynamics Algorithms</h1>
