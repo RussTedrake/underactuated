@@ -5701,6 +5701,8 @@ Robust control.  Common Lyapunov functions.  Dissipation inequalities.  Guarante
 
 <section data-type="chapter" class="chapter"><h1>System Identification</h1>
 
+  <todo>equation error vs simulation error.  model-reduction for linear systems.  optimal experiment design</todo>
+
 </section>
 
 <section data-type="chapter" class="chapter"><h1>State Estimation</h1>
@@ -5718,7 +5720,7 @@ Robust control.  Common Lyapunov functions.  Dissipation inequalities.  Guarante
 
 <appendix class="part" title="Appendix">
 
-<section data-type="chapter" class="chapter" id="ch:manipulator"><h1>Robot Dynamics</h1>
+<section data-type="chapter" class="chapter" id="ch:manipulator"><h1>Rigid-Body Dynamics</h1>
 
 <section data-type="sect1"><h1>Deriving the equations of motion (an example)</h1>
 
@@ -5800,9 +5802,9 @@ our algorithms.</p>
 
 <p>   Continuing our abstractions, we find that the equations of motion of a
 general robotic manipulator (sans kinematic loops) take the form $${\bf
-H}(\bq)\ddot{\bq} + {\bf C}(\bq,\dot{\bq})\dot{\bq} + {\bf G}(\bq) = {\bf
+H}(\bq)\ddot{\bq} + {\bf C}(\bq,\dot{\bq})\dot{\bq} + {\bf g}(\bq) = {\bf
 B}(\bq)\bu,$$ where $\bq$ is the state vector, ${\bf H}$ is the inertial matrix,
-${\bf C}$ captures Coriolis forces, and ${\bf G}$ captures potentials (such as
+${\bf C}$ captures Coriolis forces, and ${\bf g}$ captures potentials (such as
 gravity).  The matrix ${\bf B}$ maps control inputs $\bu$ into generalized
 forces.</p>
 
@@ -5811,7 +5813,7 @@ The equations of motion from Example 1 can be written compactly as:
 \begin{align*}
 {\bf H}(\bq) =& \begin{bmatrix} (m_1 + m_2)l_1^2 + m_2 l_2^2 + 2 m_2 l_1l_2 c_2 & m_2 l_2^2 + m_2 l_1 l_2 c_2 \\ m_2 l_2^2 + m_2 l_1 l_2 c_2 & m_2 l_2^2 \end{bmatrix} \\
 {\bf C}(\bq,\dot\bq) =& \begin{bmatrix} 0 & -m_2 l_1 l_2 (2\dot{q}_1 + \dot{q}_2)s_2 \\ m_2 l_1 l_2 \dot{q}_1 s_2 & 0 \end{bmatrix} \\
-{\bf G}(\bq) =& g \begin{bmatrix} (m_1 + m_2) l_1 s_1 + m_2 l_2
+{\bf g}(\bq) =& g \begin{bmatrix} (m_1 + m_2) l_1 s_1 + m_2 l_2
   s_{1+2} \\ m_2 l_2 s_{1+2} \end{bmatrix} , \quad {\bf B}
 = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}
 \end{align*}
@@ -5837,7 +5839,7 @@ velocity vector is no longer the same as the length of our position vector.  For
 this reason, you will see that most of the software in <drake></drake> uses the more
 general notation with $\bv$ to represent velocity, $\bq$ to represent positions,
 and the manipulator equations are written as \[ {\bf H}(\bq) \dot{\bv} + {\bf
-C}(\bq,\bv)\bv + {\bf G}(\bq) = {\bf B}(\bq) \bu, \] which is not necessarily a
+C}(\bq,\bv)\bv + {\bf g}(\bq) = {\bf B}(\bq) \bu, \] which is not necessarily a
 second-order system.  See <elib>Duindam06</elib> for a nice discussion of this
 topic.</p>
 
@@ -5846,7 +5848,7 @@ topic.</p>
     <p>Consider constraint equation $$\phi(q) = 0.$$  These arise, for
     instance, when the system has a closed kinematic chain.
     The (floating base) equations of motion can be written
-    $$H(q)\ddot{q} + C(q,\dot{q}) = B u + J(q)^T \lambda,$$
+    $$H(q)\ddot{q} + c(q,\dot{q}) = B u + J(q)^T \lambda,$$
     where $J(q) = \pd{\phi}{q}$ and $\lambda$ is the constraint force.</p>
 
     <p>To solve for $\lambda$, observe that when the constraint is imposed,
@@ -5854,7 +5856,7 @@ topic.</p>
     this out, we have \begin{gather*}\dot{\phi} = J(q)\dot{q}=0,\\
     \ddot{\phi} = J(q) \ddot{q} + \dot{J}(q) \dot{q} = 0.\end{gather*}
     Inserting the dynamics and solving for $\lambda$ yields $$\lambda =- (J
-    H^{-1} J^T)^+ (J H^{-1} (Bu - C) + \dot{J}\dot{q}).$$ The
+    H^{-1} J^T)^+ (J H^{-1} (Bu - c) + \dot{J}\dot{q}).$$ The
     $^+$ notation refers to a Moore-Penrose pseudo-inverse.  In most cases, there
     are less constraints than degrees of freedom, in which case the
     inverse has a unique solution (and the traditional inverse could have
@@ -5869,7 +5871,7 @@ topic.</p>
     yields
     \begin{gather*}
     \lambda =- (J
-    H^{-1} J^T)^+ (J H^{-1} (Bu - C) + (\dot{J} + \frac{2}{\epsilon}
+    H^{-1} J^T)^+ (J H^{-1} (Bu - c) + (\dot{J} + \frac{2}{\epsilon}
     J)\dot{q} + \frac{1}{\epsilon^2} \phi).
     \end{gather*}</p>
 
@@ -5881,18 +5883,18 @@ topic.</p>
     $$\psi(q,\dot{q}) = 0,$$
     where $\pd{\psi}{\dot{q}} \ne 0.$  These are less common, but arise
     when, for instance, a joint is driven through a prescribed motion.
-    Here, the manipulator equations are given by $$H(q)\ddot{q} + C = B u
+    Here, the manipulator equations are given by $$H(q)\ddot{q} + c = B u
     + \pd{\psi}{\dot{q}}^T \lambda.$$
     To solve for $\lambda$, we take $$\dot{\psi} = \pd{\psi}{q} \dot{q} +
     \pd{\psi}{\dot{q}}\ddot{q} = 0,$$ which yields
     $$\lambda = - \left( \pd{\psi}{\dot{q}} H^{-1} \pd{\psi}{\dot{q}}
-    \right)^+ \left[ \pd{\psi}{\dot{q}} H^{-1} (Bu - C) + \pd{\psi}{q}
+    \right)^+ \left[ \pd{\psi}{\dot{q}} H^{-1} (Bu - c) + \pd{\psi}{q}
     \dot{q} \right].$$</p>
 
     <p>Again, for numerical stability, we ask instead for $\dot{\psi} =
     -\frac{1}{\epsilon} \psi$, which yields
     $$\lambda = - \left( \pd{\psi}{\dot{q}} H^{-1} \pd{\psi}{\dot{q}}
-    \right)^+ \left[ \pd{\psi}{\dot{q}} H^{-1} (Bu - C) + \pd{\psi}{q}
+    \right)^+ \left[ \pd{\psi}{\dot{q}} H^{-1} (Bu - c) + \pd{\psi}{q}
     \dot{q} + \frac{1}{\epsilon} \psi \right].$$</p>
   </section>
 
@@ -5901,7 +5903,7 @@ topic.</p>
     <p>Now let $\phi(q)$ indicate the relative (signed) distance between two rigid bodies.
       The collision event is described by the
     zero-crossings (from positive to negative) of $\phi$.
-      Let us start by assuming frictionless collisions, allowing us to write $$H\ddot{q} + C = Bu + J^T \lambda,$$
+      Let us start by assuming frictionless collisions, allowing us to write $$H\ddot{q} + c = Bu + J^T \lambda,$$
     where $\lambda \ge 0$ is now a (scalar) coefficient of the impulsive force that is
     well-defined when integrated over the time of the collision (denoted
     $t_c^-$ to $t_c^+$).  Integrate both sides of the equation
@@ -5932,6 +5934,8 @@ topic.</p>
       If $\lambda$ is restricted to a friction cone, as in Coulomb friction, in general we have to solve an optimization.
     </p>
 
+    <todo> frictional contact </todo>
+
   </section>
 
   <section data-type="sect2"><h1>Hybrid Dynamics</h1>
@@ -5949,9 +5953,13 @@ topic.</p>
     as additional hybrid guards, or can be solved efficiently as a complementarity problem <elib>Steward96</elib>.</p>
   </section>
 
+
+  <section data-type="sect2"><h1>Compliant Contact Models</h1></section>
+
+
 </section>
 
-<section data-type="sect1"><h1>Recursive Rigid-Body Dynamics Algorithms</h1>
+<section data-type="sect1"><h1>Recursive Dynamics Algorithms</h1>
 
 <p>
 The equations of motions for our machines get complicated quickly.
@@ -5967,24 +5975,47 @@ Construction Set".
 </p>
 
 
-</section> <!-- end deriving -->
-
-<todo> frictional contact </todo>
+</section> <!-- end recursive algorithms -->
 
 <todo> numerical integration.  discrete-time approximations of continuous systems (lots of edx people had trouble with this.  some found: http://web.mit.edu/10.001/Web/Course_Notes/Differential_Equations_Notes/node3.html) </todo>
 
+<section data-type="sect1"><h1>Parameter Estimation</h1></section>
 
-</section> <!-- end robot dynamics chapter -->
+<todo> lumped parameters.  identifiable lumped parametes.  least-squares estimation.  power formulations.  trajectory design.</todo>
+
+
+
+</section> <!-- end rigid-body dynamics chapter -->
 
 <section data-type="chapter" class="chapter"><h1>Optimization Preliminaries</h1>
 
-<p>nonlinear optimization.  convex optimization.  linear program.  quadratic
-program.  (QCQP? SOCP?).  semi-definite program.   sums-of-squares optimization.
-mixed-integer optimization.  actually show the optimization hierarchy in drake and work through it.</p>
+  <section data-type="sect1"><h1>Nonlinear optimization</h1>
+    <section data-type="sect2"><h1>General formulation</h1>
+    </section>
+    <section data-type="sect2"><h1>Solution techniques</h1>
+      Lagrange multipliers / KKT, Gradient descent, SQP (SNOPT, NLOPT, IPOPT), Global optimization
+    </section>
+    <section data-type="sect2"><h1>Example: Inverse Kinematics</h1>
+    </section>
+  </section>
+  <section data-type="sect1"><h1>Convex optimization</h1>
+    <section data-type="sect2"><h1>Linear Programs/Quadratic Programs/Second-Order Cones</h1>
+      Example: Balancing force control on Atlas
+    </section>
+    <section data-type="sect2"><h1>Semidefinite Programming and Linear Matrix Inequalities</h1>
+    </section>
+    <section data-type="sect2"><h1>Sums of squares / polynomial optimization</h1>
+    </section>
+    <section data-type="sect2"><h1>Solution techniques</h1>
+      Interior point (Gurobi, Mosek, Sedumi, ...), First order methods
+    </section>
+  </section>
+  <section data-type="sect1"><h1>Mixed-integer convex optimization</h1></section>
+  <section data-type="sect1"><h1>Combinatorial optimization</h1>
+    Search, SAT, First order logic, SMT solvers, LP interpretation
+  </section>
 
-<p>solution techniques/solvers.  gradient descent.  SQP.  interior point.  homotopy. </p>
-
-<p>Lagrange Multipliers</p>
+  <todo>Polynomial root finding/homotopy, L1 optimization, QCQP, LCP/Variational inequalities, BMI, ...</todo>
 
 </section> <!-- end optimization chapter -->
 
