@@ -564,7 +564,7 @@ ${\bf B}(\bq)$ is full row rank.   For this particular example, $\bq =
 [\theta_1,\theta_2]^T$ and $\bu = [\tau_1,\tau_2]^T$, and ${\bf B}(\bq) = {\bf
 I}_{2 \times 2}$.  The system is fully actuated.</p>
 
-<todo>make drake elements expandable/collapseable.  nice example here: http://quhno.internetstrahlen.de/myopera/csstests/collapsible-paragraph.html</todo>
+<todo>make drake elements expandable/collapsible.  nice example here: http://quhno.internetstrahlen.de/myopera/csstests/collapsible-paragraph.html</todo>
 <div data-type="drake"><h1>MATLAB Example</h1>
 
 <p> I personally learn best when I can experiment and get some physical
@@ -956,7 +956,7 @@ the initial conditions are at a fixed point, we know that $x(\infty)$ will be at
 the same fixed point.</p>
 
 <p>Next let's investigate the behavior of the system in the local vicinity of
-the fixed points.  Examing the fixed point at $x^* = \pi$, if the system starts
+the fixed points.  Examining the fixed point at $x^* = \pi$, if the system starts
 just to the right of the fixed point, then $\dot{x}$ is positive, so the system
 will move away from the fixed point.  If it starts to the left, then $\dot{x}$
 is negative, and the system will move away in the opposite direction.  We'll
@@ -990,11 +990,11 @@ may never reach the fixed point (but it won't diverge), near an asymptotically
 stable fixed point will reach the fixed point as $t \rightarrow \infty$, and
 near an exponentially stable fixed point will reach the fixed point with a
 bounded rate.  An exponentially stable fixed point is also an asymptotically
-stable fixed point, but the converse is not true.  Asympotic stability and Lyapunov stability, however, are distinct notions --
+stable fixed point, but the converse is not true.  Asymptotic stability and Lyapunov stability, however, are distinct notions --
 it is actually possible to have a system that is asymptotically stable but not stable i.s.L.&dagger;<sidenote>&dagger; we can't
 see that in one dimension so will have to hold that example for a moment</sidenote>.  <!-- imagine a pendulum that converges to the top from clockwise, but for counter-clockwise it travels all of the way around before getting back to the fixed point.  (asymptotically stable, but not isL).  To avoid wrap-around coordinate issues, use the x position of the endpoint.  see exercise 1.14 in
 http://books.google.com/books?id=ByCCAwAAQBAJ&pg=PA6&lpg=PA6&dq=locally+attractive+but+not++lyapunov+stable&source=bl&ots=BLlwzfFryl&sig=lDXX4oFzIhXEH7do-4llBXU3NKo&hl=en&sa=X&ei=tqEVVKDEGoqYyATh84G4Cw&ved=0CDkQ6AEwAw#v=onepage&q=locally%20attractive%20but%20not%20%20lyapunov%20stable&f=false
-for a counter-example .  -->  Systems which are stable i.s.L. but not asympotitically stable are easy to construct (e.g. $\dot{x} = 0$). Interestingly, it is also possible to have nonlinear systems that converge
+for a counter-example .  -->  Systems which are stable i.s.L. but not asymptotically stable are easy to construct (e.g. $\dot{x} = 0$). Interestingly, it is also possible to have nonlinear systems that converge
 (or diverge) in finite-time; a so-called <em>finite-time stability</em>; we
 will see examples of this later in the book, but it is a difficult topic to
 penetrate with graphical analysis.  Rigorous nonlinear system analysis is rich with
@@ -1100,7 +1100,7 @@ Some of them are stable i.s.L., none are asymptotically stable.</p>
 
 <section data-type="sect3"><h1>Orbit calculations</h1>
 
-<p> You might wonder how we drew the black countour lines in the figure above.  We could
+<p> You might wonder how we drew the black contour lines in the figure above.  We could
 have obtained them by simulating the system numerically, but those lines can be
 easily obtained in closed-form.  Directly integrating the equations of motion is
 difficult, but at least for the case when $u_0 = 0$, we have some additional
@@ -1215,10 +1215,10 @@ unstable, and one is stable.</p>
 
 </section> <!-- undamped constant torque -->
 
-<p>Before we continue, let me know give you the promised example of a system that is asympotitcally stable, but not stable i.s.L..
+<p>Before we continue, let me know give you the promised example of a system that is asymptotically stable, but not stable i.s.L..
 We can accomplish this with a very pendulum-like example (written here in polar coordinates):</p>
-<div data-type="example"><h1>Asympototically stable, but not Lyapunov stable</h1>
-   The system \[ \dot{r} = r(1-r) \\ \dot\theta = \sin^2 (\frac{\theta}{2}) \] is asympotically stable to $x^* = [1,0]^T$, but is not stable i.s.L.
+<div data-type="example"><h1>Asymptotically stable, but not Lyapunov stable</h1>
+   The system \[ \dot{r} = r(1-r) \\ \dot\theta = \sin^2 (\frac{\theta}{2}) \] is asymptotically stable to $x^* = [1,0]^T$, but is not stable i.s.L.
 </div>
 <p>Take a minute to draw the vector field of this (you can draw each coordinate independently, if it helps) to make sure you understand.  Note that to wrap-around rotation is convenient but not essential -- we could have written the same dynamical system in cartesian coordinates without wrapping.</p>
 
@@ -1589,7 +1589,7 @@ Again, the linear dynamics follow simply.
 and
 conversely having a stable linearization implies local exponential stability of the nonlinear system<elib>Slotine90+Hauser94a</elib>.   It's worth noting that having an unstable linearization
 also implies that the system is locally unstable, but if the linearization is marginally stable that one cannot conclude whether the nonlinear system
-is asympotitcally stable, stable i.s.L., or unstable (only that it is not exponentially stable)<elib>Slotine90</elib>.
+is asymptotically stable, stable i.s.L., or unstable (only that it is not exponentially stable)<elib>Slotine90</elib>.
 
 -->
 
@@ -1795,7 +1795,7 @@ has 1).</p>
 <div data-type="example" class="drake"><h1>LQR for a Quadrotors</h1>
 
 <p>LQR works essentially out of the box for Quadrotors, if linearized around
-  a nominal fixed point (where the non-zero thrust from the propellors is balancing
+  a nominal fixed point (where the non-zero thrust from the propellers is balancing
   gravity).  We have a few Quadrotor models in <drake></drake>.  You should
   start with the Planar Quadrotor (technically a bi-rotor):</p>
 <pre><code class="matlab" testfile="testQuadrotor2dLqr">
@@ -2039,7 +2039,7 @@ derivation above.</p>
 <p>
 The task space derivation above provides a convenient generalization
 of the partial feedback linearization (PFL) <elib>Spong94a</elib>, which
-emcompasses both the collocated and non-collocated results.  If we
+encompasses both the collocated and non-collocated results.  If we
 choose ${\bf y} = \bq_2$ (collocated), then we have $${\bf J}_1 = 0, {\bf J}_2 =
 {\bf I}, \dot{\bf J} = 0, \bar{\bf J} = {\bf I}, \bar{\bf J}^+ = {\bf I}.$$ From this, the command
 in ($\ref{eq:q2cmd}$) reduces to $\ddot\bq_2 = v$. The torque command
@@ -2076,7 +2076,7 @@ results as in <elib>Spong94a</elib>.</p>
 <p>
 Recall the phase portraits that we used to understand the dynamics of
 the undamped, unactuated, simple pendulum ($u=b=0$).  The orbits of this phase plot were defined by
-countours of constant energy.  One very special orbit, known as a
+contours of constant energy.  One very special orbit, known as a
 <em>homoclinic</em> orbit, is the orbit which passes through the
 unstable fixed point.  In fact, visual inspection will reveal that any
 state that lies on this homoclinic orbit must pass into the unstable
@@ -2399,7 +2399,7 @@ cd(fullfile(getDrakePath,'examples','RimlessWheel'));
 RimlessWheelPlant.run();
 </code></pre>
 
-Optionally you can specify the intial conditions.  Here are a few good values to try.  (You can
+Optionally you can specify the initial conditions.  Here are a few good values to try.  (You can
 either run the code yourself or click on the links below to see the animation).
 <ul>
   <li><a href="figures/rimlessWheel_w0_5.swf"><code>RimlessWheelPlant.run(5)</code></a></li>
@@ -2486,7 +2486,7 @@ closed-orbit<elib>Strogatz94</elib>.  By closed, I mean that any trajectory
 which enters the region will stay in the region (this is the
 Poincar&eacute-Bendixson Theorem).  It's also interesting to note that
 gradient potential fields (e.g. Lyapunov functions) cannot have a
-closed-orbit<elib>Strogatz94</elib>, and consquently Lyapunov analysis
+closed-orbit<elib>Strogatz94</elib>, and consequently Lyapunov analysis
 cannot be applied to limit cycle stability without some modification.</p>
 
 </section>
@@ -2497,7 +2497,7 @@ cannot be applied to limit cycle stability without some modification.</p>
   One definition for the stability of a limit cycle uses the method of
   Poincar&eacute.  Let's consider an $n$ dimensional dynamical system,
   $\dot{\bx} = {\bf f}(\bx).$ Define an $n-1$ dimensional <em>surface
-  of section</em>, $S$.  We will also require that $S$ is tranverse to the
+  of section</em>, $S$.  We will also require that $S$ is transverse to the
   flow (i.e., all trajectories starting on $S$ flow through $S$, not
   parallel to it).  The Poincar&eacute map (or return map) is a mapping from
   $S$ to itself:  $$\bx_p[n+1] = {\bf P}(\bx_p[n]),$$ where $\bx_p[n]$
@@ -2829,7 +2829,7 @@ remain unchanged.  The center of mass is a configuration dependent point, and do
 
 <p>For an articulated robot, though, there are a number of possible strategies for the legs which can effect the dynamics of the center of mass.  For example, if the robot hits the ground with a stiff leg like the rimless wheel, then the angular momentum about the point of collision will be conserved, but any momentum going into the ground will be lost.  However, if the robot has a spring leg and a massless toe like the SLIP model, then no energy need be lost.</p>
 
-<p>One strategy that many highly-articulated legged robots use is to keep their center of mass at a constant height, $$z = c \quad \Rightarrow \quad \dot{z} = \ddot{z} = 0,$$  and minimize their angular momentum abount the center of mass (here $\ddot\theta=0$).  Using this strategy, if the swinging foot lands roughly below the center of mass, then even with a stiff leg there is no energy dissipated in the collision - all of the momentum is conserved.  This often (but does not always) justify ignoring the impacts in the center of mass dynamics of the system.</p>
+<p>One strategy that many highly-articulated legged robots use is to keep their center of mass at a constant height, $$z = c \quad \Rightarrow \quad \dot{z} = \ddot{z} = 0,$$  and minimize their angular momentum about the center of mass (here $\ddot\theta=0$).  Using this strategy, if the swinging foot lands roughly below the center of mass, then even with a stiff leg there is no energy dissipated in the collision - all of the momentum is conserved.  This often (but does not always) justify ignoring the impacts in the center of mass dynamics of the system.</p>
 
 </section>
 
@@ -2844,7 +2844,7 @@ remain unchanged.  The center of mass is a configuration dependent point, and do
   <figcaption>External forces acting on a robot pushing on a flat ground</figcaption>
 </figure>
 
-<p>First, on flat terrain $F_{i,z}$ represents the force that is normal to the surface at contact point $i$.  If we assume that the robot can ony push on the ground (and not pull), then this implies $$\forall i, F_{i,z} \ge 0 \Rightarrow \sum_i F_{i,z} \ge 0 \Rightarrow \ddot{z} \ge -g.$$  In other words, if I cannot pull on the ground, then my center of mass cannot accelerate towards the ground faster than gravity.</p>
+<p>First, on flat terrain $F_{i,z}$ represents the force that is normal to the surface at contact point $i$.  If we assume that the robot can only push on the ground (and not pull), then this implies $$\forall i, F_{i,z} \ge 0 \Rightarrow \sum_i F_{i,z} \ge 0 \Rightarrow \ddot{z} \ge -g.$$  In other words, if I cannot pull on the ground, then my center of mass cannot accelerate towards the ground faster than gravity.</p>
 
 <p>Furthermore, if we use a Coulomb model of friction on the ground, with friction coefficient $\mu$, then $$\forall i, |F_{i,x}| \le \mu F_{i,z} \Rightarrow \sum_i |F_{i,x}| \le \mu \sum_i F_z \Rightarrow |\ddot{x}| \le \mu (\ddot{z} + g).$$  For instance, if I keep my center of mass at a constant height, then $\ddot{z}=0$ and $|\ddot{x}| \le \mu g$; this is a nice reminder of just how important friction is if you want to be able to move around in the world.</p>
 
@@ -3058,7 +3058,7 @@ where this additional input $\bw$ is the (vector) output of some random process.
         When conditioned on $x[n]$, the distribution given by the dynamics subjected to mean-zero Gaussian white noise
         is simply another Gaussian, with the mean given by $ax[n]$:
         \[ p(x[n+1]|x[n]) = \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(x[n+1]-ax[n])^2}{2\sigma^2}}, \]
-        yeilding the master equation
+        yielding the master equation
         \[ p_{n+1}(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \int_{-\infty}^\infty e^{-\frac{(x-ax')^2}{2\sigma^2}} p_n(x') dx'. \]
       </p>
       <p>Now here's the magic.  Let's push a distribution, $p_n(x)$, which is zero-mean, with standard deviation $\sigma_n$, through the master equation:
@@ -3069,7 +3069,7 @@ where this additional input $\bw$ is the (vector) output of some random process.
         The result is another mean-zero Gaussian with $\sigma_{n+1}^2 = \sigma^2 + a^2 \sigma_n^2$.  This
         result generalizes to the multi-variate case, too, and might be familiar to you e.g. from the process update of the <a href="https://en.wikipedia.org/wiki/Kalman_filter">Kalman filter</a>.
       </p>
-      <p>Taking it a step further, we can see that a stationary distribution for this sytem
+      <p>Taking it a step further, we can see that a stationary distribution for this system
       is given by a mean-zero Gaussian with \[ \sigma_*^2 = \frac{\sigma}{1-a^2}. \]
       Note that this distribution is well defined when $-1 < a < 1$ (only when the system is stable).</p>
     </div>
@@ -3190,7 +3190,7 @@ simple pendulum, and concluded with a challenge: can we design a nonlinear
 controller to <em>reshape</em> the phase portrait, with a very modest amount of
 actuation, so that the upright fixed point becomes globally stable?  With
 unbounded torque, feedback linearization solutions (e.g., invert gravity) can
-work well, but can also require an unecessarily large amount of control effort.
+work well, but can also require an unnecessarily large amount of control effort.
 The energy-based swing-up control solutions presented for the acrobot and
 cart-pole systems  are considerably more appealing, but required some cleverness
 and might not scale to more complicated systems.  Here we investigate another
@@ -3376,7 +3376,7 @@ plotted here:</p>
 <figcaption>Time to the origin using the bang-bang policy</figcaption>
 </figure>
 Notice that the function is continuous (though not smooth), even though
-the policy is discontinous.
+the policy is discontinuous.
 
 </div> <!-- end of example -->
 
@@ -3430,7 +3430,7 @@ graph.</figcaption></figure>
 
 <p>Let us also assume that each edge has an associate
 weight or cost, using $g(s,a)$ to denote the cost of being in state $s$ and
-taking action $a$. Furthemore we will denote the transition "dynamics" using \[ s[n+1] =
+taking action $a$. Furthermore we will denote the transition "dynamics" using \[ s[n+1] =
 f(s[n],a[n]). \] For instance, in the graph above, $f(s_1,a_1) = s_2$.</p>
 
 <p>There are many algorithms for finding (or approximating) the optimal path
@@ -3542,15 +3542,15 @@ on continuous dynamical systems.  We'll explore those extensions in this section
 It's important to understand that the value iteration equations, equations (\ref{eq:value_update}) and (\ref{eq:policy_update}),
 are more than just an algorithm.  They are also sufficient conditions for optimality:
 if we can produce a $J^*$ and $\pi^*$ which satisfy these equations, then $\pi^*$ must
-be an optimal controller.  There are an analagous set of conditions for the continuous
-systems.  For a system $\dot{\bx} = f(\bx,\bu)$ and an inifinite-horizon
+be an optimal controller.  There are an analogous set of conditions for the continuous
+systems.  For a system $\dot{\bx} = f(\bx,\bu)$ and an infinite-horizon
 additive cost $\int_0^\infty g(\bx,\bu)dt$, we have:
 \begin{gather} 0 = \min_\bu \left[ g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right], \label{eq:HJB} \\ \pi^*(\bx) = \argmin_\bu \left[ g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right]. \end{gather}
 Equation \ref{eq:HJB} is known as the <em>Hamilton-Jacobi-Bellman</em> (HJB) equation.  <elib>Bertsekas05</elib> <!-- chapter 3 --> gives an informal derivation
 of these equations as the limit of a discrete-time approximation of the dynamics, and also gives
 the following sufficiency theorem:</p>
 <div data-type="theorem"><h1>HJB Sufficiency Theorem</h1>
-<p>The following statement is adapted from Proposition 3.2.1 of <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}=f(\bx,\bu)$ and an inifinite-horizon additive cost $\int_0^\infty g(\bx,\bu)dt$.  Suppose $J(\bx)$ is a solution
+<p>The following statement is adapted from Proposition 3.2.1 of <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}=f(\bx,\bu)$ and an infinite-horizon additive cost $\int_0^\infty g(\bx,\bu)dt$.  Suppose $J(\bx)$ is a solution
   to the HJB equation; that is $J$ is continuously differentiable in $\bx$ and is such that
   \[ 0 = \min_{u\in U} \left[ g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx. \]
    Suppose also that $\pi^*(\bx)$ attains the minimum in the equation for all $\bx$.  Further
@@ -3927,7 +3927,7 @@ trivial linear system: $$\ddot{q} = u.$$</p>
 
 </section>
 
-<todo> add discrete time derviation? </todo>
+<todo> add discrete time derivation? </todo>
 
 </section> <!-- end basic derivation -->
 
@@ -4152,7 +4152,7 @@ not yet appeared in any mainstream textbooks.</p>
     have that.  Since we couldn't provide a solution analytically, in chapter 2
     we resorted to a graphical analysis, and confirmed the intuition that there
     are fixed points in the system (at $\theta = k\pi$ for every integer $k$) and that
-    the fixed points at $\theta = 2\pi k$ are asympotitically stable with a large basin of
+    the fixed points at $\theta = 2\pi k$ are asymptotically stable with a large basin of
     attraction.  The graphical analysis gave us this intuition, but can we actually
     prove this stability property?  In a way that might also work for much more
     complicated systems?</p>
@@ -4188,7 +4188,7 @@ not yet appeared in any mainstream textbooks.</p>
     function, the system energy, to describe something about the long-term dynamics
     of the pendulum even though the actual trajectories of the system are (analytically)
     very complex.  It also demonstrated one of the subtleties of using an energy-like function
-    that is non-increasing (instead of strictly decreasing) to prove asympototic stability.</p>
+    that is non-increasing (instead of strictly decreasing) to prove asymptotic stability.</p>
 
     <p>Lyapunov functions generalize this notion of an energy function to more general
       systems, which might not be stable in the sense of some mechanical energy.  If
@@ -4212,7 +4212,7 @@ not yet appeared in any mainstream textbooks.</p>
             then the origin $(\bx = 0)$ is stable in the sense of Lyapunov (i.s.L.).
         </p>
         <p>If, additionally, we have $$\dot{V}(\bx) = \pd{V}{\bx} f(\bx) < 0, \forall \bx \in {\cal B} \ne 0 \quad \dot{V}(0) = 0,$$
-        then the origin is (locally) asympotically stable.  And if we have
+        then the origin is (locally) asymptotically stable.  And if we have
         $$\dot{V}(\bx) = \pd{V}{\bx} f(\bx) \le -\alpha V(x), \forall \bx \in {\cal B} \ne 0 \quad \dot{V}(0) = 0,$$ for some
             $\alpha>0$, then the origin is (locally) exponentially stable.
         </p>
@@ -4449,7 +4449,7 @@ l^2} \left( b \dot\theta + mgls \right) \end{bmatrix}.$$ </p>
 
             <p>Now let's parameterize a Lyapunov candidate $V(s,c,\dot\theta)$ as the polynomial with unknown coefficients which
             contains all monomials up to degree 2:  $$V = \alpha_1 + \alpha_2 s + \alpha_3 c + ... \alpha_{10} s^2 + \alpha_{11} sc + \alpha_{12} s\dot\theta.$$
-            Now we'll formulate the feasiblity problem:
+            Now we'll formulate the feasibility problem:
             \[
             \find_{\bf \alpha} \quad  \subjto \quad V \sos, \quad -\dot{V} \sos.\]
             In fact, this is asking too much -- really $\dot{V}$ only needs to be negative when $s^2+c^2=1$.  We can
@@ -4471,7 +4471,7 @@ l^2} \left( b \dot\theta + mgls \right) \end{bmatrix}.$$ </p>
 
             <p>Aha!  Not only does the optimization finds us coefficients for the Lyapunov function which satisfy our Lyapunov
             conditions, but the result looks a lot like mechanical energy.  In fact, the result is a little better than energy...
-            there are some small extra terms added which prove exponential stability without having to invoke LaSalle's Thereom.</p>
+            there are some small extra terms added which prove exponential stability without having to invoke LaSalle's Theorem.</p>
 
         </div>
 
@@ -4488,7 +4488,7 @@ l^2} \left( b \dot\theta + mgls \right) \end{bmatrix}.$$ </p>
 
 <section data-type="sect1"><h1>Lyapunov functions for estimating regions of attraction</h1>
 
-<p>There is another very important connection between Lypaunov functions and the
+<p>There is another very important connection between Lyapunov functions and the
 concept of an invariant set: <em>any sub-level set of a Lyapunov function is
 also an invariant set</em>.  This gives us the ability to use sub-level sets
 of a Lyapunov function as approximations of the region of attraction for nonlinear systems.</p>
@@ -4505,7 +4505,7 @@ of a Lyapunov function as approximations of the region of attraction for nonline
       asymptotically stable and the set ${\cal G}$ is inside the region of attraction
       of this fixed point.  Alternatively, if $\dot{V}(\bx) \preceq 0$ in ${\cal G}$
       and $\bx = 0$ is the only invariant subset of ${\cal G}$ where $\dot{V}=0$, then
-      the origin is asympotically stable and the set ${\cal G}$ is inside the region of
+      the origin is asymptotically stable and the set ${\cal G}$ is inside the region of
       attraction of this fixed point.
     </p>
 
@@ -4754,7 +4754,7 @@ c(z) \quad \subjto \quad {\bf \phi}(z) \le 0, \]     where $z$ is a vector
 of <em>decision variables</em>, $c$ is a scalar
 <em>objective function</em> and $\phi$ is a vector     of <em>constraints</em>.  Note that,
 although we write $\phi \le 0$, this formulation     captures positivity
-constraints on the decision variables (simply mulitply the constraint by $-1$)
+constraints on the decision variables (simply multiply the constraint by $-1$)
 and equality constraints (simply list both $\phi\le0$ and $-\phi\le0$) as well.
 </p>
 
@@ -4982,7 +4982,7 @@ recall that I'm using $\bu_k$ to represent the decision variable and $\bu[n]$ to
 <p>To take advantage of this efficiency, advocates of the shooting methods often
 use penalty methods   instead of enforcing hard state constraints; instead of
 telling the solver about   the constraint explicitly, you simply add an
-additional term to the cost function   which gives a large penalty commesurate
+additional term to the cost function   which gives a large penalty commensurate
 with the amount by which the constraint   is violated. These are not quite as
 accurate and can be harder to tune (you'd   like the cost to be high compared to
 other costs, but making it too high can   lead to numerical conditioning
@@ -5068,7 +5068,7 @@ of the shooting method simply require the a modified terminal condition $$\lambd
 </section> <!-- end three algorithms -->
 
 
-<section data-type="sect1"><h1>Pontraygin's Minimum Principle</h1>
+<section data-type="sect1"><h1>Pontryagin's Minimum Principle</h1>
 
 <p>The tools that we've been developing for numerical trajectory optimization
   are closely tied to theorems from (analytical) optimal control.  Let us take
@@ -5147,7 +5147,7 @@ is clearly the minimizer of the objective.</p>
 
 <section data-type="sect2"><h1>Necessary conditions for optimality in continuous time</h1>
 
-<p>You won't be suprised to hear that these necessary conditions have an
+<p>You won't be surprised to hear that these necessary conditions have an
 analogue in continuous time. I'll state it here without derivation.  Given the
 initial conditions, $\bx_0$, a continuous dynamics, $\dot\bx = f(\bx,\bu)$, and
 the instantaneous cost $g(\bx,\bu)$, for a trajectory $\bx(\cdot),\bu(\cdot)$
@@ -5253,7 +5253,7 @@ applicability beyond simple periodic motions.</p>
   choose to have the initial conditions as one of the decision variables.  In
   fact, the simplest formulation for finding a periodic solution is to leave
   the entire trajectory as a decision variable, but to add <em>periodicity constraints</em>
-  enforcing that the intial conditions and the final conditions match.  Some
+  enforcing that the initial conditions and the final conditions match.  Some
   care is needed here; if you're not careful then these constraints will all
   be met if the entire trajectory remains at a fixed point in the system.  In
   the example below, we constrain that the initial and final conditions lie on
@@ -5286,7 +5286,7 @@ VanDerPol.runDircol();
 
 <p><a href="figures/vanDerPolDircol.swf">Click here to see an animation of the
 result.</a>  The red dots are the initial and final conditions (which appear as
-one dot once the constraints are satified).  As always, make sure that you take
+one dot once the constraints are satisfied).  As always, make sure that you take
 a look at the code.  Poke around.  Try changing some things.</p>
 
 <p>One of the things that you should notice in the code is that I provide an initial
@@ -5314,7 +5314,7 @@ manifold described by cycle   $\bx^*(t)$, \[ \min_\tau || x(t) - x^*(\tau) ||
 \rightarrow 0.\] In the case of limit cycles, this manifold is a periodic
 solution with $\bx^*(t+t_{period}) = \bx^*(t)$.   Depending on exactly how that
 convergence happens, we can define orbital stability in the sense of Lyapunov,
-asympotitic orbital stability, exponential orbital stability, or even
+asymptotic orbital stability, exponential orbital stability, or even
 finite-time orbital stability.</p>
 
 <p>In order to prove that a system is orbitally stable (locally, over a region, or globally),
@@ -5392,7 +5392,7 @@ x_\perp =& \sqrt{x_1^2+x_2^2}-1, \end{align*} which is valid when $x_\perp>-1$, 
 dynamics are revealed:   \begin{align*}     \dot\tau =& 1 \\     \dot{x}_\perp =&
 -\alpha x_\perp.   \end{align*}   Taking a Lyapunov candidate $V(x_\perp,\tau) =
 x_\perp^2$, we can verify that $$\dot{V} = -2 \alpha x_\perp^2 \prec 0, \quad \forall x_\perp > -1.$$
-This demonstrates that the limit cycle is locally asyptotically stable, and furthermore that the invariant open-set $V < 1$ is inside the region of attraction
+This demonstrates that the limit cycle is locally asymptotically stable, and furthermore that the invariant open-set $V < 1$ is inside the region of attraction
 of that limit cycle. In fact, we know that all $x_\perp > -1$ are in the region of attraction
 that limit cycle, but this is not proven by the Lyapunov argument above.
 </p>
@@ -5457,7 +5457,7 @@ Coming soon.  If you are interested, see <elib>Manchester10a+Manchester10b</elib
 
 </section>
 
-<section data-type="sect1"><h1>The measure differential inclusions appraoch</h1>
+<section data-type="sect1"><h1>The measure differential inclusions approach</h1>
 </section>
 
 </section>
@@ -5493,13 +5493,13 @@ to $\bx \in {\cal G}$ if such a trajectory exists.</p>
 <section data-type="sect1"><h1>Artificial Intelligence as Search</h1>
 
 <p>A long history...  some people feel that the route to creating intelligent machines
-is to collect large ontogolies of knowledge, and then perform very efficient search.
+is to collect large ontologies of knowledge, and then perform very efficient search.
 (The more modern view of AI is focused instead on machine learning, the right answer
 probably involves pieces of both.)  Samuels checker players, Deep Blue playing chess, theorem
 proving, Cyc, IBM Watson,...</p>
 
 <p>One of the key ideas is the use of "heuristics" to guide the search.  "Is it possible to find
-  and optimal path from the start to a goal without visiting every node?".  $A^*$.  Admissable heuristics.
+  and optimal path from the start to a goal without visiting every node?".  $A^*$.  Admissible heuristics.
 Example: google maps.</p>
 
 <p>Online planning.  $D^*$, $D^*$-Lite.</p>
@@ -5981,7 +5981,7 @@ Construction Set".
 
 <section data-type="sect1"><h1>Parameter Estimation</h1></section>
 
-<todo> lumped parameters.  identifiable lumped parametes.  least-squares estimation.  power formulations.  trajectory design.</todo>
+<todo> lumped parameters.  identifiable lumped parameters.  least-squares estimation.  power formulations.  trajectory design.</todo>
 
 
 
@@ -6082,7 +6082,7 @@ Like SimMechanics, <drake></drake> provides a number of tools for working specif
 
 </section>
 
-<section data-type="sect1"><h1>Modeling Input-Ouput Dynamical Systems</h1>
+<section data-type="sect1"><h1>Modeling Input-Output Dynamical Systems</h1>
 
   <p>
     The fundamental object in <drake></drake> is a dynamical system.  Robots,
@@ -6182,7 +6182,7 @@ end
 </div>
 
 
-<p><b>Mixed Discrete and Continous Dynamics</b>.
+<p><b>Mixed Discrete and Continuous Dynamics</b>.
   It is also possible to implement systems that have both continuous
 dynamics and discrete dynamics.  There are two subtleties that must be
 addressed.  First, we'll denote the discrete states as $x_d$ and the
@@ -6193,7 +6193,7 @@ period with $\Delta_t$.  Then a mixed system can be written
 as:\begin{gather*} \dot{x}_c = f_c(t,x,u),\\ x_d(t+t') = f_d(t,x,u),
   \quad \forall t \in \{0,\Delta_t,2\Delta_t,...\},\forall t' \in
   (0,\Delta_t] \\ y=g(t,x,u). \end{gather*} Note that, unlike the
-purley discrete time example, the solution of the discrete time variable is defined
+purely discrete time example, the solution of the discrete time variable is defined
 for all $t$.  To implement this, derive from <code>DrakeSystem</code> and
 implement the <code>dynamics</code>, <code>update</code>, <code>output</code> methods
 for $f_c()$, $f_d()$, and $g()$, respectively.  To define the timing,
@@ -6252,7 +6252,7 @@ These two types of constraints are handled quite differently.</p>
   Input constraints are designed to act in the same way that an actuator limit might work for a mechanical system.  These act as a saturation nonlinearity system attached to the input, where for each element: $$y_i = \begin{cases} u_{max,i} & \text{if } u_i > u_{max,i} \\ u_{min,i} & \text{if } u_i < u_{min,i} \\ u_i & \text{otherwise.}\end{cases}$$  The advantage of using the input limits instead of implementing the saturation in your own code is that the discontinuity associated with hitting or leaving a saturation is communicated to the solver correctly, allowing for more efficient and accurate simulations.  Input constraints are set by calling the <code>setInputLimits</code> method.</p>
 
 <p>
-  State constraints are additional information that you are providing to the solver and analysis routines.  They should be read as "this dynamical system will only ever visit states described by $\phi(x)=0$".  Evaluating the dynamics at a vector $x$ for which $\phi(x) \ne 0$ may lead to an undefined or non-sensible output.   Telling <drake></drake> about this constraint will allow it to select initial conditions which satisfy the constraint, simulate the system more accurately (with the constraint imposed), and restrict attention during analysis to the manifold defined by the constraints.  However, \emph{the state constraints function should not be used to enforce an additional constraint that is not already imposed on the system by the governing equations.}.  The state constraint should be simply announcing a property that the system already has, if simulated accurately.   Examples might include a passive system with a known total energy, or a four-bar linkage in a rigid body whos dynamics are written as a kinematic tree + constraint forces.   State constraints are implemented by overloading the <code>stateConstraints</code> method \emph{and} by calling <code>setNumStateConstraints</code> to tell the solver what to expect in that method.</p>
+  State constraints are additional information that you are providing to the solver and analysis routines.  They should be read as "this dynamical system will only ever visit states described by $\phi(x)=0$".  Evaluating the dynamics at a vector $x$ for which $\phi(x) \ne 0$ may lead to an undefined or non-sensible output.   Telling <drake></drake> about this constraint will allow it to select initial conditions which satisfy the constraint, simulate the system more accurately (with the constraint imposed), and restrict attention during analysis to the manifold defined by the constraints.  However, \emph{the state constraints function should not be used to enforce an additional constraint that is not already imposed on the system by the governing equations.}.  The state constraint should be simply announcing a property that the system already has, if simulated accurately.   Examples might include a passive system with a known total energy, or a four-bar linkage in a rigid body whose dynamics are written as a kinematic tree + constraint forces.   State constraints are implemented by overloading the <code>stateConstraints</code> method \emph{and} by calling <code>setNumStateConstraints</code> to tell the solver what to expect in that method.</p>
 
 <!--implement example of passive pendulum with and without state constraints, showing the additional accuracy.-->
 
@@ -6296,7 +6296,7 @@ of the active mode.</p>
   <code>HybridDrakeSystem</code> with a single continuous mode to model
   the flight of the ball through the air and a discrete collision
   event at the moment that the ball hit the ground. This can be
-  accompished with the following two classes (which can be found in the <a href="https://github.com/RobotLocomotion/drake/tree/master/examples/BouncingBall"><code>examples/BouncingBall</code> directory</a>):
+  accomplished with the following two classes (which can be found in the <a href="https://github.com/RobotLocomotion/drake/tree/master/examples/BouncingBall"><code>examples/BouncingBall</code> directory</a>):
 <pre><code class="matlab" testfile="BallFlightPhasePlant">
 classdef BallFlightPhasePlant < DrakeSystem
 
@@ -6594,7 +6594,7 @@ time or input -- in this case you should overload the method
 <p>By default, <drake></drake> uses the Simulink backend for simulation, and
 makes use of a number of Simulink's advanced features.  For example,
 input limits can cause discontinuities in the derivative of a
-continuous time system, which can potenially lead to inaccuracy and inefficiency
+continuous time system, which can potentially lead to inaccuracy and inefficiency
 in simulation with variable-step solvers; <drake></drake> avoids this by
 registering "zero-crossings" for each input saturation which allow
 the solver to handle the derivative discontinuity event explicitly,
@@ -6616,7 +6616,7 @@ understand (most of) the Simulink solver parameters.</p>
 <p>Cascading.   Use the realtime block.</p>
 
 
-<section data-type="sect3"><h1>Outputing to a movie format</h1>
+<section data-type="sect3"><h1>Outputting to a movie format</h1>
 
 <p>
 There are a number of options for creating a movie file from your simulation,
