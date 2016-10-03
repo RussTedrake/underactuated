@@ -1,4 +1,5 @@
 *.aux
 *.log
 *.pyc
-examples
+build/
+examples/
