@@ -185,7 +185,7 @@
     </script>
 
     <link rel="stylesheet" href="highlight/styles/default.css">
-    <script src="highlight/highlight.pack.js"></script>
+    <script src="highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
     <script>hljs.initHighlightingOnLoad();</script>
 
     <script type="text/javascript">
@@ -205,13 +205,14 @@
         for (i = 0; i < codeTags.length; i++) {
           var file = codeTags[i].innerHTML;
           var xhttp = new XMLHttpRequest();
-          xhttp.onreadystatechange = function () {
+          xhttp.onreadystatechange = ( function (i) { return function() {
             if (this.readyState == 4 && this.status == 200) {
-              codeTags[0].innerHTML = this.responseText;
+              var text = hljs.highlight('cpp',this.responseText,true)
+              codeTags[i].innerHTML = '<pre><code>'+text.value+'</code></pre>';
             }
-          };//(codeTags[i]);
+          } })(i);
           xhttp.overrideMimeType('text/plain');
-          xhttp.open('GET', 'test.txt', true); //""../../" + file, true);
+          xhttp.open('GET', codeTags[i].innerHTML, true); // note: only works for files in or below current directory http://jquery-howto.blogspot.com/2008/12/access-to-restricted-uri-denied-code.html
           xhttp.send();
         }
       }
@@ -5813,9 +5814,9 @@ and $g()$ are anything that you can write into a C++ function.
 This is accomplished by deriving from the <code>drake::systems::LeafSystem</code> class, defining the output vector in the constructor, and overloading the <code>dynamics</code> and <code>output</code> methods, as illustrated by the following example:
 
 <div data-type="example" class="drake"><h1>A simple continuous-time system</h1>
-<p>Consider the system \begin{gather*}\dot{x} = -x + x^3,\\ y = x.\end{gather*}  This system has zero inputs, one (continuous) state variable, and one output.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/drake/examples/simple_continuous_time_system.cc">code</a>:</p>
+<p>Consider the system \begin{gather*}\dot{x} = -x + x^3,\\ y = x.\end{gather*}  This system has zero inputs, one (continuous) state variable, and one output.  It can be implemented in <drake></drake> using the following code:</p>
 
-  <div><drake_code>examples/simple_continuous_time_system.cc</drake_code></div>
+  <div><drake_code>src/simple_continuous_time_system.h</drake_code></div>
 </div>
 
 
