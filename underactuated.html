@@ -163,8 +163,6 @@
             document.getElementById("list_of_drake_examples").innerHTML = "<ul>" + list_of_drake_examples + "</ul>";
           }
         }
-
-
       }
       </script>
 
@@ -191,22 +189,36 @@
     <script>hljs.initHighlightingOnLoad();</script>
 
     <script type="text/javascript">
-      function myMacros(){
-        var elibTags=document.getElementsByTagName('elib');
-        for(i=0;i<elibTags.length;i++)
-        {
+      function myMacros() {
+        var elibTags = document.getElementsByTagName('elib');
+        for (i = 0; i < elibTags.length; i++) {
           var c = elibTags[i].innerHTML;
-          elibTags[i].innerHTML='[<a href="http://groups.csail.mit.edu/locomotion/elib.cgi?b='+c+'">'+(i+1)+'</a>]';
+          elibTags[i].innerHTML = '[<a href="http://groups.csail.mit.edu/locomotion/elib.cgi?b=' + c + '">' + (i + 1) + '</a>]';
         }
 
-        var drakeTags=document.getElementsByTagName('drake');
-        for(i=0;i<drakeTags.length;i++)
-        {
-          drakeTags[i].innerHTML='<a style="font-variant:small-caps; text-decoration:none;" href="http://drake.mit.edu">Drake</a>';
+        var drakeTags = document.getElementsByTagName('drake');
+        for (i = 0; i < drakeTags.length; i++) {
+          drakeTags[i].innerHTML = '<a style="font-variant:small-caps; text-decoration:none;" href="http://drake.mit.edu">Drake</a>';
+        }
+
+        var codeTags = document.getElementsByTagName('drake_code');
+        for (i = 0; i < codeTags.length; i++) {
+          var file = codeTags[i].innerHTML;
+          var xhttp = new XMLHttpRequest();
+          xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+              codeTags[0].innerHTML = this.responseText;
+            }
+          };//(codeTags[i]);
+          xhttp.overrideMimeType('text/plain');
+          xhttp.open('GET', 'test.txt', true); //""../../" + file, true);
+          xhttp.send();
         }
       }
     </script>
     <link rel="stylesheet" type="text/css" href="underactuated.css">
+
+    <script src="http://www.w3schools.com/lib/w3data.js"></script> <!-- for w3IncludeHTML -->
   </head>
 
 
@@ -5760,32 +5772,35 @@ Robust control.  Common Lyapunov functions.  Dissipation inequalities.  Guarante
 
 <section data-type="chapter" class="chapter"><h1>Modeling Input-Output Dynamical Systems</h1>
 
-<p><drake></drake> is a library for modeling, analyzing, and designing dynamical systems using the optimization tools described in
-  the previous chapter.</p>
+<p>This chapter provides a short tutorial for modeling input-output dynamical systems in <drake></drake>.
+  <drake></drake> includes a set of C++ classes in <code>drake::systems</code> that provide an API for
+  building complex dynamical systems by connecting simple dynamical systems into a block diagram.  The modeling approach
+  is very much inspired by MATLAB's Simulink (though without the graphical user interface).  Like Simulink,
+  <code>drake::systems</code> provides a library of existing systems and also makes it easy for you to define your own
+  new dynamical systems.</p>
 
-  <p>The fundamental object in <drake></drake> is a dynamical system.  Robots,
-  controllers, state estimators, etc. are all instances of dynamical
-  systems.  Algorithms in <drake></drake> operate on dynamical systems.  This
-  chapter introduces what you need to know to instantiate the dynamical
-  systems that you are interested in, and to simulate and visualize
-  their outputs.</p>
+  <p>A major difference between modeling dynamical systems in <code>drake::systems</code> vs Simulink (or most other
+    system modeling languages) is that there is a considerable emphasis in <drake></drake> on exposing the underlying
+    structure in the governing equations.  For example, if certain outputs of a dynamical system depend on only a small
+    fraction of the inputs, then we attempt to expose this sparsity directly.  Similarly, if the dynamics of a system
+    can be described by a polynomial vector field (or linear, or at least differentiable, ...), then <drake></drake>
+    aims to expose this structure as well, and to preserve this structure when systems are combined into a diagram.
+    Exposing this structure may have only modest benefit for numerical simulation, but it is incredibly enabling for
+    more sophisticated algorithms for analysis, system identification, and feedback or state estimator design.
+  </p>
 
-  <p>
+  <p>We'll return to the more advanced modeling tools in a minute, but let us start with some very simple examples.
 Dynamical systems in <drake></drake> are represented by their dynamics in
-state-space form, with $x$ denoting the state vector.  In addition,
-every dynamical system can have an input vector, $u$, and an output
-vector $y$. </p>
+state-space form, where we often $x$ to denote the state vector.  In addition,
+every dynamical system can have an input vector, often denoted $u$, and an output
+vector, often $y$. </p>
 
 <center><img style="width:250px;" data-src="figures/input_output_system.svg"/></center>
 
-<p>
-As we will see, dynamical systems in <drake></drake> can be instantiated in a
-number of different ways.  A system can be described by a small block of MATLAB or C++ code deriving from our <code>DrakeSystem</code> class interface, or -- in the case of rigid-body systems -- even by simple XML file (see the section below on the URDF format) that can be parsed by our existing class implementations.</p>
-
-<section data-type="sect2"><h1>Writing your own dynamics in MATLAB</h1>
+<section data-type="sect1"><h1>Writing your own dynamics</h1>
 
 <p>
-In this section, we will describe how you can write your own dynamics class in MATLAB by deriving from the <code>DrakeSystem</code> interface class.</p>
+In this section, we will describe how you can write your own dynamics class in C++ by deriving from the <code>drake::systems::LeafSystem</code> interface class.</p>
 
 <p>
 <b>Continuous-Time Systems.</b>
@@ -5794,33 +5809,13 @@ Consider a basic continuous-time nonlinear input-output dynamical system describ
 \dot{x} = f(t,x,u), \\ y = g(t,x,u).
 \end{gather*}
 In <drake></drake>, you can instantiate a system of this form where $f()$
-and $g()$ are anything that you can write into a MATLAB function.
-This is accomplished by deriving from the <code>DrakeSystem</code> class, defining the size of the input, state, and output vectors in the constructor, and overloading the <code>dynamics</code> and <code>output</code> methods, as illustrated by the following example:
+and $g()$ are anything that you can write into a C++ function.
+This is accomplished by deriving from the <code>drake::systems::LeafSystem</code> class, defining the output vector in the constructor, and overloading the <code>dynamics</code> and <code>output</code> methods, as illustrated by the following example:
 
 <div data-type="example" class="drake"><h1>A simple continuous-time system</h1>
-<p>Consider the system \begin{gather*}\dot{x} = -x + x^3,\\ y = x.\end{gather*}  This system has zero inputs, one (continuous) state variable, and one output.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/examples/SimpleCTExample.m">code</a>:</p>
-<pre><code class="matlab" testfile="SimpleCTExample">
-classdef SimpleCTExample < DrakeSystem
-  methods
-    function obj = SimpleCTExample()
-      % call the parent class constructor:
-      obj = obj@DrakeSystem(...
-         1, ... % number of continuous states
-         0, ... % number of discrete states
-         0, ... % number of inputs
-         1, ... % number of outputs
-         false, ... % because the output does not depend on u
-         true);  % because the dynamics and output do not depend on t
-    end
-    function xdot = dynamics(obj,t,x,u)
-      xdot = -x+x^3;
-    end
-    function y=output(obj,t,x,u)
-      y=x;
-    end
-  end
-end
-</code></pre>
+<p>Consider the system \begin{gather*}\dot{x} = -x + x^3,\\ y = x.\end{gather*}  This system has zero inputs, one (continuous) state variable, and one output.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/drake/examples/simple_continuous_time_system.cc">code</a>:</p>
+
+  <div><drake_code>examples/simple_continuous_time_system.cc</drake_code></div>
 </div>
 
 
@@ -6611,6 +6606,9 @@ output formats supported by your current visualizer.</p>
   <tr><td><em>Underactuated Robotics</em></td><td align="right">&copy; Russ Tedrake, 2016</td></tr>
 </table>
 </div>
+
+<script> w3IncludeHTML(); </script>
+
 
 </body>
 </html>
