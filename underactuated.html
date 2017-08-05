@@ -1242,7 +1242,7 @@ Now let's add damping back.  You can still add torque to move the fixed points
 <p> Here's a thought exercise.  If $u$ is no longer a constant, but a function
 $\pi(q,\dot{q})$, then how would you choose $\pi$ to stabilize the vertical
 position.  Feedback linearization is the trivial solution, for example: $$u =
-\pi(q,\dot{q}) = 2 \frac{g}{l}\cos\theta.$$ But these plots we've been making
+\pi(q,\dot{q}) = 2mgl\sin\theta.$$ But these plots we've been making
 tell a different story.  How would you shape the natural dynamics - at each
 point pick a $u$ from the stack of phase plots - to stabilize the vertical fixed
 point <em>with minimal torque effort</em>?  This is exactly the way that I would
