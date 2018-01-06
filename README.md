@@ -28,6 +28,14 @@ $ cmake ..
 $ make
 ```
 
+Also make sure to initialize the submodules:
+
+```
+git submodule init
+git submodule update
+```
+The textbook should then be viewable by opening `index.html` in your browser. 
+
 Notes
 -----
 
