@@ -1,16 +1,13 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.5.1)
 project(underactuated LANGUAGES NONE)
 
-if(CMAKE_VERSION VERSION_LESS 3.7)
-  set(CMAKE_MODULE_PATH
-    "${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules/3.7"
-    ${CMAKE_MODULE_PATH})
-endif()
+list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake/modules")
 
 include(CTest)
+include(GNUInstallDirs)
 
-/// TODO(russt): find drake (what is the new cmake way to do this?)
+find_package(PythonInterp 2.7 REQUIRED)
+
+find_package(drake CONFIG REQUIRED)
 
 add_subdirectory(src)
-
-
