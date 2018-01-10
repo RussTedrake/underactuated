@@ -31,4 +31,16 @@
 
 set -eux
 
-./scripts/continuous_integration/common/drake_cmake_installed
+cmake --version
+
+mkdir build
+pushd build
+
+cmake -Ddrake_DIR=/opt/drake/lib/cmake/drake ..
+make
+ctest -V .
+
+rm -rf build
+
+popd
+
