@@ -1,0 +1,98 @@
+#!/bin/bash
+
+# Copyright (c) 2017, Massachusetts Institute of Technology.
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# * Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+#
+# * Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+# * Neither the name of the Massachusetts Institute of Technology nor the names
+#   of its contributors may be used to endorse or promote products derived from
+#   this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE MASSACHUSETTS INSTITUTE OF TECHNOLOGY AND
+# CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT
+# NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+# PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE MASSACHUSETTS
+# INSTITUTE OF TECHNOLOGY OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+# INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA,
+# OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+# LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+# NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+# EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+set -euo pipefail
+
+if [[ "${EUID}" -eq 0 ]]; then
+  echo 'This script must NOT be run as root' >&2
+  exit 1
+fi
+
+if ! command -v javac &>/dev/null; then
+  echo 'Java is NOT installed' >&2
+  exit 2
+fi
+
+if ! command -v brew &>/dev/null; then
+  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+fi
+
+if [[ ! -f /usr/include/expat.h || ! -f /usr/include/zlib.h ]]; then
+  echo 'Command Line Tools for Xcode are NOT installed' >&2
+  exit 3
+fi
+
+brew tap dreal-deps/coinor
+brew tap dreal-deps/ibex
+brew tap dreal/dreal
+brew tap robotlocomotion/director
+
+brew update
+brew upgrade
+
+# Install development and Drake dependencies.
+brew install $(tr '\n' ' ' <<EOF
+bazel
+boost
+clang-format
+cmake
+dreal
+gflags
+glib
+ipopt
+libccd
+libyaml
+nlopt
+numpy
+pkg-config
+protobuf
+python
+scipy
+tinyxml
+tinyxml2
+vtk@8.0
+yaml-cpp
+EOF
+)
+
+if [[ ! -f "${HOME}/.bazelrc" ]] || ! grep -q 'build --python_path=/usr/local/opt/python/libexec/bin/python' "${HOME}/.bazelrc"; then
+  echo 'build --python_path=/usr/local/opt/python/libexec/bin/python' >> "${HOME}/.bazelrc"
+fi
+
+pip2 install --upgrade $(tr '\n' ' ' <<EOF
+lxml
+pip
+PyYAML
+EOF
+)
+
+# Install additional dependencies for various compatibility examples.
+brew install pcl
