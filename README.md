@@ -20,7 +20,7 @@ Also make sure to initialize the submodules:
 git submodule init
 git submodule update
 ```
-The textbook should then be viewable by opening `index.html` in your browser. 
+The textbook should then be viewable by opening `underactuated.html` in your browser. 
 
 Notes
 -----
@@ -28,3 +28,12 @@ Notes
 Embedding mp4 w/ flash fallback:
 
 <http://css-tricks.com/snippets/html/video-for-everybody-html5-video-with-flash-fallback/>
+
+
+HTML linter
+-----------
+
+mac:  brew install tidy-html5
+linux: sudo apt-get install tidy
+
+tidy -config .tidy.config -f errs.txt underactuated.html
