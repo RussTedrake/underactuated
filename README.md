@@ -5,26 +5,12 @@ Underactuated Robotics
 
 <http://underactuated.mit.edu/>
 
-Prerequisites
--------------
-
-Debian / Ubuntu:
-```
-$ sudo apt-get install python-bs4 python-html5lib
-```
-
-macOS / OS X
-
-```
-$ pip install beautifulsoup4 html5lib
-```
-
-Build
------
+Build the examples
+------------------
 
 ```
 $ mkdir build && cd build
-$ cmake ..
+$ cmake -D -Ddrake_DIR=PATH_TO_DRAKE/lib/cmake/drake ..
 $ make
 ```
 
