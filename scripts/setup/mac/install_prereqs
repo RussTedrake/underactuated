@@ -76,6 +76,7 @@ pkg-config
 protobuf
 python
 scipy
+tidy-html5
 tinyxml
 tinyxml2
 vtk@8.0
