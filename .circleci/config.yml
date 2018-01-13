@@ -14,6 +14,8 @@ jobs:
           name: setup
           command: ./scripts/continuous_integration/circle_ci/setup
 
+      - run: echo 'export PYTHONPATH=/opt/drake/lib/python2.7/site-packages:${PYTHONPATH}' >> $BASH_ENV
+
       - run:
           name: build and test
           command: ./scripts/continuous_integration/circle_ci/build_test

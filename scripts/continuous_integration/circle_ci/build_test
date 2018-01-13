@@ -36,7 +36,6 @@ cmake --version
 mkdir build
 pushd build
 
-export PYTHONPATH=/opt/drake/lib/python2.7/site-packages:${PYTHONPATH}
 cmake -Ddrake_DIR=/opt/drake/lib/cmake/drake ..
 make
 ctest -V .
