@@ -22,7 +22,7 @@ workflows:
   version: 2
   pr-workflow:
     jobs:
-      - build_and_test 
+      - build_and_test:
           filters:
             branches:
               only: master
@@ -34,4 +34,4 @@ workflows:
             branches:
               only: master
     jobs:
-      - build
+      - build_and_test
