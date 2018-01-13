@@ -37,3 +37,4 @@ mac:  brew install tidy-html5
 linux: sudo apt-get install tidy
 
 tidy -config .tidy.config -f errs.txt underactuated.html
+

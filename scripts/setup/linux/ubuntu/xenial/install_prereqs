@@ -115,6 +115,12 @@ trap 'rm -f dreal_4.17.12.2_amd64.deb' EXIT
 echo '9347492e47a518ff78991e15fe9de0cff0200573091385e42940cdbf1fcf77a5  dreal_4.17.12.2_amd64.deb' | sha256sum -c
 dpkg -i dreal_4.17.12.2_amd64.deb
 
+apt remove tidy libtidy-0.99-0
+curl -LO https://github.com/htacg/tidy-html5/releases/download/5.4.0/tidy-5.4.0-64bit.deb
+trap 'rm -rf tidy-5.4.0-64bit.deb' EXIT
+echo 'b6b971534ee6bacc68a7c5f9878b0a146fbd7f50c580db76a19823e8541f92f8  tidy-5.4.0-64bit.deb' | sha256sum -c
+dpkg -i tidy-5.4.0-64bit.deb
+
 # Install additional dependencies for various compatibility examples.
 apt install --no-install-recommends $(tr '\n' ' ' <<EOF
 libpcl-dev
