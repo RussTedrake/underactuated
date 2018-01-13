@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-  build:
+  build_and_test:
     docker:
       - image: robotlocomotion/circleci:xenial
 
@@ -20,16 +20,18 @@ jobs:
 
 workflows:
   version: 2
-  commit-workflow:
+  pr-workflow:
     jobs:
-      - build 
+      - build_and_test 
+          filters:
+            branches:
+              only: master
   nightly-workflow:
     triggers:
       - schedule:
           cron: "0 4 * * *"
           filters:
             branches:
-              only:
-                 - master
+              only: master
     jobs:
       - build
