@@ -40,6 +40,6 @@ state = simulator.get_mutable_context().get_mutable_state()\
 initial_state = np.array([1.0, 0.0])
 state.SetFromVector(initial_state)
 
-simulator.StepTo(100.0)
+simulator.StepTo(10.0)
 
 print(state.CopyToVector())
