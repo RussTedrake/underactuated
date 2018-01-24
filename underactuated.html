@@ -1,4 +1,4 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 
 <html xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  xsi:schemaLocation="http://www.w3.org/1999/xhtml HTMLBook/schema/htmlbook.xsd"
@@ -304,8 +304,7 @@ readable manuscript that will be of use to any enthusiastic roboticist.</p>
 
 <section><h1>Organization</h1>
 
-<p>
-The material in these notes is organized into a few main parts.
+<p>The material in these notes is organized into a few main parts.
 "Model Systems" introduces a series of increasingly complex
 dynamical systems and overviews some of the relevant results from the
 literature for each system. "Nonlinear Planning and Control"
@@ -317,8 +316,8 @@ stochasticity and robustness.  "Estimation and Learning" follows
 this up with techniques from statistics and machine learning which
 capitalize on this viewpoint to introduce additional algorithms which
 can operate with less assumptions on knowing the model or having
-perfect sensors.  The book closes with chapters on "Applications and
-Extensions" and an "Appendix".</p>
+perfect sensors.  The book closes with an "Appendix" that provides slightly
+more introduction (and references) for the main topics used in the course.</p>
 
 <p>The order of the chapters was chosen to make the book valuable as a
 reference.  When teaching the course, however, I take a spiral trajectory
@@ -438,6 +437,22 @@ Cornell<elib>Collins01</elib>. </p>
 <p> Passive walkers demonstrate that the high-gain, dynamics-cancelling feedback
 approach taken on ASIMO is not a necessary one.  In fact, the dynamics of
 walking is beautiful, and should be exploited - not cancelled out. </p>
+
+<p> The world is just starting to see what this vision could look like.
+This video from Boston Dynamics is one of my favorite of all time:</p>
+
+<figure>
+<iframe width="560" height="315"
+        src="https://www.youtube.com/embed/fRj34o4hN4I?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+<figcaption>Boston Dynamics' Atlas robot does a backflip.</figcaption>
+</figure>
+
+<p> This result is a marvel of engineering (the mechanical design alone is
+amazing...).  In this class, we'll teach you the computational tools to
+produce this type of maneuver in your own robots, assuming you happen to have
+a super-lightweight, super-powerful, and super-robust humanoid in your shop.
+We'll also try to reason about how robust these types of maneuvers are and can be.
+</p>
 </section>
 
 <section data-type="sect2">
@@ -464,7 +479,7 @@ metabolic cost<elib>Arnould96</elib>, suggesting that they can travel incredible
 distances (upwind or downwind) powered almost completely by gradients in the
 wind.  Other birds achieve efficiency through similarly rich interactions with
 the air - including formation flying, thermal soaring, and ridge soaring.  Small
-birds and large insects, such as butterflies and locusts, use `gust soaring' to
+birds and large insects, such as butterflies and locusts, use "gust soaring" to
 migrate hundreds or even thousands of kilometers carried primarily by the wind.
 </p>
 
@@ -504,6 +519,53 @@ this passive propulsion is presumably part of the technique used by rainbow
 trout to swim upstream at mating season<elib>Beal06</elib>. </p>
 
 </section>
+
+<section data-type="sect2">
+<h1>Manipulation</h1>
+
+<p>Despite a long history of success in industrial applications, and the
+huge potential for consumer applications, we still don't have robot arms that
+can perform any meaningful tasks in the home.  Admittedly, the perception
+problem (using sensors to detect/localize objects and understand the scene) for
+home robotics is incredibly difficult. But even if we were given a perfect
+perception system, our robots are still a long way from performing basic
+object manipulation tasks with the dexterity and versatility of a human.
+</p>
+
+<p>Most robots that perform object manipulation today use a stereotypical
+pipeline.  First, we enumerate a handful of contact locations on the hand
+(these points, and only these points, are allowed to contact the world).
+Then, given a localized object in the environment, we plan a collision-free
+trajectory for the arm that will move the hand into a "pre-grasp" location.
+At this point the robot closes it's eyes (figuratively) and closes the hand,
+hoping that the pre-grasp location was good enough that the object will be
+successfully grasped using e.g. only current feedback in the fingers to know
+when to stop closing.  "Underactuated hands" make this approach more
+successful, but the entire approach really only works well for enveloping
+grasps.
+</p>
+
+<p>The enveloping grasps approach may actually be sufficient for a number
+of simple pick-and-place tasks, but it is a very poor representation of
+how humans do manipulation.  When humans manipulate objects, the contact
+interactions with the object and the world are very rich -- we often use
+pieces of the environment as fixtures to reduce uncertainty, we commonly
+<i>exploit</i> slipping behaviors (e.g. for picking things up, or reorienting
+it in the hand), and our brains don't throw NaNs if we use the entire
+surface of our arms to e.g. manipulate a large object.
+</p>
+
+  <todo>Add videos.  Salami pick and place?  Rick's box turning?  Alex's
+    disney bubbles?</todo>
+
+<p>By the way, in most cases, if the robots fail to make contact at the
+anticipated contact times/locations,
+<a href="https://youtu.be/g0TaYhjpOfo?t=48s">bad things can happen</a>. The
+results are hilarious and depressing at the same time.  (Let's fix that!)</p>
+
+
+</section>
+
 
 <section data-type="sect2">
 <h1>The common theme</h1>
@@ -566,19 +628,21 @@ underactuated if it is underactuated in <i>any</i> state or time.</p>
 </figure>
 
 <p> Consider the simple robot manipulator illustrated above.  As described in
-Appendix A, the equations of motion for this system are quite simple to derive,
+<a href="underactuated.html?chapter=25">Appendix B</a>, the equations of
+motion for this system are quite simple to derive,
 and take the form of the standard "manipulator equations": $${\bf
-H}(\bq)\ddot\bq + {\bf C}(\bq,\dot\bq)\dot\bq + {\bf G}(\bq) = {\bf
-B}(\bq)\bu.$$ It is well known that the inertial matrix, ${\bf H}(\bq)$ is
+M}(\bq)\ddot\bq + {\bf C}(\bq,\dot\bq)\dot\bq - {\bf \tau_g}(\bq) = {\bf
+B}(\bq)\bu.$$ It is well known that the inertial matrix, ${\bf M}(\bq)$ is
 (always) uniformly symmetric and positive definite, and is therefore invertible.
 Putting the system into the form of equation \ref{eq:f1_plus_f2} yields:
-\begin{align*}\ddot{\bq} =& -{\bf H}^{-1}(\bq)\left[ {\bf C}(\bq,\dot\bq)
-\dot\bq + {\bf G}(\bq) \right]\\ &+ {\bf H}^{-1}(\bq) {\bf B}(\bq)
-\bu.\end{align*} Because ${\bf H}^{-1}(\bq)$ is always full rank, we find that a
+\begin{align*}\ddot{\bq} =& -{\bf M}^{-1}(\bq)\left[ {\bf C}(\bq,\dot\bq)
+\dot\bq + {\bf \tau_g}(\bq) \right]\\ &+ {\bf M}^{-1}(\bq) {\bf B}(\bq)
+\bu.\end{align*} Because ${\bf M}^{-1}(\bq)$ is always full rank, we find that a
 system described by the manipulator equations is fully-actuated if and only if
 ${\bf B}(\bq)$ is full row rank.   For this particular example, $\bq =
-[\theta_1,\theta_2]^T$ and $\bu = [\tau_1,\tau_2]^T$, and ${\bf B}(\bq) = {\bf
-I}_{2 \times 2}$.  The system is fully actuated.</p>
+[\theta_1,\theta_2]^T$ and $\bu = [\tau_1,\tau_2]^T$ (motor torques at the
+joints), and ${\bf B}(\bq) = {\bf I}_{2 \times 2}$.  The system is fully
+actuated.</p>
 
 <todo>make drake elements expandable/collapsible.  nice example here: http://quhno.internetstrahlen.de/myopera/csstests/collapsible-paragraph.html</todo>
 <div data-type="drake"><h1>MATLAB Example</h1>
@@ -682,7 +746,9 @@ discrete-time systems and/or differential inclusions.</p>
 <p>A quick note about notation.  When describing the dynamics of rigid-body
 systems in this class, I will use $\bq$ for configurations (positions), $\dot{\bq}$ for
 velocities, and use $\bx$ for the full state ($\bx = [\bq^T,\dot{\bq}^T]^T$).  There
-is an important limitation to this convention, described in the Appendix<!--
+is an important limitation to this convention (3D angular velocity should not be
+represented as the derivative of 3D pose) described
+in the Appendix<!--
 ch:robot_dynamics -->, but it will keep the notes cleaner. Unless otherwise
 noted, vectors are always treated as column vectors. Vectors and matrices are
 bold (scalars are not). </p>
@@ -697,7 +763,10 @@ problem.  The field of linear control is incredibly advanced, and there are many
 well-known solutions for controlling linear systems. </p>
 
 <p>The trick is called feedback linearization.  When ${\bf f}_2$ is full row
-rank, it is invertible.  Consider the nonlinear feedback law: $$\bu = {\bf
+rank, it is invertible<sidenote>If ${\bf f}_2$ is not square,
+for instance you have multiple actuators per joint, then this inverse may
+not be unique.</sidenote>.
+Consider the nonlinear feedback law: $$\bu = {\bf
 \pi}(\bq,\dot\bq,t) = {\bf f}_2^{-1}(\bq,\dot\bq,t) \left[ \bu' - {\bf
 f}_1(\bq,\dot\bq,t) \right],$$ where $\bu'$ is some additional control input.
 Applying this feedback controller to equation \ref{eq:f1_plus_f2} results in the
@@ -716,7 +785,7 @@ single pendulum (with damping), whose dynamics are given by: \begin{align*}
 \end{align*} This is easily achieved using <sidenote>Note that our chosen
 dynamics do not actually stabilize $\theta_2$ - this detail was left out for
 clarity, but would be necessary for any real implementation.</sidenote> $$\bu =
-{\bf B}^{-1}\left[ {\bf C}\dot{\bq} + {\bf G} + {\bf H}\begin{bmatrix}
+{\bf B}^{-1}\left[ {\bf C}\dot{\bq} - {\bf \tau_g} + {\bf M}\begin{bmatrix}
 -\frac{g}{l}c_1 - b\dot{q}_1 \\ 0 \end{bmatrix} \right].$$ </p>
 
 <p> Since we are embedding a nonlinear dynamics (not a linear one), we refer to
@@ -755,13 +824,13 @@ robot to come into contact with. </p>
 
 <div data-type="definition"><h1>Input and State Constraints</h1> A dynamical
 system described by $\dot{\bx} = {\bf f}(\bx,\bu,t)$ may be subject to one or
-more constraints described by ${\bf \phi}(\bx,\bu,t)\le0$. </div>
+more constraints described by ${\bf \phi}(\bx,\bu,t)\ge0$. </div>
 
 <p>In practice it can be useful to separate out constraints which depend only on
-the input, e.g. $\phi(\bu)\le0$, such as actuator limits, as they can often be
+the input, e.g. $\phi(\bu)\ge0$, such as actuator limits, as they can often be
 easier to handle than state constraints.  An obstacle in the environment might
 manifest itself as one or more constraints that depend only on position, e.g.
-$\phi(\bq)\le0$.</p>
+$\phi(\bq)\ge0$.</p>
 
 <p>By our generalized definition of underactuation, we can see that input and
 state constraints can also cause a system to be underactuated.</p>
@@ -868,7 +937,7 @@ state-of-the-art.</p>
 
 <p> The target audience for the class includes both computer science and
 mechanical/aero students pursuing research in robotics.  Although I assume a
-comfort with linear algebra, ODEs, and MATLAB, the course notes aim to provide
+comfort with linear algebra, ODEs, and Python, the course notes aim to provide
 most of the material and references required for the course. </p>
 
 </section>
