@@ -31,7 +31,7 @@ diagram = builder.Build()
 simulator = Simulator(diagram)
 simulator.Initialize()
 simulator.set_target_realtime_rate(1.0)
-simulator.set_publish_every_time_step(False)
+#simulator.set_publish_every_time_step(False)
 
 # TODO(russt): Clean up state vector access below.
 state = simulator.get_mutable_context().get_mutable_state()\
