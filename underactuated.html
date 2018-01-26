@@ -6687,7 +6687,7 @@ output formats supported by your current visualizer.</p>
           and therefore
           $$\int_{t_c^-}^{t_c^+} \lambda dt = - (1+e)\left[ \bJ \bM^{-1} \bJ^T
         \right]^+
-          \bJ \dot{q}^-.$$  Substituting this back in above results in
+          \bJ \dot{\bq}^-.$$  Substituting this back in above results in
           $$\dot{\bq}^+ = \left[ \bI - (1+e)\bM^{-1} \bJ^T \left[ \bJ \bM^{-1}
         \bJ^T
         \right]^+ \bJ
@@ -6719,7 +6719,7 @@ output formats supported by your current visualizer.</p>
           The guards of the hybrid model are when an inactive constraint
           becomes active ($\bphi_i>0 \rightarrow \bphi_i=0$), or when
           an active constraint becomes inactive ($\blambda_i>0 \rightarrow
-          \blambda_i=0$).
+          \blambda_i=0$ and $\dot\phi_i > 0$).
           Note that collision events will (almost always) only result in new active constraints when $e=0$, e.g.
           we have pure inelastic collisions, because elastic collisions will
         rarely permit sustained contact.</p>
