@@ -20,7 +20,9 @@ Also make sure to initialize the submodules:
 git submodule init
 git submodule update
 ```
-The textbook should then be viewable by opening `underactuated.html` in your browser. 
+The textbook should then be viewable by opening `underactuated.html` in your browser.
+
+You'll need to run a local webserver for the code includes (via ajax) to work. I used https://websitebeaver.com/set-up-localhost-on-macos-high-sierra-apache-mysql-and-php-7-with-sslhttps and just pointed by root doc directory directly at my underactuated checkout. 
 
 Notes
 -----
