@@ -246,9 +246,18 @@
   \newcommand{\bu}{{\bf u}}
   \newcommand{\bw}{{\bf w}}
   \newcommand{\bz}{{\bf z}}
+  \newcommand{\bB}{{\bf B}}
+  \newcommand{\bC}{{\bf C}}
+  \newcommand{\bI}{{\bf I}}
+  \newcommand{\bJ}{{\bf J}}
   \newcommand{\bK}{{\bf K}}
+  \newcommand{\bM}{{\bf M}}
   \newcommand{\balpha}{{\bf \alpha}}
   \newcommand{\bbeta}{{\bf \beta}}
+  \newcommand{\blambda}{{\bf \lambda}}
+  \newcommand{\btau}{{\bf \tau}}
+  \newcommand{\bphi}{{\bf \phi}}
+  \newcommand{\bpsi}{{\bf \psi}}
   \newcommand{\avg}[1]{E\left[ #1 \right]}
   \newcommand{\subjto}{\textrm{subject to}}
   \newcommand{\minimize}{\operatorname{\textrm{minimize}}}
@@ -632,17 +641,17 @@ underactuated if it is underactuated in <i>any</i> state or time.</p>
 <a href="underactuated.html?chapter=26">Appendix C</a>, the equations of
 motion for this system are quite simple to derive,
 and take the form of the standard "manipulator equations": $${\bf
-M}(\bq)\ddot\bq + {\bf C}(\bq,\dot\bq)\dot\bq - {\bf \tau_g}(\bq) = {\bf
+M}(\bq)\ddot\bq + \bC(\bq,\dot\bq)\dot\bq - \btau_g(\bq) = {\bf
 B}(\bq)\bu.$$ It is well known that the inertial matrix, ${\bf M}(\bq)$ is
 (always) uniformly symmetric and positive definite, and is therefore invertible.
 Putting the system into the form of equation \ref{eq:f1_plus_f2} yields:
-\begin{align*}\ddot{\bq} =& -{\bf M}^{-1}(\bq)\left[ {\bf C}(\bq,\dot\bq)
-\dot\bq + {\bf \tau_g}(\bq) \right]\\ &+ {\bf M}^{-1}(\bq) {\bf B}(\bq)
+\begin{align*}\ddot{\bq} =& -{\bf M}^{-1}(\bq)\left[ \bC(\bq,\dot\bq)
+\dot\bq + \btau_g(\bq) \right]\\ &+ {\bf M}^{-1}(\bq) \bB(\bq)
 \bu.\end{align*} Because ${\bf M}^{-1}(\bq)$ is always full rank, we find that a
 system described by the manipulator equations is fully-actuated if and only if
-${\bf B}(\bq)$ is full row rank.   For this particular example, $\bq =
+$\bB(\bq)$ is full row rank.   For this particular example, $\bq =
 [\theta_1,\theta_2]^T$ and $\bu = [\tau_1,\tau_2]^T$ (motor torques at the
-joints), and ${\bf B}(\bq) = {\bf I}_{2 \times 2}$.  The system is fully
+joints), and $\bB(\bq) = {\bf I}_{2 \times 2}$.  The system is fully
 actuated.</p>
 
 <todo>make drake elements expandable/collapsible.  nice example here: http://quhno.internetstrahlen.de/myopera/csstests/collapsible-paragraph.html</todo>
@@ -710,7 +719,7 @@ robots.</p>
 
 <p> While the basic double pendulum is fully actuated, imagine the somewhat
 bizarre case that we have a motor to provide torque at the elbow, but no motor
-at the shoulder.  In this case, we have $\bu = \tau_2$, and ${\bf B}(\bq) =
+at the shoulder.  In this case, we have $\bu = \tau_2$, and $\bB(\bq) =
 [0,1]^T$.  This system is clearly underactuated.  While it may sound like a
 contrived example, it turns out that it is almost exactly the dynamics we will
 use to study as our simplest model of walking later in the class. </p>
@@ -733,10 +742,10 @@ systems beyond the second-order control affine systems.</p>
 
 <div data-type="definition"> <h1>Underactuated Control Differential
 Equations</h1> An $n$th-order control differential equation control described by
-the equations \begin{equation} \frac{d^n{\bf q}}{dt^n} = f({\bf q}, ...,
-\frac{d^{n-1} {\bf q}}{dt^{n-1}}, t, {\bf u}) \end{equation} is fully actuated
-in state ${\bf x} = ({\bf q}, ..., \frac{d^{n-1} {\bf q}}{dt^{n-1}})$ and time
-$t$ if the resulting map ${\bf f}$ is surjective: for every $\frac{d^n{\bf q}}{dt^n} $
+the equations \begin{equation} \frac{d^n\bq}{dt^n} = f(\bq, ...,
+\frac{d^{n-1} \bq}{dt^{n-1}}, t, {\bf u}) \end{equation} is fully actuated
+in state ${\bf x} = (\bq, ..., \frac{d^{n-1} \bq}{dt^{n-1}})$ and time
+$t$ if the resulting map ${\bf f}$ is surjective: for every $\frac{d^n\bq}{dt^n} $
 there exists a ${\bf u}$ which produces the desired response.  Otherwise it is
 underactuated. </div>
 
@@ -786,7 +795,7 @@ single pendulum (with damping), whose dynamics are given by: \begin{align*}
 \end{align*} This is easily achieved using <sidenote>Note that our chosen
 dynamics do not actually stabilize $\theta_2$ - this detail was left out for
 clarity, but would be necessary for any real implementation.</sidenote> $$\bu =
-{\bf B}^{-1}\left[ {\bf C}\dot{\bq} - {\bf \tau_g} + {\bf M}\begin{bmatrix}
+\bB^{-1}\left[ \bC\dot{\bq} - \btau_g + {\bf M}\begin{bmatrix}
 -\frac{g}{l}c_1 - b\dot{q}_1 \\ 0 \end{bmatrix} \right].$$ </p>
 
 <p> Since we are embedding a nonlinear dynamics (not a linear one), we refer to
@@ -825,7 +834,7 @@ robot to come into contact with. </p>
 
 <div data-type="definition"><h1>Input and State Constraints</h1> A dynamical
 system described by $\dot{\bx} = {\bf f}(\bx,\bu,t)$ may be subject to one or
-more constraints described by ${\bf \phi}(\bx,\bu,t)\ge0$. </div>
+more constraints described by $\bphi(\bx,\bu,t)\ge0$. </div>
 
 <p>In practice it can be useful to separate out constraints which depend only on
 the input, e.g. $\phi(\bu)\ge0$, such as actuator limits, as they can often be
@@ -851,8 +860,8 @@ similar tools to find a control solution.</p>
 <p> You might have heard of the term "nonholonomic system" (see e.g.
 <elib>Bloch03</elib>), and be thinking about how nonholonomy relates to
 underactuation.  Briefly, a nonholonomic constraint is a constraint
-of the form $\phi({\bf q}, {\bf \dot{q}}, t) = 0$, which cannot be
-integrated into a constraint of the form $\phi({\bf q}, t) = 0$ (a holonomic constraint).
+of the form $\phi(\bq, {\bf \dot{q}}, t) = 0$, which cannot be
+integrated into a constraint of the form $\phi(\bq, t) = 0$ (a holonomic constraint).
 A nonholonomic constraint does not restrain the possible configurations of
 the system, but rather the manner in which those configurations can be reached.
 While a holonomic constraint reduces the number of degrees of freedom of a system by one,
@@ -861,7 +870,7 @@ canonical example:</p>
 
 <div data-type="example"><h1>Wheeled robot</h1> Consider a simple model of a
 wheeled robot whose configuration is described by its Cartesian position $x,y$
-and its orientation, $\theta$, so ${\bf q} = \begin{bmatrix} x, y, \theta
+and its orientation, $\theta$, so $\bq = \begin{bmatrix} x, y, \theta
 \end{bmatrix}^T$.  The system is subject to a differential constraint that
 prevents side-slip, \begin{gather*} \dot{x} = v \cos\theta \\ \dot{y} = v
 \sin\theta \\ v = \sqrt{\dot{x}^2 + \dot{y}^2} \end{gather*} or equivalently,
@@ -872,7 +881,7 @@ nonholonomic constraint. </div>
 
 <p>Contrast the wheeled robot example with a robot on train tracks.  The train tracks
 correspond to a holonomic constraint: the track constraint can be written directly in
-terms of the configuration ${\bf q}$ of the system, without using the velocity ${\bf \dot{q}}$.
+terms of the configuration $\bq$ of the system, without using the velocity ${\bf \dot{q}}$.
 Even though the track constraint could also be written as a differential constraint
 on the velocity, it would be possible to integrate this constraint to obtain
 a constraint on configuration. The track restrains the possible configurations of the system.</p>
@@ -882,7 +891,7 @@ a constraint on configuration. The track restrains the possible configurations o
 vehicle certainly results in an underactuated system.  The converse is not
 necessarily true&mdash;the double pendulum system which is missing an actuator is
 underactuated but would not typically be called a nonholonomic system.  Note that
-the Lagrangian equations of motion are a constraint of the form \[{\bf \phi}({\bf q},{\bf \dot{q}},{\bf \ddot{q}},t) =  0,\]
+the Lagrangian equations of motion are a constraint of the form \[\bphi(\bq,{\bf \dot{q}},{\bf \ddot{q}},t) =  0,\]
 so do not qualify as a nonholonomic constraint.</p>
 
 </section>
@@ -1461,12 +1470,12 @@ In standard, manipulator equation form, we have:
 \begin{gather}
 {\bf H}(\bq) = \begin{bmatrix} I_1 + I_2 + m_2 l_1^2 + 2m_2 l_1 l_{c2}
   c_2 & I_2 + m_2 l_1 l_{c2} c_2 \\ I_2 + m_2 l_1 l_{c2} c_2 & I_2
-  \end{bmatrix},\label{eq:Hacrobot}\\{\bf C}(\bq,\dot{\bq}) = \begin{bmatrix} -2 m_2
+  \end{bmatrix},\label{eq:Hacrobot}\\\bC(\bq,\dot{\bq}) = \begin{bmatrix} -2 m_2
   l_1 l_{c2} s_2 \dot{q}_2 & -m_2 l_1 l_{c2} s_2 \dot{q}_2 \\ m_2 l_1
   l_{c2} s_2 \dot{q}_1 & 0 \end{bmatrix}, \\
 {\bf G}(\bq) = \begin{bmatrix} m_1 g l_{c1}s_1 + m_2 g (l_1 s_1 + l_{c2}s_{1+2})
 \\ m_2 g l_{c2} s_{1+2} \end{bmatrix}, \quad
-  {\bf B} = \begin{bmatrix} 0 \\ 1 \end{bmatrix}.
+  \bB = \begin{bmatrix} 0 \\ 1 \end{bmatrix}.
 \end{gather}
 </p>
 <!--
@@ -1540,15 +1549,15 @@ The kinematics of the system are given by
   m_p l \ddot{x} \cos\theta + m_p l^2 \ddot\theta + m_p g l \sin\theta = 0
   \end{gather}
   In standard form, using $\bq = [x,\theta]^T$, $\bu = f$:
-  $${\bf H}(\bq)\ddot\bq + {\bf C}(\bq,\dot\bq)\dot\bq + {\bf G}(\bq) =
-  {\bf B}\bu,$$
+  $${\bf H}(\bq)\ddot\bq + \bC(\bq,\dot\bq)\dot\bq + {\bf G}(\bq) =
+  \bB\bu,$$
   where \begin{gather*}
   {\bf H}(\bq) = \begin{bmatrix} m_c + m_p & m_p l \cos\theta \\ m_p l
-    \cos\theta & m_p l^2 \end{bmatrix}, \quad {\bf C}(\bq,\dot{\bq}) =
+    \cos\theta & m_p l^2 \end{bmatrix}, \quad \bC(\bq,\dot{\bq}) =
   \begin{bmatrix} 0 & -m_p l \dot\theta \sin\theta \\ 0 & 0
   \end{bmatrix}, \\
   {\bf G}(\bq) = \begin{bmatrix} 0 \\ m_p gl \sin\theta \end{bmatrix},
-  \quad {\bf B} = \begin{bmatrix} 1 \\ 0 \end{bmatrix}
+  \quad \bB = \begin{bmatrix} 1 \\ 0 \end{bmatrix}
   \end{gather*}
   In this case, it is particularly easy to solve directly for the accelerations:
   \begin{align}
@@ -1617,26 +1626,26 @@ ${\bf f}(\bx^*,\bu^*)$ is zero, and we are left with the standard
 linear state-space form:
 \begin{align}
 \dot\bx =& \begin{bmatrix} \dot\bq \\ {\bf H}^{-1}(\bq) \left[ {\bf
-      B}(\bq)\bu - {\bf C}(\bq,\dot\bq)\dot\bq - {\bf G}(\bq) \right]
+      B}(\bq)\bu - \bC(\bq,\dot\bq)\dot\bq - {\bf G}(\bq) \right]
       \end{bmatrix},\\
-\approx& {\bf A}_{lin} (\bx-\bx^*) + {\bf B}_{lin} (\bu - \bu^*),
+\approx& {\bf A}_{lin} (\bx-\bx^*) + \bB_{lin} (\bu - \bu^*),
 \end{align}
-where ${\bf A}_{lin}$, and ${\bf B}_{lin}$ are constant matrices.  Let us define $\bar\bx = \bx - \bx^*, \bar\bu = \bu - \bu^*$, and
-write $$\dot{\bar\bx} = {\bf A}_{lin}\bar\bx + {\bf B}_{lin}\bar\bu.$$ Evaluation of
+where ${\bf A}_{lin}$, and $\bB_{lin}$ are constant matrices.  Let us define $\bar\bx = \bx - \bx^*, \bar\bu = \bu - \bu^*$, and
+write $$\dot{\bar\bx} = {\bf A}_{lin}\bar\bx + \bB_{lin}\bar\bu.$$ Evaluation of
 the Taylor expansion around a fixed point yields the following, very
 simple equations, given in block form by:
 \begin{align}
-{\bf A}_{lin} =& \begin{bmatrix} {\bf 0} & {\bf I} \\ -{\bf H}^{-1} \pd{\bf G}{\bq} + \sum_{j} {\bf H}^{-1}\pd{{\bf B}_j}{\bq} u_j  & -{\bf H}^{-1} {\bf
+{\bf A}_{lin} =& \begin{bmatrix} {\bf 0} & {\bf I} \\ -{\bf H}^{-1} \pd{\bf G}{\bq} + \sum_{j} {\bf H}^{-1}\pd{\bB_j}{\bq} u_j  & -{\bf H}^{-1} {\bf
   C}  \end{bmatrix}_{\bx=\bx^*,\bu=\bu^*} \\
-{\bf B}_{lin} =& \begin{bmatrix} {\bf 0} \\ {\bf H}^{-1} {\bf B}
+\bB_{lin} =& \begin{bmatrix} {\bf 0} \\ {\bf H}^{-1} \bB
   \end{bmatrix}_{\bx=\bx^*, \bu=\bu^*}
 \end{align}
-where ${\bf B}_j$ is the $j$th column of ${\bf B}$.  Note that the term involving $\pd{{\bf H}^{-1}}{q_i}$ disappears
-because ${\bf B}\bu - {\bf C}\dot{\bq} - {\bf G}$ must be zero at the
-fixed point.  Many of the ${\bf C}\dot\bq$ derivatives drop out, too,
+where $\bB_j$ is the $j$th column of $\bB$.  Note that the term involving $\pd{{\bf H}^{-1}}{q_i}$ disappears
+because $\bB\bu - \bC\dot{\bq} - {\bf G}$ must be zero at the
+fixed point.  Many of the $\bC\dot\bq$ derivatives drop out, too,
   because $\dot{\bq}^* = 0$.  In many cases, including both
-  the Acrobot and Cart-Pole systems (but not the Quadrotors), the matrix ${\bf B}(\bq)$ is a constant,
-  so the $\pd{\bf B}{\bq}$ terms also drop out.
+  the Acrobot and Cart-Pole systems (but not the Quadrotors), the matrix $\bB(\bq)$ is a constant,
+  so the $\pd\bB{\bq}$ terms also drop out.
 </p>
 
 <div data-type="example"><h1>Linearization of the Acrobot</h1>
@@ -1644,7 +1653,7 @@ fixed point.  Many of the ${\bf C}\dot\bq$ derivatives drop out, too,
 <p>
   Linearizing around the (unstable) upright point, we have:
 \begin{gather}
-{\bf C}(\bq,\dot\bq)_{\bx=\bx^*} = {\bf 0},\\
+\bC(\bq,\dot\bq)_{\bx=\bx^*} = {\bf 0},\\
 \left[\pd{\bf G}{\bq}\right]_{\bx=\bx^*} = \begin{bmatrix} -g (m_1 l_{c1}
     + m_2 l_1 + m_2 l_{c2}) & -m_2 g l_{c2} \\ -m_2 g l_{c2} & -m_2 g l_{c2}
 \end{bmatrix}
@@ -1659,7 +1668,7 @@ manipulator form of the Acrobot equations.</p>
 <p>
 Linearizing around the unstable fixed point in this system, we have:
 \begin{gather}
-{\bf C}(\bq,\dot\bq)_{\bx=\bx^*} = {\bf 0},\quad
+\bC(\bq,\dot\bq)_{\bx=\bx^*} = {\bf 0},\quad
 \left[\pd{\bf G}{\bq}\right]_{\bx=\bx^*} = \begin{bmatrix} 0 & 0 \\ 0
   & -m_p g l \end{bmatrix}
 \end{gather}
@@ -1688,7 +1697,7 @@ if it is possible to construct an unconstrained   input signal, $\bu(t)$, $t \in
 in a finite interval of time, $0 < t < t_f$ <elib>Ogata96</elib>. </div>
 
 <p>
-For the linear system $$\dot{\bx} = {\bf A}\bx + {\bf B}u,$$
+For the linear system $$\dot{\bx} = {\bf A}\bx + \bBu,$$
 we can integrate this linear system in closed
 form, so it is possible to derive the exact conditions of
 controllability.  In particular, for linear systems it is sufficient to demonstrate
@@ -1717,12 +1726,12 @@ We can continue our eigenmodal analysis of the linear system by
 defining the modal coordinates, ${\bf r}$, with: $$\bx = {\bf V}{\bf
   r},\quad \text{or}\quad {\bf r} = {\bf V}^{-1}\bx.$$  In modal
 coordinates, the dynamics of the linear system are given by $$\dot{\bf
-  r} = {\bf V}^{-1} {\bf A} {\bf V} {\bf r} + {\bf V}^{-1} {\bf B} \bu
-= {\bf \Lambda} {\bf r} + {\bf V}^{-1}{\bf B} \bu.$$  This illustrates
+  r} = {\bf V}^{-1} {\bf A} {\bf V} {\bf r} + {\bf V}^{-1} \bB \bu
+= {\bf \Lambda} {\bf r} + {\bf V}^{-1}\bB \bu.$$  This illustrates
 the power of modal analysis; in modal coordinates, the dynamics
 diagonalize yielding independent linear equations: $$\dot{r}_i =
 \lambda_i r_i + \sum_j \beta_{ij} u_j,\quad {\bf \beta} = {\bf V}^{-1}
-       {\bf B}.$$</p>
+       \bB.$$</p>
 
 <p>
 Now the concept of controllability becomes clear.  Input $j$ can
@@ -1743,9 +1752,9 @@ A more general solution to the controllability issue, which removes
 our assumption about the eigenvalues, can be obtained by examining the
 time-domain solution of the linear equations.  The solution of this
 system is $$\bx(t) = e^{{\bf A}t} \bx(0) + \int_0^{t} e^{{\bf A}(t -
-\tau)} {\bf B} u(\tau) d\tau.$$ Without loss of generality, lets
+\tau)} \bB u(\tau) d\tau.$$ Without loss of generality, lets
 consider the that the final state of the system is zero.  Then we
-have: $$\bx(0) = - \int_0^{t_f} e^{-{\bf A}\tau}{\bf B}u(\tau)
+have: $$\bx(0) = - \int_0^{t_f} e^{-{\bf A}\tau}\bBu(\tau)
 d\tau.$$ You might be wondering what we mean by $e^{{\bf A}t}$; a
 scalar raised to the power of a matrix..?  Recall that $e^{z}$ is
 actually defined by a convergent infinite sum: $$e^{z} =1 + z +
@@ -1761,15 +1770,15 @@ $$e^{-{\bf A}\tau} = \sum_{k=0}^{n-1} \alpha_k(\tau) {\bf A}^k.$$ This
 is a particularly surprising form, because the infinite sum above is
 represented by this finite sum; the derivation uses Sylvester's
 Theorem <elib>Ogata96</elib>, <elib>Chen98a</elib>.  Then
-we have, \begin{align*} \bx(0) =& - \sum_{k=0}^{n-1} {\bf A}^k {\bf B}
+we have, \begin{align*} \bx(0) =& - \sum_{k=0}^{n-1} {\bf A}^k \bB
 \int_0^{t_f} \alpha_k(\tau) u(\tau) d\tau \\ =& -\sum_{k=0}^{n-1} {\bf
-A}^k {\bf B} w_k \text{, where } w_k = \int_0^{t_f} \alpha_k(\tau)
-u(\tau) d\tau \\ =& - \begin{bmatrix} {\bf B} & {\bf AB} & {\bf
-A}^2{\bf B} & \cdots & {\bf A}^{n-1}{\bf B} \end{bmatrix}_{n \times (nm)}
+A}^k \bB w_k \text{, where } w_k = \int_0^{t_f} \alpha_k(\tau)
+u(\tau) d\tau \\ =& - \begin{bmatrix} \bB & {\bf AB} & {\bf
+A}^2\bB & \cdots & {\bf A}^{n-1}\bB \end{bmatrix}_{n \times (nm)}
 \begin{bmatrix} w_0 \\ w_1 \\ w_2 \\ \vdots \\ w_{n-1} \end{bmatrix}
 \end{align*}
-The matrix containing the vectors ${\bf B}$, ${\bf AB}$, ... ${\bf
-A}^{n-1}{\bf B}$ is called the controllability matrix.  In order for
+The matrix containing the vectors $\bB$, ${\bf AB}$, ... ${\bf
+A}^{n-1}\bB$ is called the controllability matrix.  In order for
 the system to be controllable, for every initial
 condition $\bx(0)$ we must be able to find the corresponding vector
 ${\bf w}$.  This is only possible when the rows of the
@@ -1780,8 +1789,8 @@ full rank.</p>
 <p>
 Although we only treated the case of a scalar $u$, it is possible to
 extend the analysis to a vector $\bu$ of size $m$, yielding the
-condition $$\text{rank} \begin{bmatrix} {\bf B} & {\bf AB} & {\bf
-A}^2{\bf B} & \cdots & {\bf A}^{n-1}{\bf B} \end{bmatrix}_{n \times
+condition $$\text{rank} \begin{bmatrix} \bB & {\bf AB} & {\bf
+A}^2\bB & \cdots & {\bf A}^{n-1}\bB \end{bmatrix}_{n \times
 (nm)} = n.$$ In Matlab (using the Control Systems Toolbox),
 you can obtain the controllability matrix using <code>Cm = ctrb(A,B)</code>,
 and evaluate its rank with <code>rank(Cm)</code>.</p>
@@ -1839,8 +1848,8 @@ particular, as we describe in the linear optimal control chapter, one can easily
 design an optimal feedback controller for a regulation task like balancing, so
 long as we are willing to linearize the system around the operating point and
 define optimality in terms of a quadratic cost function: $$J(\bx_0) =
-\int_0^\infty \left[ \bx^T(t) {\bf Q} \bx(t) + \bu^T(t) {\bf R} \bu(t) \right]dt,
-\quad \bx(0)=\bx_0, {\bf Q}={\bf Q}^T>0, {\bf R}={\bf R}^T>0.$$ The linear
+\int_0^\infty \left[ \bx^T(t) \bq \bx(t) + \bu^T(t) {\bf R} \bu(t) \right]dt,
+\quad \bx(0)=\bx_0, \bq={\bf Q}^T>0, {\bf R}={\bf R}^T>0.$$ The linear
 feedback matrix ${\bf K}$ used as $$\bu(t) = - {\bf K}\bx(t),$$ is the so-called
 optimal linear quadratic regulator (LQR).  Even without understanding the
 detailed derivation, we can quickly become practitioners of LQR.  Conveniently,
@@ -1987,9 +1996,9 @@ no torques on other joints), we can, without loss of generality,
 reorganize the joint coordinates in any underactuated system described
 by the manipulator equations into the form:
 \begin{align}
-{\bf H}_{11} \ddot{\bq}_1 + {\bf H}_{12} \ddot{\bq}_2 + {\bf \phi}_1 = 0, \label{eq:passive_dyn}\\
-{\bf H}_{21} \ddot{\bq}_1 + {\bf H}_{22} \ddot{\bq}_2 + {\bf \phi}_2 =
-{\bf \tau}, \label{eq:active_dyn}
+{\bf H}_{11} \ddot{\bq}_1 + {\bf H}_{12} \ddot{\bq}_2 + \bphi_1 = 0, \label{eq:passive_dyn}\\
+{\bf H}_{21} \ddot{\bq}_1 + {\bf H}_{22} \ddot{\bq}_2 + \bphi_2 =
+\btau, \label{eq:active_dyn}
 \end{align}
 with $\bq \in \Re^n$, $\bq_1 \in \Re^m$, $\bq_2 \in \Re^l$, $l=n-m$.
 $\bq_1$ represents all of the passive joints, and $\bq_2$ represents
@@ -2006,11 +2015,11 @@ and ${\bf H}_{22}$ are also positive definite.</p>
 Performing the same substitutions into the full manipulator equations,
 we get:
 \begin{gather}
-\ddot\bq_1 = -{\bf H}_{11}^{-1} \left[ {\bf H}_{12} \ddot\bq_2 + {\bf \phi}_1
+\ddot\bq_1 = -{\bf H}_{11}^{-1} \left[ {\bf H}_{12} \ddot\bq_2 + \bphi_1
   \right] \\
 ({\bf H}_{22} - {\bf H}_{21} {\bf H}_{11}^{-1} {\bf H}_{12})
   \ddot\bq_2 + {\bf \phi_2} - {\bf H}_{21} {\bf H}_{11}^{-1} {\bf
-  \phi}_1 = {\bf \tau}
+  \phi}_1 = \btau
 \end{gather}
 It can be easily shown that the matrix $({\bf H}_{22} - {\bf H}_{21}
 {\bf H}_{11}^{-1} {\bf H}_{12})$ is invertible<elib>Spong94a</elib>; we can
@@ -2024,11 +2033,11 @@ is valid globally.</p>
 
 <p>
 \begin{gather}
-\ddot\bq_2 = -{\bf H}_{12}^+ \left[ {\bf H}_{11} \ddot\bq_1 + {\bf \phi}_1
+\ddot\bq_2 = -{\bf H}_{12}^+ \left[ {\bf H}_{11} \ddot\bq_1 + \bphi_1
   \right] \\
 ({\bf H}_{21} - {\bf H}_{22} {\bf H}_{12}^+ {\bf H}_{11})
   \ddot\bq_1 + {\bf \phi_2} - {\bf H}_{22} {\bf H}_{12}^+ {\bf
-  \phi}_1 = {\bf \tau}
+  \phi}_1 = \btau
 \end{gather}
 where ${\bf H}_{12}^+$ is a Moore-Penrose pseudo-inverse.  This
 inverse provides a unique solution when the rank of ${\bf H}_{12}$
@@ -2048,44 +2057,44 @@ joints that we would like to control.  This combination is sometimes
 called a "task space". <todo>cite some task space refs here?</todo>
 Consider an output function of the form, $${\bf y} = {\bf
 f}(\bq),$$ with ${\bf y} \in \Re^p$, which defines the task space.  Define
-${\bf J}_1 = \frac{\partial {\bf f}}{\partial \bq_1}$, ${\bf J}_2 =
-\frac{\partial {\bf f}}{\partial \bq_2}$, ${\bf J} = [{\bf J}_1,{\bf J}_2]$.</p>
+$\bJ_1 = \frac{\partial {\bf f}}{\partial \bq_1}$, $\bJ_2 =
+\frac{\partial {\bf f}}{\partial \bq_2}$, $\bJ = [\bJ_1,\bJ_2]$.</p>
 
 <div data-type="theorem"><h1>Task Space PFL</h1>
 
 <p>
 If the actuated joints are commanded so that
- \begin{equation} \ddot\bq_2 = \bar{\bf J}^+ \left [{\bf v} -
-    \dot{\bf J}\dot\bq + {\bf J}_1 {\bf H}_{11}^{-1}{\bf \phi}_1 \right],  \label{eq:q2cmd} \end{equation}
-where $\bar{{\bf J}} = {\bf J}_2 - {\bf J}_1 {\bf H}_{11}^{-1} {\bf H}_{12}.$
-and $\bar{\bf J}^+$ is the right Moore-Penrose pseudo-inverse, $$\bar{\bf J}^+
-= \bar{\bf J}^T (\bar{\bf J} \bar{\bf J}^T)^{-1},$$ then we have \begin{equation} \ddot{\bf y} = {\bf v}.\end{equation}
+ \begin{equation} \ddot\bq_2 = \bar\bJ^+ \left [{\bf v} -
+    \dot\bJ\dot\bq + \bJ_1 {\bf H}_{11}^{-1}\bphi_1 \right],  \label{eq:q2cmd} \end{equation}
+where $\bar{\bJ} = \bJ_2 - \bJ_1 {\bf H}_{11}^{-1} {\bf H}_{12}.$
+and $\bar\bJ^+$ is the right Moore-Penrose pseudo-inverse, $$\bar\bJ^+
+= \bar\bJ^T (\bar\bJ \bar\bJ^T)^{-1},$$ then we have \begin{equation} \ddot{\bf y} = {\bf v}.\end{equation}
 subject to
-\begin{equation}\text{rank}\left(\bar{{\bf J}} \right) = p, \label{eq:rank_condition}\end{equation}
+\begin{equation}\text{rank}\left(\bar{\bJ} \right) = p, \label{eq:rank_condition}\end{equation}
 </p>
 
 <p><b>Proof Sketch.</b>
   Differentiating the output function we have
   \begin{gather*}
-  \dot{\bf y} = {\bf J} \dot\bq \\
-  \ddot{\bf y} = \dot{\bf J} \dot\bq + {\bf J}_1 \ddot\bq_1 + {\bf J}_2 \ddot\bq_2.
+  \dot{\bf y} = \bJ \dot\bq \\
+  \ddot{\bf y} = \dot\bJ \dot\bq + \bJ_1 \ddot\bq_1 + \bJ_2 \ddot\bq_2.
   \end{gather*}
   Solving \ref{eq:passive_dyn} for the dynamics of the unactuated joints
   we have:
   \begin{equation}
-  \ddot\bq_1 = - {\bf H}_{11}^{-1} ({\bf H}_{12} \ddot\bq_2 + {\bf \phi}_1)  \label{eq:q1cmd}
+  \ddot\bq_1 = - {\bf H}_{11}^{-1} ({\bf H}_{12} \ddot\bq_2 + \bphi_1)  \label{eq:q1cmd}
   \end{equation}
   Substituting, we have
   \begin{align}
-  \ddot{\bf y} =& \dot{\bf J} \dot\bq - {\bf J}_1 {\bf H}_{11}^{-1}({\bf
-    H}_{12}\ddot\bq_2 + {\bf \phi}_1) + {\bf J}_2 \ddot\bq_2 \\
-  =& \dot{\bf J} \dot\bq + \bar{{\bf J}} \ddot\bq_2 - {\bf J}_1 {\bf H}_{11}^{-1}{\bf \phi}_1 \\
+  \ddot{\bf y} =& \dot\bJ \dot\bq - \bJ_1 {\bf H}_{11}^{-1}({\bf
+    H}_{12}\ddot\bq_2 + \bphi_1) + \bJ_2 \ddot\bq_2 \\
+  =& \dot\bJ \dot\bq + \bar{\bJ} \ddot\bq_2 - \bJ_1 {\bf H}_{11}^{-1}\bphi_1 \\
   =& {\bf v}
   \end{align}
   Note that the last line required the rank condition
-  ($\ref{eq:rank_condition}$) on $\bar{\bf J}$ to ensure that the rows
-  of $\bar{{\bf J}}$ are linearly independent, allowing $\bar{\bf J}
-  \bar{\bf J}^+ = {\bf I}$.</p>
+  ($\ref{eq:rank_condition}$) on $\bar\bJ$ to ensure that the rows
+  of $\bar{\bJ}$ are linearly independent, allowing $\bar\bJ
+  \bar\bJ^+ = {\bf I}$.</p>
 
 </div>
 
@@ -2126,25 +2135,25 @@ derivation above.</p>
 The task space derivation above provides a convenient generalization
 of the partial feedback linearization (PFL) <elib>Spong94a</elib>, which
 encompasses both the collocated and non-collocated results.  If we
-choose ${\bf y} = \bq_2$ (collocated), then we have $${\bf J}_1 = 0, {\bf J}_2 =
-{\bf I}, \dot{\bf J} = 0, \bar{\bf J} = {\bf I}, \bar{\bf J}^+ = {\bf I}.$$ From this, the command
+choose ${\bf y} = \bq_2$ (collocated), then we have $$\bJ_1 = 0, \bJ_2 =
+{\bf I}, \dot\bJ = 0, \bar\bJ = {\bf I}, \bar\bJ^+ = {\bf I}.$$ From this, the command
 in ($\ref{eq:q2cmd}$) reduces to $\ddot\bq_2 = v$. The torque command
 is then
-$$ \tau = - {\bf H}_{21} {\bf H}_{11}^{-1} ({\bf H}_{12} v + {\bf \phi}_1) +
-{\bf H}_{22} v + {\bf \phi}_2,$$ and the rank condition
+$$ \tau = - {\bf H}_{21} {\bf H}_{11}^{-1} ({\bf H}_{12} v + \bphi_1) +
+{\bf H}_{22} v + \bphi_2,$$ and the rank condition
 ($\ref{eq:rank_condition}$) is always met.</p>
 
 <p>
-If we choose ${\bf y} = \bq_1$ (non-collocated), we have $${\bf J}_1 =
-{\bf I}, {\bf J}_2
-= 0, \dot{\bf J} = 0, \bar{{\bf J}}=-{\bf H}_{11}^{-1}{\bf H}_{12}.$$ The rank
+If we choose ${\bf y} = \bq_1$ (non-collocated), we have $$\bJ_1 =
+{\bf I}, \bJ_2
+= 0, \dot\bJ = 0, \bar{\bJ}=-{\bf H}_{11}^{-1}{\bf H}_{12}.$$ The rank
 condition ($\ref{eq:rank_condition}$) requires that
 $\text{rank}({\bf H}_{12}) = l$, in which case we can write
-$\bar{{\bf J}}^+=-{\bf H}_{12}^+{\bf H}_{11}$, reducing the rank condition to
+$\bar{\bJ}^+=-{\bf H}_{12}^+{\bf H}_{11}$, reducing the rank condition to
 precisely the "Strong Inertial Coupling" condition described in
 <elib>Spong94a</elib>. Now the command in ($\ref{eq:q2cmd}$) reduces to
 \begin{equation}
-\ddot\bq_2 = -{\bf H}_{12}^+ \left [ {\bf H}_{11}{\bf v} + {\bf \phi}_1 \right] \label{eq:q2ddnonco}
+\ddot\bq_2 = -{\bf H}_{12}^+ \left [ {\bf H}_{11}{\bf v} + \bphi_1 \right] \label{eq:q2ddnonco}
 \end{equation}
 The torque command is found by substituting $\ddot\bq_1 = v$ and
 ($\ref{eq:q2ddnonco}$) into ($\ref{eq:active_dyn}$), yielding the same
@@ -2746,15 +2755,15 @@ The abbreviation $st$ is shorthand for the stance leg and $sw$ for
 the swing leg. Using $\bq = [ \theta_{sw}, \theta_{st} ]^T$ and $\bu =
 \tau$, we can
 write the dynamics as $${\bf H}(\bq)\ddot\bq + {\bf
-C}(\bq,\dot\bq)\dot\bq + {\bf G}(\bq) = {\bf B}\bu,$$ with \begin{gather*}
+C}(\bq,\dot\bq)\dot\bq + {\bf G}(\bq) = \bB\bu,$$ with \begin{gather*}
 {\bf H} = \begin{bmatrix}
 mb^2~~ & ~~-mlb\cos(\theta_{st}-\theta_{sw}) \\
 -mlb\cos(\theta_{st}-\theta_{sw})~~ & ~~(m_h+m)l^2 + ma^2
 \end{bmatrix} \\
-{\bf C} = \begin{bmatrix} 0~~ &  ~~mlb\sin(\theta_{st}-\theta_{sw})\dot\theta_{st} \\ mlb\sin(\theta_{st}-\theta_{sw})\dot\theta_{sw}~~ & ~~0 \end{bmatrix} \\
+\bC = \begin{bmatrix} 0~~ &  ~~mlb\sin(\theta_{st}-\theta_{sw})\dot\theta_{st} \\ mlb\sin(\theta_{st}-\theta_{sw})\dot\theta_{sw}~~ & ~~0 \end{bmatrix} \\
 {\bf G} = \begin{bmatrix} mbg\sin(\theta_{sw}) \\ -(m_hl + ma +
 ml)g\sin(\theta_{st}) \end{bmatrix},\\
-{\bf B} = \begin{bmatrix} 1 \\ -1 \end{bmatrix}
+\bB = \begin{bmatrix} 1 \\ -1 \end{bmatrix}
 \end{gather*}
 and $l=a+b$.  These equations come straight out of
 <elib>Goswami96a</elib>.</p>
@@ -3776,8 +3785,8 @@ we say about it's convergence?</li>
 <todo> add quote from neuro-dynamic programming preface </todo>
 
 <p>In general, many of these questions will have to go unanswered.  But there are some answers available
-for the special case of <em>linear function approximators</em>.  A linear function approximator takes the form: \[ \hat{J}^*_\balpha(\bx) = \sum_i \alpha_i \psi_i(\bx) = \balpha^T {\bf\psi}(\bx), \]
-where ${\bf \psi}(\bx)$ is a vector of potentially nonlinear features.  Common examples of features include
+for the special case of <em>linear function approximators</em>.  A linear function approximator takes the form: \[ \hat{J}^*_\balpha(\bx) = \sum_i \alpha_i \psi_i(\bx) = \balpha^T \bpsi(\bx), \]
+where $\bpsi(\bx)$ is a vector of potentially nonlinear features.  Common examples of features include
 polynomials, radial basis functions, or the most interpolation schemes used on a mesh.  <!-- The distinguishing
 feature of a linear function approximator is the ability to exactly solve for $\balpha$ in order
 to represent a desired function optimally, in a least-squares sense.  For instance, if we
@@ -3895,9 +3904,9 @@ J^\pi(\bx_0) = \int_0^\infty e^{-\frac{t}{\tau}} g(\bx(t),\bu(t)) dt,\quad
 \bx(0) = \bx_0\\
 \frac{1}{\tau} J^*(\bx) = \min_\bu \left[ g(\bx,\bu) + \frac{\partial
 J^*}{\partial \bx}^T \dot{\bx} \right] \\
-\frac{\partial}{\partial \bu} = {\bf R}\bu + {\bf B}^T \frac{\partial J^*}{\partial \bx} =
+\frac{\partial}{\partial \bu} = {\bf R}\bu + \bB^T \frac{\partial J^*}{\partial \bx} =
 0 \\
-u = -{\bf R}^{-1} {\bf B}^T \frac{\partial J^*}{\partial \bx}
+u = -{\bf R}^{-1} \bB^T \frac{\partial J^*}{\partial \bx}
 \end{gather*}
 
 Now assume $J^*(x) = \frac{1}{2} \bx^T {\bf S} \bx$, with ${\bf
@@ -3906,8 +3915,8 @@ Now assume $J^*(x) = \frac{1}{2} \bx^T {\bf S} \bx$, with ${\bf
 \frac{\partial J^*}{\partial \bx} = {\bf S}\bx \\
 \frac{1}{2\tau} J^*(x) = \frac{1}{2} \bx^T {\bf Q} \bx - \frac{1}{2}
 \bx^T {\bf S B
-R}^{-1} {\bf B}^T {\bf S} \bx + \bx^T {\bf S A} \bx \\
-\frac{1}{\tau} {\bf S} = {\bf Q} - {\bf SBR}^{-1}{\bf B}^T {\bf S} +
+R}^{-1} \bB^T {\bf S} \bx + \bx^T {\bf S A} \bx \\
+\frac{1}{\tau} {\bf S} = {\bf Q} - {\bf SBR}^{-1}\bB^T {\bf S} +
 2{\bf SA}
 \end{gather*}
 This equation can be solved for ${\bf S}$ numerically with the Riccati recursion.
@@ -3936,12 +3945,12 @@ the basic algorithm and a variety of useful extensions.</p>
 <section data-type="sect1"><h1>Basic Derivation</h1>
 
 <p>Consider a linear time-invariant system in state-space form, $$\dot{\bx} =
-{\bf A}\bx + {\bf B}\bu,$$ with the infinite-horizon cost function given by $$J =
+{\bf A}\bx + \bB\bu,$$ with the infinite-horizon cost function given by $$J =
 \int_0^\infty \left[ \bx^T {\bf Q} \bx + \bu^T {\bf R} \bu \right] dt, \quad
 {\bf Q} = {\bf Q}^T \ge {\bf 0}, {\bf R} = {\bf R}^T > 0.$$  Our goal is to find
 the optimal cost-to-go function $J^*(\bx)$ which satisfies the HJB: $$\forall
 \bx, \quad 0 = \min_\bu \left[ \bx^T {\bf Q} \bx + \bu^T {\bf R} \bu +
-\pd{J^*}{\bx} \left( {\bf A}\bx + {\bf B}\bu \right) \right].$$</p>
+\pd{J^*}{\bx} \left( {\bf A}\bx + \bB\bu \right) \right].$$</p>
 
 <p> There is one magic step here -- it is well known that for this problem the
 optimal cost-to-go   function is quadratic.  This is easy to verify.  Let us choose
@@ -3952,19 +3961,19 @@ this function is $$\pd{J^*}{\bx} = 2 \bx^T {\bf S}.$$</p>
 <p> Since we have guaranteed, by construction, that the terms inside the $\min$ are
   quadratic and convex (because ${\bf R} \succ 0$), we can take the minimum explicitly
   by finding the solution where the gradient of those terms vanishes:
-  $$\pd{}{\bu} = 2\bu^T {\bf R} + 2 \bx^T {\bf S} {\bf B} = 0.$$
+  $$\pd{}{\bu} = 2\bu^T {\bf R} + 2 \bx^T {\bf S} \bB = 0.$$
 This yields the optimal policy $$\bu^* =
-\pi^*(\bx) = - {\bf R}^{-1} {\bf B}^T {\bf S} \bx = - {\bf   K} \bx.$$</p>
+\pi^*(\bx) = - {\bf R}^{-1} \bB^T {\bf S} \bx = - {\bf   K} \bx.$$</p>
 
 <p>Inserting this back into the HJB and simplifying yields
-$$0 = \bx^T \left[ {\bf Q} - {\bf S B R}^{-1}{\bf B}^T{\bf S} + 2{\bf SA} \right]\bx.$$
+$$0 = \bx^T \left[ {\bf Q} - {\bf S B R}^{-1}\bB^T{\bf S} + 2{\bf SA} \right]\bx.$$
 All of the terms here are symmetric except for the $2{\bf SA}$, but since
 $\bx^T{\bf SA}\bx = \bx^T{\bf A}^T{\bf S}\bx$, we can write
-$$0 = \bx^T \left[ {\bf Q} - {\bf S B R}^{-1}{\bf B}^T{\bf S} + {\bf SA} + {\bf A}^T{\bf S} \right]\bx.$$
+$$0 = \bx^T \left[ {\bf Q} - {\bf S B R}^{-1}\bB^T{\bf S} + {\bf SA} + {\bf A}^T{\bf S} \right]\bx.$$
 and since this condition must hold for all $\bx$, it is sufficient to consider
 the matrix equation
 $$0 = {\bf S}
-{\bf A} + {\bf A}^T {\bf S} - {\bf S} {\bf B} {\bf R}^{-1} {\bf B}^T {\bf S} +
+{\bf A} + {\bf A}^T {\bf S} - {\bf S} \bB {\bf R}^{-1} \bB^T {\bf S} +
 {\bf Q}.$$ This extremely important equation is a version of the <em>algebraic Riccati equation</em>.
 Note that it is quadratic in ${\bf S}$, making its solution non-trivial,
 but it is well known that the equation has a single positive-definite solution if and only
@@ -3979,7 +3988,7 @@ Since the value function represents cost-to-go, it would be sensible
 to move down this landscape as quickly as possible.  Indeed, $-{\bf
 S}\bx$ is in the direction of steepest descent of the value function.
 However, not all directions are possible to achieve in state-space.
-$-{\bf B}^T {\bf S} \bx$ represents precisely the projection of the
+$-\bB^T {\bf S} \bx$ represents precisely the projection of the
 steepest descent onto the control space, and is the steepest descent
 achievable with the control inputs $\bu$.  Finally, the pre-scaling by
 the matrix ${\bf R}^{-1}$ biases the direction of descent to account
@@ -4004,7 +4013,7 @@ trivial linear system: $$\ddot{q} = u.$$</p>
   $$\bar\bx = \bx - \bx_0, \quad \bar\bu = \bu - \bu_0,$$ and observe that
   $$\dot{\bar\bx} = \dot{\bx} = f(\bx,\bu),$$ which we can approximate with a
   first-order Taylor expansion to $$\dot{\bar\bx} \approx f(\bx_0,\bu_0) + \pd{f(\bx_0,\bu_0)}{\bx} (\bx - \bx_0)
-   + \pd{f(\bx_0,\bu_0)}{\bu} (\bu - \bu_0) = {\bf A}\bar{\bx} + {\bf B}\bar\bu.$$</p>
+   + \pd{f(\bx_0,\bu_0)}{\bu} (\bu - \bu_0) = {\bf A}\bar{\bx} + \bB\bar\bu.$$</p>
 
 <p>Similarly, we can define a quadratic cost function in the error coordinates,
   or take a (positive-definite) second-order approximation of a nonlinear cost function about the operating
@@ -4034,7 +4043,7 @@ $$ \forall \bx, \forall t\in[t_0,t_f],\quad 0 = \min_\bu \left[ g(\bx,\bu) + \pd
 <p>
     Consider
 systems governed by an LTI state-space equation of the form
-$$\dot{\bx} = {\bf A}\bx + {\bf B}\bu,$$ and a finite-horizon cost
+$$\dot{\bx} = {\bf A}\bx + \bB\bu,$$ and a finite-horizon cost
 function with
 \begin{gather*}
 h(\bx) = \bx^T {\bf Q}_f \bx,\quad {\bf Q}_f = {\bf Q}_f^T \ge {\bf 0}
@@ -4043,13 +4052,13 @@ h(\bx) = \bx^T {\bf Q}_f \bx,\quad {\bf Q}_f = {\bf Q}_f^T \ge {\bf 0}
 \end{gather*}
 Writing the HJB, we have
 $$ 0 = \min_\bu \left[\bx^T {\bf Q} \bx +
-\bu^T {\bf R}\bu + \pd{J^*}{\bx} \left({\bf A} \bx + {\bf B} \bu
+\bu^T {\bf R}\bu + \pd{J^*}{\bx} \left({\bf A} \bx + \bB \bu
 \right) + \pd{J^*}{t} \right]. $$  Due to the positive definite
 quadratic form on $\bu$, we can find the minimum by setting the
 gradient to zero:
 \begin{gather*}
-\pd{}{\bu} = 2 \bu^T {\bf R} + \pd{J^*}{\bx} {\bf B}  = 0 \\
-\bu^* = \pi^*(\bx,t) = - \frac{1}{2}{\bf R}^{-1} {\bf B}^T \pd{J^*}{\bx}^T
+\pd{}{\bu} = 2 \bu^T {\bf R} + \pd{J^*}{\bx} \bB  = 0 \\
+\bu^* = \pi^*(\bx,t) = - \frac{1}{2}{\bf R}^{-1} \bB^T \pd{J^*}{\bx}^T
 \end{gather*}
 In order to proceed, we need to investigate a particular form for the
 cost-to-go function, $J^*(\bx,t)$.  Let's try a solution of the form:
@@ -4058,13 +4067,13 @@ $$J^*(\bx,t) = \bx^T {\bf S}(t) \bx, \quad {\bf S}(t) = {\bf S}^T(t) >
 $$\pd{J^*}{\bx} = 2 \bx^T {\bf S}(t), \quad \pd{J*}{t} = \bx^T
 \dot{\bf S}(t) \bx,$$ and therefore
 \begin{gather*}
-\bu^* = \pi^*(\bx,t) = - {\bf R}^{-1} {\bf B}^T {\bf S}(t) \bx \\
-0 = \bx^T \left[ {\bf Q} - {\bf S}(t) {\bf B} {\bf R}^{-1} {\bf B}^T {\bf
+\bu^* = \pi^*(\bx,t) = - {\bf R}^{-1} \bB^T {\bf S}(t) \bx \\
+0 = \bx^T \left[ {\bf Q} - {\bf S}(t) \bB {\bf R}^{-1} \bB^T {\bf
 S}(t) + {\bf S}(t) {\bf A} + {\bf A}^T {\bf S}(t) + \dot{\bf S}(t)
 \right] \bx.\end{gather*}  Therefore, ${\bf S}(t)$ must satisfy the condition
 (known as the continuous-time <em>differential Riccati equation</em>):
 $$-\dot{\bf S}(t) = {\bf S}(t) {\bf A} + {\bf A}^T {\bf S}(t) - {\bf
-S}(t) {\bf B} {\bf R}^{-1} {\bf B}^T {\bf S}(t) + {\bf Q},$$ and the
+S}(t) \bB {\bf R}^{-1} \bB^T {\bf S}(t) + {\bf Q},$$ and the
 terminal condition $${\bf S}(T) = {\bf Q}_f.$$ Since we were able to
 satisfy the HJB with the minimizing policy, we have met the
 sufficiency condition, and have found the optimal policy and optimal
@@ -4085,7 +4094,7 @@ cost-to-go function.</p>
   ${\bf Q}$ and ${\bf R}$ can also be time-varying.  This is quite surprising,
   as the class of time-varying linear systems is a quite general class of systems.
   It requires essentially no assumptions on how the time-dependence enters, except
-  perhaps that if ${\bf A}$ or ${\bf B}$ is discontinuous in time then one
+  perhaps that if ${\bf A}$ or $\bB$ is discontinuous in time then one
   would have to use the proper techniques to accurately integrate the differential equation.
   As we will see in the next chapter, one of the most powerful applications involves
   linearizing around a nominal trajectory of a nonlinear system and using LQR
@@ -4099,7 +4108,7 @@ cost-to-go function.</p>
 linear quadratic regulator.  The standard LQR derivation attempts to
 drive the system to zero.  Consider now the problem:
 \begin{gather*}
-\dot{\bx} = {\bf A}\bx + {\bf B}\bu \\ h(\bx) = (\bx - \bx^d(T))^T
+\dot{\bx} = {\bf A}\bx + \bB\bu \\ h(\bx) = (\bx - \bx^d(T))^T
     {\bf Q}_f (\bx - \bx^d(T)),
 \quad {\bf Q}_f = {\bf Q}_f^T \ge 0 \\ g(\bx,\bu,t) = (\bx - \bx^d(t))^T
 {\bf Q} (\bx - \bx^d(t)) + (\bu - \bu^d(t))^T {\bf R} (\bu - \bu^d(t)),\\ {\bf Q} = {\bf
@@ -4115,24 +4124,24 @@ $$\pd{J^*}{\bx} = 2 \bx^T {\bf S_2}(t) + {\bf s_1}^T(t),\quad
 \pd{J^*}{t} = \bx^T \dot{\bf S_2}(t) \bx + \bx^T \dot{\bf s_1}(t) + \dot{s_0}(t).$$
 Using the HJB,
 $$ 0 = \min_\bu \left[(\bx - \bx^d(t))^T {\bf Q} (\bx - \bx^d(t)) +
-(\bu - \bu^d(t))^T {\bf R} (\bu - \bu^d(t)) + \pd{J^*}{\bx} \left({\bf A} \bx + {\bf B} \bu
+(\bu - \bu^d(t))^T {\bf R} (\bu - \bu^d(t)) + \pd{J^*}{\bx} \left({\bf A} \bx + \bB \bu
 \right) + \pd{J^*}{t} \right], $$
 we have
 \begin{gather*}
 \pd{}{\bu} = 2 (\bu - \bu^d(t))^T{\bf R} + (2\bx^T{\bf S_2}(t) +
-{\bf s_1}^T(t)){\bf B} = 0,\\
-\bu^*(t) =  \bu^d(t) - {\bf R}^{-1} {\bf B}^T\left[{\bf S_2}(t)\bx + \frac{1}{2}{\bf s_1}(t)\right]
+{\bf s_1}^T(t))\bB = 0,\\
+\bu^*(t) =  \bu^d(t) - {\bf R}^{-1} \bB^T\left[{\bf S_2}(t)\bx + \frac{1}{2}{\bf s_1}(t)\right]
 \end{gather*}
 The HJB can be satisfied by integrating backwards
 \begin{align*}
--\dot{\bf S_2}(t) =& {\bf Q} - {\bf S_2}(t) {\bf B} {\bf R}^{-1} {\bf
+-\dot{\bf S_2}(t) =& {\bf Q} - {\bf S_2}(t) \bB {\bf R}^{-1} {\bf
 B}^T {\bf S_2}(t) + {\bf S_2}(t) {\bf A} + {\bf A}^T {\bf S_2}(t)\\
 -\dot{\bf s_1}(t) =& -2 {\bf Q} \bx^d(t) + \left[{\bf A}^T - {\bf S}_2
-  {\bf B} {\bf R}^{-1} {\bf B}^T \right]{\bf s_1}(t) + 2{\bf
-  S_2}(t) {\bf B} \bu^d(t)\\
+  \bB {\bf R}^{-1} \bB^T \right]{\bf s_1}(t) + 2{\bf
+  S_2}(t) \bB \bu^d(t)\\
 -\dot{s_0}(t) =&  \bx^d(t)^T {\bf Q} \bx^d(t) - \frac{1}{4} {\bf
-  s_1}^T(t) {\bf B} {\bf R}^{-1} {\bf B}^T {\bf s_1}(t) + {\bf
-  s_1}(t)^T {\bf B} \bu^d(t),
+  s_1}^T(t) \bB {\bf R}^{-1} \bB^T {\bf s_1}(t) + {\bf
+  s_1}(t)^T \bB \bu^d(t),
 \end{align*}
 from the final conditions
 \begin{align*}
@@ -4157,7 +4166,7 @@ $x_{min}$ defined by $\pd{}{x} = 0$.</p>
 <section data-type="sect2"><h1>Minimum-time LQR</h1>
 
 \begin{gather*}
-\dot{\bx} = {\bf A}\bx + {\bf B}\bu \\
+\dot{\bx} = {\bf A}\bx + \bB\bu \\
 h(\bx) = \bx^T {\bf Q}_f \bx,
 \quad {\bf Q}_f = {\bf Q}_f^T \ge 0 \\
 g(\bx,\bu,t) = 1 + \bx^T {\bf Q} \bx + \bu {\bf R} \bu,\\
@@ -4179,7 +4188,7 @@ consider solving for ${\bf P}(t) = {\bf S}(t)^{-1}$.  Using the matrix
 relation $\frac{d {\bf
 S}^{-1}}{dt} = - {\bf S}^{-1} \frac{d {\bf S}}{dt} {\bf S}^{-1}$, we
 have:
-$$-\dot{\bf P}(t) = - {\bf P}(t){\bf Q P}(t) + {\bf B R}^{-1} {\bf B}
+$$-\dot{\bf P}(t) = - {\bf P}(t){\bf Q P}(t) + {\bf B R}^{-1} \bB
 - {\bf A P}(t) - {\bf P}(t){\bf A}^T,$$ with the final conditions $${\bf P}(T) = 0.$$
 This Riccati equation can be integrated backwards in time for a
 solution.  </p>
@@ -4841,7 +4850,7 @@ can be defined for all time or some subset of the trajectory.</p>
   that they give a locally optimal solution.</p>
 
 <p>The generic formulation of a nonlinear optimization problem is     \[ \minimize_z
-c(z) \quad \subjto \quad {\bf \phi}(z) \le 0, \]     where $z$ is a vector
+c(z) \quad \subjto \quad \bphi(z) \le 0, \]     where $z$ is a vector
 of <em>decision variables</em>, $c$ is a scalar
 <em>objective function</em> and $\phi$ is a vector     of <em>constraints</em>.  Note that,
 although we write $\phi \le 0$, this formulation     captures positivity
@@ -5178,7 +5187,7 @@ We can generalize this argument to constrained optimization using <em>Lagrange m
 <section data-type="sect2"><h1>Constrained optimization with Lagrange multipliers</h1>
 
 <p>Given the equality-constrained optimization problem $$\minimize_\bz g(\bz)
-\quad \subjto \quad {\bf \phi}(\bz) = 0,$$ where ${\bf \phi}$ is a vector.
+\quad \subjto \quad \bphi(\bz) = 0,$$ where $\bphi$ is a vector.
 Define a vector $\lambda$ of Lagrange multipliers, the same size as $\phi$, and
 the scalar Lagrangian function, $$L(\bz,{\bf \lambda}) = g(\bz) + \lambda^T\phi(\bz).$$
 A necessary condition for $\bz^*$ to be an optimal value of the constrained optimization
@@ -6453,7 +6462,7 @@ output formats supported by your current visualizer.</p>
           \end{align*}
 
           As we saw in chapter 1, numerically integrating (and animating) these equations
-          in MATLAB produces the expected result. </p>
+          in <drake></drake> produces the expected result. </p>
 
       </div>
 
@@ -6464,33 +6473,46 @@ output formats supported by your current visualizer.</p>
       <p> If you crank through the Lagrangian dynamics for a few simple robotic
         manipulators, you will begin to see a pattern emerge - the resulting equations
         of motion all have a characteristic form.  For example, the kinetic energy of
-        your robot can always be written in the form: $$T = \frac{1}{2} \dot{\bq}^T {\bf
-        H}(\bq) \dot{\bq},$$ where ${\bf H}$ is the state-dependent inertial matrix.
-        This abstraction affords some insight into general manipulator dynamics - for
-        example we know that ${\bf H}$ is always positive definite, and
+        your robot can always be written in the form: $$T = \frac{1}{2}
+      \dot{\bq}^T \bM(\bq) \dot{\bq},$$ where $\bM$ is the state-dependent inertial
+      matrix (aka mass matrix).
+        This observation affords some insight into general manipulator
+      dynamics - for
+        example we know that ${\bf M}$ is always positive definite, and
         symmetric<elib>Asada86</elib>(p.107) and has a beautiful sparsity
         pattern<elib>Featherstone05</elib> that we'll attempt to take advantage of in
         our algorithms.</p>
 
 
-      <p>   Continuing our abstractions, we find that the equations of motion of a
-        general robotic manipulator (sans kinematic loops) take the form $${\bf
-        H}(\bq)\ddot{\bq} + {\bf C}(\bq,\dot{\bq})\dot{\bq} + {\bf g}(\bq) = {\bf
-        B}(\bq)\bu,$$ where $\bq$ is the state vector, ${\bf H}$ is the inertial matrix,
-        ${\bf C}$ captures Coriolis forces, and ${\bf g}$ captures potentials (such as
-        gravity).  The matrix ${\bf B}$ maps control inputs $\bu$ into generalized
+      <p>Continuing our abstractions, we find that the equations of motion of a
+        general robotic manipulator (without kinematic loops) take the
+      form
+      $${\bf
+        M}(\bq)\ddot{\bq} + \bC(\bq,\dot{\bq})\dot{\bq} - {\bf
+      \tau_g}(\bq) =
+      {\bf
+        B}(\bq)\bu,$$ where $\bq$ is the state vector, ${\bf M}$ is the
+      inertial matrix,
+        $\bC$ captures Coriolis forces, and $\btau_g$ is the gravity
+      vector.  Note that we place a minus sign in front of the gravity vector
+      in these notes, although it is not as standard, because it permits ${\bf
+      \tau_g}$ to actually denote the torques due to gravity (instead of the
+      torques required to oppose gravity).
+      The
+      matrix $\bB$ maps control inputs $\bu$ into generalized
         forces.</p>
 
       <div data-type="example"><h1>Manipulator Equation form of the Simple Double Pendulum</h1>
         The equations of motion from Example 1 can be written compactly as:
         \begin{align*}
-        {\bf H}(\bq) =& \begin{bmatrix} (m_1 + m_2)l_1^2 + m_2 l_2^2 + 2 m_2 l_1l_2 c_2 & m_2 l_2^2 + m_2 l_1 l_2 c_2 \\ m_2 l_2^2 + m_2 l_1 l_2 c_2 & m_2 l_2^2 \end{bmatrix} \\
-        {\bf C}(\bq,\dot\bq) =& \begin{bmatrix} 0 & -m_2 l_1 l_2 (2\dot{q}_1 + \dot{q}_2)s_2 \\ m_2 l_1 l_2 \dot{q}_1 s_2 & 0 \end{bmatrix} \\
-        {\bf g}(\bq) =& g \begin{bmatrix} (m_1 + m_2) l_1 s_1 + m_2 l_2
-        s_{1+2} \\ m_2 l_2 s_{1+2} \end{bmatrix} , \quad {\bf B}
+        \bM(\bq) =& \begin{bmatrix} (m_1 + m_2)l_1^2 + m_2 l_2^2 + 2 m_2
+      l_1l_2 c_2 & m_2 l_2^2 + m_2 l_1 l_2 c_2 \\ m_2 l_2^2 + m_2 l_1 l_2 c_2 & m_2 l_2^2 \end{bmatrix} \\
+        \bC(\bq,\dot\bq) =& \begin{bmatrix} 0 & -m_2 l_1 l_2 (2\dot{q}_1 + \dot{q}_2)s_2 \\ m_2 l_1 l_2 \dot{q}_1 s_2 & 0 \end{bmatrix} \\
+        \btau_g(\bq) =& -g \begin{bmatrix} (m_1 + m_2) l_1 s_1 + m_2 l_2
+        s_{1+2} \\ m_2 l_2 s_{1+2} \end{bmatrix} , \quad \bB
         = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix}
         \end{align*}
-        Note that this choice of the ${\bf C}$ matrix was not unique.
+        Note that this choice of the $\bC$ matrix was not unique.
       </div>
 
       <p> The manipulator equations are very general, but they do define some
@@ -6511,25 +6533,61 @@ output formats supported by your current visualizer.</p>
         velocity vector is no longer the same as the length of our position vector.  For
         this reason, you will see that most of the software in <drake></drake> uses the more
         general notation with $\bv$ to represent velocity, $\bq$ to represent positions,
-        and the manipulator equations are written as \[ {\bf H}(\bq) \dot{\bv} + {\bf
-        C}(\bq,\bv)\bv + {\bf g}(\bq) = {\bf B}(\bq) \bu, \] which is not necessarily a
+        and the manipulator equations are written as \[ \bM(\bq)
+      \dot{\bv} + {\bf
+        C}(\bq,\bv)\bv - \btau_g(\bq) = \bB(\bq) \bu, \] which is not
+      necessarily a
         second-order system.  See <elib>Duindam06</elib> for a nice discussion of this
         topic.</p>
 
       <section data-type="sect2"><h1>Bilateral Position Constraints</h1>
 
-        <p>Consider constraint equation $$\phi(q) = 0.$$  These arise, for
-          instance, when the system has a closed kinematic chain.
-          The (floating base) equations of motion can be written
-          $$H(q)\ddot{q} + c(q,\dot{q}) = B u + J(q)^T \lambda,$$
-          where $J(q) = \pd{\phi}{q}$ and $\lambda$ is the constraint force.</p>
+        <p>If our robot has closed-kinematic chains, for instance those
+        that arise from a <a
+            href="https://en.wikipedia.org/wiki/Four-bar_linkage">four-bar
+          linkage</a>, then we need a little more.  The Lagrangian
+        machinery above assumes "minimal coordinates"; if our state vector
+        $\bq$ contains all of the links in the kinematic chain, then
+        we do not have a minimal parameterization -- each kinematic loop
+        adds (at least) one constraint so should remove (at least) one degree of
+        freedom.  Although some constraints can be solved away, the more
+        general solution is to use the Lagrangian to derive the dynamics of
+        the unconstrained system (a kinematic tree without the closed-loop
+        constraints), then add additional generalized forces that ensure
+        that the constraint is always satisfied.
+        </p>
 
-        <p>To solve for $\lambda$, observe that when the constraint is imposed,
-          $\phi(q)=0$ and therefor $\dot{\phi}=0$ and $\ddot{\phi}=0$.  Writing
-          this out, we have \begin{gather*}\dot{\phi} = J(q)\dot{q}=0,\\
-          \ddot{\phi} = J(q) \ddot{q} + \dot{J}(q) \dot{q} = 0.\end{gather*}
-          Inserting the dynamics and solving for $\lambda$ yields $$\lambda =- (J
-          H^{-1} J^T)^+ (J H^{-1} (Bu - c) + \dot{J}\dot{q}).$$ The
+        <p>Consider constraint equation $$\bphi(\bq) = 0.$$  For the
+        case of the kinematic closed-chain, this can be the kinematic
+        constraint that the location of one end of the chain is equal to the
+        location of the other end of the chain.
+          The (floating base) equations of motion can be written
+          $$\bM({\bq})\ddot{\bq} + \bC(\bq,\dot{\bq})\dot\bq - {\bf
+        \tau_g}(\bq) =
+        \bB\bu +
+        \bJ(\bq)^T
+        \blambda,$$
+          where $\bJ(\bq) = \pd\bphi{\bq}$ and ${\blambda}$ is
+        the
+        constraint
+        force.  Let's use the shorthand \[ \bM({\bq})\ddot{\bq} =
+        \btau(q,\dot{q},u) +
+        \bJ(\bq)^T
+        \blambda.\]</p>
+
+        <p>To solve for ${\bf \lambda}$, observe that when the constraint is
+        imposed,
+          $\bphi(\bq)=0$ and therefor $\dot\bphi=0$ and
+        $\ddot\bphi=0$.  Writing
+          this out, we have \begin{gather*}\dot\bphi =
+        \bJ(\bq)\dot\bq=0,\\
+          \ddot\bphi = \bJ(\bq) {\bf \ddot{q}} +
+        \dot\bJ(\bq)\dot\bq =
+        0.\end{gather*}
+          Inserting the dynamics and solving for $\blambda$ yields
+        $$\blambda =- (\bJ
+          \bM^{-1} \bJ^T)^+ (\bJ \bM^{-1} \btau +
+        \dot\bJ\dot\bq).$$ The
           $^+$ notation refers to a Moore-Penrose pseudo-inverse.  In most cases, there
           are less constraints than degrees of freedom, in which case the
           inverse has a unique solution (and the traditional inverse could have
@@ -6538,14 +6596,17 @@ output formats supported by your current visualizer.</p>
 
         <p>For numerical stability, one might like to add a restoring force to
           this constraint in the event that the constraint is not satisfied to
-          numerical precision.  To accomplish this, we can implement $$\ddot\phi =
-          -\frac{2}{\epsilon} \dot\phi(q) - \frac{1}{\epsilon^2} \phi(q).$$
+          numerical precision.  To accomplish this, we can implement
+        $$\ddot\bphi =
+          -\frac{2}{\epsilon} \dot\bphi(\bq) - \frac{1}{\epsilon^2}
+        \bphi(\bq).$$
           Carrying this through
           yields
           \begin{gather*}
-          \lambda =- (J
-          H^{-1} J^T)^+ (J H^{-1} (Bu - c) + (\dot{J} + \frac{2}{\epsilon}
-          J)\dot{q} + \frac{1}{\epsilon^2} \phi).
+          \blambda =- (\bJ
+          \bM^{-1} \bJ^T)^+ (\bJ \bM^{-1} \btau + (\dot{\bJ} +
+        \frac{2}{\epsilon}
+          \bJ)\dot{\bq} + \frac{1}{\epsilon^2} \bphi).
           \end{gather*}</p>
 
       </section>
@@ -6553,61 +6614,98 @@ output formats supported by your current visualizer.</p>
       <section data-type="sect2"><h1>Bilateral Velocity Constraints</h1>
 
         <p>Consider the constraint equation
-          $$\psi(q,\dot{q}) = 0,$$
-          where $\pd{\psi}{\dot{q}} \ne 0.$  These are less common, but arise
+          $$\bpsi(q,\dot{\bq}) = 0,$$
+          where $\pd{\bpsi}{\dot{\bq}} \ne 0.$  These are less common, but arise
           when, for instance, a joint is driven through a prescribed motion.
-          Here, the manipulator equations are given by $$H(q)\ddot{q} + c = B u
-          + \pd{\psi}{\dot{q}}^T \lambda.$$
-          To solve for $\lambda$, we take $$\dot{\psi} = \pd{\psi}{q} \dot{q} +
-          \pd{\psi}{\dot{q}}\ddot{q} = 0,$$ which yields
-          $$\lambda = - \left( \pd{\psi}{\dot{q}} H^{-1} \pd{\psi}{\dot{q}}
-          \right)^+ \left[ \pd{\psi}{\dot{q}} H^{-1} (Bu - c) + \pd{\psi}{q}
-          \dot{q} \right].$$</p>
+          Here, the manipulator equations are given by $$\bM(\bq)\ddot{\bq}  =
+        \btau(\bq,\dot\bq,\bu)
+          + \pd{\bpsi}{\dot{\bq}}^T \blambda.$$
+          To solve for $\blambda$, we take $$\dot{\bpsi} = \pd{\bpsi}{\bq}
+        \dot{\bq} +
+          \pd{\bpsi}{\dot{\bq}}\ddot{\bq} = 0,$$ which yields
+          $$\blambda = - \left( \pd{\bpsi}{\dot{\bq}} \bM^{-1}
+        \pd{\bpsi}{\dot{\bq}}
+          \right)^+ \left[ \pd{\bpsi}{\dot{\bq}} \bM^{-1} \btau +
+        \pd{\bpsi}{\bq}
+          \dot{\bq} \right].$$</p>
 
-        <p>Again, for numerical stability, we ask instead for $\dot{\psi} =
-          -\frac{1}{\epsilon} \psi$, which yields
-          $$\lambda = - \left( \pd{\psi}{\dot{q}} H^{-1} \pd{\psi}{\dot{q}}
-          \right)^+ \left[ \pd{\psi}{\dot{q}} H^{-1} (Bu - c) + \pd{\psi}{q}
-          \dot{q} + \frac{1}{\epsilon} \psi \right].$$</p>
+        <p>Again, for numerical stability, we ask instead for $\dot{\bpsi} =
+          -\frac{1}{\epsilon} \bpsi$, which yields
+          $$\blambda = - \left( \pd{\bpsi}{\dot{\bq}} \bM^{-1}
+        \pd{\bpsi}{\dot{\bq}}
+          \right)^+ \left[ \pd{\bpsi}{\dot{\bq}} \bM^{-1} \btau +
+        \pd{\bpsi}{\bq}
+          \dot{\bq} + \frac{1}{\epsilon} \bpsi \right].$$</p>
       </section>
+
+    </section>
+    <section data-type="sect1"><h1>Contact Models</h1>
+
+      <p>There are three main approaches used to modeling
+      contact with "rigid" body systems:  1) rigid contact approximated with
+      stiff compliant contact, 2) rigid contact approximated with
+      time-averaged forces (time-stepping), 3) hybrid models with collision
+      event
+      detection, impulsive reset maps, and continuous (constrained) dynamics
+      between
+      collision events.  Each modeling
+      approach has
+      advantages for different applications...</p>
+
+      <todo>Finish this</todo>
 
       <section data-type="sect2"><h1>Impulsive Collisions</h1>
 
-        <p>Now let $\phi(q)$ indicate the relative (signed) distance between two rigid bodies.
+        <p>Now let $\phi(\bq)$ indicate the relative (signed) distance between
+        two rigid bodies.
           The collision event is described by the
           zero-crossings (from positive to negative) of $\phi$.
-          Let us start by assuming frictionless collisions, allowing us to write $$H\ddot{q} + c = Bu + J^T \lambda,$$
-          where $\lambda \ge 0$ is now a (scalar) coefficient of the impulsive force that is
+          Let us start by assuming frictionless collisions, allowing us to
+        write $$\bM\ddot{\bq} = \btau + \bJ^T \lambda,$$
+          where $\lambda \ge 0$ is now a (scalar)
+        impulsive force that is
           well-defined when integrated over the time of the collision (denoted
           $t_c^-$ to $t_c^+$).  Integrate both sides of the equation
           over that (instantaneous) interval:
-          \begin{align*}\int_{t_c^-}^{t_c^+} dt\left[  H \ddot{q} + C \right] =
-          \int_{t_c^-}^{t_c^+} dt \left[ Bu + J^T \lambda \right]
+          \begin{align*}\int_{t_c^-}^{t_c^+} dt\left[  \bM \ddot{\bq}
+        \right] =
+          \int_{t_c^-}^{t_c^+} dt \left[ \btau + \bJ^T \lambda \right]
           \end{align*}
-          Since $q$ and $u$ are constants over this interval, we are left
+          Since $\bq$ and $\bu$ are constants over this interval, we are left
           with
-          $$H\dot{q}^+ - H\dot{q}^- = J^T \int_{t_c^-}^{t_c^+} \lambda dt,$$
-          where $\dot{q}^+$ is short-hand
-          for $\dot{q}(t_c^+)$.  Multiplying both sides by $J H^{-1}$, we have
-          $$ J \dot{q}^+ - J\dot{q}^- = J H^{-1} J^T \int_{t_c^-}^{t_c^+} \lambda dt.$$
+          $$\bM\dot{\bq}^+ - \bM\dot{\bq}^- = \bJ^T \int_{t_c^-}^{t_c^+}
+        \lambda dt,$$
+          where $\dot{\bq}^+$ is short-hand
+          for $\dot{\bq}(t_c^+)$.  Multiplying both sides by $\bJ \bM^{-1}$, we
+        have
+          $$ \bJ \dot{\bq}^+ - \bJ\dot{\bq}^- = \bJ \bM^{-1} \bJ^T
+        \int_{t_c^-}^{t_c^+} \lambda dt.$$
           After the collision, we have
           $\dot\phi^+ = -e \dot\phi^-$, with $0 \le e \le 1$ denoting the
           <a href="https://en.wikipedia.org/wiki/Coefficient_of_restitution">coefficient of restitution</a>, yielding:
-          $$ J \dot{q}^+ - J\dot{q}^- = -(1+e)J\dot{q}^-,$$
+          $$ \bJ \dot{\bq}^+ - \bJ\dot{\bq}^- = -(1+e)\bJ\dot{\bq}^-,$$
           and therefore
-          $$\int_{t_c^-}^{t_c^+} \lambda dt = - (1+e)\left[ J H^{-1} J^T \right]^+
-          J \dot{q}^-.$$  Substituting this back in above results in
-          $$\dot{q}^+ = \left[ I - (1+e)H^{-1} J^T \left[ J H^{-1} J^T \right]^+ J
-          \right] \dot{q}^-.$$</p>
+          $$\int_{t_c^-}^{t_c^+} \lambda dt = - (1+e)\left[ \bJ \bM^{-1} \bJ^T
+        \right]^+
+          \bJ \dot{q}^-.$$  Substituting this back in above results in
+          $$\dot{\bq}^+ = \left[ \bI - (1+e)\bM^{-1} \bJ^T \left[ \bJ \bM^{-1}
+        \bJ^T
+        \right]^+ \bJ
+          \right] \dot{\bq}^-.$$</p>
 
         <p>We can add friction at the contact.  Rigid bodies will almost always experience
-          contact at only a point, so we typically ignore torsional friction <elib>Featherstone06</elib>, and model only tangential friction by extending $J$ to include the two
+          contact at only a point, so we typically ignore torsional friction
+        <elib>Featherstone06</elib>, and model only tangential friction by
+        extending $\bJ$ to include the two
           vectors that span the tangential coordinates at the contact, written in joint coordinates (c.f. <elib>Stewart96</elib>).
-          Then $\lambda$ becomes a Cartesian force vector, but the equations above remain unchanged.
-          If $\lambda$ is restricted to a friction cone, as in Coulomb friction, in general we have to solve an optimization.
+          Then $\blambda$ becomes a Cartesian force vector, but the equations
+        above remain unchanged.
+          If $\blambda$ is restricted to a friction cone, as in Coulomb
+        friction, in general we have to solve an optimization to solve for
+        $\dot\bq^+$ subject to
+        the
+        inequality constraints.
         </p>
-
-        <todo> frictional contact </todo>
 
       </section>
 
@@ -6615,12 +6713,16 @@ output formats supported by your current visualizer.</p>
         <p>
           We can put the bilateral constraint equations and the impulsive collision equations together
           to implement a hybrid model for unilateral constraints of the form
-          $$\phi(q) \ge 0.$$
-          At every moment, some subset of the contacts are active, and can be treated as a bilateral constraint ($\phi_i=0$).
-          The guards of the hybrid model are when an inactive constraint becomes active ($\phi_i>0 \rightarrow \phi_i=0$), or when
-          an active constraint becomes inactive ($\lambda_i>0 \rightarrow \lambda_i=0$).
+          $$\bphi(\bq) \ge 0.$$
+          At every moment, some subset of the contacts are active, and can be
+          treated as a bilateral constraint ($\bphi_i=0$).
+          The guards of the hybrid model are when an inactive constraint
+          becomes active ($\bphi_i>0 \rightarrow \bphi_i=0$), or when
+          an active constraint becomes inactive ($\blambda_i>0 \rightarrow
+          \blambda_i=0$).
           Note that collision events will (almost always) only result in new active constraints when $e=0$, e.g.
-          we have pure inelastic collisions.</p>
+          we have pure inelastic collisions, because elastic collisions will
+        rarely permit sustained contact.</p>
 
         <p>If the contact involves Coulomb friction, then the transitions between sticking and sliding can be modeled
           as additional hybrid guards, or can be solved efficiently as a complementarity problem <elib>Steward96</elib>.</p>
