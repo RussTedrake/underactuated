@@ -207,12 +207,13 @@
           var xhttp = new XMLHttpRequest();
           xhttp.onreadystatechange = ( function (i) { return function() {
             if (this.readyState == 4 && this.status == 200) {
-              var text = hljs.highlight('cpp',this.responseText,true)
+              var text = hljs.highlight('python',this.responseText,true)
               codeTags[i].innerHTML = '<pre><code>'+text.value+'</code></pre>';
             }
           } })(i);
           xhttp.overrideMimeType('text/plain');
-          xhttp.open('GET', codeTags[i].innerHTML, true); // note: only works for files in or below current directory http://jquery-howto.blogspot.com/2008/12/access-to-restricted-uri-denied-code.html
+          xhttp.open('GET', codeTags[i].innerHTML, true);
+          // note: only works for files in or below current directory http://jquery-howto.blogspot.com/2008/12/access-to-restricted-uri-denied-code.html
           xhttp.send();
         }
       }
@@ -5888,7 +5889,7 @@ This is accomplished by deriving from the <code>drake::systems::LeafSystem</code
 <div data-type="example" class="drake"><h1>A simple continuous-time system</h1>
 <p>Consider the system \begin{gather*}\dot{x} = -x + x^3,\\ y = x.\end{gather*}  This system has zero inputs, one (continuous) state variable, and one output.  It can be implemented in <drake></drake> using the following code:</p>
 
-  <div><drake_code>src/simple_continuous_time_system.h</drake_code></div>
+  <div><drake_code>src/simple_continuous_time_system.py</drake_code></div>
 </div>
 
 
