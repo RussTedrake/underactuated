@@ -6585,11 +6585,13 @@ output formats supported by your current visualizer.</p>
 
       <p>To combat numerical "constraint drift", one might like to add a
       restoring force in the event that the constraint is not satisfied to
-      numerical precision.  To accomplish this, we can implement
-      \begin{equation}\ddot\bh = -2\alpha \dot\bh - \alpha^2 \bh,\end{equation}
-      where $\alpha>0$ is a stiffness parameter. Carrying this through yields
-      \begin{gather*} \blambda =- (\bH \bM^{-1} \bH^T)^+ (\bH \bM^{-1} \btau +
-      (\dot{\bH} + 2\alpha \bH)\dot{\bq} + \alpha^2 \bh). \end{gather*}</p>
+      numerical precision.  To accomplish this, rather than solving for
+      $\ddot\bh = 0$ as above, we can instead solve for \begin{equation}\ddot\bh
+      = \bH\ddot\bq + \dot\bH\dot\bq = -2\alpha \dot\bh - \alpha^2
+      \bh,\end{equation} where $\alpha>0$ is a stiffness parameter. Carrying
+      this through yields \begin{equation} \blambda =- (\bH \bM^{-1} \bH^T)^+
+      (\bH \bM^{-1} \btau + (\dot{\bH} + 2\alpha \bH)\dot{\bq} + \alpha^2 \bh).
+      \end{equation}</p>
 
     </section>
 
