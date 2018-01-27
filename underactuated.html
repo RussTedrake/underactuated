@@ -231,7 +231,7 @@
     <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p>
   	<p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
     <p style="font-size: 14px; text-align: right;">
-      &copy; Russ Tedrake, 2016<br/>
+      &copy; Russ Tedrake, 2018<br/>
       <a href="tocite.html">How to cite these notes</a><br/>
     </p>
   </header>
@@ -257,6 +257,7 @@
   \newcommand{\blambda}{{\bf \lambda}}
   \newcommand{\btau}{{\bf \tau}}
   \newcommand{\bphi}{{\bf \phi}}
+  \newcommand{\bPhi}{{\bf \Phi}}
   \newcommand{\bpsi}{{\bf \psi}}
   \newcommand{\avg}[1]{E\left[ #1 \right]}
   \newcommand{\subjto}{\textrm{subject to}}
@@ -273,7 +274,7 @@
 
 <div id="debug_output"></div>
 
-<p><b>Note:</b> These are working notes used for a course taught at <a href="http://student.mit.edu/catalog/search.cgi?search=6.832&style=verbatim">MIT</a> and a free online course on <a href="http://tiny.cc/mitx-underactuated">MITx</a>.  They will be updated throughout the Spring 2016 semester.</p>
+<p><b>Note:</b> These are working notes used for a course taught at <a href="http://student.mit.edu/catalog/search.cgi?search=6.832&style=verbatim">MIT</a> and a free online course on <a href="http://tiny.cc/mitx-underactuated">MITx</a>.  They will be updated throughout the Spring 2018 semester.</p>
 
 <section id="table_of_contents"></section>
 
@@ -642,7 +643,7 @@ underactuated if it is underactuated in <i>any</i> state or time.</p>
 motion for this system are quite simple to derive,
 and take the form of the standard "manipulator equations": $${\bf
 M}(\bq)\ddot\bq + \bC(\bq,\dot\bq)\dot\bq - \btau_g(\bq) = {\bf
-B}(\bq)\bu.$$ It is well known that the inertial matrix, ${\bf M}(\bq)$ is
+B}(\bq)\bu.$$ It is well known that the inertia matrix, ${\bf M}(\bq)$ is
 (always) uniformly symmetric and positive definite, and is therefore invertible.
 Putting the system into the form of equation \ref{eq:f1_plus_f2} yields:
 \begin{align*}\ddot{\bq} =& -{\bf M}^{-1}(\bq)\left[ \bC(\bq,\dot\bq)
@@ -6410,7 +6411,9 @@ output formats supported by your current visualizer.</p>
         of Lagrange.  Using $T$ as the total kinetic energy of the system, and $U$ as
         the total potential energy of the system, $L = T-U$, and $Q_i$ as the
         generalized force corresponding to $q_i$, the Lagrangian dynamic equations are:
-        $$\frac{d}{dt}\pd{L}{\dot{q}_i} - \pd{L}{q_i} = Q_i.$$ If you are not
+        \begin{equation} \frac{d}{dt}\pd{L}{\dot{q}_i} - \pd{L}{q_i} =
+      Q_i.\end{equation} If
+      you are not
         comfortable with these equations, then any good book chapter on rigid body
         mechanics can bring you up to speed -- try <elib>Craig89</elib> for a very
         practical guide to robot kinematics/dynamics, <elib>Goldstein02</elib> for a
@@ -6473,8 +6476,10 @@ output formats supported by your current visualizer.</p>
       <p> If you crank through the Lagrangian dynamics for a few simple robotic
         manipulators, you will begin to see a pattern emerge - the resulting equations
         of motion all have a characteristic form.  For example, the kinetic energy of
-        your robot can always be written in the form: $$T = \frac{1}{2}
-      \dot{\bq}^T \bM(\bq) \dot{\bq},$$ where $\bM$ is the state-dependent inertial
+        your robot can always be written in the form: \begin{equation} T =
+      \frac{1}{2}
+      \dot{\bq}^T \bM(\bq) \dot{\bq},\end{equation} where $\bM$ is the
+      state-dependent inertial
       matrix (aka mass matrix).
         This observation affords some insight into general manipulator
       dynamics - for
@@ -6487,12 +6492,12 @@ output formats supported by your current visualizer.</p>
       <p>Continuing our abstractions, we find that the equations of motion of a
         general robotic manipulator (without kinematic loops) take the
       form
-      $${\bf
+      \begin{equation}{\bf
         M}(\bq)\ddot{\bq} + \bC(\bq,\dot{\bq})\dot{\bq} - {\bf
       \tau_g}(\bq) =
       {\bf
-        B}(\bq)\bu,$$ where $\bq$ is the state vector, ${\bf M}$ is the
-      inertial matrix,
+        B}(\bq)\bu,\end{equation} where $\bq$ is the state vector, ${\bf M}$ is the
+      inertia matrix,
         $\bC$ captures Coriolis forces, and $\btau_g$ is the gravity
       vector.  Note that we place a minus sign in front of the gravity vector
       in these notes, although it is not as standard, because it permits ${\bf
@@ -6533,9 +6538,10 @@ output formats supported by your current visualizer.</p>
         velocity vector is no longer the same as the length of our position vector.  For
         this reason, you will see that most of the software in <drake></drake> uses the more
         general notation with $\bv$ to represent velocity, $\bq$ to represent positions,
-        and the manipulator equations are written as \[ \bM(\bq)
+        and the manipulator equations are written as \begin{equation} \bM(\bq)
       \dot{\bv} + {\bf
-        C}(\bq,\bv)\bv - \btau_g(\bq) = \bB(\bq) \bu, \] which is not
+        C}(\bq,\bv)\bv - \btau_g(\bq) = \bB(\bq) \bu, \end{equation} which is
+      not
       necessarily a
         second-order system.  See <elib>Duindam06</elib> for a nice discussion of this
         topic.</p>
@@ -6557,56 +6563,57 @@ output formats supported by your current visualizer.</p>
         that the constraint is always satisfied.
         </p>
 
-        <p>Consider constraint equation $$\bphi(\bq) = 0.$$  For the
+        <p>Consider the constraint equation \begin{equation}\bphi(\bq) =
+        0.\end{equation}  For the
         case of the kinematic closed-chain, this can be the kinematic
         constraint that the location of one end of the chain is equal to the
         location of the other end of the chain.
           The (floating base) equations of motion can be written
-          $$\bM({\bq})\ddot{\bq} + \bC(\bq,\dot{\bq})\dot\bq - {\bf
+          \begin{equation}\bM({\bq})\ddot{\bq} + \bC(\bq,\dot{\bq})\dot\bq - {\bf
         \tau_g}(\bq) =
         \bB\bu +
-        \bJ(\bq)^T
-        \blambda,$$
+        \bJ^T(\bq)
+        \blambda,\end{equation}
           where $\bJ(\bq) = \pd\bphi{\bq}$ and ${\blambda}$ is
         the
         constraint
-        force.  Let's use the shorthand \[ \bM({\bq})\ddot{\bq} =
+        force.  Let's use the shorthand \begin{equation} \bM({\bq})\ddot{\bq} =
         \btau(q,\dot{q},u) +
-        \bJ(\bq)^T
-        \blambda.\]</p>
+        \bJ^T(\bq)
+        \blambda. \label{eq:manip_short} \end{equation}</p>
 
-        <p>To solve for ${\bf \lambda}$, observe that when the constraint is
+        <p>Using \begin{gather}\dot\bphi =
+        \bJ\dot\bq,\\
+          \ddot\bphi = \bJ \ddot\bq +
+        \dot\bJ \dot\bq, \label{eq:ddotphi} \end{gather}
+          we can solve for $\blambda$, by observing that when the constraint is
         imposed,
-          $\bphi(\bq)=0$ and therefor $\dot\bphi=0$ and
-        $\ddot\bphi=0$.  Writing
-          this out, we have \begin{gather*}\dot\bphi =
-        \bJ(\bq)\dot\bq=0,\\
-          \ddot\bphi = \bJ(\bq) {\bf \ddot{q}} +
-        \dot\bJ(\bq)\dot\bq =
-        0.\end{gather*}
-          Inserting the dynamics and solving for $\blambda$ yields
-        $$\blambda =- (\bJ
+        $\bphi=0$ and therefore $\dot\bphi=0$ and
+        $\ddot\bphi=0$.  Inserting the dynamics (\ref{eq:manip_short}) into
+        (\ref{eq:ddotphi}) yields
+        \begin{equation}\blambda =- (\bJ
           \bM^{-1} \bJ^T)^+ (\bJ \bM^{-1} \btau +
-        \dot\bJ\dot\bq).$$ The
-          $^+$ notation refers to a Moore-Penrose pseudo-inverse.  In most cases, there
-          are less constraints than degrees of freedom, in which case the
-          inverse has a unique solution (and the traditional inverse could have
-          been used).  But the pseudo-inverse also works in cases where the
-          system is over-constrained.</p>
+        \dot\bJ\dot\bq).\end{equation} The
+          $^+$ notation refers to a Moore-Penrose pseudo-inverse.  In many
+        cases, this matrix will be full rank (for instance, in the case of
+        multiple independent four-bar linkages) and the traditional inverse
+        could have been used.  When the matrix drops rank (multiple
+        solutions), then the pseudo-inverse will select the solution with the
+        smallest constraint forces in the least-squares sense.</p>
 
         <p>For numerical stability, one might like to add a restoring force to
           this constraint in the event that the constraint is not satisfied to
           numerical precision.  To accomplish this, we can implement
-        $$\ddot\bphi =
-          -\frac{2}{\epsilon} \dot\bphi(\bq) - \frac{1}{\epsilon^2}
-        \bphi(\bq).$$
+        \begin{equation}\ddot\bphi =
+          -2\alpha \dot\bphi - \alpha^2
+        \bphi,\end{equation} where $\alpha>0$ is a stiffness parameter.
           Carrying this through
           yields
           \begin{gather*}
           \blambda =- (\bJ
           \bM^{-1} \bJ^T)^+ (\bJ \bM^{-1} \btau + (\dot{\bJ} +
-        \frac{2}{\epsilon}
-          \bJ)\dot{\bq} + \frac{1}{\epsilon^2} \bphi).
+        2\alpha
+          \bJ)\dot{\bq} + \alpha^2 \bphi).
           \end{gather*}</p>
 
       </section>
@@ -6614,28 +6621,31 @@ output formats supported by your current visualizer.</p>
       <section data-type="sect2"><h1>Bilateral Velocity Constraints</h1>
 
         <p>Consider the constraint equation
-          $$\bpsi(q,\dot{\bq}) = 0,$$
+          \begin{equation}\bpsi(\bq,\dot{\bq}) = 0,\end{equation}
           where $\pd{\bpsi}{\dot{\bq}} \ne 0.$  These are less common, but arise
           when, for instance, a joint is driven through a prescribed motion.
-          Here, the manipulator equations are given by $$\bM(\bq)\ddot{\bq}  =
-        \btau(\bq,\dot\bq,\bu)
-          + \pd{\bpsi}{\dot{\bq}}^T \blambda.$$
-          To solve for $\blambda$, we take $$\dot{\bpsi} = \pd{\bpsi}{\bq}
+          Here, the manipulator equations are given by \begin{equation}\bM\ddot{\bq}  =
+        \btau
+          + \pd{\bpsi}{\dot{\bq}}^T \blambda.\end{equation}
+          Using \begin{equation} \dot{\bpsi} =
+        \pd{\bpsi}{\bq}
         \dot{\bq} +
-          \pd{\bpsi}{\dot{\bq}}\ddot{\bq} = 0,$$ which yields
-          $$\blambda = - \left( \pd{\bpsi}{\dot{\bq}} \bM^{-1}
+          \pd{\bpsi}{\dot{\bq}}\ddot{\bq},\end{equation} setting $\dot\psi =
+        0$
+        yields
+          \begin{equation}\blambda = - \left( \pd{\bpsi}{\dot{\bq}} \bM^{-1}
         \pd{\bpsi}{\dot{\bq}}
           \right)^+ \left[ \pd{\bpsi}{\dot{\bq}} \bM^{-1} \btau +
         \pd{\bpsi}{\bq}
-          \dot{\bq} \right].$$</p>
+          \dot{\bq} \right].\end{equation}</p>
 
-        <p>Again, for numerical stability, we ask instead for $\dot{\bpsi} =
-          -\frac{1}{\epsilon} \bpsi$, which yields
-          $$\blambda = - \left( \pd{\bpsi}{\dot{\bq}} \bM^{-1}
+        <p>Again, for numerical stability, we can ask instead for $\dot{\bpsi} =
+          -\alpha \bpsi$, which yields
+          \begin{equation}\blambda = - \left( \pd{\bpsi}{\dot{\bq}} \bM^{-1}
         \pd{\bpsi}{\dot{\bq}}
           \right)^+ \left[ \pd{\bpsi}{\dot{\bq}} \bM^{-1} \btau +
         \pd{\bpsi}{\bq}
-          \dot{\bq} + \frac{1}{\epsilon} \bpsi \right].$$</p>
+          \dot{\bq} + \alpha \bpsi \right].\end{equation}</p>
       </section>
 
     </section>
@@ -6661,7 +6671,7 @@ output formats supported by your current visualizer.</p>
           The collision event is described by the
           zero-crossings (from positive to negative) of $\phi$.
           Let us start by assuming frictionless collisions, allowing us to
-        write $$\bM\ddot{\bq} = \btau + \bJ^T \lambda,$$
+        write \begin{equation}\bM\ddot{\bq} = \btau + \bJ^T \lambda,\end{equation}
           where $\lambda \ge 0$ is now a (scalar)
         impulsive force that is
           well-defined when integrated over the time of the collision (denoted
@@ -6671,7 +6681,7 @@ output formats supported by your current visualizer.</p>
         \right] =
           \int_{t_c^-}^{t_c^+} dt \left[ \btau + \bJ^T \lambda \right]
           \end{align*}
-          Since $\bq$ and $\bu$ are constants over this interval, we are left
+          Since $\bM$ and $\btau$ are constants over this interval, we are left
           with
           $$\bM\dot{\bq}^+ - \bM\dot{\bq}^- = \bJ^T \int_{t_c^-}^{t_c^+}
         \lambda dt,$$
@@ -6688,10 +6698,10 @@ output formats supported by your current visualizer.</p>
           $$\int_{t_c^-}^{t_c^+} \lambda dt = - (1+e)\left[ \bJ \bM^{-1} \bJ^T
         \right]^+
           \bJ \dot{\bq}^-.$$  Substituting this back in above results in
-          $$\dot{\bq}^+ = \left[ \bI - (1+e)\bM^{-1} \bJ^T \left[ \bJ \bM^{-1}
+          \begin{equation}\dot{\bq}^+ = \left[ \bI - (1+e)\bM^{-1} \bJ^T \left[ \bJ \bM^{-1}
         \bJ^T
         \right]^+ \bJ
-          \right] \dot{\bq}^-.$$</p>
+          \right] \dot{\bq}^-.\end{equation}</p>
 
         <p>We can add friction at the contact.  Rigid bodies will almost always experience
           contact at only a point, so we typically ignore torsional friction
@@ -6713,7 +6723,7 @@ output formats supported by your current visualizer.</p>
         <p>
           We can put the bilateral constraint equations and the impulsive collision equations together
           to implement a hybrid model for unilateral constraints of the form
-          $$\bphi(\bq) \ge 0.$$
+          \begin{equation}\bphi(\bq) \ge 0.\end{equation}
           At every moment, some subset of the contacts are active, and can be
           treated as a bilateral constraint ($\bphi_i=0$).
           The guards of the hybrid model are when an inactive constraint
@@ -6742,11 +6752,9 @@ output formats supported by your current visualizer.</p>
         are very efficient and natural recursive algorithms for generating
         these equations of motion.  For a detailed reference on these methods,
         see <elib>Featherstone07</elib>; some people prefer reading about the
-        Articulated Body Method in <elib>Mirtich96</elib>.  The software libraries
-        distributed with this text include a complete implementation; you can
-        also some matlab algorithms available on Roy Featherstone's
-        website, or try googling "Open Dynamics Engine" or "Simulation
-        Construction Set".
+        Articulated Body Method in <elib>Mirtich96</elib>.  The
+        implementation in <drake></drake>
+        uses a related formulation from <elib>Jain11</elib>.
       </p>
 
 
@@ -6779,7 +6787,8 @@ output formats supported by your current visualizer.</p>
 <div id="footer">
 <hr>
 <table style="width:100%;">
-  <tr><td><em>Underactuated Robotics</em></td><td align="right">&copy; Russ Tedrake, 2016</td></tr>
+  <tr><td><em>Underactuated Robotics</em></td><td align="right">&copy; Russ
+    Tedrake, 2018</td></tr>
 </table>
 </div>
 
