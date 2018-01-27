@@ -6583,8 +6583,8 @@ output formats supported by your current visualizer.</p>
       (multiple solutions), then the pseudo-inverse will select the solution
       with the smallest constraint forces in the least-squares sense.</p>
 
-      <p>For numerical stability, one might like to add a restoring force to
-      this constraint in the event that the constraint is not satisfied to
+      <p>To combat numerical "constraint drift", one might like to add a
+      restoring force in the event that the constraint is not satisfied to
       numerical precision.  To accomplish this, we can implement
       \begin{equation}\ddot\bh = -2\alpha \dot\bh - \alpha^2 \bh,\end{equation}
       where $\alpha>0$ is a stiffness parameter. Carrying this through yields
@@ -6607,7 +6607,7 @@ output formats supported by your current visualizer.</p>
       \pd{\bh_v}{\dot{\bq}} \bM^{-1} \btau + \pd{\bh_v}{\bq} \dot{\bq}
       \right].\end{equation}</p>
 
-      <p>Again, for numerical stability, we can ask instead for $\dot\bh_v =
+      <p>Again, to combat constraint drift, we can ask instead for $\dot\bh_v =
       -\alpha \bh_v$, which yields \begin{equation}\blambda = - \left(
       \pd{\bh_v}{\dot{\bq}} \bM^{-1} \pd{\bh_v}{\dot{\bq}} \right)^+ \left[
       \pd{\bh_v}{\dot{\bq}} \bM^{-1} \btau + \pd{\bh_v}{\bq} \dot{\bq} + \alpha
