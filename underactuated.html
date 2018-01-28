@@ -1752,7 +1752,7 @@ if it is possible to construct an unconstrained   input signal, $\bu(t)$, $t \in
 in a finite interval of time, $0 < t < t_f$ <elib>Ogata96</elib>. </div>
 
 <p>
-For the linear system $$\dot{\bx} = {\bf A}\bx + \bBu,$$
+For the linear system $$\dot{\bx} = {\bf A}\bx + \bB\bu,$$
 we can integrate this linear system in closed
 form, so it is possible to derive the exact conditions of
 controllability.  In particular, for linear systems it is sufficient to demonstrate
@@ -1807,9 +1807,9 @@ A more general solution to the controllability issue, which removes
 our assumption about the eigenvalues, can be obtained by examining the
 time-domain solution of the linear equations.  The solution of this
 system is $$\bx(t) = e^{{\bf A}t} \bx(0) + \int_0^{t} e^{{\bf A}(t -
-\tau)} \bB u(\tau) d\tau.$$ Without loss of generality, lets
+\tau)} \bB \bu(\tau) d\tau.$$ Without loss of generality, lets
 consider the that the final state of the system is zero.  Then we
-have: $$\bx(0) = - \int_0^{t_f} e^{-{\bf A}\tau}\bBu(\tau)
+have: $$\bx(0) = - \int_0^{t_f} e^{-{\bf A}\tau}\bB \bu(\tau)
 d\tau.$$ You might be wondering what we mean by $e^{{\bf A}t}$; a
 scalar raised to the power of a matrix..?  Recall that $e^{z}$ is
 actually defined by a convergent infinite sum: $$e^{z} =1 + z +
