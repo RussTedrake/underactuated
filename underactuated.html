@@ -135,8 +135,12 @@
                   }
                 }
               }
-
-
+              var iframes = chapters[i].getElementsByTagName("iframe");
+              for (j=0; j<iframes.length; j++) {
+                if (iframes[j].hasAttribute("data-src")) {
+                    iframes[j].setAttribute("src",iframes[j].getAttribute("data-src"));
+                }
+              }
 
 //              document.getElementById("debug_output").innerHTML="got here";
               var display_num = i;
@@ -451,7 +455,8 @@
 
       <figure>
       <iframe width="560" height="315"
-              src="https://www.youtube.com/embed/fRj34o4hN4I?rel=0" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+              data-src="https://www.youtube.com/embed/fRj34o4hN4I?rel=0"
+              frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
       <figcaption>Boston Dynamics' Atlas robot does a backflip.</figcaption>
       </figure>
 
