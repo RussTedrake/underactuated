@@ -16,6 +16,26 @@
         return results == null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
       }
 
+      function chapterNumberToID(number) {
+        if (number<0) { console.error("Bad chapter number"); }
+        var chapters = document.getElementsByClassName("chapter");
+        if ((number-1) < chapters.length) {
+          return chapters[number-1].id;
+        }
+        console.error("Bad chapter number");
+      }
+      function chapterIDToNumber(id) {
+        id = id.toLowerCase();
+        var chapters = document.getElementsByClassName("chapter");
+        for (j=0; j<chapters.length; j++) {
+          if (chapters[j].id.toLowerCase() === id) {
+            return j+1;
+          }
+        }
+        console.error("Bad chapter ID");
+        return -1;
+      }
+
       function revealChapters() {
         // generate table of contents
         {
@@ -29,10 +49,6 @@
           var current_part = chapters[0].parentNode;
           var part_number = 1;
 
-          var current_chapter = getParameterByName("chapter");
-          var drake_chapter = chapters.length;
-          if (current_chapter.toLowerCase() == "drake")
-            current_chapter = drake_chapter;
           var list_of_drake_examples = "";
 
           for (i = 0; i < chapters.length; i++) {
@@ -52,10 +68,12 @@
 //            toc = toc + chapters[i].parentNode.tagName.toLowerCase();
             var chapter_link = "";
             if (chapters[i].parentNode.tagName.toLowerCase() == "appendix") {
-              chapter_link = "<li><a href=underactuated.html?chapter="+(i+1)+">";
+              chapter_link =
+                  "<li><a href=underactuated.html?chapter="+chapterNumberToID(i+1)+">";
               chapter_link += "Appendix " + String.fromCharCode(64 + i+1-start_appendix);
             } else {
-              chapter_link = "<li><a href=underactuated.html?chapter="+(i+1)+">";
+              chapter_link =
+                  "<li><a href=underactuated.html?chapter="+chapterNumberToID(i+1)+">";
               chapter_link += "Chapter " + (i+1);
             }
             chapter_link += ": " + titles[0].innerHTML + "</a>\n";
@@ -82,7 +100,8 @@
 
             toc += "</li>\n";
 
-            if (current_chapter && Number(current_chapter)==drake_chapter) { // then I'm writing the drake example list, too
+            // TODO: re-enable this.
+            if (false) { // then I'm writing the drake example list, too
               var examples = chapters[i].getElementsByClassName("drake");
               if (examples.length>0) {
                 list_of_drake_examples += chapter_link + "<ul>";
@@ -98,14 +117,22 @@
             }
 
           }
+
           toc = toc + "</ul>\n";
           document.getElementById("table_of_contents").innerHTML = toc;
         }
 
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"mathjax_setup"]);
 
+        var current_chapter = getParameterByName("chapter");
+
         if (current_chapter) {
-          current_chapter = Number(current_chapter);
+          if (isNaN(current_chapter)) {
+            current_chapter = chapterIDToNumber(current_chapter);
+          } else {
+            current_chapter = Number(current_chapter);
+          }
+
           document.getElementById("preface").style.display = "none";
           document.getElementById("table_of_contents").style.display = "none";
           //document.getElementById("debug_output").innerHTML="displaying only chapter " + chapter + " of " + chapters.length;
@@ -116,6 +143,8 @@
               chapters[i].style.display = "inline";
 
               // load images/videos for this chapter only
+              // TODO(russt): consider adding a lint test to make sure all
+              // relevant elements are typed in as data-src instead of src.
               var images = chapters[i].getElementsByTagName("img");
               for (j=0; j<images.length; j++) {
                 if (images[j].hasAttribute("data-src")) {
@@ -152,11 +181,15 @@
               var nav = "\n<table style=\"width:100%;\"><tr style=\"width:100%\">";
               nav += "<td style=\"width:33%;text-align:left;\">";
               if (i>0) {
-                nav+="<a href=underactuated.html?chapter=" + (i) + ">Previous chapter</a>";
+                nav+="<a href=underactuated.html?chapter=" +
+                    chapterNumberToID(current_chapter-1) +
+                    ">Previous chapter</a>";
               }
               nav += "</td><td style=\"width:33%;text-align:center;\"><a href=underactuated.html>Table of contents</a></td><td style=\"width:33%;text-align:right;\">";
               if ((i+1)<chapters.length) {
-                nav += "<a href=underactuated.html?chapter=" + (i+2) + ">Next chapter</a>";
+                nav += "<a href=underactuated.html?chapter=" +
+                    chapterNumberToID(current_chapter+1) +
+                    ">Next chapter</a>";
               }
               nav += "</td></tr></table>\n";
               chapters[i].innerHTML = nav + chapters[i].innerHTML + nav;
@@ -356,11 +389,11 @@
 
   </section>
 
-  <p style="text-align:right;"><a href="underactuated.html?chapter=1">First chapter</a></p>
+  <p style="text-align:right;"><a href="underactuated.html?chapter=intro">First chapter</a></p>
 
 </section> <!-- end preface -->
 
-<section data-type="chapter" class="chapter" id="ch:intro">
+<section data-type="chapter" class="chapter" id="intro">
 <h1>Fully-actuated vs Underactuated Systems</h1>
 
   <p>Robots today move far too conservatively, and accomplish only a fraction of
@@ -644,7 +677,8 @@
     </figure>
 
     <p> Consider the simple robot manipulator illustrated above.  As described
-    in <a href="underactuated.html?chapter=26">Appendix C</a>, the equations of
+    in <a href="underactuated.html?chapter=multibody">Appendix C</a>, the
+    equations of
     motion for this system are quite simple to derive, and take the form of the
     standard "manipulator equations": $${\bf M}(\bq)\ddot\bq +
     \bC(\bq,\dot\bq)\dot\bq - \btau_g(\bq) = {\bf B}(\bq)\bu.$$ It is well known
@@ -979,7 +1013,7 @@
 <div class="part" title="Model Systems">
 
 
-<section data-type="chapter" class="chapter" id="ch:pend">
+<section data-type="chapter" class="chapter" id="pend">
 <h1>The Simple Pendulum</h1>
 
 <section data-type="sect1"><h1>Introduction</h1>
@@ -1399,7 +1433,7 @@ throughout this book.</p>
 
 </section> <!-- ***************  end of pendulum chapter **************   -->
 
-<section data-type="chapter" class="chapter" id="ch:modelsys">
+<section data-type="chapter" class="chapter" id="acrobot">
   <h1>Acrobots, Cart-Poles, and Quadrotors</h1>
 
 <p> A great deal of work in the control of underactuated systems has been   done
@@ -2386,7 +2420,8 @@ used heavily in underactuated control research.  Other examples include:</p>
 </section> <!-- ***************  end of acrobot/cartpole/quadrotor chapter **************   -->
 
 
-<section data-type="chapter" class="chapter"><h1>Walking and Running</h1>
+<section data-type="chapter" class="chapter" id="simple_legs"><h1>Walking and
+  Running</h1>
 
 <p>Practical legged locomotion is one of the fundamental unsolved
 problems in robotics.  Many challenges are in mechanical design - a
@@ -2883,7 +2918,8 @@ limit cycle is traversed clockwise.</p>
 
 </section> <!-- ***************  end of walking and running **************   -->
 
-<section data-type="chapter" class="chapter"><h1>Highly-articulated Legged Robots</h1>
+<section data-type="chapter" class="chapter"
+id="humanoids"><h1>Highly-articulated Legged Robots</h1>
 
 <p>The passive dynamic walkers and hopping robots described in the last chapter capture the fundamental dynamics of legged locomotion -- dynamics which are fundamentally nonlinear and punctuated by impulsive events due to making and breaking contact with the environment.  But if you start reading the literature on humanoid robots, or many-legged robots like quadrupeds, then you will find a quite different set of ideas taking center stage: ideas like the "zero-moment point" and footstep planning.  The goal of this chapter is to penetrate that world.</p>
 
@@ -3032,22 +3068,26 @@ where ${\bf F}_{net} = \sum_i {\bf F}_i$ and the value of $\tau_{net}$ depends o
 
 </section> <!-- ** end highly-articulated legged robots ** -->
 
-<section data-type="chapter" class="chapter"><h1>Manipulation</h1>
+<section data-type="chapter" class="chapter" id="manip"><h1>Manipulation</h1>
 
 </section>
 
 <!-- ***************  end of Manipulation **************   -->
 
-<section data-type="chapter" class="chapter"><h1>Vehicles</h1>
+<section data-type="chapter" class="chapter" id="vehicles"><h1>Vehicles</h1>
 
 </section> <!-- ***************  end of vehicles **************   -->
 
 
-<section data-type="chapter" class="chapter"><h1>Model Systems with Fluid Dynamics</h1>
+<section data-type="chapter" class="chapter" id="fluids"><h1>Model Systems with
+  Fluid
+  Dynamics</h1>
 
 </section> <!-- ***************  end of fluid dynamics **************   -->
 
-<section data-type="chapter" class="chapter"><h1>Model Systems with Stochasticity</h1>
+<section data-type="chapter" class="chapter" id="stochastic"><h1>Model Systems
+  with
+  Stochasticity</h1>
 
 <p>My goals for this chapter are to build intuition for the beautiful and rich behavior of nonlinear dynamical system
   that are subjected to random (noise/disturbance) inputs.  So far we have focused primarily
@@ -3304,7 +3344,7 @@ where this additional input $\bw$ is the (vector) output of some random process.
 
 <div class="part" title="Nonlinear Planning and Control">
 
-<section data-type="chapter" class="chapter"><h1>Dynamic Programming</h1>
+<section data-type="chapter" class="chapter" id="dp"><h1>Dynamic Programming</h1>
 
 <p>In chapter 2, we spent some time thinking about the phase portrait of the
 simple pendulum, and concluded with a challenge: can we design a nonlinear
@@ -3951,7 +3991,7 @@ This equation can be solved for ${\bf S}$ numerically with the Riccati recursion
 </section> <!-- ***************  end of dynamic programming **************   -->
 
 
-<section data-type="chapter" class="chapter" id="ch:lqr"><h1>Linear Quadratic Regulators</h1>
+<section data-type="chapter" class="chapter" id="lqr"><h1>Linear Quadratic Regulators</h1>
 
 <p>While solving the dynamic programming problem for continuous systems is very hard
   in general, there are a few very important special cases where the solutions are
@@ -4231,7 +4271,8 @@ design a feedback law.</p>
 
 </section> <!-- ***************  end of LQR **************   -->
 
-<section data-type="chapter" class="chapter"><h1>Lyapunov Analysis</h1>
+<section data-type="chapter" class="chapter" id="lyapunov"><h1>Lyapunov
+  Analysis</h1>
 
 <p>Optimal control provides a powerful framework for formulating control problems
 using the language of optimization.  But solving optimal control problems for
@@ -4792,7 +4833,8 @@ of a Lyapunov function as approximations of the region of attraction for nonline
 
 </section> <!-- ***************  end of Lyapunov chapter **************   -->
 
-<section data-type="chapter" class="chapter"><h1>Trajectory Optimization</h1>
+<section data-type="chapter" class="chapter" id="trajopt"><h1>Trajectory
+  Optimization</h1>
 
 <p>I've argued that optimal control is a powerful framework for specifying
   complex behaviors with simple objective functions, letting the dynamics and
@@ -5350,7 +5392,8 @@ apply finite-horizon LQR (see the LQR chapter).</p>
 
 </section> <!-- ***************  end of trajectory optimization **************   -->
 
-<section data-type="chapter" class="chapter"><h1>Algorithms for Limit Cycles</h1>
+<section data-type="chapter" class="chapter" id="limit_cycles"><h1>Algorithms
+for Limit Cycles</h1>
 
 <p>The discussion of walking and running robots in Chapter 4 motivated the notion of
 limit cycle stability.  Linear systems are not capable of producing stable limit cycle
@@ -5570,7 +5613,9 @@ Coming soon.  If you are interested, see <elib>Manchester10a+Manchester10b</elib
 
 </section> <!-- end limit cycles -->
 
-<section data-type="chapter" class="chapter"><h1>Planning and Control through Contact</h1>
+<section data-type="chapter" class="chapter" id="contact"><h1>Planning and
+  Control
+  through Contact</h1>
 
 <section data-type="sect1"><h1>The hybrid system's approach</h1>
 
@@ -5585,7 +5630,8 @@ Coming soon.  If you are interested, see <elib>Manchester10a+Manchester10b</elib
 
 <!-- ***************  end of hybrid systems **************   -->
 
-<section data-type="chapter" class="chapter"><h1>Motion Planning as Search</h1>
+<section data-type="chapter" class="chapter" id="search"><h1>Motion Planning as
+  Search</h1>
 
 <p>The term "motion planning" is a hopelessly general term which almost certainly
   encompasses the dynamic programming, feedback design, and trajectory optimization
@@ -5780,20 +5826,25 @@ until we understand geometric and dynamic planning better.</p>
 
 
 
-<section data-type="chapter" class="chapter"><h1>Feedback Motion Planning</h1>
+<section data-type="chapter" class="chapter"
+         id="feedback_motion_planning"><h1>Feedback Motion
+  Planning</h1>
 
 </section>
 
 <!-- ***************  end of feedback motion planning **************   -->
 
-<section data-type="chapter" class="chapter"><h1>Output Feedback</h1>
+<section data-type="chapter" class="chapter" id="output"><h1>Output
+  Feedback</h1>
 
 </section>
 
 
 <!-- ***************  end of output feedback **************   -->
 
-<section data-type="chapter" class="chapter"><h1>Robust and Stochastic Control</h1>
+<section data-type="chapter" class="chapter" id="robust"><h1>Robust and
+  Stochastic
+  Control</h1>
 
 <todo>
 Stochastic optimal control.  Stochastic HJB.  Graph search.  LQR + Gaussian noise.  Whitening filters.
@@ -5809,7 +5860,12 @@ Robust control.  Common Lyapunov functions.  Dissipation inequalities.  Guarante
 
 <!-- ***************  end of robust control **************   -->
 
-<section data-type="chapter" class="chapter"><h1>Planning Under Uncertainty</h1>
+<section data-type="chapter" class="chapter"
+         id="belief"><h1>Planning
+  Under
+  Uncertainty</h1>
+
+  <todo>POMDP, SLAG, Belief-space sample-based planning, ...</todo>
 
 </section>
 
@@ -5820,17 +5876,20 @@ Robust control.  Common Lyapunov functions.  Dissipation inequalities.  Guarante
 <!-- START OF PART III - Estimation and Learning -->
 <div class="part" title="Estimation and Learning">
 
-<section data-type="chapter" class="chapter"><h1>System Identification</h1>
+<section data-type="chapter" class="chapter"
+         id="sysid"><h1>System Identification</h1>
 
   <todo>equation error vs simulation error.  model-reduction for linear systems.  optimal experiment design</todo>
 
 </section>
 
-<section data-type="chapter" class="chapter"><h1>State Estimation</h1>
+<section data-type="chapter" class="chapter"
+         id="estimation"><h1>State Estimation</h1>
 
 </section>
 
-<section data-type="chapter" class="chapter"><h1>Reinforcement Learning</h1>
+<section data-type="chapter" class="chapter"
+         id="rl"><h1>Reinforcement Learning</h1>
 
 <todo> model-free value methods, model-free policy search, actor-critic methods </todo>
 
@@ -5842,7 +5901,9 @@ Robust control.  Common Lyapunov functions.  Dissipation inequalities.  Guarante
 <appendix class="part" title="Appendix">
 
 
-<section data-type="chapter" class="chapter"><h1>Optimization and Mathematical Programming</h1>
+<section data-type="chapter" class="chapter"
+         id="optimization"><h1>Optimization and
+  Mathematical Programming</h1>
 
   <section data-type="sect1"><h1>Nonlinear optimization</h1>
     <section data-type="sect2"><h1>General formulation</h1>
@@ -5874,7 +5935,8 @@ Robust control.  Common Lyapunov functions.  Dissipation inequalities.  Guarante
 
 </section> <!-- end optimization chapter -->
 
-<section data-type="chapter" class="chapter"><h1>Modeling Input-Output Dynamical Systems</h1>
+<section data-type="chapter" class="chapter" id="drake"><h1>Modeling
+Input-Output Dynamical Systems</h1>
 
 <p>This chapter provides a short tutorial for modeling input-output dynamical systems in <drake></drake>.
   <drake></drake> includes a set of C++ classes in <code>drake::systems</code> that provide an API for
@@ -6423,7 +6485,8 @@ output formats supported by your current visualizer.</p>
 
 </section> <!-- end chapter on modeling dynamical systems -->
 
-<section data-type="chapter" class="chapter" id="ch:manipulator"><h1>Rigid-Body Dynamics</h1>
+<section data-type="chapter" class="chapter" id="multibody"><h1>Rigid-Body
+  Dynamics</h1>
 
   <section data-type="sect1"><h1>Deriving the equations of motion (an example)</h1>
 
