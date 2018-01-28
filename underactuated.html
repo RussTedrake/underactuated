@@ -100,8 +100,8 @@
 
             toc += "</li>\n";
 
-            // TODO: re-enable this.
-            if (false) { // then I'm writing the drake example list, too
+            // TODO: only do this work if I'm actually rendering the output (current_chapter id === drake)
+            if (true) { // then I'm writing the drake example list, too
               var examples = chapters[i].getElementsByClassName("drake");
               if (examples.length>0) {
                 list_of_drake_examples += chapter_link + "<ul>";
@@ -195,7 +195,7 @@
               chapters[i].innerHTML = nav + chapters[i].innerHTML + nav;
             }
           }
-          if (current_chapter == drake_chapter) {
+          if (chapters[current_chapter-1].id === "drake") {
             // then i'm in the drake appendix, so render the list of drake examples
             document.getElementById("list_of_drake_examples").innerHTML = "<ul>" + list_of_drake_examples + "</ul>";
           }
@@ -6473,7 +6473,6 @@ output formats supported by your current visualizer.</p>
 
 </section>
 
-  <!--
 <section data-type="sect1"><h1>Listing of <drake></drake> examples throughout this text</h1>
 
 <p>The best overview we have for the remaining capabilities in <drake></drake> are the main chapters of these notes.  For convenience, here is a list of software examples that are sprinkled throughout the text:</p>
@@ -6481,7 +6480,6 @@ output formats supported by your current visualizer.</p>
   <div id="list_of_drake_examples"><center>Coming soon!</center></div>
 
 </section>
--->
 
 </section> <!-- end chapter on modeling dynamical systems -->
 
