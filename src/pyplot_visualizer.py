@@ -27,20 +27,8 @@ class PyPlotVisualizer(LeafSystem):
         - Override the draw method to parse the
         input and draw the robot in the appropriate
         state.
-        - 
-
     '''
-    a1 = 0.75
-    ac1 = 0.75
-    av = np.linspace(0,math.pi,20)
-    rb = .03
-    hb=.07
-    aw = .01
-    base_x = rb*np.concatenate(([1], np.cos(av), [-1]))
-    base_y = np.concatenate(([-hb], rb*np.sin(av), [-hb]))
-    arm_x = np.concatenate((aw*np.sin(av-math.pi/2), aw*np.sin(av+math.pi/2)))
-    arm_y = np.concatenate((aw*np.cos(av-math.pi/2), -a1+aw*np.cos(av+math.pi/2)))
-
+    
     def __init__(self, draw_rate=0.0333):
         LeafSystem.__init__(self)
         self.set_name('pyplot_visualization')
