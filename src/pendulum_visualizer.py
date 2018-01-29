@@ -11,7 +11,8 @@ from pydrake.systems.framework import (
     PortDataType,
     )
 
-class PendulumVisualizer(LeafSystem):
+from pyplot_visualizer import PyPlotVisualizer
+class PendulumVisualizer(PyPlotVisualizer):
     a1 = 0.75
     ac1 = 0.75
     av = np.linspace(0,math.pi,20)
@@ -24,33 +25,21 @@ class PendulumVisualizer(LeafSystem):
     arm_y = np.concatenate((aw*np.cos(av-math.pi/2), -a1+aw*np.cos(av+math.pi/2)))
 
     def __init__(self):
-        LeafSystem.__init__(self)
+        PyPlotVisualizer.__init__(self)
         self.set_name('pendulum_visualizer')
         self._DeclareInputPort(PortDataType.kVectorValued, 2)
-        self._DeclarePeriodicPublish(0.03,0.0)
 
-        (self.fig, ax) = plt.subplots()
-        ax.axis('equal')
-        ax.axis('off')
-        ax.set_xlim([-1.2, 1.2])
-        ax.set_ylim([-1.2, 1.2])
-        self.base = ax.fill(self.base_x, self.base_y, zorder=1, color=(.3, .6, .4), edgecolor='k')
+        self.ax.set_xlim([-1.2, 1.2])
+        self.ax.set_ylim([-1.2, 1.2])
+        self.base = self.ax.fill(self.base_x, self.base_y, zorder=1, color=(.3, .6, .4), edgecolor='k')
         # arm_x and arm_y are closed (last element == first element), but don't pass the
         # last element to the fill command, because it gets closed anyhow (and we want the
         # sizes to match for the update).
-        self.arm = ax.fill(self.arm_x[0:-1], self.arm_y[0:-1], zorder=0, color=(.9, .1, 0), edgecolor='k')
-        self.center_of_mass = ax.plot(0, -self.ac1, zorder=1, color='b', marker='o', markersize=14)
-        self.draw(0)
-        self.fig.show()
-        self.ax = ax
+        self.arm = self.ax.fill(self.arm_x[0:-1], self.arm_y[0:-1], zorder=0, color=(.9, .1, 0), edgecolor='k')
+        self.center_of_mass = self.ax.plot(0, -self.ac1, zorder=1, color='b', marker='o', markersize=14)
 
-    def _DoPublish(self, context, event):
+    def draw(self, context):
         theta = self.EvalVectorInput(context, 0).get_value()[0]
-        self.draw(theta)
-#        self.fig.canvas.draw()
-        plt.pause(0.0000001)
-
-    def draw(self, theta):
         path = self.arm[0].get_path()
         path.vertices[:,0] = self.arm_x*math.cos(theta)-self.arm_y*math.sin(theta)
         path.vertices[:,1] = self.arm_x*math.sin(theta)+self.arm_y*math.cos(theta)
