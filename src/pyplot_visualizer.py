@@ -53,9 +53,7 @@ class PyPlotVisualizer(LeafSystem):
 
     def _DoPublish(self, context, event):
         self.draw(context)
-        # TODO(gizatt) Figure out how to remove this with appropriate
-        # backend canvas draw or flip commands.
-        plt.pause(0.0000001)
+        self.fig.canvas.draw()
 
     def draw(self, context):
         print "SUBCLASSES MUST IMPLEMENT."
