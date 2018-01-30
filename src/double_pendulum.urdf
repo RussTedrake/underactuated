@@ -10,7 +10,7 @@
       <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
     </inertial>
     <visual>
-      <origin xyz="0 0.0 0" rpy="0 3.1415 0"/>
+      <origin xyz="0 0.0 0" rpy="0 0 0"/>
       <geometry>
         <cylinder radius=".015" length="0.015"/>
       </geometry>
@@ -19,12 +19,12 @@
 
   <link name="link1">
     <inertial> 
-      <origin xyz="0 -0.5 0" rpy="0 0 0" />
+      <origin xyz="0 0 -0.5" rpy="0 0 0" />
       <mass value="1" />
       <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/> 
     </inertial>
     <visual>
-      <origin xyz="0 -0.5 0" rpy="1.587 1.587 0"/>
+      <origin xyz="0 0 -0.5" rpy="0 0 0"/>
       <geometry>
         <cylinder radius=".015" length="1.0"/>
       </geometry>
@@ -34,12 +34,12 @@
 
   <link name="link2">
     <inertial>
-      <origin xyz="0 -0.5 0" rpy="0 0 0" />
+      <origin xyz="0 0 -0.5" rpy="0 0 0" />
       <mass value="1" />
       <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
     </inertial>
     <visual>
-      <origin xyz="0 -0.5 0" rpy="1.587 1.587 0"/>
+      <origin xyz="0 0 -0.5" rpy="0 0 0"/>
       <geometry>
         <cylinder radius=".015" length="1.0"/>
       </geometry>
@@ -50,15 +50,15 @@
     <parent link="base"/>
     <child link="link1"/>
     <origin xyz="0 0.0 0" rpy="0 0 0" />
-    <axis xyz="0 0 1" />
+    <axis xyz="0 1 0" />
     <dynamics damping="0.1" />
   </joint>
 
   <joint name="theta2" type="continuous">
     <parent link="link1"/>
     <child link="link2"/>
-    <origin xyz="0 -1.0 0" rpy="0 0 0" />
-    <axis xyz="0 0 1" />
+    <origin xyz="0 0 -1.0" rpy="0 0 0" />
+    <axis xyz="0 1 0" />
     <dynamics damping="0.1" />
   </joint>
   
@@ -69,7 +69,19 @@
 
   <!-- Frames located at the COM of each link. -->
   <frame
-    link="link1" name="link1_com" rpy="0 0 0" xyz="0 -0.5 0"/>
+    link="link1" name="link1_com" rpy="0 0 0" xyz="0 0 -0.5"/>
   <frame
-    link="link2" name="link2_com" rpy="0 0 0" xyz="0 -0.5 0"/>
+    link="link2" name="link2_com" rpy="0 0 0" xyz="0 0 -0.5"/>
+
+  <transmission name="shoulder_trans" type="SimpleTransmission">
+    <actuator name="shoulder"/>
+    <joint name="theta1"/>
+    <mechanicalReduction>1</mechanicalReduction>
+  </transmission>
+  <transmission name="elbow_trans" type="SimpleTransmission">
+    <actuator name="elbow"/>
+    <joint name="theta2"/>
+    <mechanicalReduction>1</mechanicalReduction>
+  </transmission>
+
 </robot>

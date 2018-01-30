@@ -2,7 +2,9 @@
 
 import scipy as sp
 import scipy.spatial
+import sys
 import numpy as np
+import random
 import math
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
@@ -15,7 +17,9 @@ from pydrake.systems.framework import (
     LeafSystem,
     PortDataType
     )
-import pydrake.multibody
+from pydrake.systems.analysis import Simulator
+from pydrake.systems.primitives import ConstantVectorSource
+from pydrake.multibody.rigid_body_plant import RigidBodyPlant
 import time
 
 from pyplot_visualizer import PyPlotVisualizer
@@ -48,7 +52,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
 
         print "Spawning for tree with %d actuators" % (self.rbtree.get_num_actuators())
 
-        self._DeclareInputPort(PortDataType.kVectorValued, self.rbtree.get_num_actuators())
+        self._DeclareInputPort(PortDataType.kVectorValued, self.rbtree.get_num_positions() + self.rbtree.get_num_velocities())
 
         self.ax.set_xlim(xlim)
         self.ax.set_ylim(ylim)
@@ -62,14 +66,14 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         self.body_fill_list = []
         q0 = np.zeros((self.rbtree.get_num_positions(),))
         kinsol = self.rbtree.doKinematics(q0)
-
-        for body_i in range(self.rbtree.get_num_bodies()-1):
+        n_bodies = self.rbtree.get_num_bodies()-1
+        color = iter(plt.cm.rainbow(np.linspace(0, 1, n_bodies)))
+        for body_i in range(n_bodies):
             tf = self.rbtree.relativeTransform(kinsol, 0, body_i+1)
             viewPatches = self.getViewPatches(body_i, tf)
+            c = next(color)
             for patch in viewPatches:
-                self.body_fill_list += self.ax.fill(patch[0, :], patch[1, :], zorder=0, color=(0.9, 0.1, 0), edgecolor='k', closed=False)
-
-        self.draw(q0)
+                self.body_fill_list += self.ax.fill(patch[0, :], patch[1, :], zorder=0, color=c, edgecolor='k', closed=False)
 
     def buildViewPatches(self):
         self.viewPatches = []
@@ -116,8 +120,10 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         projected_tf = np.dot(np.dot(self.Tview, tf), np.linalg.pinv(self.Tview))
         return [np.dot(projected_tf, patch)[0:2] for patch in self.viewPatches[body_i]]
 
-    def draw(self, state_vec):
-        kinsol = self.rbtree.doKinematics(state_vec)
+    def draw(self, context):
+        positions = self.EvalVectorInput(context, 0).get_value()[0:self.rbtree.get_num_positions()]
+
+        kinsol = self.rbtree.doKinematics(positions)
 
         body_fill_index = 0
         for body_i in range(self.rbtree.get_num_bodies()-1):
@@ -135,24 +141,59 @@ if __name__ == "__main__":
     #   <y axis select> y_axis_shift
     #   0, 0, 0 1]  homogenizer
 
-    #rbt = RigidBodyTree("Pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
-    #Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
-    #pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-1.2, 1.2], [-1.2, 1.2])
+    '''
+    rbt = RigidBodyTree("Pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
+    Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
+    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-1.2, 1.2], [-1.2, 1.2])
+    '''
+
     
     rbt = RigidBodyTree("double_pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
-    Tview = np.array([[1., 0., 0., 0.], [0., 1., 0., 0.], [0., 0., 0., 1.]], dtype=np.float64)
-    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-1.2, 1.2], [-1.2, 1.2])
+    Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
+    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-3.0, 3.0], [-3.0, 3.0])
     
 
-    #rbt = RigidBodyTree()
-    #world_frame = pydrake.rbtree.RigidBodyFrame("world_frame", rbt.world(), [0, 0, 0], [0, 0, 0])
-    #AddModelInstancesFromSdfString(open("double_pendulum.sdf", 'r').read(),
-    #    pydrake.rbtree.FloatingBaseType.kFixed,
-    #    world_frame,
-    #    rbt)
-    #Tview = np.array([[0, 1., 0., 0.], [0., 0., 1., -3.], [0., 0., 0., 1.]], dtype=np.float64)
-    #pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-3., 3.], [-3., 3.])
+    '''
+    rbt = RigidBodyTree()
+    world_frame = pydrake.rbtree.RigidBodyFrame("world_frame", rbt.world(), [0, 0, 0], [0, 0, 0])
+    AddModelInstancesFromSdfString(open("double_pendulum.sdf", 'r').read(),
+        pydrake.rbtree.FloatingBaseType.kFixed,
+        world_frame,
+        rbt)
+    Tview = np.array([[0, 1., 0., 0.], [0., 0., 1., -3.], [0., 0., 0., 1.]], dtype=np.float64)
+    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-3., 3.], [-3., 3.])
+    '''
 
-    for i in range(1000):
-        q = np.array([math.pi*math.sin(i*0.01*(k+1)) for k in range(rbt.get_num_positions())])
-        pbrv._DoPublish(q, None)
+    rbplant = RigidBodyPlant(rbt, 0.0)
+
+    builder = DiagramBuilder()
+    rbplant_sys = builder.AddSystem(rbplant)
+
+    torque = 1.0
+    if (len(sys.argv)>1):
+        torque = float(sys.argv[1])
+    torque_system = builder.AddSystem(ConstantVectorSource(np.ones((rbt.get_num_actuators(), 1))*torque))
+    builder.Connect(torque_system.get_output_port(0),
+                            rbplant_sys.get_input_port(0))
+    print('Simulating with constant torque = ' + str(torque) + ' Newton-meters')
+
+    visualizer = builder.AddSystem(pbrv)
+    builder.Connect(rbplant_sys.get_output_port(0), visualizer.get_input_port(0))
+
+    diagram = builder.Build()
+    simulator = Simulator(diagram)
+    simulator.Initialize()
+    simulator.set_target_realtime_rate(1.0)
+    simulator.set_publish_every_time_step(False)
+
+    # TODO(russt): Clean up state vector access below.
+    state = simulator.get_mutable_context().get_mutable_state()\
+                     .get_mutable_continuous_state().get_mutable_vector()
+
+    initial_state = np.zeros((rbt.get_num_positions() + rbt.get_num_velocities(), 1))
+    initial_state[0] = 1.0
+    state.SetFromVector(initial_state)
+
+    simulator.StepTo(10.0)
+
+    print(state.CopyToVector())
