@@ -14,7 +14,7 @@ import scipy.spatial
 
 import pydrake
 import pydrake.rbtree
-from pydrake.rbtree import RigidBodyTree, Shape
+from pydrake.rbtree import RigidBodyTree
 from pydrake.parsers import PackageMap
 from pydrake.systems.analysis import Simulator
 from pydrake.systems.framework import (
@@ -24,6 +24,7 @@ from pydrake.systems.framework import (
     )
 from pydrake.systems.primitives import ConstantVectorSource
 from pydrake.multibody.rigid_body_plant import RigidBodyPlant
+from pydrake.multibody.shapes import Shape
 
 from pyplot_visualizer import PyPlotVisualizer
 
