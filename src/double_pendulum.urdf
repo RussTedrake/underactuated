@@ -9,6 +9,12 @@
       <mass value="1" />
       <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
     </inertial>
+    <visual>
+      <origin xyz="0 0.0 0" rpy="0 3.1415 0"/>
+      <geometry>
+        <cylinder radius=".015" length="0.015"/>
+      </geometry>
+    </visual>
   </link>
 
   <link name="link1">
@@ -17,6 +23,13 @@
       <mass value="1" />
       <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/> 
     </inertial>
+    <visual>
+      <origin xyz="0 -0.5 0" rpy="1.587 1.587 0"/>
+      <geometry>
+        <cylinder radius=".015" length="1.0"/>
+      </geometry>
+    </visual>
+
   </link>
 
   <link name="link2">
@@ -25,6 +38,12 @@
       <mass value="1" />
       <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
     </inertial>
+    <visual>
+      <origin xyz="0 -0.5 0" rpy="1.587 1.587 0"/>
+      <geometry>
+        <cylinder radius=".015" length="1.0"/>
+      </geometry>
+    </visual>
   </link>
 
   <joint name="theta1" type="continuous">

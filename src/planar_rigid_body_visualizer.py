@@ -25,9 +25,13 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         provides a view of the robot by projecting
         all geometry onto the view plane.
 
-        Obviously, this is intended to be
+        This is intended to be
         used for robots that operate in the
-        plane. But it ought to work regardless.
+        plane, and won't render out-of-plane
+        transformations correctly. (It precomputes
+        how geometry looks on the projected plane
+        and assumes it won't be rotated out of
+        plane.)
 
         view_origin, x_dir, and y_dir define
         a 2D coordinate system in which
@@ -70,7 +74,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
     def buildViewPatches(self):
         self.viewPatches = []
         for body_i in range(self.rbtree.get_num_bodies()-1):
-            body = self.rbtree.get_body(body_i)
+            body = self.rbtree.get_body(body_i+1)
             visual_elements = body.get_visual_elements()
             this_body_patches = []
             for element in visual_elements:
@@ -83,7 +87,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                         points = geom.getPoints()
                         tris = geom.getFaces()
                         for tri in tris:
-                            patch = np.array([points[:, x] for x in tri], dtype=np.float64)
+                            patch = np.transpose(np.vstack([points[:, x] for x in tri]))
                             patch = np.vstack((patch, np.ones((1, patch.shape[1]))))
                             patch = np.dot(element_local_tf, patch)
                             # Project into 2D
@@ -131,17 +135,22 @@ if __name__ == "__main__":
     #   <y axis select> y_axis_shift
     #   0, 0, 0 1]  homogenizer
 
-    rbt = RigidBodyTree("Pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
-    Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
+    #rbt = RigidBodyTree("Pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
+    #Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
+    #pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-1.2, 1.2], [-1.2, 1.2])
+    
+    rbt = RigidBodyTree("double_pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
+    Tview = np.array([[1., 0., 0., 0.], [0., 1., 0., 0.], [0., 0., 0., 1.]], dtype=np.float64)
     pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-1.2, 1.2], [-1.2, 1.2])
     
+
     #rbt = RigidBodyTree()
     #world_frame = pydrake.rbtree.RigidBodyFrame("world_frame", rbt.world(), [0, 0, 0], [0, 0, 0])
     #AddModelInstancesFromSdfString(open("double_pendulum.sdf", 'r').read(),
     #    pydrake.rbtree.FloatingBaseType.kFixed,
     #    world_frame,
     #    rbt)
-    #Tview = np.array([[0, 1., 0., 0.], [0., 0., 1., -3.]], dtype=np.float64)
+    #Tview = np.array([[0, 1., 0., 0.], [0., 0., 1., -3.], [0., 0., 0., 1.]], dtype=np.float64)
     #pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-3., 3.], [-3., 3.])
 
     for i in range(1000):
