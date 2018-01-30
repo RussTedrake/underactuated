@@ -228,6 +228,8 @@
     <script type="text/javascript">
       function myMacros() {
         var elibTags = document.getElementsByTagName('elib');
+        // TODO(russt): identical references should reuse reference numbers.
+        // TODO(russt): create actual bibliography section (similar to how I made the drake example list).
         for (i = 0; i < elibTags.length; i++) {
           var c = elibTags[i].innerHTML;
           elibTags[i].innerHTML = '[<a href="http://groups.csail.mit.edu/locomotion/elib.cgi?b=' + c + '">' + (i + 1) + '</a>]';
