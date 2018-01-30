@@ -43,6 +43,14 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         transformations, but render things
         increasingly inaccurately.)
 
+        Params:
+        - Tview, xlim, and ylim set up view into scene.
+        - facecolor is passed through to figure() and sets
+        background color. Both color name strings and
+        RGB triplets are allowed. Defaults to white.
+
+        Specifics on view setup:
+
         TView specifies the view projection matrix,
         and should be a 3x4 matrix:
         [ <x axis select> x_axis_shift
@@ -66,7 +74,8 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         offsetting with the projection matrix.
     '''
 
-    def __init__(self, rbtree, Tview, xlim = [-1., 1], ylim = [-1, 1]):
+    def __init__(self, rbtree, Tview, xlim = [-1., 1], ylim = [-1, 1],
+            facecolor=[1, 1, 1], use_random_colors=False):
         PyPlotVisualizer.__init__(self)
         self.set_name('planar_rigid_body_visualizer')
 
@@ -82,7 +91,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         self.ax.set_ylim(ylim)
 
         # Populate body patches
-        self.buildViewPatches()
+        self.buildViewPatches(use_random_colors)
 
         # Populate the body fill list -- which requires doing most of
         # a draw pass, but with an ax.fill() command rather than
@@ -96,30 +105,33 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         q0 = np.zeros((self.rbtree.get_num_positions(),))
         kinsol = self.rbtree.doKinematics(q0)
         n_bodies = self.rbtree.get_num_bodies()-1
-        # Spawn a random color generator, in case we need to pick
-        # random colors for some bodies. Each body will be given
-        # a unique color when using this random generator, with
-        # each visual element of the body colored the same.
-        color = iter(plt.cm.rainbow(np.linspace(0, 1, n_bodies)))
         for body_i in range(n_bodies):
             tf = self.rbtree.relativeTransform(kinsol, 0, body_i+1)
-            viewPatches = self.getViewPatches(body_i, tf)
-            c = next(color)
-            for patch in viewPatches:
+            viewPatches, viewColors = self.getViewPatches(body_i, tf)
+            for patch, color in zip(viewPatches, viewColors):
                 self.body_fill_list += self.ax.fill(patch[0, :], patch[1, :], 
-                    zorder=0, color=c, edgecolor='k', closed=False)
+                    zorder=0, color=color, edgecolor='k', closed=False)
 
-    def buildViewPatches(self):
+    def buildViewPatches(self, use_random_colors):
         ''' Generates view patches. self.viewPatches stores a list
         of viewPatches for each body (starting at body id 1). A viewPatch
         is a list of 2D coordinates in counterclockwise order forming
         the boundary of a filled polygon representing a piece of visual
         geometry. '''
         self.viewPatches = []
-        for body_i in range(self.rbtree.get_num_bodies()-1):
+        self.viewPatchColors = []
+
+        # Spawn a random color generator, in case we need to pick
+        # random colors for some bodies. Each body will be given
+        # a unique color when using this random generator, with
+        # each visual element of the body colored the same.
+        n_bodies = self.rbtree.get_num_bodies()-1
+        color = iter(plt.cm.rainbow(np.linspace(0, 1, n_bodies)))
+        for body_i in range(n_bodies):
             body = self.rbtree.get_body(body_i+1)
             visual_elements = body.get_visual_elements()
             this_body_patches = []
+            this_body_colors = []
             for element in visual_elements:
                 element_local_tf = element.getLocalTransform()
                 if element.hasGeometry():
@@ -164,15 +176,22 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                         hull = sp.spatial.ConvexHull(np.transpose(patch[0:2, :]))
                         patch = np.transpose(np.vstack([patch[:, v] for v in hull.vertices]))
                     this_body_patches.append(patch)
+                    if use_random_colors:
+                        this_body_colors.append(next(color))
+                    else:
+                        this_body_colors.append(element.getMaterial())
 
             self.viewPatches.append(this_body_patches)
+            self.viewPatchColors.append(this_body_colors)
 
 
     def getViewPatches(self, body_i, tf):
         ''' Pulls out the view patch verts for the given body index after applying
             the appropriate TF '''
         projected_tf = np.dot(np.dot(self.Tview, tf), self.Tview_pinv)
-        return [np.dot(projected_tf, patch)[0:2] for patch in self.viewPatches[body_i]]
+        transformed_patches = [np.dot(projected_tf, patch)[0:2] for patch in self.viewPatches[body_i]]
+        colors = self.viewPatchColors[body_i]
+        return (transformed_patches, colors)
 
     def draw(self, context):
         ''' Evalutates the robot state and draws it. '''
@@ -183,7 +202,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         body_fill_index = 0
         for body_i in range(self.rbtree.get_num_bodies()-1):
             tf = self.rbtree.relativeTransform(kinsol, 0, body_i+1)
-            viewPatches = self.getViewPatches(body_i, tf)
+            viewPatches, _ = self.getViewPatches(body_i, tf)
             for patch in viewPatches:
                 self.body_fill_list[body_fill_index].get_path().vertices[:, :] = np.transpose(patch)
                 body_fill_index += 1
@@ -201,7 +220,7 @@ if __name__ == "__main__":
 
     rbt = RigidBodyTree("double_pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
     Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
-    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-3.0, 3.0], [-3.0, 3.0])
+    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-3.0, 3.0], [-3.0, 3.0], use_random_colors=True)
 
     '''
     # Doesn't work correctly, as it has no inputs hooked up.

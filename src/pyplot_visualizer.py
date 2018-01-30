@@ -29,12 +29,12 @@ class PyPlotVisualizer(LeafSystem):
         state.
     '''
     
-    def __init__(self, draw_rate=0.0333):
+    def __init__(self, draw_rate=0.0333, facecolor=[1, 1, 1]):
         LeafSystem.__init__(self)
         self.set_name('pyplot_visualization')
         self._DeclarePeriodicPublish(draw_rate, 0.0)
 
-        (self.fig, self.ax) = plt.subplots()
+        (self.fig, self.ax) = plt.subplots(facecolor=facecolor)
         self.ax.axis('equal')
         self.ax.axis('off')
         self.fig.show()
