@@ -1,29 +1,32 @@
 # -*- coding: utf8 -*-
 
-import scipy as sp
-import scipy.spatial
-import sys
-import numpy as np
-import random
 import math
+import random
+import sys
+import time
+import os.path
+
+import numpy as np
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
-import pydrake
-from pydrake.parsers import PackageMap
-from pydrake.rbtree import RigidBodyTree, Shape
-import pydrake.rbtree
+import scipy as sp
+import scipy.spatial
 
+import pydrake
+import pydrake.rbtree
+from pydrake.rbtree import RigidBodyTree, Shape
+from pydrake.parsers import PackageMap
+from pydrake.systems.analysis import Simulator
 from pydrake.systems.framework import (
     DiagramBuilder,
     LeafSystem,
     PortDataType
     )
-from pydrake.systems.analysis import Simulator
 from pydrake.systems.primitives import ConstantVectorSource
 from pydrake.multibody.rigid_body_plant import RigidBodyPlant
-import time
 
 from pyplot_visualizer import PyPlotVisualizer
+
 class PlanarRigidBodyVisualizer(PyPlotVisualizer):
     '''
         Given a RigidBodyPlant and a view plane,
@@ -36,7 +39,9 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         transformations correctly. (It precomputes
         how geometry looks on the projected plane
         and assumes it won't be rotated out of
-        plane.)
+        plane. It'll *work* for out-of-plane
+        transformations, but render things
+        increasingly inaccurately.)
 
         TView specifies the view projection matrix,
         and should be a 3x4 matrix:
@@ -59,7 +64,6 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         to keep handle scaling with xlim and ylim
         and view plane selection and *maybe*
         offsetting with the projection matrix.
-
     '''
 
     def __init__(self, rbtree, Tview, xlim = [-1., 1], ylim = [-1, 1]):
@@ -68,8 +72,9 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
 
         self.rbtree = rbtree
         self.Tview = Tview
+        self.Tview_pinv = np.linalg.pinv(self.Tview)
 
-        print "Spawning for tree with %d actuators" % (self.rbtree.get_num_actuators())
+        print "Spawning PlanarRigidBodyVisualizer for tree with %d actuators" % (self.rbtree.get_num_actuators())
 
         self._DeclareInputPort(PortDataType.kVectorValued, self.rbtree.get_num_positions() + self.rbtree.get_num_velocities())
 
@@ -81,20 +86,35 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
 
         # Populate the body fill list -- which requires doing most of
         # a draw pass, but with an ax.fill() command rather than
-        # an in-place replacement of vertex positions.
+        # an in-place replacement of vertex positions to initialize
+        # the draw patches.
+        # The body fill list stores the ax patch objects in the
+        # order they were spawned (i.e. by body, and then by
+        # order of viewPatches). Drawing the tree should update them
+        # by iterating over bodies and patches in the same order.
         self.body_fill_list = []
         q0 = np.zeros((self.rbtree.get_num_positions(),))
         kinsol = self.rbtree.doKinematics(q0)
         n_bodies = self.rbtree.get_num_bodies()-1
+        # Spawn a random color generator, in case we need to pick
+        # random colors for some bodies. Each body will be given
+        # a unique color when using this random generator, with
+        # each visual element of the body colored the same.
         color = iter(plt.cm.rainbow(np.linspace(0, 1, n_bodies)))
         for body_i in range(n_bodies):
             tf = self.rbtree.relativeTransform(kinsol, 0, body_i+1)
             viewPatches = self.getViewPatches(body_i, tf)
             c = next(color)
             for patch in viewPatches:
-                self.body_fill_list += self.ax.fill(patch[0, :], patch[1, :], zorder=0, color=c, edgecolor='k', closed=False)
+                self.body_fill_list += self.ax.fill(patch[0, :], patch[1, :], 
+                    zorder=0, color=c, edgecolor='k', closed=False)
 
     def buildViewPatches(self):
+        ''' Generates view patches. self.viewPatches stores a list
+        of viewPatches for each body (starting at body id 1). A viewPatch
+        is a list of 2D coordinates in counterclockwise order forming
+        the boundary of a filled polygon representing a piece of visual
+        geometry. '''
         self.viewPatches = []
         for body_i in range(self.rbtree.get_num_bodies()-1):
             body = self.rbtree.get_body(body_i+1)
@@ -104,42 +124,58 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                 element_local_tf = element.getLocalTransform()
                 if element.hasGeometry():
                     geom = element.getGeometry()
-
-                    # Prefer to use faces when possible
-                    if 0 and geom.hasFaces():
-                        points = geom.getPoints()
-                        tris = geom.getFaces()
-                        for tri in tris:
-                            patch = np.transpose(np.vstack([points[:, x] for x in tri]))
-                            patch = np.vstack((patch, np.ones((1, patch.shape[1]))))
-                            patch = np.dot(element_local_tf, patch)
-                            # Project into 2D
-                            patch = np.dot(self.Tview, patch)
-                            # No convhull necessary, already appropriately ordered
-                            this_body_patches.append(patch)
+                    # Prefer to use faces when possible.
+                    if geom.hasFaces():
+                        try:
+                            points = geom.getPoints()
+                            # Unnecessary if we're taking a convex hull
+                            #tris = geom.getFaces()
+                            #for tri in tris:
+                            #    new_pts = np.transpose(np.vstack([points[:, x] for x in tri]))
+                            #    patch.append(new_pts)
+                            patch = points
+                        except Exception as e:
+                            print "Exception when loading tris from geometry: ", e
                     else:
-                        # Placeholder until polymorphic Geometry wrapping works
-                        patch = geom.getPoints()
-                        patch = np.vstack((patch, np.ones((1, patch.shape[1]))))
-                        patch = np.dot(element_local_tf, patch)
-                        # Project into 2D
-                        patch = np.dot(self.Tview, patch)
+                        geom_type = geom.getShape()
+                        if geom_type == Shape.SPHERE:
+                            # Sphere will return their center as their
+                            # getPoint(). So generate a better patch by sampling
+                            # points around the sphere surface in the view plane.
+                            center = geom.getPoints()
+                            sample_pts = np.arange(0., 2.*math.pi, 0.25)
+                            patch = np.vstack([math.cos(pt)*self.Tview[0, 0:3] + math.sin(pt)*self.Tview[1, 0:3] for pt in sample_pts])
+                            patch = np.transpose(patch)
+                            patch *= geom.radius
+                        else:
+                            # Other geometry types will usually return their
+                            # bounding box, which is good enough for basic
+                            # visualization. (This could be improved for 
+                            # capsules?)
+                            patch = geom.getPoints()
+                    # Convert to homogenous coords and move out of body frame
+                    patch = np.vstack((patch, np.ones((1, patch.shape[1]))))
+                    patch = np.dot(element_local_tf, patch)
+                    # Project into 2D
+                    patch = np.dot(self.Tview, patch)
 
-                        # Take convhull
-                        if patch.shape[1] > 3:
-                            hull = sp.spatial.ConvexHull(np.transpose(patch[0:2, :]))
-                            patch = np.transpose(np.vstack([patch[:, v] for v in hull.vertices]))
-                        this_body_patches.append(patch)
+                    # Take convhull of resulting points
+                    if patch.shape[1] > 3:
+                        hull = sp.spatial.ConvexHull(np.transpose(patch[0:2, :]))
+                        patch = np.transpose(np.vstack([patch[:, v] for v in hull.vertices]))
+                    this_body_patches.append(patch)
 
             self.viewPatches.append(this_body_patches)
 
 
-    # Pulls out the view patch verts for the given body index
     def getViewPatches(self, body_i, tf):
-        projected_tf = np.dot(np.dot(self.Tview, tf), np.linalg.pinv(self.Tview))
+        ''' Pulls out the view patch verts for the given body index after applying
+            the appropriate TF '''
+        projected_tf = np.dot(np.dot(self.Tview, tf), self.Tview_pinv)
         return [np.dot(projected_tf, patch)[0:2] for patch in self.viewPatches[body_i]]
 
     def draw(self, context):
+        ''' Evalutates the robot state and draws it. '''
         positions = self.EvalVectorInput(context, 0).get_value()[0:self.rbtree.get_num_positions()]
 
         kinsol = self.rbtree.doKinematics(positions)
@@ -153,6 +189,8 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                 body_fill_index += 1
 
 if __name__ == "__main__":
+    # Usage demo: load a URDF, rig it up with a constant torque input, and draw it.
+
     np.set_printoptions(precision=5, suppress=True)
 
     '''
@@ -164,7 +202,6 @@ if __name__ == "__main__":
     rbt = RigidBodyTree("double_pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
     Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
     pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-3.0, 3.0], [-3.0, 3.0])
-    
 
     '''
     # Doesn't work correctly, as it has no inputs hooked up.
@@ -179,22 +216,24 @@ if __name__ == "__main__":
     '''
 
     '''
+    # Valkyrie Example
     rbt = RigidBodyTree()
     world_frame = pydrake.rbtree.RigidBodyFrame("world_frame", rbt.world(), [0, 0, 0], [0, 0, 0])
     pmap = PackageMap()
     pmap.PopulateFromEnvironment("ROS_PACKAGE_PATH")
+    drake_base_path = os.path.expandvars("${DRAKE_RESOURCE_ROOT}")
     pydrake.rbtree.AddModelInstanceFromUrdfStringSearchingInRosPackages(
-        open("/home/gizatt/drake/multibody/rigid_body_plant/test/world.urdf", 'r').read(),
+        open(drake_base_path + "/multibody/rigid_body_plant/test/world.urdf", 'r').read(),
         pmap,
-        "/home/gizatt/drake/examples/",
+        drake_base_path + "/examples/",
         pydrake.rbtree.FloatingBaseType.kRollPitchYaw,
         world_frame,
         rbt)
     val_start_frame = pydrake.rbtree.RigidBodyFrame("val_start_frame", rbt.world(), [0, 0, 2], [0, 0, 0])
     pydrake.rbtree.AddModelInstanceFromUrdfStringSearchingInRosPackages(
-        open("/home/gizatt/drake/examples/valkyrie/urdf/urdf/valkyrie_A_sim_drake_one_neck_dof_wide_ankle_rom.urdf", 'r').read(),
+        open(drake_base_path + "/examples/valkyrie/urdf/urdf/valkyrie_A_sim_drake_one_neck_dof_wide_ankle_rom.urdf", 'r').read(),
         pmap,
-        "/home/gizatt/drake/examples/",
+        drake_base_path + "/examples/",
         pydrake.rbtree.FloatingBaseType.kRollPitchYaw,
         val_start_frame,
         rbt)
@@ -228,7 +267,6 @@ if __name__ == "__main__":
     state = simulator.get_mutable_context().get_mutable_state()\
                      .get_mutable_continuous_state().get_mutable_vector()
 
-    print state.size()
     initial_state = np.zeros((rbt.get_num_positions() + rbt.get_num_velocities(), 1))
     initial_state[0] = 1.0
     state.SetFromVector(initial_state)

@@ -12,7 +12,7 @@
     <visual>
       <origin xyz="0 0.0 0" rpy="0 0 0"/>
       <geometry>
-        <cylinder radius=".015" length="0.015"/>
+        <sphere radius=".1"/>
       </geometry>
     </visual>
   </link>
