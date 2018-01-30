@@ -9,7 +9,8 @@ import math
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import pydrake
-from pydrake.rbtree import RigidBodyTree, Shape, AddModelInstancesFromSdfString
+from pydrake.parsers import PackageMap
+from pydrake.rbtree import RigidBodyTree, Shape
 import pydrake.rbtree
 
 from pydrake.systems.framework import (
@@ -87,7 +88,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                     geom = element.getGeometry()
 
                     # Prefer to use faces when possible
-                    if geom.hasFaces():
+                    if 0 and geom.hasFaces():
                         points = geom.getPoints()
                         tris = geom.getFaces()
                         for tri in tris:
@@ -147,16 +148,16 @@ if __name__ == "__main__":
     pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-1.2, 1.2], [-1.2, 1.2])
     '''
 
-    
     rbt = RigidBodyTree("double_pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
     Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
     pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-3.0, 3.0], [-3.0, 3.0])
     
 
     '''
+    # Doesn't work correctly, as it has no inputs hooked up.
     rbt = RigidBodyTree()
     world_frame = pydrake.rbtree.RigidBodyFrame("world_frame", rbt.world(), [0, 0, 0], [0, 0, 0])
-    AddModelInstancesFromSdfString(open("double_pendulum.sdf", 'r').read(),
+    pydrake.rbtree.AddModelInstancesFromSdfString(open("double_pendulum.sdf", 'r').read(),
         pydrake.rbtree.FloatingBaseType.kFixed,
         world_frame,
         rbt)
@@ -164,7 +165,31 @@ if __name__ == "__main__":
     pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-3., 3.], [-3., 3.])
     '''
 
-    rbplant = RigidBodyPlant(rbt, 0.0)
+    '''
+    rbt = RigidBodyTree()
+    world_frame = pydrake.rbtree.RigidBodyFrame("world_frame", rbt.world(), [0, 0, 0], [0, 0, 0])
+    pmap = PackageMap()
+    pmap.PopulateFromEnvironment("ROS_PACKAGE_PATH")
+    pydrake.rbtree.AddModelInstanceFromUrdfStringSearchingInRosPackages(
+        open("/home/gizatt/drake/multibody/rigid_body_plant/test/world.urdf", 'r').read(),
+        pmap,
+        "/home/gizatt/drake/examples/",
+        pydrake.rbtree.FloatingBaseType.kRollPitchYaw,
+        world_frame,
+        rbt)
+    val_start_frame = pydrake.rbtree.RigidBodyFrame("val_start_frame", rbt.world(), [0, 0, 2], [0, 0, 0])
+    pydrake.rbtree.AddModelInstanceFromUrdfStringSearchingInRosPackages(
+        open("/home/gizatt/drake/examples/valkyrie/urdf/urdf/valkyrie_A_sim_drake_one_neck_dof_wide_ankle_rom.urdf", 'r').read(),
+        pmap,
+        "/home/gizatt/drake/examples/",
+        pydrake.rbtree.FloatingBaseType.kRollPitchYaw,
+        val_start_frame,
+        rbt)
+    Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
+    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-2.0, 2.0], [-0.25, 3.0])
+    '''
+
+    rbplant = RigidBodyPlant(rbt)
 
     builder = DiagramBuilder()
     rbplant_sys = builder.AddSystem(rbplant)
@@ -190,6 +215,7 @@ if __name__ == "__main__":
     state = simulator.get_mutable_context().get_mutable_state()\
                      .get_mutable_continuous_state().get_mutable_vector()
 
+    print state.size()
     initial_state = np.zeros((rbt.get_num_positions() + rbt.get_num_velocities(), 1))
     initial_state[0] = 1.0
     state.SetFromVector(initial_state)
