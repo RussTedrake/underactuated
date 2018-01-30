@@ -6595,14 +6595,14 @@ output formats supported by your current visualizer.</p>
 
     <p>Continuing our abstractions, we find that the equations of motion of a
     general robotic manipulator (without kinematic loops) take the form
-    \begin{equation}{\bf M}(\bq)\ddot{\bq} + \bC(\bq,\dot{\bq})\dot{\bq} - {\bf
-    \tau_g}(\bq) = {\bf B}(\bq)\bu,\end{equation} where $\bq$ is the state
+    \begin{equation}{\bf M}(\bq)\ddot{\bq} + \bC(\bq,\dot{\bq})\dot{\bq} -
+    \btau_g(\bq) = {\bf B}(\bq)\bu,\end{equation} where $\bq$ is the state
     vector, ${\bf M}$ is the inertia matrix, $\bC$ captures Coriolis forces, and
     $\btau_g$ is the gravity vector.  Note that we place a minus sign in front
     of the gravity vector in these notes, although it is not as standard,
-    because it permits ${\bf \tau_g}$ to actually denote the torques due to
-    gravity (instead of the torques required to oppose gravity). The matrix
-    $\bB$ maps control inputs $\bu$ into generalized forces.</p>
+    because it permits $\btau_g$ to actually denote the torques due to gravity
+    (instead of the torques required to oppose gravity). The matrix $\bB$ maps
+    control inputs $\bu$ into generalized forces.</p>
 
     <div data-type="example"><h1>Manipulator Equation form of the Simple Double
     Pendulum</h1> The equations of motion from Example 1 can be written
@@ -6655,9 +6655,9 @@ output formats supported by your current visualizer.</p>
       <p>Consider the constraint equation \begin{equation}\bh(\bq) =
       0.\end{equation}  For the case of the kinematic closed-chain, this can be
       the kinematic constraint that the location of one end of the chain is
-      equal to the location of the other end of the chain. The (floating base)
-      equations of motion can be written \begin{equation}\bM({\bq})\ddot{\bq} +
-      \bC(\bq,\dot{\bq})\dot\bq - {\bf \tau_g}(\bq) = \bB\bu + \bH^T(\bq)
+      equal to the location of the other end of the chain. The equations of
+      motion can be written \begin{equation}\bM({\bq})\ddot{\bq} +
+      \bC(\bq,\dot{\bq})\dot\bq - \btau_g(\bq) = \bB\bu + \bH^T(\bq)
       \blambda,\end{equation} where $\bH(\bq) = \pd\bh{\bq}$ and ${\blambda}$ is
       the constraint force.  Let's use the shorthand \begin{equation}
       \bM({\bq})\ddot{\bq} = \btau(q,\dot{q},u) + \bH^T(\bq) \blambda.
@@ -6681,7 +6681,10 @@ output formats supported by your current visualizer.</p>
       numerical precision.  To accomplish this, rather than solving for
       $\ddot\bh = 0$ as above, we can instead solve for \begin{equation}\ddot\bh
       = \bH\ddot\bq + \dot\bH\dot\bq = -2\alpha \dot\bh - \alpha^2
-      \bh,\end{equation} where $\alpha>0$ is a stiffness parameter. Carrying
+      \bh,\end{equation} where $\alpha>0$ is a stiffness parameter. This is
+      known as Baumgarte's stabilization technique, implemented here with a
+      single parameter to provide a critically-damped response.
+      Carrying
       this through yields \begin{equation} \blambda =- (\bH \bM^{-1} \bH^T)^+
       (\bH \bM^{-1} \btau + (\dot{\bH} + 2\alpha \bH)\dot{\bq} + \alpha^2 \bh).
       \end{equation}</p>
@@ -6784,7 +6787,7 @@ output formats supported by your current visualizer.</p>
       <p>If the contact involves Coulomb friction, then the transitions between
       sticking and sliding can be modeled as additional hybrid guards, or can be
       solved efficiently as a complementarity problem
-      <elib>Steward96</elib>.</p>
+      <elib>Stewart96</elib>.</p>
 
     </section>
 
