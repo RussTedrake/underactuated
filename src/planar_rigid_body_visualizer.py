@@ -38,13 +38,31 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         and assumes it won't be rotated out of
         plane.)
 
-        view_origin, x_dir, and y_dir define
-        a 2D coordinate system in which
-        all points will be projected.
+        TView specifies the view projection matrix,
+        and should be a 3x4 matrix:
+        [ <x axis select> x_axis_shift
+          <y axis select> y_axis_shift
+           0, 0, 0 1]  homogenizer
+
+        e.g.
+
+        [ 1 0 0 0.5
+          0 1 0 0
+          0 0 0 1]
+
+        would give a top-down view (i.e squashing
+        the z axis), and would shift things in the
+        x axis positively by 0.5.
+
+        xlim and ylim don't technically provide
+        extra functionality, but I think it's easier
+        to keep handle scaling with xlim and ylim
+        and view plane selection and *maybe*
+        offsetting with the projection matrix.
 
     '''
 
-    def __init__(self, rbtree, Tview, xlim = [-10., 10], ylim = [-10, 10]):
+    def __init__(self, rbtree, Tview, xlim = [-1., 1], ylim = [-1, 1]):
         PyPlotVisualizer.__init__(self)
         self.set_name('planar_rigid_body_visualizer')
 
@@ -136,11 +154,6 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
 
 if __name__ == "__main__":
     np.set_printoptions(precision=5, suppress=True)
-
-    # TView elements:
-    # [ <x axis select> x_axis_shift
-    #   <y axis select> y_axis_shift
-    #   0, 0, 0 1]  homogenizer
 
     '''
     rbt = RigidBodyTree("Pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
