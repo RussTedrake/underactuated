@@ -1,5 +1,7 @@
 # -*- coding: utf8 -*-
 
+import scipy as sp
+import scipy.spatial
 import numpy as np
 import math
 import matplotlib.animation as animation
@@ -13,7 +15,7 @@ from pydrake.systems.framework import (
     LeafSystem,
     PortDataType
     )
-from pydrake.systems.rbplant import RigidBodyPlant
+import pydrake.multibody
 import time
 
 from pyplot_visualizer import PyPlotVisualizer
@@ -50,8 +52,6 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         # Populate body patches
         self.buildViewPatches()
 
-        print self.viewPatches
-
         # Populate the body fill list -- which requires doing most of
         # a draw pass, but with an ax.fill() command rather than
         # an in-place replacement of vertex positions.
@@ -63,8 +63,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
             tf = self.rbtree.relativeTransform(kinsol, 0, body_i+1)
             viewPatches = self.getViewPatches(body_i, tf)
             for patch in viewPatches:
-                print tf, patch
-                self.body_fill_list += self.ax.fill(patch[0, :], patch[1, :], zorder=0, color=(0.9, 0.1, 0), edgecolor='k')
+                self.body_fill_list += self.ax.fill(patch[0, :], patch[1, :], zorder=0, color=(0.9, 0.1, 0), edgecolor='k', closed=False)
 
         self.draw(q0)
 
@@ -84,29 +83,34 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                         points = geom.getPoints()
                         tris = geom.getFaces()
                         for tri in tris:
-                            this_body_patches.append(np.array([points[x] for x in tri], dtype=np.float64))
+                            patch = np.array([points[:, x] for x in tri], dtype=np.float64)
+                            patch = np.vstack((patch, np.ones((1, patch.shape[1]))))
+                            patch = np.dot(element_local_tf, patch)
+                            # Project into 2D
+                            patch = np.dot(self.Tview, patch)
+                            # No convhull necessary, already appropriately ordered
+                            this_body_patches.append(patch)
                     else:
                         # Placeholder until polymorphic Geometry wrapping works
-                        patch = np.transpose(np.array([[-0.1, 0, -0.1, 1], [0.1, 0, -0.1, 1], [0.1, 0, 0.1, 1], [-0.1, 0.0, 0.1, 1], [-0.1, 0, -0.1, 1]], dtype=np.float64))
+                        patch = geom.getPoints()
+                        patch = np.vstack((patch, np.ones((1, patch.shape[1]))))
                         patch = np.dot(element_local_tf, patch)
-                        # Because I want to support out-of-plane robots,
-                        # I'm pretty sure I can't project down to
-                        # the view plane here, as transformations might
-                        # depend on out-of-view-plane coordinates.
+                        # Project into 2D
+                        patch = np.dot(self.Tview, patch)
+
+                        # Take convhull
+                        if patch.shape[1] > 3:
+                            hull = sp.spatial.ConvexHull(np.transpose(patch[0:2, :]))
+                            patch = np.transpose(np.vstack([patch[:, v] for v in hull.vertices]))
                         this_body_patches.append(patch)
 
-                    print geom.getPoints()
-                    print geom.getBoundingBoxPoints()
-                    if geom.hasFaces():
-                        print element.getGeometry().getFaces()
             self.viewPatches.append(this_body_patches)
 
 
     # Pulls out the view patch verts for the given body index
-    # transformed by a world-to-body tf into world frame
-    # after modification with the view frame projection
     def getViewPatches(self, body_i, tf):
-        return [np.dot(self.Tview, np.dot(tf, patch)) for patch in self.viewPatches[body_i]]
+        projected_tf = np.dot(np.dot(self.Tview, tf), np.linalg.pinv(self.Tview))
+        return [np.dot(projected_tf, patch)[0:2] for patch in self.viewPatches[body_i]]
 
     def draw(self, state_vec):
         kinsol = self.rbtree.doKinematics(state_vec)
@@ -124,20 +128,21 @@ if __name__ == "__main__":
 
     # TView elements:
     # [ <x axis select> x_axis_shift
-    #   <y axis select> y_axis_shift]
+    #   <y axis select> y_axis_shift
+    #   0, 0, 0 1]  homogenizer
 
-    #rbt = RigidBodyTree("Pendulum.urdf")
-    #Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.]], dtype=np.float64)
-    #pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-1.2, 1.2], [-1.2, 1.2])
+    rbt = RigidBodyTree("Pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
+    Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
+    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-1.2, 1.2], [-1.2, 1.2])
     
-    rbt = RigidBodyTree()
-    world_frame = pydrake.rbtree.RigidBodyFrame("world_frame", rbt.world(), [0, 0, 0], [0, 0, 0])
-    AddModelInstancesFromSdfString(open("double_pendulum.sdf", 'r').read(),
-        pydrake.rbtree.FloatingBaseType.kFixed,
-        world_frame,
-        rbt)
-    Tview = np.array([[0, 1., 0., 0.], [0., 0., 1., -3.]], dtype=np.float64)
-    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-3., 3.], [-3., 3.])
+    #rbt = RigidBodyTree()
+    #world_frame = pydrake.rbtree.RigidBodyFrame("world_frame", rbt.world(), [0, 0, 0], [0, 0, 0])
+    #AddModelInstancesFromSdfString(open("double_pendulum.sdf", 'r').read(),
+    #    pydrake.rbtree.FloatingBaseType.kFixed,
+    #    world_frame,
+    #    rbt)
+    #Tview = np.array([[0, 1., 0., 0.], [0., 0., 1., -3.]], dtype=np.float64)
+    #pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-3., 3.], [-3., 3.])
 
     for i in range(1000):
         q = np.array([math.pi*math.sin(i*0.01*(k+1)) for k in range(rbt.get_num_positions())])
