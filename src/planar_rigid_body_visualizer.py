@@ -89,6 +89,10 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                         # Placeholder until polymorphic Geometry wrapping works
                         patch = np.transpose(np.array([[-0.1, 0, -0.1, 1], [0.1, 0, -0.1, 1], [0.1, 0, 0.1, 1], [-0.1, 0.0, 0.1, 1], [-0.1, 0, -0.1, 1]], dtype=np.float64))
                         patch = np.dot(element_local_tf, patch)
+                        # Because I want to support out-of-plane robots,
+                        # I'm pretty sure I can't project down to
+                        # the view plane here, as transformations might
+                        # depend on out-of-view-plane coordinates.
                         this_body_patches.append(patch)
 
                     print geom.getPoints()
