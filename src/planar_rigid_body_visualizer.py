@@ -1,5 +1,6 @@
 # -*- coding: utf8 -*-
 
+import argparse
 import math
 import random
 import sys
@@ -208,34 +209,19 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                 self.body_fill_list[body_fill_index].get_path().vertices[:, :] = np.transpose(patch)
                 body_fill_index += 1
 
-if __name__ == "__main__":
-    # Usage demo: load a URDF, rig it up with a constant torque input, and draw it.
-
-    np.set_printoptions(precision=5, suppress=True)
-
-    '''
-    rbt = RigidBodyTree("Pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
+def setupPendulumExample():
+    rbt = RigidBodyTree("pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
     Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
     pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-1.2, 1.2], [-1.2, 1.2])
-    '''
+    return rbt, pbrv
 
+def setupDoublePendulumExample():
     rbt = RigidBodyTree("double_pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
     Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
     pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-3.0, 3.0], [-3.0, 3.0], use_random_colors=True)
+    return rbt, pbrv
 
-    '''
-    # Doesn't work correctly, as it has no inputs hooked up.
-    rbt = RigidBodyTree()
-    world_frame = pydrake.rbtree.RigidBodyFrame("world_frame", rbt.world(), [0, 0, 0], [0, 0, 0])
-    pydrake.rbtree.AddModelInstancesFromSdfString(open("double_pendulum.sdf", 'r').read(),
-        pydrake.rbtree.FloatingBaseType.kFixed,
-        world_frame,
-        rbt)
-    Tview = np.array([[0, 1., 0., 0.], [0., 0., 1., -3.], [0., 0., 0., 1.]], dtype=np.float64)
-    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-3., 3.], [-3., 3.])
-    '''
-
-    '''
+def setupValkyrieExample():
     # Valkyrie Example
     rbt = RigidBodyTree()
     world_frame = pydrake.rbtree.RigidBodyFrame("world_frame", rbt.world(), [0, 0, 0], [0, 0, 0])
@@ -258,39 +244,80 @@ if __name__ == "__main__":
         val_start_frame,
         rbt)
     Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
-    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-2.0, 2.0], [-0.25, 3.0])
-    '''
+    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-2.0, 2.0], [-0.25, 3.0], use_random_colors=True)
+    return rbt, pbrv
 
-    rbplant = RigidBodyPlant(rbt)
+if __name__ == "__main__":
+    # Usage demo: load a URDF, rig it up with a constant torque input, and draw it.
 
-    builder = DiagramBuilder()
-    rbplant_sys = builder.AddSystem(rbplant)
 
-    torque = 1.0
-    if (len(sys.argv)>1):
-        torque = float(sys.argv[1])
-    torque_system = builder.AddSystem(ConstantVectorSource(np.ones((rbt.get_num_actuators(), 1))*torque))
-    builder.Connect(torque_system.get_output_port(0),
-                            rbplant_sys.get_input_port(0))
-    print('Simulating with constant torque = ' + str(torque) + ' Newton-meters')
+    np.set_printoptions(precision=5, suppress=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-t", "--torque",
+                        type=float,
+                        help="Constant torque to apply to all joints.",
+                        default=1.0)
+    parser.add_argument("-T", "--time", 
+                        type=float,
+                        help="Duration to run sim.",
+                        default=1.0)
+    parser.add_argument("-m", "--models",
+                        type=str,
+                        nargs="*",
+                        help="Models to run, at least one of [pend, dpend, val]",
+                        default=["dpend"])
+    args = parser.parse_args()
 
-    visualizer = builder.AddSystem(pbrv)
-    builder.Connect(rbplant_sys.get_output_port(0), visualizer.get_input_port(0))
+    for model in args.models:
+        if model == "pend":
+            rbt, pbrv = setupPendulumExample()
+            timestep = 0.0
+            set_initial_state = True
+        elif model == "dpend":
+            rbt, pbrv = setupDoublePendulumExample()
+            timestep = 0.0
+            set_initial_state = True
+        elif model == "val":
+            rbt, pbrv = setupValkyrieExample()
+            timestep = 0.001
+            # Setting initial state does not work for Timestepping RBT
+            # in current configuration. It's probably something simple,
+            # but I just want to hack the Val planar viz into working...
+            set_initial_state = False
+        else:
+            print "Unrecognized model %s." % model
+            parser.print_usage()
+            exit(1)
 
-    diagram = builder.Build()
-    simulator = Simulator(diagram)
-    simulator.Initialize()
-    simulator.set_target_realtime_rate(1.0)
-    simulator.set_publish_every_time_step(False)
+        rbplant = RigidBodyPlant(rbt, timestep)
 
-    # TODO(russt): Clean up state vector access below.
-    state = simulator.get_mutable_context().get_mutable_state()\
-                     .get_mutable_continuous_state().get_mutable_vector()
+        builder = DiagramBuilder()
+        rbplant_sys = builder.AddSystem(rbplant)
 
-    initial_state = np.zeros((rbt.get_num_positions() + rbt.get_num_velocities(), 1))
-    initial_state[0] = 1.0
-    state.SetFromVector(initial_state)
+        torque = args.torque
+        torque_system = builder.AddSystem(ConstantVectorSource(np.ones((rbt.get_num_actuators(), 1))*torque))
+        builder.Connect(torque_system.get_output_port(0),
+                                rbplant_sys.get_input_port(0))
+        print('Simulating with constant torque = ' + str(torque) + ' Newton-meters')
 
-    simulator.StepTo(10.0)
+        visualizer = builder.AddSystem(pbrv)
+        builder.Connect(rbplant_sys.get_output_port(0), visualizer.get_input_port(0))
 
-    print(state.CopyToVector())
+        diagram = builder.Build()
+        simulator = Simulator(diagram)
+        simulator.Initialize()
+        simulator.set_target_realtime_rate(1.0)
+        simulator.set_publish_every_time_step(False)
+
+        # TODO(russt): Clean up state vector access below.
+        state = simulator.get_mutable_context().get_mutable_state()\
+                         .get_mutable_continuous_state().get_mutable_vector()
+
+        if set_initial_state:
+            initial_state = np.zeros((rbt.get_num_positions() + rbt.get_num_velocities(), 1))
+            initial_state[0] = 1.0
+            state.SetFromVector(initial_state)
+
+        simulator.StepTo(args.time)
+
+        print(state.CopyToVector())
