@@ -10,7 +10,7 @@ Build the examples
 
 ```
 $ mkdir build && cd build
-$ cmake -D -Ddrake_DIR=PATH_TO_DRAKE/lib/cmake/drake ..
+$ cmake -Ddrake_DIR=PATH_TO_DRAKE/lib/cmake/drake ..
 $ make
 ```
 

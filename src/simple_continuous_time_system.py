@@ -18,6 +18,7 @@ class SimpleContinuousTimeSystem(VectorSystem):
     def _DoCalcVectorTimeDerivatives(self, context, input, state, derivatives):
         derivatives[0] = -state[0] + state[0]**3
 
+    # y = x
     def _DoCalcVectorOutput(self, context, input, state, output):
         output[0] = state[0]
 
