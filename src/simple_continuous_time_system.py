@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-
-import numpy as np
 import pydrake
 from pydrake.systems.framework import (DiagramBuilder, VectorSystem)
 from pydrake.systems.primitives import SignalLogger
@@ -35,7 +32,6 @@ diagram = builder.Build()
 
 # Create the simulator.
 simulator = Simulator(diagram)
-simulator.Initialize()
 
 # Set the initial conditions, x(0).
 state = simulator.get_mutable_context().get_mutable_state()\
@@ -47,4 +43,6 @@ simulator.StepTo(10)
 
 # Plot the results.
 plt.plot(logger.sample_times(), logger.data().transpose())
+plt.xlabel('t')
+plt.ylabel('x(t)')
 plt.show()
