@@ -15,12 +15,12 @@ class SimpleContinuousTimeSystem(VectorSystem):
         self._DeclareContinuousState(1)  # One state variable.
 
     # xdot = -x + x^3
-    def _DoCalcVectorTimeDerivatives(self, context, input, state, derivatives):
-        derivatives[0] = -state[0] + state[0]**3
+    def _DoCalcVectorTimeDerivatives(self, context, u, x, xdot):
+        xdot[:] = -x + x**3
 
     # y = x
-    def _DoCalcVectorOutput(self, context, input, state, output):
-        output[0] = state[0]
+    def _DoCalcVectorOutput(self, context, u, x, y):
+        y[:] = x
 
 
 if __name__ == "__main__":
@@ -40,7 +40,7 @@ if __name__ == "__main__":
     # Set the initial conditions, x(0).
     state = simulator.get_mutable_context().get_mutable_state()\
         .get_mutable_continuous_state().get_mutable_vector()
-    state.SetFromVector(np.array([0.9]))
+    state.SetFromVector([0.9])
 
     # Simulate for 10 seconds.
     simulator.StepTo(10)
