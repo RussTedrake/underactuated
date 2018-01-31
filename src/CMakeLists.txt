@@ -17,5 +17,6 @@ function(add_pytest pyfile)
 
 endfunction(add_pytest)
 
-add_pytest(simple_continuous_time_system.py)
+add_pytest(simple_continuous_time_system_simulation.py)
+#add_pytest(simple_discrete_time_system_simulation.py)
 add_pytest(double_pendulum.py)

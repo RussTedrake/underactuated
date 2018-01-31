@@ -5967,548 +5967,184 @@ and Validation</h1>
 <section data-type="chapter" class="chapter" id="drake"><h1>Modeling
 Input-Output Dynamical Systems</h1>
 
-<p>This chapter provides a short tutorial for modeling input-output dynamical systems in <drake></drake>.
-  <drake></drake> includes a set of C++ classes in <code>drake::systems</code> that provide an API for
-  building complex dynamical systems by connecting simple dynamical systems into a block diagram.  The modeling approach
-  is very much inspired by MATLAB's Simulink (though without the graphical user interface).  Like Simulink,
-  <code>drake::systems</code> provides a library of existing systems and also makes it easy for you to define your own
-  new dynamical systems.</p>
-
-  <p>A major difference between modeling dynamical systems in <code>drake::systems</code> vs Simulink (or most other
-    system modeling languages) is that there is a considerable emphasis in <drake></drake> on exposing the underlying
-    structure in the governing equations.  For example, if certain outputs of a dynamical system depend on only a small
-    fraction of the inputs, then we attempt to expose this sparsity directly.  Similarly, if the dynamics of a system
-    can be described by a polynomial vector field (or linear, or at least differentiable, ...), then <drake></drake>
-    aims to expose this structure as well, and to preserve this structure when systems are combined into a diagram.
-    Exposing this structure may have only modest benefit for numerical simulation, but it is incredibly enabling for
-    more sophisticated algorithms for analysis, system identification, and feedback or state estimator design.
-  </p>
-
-  <p>We'll return to the more advanced modeling tools in a minute, but let us start with some very simple examples.
-Dynamical systems in <drake></drake> are represented by their dynamics in
-state-space form, where we often $x$ to denote the state vector.  In addition,
-every dynamical system can have an input vector, often denoted $u$, and an output
-vector, often $y$. </p>
-
-<center><img style="width:250px;" data-src="figures/input_output_system.svg"/></center>
-
-<section data-type="sect1"><h1>Writing your own dynamics</h1>
-
-<p>
-In this section, we will describe how you can write your own dynamics class in C++ by deriving from the <code>drake::systems::LeafSystem</code> interface class.</p>
-
-<p>
-<b>Continuous-Time Systems.</b>
-Consider a basic continuous-time nonlinear input-output dynamical system described by the following state-space equations:
-\begin{gather*}
-\dot{x} = f(t,x,u), \\ y = g(t,x,u).
-\end{gather*}
-In <drake></drake>, you can instantiate a system of this form where $f()$
-and $g()$ are anything that you can write into a C++ function.
-This is accomplished by deriving from the <code>drake::systems::LeafSystem</code> class, defining the output vector in the constructor, and overloading the <code>dynamics</code> and <code>output</code> methods, as illustrated by the following example:
-
-<div data-type="example" class="drake"><h1>A simple continuous-time system</h1>
-<p>Consider the system \begin{gather*}\dot{x} = -x + x^3,\\ y = x.\end{gather*}  This system has zero inputs, one (continuous) state variable, and one output.  It can be implemented in <drake></drake> using the following code:</p>
-
-  <drake_code>src/simple_continuous_time_system.py</drake_code>
-</div>
-
-
-<p><b>Discrete-Time Systems</b>.
-Implementing a basic discrete-time system in <drake></drake> is very analogous to implementing a continuous-time system.  The discrete-time system given by:
-\begin{gather*}
-x[n+1] = f(n,x,u),\\
-y[n] = g(n,x,u),
-\end{gather*}
-can be implemented by deriving from <code>DrakeSystem</code> and defining the <code>update</code> and <code>output</code> methods, as seen in the following example.</p>
-
-<div data-type="example" class="drake"><h1>A simple discrete-time system</h1>
-<p>
-Consider the system \begin{gather*}x[n+1] = x^3[n],\\ y[n] = x[n].\end{gather*}  This system has zero inputs, one (discrete) state variable, and one output.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/examples/SimpleDTExample.m">code</a>:</p>
-<pre><code class="matlab" testfile="SimpleDTExample">
-classdef SimpleDTExample < DrakeSystem
-  methods
-    function obj = SimpleDTExample()
-      % call the parent class constructor:
-      obj = obj@DrakeSystem(...
-         0, ... % number of continuous states
-         1, ... % number of discrete states
-         0, ... % number of inputs
-         1, ... % number of outputs
-         false, ... % because the output does not depend on u
-         true);  % because the update and output do not depend on t
-    end
-    function xnext = update(obj,t,x,u)
-      xnext = x^3;
-    end
-    function y=output(obj,t,x,u)
-      y=x;
-    end
-  end
-end
-</code></pre>
-</div>
-
-
-<p><b>Mixed Discrete and Continuous Dynamics</b>.
-  It is also possible to implement systems that have both continuous
-dynamics and discrete dynamics.  There are two subtleties that must be
-addressed.  First, we'll denote the discrete states as $x_d$ and the
-continuous states as $x_c$, and the entire state vector $x = [x_d^T,
-x_c^T]^T$.  Second, we must define the timing of the discrete dynamics
-update relative to the continuous time variable $t$; we'll denote this
-period with $\Delta_t$.  Then a mixed system can be written
-as:\begin{gather*} \dot{x}_c = f_c(t,x,u),\\ x_d(t+t') = f_d(t,x,u),
-  \quad \forall t \in \{0,\Delta_t,2\Delta_t,...\},\forall t' \in
-  (0,\Delta_t] \\ y=g(t,x,u). \end{gather*} Note that, unlike the
-purely discrete time example, the solution of the discrete time variable is defined
-for all $t$.  To implement this, derive from <code>DrakeSystem</code> and
-implement the <code>dynamics</code>, <code>update</code>, <code>output</code> methods
-for $f_c()$, $f_d()$, and $g()$, respectively.  To define the timing,
-you must also implement the <code>getSampleTime</code> method.  Type
-<code>help DrakeSystem/getSampleTime</code> at the MATLAB prompt for
-more information.  Note that currently <drake></drake> only supports a
-single DT sample time for each individual <code>DrakeSystem</code> (but multiple systems can be combined with different sampling times). </p>
-<!--  since it there is there is only a single update method published by the drakesystem class.  -->
-
-<div data-type="example" class="drake"><h1>A mixed discrete- and continuous-time example</h1>
-<p>
-  Consider the system \begin{gather*}x_1(t+t') = x_1^3(t), \quad \forall
-  t \in \{0,1,2,..\}, \forall t' \in (0,1], \\\dot{x}_2 =
-  -x_2(t) + x_2^3(t), \end{gather*} which is the combination of the
-previous two examples into a single system.  It can be implemented in <drake></drake> using the following <a href="https://github.com/RobotLocomotion/drake/blob/master/examples/SimpleMixedCTDTExample.m">code</a>:</p>
-<pre><code class="matlab" testfile="SimpleMixedCTDTExample">
-classdef SimpleMixedCTDTExample < DrakeSystem
-  methods
-    function obj = SimpleMixedCTDTExample()
-      % call the parent class constructor:
-      obj = obj@DrakeSystem(...
-         1, ... % number of continuous states
-         1, ... % number of discrete states
-         0, ... % number of inputs
-         2, ... % number of outputs
-         false, ... % because the output does not depend on u
-         true);  % because the update and output do not depend on t
-    end
-    function ts = getSampleTime(obj)
-      ts = [[0;0], ...  % continuous and discrete sample times
-        [1;0]];         % with dt = 1
-    end
-    function xdnext = update(obj,t,x,u)
-      xdnext = x(1)^3;       % the DT state is x(1)
-    end
-    function xcdot = dynamics(obj,t,x,u);
-      xcdot = -x(2)+x(2)^3;  % the CT state is x(2)
-    end
-    function y=output(obj,t,x,u)
-      y=x;
-    end
-  end
-end</code></pre>
-</div>
-
-
-<p><b>Systems with Constraints</b>. Nonlinear input-output systems with constraints can
-also be defined.  There are two distinct types of constraints supported: state constraints that can be modeled as a function $\phi(x) = 0$ and input constraints which can be modeled as $u_{min} \le u \le u_{max}$.  For instance, we would write a continuous-time system with state and input constraints as:
-\begin{gather*}
-\dot{x} = f(t,x,u),\quad y = g(t,x,u), \\ \text{subject to }  \phi(x) =
-0, u_{min} \le u \le u_{max}.
-\end{gather*}
-These two types of constraints are handled quite differently.</p>
-
-<p>
-  Input constraints are designed to act in the same way that an actuator limit might work for a mechanical system.  These act as a saturation nonlinearity system attached to the input, where for each element: $$y_i = \begin{cases} u_{max,i} & \text{if } u_i > u_{max,i} \\ u_{min,i} & \text{if } u_i < u_{min,i} \\ u_i & \text{otherwise.}\end{cases}$$  The advantage of using the input limits instead of implementing the saturation in your own code is that the discontinuity associated with hitting or leaving a saturation is communicated to the solver correctly, allowing for more efficient and accurate simulations.  Input constraints are set by calling the <code>setInputLimits</code> method.</p>
-
-<p>
-  State constraints are additional information that you are providing to the solver and analysis routines.  They should be read as "this dynamical system will only ever visit states described by $\phi(x)=0$".  Evaluating the dynamics at a vector $x$ for which $\phi(x) \ne 0$ may lead to an undefined or non-sensible output.   Telling <drake></drake> about this constraint will allow it to select initial conditions which satisfy the constraint, simulate the system more accurately (with the constraint imposed), and restrict attention during analysis to the manifold defined by the constraints.  However, \emph{the state constraints function should not be used to enforce an additional constraint that is not already imposed on the system by the governing equations.}.  The state constraint should be simply announcing a property that the system already has, if simulated accurately.   Examples might include a passive system with a known total energy, or a four-bar linkage in a rigid body whose dynamics are written as a kinematic tree + constraint forces.   State constraints are implemented by overloading the <code>stateConstraints</code> method \emph{and} by calling <code>setNumStateConstraints</code> to tell the solver what to expect in that method.</p>
-
-<!--implement example of passive pendulum with and without state constraints, showing the additional accuracy.-->
-
-<p><b>Hybrid (Event-Driven) Systems.</b>
-<drake></drake> supports systems that are modeled as smooth, discrete- or
-continuous- time systems which transition between discrete modes based
-on some event.  Simulink calls these models "State Machines".  Examples include a walking robot model which undergoes a
-discrete impulsive collision event (and possibly a change to a
-different model) when a foot hits the ground, or the switching
-controller for swinging up the underactuated double pendulum (Acrobot)
-which switches from an energy-shaping swing-up controller to a
-linear balancing controller at the moment when the state arrives in a
-pre-specified neighborhood around the upright.  An example
-hybrid system is illustrated in the figure below.  Note that the internal
-mode dynamics could also have discrete-time dynamics or mixed discrete-
-and continuous-time dynamics.<p>
-
-<center><img style="width:550px;" data-src="figures/hybrid_system.svg"/></center>
-
-<p>Event-driven systems in <drake></drake> are described using the language
-from the Hybrid Systems community.  Transitions between individual
-modes are described by a <i>guard</i> function, denoted by
-$\phi(t,x,u)$ in the figure, which triggers a transition
-out of the current mode when $\phi \le 0$.  The dynamics of the
-transition are given by the <i>reset</i> function, $x^+ =
-\Delta(t,x^-,u)$.  Event-driven systems are constructed by creating
-(or inheriting from) an empty <code>HybridDrakeSystem</code>, then
-populating the system with modes (nodes in the graph) by calling
-<code>addMode</code>, and populating the system with transitions (edges in
-the graph) by calling <code>addTransition</code>.  Note that it is often
-useful to create guard out of a logical combination of smooth guards
-(e.g. $x(1)>0$ and $x(2)<.5$); to accomplish this you should use the
-<code>andGuard</code> and <code>notGuard</code> methods.
-The output of a <code>HybridDrakeSystem</code> is the output
-of the active mode.</p>
-
-
-<div data-type="example" class="drake"><h1>The bouncing ball: a hybrid system example</h1>
-
-<p>The dynamics of a vertically bouncing ball can be described by a
-  <code>HybridDrakeSystem</code> with a single continuous mode to model
-  the flight of the ball through the air and a discrete collision
-  event at the moment that the ball hit the ground. This can be
-  accomplished with the following two classes (which can be found in the <a href="https://github.com/RobotLocomotion/drake/tree/master/examples/BouncingBall"><code>examples/BouncingBall</code> directory</a>):
-<pre><code class="matlab" testfile="BallFlightPhasePlant">
-classdef BallFlightPhasePlant < DrakeSystem
-
-  methods
-    function obj = BallFlightPhasePlant()
-      obj = obj@DrakeSystem(...
-        2, ... % number of continuous states
-        0, ... % number of discrete states
-        0, ... % number of inputs
-        1, ... % number of outputs
-        false, ... % not direct feedthrough
-        true); % time invariant
-    end
-
-    function xdot = dynamics(obj,t,x,u)
-      xdot = [x(2); -obj.g];  % qddot = -g; x=[q,qdot]
-    end
-
-    function y = output(obj,t,x,u)
-      y = x(1); % height of the ball
-    end
-  end
-
-  properties
-    g = 9.81;  % gravity
-  end
-end
-</code></pre>
-
-<pre><code class="matlab" testfile="BallPlant">
-classdef BallPlant < HybridDrakeSystem
-
-  methods
-    function obj = BallPlant()
-      obj = obj@HybridDrakeSystem(...
-        0, ...  % number of inputs
-        1);     % number of outputs
-
-      % create flight mode system
-      sys = BallFlightPhasePlant();
-      obj = setInputFrame(obj,sys.getInputFrame);
-      obj = setOutputFrame(obj,sys.getOutputFrame);
-      [obj,flight_mode] = addMode(obj,sys);  % add the single mode
-
-      g1=inline('x(1)-obj.r','obj','t','x','u');  % q-r<=0
-      g2=inline('x(2)','obj','t','x','u'); % qdot<=0
-      obj = addTransition(obj, ...
-        flight_mode, ...           % from mode
-        andGuards(obj,g1,g2), ...  % q-r<=0 & qdot<=0
-        @collisionDynamics, ...    % transition method
-        false, ...                 % not direct feedthrough
-        true);                     % time invariant
-    end
-
-    function [xn,m,status] = collisionDynamics(obj,m,t,x,u)
-      xn = [x(1); -obj.cor*x(2)];      % qdot = -cor*qdot
-
-      if (xn(2)<0.01) status = 1; % stop simulating if ball has stopped
-      else status = 0; end
-    end
-
-  end
-
-  properties
-    r = 1;  % radius of the ball
-    cor = .8;  % coefficient of restitution
-  end
-end
-</code></pre>
-</div>
-
-
-<p><b>Stochastic Systems</b>.
-<drake></drake> also provides limited support for working with stochastic
-systems.  This includes continuous-time stochastic models of the
-form \begin{gather*} \dot{x}(t) = f(t,x(t),u(t),w(t)) \\ y(t) =
-  g(t,x(t),u(t),w(t)), \end{gather*} where $w(t)$ is the vector output of a random
-process which generates Gaussian white noise.
-It also supports discrete-time models of the
-form \begin{gather*}
-x[n+1] = f(n,x[n],u[n],w[n]) \\ y[n] = g(n,x[n],u[n],w[n]), \end{gather*} where
-$w[n]$ is Gaussian i.i.d. noise, and mixed continuous- and
-discrete-time systems as described above.  These are quite general models, since
-nearly any distribution can be approximated by a white noise input
-into a nonlinear dynamical system.  Note that for simulation purposes, any
-continuous-time white noise, $w(t)$, is approximated by a band-limited
-white noise signal.  </p>
-
-<p>
-Stochastic models can be implemented in <drake></drake> by deriving from
-<code>StochastiDrakeSystem</code> and implementing the
-<code>stochasticDynamics</code>, <code>stochasticUpdate</code>, and
-<code>stochasticOutput</code> methods. </p>
-
-<div data-type="example" class="drake"><h1>A simple continuous-time stochastic system</h1>
-
-<p>Consider the system \begin{gather*}\dot{x} = -x + w,\\ y = x.\end{gather*}  This system has zero inputs, one (continuous) state variable, and one output.  It can be implemented in <drake></drake> using the following code:</p>
-<pre><code class="matlab" testfile="LinearGaussianExample">
-classdef LinearGaussianExample < StochasticDrakeSystem
-
-  methods
-    function obj = LinearGaussianExample
-      obj = obj@StochasticDrakeSystem(...
-        1, ... % number of continuous states
-        0, ... % number of discrete states
-        0, ... % number of inputs
-        1, ... % number of outputs
-        false, ...  % not direct feedthrough
-        true, ...   % time invariant
-        1, ... % number of noise inputs
-        .01);  % time constant of w(t)
-    end
-
-    function xcdot = stochasticDynamics(obj,t,x,u,w)
-      xcdot = -x + w;
-    end
-
-    function y = stochasticOutput(obj,t,x,u,w);
-      y=x;
-    end
-  end
-end
-</code></pre>
-</div>
-
-<p><b>Important Special Cases</b>.
-There are many special cases of dynamical systems with structure in the
-dynamics which can be exploited by our algorithms.  Special cases of
-dynamical systems implemented in <drake></drake> include</p>
-<ul>
-  <li>Second-order systems, given by $\ddot{q} = f(t,q,\dot{q},u),$ $y
-  = g(t,q,\dot{q},u)$, and $\phi_1(q)=0$ and $\phi_2(q,\dot{q})=0$.</li>
-<li> Rigid-body systems, governed by the manipulator
-  equations, \begin{gather*}H(q)\ddot{q} + C(q,\dot{q})\dot{q} + G(q) = Bu + \pd{\phi_1}{q}^T
-  \lambda_1 + \pd{\phi_2}{\dot{q}}^T \lambda_2\\ \phi_1(q) = 0, \quad
-  \phi_2(q,\dot{q})=0\end{gather*} where $\lambda_1$ and $\lambda_2$
-are forces defined implicitly by the constraints.</li>
-<li> (Rational) polynomial systems, given by $e(x)\dot{x} =
-  f(t,x,u)$, $y = g(t,x,u)$, subject to $\phi(x)=0$, where $e(), f(),
-  g(),$ and $\phi()$ are all polynomial. </li>
-<li> Linear time-invariant systems, given by \begin{gather*}
-\dot{x}_c = A_c x + B_c u,\\
-x_d[n+1] = A_d x + B_d u, \\
-y = Cx + Du,
-\end{gather*}
-and $\phi(x)=\{\}$.</li>
-</ul>
-<p>These special cases are implemented by classes derived from <code>DrakeSystem</code>.
-You should always attempt to derive from the deepest class in the hierarchy that
-describes your system.  </p>
-
-<p>
-  In some cases it is possible to convert between these derived
-classes.  For example, it is possible to convert a rigid-body system to a rational
-polynomial system (e.g., by changing coordinates through a
-stereographic projection).  Methods which implement these conversions are
-provided whenever possible.</p>
-
-<!--\todo{xcubed example again, but this time deriving from
-polynomialsystem}
-
-\todo{describe user gradients}
-%<section data-type="sect4"><h1>{Providing User Gradients}
--->
-
-<section data-type="sect2"><h1>Describing a rigid-body system with URDF</h1>
-
-  <p> URDF = Universal Robot Description Format.  Details coming soon. </p>
-</section>
-
-<section data-type="sect2"><h1>Using existing Simulink models/blocks</h1>
-
-<p>Although most users of Drake never open a Simulink GUI, <drake></drake>
-is built on top of the MATLAB Simulink engine.  As such, <drake></drake>
-systems can be used in any Simulink model, and any existing Simulink
-block or Simulink model (an entire Simulink diagram) which has a
-single (vector) input and single (vector) output can be used with the
-<drake></drake> infrastructure.</p>
-
-<!--\todo{Example of using a simulink model} -->
-</section>
-
-</section>
-
-<section data-type="sect2"><h1>Combinations of Systems</h1>
-
-<figure>
-  <center><img style="width:250px;" data-src="figures/feedback_system.svg"/></center>
-  <figcaption>Feedback combination</figcaption>
-</figure>
-<figure>
-  <center><img style="width:300px;" data-src="figures/cascade_system.svg"/></center>
-  <figcaption>Cascade combination</figcaption>
-</figure>
-
-<p>Whenever possible, structure in the equations is preserved on
-combination.  A polynomial system that is feedback combined with
-another polynomial system produces a new polynomial system.   However,
-if a polynomial system is feedback combined with a Simulink Block,
-then the new system is a DynamicalSystem, but not a PolynomialSystem. </p>
-
-<p>A combination of two systems should return a system of the type that
-is the least common ancestor in the <a href="http://drake.mit.edu/doxygen_matlab/inherits.html">class hierarchy</a>.  There are two exceptions:  combinations with
-a hybrid system stay hybrid, and combinations with a stochastic system
-stay stochastic.  <!--\todo{Stochastic Hybrid Systems are not implemented yet,
-but it wouldn't be hard.}--></p>
-
-<!--
-\todo{Make sure that feedback and cascade handle all of the cases
-  described above (especially blocks with different sample times,
-  hybrid systems, etc)}
--->
-</section>
-
-<section data-type="sect2"><h1>Coordinate frames</h1>
-
-<p>Every dynamical system in Drake has a number of coordinate frames
-associated with it, including frames which describe the inputs, states,
-and outputs of the system.  These coordinate frames provide extra
-information about the vector signals, including a name for each
-element.
-Must match to allow combination.  Hybrid modes automatically inherit the input and output coordinate
-frame of the hybrid system; the hybrid system does not have a
-coordinate frame for the state.</p>
-
-</section>
-
-<section data-type="sect2"><h1>Simulation</h1>
-
-<p>Once you have acquired a DynamicalSystem object describing the
-dynamics of interest, the most basic thing that you can do is to
-simulate it.  This is accomplished with the <code>simulate</code> method in
-the DynamicalSystem class, which takes the timespan of the simulation
-as a 1x2 vector of the form <code>[t0 tf]</code> and optionally a vector
-initial condition as input.  Type <code>help
-  DynamicalSystem/simulate</code> for further documentation about simulation
-options.</p>
-
-<p>Every <code>simulate</code> method outputs a instance of the
-<code>Trajectory</code> class.  To inspect
-the output, you may want to evaluate the trajectory at any snapshot in time
-using <code>eval</code>, plot the output using <code>fnplt</code>, or hand the
-trajectory to a visualizer (described below).</p>
-
-<div data-type="example" class="drake"><h1>Simulating the simple systems and plotting the results</h1>
-<p>Use the following code to instantiate the <code>SimpleCTExample</code>,
-simulate it, and plot the results:</p>
-<pre><code class="matlab" testfile="testSimpleCTExample">
-sys = SimpleCTExample;
-traj = simulate(sys, [0 10], .99);
-fnplt(traj);
-</code></pre>
-
-<p>The arguments passed to <code>simulate</code> set the initial time to $t_0=0$,
-final time to $t_f=5$, and initial condition to $x_0=.99$.  The code looks the same for the <code>SimpleDTExample</code>:
-<pre><code class="matlab" testfile="testSimpleDTExample">
-sys = SimpleDTExample;
-traj = simulate(sys, [0 10], .99);
-fnplt(traj);
-</code></pre>
-<!-- also use set(gca,'FontSize',20); -->
-
-<p>These generate the plots below</p>
-<figure>
-  <table width="100%"><tr width="100%"><td>
-    <img style="width:250px" data-src="figures/simple_ct_example.svg"/>
-  </td><td>
-  <img style="width:250px" data-src="figures/simple_dt_example.svg"/>
-</td></tr></table>
-<figcaption>Simulation of <code>SimpleCTSystem</code> (left) and
-  <code>SimpleDTSystem</code> (right).</figcaption>
-</figure>
-</div>
-
-<p>The <code>simulate</code> method sets the input, $u$, to the
-system to zero.  In order to simulate with an input tape, you should
-<code>cascade</code> a <code>Trajectory</code> object describing $u(t)$ with the system,
-then simulate.  If you do not specify the initial conditions on your
-call to <code>simulate</code>, then the <code>getInitialState()</code> method is
-called on your <code>DynamicalSystem</code> object.  The default
-<code>getInitialState</code> method sets $x_0 = 0$; you should consider
-overloading this method in your <code>DynamicalSystem</code> class.  In special
-cases, you may need to set initial conditions based on the initial
-time or input -- in this case you should overload the method
-<code>getInitialStateWInput</code>.  </p>
-
-<!--
-% todo: consider mentioning the realtime block in here?  Add it as an
-% option to simulate?  probably not unless somebody requests it.
-% (avoid feature creep)
--->
-
-<p>By default, <drake></drake> uses the Simulink backend for simulation, and
-makes use of a number of Simulink's advanced features.  For example,
-input limits can cause discontinuities in the derivative of a
-continuous time system, which can potentially lead to inaccuracy and inefficiency
-in simulation with variable-step solvers; <drake></drake> avoids this by
-registering "zero-crossings" for each input saturation which allow
-the solver to handle the derivative discontinuity event explicitly,
-without reducing the step-size to achieve the accuracy tolerance.  You
-can change the Simulink solver parameters using the
-<code>setSimulinkParam</code> method.
-For <code>DrakeSystems</code>, you can optionally use the MATLAB's <code>ode45</code>
-suite of solvers using the method <code>simulateODE</code>, which can also
-understand (most of) the Simulink solver parameters.</p>
-
-<section data-type="sect2"><h1>Visualization</h1>
-
-<p>Visualizers are dynamical systems, too.</p>
-
-<p>Playback</p>
-
-<p>Use ball bouncing as an example.  </p>
-
-<p>Cascading.   Use the realtime block.</p>
-
-
-<section data-type="sect3"><h1>Outputting to a movie format</h1>
-
-<p>
-There are a number of options for creating a movie file from your simulation,
-depending on which Visualizer you used.  Given a trajectory, <code>traj</code>,
-and a Visualizer object, <code>v</code>, use</p>
-<pre><code class="matlab">
-playbackMovie(v,traj);
-</code></pre>
-
-<p>If you specify an extension in your filename when you are prompted,
-then playbackMovie will attempt to write in the specified format.  If you
-specify a filename with no extension, then you will be prompted with the
-output formats supported by your current visualizer.</p>
-
-</section>
-</section>
-
-</section>
-
-<section data-type="sect1"><h1>Listing of <drake></drake> examples throughout this text</h1>
-
-<p>The best overview we have for the remaining capabilities in <drake></drake> are the main chapters of these notes.  For convenience, here is a list of software examples that are sprinkled throughout the text:</p>
-
-  <div id="list_of_drake_examples"><center>Coming soon!</center></div>
-
-</section>
+  <p>This chapter provides a short tutorial for modeling input-output dynamical
+  systems in <drake></drake>. <drake></drake> includes a set of C++ classes in
+  <code>drake::systems</code> that provide an API for building complex dynamical
+  systems by connecting simple dynamical systems into a block diagram.  The
+  modeling approach is very much inspired by MATLAB's Simulink (though without
+  the graphical user interface).  Like Simulink, <code>drake::systems</code>
+  provides a library of existing systems and also makes it easy for you to
+  define your own new dynamical systems.  The python wrappers in
+  <code>pydrake</code> used in these notes provide a convenient set of
+  bindings on top of this systems framework, allowing you to write new
+  systems in either Python or C++, and to use them interchangeably.</p>
+
+  <p>A major difference between modeling dynamical systems in
+  <drake></drake> vs Simulink (or most other system modeling
+  languages) is that there is a considerable emphasis in <drake></drake> on
+  exposing the underlying structure in the governing equations.  For example, if
+  certain outputs of a dynamical system depend on only a small fraction of the
+  inputs, then we attempt to expose this sparsity directly.  Similarly, if the
+  dynamics of a system can be described by a polynomial vector field (or linear,
+  or at least differentiable, ...), then <drake></drake> aims to expose this
+  structure as well, and to preserve this structure when systems are combined
+  into a diagram. Exposing this structure may have only modest benefit for
+  numerical simulation, but it is incredibly enabling for more sophisticated
+  algorithms for analysis, system identification, and feedback or state
+  estimator design. </p>
+
+  <p>We'll return to the more advanced modeling tools in a minute, but let us
+  start with some very simple examples.</p>
+
+  <p>A quick note on documentation.  The C++ classes are beautifully documented
+  in <a href="http://drake.mit.edu/doxygen_cxx">doxygen</a>.  I <a
+  href="https://github.com/RobotLocomotion/drake/issues/7915">currently
+  recommend</a> using this doxygen as the primary source of documentation even
+  for your Python development... most of the <code>pydrake</code> API maps
+  directly to that C++ API.</p>
+
+  <section data-type="sect1"><h1>Writing your own dynamics</h1>
+
+    <p> In this section, we will describe how you can write your own dynamics
+    class in pydrake.  Every user system should derive from the
+    <code>pydrake.systems.framework.LeafSystem</code> class.</p>
+
+    <p> However, many dynamical systems we are interested in are represented by
+    a simple vector field in state-space form, where we often $x$ to denote the
+    state vector, $u$ for the input vector, and $y$ for the output vector.  To
+    make it even easier to implement systems in this form, we provide another
+    subclass <code>pydrake.systems.framework.VectorSystem</code> that provides
+    an excellent starting point. </p>
+
+    <center><img style="width:250px;" data-src="figures/input_output_system.svg"/></center>
+
+    <p> <b>Continuous-Time Systems.</b> Consider a basic continuous-time
+    nonlinear input-output dynamical system described by the following
+    state-space equations: \begin{gather*} \dot{x} = f(t,x,u), \\ y = g(t,x,u).
+    \end{gather*} In <code>pydrake</code>, you can instantiate a system of this
+    form where $f()$ and $g()$ are anything that you can write into a Python
+    function, as illustrated by the following example:
+
+    <div data-type="example" class="drake"><h1>A simple continuous-time system</h1>
+
+      <p>Consider the system \begin{gather*}\dot{x} = -x + x^3,\\ y =
+      x.\end{gather*}  This system has zero inputs, one (continuous) state
+      variable, and one output.  It can be implemented in <drake></drake> using
+      the following code:</p>
+
+      <drake_code>src/simple_continuous_time_system.py</drake_code>
+
+    </div>
+
+
+    <p><b>Discrete-Time Systems</b>. Implementing a basic discrete-time system
+    in <drake></drake> is very analogous to implementing a continuous-time
+    system.  The discrete-time system given by: \begin{gather*} x[n+1] =
+    f(n,x,u),\\ y[n] = g(n,x,u), \end{gather*} can be implemented as seen in the
+    following example.</p>
+
+    <div data-type="example" class="drake"><h1>A simple discrete-time
+    system</h1>
+
+      <p>Consider the system \begin{gather*}x[n+1] = x^3[n],\\ y[n] =
+      x[n].\end{gather*}  This system has zero inputs, one (discrete) state
+      variable, and one output.  It can be implemented in <drake></drake> using
+      the following code:</p>
+
+      <drake_code>src/simple_discrete_time_system.py</drake_code>
+
+    </div>
+
+    <todo>restore/update mixed discrete/continuous, systems with
+      constraints, hybrid systems, and stochastic systems.  Also
+      RigidBodyPlant (load from urdf/sdf).</todo>
+
+  </section>
+  <section data-type="sect2"><h1>Combinations of Systems</h1>
+
+    <figure>
+      <center><img style="width:250px;" data-src="figures/feedback_system.svg"/></center>
+      <figcaption>Feedback combination</figcaption>
+    </figure>
+    <figure>
+      <center><img style="width:300px;" data-src="figures/cascade_system.svg"/></center>
+      <figcaption>Cascade combination</figcaption>
+    </figure>
+
+    <p>Whenever possible, structure in the equations is preserved on
+    combination.  A polynomial system that is feedback combined with
+    another polynomial system produces a new polynomial system.   However,
+    if a polynomial system is feedback combined with a Simulink Block,
+    then the new system is a DynamicalSystem, but not a PolynomialSystem. </p>
+
+    <p>A combination of two systems should return a system of the type that
+    is the least common ancestor in the <a href="http://drake.mit.edu/doxygen_matlab/inherits.html">class hierarchy</a>.  There are two exceptions:  combinations with
+    a hybrid system stay hybrid, and combinations with a stochastic system
+    stay stochastic.  <!--\todo{Stochastic Hybrid Systems are not implemented yet,
+    but it wouldn't be hard.}--></p>
+
+    <!--
+    \todo{Make sure that feedback and cascade handle all of the cases
+    described above (especially blocks with different sample times,
+    hybrid systems, etc)}
+    -->
+  </section>
+
+  <section data-type="sect2"><h1>Simulation</h1>
+
+    <p>Once you have acquired a System object describing the dynamics of
+    interest, the most basic thing that you can do is to simulate it.  This is
+    accomplished with the <code>pydrake.framework.analysis.Simulator</code>
+    class. This class provides access to a rich suite of numerical integration
+    routines, with support for variable-step integration, stiff solvers, and
+    event detection.</p>
+
+    <p>In order to view the data from a simulation after the simulation has run,
+    you should add a <code>pydrake.framework.primitives.SignalLogger</code>
+    system to your diagram.</p>
+
+    <div data-type="example" class="drake"><h1>Simulating the simple systems and
+    plotting the results</h1>
+
+      <p>Use the following code to instantiate the
+      <code>SimpleContinuousTimeSystem </code>, simulate it, and plot the
+      results:</p>
+      <drake_code>src/simple_continuous_time_system_simulation.py</drake_code>
+
+      <p>This should generate the plot below</p>
+      <figure>
+        <img style="width:500px"
+             data-src="figures/simple_continuous_time_system_simulation.svg"/>
+        <figcaption>Simulation and plot the simple continuous time system
+          .</figcaption>
+      </figure>
+
+    </div>
+
+    <p>The simulator requires that all input ports are properly connected.
+    <code>pydrake.systems.primitives.ConstantVectorSource</code> to provide
+    those inputs, or <drake></drake> also provides a shortcut where you can call
+    <code>FixInputPort</code> directly on the
+    <code>pydrake.systems.framework.Context</code>. </p>
+
+    <p>For simple systems, the simulation will run much faster than real time.
+    If you would like to tell the simulator to slow down (if possible) to some
+    multiple of the real time clock, then consider using the
+    <code>set_target_realtime_rate</code> method of the <code>Simulator</code>.
+    This is useful, for example, if you are trying to animate your robot as it
+    simulates, and would like the benefit of physical intuition, or if you are
+    trying to use the simulation as a part of a multi-process real-time control
+    system.</p>
+
+  </section>
+
+  <section data-type="sect1"><h1>Listing of <drake></drake> examples throughout this text</h1>
+
+  <p>The best overview we have for the remaining capabilities in <drake></drake> are the main chapters of these notes.  For convenience, here is a list of software examples that are sprinkled throughout the text:</p>
+
+    <div id="list_of_drake_examples"><center>Coming soon!</center></div>
+
+  </section>
 
 </section> <!-- end chapter on modeling dynamical systems -->
 
