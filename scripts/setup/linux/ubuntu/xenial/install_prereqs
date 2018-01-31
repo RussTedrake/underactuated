@@ -105,6 +105,7 @@ python-matplotlib
 python-numpy
 python-protobuf
 python-scipy
+python-tk
 python-yaml
 qt5-default
 zlib1g-dev
