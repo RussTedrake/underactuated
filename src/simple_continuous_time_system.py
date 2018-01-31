@@ -7,6 +7,7 @@ from pydrake.systems.primitives import SignalLogger
 from pydrake.systems.analysis import Simulator
 import matplotlib.pyplot as plt
 
+# Define the system.
 class SimpleContinuousTimeSystem(VectorSystem):
     def __init__(self):
         VectorSystem.__init__(self,
@@ -23,28 +24,27 @@ class SimpleContinuousTimeSystem(VectorSystem):
         y[:] = x
 
 
-if __name__ == "__main__":
-    # Create a simple block diagram containing our system.
-    builder = DiagramBuilder()
-    system = builder.AddSystem(SimpleContinuousTimeSystem())
-    # TODO(russt): add binding then replace the next two lines with
-    #   logger = LogOutput(system->get_output_port(0), builder)
-    logger = builder.AddSystem(SignalLogger(1))
-    builder.Connect(system.get_output_port(0), logger.get_input_port(0))
-    diagram = builder.Build()
+# Create a simple block diagram containing our system.
+builder = DiagramBuilder()
+system = builder.AddSystem(SimpleContinuousTimeSystem())
+# TODO(russt): add binding then replace the next two lines with
+#   logger = LogOutput(system->get_output_port(0), builder)
+logger = builder.AddSystem(SignalLogger(1))
+builder.Connect(system.get_output_port(0), logger.get_input_port(0))
+diagram = builder.Build()
 
-    # Create the simulator.
-    simulator = Simulator(diagram)
-    simulator.Initialize()
+# Create the simulator.
+simulator = Simulator(diagram)
+simulator.Initialize()
 
-    # Set the initial conditions, x(0).
-    state = simulator.get_mutable_context().get_mutable_state()\
-        .get_mutable_continuous_state().get_mutable_vector()
-    state.SetFromVector([0.9])
+# Set the initial conditions, x(0).
+state = simulator.get_mutable_context().get_mutable_state()\
+                 .get_mutable_continuous_state().get_mutable_vector()
+state.SetFromVector([0.9])
 
-    # Simulate for 10 seconds.
-    simulator.StepTo(10)
+# Simulate for 10 seconds.
+simulator.StepTo(10)
 
-    # Plot the results.
-    plt.plot(logger.sample_times(), logger.data().transpose())
-    plt.show()
+# Plot the results.
+plt.plot(logger.sample_times(), logger.data().transpose())
+plt.show()
