@@ -5929,43 +5929,37 @@ and Validation</h1>
 
 <appendix class="part" title="Appendix">
 
+<section data-type="chapter" class="chapter" id="drake"><h1>Drake</h1>
 
-<section data-type="chapter" class="chapter"
-         id="optimization"><h1>Optimization and
-  Mathematical Programming</h1>
+  <p>The <drake></drake> website is the main source for information and
+  documentation.  This goal of this chapter provide a few specific pointers
+  and recommended workflows to get you up and running quickly to use
+  <drake></drake> with these notes.</p>
 
-  <section data-type="sect1"><h1>Nonlinear optimization</h1>
-    <section data-type="sect2"><h1>General formulation</h1>
-    </section>
-    <section data-type="sect2"><h1>Solution techniques</h1>
-      Lagrange multipliers / KKT, Gradient descent, SQP (SNOPT, NLOPT, IPOPT), Global optimization
-    </section>
-    <section data-type="sect2"><h1>Example: Inverse Kinematics</h1>
-    </section>
-  </section>
-  <section data-type="sect1"><h1>Convex optimization</h1>
-    <section data-type="sect2"><h1>Linear Programs/Quadratic Programs/Second-Order Cones</h1>
-      Example: Balancing force control on Atlas
-    </section>
-    <section data-type="sect2"><h1>Semidefinite Programming and Linear Matrix Inequalities</h1>
-    </section>
-    <section data-type="sect2"><h1>Sums of squares / polynomial optimization</h1>
-    </section>
-    <section data-type="sect2"><h1>Solution techniques</h1>
-      Interior point (Gurobi, Mosek, Sedumi, ...), First order methods
-    </section>
-  </section>
-  <section data-type="sect1"><h1>Mixed-integer convex optimization</h1></section>
-  <section data-type="sect1"><h1>Combinatorial optimization</h1>
-    Search, SAT, First order logic, SMT solvers, LP interpretation
+  <section data-type="sect1"><h1>Installation</h1>
+
+    <todo>
+      Following pydrake instructions.
+
+      Docker?
+
+      Troubleshooting.
+    </todo>
+
   </section>
 
-  <todo>Polynomial root finding/homotopy, L1 optimization, QCQP, LCP/Variational inequalities, BMI, ..., warm-starting, ...</todo>
+  <section data-type="sect1"><h1>Listing of <drake></drake> examples throughout this text</h1>
 
-</section> <!-- end optimization chapter -->
+    <p>The best overview we have for the remaining capabilities in <drake></drake> are the main chapters of these notes.  For convenience, here is a list of software examples that are sprinkled throughout the text:</p>
 
-<section data-type="chapter" class="chapter" id="drake"><h1>Modeling
-Input-Output Dynamical Systems</h1>
+    <div id="list_of_drake_examples"><center>Coming soon!</center></div>
+
+  </section>
+
+</section> <!-- end chapter on drake -->
+
+<section data-type="chapter" class="chapter" id="systems"><h1>Modeling
+  Input-Output Dynamical Systems in Drake</h1>
 
   <p>This chapter provides a short tutorial for modeling input-output dynamical
   systems in <drake></drake>. <drake></drake> includes a set of C++ classes in
@@ -6060,6 +6054,9 @@ Input-Output Dynamical Systems</h1>
       RigidBodyPlant (load from urdf/sdf).</todo>
 
   </section>
+
+  <todo>Add section about the Context</todo>
+
   <section data-type="sect2"><h1>Combinations of Systems</h1>
 
     <figure>
@@ -6138,13 +6135,6 @@ Input-Output Dynamical Systems</h1>
 
   </section>
 
-  <section data-type="sect1"><h1>Listing of <drake></drake> examples throughout this text</h1>
-
-  <p>The best overview we have for the remaining capabilities in <drake></drake> are the main chapters of these notes.  For convenience, here is a list of software examples that are sprinkled throughout the text:</p>
-
-    <div id="list_of_drake_examples"><center>Coming soon!</center></div>
-
-  </section>
 
 </section> <!-- end chapter on modeling dynamical systems -->
 
@@ -6460,14 +6450,45 @@ Input-Output Dynamical Systems</h1>
 </section> <!-- end rigid-body dynamics chapter -->
 
 
+<section data-type="chapter" class="chapter"
+         id="optimization"><h1>Optimization and
+  Mathematical Programming</h1>
 
-  <section data-type="chapter" class="chapter"><h1>Machine Learning Preliminaries</h1>
+  <section data-type="sect1"><h1>Nonlinear optimization</h1>
+    <section data-type="sect2"><h1>General formulation</h1>
+    </section>
+    <section data-type="sect2"><h1>Solution techniques</h1>
+      Lagrange multipliers / KKT, Gradient descent, SQP (SNOPT, NLOPT, IPOPT), Global optimization
+    </section>
+    <section data-type="sect2"><h1>Example: Inverse Kinematics</h1>
+    </section>
+  </section>
+  <section data-type="sect1"><h1>Convex optimization</h1>
+    <section data-type="sect2"><h1>Linear Programs/Quadratic Programs/Second-Order Cones</h1>
+      Example: Balancing force control on Atlas
+    </section>
+    <section data-type="sect2"><h1>Semidefinite Programming and Linear Matrix Inequalities</h1>
+    </section>
+    <section data-type="sect2"><h1>Sums of squares / polynomial optimization</h1>
+    </section>
+    <section data-type="sect2"><h1>Solution techniques</h1>
+      Interior point (Gurobi, Mosek, Sedumi, ...), First order methods
+    </section>
+  </section>
+  <section data-type="sect1"><h1>Mixed-integer convex optimization</h1></section>
+  <section data-type="sect1"><h1>Combinatorial optimization</h1>
+    Search, SAT, First order logic, SMT solvers, LP interpretation
+  </section>
 
-    <section data-type="sect1"><h1>Function approximation</h1>
+  <todo>Polynomial root finding/homotopy, L1 optimization, QCQP, LCP/Variational inequalities, BMI, ..., warm-starting, ...</todo>
 
-    </section> <!-- end function approximation -->
+</section> <!-- end optimization chapter -->
 
-  </section> <!-- end machine learning -->
+<section data-type="chapter" class="chapter"><h1>Machine Learning Preliminaries</h1>
+
+  <todo>Function approximation, sample complexity, ...</todo>
+
+</section> <!-- end machine learning -->
 
 
 </appendix>
