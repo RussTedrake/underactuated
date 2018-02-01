@@ -6,10 +6,12 @@ import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import pydrake
 from pydrake.systems.framework import (
+    Context,
     DiagramBuilder,
     LeafSystem,
     PortDataType,
     )
+import scipy.interpolate
 
 from pyplot_visualizer import PyPlotVisualizer
 class PendulumVisualizer(PyPlotVisualizer):
@@ -40,24 +42,32 @@ class PendulumVisualizer(PyPlotVisualizer):
 
     def draw(self, context):
         if isinstance(context, Context):
-            positions = self.EvalVectorInput(context, 0).get_value()[0]
+            theta = self.EvalVectorInput(context, 0).get_value()[0]
         else:
             theta = context
 
-        theta = self.EvalVectorInput(context, 0).get_value()[0]
         path = self.arm[0].get_path()
         path.vertices[:,0] = self.arm_x*math.cos(theta)-self.arm_y*math.sin(theta)
         path.vertices[:,1] = self.arm_x*math.sin(theta)+self.arm_y*math.cos(theta)
         self.center_of_mass[0].set_data(self.ac1*math.sin(theta),-self.ac1*math.cos(theta))
 
-    def animation_update(self, i):
-        self.draw(math.sin(0.03*i))
-
-    def animate(self, log):
+    def animate(self, log, rate, resample=True, repeat=False):
         # log - a reference to a pydrake.systems.primitives.SignalLogger that
-        # constains the pendulum state, or pendulum output (the first element
-        # should be the pendulum's theta) after running a simulation.
+        # constains the plant state after running a simulation.
+        # rate - the frequency of frames in the resulting animation
+        # resample -- should we do a resampling operation to make
+        # the samples more consistent in time? This can be disabled
+        # if you know the sampling rate is exactly the rate you supply
+        # as an argument.
+        # repeat - should the resulting animation repeat?
         t = log.sample_times()
         x = log.data()
-        ani = animation.FuncAnimation(self.fig, self.animation_update, 500, interval=25, repeat=False)
+
+        if resample:
+            t_resample = np.arange(0, t[-1], 1./rate)
+            x = scipy.interpolate.interp1d(t, x, kind='linear', axis=1)(t_resample)
+            t = t_resample
+
+        animate_update = lambda i: self.draw(x[0, i])
+        ani = animation.FuncAnimation(self.fig, animate_update, t.shape[0], interval=1000./rate, repeat=repeat)
         return ani

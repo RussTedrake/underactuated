@@ -7,7 +7,7 @@ import pydrake.systems.framework
 from pydrake.examples.pendulum import PendulumPlant
 from pydrake.systems.analysis import Simulator
 from pydrake.systems.framework import DiagramBuilder
-from pydrake.systems.primitives import ConstantVectorSource
+from pydrake.systems.primitives import ConstantVectorSource, SignalLogger
 
 from pendulum_visualizer import PendulumVisualizer
 import matplotlib.pyplot as plt
@@ -27,6 +27,11 @@ print('Simulating with constant torque = ' + str(torque) + ' Newton-meters')
 visualizer = builder.AddSystem(PendulumVisualizer())
 builder.Connect(pendulum.get_output_port(0), visualizer.get_input_port(0))
 
+signalLogRate = 60
+signalLogger = builder.AddSystem(SignalLogger(2))
+signalLogger._DeclarePeriodicPublish(1. / signalLogRate, 0.0)
+builder.Connect(pendulum.get_output_port(0), signalLogger.get_input_port(0))
+
 diagram = builder.Build()
 simulator = Simulator(diagram)
 simulator.Initialize()
@@ -43,3 +48,6 @@ state.SetFromVector(initial_state)
 simulator.StepTo(10.0)
 
 print(state.CopyToVector())
+
+ani = visualizer.animate(signalLogger, signalLogRate, repeat=True)
+plt.show()
