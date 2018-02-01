@@ -71,7 +71,6 @@ ipopt
 libccd
 libyaml
 nlopt
-matplotlib
 numpy
 pkg-config
 protobuf
