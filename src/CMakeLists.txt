@@ -6,4 +6,17 @@ add_test(NAME simple_continuous_time_system COMMAND simple_continuous_time_syste
 
 find_package(PythonInterp REQUIRED)
 
-add_test(NAME double_pendulum COMMAND ${PYTHON_EXECUTABLE} double_pendulum.py WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+function(add_pytest pyfile)
+
+  add_test(NAME ${pyfile}
+           COMMAND ${PYTHON_EXECUTABLE} ${pyfile} ${ARGN}
+           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+  set_property(TEST ${pyfile}
+               PROPERTY ENVIRONMENT "MPLBACKEND=Template")  # So that pyplot.show() does not block
+
+endfunction(add_pytest)
+
+add_pytest(simple_continuous_time_system_simulation.py)
+add_pytest(simple_discrete_time_system_simulation.py)
+add_pytest(double_pendulum.py)
