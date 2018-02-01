@@ -39,6 +39,11 @@ class PendulumVisualizer(PyPlotVisualizer):
         self.center_of_mass = self.ax.plot(0, -self.ac1, zorder=1, color='b', marker='o', markersize=14)
 
     def draw(self, context):
+        if isinstance(context, Context):
+            positions = self.EvalVectorInput(context, 0).get_value()[0]
+        else:
+            theta = context
+
         theta = self.EvalVectorInput(context, 0).get_value()[0]
         path = self.arm[0].get_path()
         path.vertices[:,0] = self.arm_x*math.cos(theta)-self.arm_y*math.sin(theta)
@@ -56,6 +61,3 @@ class PendulumVisualizer(PyPlotVisualizer):
         x = log.data()
         ani = animation.FuncAnimation(self.fig, self.animation_update, 500, interval=25, repeat=False)
         return ani
-
-
-
