@@ -17,8 +17,7 @@ diagram = builder.Build()
 simulator = Simulator(diagram)
 
 # Set the initial conditions, x(0).
-state = simulator.get_mutable_context().get_mutable_state()\
-                 .get_mutable_discrete_state(0).get_mutable_vector()
+state = simulator.get_mutable_context().get_mutable_discrete_state_vector()
 state.SetFromVector([0.9])
 
 # Simulate for 10 seconds.
