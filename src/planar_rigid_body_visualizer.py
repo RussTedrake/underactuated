@@ -25,7 +25,7 @@ from pydrake.systems.framework import (
     PortDataType,
     Context
     )
-from pydrake.systems.primitives import ConstantVectorSource
+from pydrake.systems.primitives import ConstantVectorSource, SignalLogger
 from pydrake.multibody.rigid_body_plant import RigidBodyPlant
 from pydrake.multibody.shapes import Shape
 
@@ -295,6 +295,9 @@ if __name__ == "__main__":
                         nargs="*",
                         help="Models to run, at least one of [pend, dpend, val]",
                         default=["dpend"])
+    parser.add_argument("-a", "--animate",
+                        action="store_true",
+                        help="Enable real-time looping animation after each simulation.")
     args = parser.parse_args()
 
     for model in args.models:
@@ -319,6 +322,7 @@ if __name__ == "__main__":
             exit(1)
 
         rbplant = RigidBodyPlant(rbt, timestep)
+        nx = rbt.get_num_positions() + rbt.get_num_velocities()
 
         builder = DiagramBuilder()
         rbplant_sys = builder.AddSystem(rbplant)
@@ -329,8 +333,15 @@ if __name__ == "__main__":
                                 rbplant_sys.get_input_port(0))
         print('Simulating with constant torque = ' + str(torque) + ' Newton-meters')
 
+        # Visualize
         visualizer = builder.AddSystem(pbrv)
         builder.Connect(rbplant_sys.get_output_port(0), visualizer.get_input_port(0))
+
+        # And also log
+        signalLogRate = 60
+        signalLogger = builder.AddSystem(SignalLogger(nx))
+        signalLogger._DeclarePeriodicPublish(1. / signalLogRate, 0.0)
+        builder.Connect(rbplant_sys.get_output_port(0), signalLogger.get_input_port(0))
 
         diagram = builder.Build()
         simulator = Simulator(diagram)
@@ -343,10 +354,17 @@ if __name__ == "__main__":
                          .get_mutable_continuous_state().get_mutable_vector()
 
         if set_initial_state:
-            initial_state = np.zeros((rbt.get_num_positions() + rbt.get_num_velocities(), 1))
+            initial_state = np.zeros((nx, 1))
             initial_state[0] = 1.0
             state.SetFromVector(initial_state)
 
         simulator.StepTo(args.time)
 
         print(state.CopyToVector())
+
+        # Generate an animation of whatever happened
+        ani = visualizer.animate(signalLogger, signalLogRate, repeat=True)
+
+        if (args.animate):
+            print "Animating the simulation on repeat -- close the plot to continue."
+            plt.show()
