@@ -12,6 +12,7 @@ import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import scipy as sp
 import scipy.spatial
+import scipy.interpolate
 
 import pydrake
 import pydrake.rbtree
@@ -21,7 +22,8 @@ from pydrake.systems.analysis import Simulator
 from pydrake.systems.framework import (
     DiagramBuilder,
     LeafSystem,
-    PortDataType
+    PortDataType,
+    Context
     )
 from pydrake.systems.primitives import ConstantVectorSource
 from pydrake.multibody.rigid_body_plant import RigidBodyPlant
@@ -196,8 +198,13 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         return (transformed_patches, colors)
 
     def draw(self, context):
-        ''' Evalutates the robot state and draws it. '''
-        positions = self.EvalVectorInput(context, 0).get_value()[0:self.rbtree.get_num_positions()]
+        ''' Evaluates the robot state and draws it.
+            Can be passed either a raw state vector, or
+            an input context.'''
+        if isinstance(context, Context):
+            positions = self.EvalVectorInput(context, 0).get_value()[0:self.rbtree.get_num_positions()]
+        else:
+            positions = context[0:self.rbtree.get_num_positions()]
 
         kinsol = self.rbtree.doKinematics(positions)
 
@@ -209,6 +216,28 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                 self.body_fill_list[body_fill_index].get_path().vertices[:, :] = np.transpose(patch)
                 body_fill_index += 1
 
+    def animate(self, log, rate, resample=True, repeat=False):
+        # log - a reference to a pydrake.systems.primitives.SignalLogger that
+        # constains the plant state after running a simulation.
+        # rate - the frequency of frames in the resulting animation
+        # resample -- should we do a resampling operation to make
+        # the samples more consistent in time? This can be disabled
+        # if you know the sampling rate is exactly the rate you supply
+        # as an argument.
+        # repeat - should the resulting animation repeat?
+        t = log.sample_times()
+        x = log.data()
+
+        if resample:
+            t_resample = np.arange(0, t[-1], 1./rate)
+            x = scipy.interpolate.interp1d(t, x, kind='linear', axis=1)(t_resample)
+            t = t_resample
+
+        animate_update = lambda i: self.draw(x[:, i])
+        ani = animation.FuncAnimation(self.fig, animate_update, t.shape[0], interval=1000./rate, repeat=repeat)
+        return ani
+
+
 def setupPendulumExample():
     rbt = RigidBodyTree("pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
     Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
@@ -218,7 +247,7 @@ def setupPendulumExample():
 def setupDoublePendulumExample():
     rbt = RigidBodyTree("double_pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
     Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
-    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-3.0, 3.0], [-3.0, 3.0], use_random_colors=True)
+    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-2.5, 2.5], [-2.5, 2.5], use_random_colors=True)
     return rbt, pbrv
 
 def setupValkyrieExample():
@@ -229,13 +258,13 @@ def setupValkyrieExample():
     pmap.PopulateFromEnvironment("ROS_PACKAGE_PATH")
     drake_base_path = os.path.expandvars("${DRAKE_RESOURCE_ROOT}")
     pydrake.rbtree.AddModelInstanceFromUrdfStringSearchingInRosPackages(
-        open(drake_base_path + "/multibody/rigid_body_plant/test/world.urdf", 'r').read(),
+        open("plane.urdf", 'r').read(),
         pmap,
         drake_base_path + "/examples/",
-        pydrake.rbtree.FloatingBaseType.kRollPitchYaw,
+        pydrake.rbtree.FloatingBaseType.kFixed,
         world_frame,
         rbt)
-    val_start_frame = pydrake.rbtree.RigidBodyFrame("val_start_frame", rbt.world(), [0, 0, 2], [0, 0, 0])
+    val_start_frame = pydrake.rbtree.RigidBodyFrame("val_start_frame", rbt.world(), [0, 0, 1.5], [0, 0, 0])
     pydrake.rbtree.AddModelInstanceFromUrdfStringSearchingInRosPackages(
         open(drake_base_path + "/examples/valkyrie/urdf/urdf/valkyrie_A_sim_drake_one_neck_dof_wide_ankle_rom.urdf", 'r').read(),
         pmap,
