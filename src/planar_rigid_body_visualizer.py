@@ -20,10 +20,10 @@ from pydrake.rbtree import RigidBodyTree
 from pydrake.parsers import PackageMap
 from pydrake.systems.analysis import Simulator
 from pydrake.systems.framework import (
+    Context
     DiagramBuilder,
     LeafSystem,
-    PortDataType,
-    Context
+    PortDataType
     )
 from pydrake.systems.primitives import ConstantVectorSource, SignalLogger
 from pydrake.multibody.rigid_body_plant import RigidBodyPlant
