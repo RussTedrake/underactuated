@@ -3370,606 +3370,664 @@ where this additional input $\bw$ is the (vector) output of some random process.
 
 <section data-type="chapter" class="chapter" id="dp"><h1>Dynamic Programming</h1>
 
-<p>In chapter 2, we spent some time thinking about the phase portrait of the
-simple pendulum, and concluded with a challenge: can we design a nonlinear
-controller to <em>reshape</em> the phase portrait, with a very modest amount of
-actuation, so that the upright fixed point becomes globally stable?  With
-unbounded torque, feedback linearization solutions (e.g., invert gravity) can
-work well, but can also require an unnecessarily large amount of control effort.
-The energy-based swing-up control solutions presented for the acrobot and
-cart-pole systems  are considerably more appealing, but required some cleverness
-and might not scale to more complicated systems.  Here we investigate another
-approach to the problem, using computational optimal control to synthesize a
-feedback controller directly.</p>
-
-<section data-type="sect1"><h1>Formulating control design as an optimization</h1>
-
-<p>   In this chapter, we will introduce optimal control - a control design
-process using optimization.  This approach is powerful for a number of reasons.
-First and foremost, it is very general - allowing us to   specify the goal of
-control equally well for fully- or under-actuated,   linear or nonlinear,
-deterministic or stochastic, and continuous or   discrete systems. Second, it
-permits concise descriptions of potentially very complex desired behaviours,
-specifying the goal of control as an scalar objective (plus a list of
-constraints).  Finally, and most importantly, optimal control is very amenable
-to numerical solutions. <elib>Bertsekas00a</elib> is a fantastic reference on
-this material.</p>
-
-<p>   The fundamental idea in optimal control is to formulate the goal of
-control as the <em>long-term</em> optimization of a scalar cost function.
-Let's introduce the basic concepts by considering a system that is even
-simpler than the simple pendulum.</p>
-
-<div data-type="example"><h1>Optimal Control Formulations for the Double Integrator</h1>
-
-<p>
-Consider the double integrator system $$\ddot{q} = u, \quad |u| \le 1.$$   If you would like a mechanical analog of the
-system (I always do), then you can think about this as a unit mass
-brick moving along the x-axis on a frictionless surface, with a control
-input which provides a horizontal force, $u$.
-The task is to design a
-control system, $u = \pi(\bx,t)$, $\bx=[q,\dot{q}]^T$ to regulate this
-brick to $\bx = [0,0]^T$.</p>
-<figure>
-<img width="70%" data-src="figures/double_integrator_brick.svg"/>
-<figcaption>The double integrator as a unit-mass brick on a frictionless surface</figcaption>
-</figure>
-
-<p>
-In order to formulate this control design problem using optimal
-control, we must define a scalar objective which scores the
-long-term performance of running each candidate control policy,
-$\pi(\bx,t)$, from each initial condition, $(\bx_0,t_0)$, and a list
-of constraints that must be satisfied.   For the
-task of driving the double integrator to the origin, one could imagine
-a number of optimal control formulations which would accomplish the
-task, e.g.:
-<ul>
-<li> Minimum time:  $\min_\pi t_f,$ subject to $\bx(t_0) =
-  \bx_0,$ $\bx(t_f) = {\bf 0}.$ </li>
-<li> Quadratic cost:  $\min_\pi \int_{t_0}^{\infty} \left[ \bx^T(t)
-    {\bf Q} \bx(t) \right] dt,$ ${\bf Q}\succ0$.</li>
-</ul>
-<p>where the first is a constrained optimization formulation which
-optimizes time, and the second accrues a penalty at every instance
-according to the distance that the state is away from the origin (in a
-metric space defined by the matrix ${\bf Q}$), and therefore
-encourages trajectories that go more directly towards the goal,
-possibly at the expense of requiring a longer time to reach the goal
-(in fact it will result in an exponential approach to the goal, where
-as the minimum-time formulation will arrive at the goal in finite time).
-Note that both optimization problems are only
-well defined if it is possible for the system to actually reach the
-origin, otherwise the minimum-time problem cannot satisfy the terminal
-constraint, and the integral in the quadratic cost would not converge
-to a finite value as time approaches infinity (fortunately the double
-integrator system is controllable, and therefore can be driven to the
-goal in finite time).</p>
-
-<p> Note that the input limits, $|u|\le1$ are also required to make this problem
-well-posed; otherwise both optimizations would result in the optimal policy
-using infinite control input to approach the goal infinitely fast.  Besides input limits,
-another common approach to limiting the control effort is to add an additional
-quadratic cost on the input (or "effort"), e.g.
-$\int \left[ \bu^T(t) {\bf R} \bu(t) \right] dt,$   ${\bf R}\succ0$.
-This could be added to either formulation above.  We will examine many of these formulations
-in some details in the examples worked out at the end of this chapter.
-</p>
-
-</div> <!-- end example -->
-
-<p>Optimal control has a long history in robotics.  For instance, there has been
-a great deal of work on the minimum-time problem for pick-and-place robotic
-manipulators, and the linear quadratic regulator (LQR) and linear quadratic
-regulator with Gaussian noise (LQG) have become essential tools for any
-practicing controls engineer.  With increasingly powerful computers and
-algorithms, the popularity of numerical optimal control has grown at an
-incredible pace over the last few years.</p>
-
-<div data-type="example"><h1>The minimum time problem for the double integrator</h1>
-
-<p>
-For more intuition, let's do an informal derivation of the solution to
-the minimum time problem for the double integrator with input constraints:
-\begin{align*}
-  \minimize_{\pi} \quad & t_f\\
-  \subjto \quad & \bx(t_0) = \bx_0, \\
-  & \bx(t_f) = {\bf 0}, \\
-  & \ddot{q}(t) = u(t), \\
-  & |u| \le 1.
-\end{align*}
-What behavior would you expect an optimal controller exhibit?</p>
-
-<p>
-Your intuition might tell you that the best thing that the brick can
-do, to reach the goal in minimum time with limited control input, is
-to accelerate maximally towards the goal until reaching a critical
-point, then hitting the brakes in order to come to a stop exactly at
-the goal.  This would be called a <em>bang-bang</em> control policy;
-these are often optimal for systems with bounded input, and it is in
-fact optimal for the double integrator, although we will not prove it
-until we have developed more tools.  <!-- leave the proof to the pontryagin notes --></p>
-
-<p>
-Let's work out the details of this bang-bang policy.  First, we can
-figure out the states from which, when the brakes are fully
-applied, the system comes to rest precisely at the origin.  Let's
-start with the case where $q(0) < 0$, and $\dot{q}(0)>0$, and "hitting
-the brakes" implies that $u=-1$ .
-Integrating the equations, we have \begin{gather*} \ddot{q}(t) = u =
-  -1 \\\dot{q}(t) = \dot{q}(0) - t \\ q(t) = q(0) + \dot{q}(0) t -
-  \frac{1}{2} t^2.  \end{gather*}
-Substituting $t = \dot{q}(0) - \dot{q}$ into the solution give $\dot{q}$ reveals
-that the system orbits are parabolic arcs:
-\[ q = -\frac{1}{2} \dot{q}^2 + c_{-}, \] with $c_{-} = q(0) + \frac{1}{2}\dot{q}^2(0)$.</p>
-<figure>
-  <img width="80%" data-src="figures/double_integrator_orbits.svg"/>
-  <figcaption>Two solutions for the system with $u=-1$</figcaption>
-</figure>
-<!-- t = qdot - qdot0,
-q = q0 + qdot0(qdot-qdot0) + 1/2(qdot-qdot0)^2
-  = q0 + qdot0*qdot - qdot0^2 + 1/2qdot^2 - qdot*qdot0 + 1/2qdot0^2
-  = 1/2qdot^2 + (q0 - 1/2 qdot0^2)
--->
-<p>Similarly, the solutions for $u=1$ are $q = \frac{1}{2} \dot{q}^2 + c_{+}$, with $c_{+}=q(0)-\frac{1}{2}\dot{q}^2(0)$.</p>
-
-<p> Perhaps the most important of these orbits are the ones that pass directly
-through the origin (e.g., $c_{-}=0$). Following our initial logic, if the system is going
-slower than this $\dot{q}$ for any $q$, then the optimal thing to do is to slam
-on the accelerator ($u=-\text{sgn}(q)$).  If it's going faster than the
-$\dot{q}$ that we've solved for, then still the best thing to do is to brake;
-but inevitably the system will overshoot the origin and have to come back.  We
-can summarize this policy with: \[ u = \begin{cases}  +1 & \text{if } (\dot{q} < 0 \text{ and } q \le \frac{1}{2} \dot{q}^2) \text{ or } (\dot{q}\ge 0 \text{ and } q < -\frac{1}{2} \dot{q}^2) \\ 0 & \text{if } q=0 \text{
-and } \dot{q}=0 \\ -1 & \text{otherwise} \end{cases} \]</p>
-<!--This policy is cartooned in
-Figure~\ref{fig:mintime_double_int}.  %Trajectories of the system
-%executing this policy are also included - the fundamental
-%characteristic is that the system is accelerated as quickly as
-%possible toward the switching surface, then rides the switching
-%surface in to the origin. -->
-<figure>
-<img width="80%" data-src="figures/double_integrator_mintime_policy.svg"/>
-<figcaption>Candidate optimal (bang-bang) policy for the minimum-time
-  double integrator problem.</figcaption>
-</figure>
-and illustrate some of the optimal solution trajectories:
-<figure>
-<img width="80%" data-src="figures/double_integrator_mintime_orbits.svg"/>
-<figcaption>Solution trajectories of system using the optimal policy</figcaption>
-</figure>
-
-<p>And for completeness, we can compute the optimal time to the goal by solving for
-the amount of time required to reach the switching surface plus the amount of
-time spent moving along the switching surface to the goal.  With a little
-algebra, you will find that the time to goal, $T(\bx)$, is given by
-\[ T(\bx) = \begin{cases} 2\sqrt{\frac{1}{2}\dot{q}^2-q} - \dot{q} & \text{for } u=+1 \text{ regime}, \\
-0 & \text{for } u=0, \\ \dot{q} + 2\sqrt{\frac{1}{2}\dot{q}^2+q} & \text{for } u=-1, \end{cases} \]<!--
-call t_m the time to the surface, then the
-time on switching surface = |qdot(t_m)|
-
-for u=1
-q0,qdot0 => qm,qdotm with qm = -1/2 qdotm^2
--1/2 qdotm^2 = 1/2 qdotm^2 + c+
-qdotm^2 = - c+  , qdotm = sqrt(-c+)
-T = (qdotm-qdot0)+qdotm = 2*sqrt(-c+) - qdot0
-for u=-1, qdotm^2 = c- , qdotm = -sqrt(c-)
-T = (qdot0-qdotm)-qdotm = qdot0 + 2*sqrt(c-)
--->
-plotted here:</p>
-<figure>
-<img width="80%" data-src="figures/double_integrator_mintime_cost_to_go.svg"/>
-<figcaption>Time to the origin using the bang-bang policy</figcaption>
-</figure>
-Notice that the function is continuous (though not smooth), even though
-the policy is discontinuous.
-
-</div> <!-- end of example -->
-
-<section data-type="sect2"><h1>Additive cost</h1>
-
-<p>
-As we begin to develop theoretical and algorithmic tools for optimal control,
-we will see that some formulations are much easier to deal with than others.
-One important example is the dramatic simplification that can come from
-formulating objective functions using <em>additive
-  cost</em>, because they often yield recursive solutions.  In the additive cost formulation, the long-term "score"
-for a trajectory can be written as $$\int_0^T g(x(t),u(t)) dt,$$ where
-$g()$ is the instantaneous cost, and $T$ can be either a finite
-real number or $\infty$.  We will call a problem specification with a finite $T$ a
-"finite-horizon" problem, and $T=\infty$ an "infinite-horizon"
-problem.  Problems and solutions for infinite-horizon problems tend to be more elegant, but
-care is required to make sure that the integral converges for the
-optimal controller (typically by having an achievable goal that allows the robot to accrue zero-cost).</p>
-
-<p> At first glance, our minimum-time problem formulation for the double
-integrator does not look like an additive cost problem.  However, we can write
-in as an additive cost problem using an infinite horizon and the instantaneous
-cost  $$g(x,u) = \begin{cases} 0 & \text{if } x=0, \\ 1 &
-\text{otherwise.} \end{cases}$$</p>
-
-<p>
-We will examine a number of approaches to solving optimal control
-problems throughout the next few chapters.  For the remainder of this chapter, we will
-focus on additive-cost problems and their solution via <em>dynamic programming</em>.</p>
-
-</section> <!-- end of additive cost -->
-
-</section> <!-- control design as an optimization -->
-
-<section data-type="sect1"><h1>Optimal control as graph search</h1>
-
-<p> For systems with continuous states and continuous actions, dynamic
-programming is a set of theoretical ideas surrounding additive cost optimal
-control problems. For systems with a finite, discrete set of states and a
-finite, discrete set of actions, dynamic programming also represents a set of very
-efficient numerical <em>algorithm</em> which can compute optimal feedback
-controllers. Many of you will have learned it before as a tool for graph search.
-</p>
-
-<p>Imagine you have a directed graph with states (or nodes) $\{s_1,s_2,...\} \in
-S$ and "actions" associated with edges labeled as $\{a_1,a_2,...\} \in A$, as in
-the following trivial example:</p>
-<figure><img width="70%"
-data-src="figures/graph_search.svg"/><figcaption>A simple directed
-graph.</figcaption></figure>
-
-<p>Let us also assume that each edge has an associate
-weight or cost, using $g(s,a)$ to denote the cost of being in state $s$ and
-taking action $a$. Furthermore we will denote the transition "dynamics" using \[ s[n+1] =
-f(s[n],a[n]). \] For instance, in the graph above, $f(s_1,a_1) = s_2$.</p>
-
-<p>There are many algorithms for finding (or approximating) the optimal path
-from a start to a goal on directed graphs.  In dynamic programming, the key
-insight is that we can find the shortest path from every node by solving
-recursively for the optimal <em>cost-to-go</em> from every node to the goal. One
-such algorithm starts by initializing an estimate $\hat{J}^*=0$ for all $s_i$,
-then proceeds with an iterative algorithm which sets \begin{equation}
-\hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[ g(s_i,a) +
-\hat{J}^*\left({f(s_i,a)}\right) \right]. \label{eq:value_update} \end{equation}
-In software, $\hat{J}^*$ can be represented as a vector with dimension equal to
-the number of discrete states.  This algorithm, appropriately known as <em>value
-iteration</em>, is guaranteed to converge to the optimal cost-to-go, $\hat{J}^*
-\rightarrow J^*$ <elib>Bertsekas96</elib>, and in practice does so rapidly.
-Typically the update is done in <em>batch</em> -- e.g. the estimate is updated
-for all $i$ at once -- but the <em>asynchronous</em> version where states are
-updated one at a time is also known to converge, so long as every state is
-eventually updated infinitely often.  Assuming the graph has a goal state with a
-zero-cost self-transition, then this cost-to-go function represents the weighted
-shortest distance to the goal. </p>
-
-<p> Value iteration is an amazingly simple algorithm, but it accomplishes
-something quite amazing: it efficiently computes the long-term cost of an
-optimal policy from <i>every</i> state by iteratively evaluating the one-step
-cost.  If we know the optimal cost-to-go, then it's easy to extract the optimal
-policy, $a = \pi^*(s)$: \begin{equation} \pi^*(s_i) = \argmin_a \left[ g(s_i,a) +
-J^*\left( f(s_i,a) \right) \right]. \label{eq:policy_update} \end{equation}
-It's a simple algorithm, but playing with an example can help our intuition.</p>
-
-<div data-type="example" class="drake"><h1>Grid World</h1>
-
-<p>Imagine a robot living in a grid (finite state) world.  Wants to get to the goal
-location.  Possibly has to negotiate cells with obstacles.  Actions
-are to move up, down, left, right, or do nothing.  <elib>Sutton98</elib></p>
-
-<figure>
-  <a href="figures/gridworld_mintime.swf">
-    <img width="80%" data-src="figures/gridworld_mintime.svg" />
-  </a>
-  <figcaption>The one-step cost for the grid-world minimum-time problem. The goal state has a cost of zero, the obstacles have a cost of 10, and every other state has a cost of 1. <em>Click the image to watch the value iteration algorithm in action.</em></figcaption>
-</figure>
-
-<todo>insert value iteration animation for min time and quadratic cost</todo>
-
-<p>You can experiment with the grid world example in <drake></drake> using
-<pre><code class="matlab" testfile="testGridWorldValueIteration">
-cd(fullfile(getDrakePath,'examples'));
-GridWorld.runValueIteration();
-</code></pre>
-<p>I recommend trying to edit the cost function and obstacles.</p>
-
-</div> <!-- end grid world -->
-
-<p>TODO: figure/text for graph approximation of a continuous state space.</p>
-
-<div data-type="example" class="drake"><h1>Dynamic Programming for the Double Integrator</h1>
-
-<p>You can run value iteration for the double integrator (using barycentric interpolation to interpolate between nodes) in <drake></drake> using:
-<pre><code class="matlab" testfile="testDoubleIntegratorValueIteration">
-cd(fullfile(getDrakePath,'examples'));
-DoubleIntegrator.runValueIteration();
-</code></pre>
-<p>Again, you can easily try different cost functions by editing the code yourself.</p>
-
-</div>
-
-<p>
-Let's take a minute to appreciate how amazing this is.  Our solution to finding the
-optimal controller for the double integrator wasn't all that hard, but it required
-some mechanical intuition and solutions to differential equations.  The resulting
-policy was non-trivial -- bang-bang control with a parabolic switching surface.
-The value iteration algorithm doesn't use any of this directly -- it's a simple
-algorithm for graph search.  But remarkably, it can generate effectively the same
-policy with just a few moments of computation.</p>
-
-<p>It's important to note that there <em>are</em> some differences between the computed
-  policy and the optimal policy that we derived, due to discretization errors.  We
-  will ask you to explore these in the problems.</p>
-
-<p>The real value of this numerical solution, however, is unlike our analytical
-solution for the double integrator, we can apply this same algorithm to any number
-of dynamical systems virtually without modification.  Let's apply it now to the simple
-pendulum, which was intractable analytically.</p>
-
-<div data-type="example" class="drake"><h1>Dynamic Programming for the Simple Pendulum</h1>
-
-<p>You can run value iteration for the simple pendulum (using barycentric interpolation to interpolate between nodes) in <drake></drake> using:
-<pre><code class="matlab" testfile="testPendulumValueIteration">
-cd(fullfile(getDrakePath,'examples','Pendulum'));
-runValueIteration();
-</code></pre>
-<p>Again, you can easily try different cost functions by editing the code yourself.</p>
-
-</div>
-
-</section> <!-- end of graph search -->
-
-<section data-type="sect1"><h1>Continuous dynamic programming</h1>
-
-<p>
-I find the graph search algorithm extremely satisfying as a first step, but also
-become quickly frustrated by the limitations of the discretization required to use it.
-In many cases, we can do better; coming up with algorithms which work more natively
-on continuous dynamical systems.  We'll explore those extensions in this section.</p>
-
-<section data-type="sect2"><h1>The Hamilton-Jacobi-Bellman Equation</h1>
-
-<p>
-It's important to understand that the value iteration equations, equations (\ref{eq:value_update}) and (\ref{eq:policy_update}),
-are more than just an algorithm.  They are also sufficient conditions for optimality:
-if we can produce a $J^*$ and $\pi^*$ which satisfy these equations, then $\pi^*$ must
-be an optimal controller.  There are an analogous set of conditions for the continuous
-systems.  For a system $\dot{\bx} = f(\bx,\bu)$ and an infinite-horizon
-additive cost $\int_0^\infty g(\bx,\bu)dt$, we have:
-\begin{gather} 0 = \min_\bu \left[ g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right], \label{eq:HJB} \\ \pi^*(\bx) = \argmin_\bu \left[ g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right]. \end{gather}
-Equation \ref{eq:HJB} is known as the <em>Hamilton-Jacobi-Bellman</em> (HJB) equation.  <elib>Bertsekas05</elib> <!-- chapter 3 --> gives an informal derivation
-of these equations as the limit of a discrete-time approximation of the dynamics, and also gives
-the following sufficiency theorem:</p>
-<div data-type="theorem"><h1>HJB Sufficiency Theorem</h1>
-<p>The following statement is adapted from Proposition 3.2.1 of <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}=f(\bx,\bu)$ and an infinite-horizon additive cost $\int_0^\infty g(\bx,\bu)dt$.  Suppose $J(\bx)$ is a solution
-  to the HJB equation; that is $J$ is continuously differentiable in $\bx$ and is such that
-  \[ 0 = \min_{u\in U} \left[ g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx. \]
-   Suppose also that $\pi^*(\bx)$ attains the minimum in the equation for all $\bx$.  Further
-   assume that the differential equation described by $f$ has a unique solution starting
-   from any state $\bx$, and that the control input trajectory, $\bu^*(t)$, obtained by evaluating
-   $\pi^*$ along any solution is piecewise continuous as a function of $t$.  Then $J$ is equal
-   to the optimal cost-to-go function, $J(\bx)=J^*(\bx)$ for all $\bx$, and the control trajectories
-   $\bu^*(t)$ are optimal.</p>
-</div>
-
-<p>As a tool for verifying optimality, the HJB equations are actually surprisingly easy to work with:
-  we can verify optimality for an infinite-horizon objective without doing any integration; we simply
-  have to check a derivative condition on the optimal cost-to-go function $J^*$.  Let's see this
-  play out on the double integrator example.</p>
-
-<div data-type="example"><h1>HJB for the Double Integrator</h1>
-
-<p>Consider the problem of regulating the double integrator (this time without
-input limits) to the origin   using a quadratic cost: $$ g(\bx,\bu) = q^2 +
-\dot{q}^2 + u^2. $$  I claim   (without derivation) that the optimal controller
-for this objective is $$\pi(\bx) = -q - \sqrt{3}\dot{q}.$$   To convince you
-that this is indeed optimal, I have produced   the following cost-to-go
-function: $$J(\bx) = \sqrt{3} q^2 + 2 q \dot{q} + \sqrt{3} \dot{q}^2.$$</p>
-
-<p>Taking \begin{gather*} \pd{J}{q} = 2\sqrt{3} q + 2\dot{q}, \qquad
-\pd{J}{\dot{q}} = 2q + 2\sqrt{3}\dot{q}, \end{gather*}   we can write
-\begin{align*} g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) &= q^2 + \dot{q}^2 + u^2 +
-(2\sqrt{3} q + 2\dot{q}) \dot{q} + (2q + 2\sqrt{3}\dot{q}) u \end{align*}   This
-is a convex quadratic function in $u$, so we can find the minimum with respect
-to $u$ by finding where the gradient with respect to $u$ evaluates to zero.   \[
-\pd{}{u} \left[ g(\bx,\bu) + \pd{J}{\bx} f(\bx,\bu) \right] = 2u + 2q +
-2\sqrt{3}\dot{q}. \]  Setting this equal to $0$ and   solving for $u$ yields:
-$$u^* = -q - \sqrt{3} \dot{q},$$ thereby confirming that our policy $\pi$ is in
-fact the minimizer.  Substituting $u^*$ back into the HJB reveals
-that the right side does in fact simplify to zero.  I hope you are convinced!
-</div>
-
-<p>Note that evaluating the HJB for the time-to-go of the minimum-time
-  problem for the double integrator will also reveal that the
-  HJB is satisfied wherever that gradient is well-defined.  This is
-  certainly mounting evidence in support of our bang-bang policy being
-  optimal, but since $\pd{J}{\bx}$ is not defined everywhere, it does
-  not actually satisfy the requirements of the sufficiency theorem as stated above.</p>
-
-</section> <!-- end HJB -->
-
-<section data-type="sect2" id="hjb_minimizing_control"><h1>Solving for the minimizing control</h1>
-
-<p>We still face a few barriers to actually using the HJB in an algorithm.  The first barrier
-is the minimization over $u$.  When the action set was discrete, as in the graph search
-version, we could evaluate the one-step cost plus cost-to-go for every possible action,
-and then simply take the best.  For continuous action spaces, in general we cannot rely on the
-strategy of evaluating a finite number of possible $\bu$'s to find the minimizer.</p>
-
-<p>All is not lost.  In the quadratic cost double integrator example above, we
-were able   to solve explicitly for the minimizing $\bu$ in terms of the
-cost-to-go.  It turns out that   this strategy will actually work for a number
-of the problems we're interested in, even   when the system (which we are given)
-or cost function (which we are free to pick, but which   should be expressive)
-gets more complicated.</p>
-
-<p>Recall that I've already tried to convinced you that a majority of the
-systems of interest   are <em>control affine</em>, e.g. I can write \[
-f(\bx,\bu) = f_1(\bx) + f_2(\bx)\bu. \]   We can make another dramatic
-simplification by restrict ourselves to instantaneous cost functions of the form \[
-g(\bx,\bu) = g_1(\bx) + \bu^T {\bf R} \bu, \qquad {\bf R}={\bf R}^T
-\succ 0. \] In my view, this is not very restrictive - many of the cost
-functions that I find myself choosing to write down can be expressed in this
-form.  Given these assumptions, we can write the HJB as \[ 0 = \min_{\bu} \left[
-g_1(\bx) + \bu^T {\bf R} \bu + \pd{J}{\bx} \left[ f_1(\bx) +
-f_2(\bx)\bu \right]\right]. \]  Since this is a quadratic function in $\bu$, if
-the system does not have any constraints on $\bu$, then we can solve in closed-form
-for the minimizing $\bu$ by taking the gradient of the right-hand size:
-\[ \pd{}{\bu} = 2\bu^T {\bf R} + \pd{J}{\bx} f_2(\bx) = 0, \]
-and setting it equal to zero to obtain \[ \bu^* = -\frac{1}{2}{\bf R}^{-1}f_2^T(\bx) \pd{J}{\bx}^T.\]
-If there are linear constraints on the input, such as torque limits, then more generally
-this could be solved (at any particular $\bx$) as a quadratic program.</p>
-
-<p> What happens in the case where our system is not control affine or if we
-really   do need to specify an instantaneous cost function on $\bu$ that is not
-simply quadratic?   If the goal is to produce an iterative algorithm, like value
-iteration, then one   common approach is to make a (positive-definite) quadratic approximation in
-$\bu$ of the HJB, and updating   that approximation on every iteration of the
-algorithm.  This broad approach is often referred to as <em>differential
-dynamic programming</em> (c.f. <elib>Jacobson70</elib>).   </p>
-
-</section> <!-- end solve for u -->
-
-<section data-type="sect2"><h1>Numerical solutions for $J^*$</h1>
-
-
-<p> The other major barrier to using the HJB in a value iteration algorithm is
-that  the estimated optimal cost-to-go function, $\hat{J}^*$, must somehow be
-represented with a finite set of numbers, but we don't yet know anything about
-the potential form it must take. In fact, knowing the time-to-goal solution for
-minimum-time problem with the double integrator, we see that this function
-might need to be non-smooth for even very simple dynamics and objectives.</p>
-
-<p>One natural way to parameterize $\hat{J}^*$ --
- a scalar valued-function defined over the state space -- is to define the values on a
- mesh.  This approach then admits algorithms
- with close ties to the relatively very advanced numerical methods used to solve
- other partial differential equations (PDEs),
- such as the ones that arrive in finite element modeling or fluid dynamics.
- One important difference, however, is that our PDE lives in the dimension of the state
- space, while many of the mesh algorithms from the other disciplines are optimized for
-  two or three dimensional space.</p>
-
-<p>A slightly more general view of the problem would describe the mesh (and the
-  associated interpolation functions) as just one form of representations for
-  <a href="https://en.wikipedia.org/wiki/Function_approximation">function approximation</a>.</p>
-
-<todo>  (see Appendix C for a brief background on function
-  approximation) </todo>
-</section>
-
-<section data-type="sect3"><h1>Representing the cost-to-go with function approximation</h1>
-
-<p>If we approximate $J^*$ with a finitely-parameterized function
-$\hat{J}_\balpha^*$, with parameter vector $\balpha$, then   this immediately raises
-many important questions:</p>
-<ul>
-  <li>What if the true cost-to-go function does not live in
-the prescribed function class; e.g., there does not exist an $\balpha$ which
-satisfies the sufficiency conditions for all $\bx$?  (This seems very likely to
-be the case.)</li>
-<li>What update should we apply in the iterative algorithm?</li>
-<li>What can
-we say about it's convergence?</li>
-</ul>
-
-<todo> add quote from neuro-dynamic programming preface </todo>
-
-<p>In general, many of these questions will have to go unanswered.  But there are some answers available
-for the special case of <em>linear function approximators</em>.  A linear function approximator takes the form: \[ \hat{J}^*_\balpha(\bx) = \sum_i \alpha_i \psi_i(\bx) = \balpha^T \bpsi(\bx), \]
-where $\bpsi(\bx)$ is a vector of potentially nonlinear features.  Common examples of features include
-polynomials, radial basis functions, or the most interpolation schemes used on a mesh.  <!-- The distinguishing
-feature of a linear function approximator is the ability to exactly solve for $\balpha$ in order
-to represent a desired function optimally, in a least-squares sense.  For instance, if we
-have a desired set of $K$ input-output points, $(\bx_k,J^d_k)$, then we can write
-down the closed-form solution to \[ \minimize_\balpha \sum_k \left(\hat{J}_\balpha(\bx_k) - J^d_k \right)^2. \]
-Using the least squares solution in a value iteration update is sometimes referred to as <i>fitted value iteration</i>.
-In our case, we might choose to minimize, e.g., the "Bellman residual" -- the right side of the HJB which we
-hope will equal zero:
-\[ \balpha \Leftarrow \argmin_\balpha \sum_k \left( \min_\bu \left[ g(x_k,u) + \pd{\hat{J}_\balpha(x_k)}{x} f(x_k,u) \right] \right)^2. \]
---> <!-- oops the problem above is quartic in alpha, so not simple least squares -->
-</p>
-
-
-<todo> add citations for convergence results </todo>
-
-</section> <!-- end function approx -->
-
-</section> <!-- end continuous time DP -->
-
-<todo> try just running snopt on quartic objective </todo>
-
-<!--
-<section data-type="sect2"><h1>A continuous policy iteration algorithm</h1>
-
-<todo> simple (e.g. one-d example) </todo>
-
-</section> -->
-<!-- end policy iteration -->
-
-<!--
-<section data-type="sect2"><h1>How far can we take this?  (Performance and Scaling)</h1>
-
-<todo>
-Errors in bang-bang for double integrator due to discretization.
-
-Limited in number of dimensions.  Function approximation, but lacks convergence results.
-</todo>
-
-</section> --><!-- end scaling -->
-
-<section data-type="sect1"><h1>Stochastic Optimal Control</h1>
-
-<p> One of the most amazing features of the dynamic programming, additive cost
-   approach to optimal control is the relative ease with which it extends to optimizing
-   stochastic systems. </p>
-
-<section data-type="sect2"><h1>Graph search -- stochastic shortest path problems</h1>
-
-<p>For discrete systems, we can generalize our dynamics on a graph by adding action-dependent transition
-  probabilities to the edges.  This new dynamical system is known as a Markov Decision Process (MDP), and we
-  write the dynamics completely in terms of the transition probabilities \[ \Pr(s[n+1] = s' | s[n] = s, a[n] = a). \]
-  For discrete systems, this is simply a big lookup table.  The cost that we incur for any execution of
-  system is now a random variable, and so we formulate the goal of control as optimizing the expected cost, e.g.
-  \[ J^*(s[0]) = \min_{a[\cdot]} E \left[ \sum_{n=0}^\infty g(s[n],a[n]) \right]. \]  Note that there are many other potential objectives,
-  such as minimizing the worst-case error, but the expected cost is special because it preserves the
-  dynamic programming recursion:
-  \[ J^*(s) = \min_a E \left[ g(s,a) + J^*(s')\right]  = \min_a \left[ g(s,a) + \sum_{s'} \Pr(s'|s,a) J^*(s') \right].\]
-  Remarkably, if we use these optimality conditions to construct our value iteration algorithm
-  \[ \hat{J}(s) \Leftarrow \min_a \left[ g(s,a) + \sum_{s'} \Pr(s'|s,a) \hat{J}(s') \right],\]
-  then this algorithm has the same strong convergence guarantees of its counterpart for deterministic systems.  And it is essentially
-  no more expensive to compute!
-
-  </p>
-</section>
-
-<section data-type="sect2"><h1>MDP approximations of deterministic, continuous-state systems</h1>
-
-<p> There is a particularly cute trick that takes advantage of the computational
-  simplicity of the discrete MDP value iteration algorithm.   Let's assume that we have discrete control inputs and discrete-time dynamics,
-  but a continuous state space.   Imagine that we use a mesh
-  to approximate the cost-to-go function over that state space with $K$ mesh points $\hat{J}(x_k)$.
-  We would like to perform the value iteration update:
-  \[ \forall k, \hat{J}^*(x_k) \Leftarrow \min_{a \in A} \left[ g(x_k,a) +
-  \hat{J}^*\left({f(x_k,a)}\right) \right], \] but must deal with the fact that $f(x_k,a)$ might not result in a next
-  state that is directly at a mesh point.  Most interpolation schemes for a mesh
-  can be written as some weighted combination of the values at nearby mesh points, e.g.
-  \[ \hat{J}^*(x) = \sum_i \beta_i \hat{J}^*(x_i), \quad \sum_i \beta_i = 1 \] with $\beta_i$ the relative weight of the $i$th mesh
-  point.  The resulting update is exactly the same as if we treated the system
-  as a discrete state MDP with $\beta_i$ representing the probability of transitioning
-  to state $x_i$!
-</p>
-
-<p> If you looked at the code powering the numerical value iteration results above, you will
-  see that we used precisely this trick -- the continuous problem is discretized into
-  the corresponding MDP and then solved as a discrete system.  This results in nice clean code,
-  but also sheds light on the impact of discretization on the solutions -- discretization error
-  here will cause a sort of diffusion corresponding to the probability of spreading across
-  neighboring nodes.</p>
-
-  <p>Note that the update above could also be viewed as an approximation of the fitted value iteration
-    algorithm for linear function approximators described above.  It is missing a few terms, but
-    is easier to implement and remarkably, is still known to converge.</p> <todo> add citation</todo>
-
-</section>
-
-<section data-type="sect1"><h1>Extensions</h1>
-
-<todo> add section on extensions.  discounting.  finite-horizon / time-varying dynamics or cost.</todo>
+  <p>In chapter 2, we spent some time thinking about the phase portrait of the
+  simple pendulum, and concluded with a challenge: can we design a nonlinear
+  controller to <em>reshape</em> the phase portrait, with a very modest amount
+  of actuation, so that the upright fixed point becomes globally stable?  With
+  unbounded torque, feedback linearization solutions (e.g., invert gravity) can
+  work well, but can also require an unnecessarily large amount of control
+  effort. The energy-based swing-up control solutions presented for the acrobot
+  and cart-pole systems  are considerably more appealing, but required some
+  cleverness and might not scale to more complicated systems.  Here we
+  investigate another approach to the problem, using computational optimal
+  control to synthesize a feedback controller directly.</p>
+
+  <section data-type="sect1"><h1>Formulating control design as an optimization</h1>
+
+    <p>In this chapter, we will introduce optimal control - a control design
+    process using optimization.  This approach is powerful for a number of
+    reasons. First and foremost, it is very general - allowing us to   specify
+    the goal of control equally well for fully- or under-actuated,   linear or
+    nonlinear, deterministic or stochastic, and continuous or   discrete
+    systems. Second, it permits concise descriptions of potentially very complex
+    desired behaviours, specifying the goal of control as an scalar objective
+    (plus a list of constraints).  Finally, and most importantly, optimal
+    control is very amenable to numerical solutions. <elib>Bertsekas00a</elib>
+    is a fantastic reference on this material.</p>
+
+    <p>The fundamental idea in optimal control is to formulate the goal of
+    control as the <em>long-term</em> optimization of a scalar cost function.
+    Let's introduce the basic concepts by considering a system that is even
+    simpler than the simple pendulum.</p>
+
+    <div data-type="example"><h1>Optimal Control Formulations for the Double Integrator</h1>
+
+      <p>Consider the double integrator system $$\ddot{q} = u, \quad |u| \le
+      1.$$ If you would like a mechanical analog of the system (I always do),
+      then you can think about this as a unit mass brick moving along the x-axis
+      on a frictionless surface, with a control input which provides a
+      horizontal force, $u$. The task is to design a control system, $u =
+      \pi(\bx,t)$, $\bx=[q,\dot{q}]^T$ to regulate this brick to $\bx =
+      [0,0]^T$.</p>
+
+      <figure>
+      <img width="70%" data-src="figures/double_integrator_brick.svg"/>
+      <figcaption>The double integrator as a unit-mass brick on a frictionless
+      surface</figcaption>
+      </figure>
+
+      <p>In order to formulate this control design problem using optimal
+      control, we must define a scalar objective which scores the long-term
+      performance of running each candidate control policy, $\pi(\bx,t)$, from
+      each initial condition, $(\bx_0,t_0)$, and a list of constraints that must
+      be satisfied. For the task of driving the double integrator to the origin,
+      one could imagine a number of optimal control formulations which would
+      accomplish the task, e.g.: <ul> <li> Minimum time:  $\min_\pi t_f,$
+      subject to $\bx(t_0) = \bx_0,$ $\bx(t_f) = {\bf 0}.$ </li> <li> Quadratic
+      cost:  $\min_\pi \int_{t_0}^{\infty} \left[ \bx^T(t) {\bf Q} \bx(t)
+      \right] dt,$ ${\bf Q}\succ0$.</li> </ul> where the first is a constrained
+      optimization formulation which optimizes time, and the second accrues a
+      penalty at every instance according to the distance that the state is away
+      from the origin (in a metric space defined by the matrix ${\bf Q}$), and
+      therefore encourages trajectories that go more directly towards the goal,
+      possibly at the expense of requiring a longer time to reach the goal (in
+      fact it will result in an exponential approach to the goal, where as the
+      minimum-time formulation will arrive at the goal in finite time). Note
+      that both optimization problems are only well defined if it is possible
+      for the system to actually reach the origin, otherwise the minimum-time
+      problem cannot satisfy the terminal constraint, and the integral in the
+      quadratic cost would not converge to a finite value as time approaches
+      infinity (fortunately the double integrator system is controllable, and
+      therefore can be driven to the goal in finite time).</p>
+
+      <p> Note that the input limits, $|u|\le1$ are also required to make this
+      problem well-posed; otherwise both optimizations would result in the
+      optimal policy using infinite control input to approach the goal
+      infinitely fast. Besides input limits, another common approach to limiting
+      the control effort is to add an additional quadratic cost on the input (or
+      "effort"), e.g. $\int \left[ \bu^T(t) {\bf R} \bu(t) \right] dt,$   ${\bf
+      R}\succ0$. This could be added to either formulation above.  We will
+      examine many of these formulations in some details in the examples worked
+      out at the end of this chapter. </p>
+
+    </div> <!-- end example -->
+
+    <p>Optimal control has a long history in robotics.  For instance, there has
+    been a great deal of work on the minimum-time problem for pick-and-place
+    robotic manipulators, and the linear quadratic regulator (LQR) and linear
+    quadratic regulator with Gaussian noise (LQG) have become essential tools
+    for any practicing controls engineer.  With increasingly powerful computers
+    and algorithms, the popularity of numerical optimal control has grown at an
+    incredible pace over the last few years.</p>
+
+    <div data-type="example"><h1>The minimum time problem for the double
+    integrator</h1>
+
+      <p>For more intuition, let's do an informal derivation of the solution to
+      the minimum time problem for the double integrator with input constraints:
+      \begin{align*}
+        \minimize_{\pi} \quad & t_f\\
+        \subjto \quad & \bx(t_0) = \bx_0, \\
+        & \bx(t_f) = {\bf 0}, \\
+        & \ddot{q}(t) = u(t), \\
+        & |u| \le 1.
+      \end{align*}
+      What behavior would you expect an optimal controller exhibit?</p>
+
+      <p> Your intuition might tell you that the best thing that the brick can
+      do, to reach the goal in minimum time with limited control input, is to
+      accelerate maximally towards the goal until reaching a critical point,
+      then hitting the brakes in order to come to a stop exactly at the goal.
+      This would be called a <em>bang-bang</em> control policy; these are often
+      optimal for systems with bounded input, and it is in fact optimal for the
+      double integrator, although we will not prove it until we have developed
+      more tools.  <!-- leave the proof to the pontryagin notes --></p>
+
+      <p> Let's work out the details of this bang-bang policy.  First, we can
+      figure out the states from which, when the brakes are fully applied, the
+      system comes to rest precisely at the origin.  Let's start with the case
+      where $q(0) < 0$, and $\dot{q}(0)>0$, and "hitting the brakes" implies
+      that $u=-1$ . Integrating the equations, we have \begin{gather*}
+      \ddot{q}(t) = u = -1 \\\dot{q}(t) = \dot{q}(0) - t \\ q(t) = q(0) +
+      \dot{q}(0) t - \frac{1}{2} t^2.  \end{gather*} Substituting $t =
+      \dot{q}(0) - \dot{q}$ into the solution give $\dot{q}$ reveals that the
+      system orbits are parabolic arcs: \[ q = -\frac{1}{2} \dot{q}^2 + c_{-},
+      \] with $c_{-} = q(0) + \frac{1}{2}\dot{q}^2(0)$.</p>
+
+      <figure>
+        <img width="80%" data-src="figures/double_integrator_orbits.svg"/>
+        <figcaption>Two solutions for the system with $u=-1$</figcaption>
+      </figure>
+
+      <!-- t = qdot - qdot0,
+      q = q0 + qdot0(qdot-qdot0) + 1/2(qdot-qdot0)^2
+        = q0 + qdot0*qdot - qdot0^2 + 1/2qdot^2 - qdot*qdot0 + 1/2qdot0^2
+        = 1/2qdot^2 + (q0 - 1/2 qdot0^2)
+      -->
+
+      <p>Similarly, the solutions for $u=1$ are $q = \frac{1}{2} \dot{q}^2 +
+      c_{+}$, with $c_{+}=q(0)-\frac{1}{2}\dot{q}^2(0)$.</p>
+
+      <p> Perhaps the most important of these orbits are the ones that pass
+      directly through the origin (e.g., $c_{-}=0$). Following our initial
+      logic, if the system is going slower than this $\dot{q}$ for any $q$, then
+      the optimal thing to do is to slam on the accelerator
+      ($u=-\text{sgn}(q)$).  If it's going faster than the $\dot{q}$ that we've
+      solved for, then still the best thing to do is to brake; but inevitably
+      the system will overshoot the origin and have to come back.  We can
+      summarize this policy with: \[ u = \begin{cases}  +1 & \text{if } (\dot{q}
+      < 0 \text{ and } q \le \frac{1}{2} \dot{q}^2) \text{ or } (\dot{q}\ge 0
+      \text{ and } q < -\frac{1}{2} \dot{q}^2) \\ 0 & \text{if } q=0 \text{ and
+      } \dot{q}=0 \\ -1 & \text{otherwise} \end{cases} \]</p> <!--This policy is
+      cartooned in Figure~\ref{fig:mintime_double_int}.  %Trajectories of the
+      system %executing this policy are also included - the fundamental
+      %characteristic is that the system is accelerated as quickly as %possible
+      toward the switching surface, then rides the switching %surface in to the
+      origin. -->
+
+      <figure>
+      <img width="80%" data-src="figures/double_integrator_mintime_policy.svg"/>
+      <figcaption>Candidate optimal (bang-bang) policy for the minimum-time
+        double integrator problem.</figcaption>
+      </figure>
+
+      <p>and illustrate some of the optimal solution trajectories:</p>
+
+      <figure>
+      <img width="80%" data-src="figures/double_integrator_mintime_orbits.svg"/>
+      <figcaption>Solution trajectories of system using the optimal policy</figcaption>
+      </figure>
+
+      <p>And for completeness, we can compute the optimal time to the goal by
+      solving for the amount of time required to reach the switching surface
+      plus the amount of time spent moving along the switching surface to the
+      goal.  With a little algebra, you will find that the time to goal,
+      $T(\bx)$, is given by \[ T(\bx) = \begin{cases}
+      2\sqrt{\frac{1}{2}\dot{q}^2-q} - \dot{q} & \text{for } u=+1 \text{
+      regime}, \\ 0 & \text{for } u=0, \\ \dot{q} +
+      2\sqrt{\frac{1}{2}\dot{q}^2+q} & \text{for } u=-1, \end{cases} \]<!-- call
+      t_m the time to the surface, then the time on switching surface =
+      |qdot(t_m)|
+      for u=1
+      q0,qdot0 => qm,qdotm with qm = -1/2 qdotm^2
+      -1/2 qdotm^2 = 1/2 qdotm^2 + c+
+      qdotm^2 = - c+  , qdotm = sqrt(-c+)
+      T = (qdotm-qdot0)+qdotm = 2*sqrt(-c+) - qdot0
+      for u=-1, qdotm^2 = c- , qdotm = -sqrt(c-)
+      T = (qdot0-qdotm)-qdotm = qdot0 + 2*sqrt(c-)
+      -->
+      plotted here:</p>
+
+      <figure>
+      <img width="80%" data-src="figures/double_integrator_mintime_cost_to_go.svg"/>
+      <figcaption>Time to the origin using the bang-bang policy</figcaption>
+      </figure>
+
+      <p> Notice that the function is continuous (though not smooth), even
+      though the policy is discontinuous.</p>
+
+    </div> <!-- end of example -->
+
+    <section data-type="sect2"><h1>Additive cost</h1>
+
+      <p> As we begin to develop theoretical and algorithmic tools for optimal
+      control, we will see that some formulations are much easier to deal with
+      than others. One important example is the dramatic simplification that can
+      come from formulating objective functions using <em>additive cost</em>,
+      because they often yield recursive solutions.  In the additive cost
+      formulation, the long-term "score" for a trajectory can be written as
+      $$\int_0^T g(x(t),u(t)) dt,$$ where $g()$ is the instantaneous cost, and
+      $T$ can be either a finite real number or $\infty$.  We will call a
+      problem specification with a finite $T$ a "finite-horizon" problem, and
+      $T=\infty$ an "infinite-horizon" problem.  Problems and solutions for
+      infinite-horizon problems tend to be more elegant, but care is required to
+      make sure that the integral converges for the optimal controller
+      (typically by having an achievable goal that allows the robot to accrue
+      zero-cost).</p>
+
+      <p> At first glance, our minimum-time problem formulation for the double
+      integrator does not look like an additive cost problem.  However, we can
+      write in as an additive cost problem using an infinite horizon and the
+      instantaneous cost  $$g(x,u) = \begin{cases} 0 & \text{if } x=0, \\ 1 &
+      \text{otherwise.} \end{cases}$$</p>
+
+      <p> We will examine a number of approaches to solving optimal control
+      problems throughout the next few chapters.  For the remainder of this
+      chapter, we will focus on additive-cost problems and their solution via
+      <em>dynamic programming</em>.</p>
+
+    </section> <!-- end of additive cost -->
+
+  </section> <!-- control design as an optimization -->
+
+  <section data-type="sect1"><h1>Optimal control as graph search</h1>
+
+    <p> For systems with continuous states and continuous actions, dynamic
+    programming is a set of theoretical ideas surrounding additive cost optimal
+    control problems. For systems with a finite, discrete set of states and a
+    finite, discrete set of actions, dynamic programming also represents a set
+    of very efficient numerical <em>algorithm</em> which can compute optimal
+    feedback controllers. Many of you will have learned it before as a tool for
+    graph search. </p>
+
+    <p>Imagine you have a directed graph with states (or nodes) $\{s_1,s_2,...\}
+    \in S$ and "actions" associated with edges labeled as $\{a_1,a_2,...\} \in
+    A$, as in the following trivial example:</p>
+
+    <figure><img width="70%" data-src="figures/graph_search.svg"/><figcaption>A
+    simple directed graph.</figcaption></figure>
+
+    <p>Let us also assume that each edge has an associate weight or cost, using
+    $g(s,a)$ to denote the cost of being in state $s$ and taking action $a$.
+    Furthermore we will denote the transition "dynamics" using \[ s[n+1] =
+    f(s[n],a[n]). \] For instance, in the graph above, $f(s_1,a_1) = s_2$.</p>
+
+    <p>There are many algorithms for finding (or approximating) the optimal path
+    from a start to a goal on directed graphs.  In dynamic programming, the key
+    insight is that we can find the shortest path from every node by solving
+    recursively for the optimal <em>cost-to-go</em> from every node to the goal.
+    One such algorithm starts by initializing an estimate $\hat{J}^*=0$ for all
+    $s_i$, then proceeds with an iterative algorithm which sets \begin{equation}
+    \hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[ g(s_i,a) +
+    \hat{J}^*\left({f(s_i,a)}\right) \right]. \label{eq:value_update}
+    \end{equation} In software, $\hat{J}^*$ can be represented as a vector with
+    dimension equal to the number of discrete states.  This algorithm,
+    appropriately known as <em>value iteration</em>, is guaranteed to converge
+    to the optimal cost-to-go, $\hat{J}^* \rightarrow J^*$
+    <elib>Bertsekas96</elib>, and in practice does so rapidly. Typically the
+    update is done in <em>batch</em> -- e.g. the estimate is updated for all $i$
+    at once -- but the <em>asynchronous</em> version where states are updated
+    one at a time is also known to converge, so long as every state is
+    eventually updated infinitely often.  Assuming the graph has a goal state
+    with a zero-cost self-transition, then this cost-to-go function represents
+    the weighted shortest distance to the goal. </p>
+
+    <p> Value iteration is an amazingly simple algorithm, but it accomplishes
+    something quite amazing: it efficiently computes the long-term cost of an
+    optimal policy from <i>every</i> state by iteratively evaluating the
+    one-step cost.  If we know the optimal cost-to-go, then it's easy to extract
+    the optimal policy, $a = \pi^*(s)$: \begin{equation} \pi^*(s_i) = \argmin_a
+    \left[ g(s_i,a) + J^*\left( f(s_i,a) \right) \right].
+    \label{eq:policy_update} \end{equation} It's a simple algorithm, but playing
+    with an example can help our intuition.</p>
+
+    <div data-type="example" class="drake"><h1>Grid World</h1>
+
+      <p>Imagine a robot living in a grid (finite state) world.  Wants to get to
+      the goal location.  Possibly has to negotiate cells with obstacles.  Actions
+      are to move up, down, left, right, or do nothing.  <elib>Sutton98</elib></p>
+
+      <figure>
+        <a href="figures/gridworld_mintime.swf">
+          <img width="80%" data-src="figures/gridworld_mintime.svg" />
+        </a>
+        <figcaption>The one-step cost for the grid-world minimum-time problem.
+        The goal state has a cost of zero, the obstacles have a cost of 10, and
+        every other state has a cost of 1. <em>Click the image to watch the
+        value iteration algorithm in action.</em></figcaption>
+      </figure>
+
+      <todo>insert value iteration animation for min time and quadratic cost</todo>
+
+      <p>You can experiment with the grid world example in <drake></drake> using
+      <pre><code class="matlab" testfile="testGridWorldValueIteration">
+      cd(fullfile(getDrakePath,'examples'));
+      GridWorld.runValueIteration();
+      </code></pre>
+      <p>I recommend trying to edit the cost function and obstacles.</p>
+
+    </div> <!-- end grid world -->
+
+    <todo>figure/text for graph approximation of a continuous state
+    space.</todo>
+
+    <div data-type="example" class="drake"><h1>Dynamic Programming for the Double Integrator</h1>
+
+      <p>You can run value iteration for the double integrator (using
+      barycentric interpolation to interpolate between nodes) in <drake></drake>
+      using: </p>
+
+      <pre><code class="matlab"
+      testfile="testDoubleIntegratorValueIteration">
+      cd(fullfile(getDrakePath,'examples'));
+      DoubleIntegrator.runValueIteration(); </code></pre>
+
+      <p>Again, you can easily try different cost functions by editing the code
+      yourself.</p>
+
+    </div>
+
+    <p> Let's take a minute to appreciate how amazing this is.  Our solution to
+    finding the optimal controller for the double integrator wasn't all that
+    hard, but it required some mechanical intuition and solutions to
+    differential equations.  The resulting policy was non-trivial -- bang-bang
+    control with a parabolic switching surface. The value iteration algorithm
+    doesn't use any of this directly -- it's a simple algorithm for graph
+    search.  But remarkably, it can generate effectively the same policy with
+    just a few moments of computation.</p>
+
+    <p>It's important to note that there <em>are</em> some differences between
+    the computed policy and the optimal policy that we derived, due to
+    discretization errors.  We will ask you to explore these in the
+    problems.</p>
+
+    <p>The real value of this numerical solution, however, is unlike our
+    analytical solution for the double integrator, we can apply this same
+    algorithm to any number of dynamical systems virtually without modification.
+    Let's apply it now to the simple pendulum, which was intractable
+    analytically.</p>
+
+    <div data-type="example" class="drake"><h1>Dynamic Programming for the
+    Simple Pendulum</h1>
+
+      <p>You can run value iteration for the simple pendulum (using barycentric
+      interpolation to interpolate between nodes) in <drake></drake> using:
+      <pre><code class="matlab" testfile="testPendulumValueIteration">
+      cd(fullfile(getDrakePath,'examples','Pendulum')); runValueIteration();
+      </code></pre> <p>Again, you can easily try different cost functions by
+      editing the code yourself.</p>
+
+    </div>
+
+  </section> <!-- end of graph search -->
+
+  <section data-type="sect1"><h1>Continuous dynamic programming</h1>
+
+    <p> I find the graph search algorithm extremely satisfying as a first step,
+    but also become quickly frustrated by the limitations of the discretization
+    required to use it. In many cases, we can do better; coming up with
+    algorithms which work more natively on continuous dynamical systems.  We'll
+    explore those extensions in this section.</p>
+
+    <section data-type="sect2"><h1>The Hamilton-Jacobi-Bellman Equation</h1>
+
+      <p> It's important to understand that the value iteration equations,
+      equations (\ref{eq:value_update}) and (\ref{eq:policy_update}), are more
+      than just an algorithm.  They are also sufficient conditions for
+      optimality: if we can produce a $J^*$ and $\pi^*$ which satisfy these
+      equations, then $\pi^*$ must be an optimal controller.  There are an
+      analogous set of conditions for the continuous systems.  For a system
+      $\dot{\bx} = f(\bx,\bu)$ and an infinite-horizon additive cost
+      $\int_0^\infty g(\bx,\bu)dt$, we have: \begin{gather} 0 = \min_\bu \left[
+      g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right], \label{eq:HJB} \\ \pi^*(\bx)
+      = \argmin_\bu \left[ g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right].
+      \end{gather} Equation \ref{eq:HJB} is known as the
+      <em>Hamilton-Jacobi-Bellman</em> (HJB) equation.  <elib>Bertsekas05</elib>
+      <!-- chapter 3 --> gives an informal derivation of these equations as the
+      limit of a discrete-time approximation of the dynamics, and also gives the
+      following sufficiency theorem:</p>
+
+      <div data-type="theorem"><h1>HJB Sufficiency Theorem</h1>
+
+        <p>The following statement is adapted from Proposition 3.2.1 of
+        <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}=f(\bx,\bu)$ and
+        an infinite-horizon additive cost $\int_0^\infty g(\bx,\bu)dt$.  Suppose
+        $J(\bx)$ is a solution to the HJB equation; that is $J$ is continuously
+        differentiable in $\bx$ and is such that \[ 0 = \min_{u\in U} \left[
+        g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx. \]
+        Suppose also that $\pi^*(\bx)$ attains the minimum in the equation for
+        all $\bx$.  Further assume that the differential equation described by
+        $f$ has a unique solution starting from any state $\bx$, and that the
+        control input trajectory, $\bu^*(t)$, obtained by evaluating $\pi^*$
+        along any solution is piecewise continuous as a function of $t$.  Then
+        $J$ is equal to the optimal cost-to-go function, $J(\bx)=J^*(\bx)$ for
+        all $\bx$, and the control trajectories $\bu^*(t)$ are optimal.</p>
+
+      </div>
+
+      <p>As a tool for verifying optimality, the HJB equations are actually
+      surprisingly easy to work with: we can verify optimality for an
+      infinite-horizon objective without doing any integration; we simply have
+      to check a derivative condition on the optimal cost-to-go function $J^*$.
+      Let's see this play out on the double integrator example.</p>
+
+      <div data-type="example"><h1>HJB for the Double Integrator</h1>
+
+        <p>Consider the problem of regulating the double integrator (this time
+        without input limits) to the origin   using a quadratic cost: $$
+        g(\bx,\bu) = q^2 + \dot{q}^2 + u^2. $$  I claim   (without derivation)
+        that the optimal controller for this objective is $$\pi(\bx) = -q -
+        \sqrt{3}\dot{q}.$$   To convince you that this is indeed optimal, I have
+        produced   the following cost-to-go function: $$J(\bx) = \sqrt{3} q^2 +
+        2 q \dot{q} + \sqrt{3} \dot{q}^2.$$</p>
+
+        <p>Taking \begin{gather*} \pd{J}{q} = 2\sqrt{3} q + 2\dot{q}, \qquad
+        \pd{J}{\dot{q}} = 2q + 2\sqrt{3}\dot{q}, \end{gather*}   we can write
+        \begin{align*} g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) &= q^2 + \dot{q}^2 +
+        u^2 + (2\sqrt{3} q + 2\dot{q}) \dot{q} + (2q + 2\sqrt{3}\dot{q}) u
+        \end{align*}   This is a convex quadratic function in $u$, so we can
+        find the minimum with respect to $u$ by finding where the gradient with
+        respect to $u$ evaluates to zero.   \[ \pd{}{u} \left[ g(\bx,\bu) +
+        \pd{J}{\bx} f(\bx,\bu) \right] = 2u + 2q + 2\sqrt{3}\dot{q}. \]  Setting
+        this equal to $0$ and   solving for $u$ yields: $$u^* = -q - \sqrt{3}
+        \dot{q},$$ thereby confirming that our policy $\pi$ is in fact the
+        minimizer.  Substituting $u^*$ back into the HJB reveals that the right
+        side does in fact simplify to zero.  I hope you are convinced!</p>
+
+      </div>
+
+      <p>Note that evaluating the HJB for the time-to-go of the minimum-time
+      problem for the double integrator will also reveal that the HJB is
+      satisfied wherever that gradient is well-defined.  This is certainly
+      mounting evidence in support of our bang-bang policy being optimal, but
+      since $\pd{J}{\bx}$ is not defined everywhere, it does not actually
+      satisfy the requirements of the sufficiency theorem as stated above.</p>
+
+    </section> <!-- end HJB -->
+
+    <section data-type="sect2" id="hjb_minimizing_control"><h1>Solving for the minimizing control</h1>
+
+      <p>We still face a few barriers to actually using the HJB in an algorithm.
+      The first barrier is the minimization over $u$.  When the action set was
+      discrete, as in the graph search version, we could evaluate the one-step
+      cost plus cost-to-go for every possible action, and then simply take the
+      best.  For continuous action spaces, in general we cannot rely on the
+      strategy of evaluating a finite number of possible $\bu$'s to find the
+      minimizer.</p>
+
+      <p>All is not lost.  In the quadratic cost double integrator example
+      above, we were able   to solve explicitly for the minimizing $\bu$ in
+      terms of the cost-to-go.  It turns out that   this strategy will actually
+      work for a number of the problems we're interested in, even   when the
+      system (which we are given) or cost function (which we are free to pick,
+      but which   should be expressive) gets more complicated.</p>
+
+      <p>Recall that I've already tried to convinced you that a majority of the
+      systems of interest   are <em>control affine</em>, e.g. I can write \[
+      f(\bx,\bu) = f_1(\bx) + f_2(\bx)\bu. \]   We can make another dramatic
+      simplification by restrict ourselves to instantaneous cost functions of
+      the form \[ g(\bx,\bu) = g_1(\bx) + \bu^T {\bf R} \bu, \qquad {\bf R}={\bf
+      R}^T \succ 0. \] In my view, this is not very restrictive - many of the
+      cost functions that I find myself choosing to write down can be expressed
+      in this form.  Given these assumptions, we can write the HJB as \[ 0 =
+      \min_{\bu} \left[ g_1(\bx) + \bu^T {\bf R} \bu + \pd{J}{\bx} \left[
+      f_1(\bx) + f_2(\bx)\bu \right]\right]. \]  Since this is a quadratic
+      function in $\bu$, if the system does not have any constraints on $\bu$,
+      then we can solve in closed-form for the minimizing $\bu$ by taking the
+      gradient of the right-hand size: \[ \pd{}{\bu} = 2\bu^T {\bf R} +
+      \pd{J}{\bx} f_2(\bx) = 0, \] and setting it equal to zero to obtain \[
+      \bu^* = -\frac{1}{2}{\bf R}^{-1}f_2^T(\bx) \pd{J}{\bx}^T.\] If there are
+      linear constraints on the input, such as torque limits, then more
+      generally this could be solved (at any particular $\bx$) as a quadratic
+      program.</p>
+
+      <p> What happens in the case where our system is not control affine or if
+      we really   do need to specify an instantaneous cost function on $\bu$
+      that is not simply quadratic?   If the goal is to produce an iterative
+      algorithm, like value iteration, then one   common approach is to make a
+      (positive-definite) quadratic approximation in $\bu$ of the HJB, and
+      updating   that approximation on every iteration of the algorithm.  This
+      broad approach is often referred to as <em>differential dynamic
+      programming</em> (c.f. <elib>Jacobson70</elib>).   </p>
+
+    </section> <!-- end solve for u -->
+
+    <section data-type="sect2"><h1>Numerical solutions for $J^*$</h1>
+
+      <p> The other major barrier to using the HJB in a value iteration
+      algorithm is that  the estimated optimal cost-to-go function, $\hat{J}^*$,
+      must somehow be represented with a finite set of numbers, but we don't yet
+      know anything about the potential form it must take. In fact, knowing the
+      time-to-goal solution for minimum-time problem with the double integrator,
+      we see that this function might need to be non-smooth for even very simple
+      dynamics and objectives.</p>
+
+      <p>One natural way to parameterize $\hat{J}^*$ -- a scalar valued-function
+      defined over the state space -- is to define the values on a mesh.  This
+      approach then admits algorithms with close ties to the relatively very
+      advanced numerical methods used to solve other partial differential
+      equations (PDEs), such as the ones that arrive in finite element modeling
+      or fluid dynamics. One important difference, however, is that our PDE
+      lives in the dimension of the state space, while many of the mesh
+      algorithms from the other disciplines are optimized for two or three
+      dimensional space.</p>
+
+      <p>A slightly more general view of the problem would describe the mesh
+      (and the associated interpolation functions) as just one form of
+      representations for <a
+      href="https://en.wikipedia.org/wiki/Function_approximation">function
+      approximation</a>.</p>
+
+      <todo>  (see Appendix C for a brief background on function approximation)
+      </todo>
+
+      <section data-type="sect3"><h1>Representing the cost-to-go with function approximation</h1>
+
+        <p>If we approximate $J^*$ with a finitely-parameterized function
+        $\hat{J}_\balpha^*$, with parameter vector $\balpha$, then   this
+        immediately raises many important questions:</p>
+
+        <ul>
+          <li>What if the true cost-to-go function does not live in the
+        prescribed function class; e.g., there does not exist an $\balpha$ which
+        satisfies the sufficiency conditions for all $\bx$?  (This seems very
+        likely to be the case.)</li>
+          <li>What update should we apply in the iterative algorithm?</li>
+          <li>What can we say about it's convergence?</li>
+        </ul>
+
+        <todo> add quote from neuro-dynamic programming preface </todo>
+
+        <p>In general, many of these questions will have to go unanswered.  But
+        there are some answers available for the special case of <em>linear
+        function approximators</em>.  A linear function approximator takes the
+        form: \[ \hat{J}^*_\balpha(\bx) = \sum_i \alpha_i \psi_i(\bx) =
+        \balpha^T \bpsi(\bx), \] where $\bpsi(\bx)$ is a vector of potentially
+        nonlinear features.  Common examples of features include polynomials,
+        radial basis functions, or the most interpolation schemes used on a
+        mesh.  <!-- The distinguishing feature of a linear function approximator
+        is the ability to exactly solve for $\balpha$ in order to represent a
+        desired function optimally, in a least-squares sense.  For instance, if
+        we have a desired set of $K$ input-output points, $(\bx_k,J^d_k)$, then
+        we can write down the closed-form solution to \[ \minimize_\balpha
+        \sum_k \left(\hat{J}_\balpha(\bx_k) - J^d_k \right)^2. \] Using the
+        least squares solution in a value iteration update is sometimes referred
+        to as <i>fitted value iteration</i>. In our case, we might choose to
+        minimize, e.g., the "Bellman residual" -- the right side of the HJB
+        which we hope will equal zero: \[ \balpha \Leftarrow \argmin_\balpha
+        \sum_k \left( \min_\bu \left[ g(x_k,u) + \pd{\hat{J}_\balpha(x_k)}{x}
+        f(x_k,u) \right] \right)^2. \] --> <!-- oops the problem above is
+        quartic in alpha, so not simple least squares --> </p>
+
+
+        <todo> add citations for convergence results </todo>
+
+      </section>
+    </section> <!-- end function approx -->
+
+  </section> <!-- end continuous time DP -->
+
+  <todo> try just running snopt on quartic objective </todo>
+
+  <!--
+  <section data-type="sect2"><h1>A continuous policy iteration algorithm</h1>
+
+  <todo> simple (e.g. one-d example) </todo>
+
+  </section> -->
+  <!-- end policy iteration -->
+
+  <!--
+  <section data-type="sect2"><h1>How far can we take this?  (Performance and Scaling)</h1>
+
+  <todo>
+  Errors in bang-bang for double integrator due to discretization.
+
+  Limited in number of dimensions.  Function approximation, but lacks convergence results.
+  </todo>
+
+  </section> --><!-- end scaling -->
+
+  <section data-type="sect1"><h1>Stochastic Optimal Control</h1>
+
+    <p> One of the most amazing features of the dynamic programming, additive
+    cost approach to optimal control is the relative ease with which it extends
+    to optimizing stochastic systems. </p>
+
+    <section data-type="sect2"><h1>Graph search -- stochastic shortest path
+    problems</h1>
+
+      <p>For discrete systems, we can generalize our dynamics on a graph by
+      adding action-dependent transition probabilities to the edges.  This new
+      dynamical system is known as a Markov Decision Process (MDP), and we write
+      the dynamics completely in terms of the transition probabilities \[
+      \Pr(s[n+1] = s' | s[n] = s, a[n] = a). \] For discrete systems, this is
+      simply a big lookup table.  The cost that we incur for any execution of
+      system is now a random variable, and so we formulate the goal of control
+      as optimizing the expected cost, e.g. \[ J^*(s[0]) = \min_{a[\cdot]} E
+      \left[ \sum_{n=0}^\infty g(s[n],a[n]) \right]. \]  Note that there are
+      many other potential objectives, such as minimizing the worst-case error,
+      but the expected cost is special because it preserves the dynamic
+      programming recursion: \[ J^*(s) = \min_a E \left[ g(s,a) + J^*(s')\right]
+      = \min_a \left[ g(s,a) + \sum_{s'} \Pr(s'|s,a) J^*(s') \right].\]
+      Remarkably, if we use these optimality conditions to construct our value
+      iteration algorithm \[ \hat{J}(s) \Leftarrow \min_a \left[ g(s,a) +
+      \sum_{s'} \Pr(s'|s,a) \hat{J}(s') \right],\] then this algorithm has the
+      same strong convergence guarantees of its counterpart for deterministic
+      systems.  And it is essentially no more expensive to compute!</p>
+
+    </section>
+
+    <section data-type="sect2"><h1>MDP approximations of deterministic,
+    continuous-state systems</h1>
+
+      <p> There is a particularly cute trick that takes advantage of the
+      computational simplicity of the discrete MDP value iteration algorithm.
+      Let's assume that we have discrete control inputs and discrete-time
+      dynamics, but a continuous state space.   Imagine that we use a mesh to
+      approximate the cost-to-go function over that state space with $K$ mesh
+      points $\hat{J}(x_k)$. We would like to perform the value iteration
+      update: \[ \forall k, \hat{J}^*(x_k) \Leftarrow \min_{a \in A} \left[
+      g(x_k,a) + \hat{J}^*\left({f(x_k,a)}\right) \right], \] but must deal with
+      the fact that $f(x_k,a)$ might not result in a next state that is directly
+      at a mesh point.  Most interpolation schemes for a mesh can be written as
+      some weighted combination of the values at nearby mesh points, e.g. \[
+      \hat{J}^*(x) = \sum_i \beta_i \hat{J}^*(x_i), \quad \sum_i \beta_i = 1 \]
+      with $\beta_i$ the relative weight of the $i$th mesh point.  The resulting
+      update is exactly the same as if we treated the system as a discrete state
+      MDP with $\beta_i$ representing the probability of transitioning to state
+      $x_i$! </p>
+
+      <p> If you looked at the code powering the numerical value iteration
+      results above, you will see that we used precisely this trick -- the
+      continuous problem is discretized into the corresponding MDP and then
+      solved as a discrete system.  This results in nice clean code, but also
+      sheds light on the impact of discretization on the solutions --
+      discretization error here will cause a sort of diffusion corresponding to
+      the probability of spreading across neighboring nodes.</p>
+
+      <p>Note that the update above could also be viewed as an approximation of
+      the fitted value iteration algorithm for linear function approximators
+      described above.  It is missing a few terms, but is easier to implement
+      and remarkably, is still known to converge.</p> <todo> add citation</todo>
+
+    </section>
+
+  </section> <!-- end of stochastic optimal control -->
+
+  <section data-type="sect1"><h1>Extensions</h1>
+
+    <todo> add section on extensions.  discounting.  finite-horizon / time-varying dynamics or cost.</todo>
 
 
 <!--
@@ -4008,9 +4066,7 @@ This equation can be solved for ${\bf S}$ numerically with the Riccati recursion
 \end{example}
 -->
 
-</section> <!-- end of extensions -->
-
-</section> <!-- end of stochastic optimal control -->
+  </section> <!-- end of extensions -->
 
 </section> <!-- ***************  end of dynamic programming **************   -->
 
