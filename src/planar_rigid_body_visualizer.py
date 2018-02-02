@@ -20,7 +20,7 @@ from pydrake.rbtree import RigidBodyTree
 from pydrake.parsers import PackageMap
 from pydrake.systems.analysis import Simulator
 from pydrake.systems.framework import (
-    Context
+    Context,
     DiagramBuilder,
     LeafSystem,
     PortDataType
