@@ -279,6 +279,7 @@
 <div style="display:none" id="mathjax_setup"> <!-- definitions for mathjax -->
   \[
   \newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+  \newcommand{\bc}{{\bf c}}
   \newcommand{\bg}{{\bf g}}
   \newcommand{\bh}{{\bf h}}
   \newcommand{\bq}{{\bf q}}
@@ -296,6 +297,7 @@
   \newcommand{\bJ}{{\bf J}}
   \newcommand{\bK}{{\bf K}}
   \newcommand{\bM}{{\bf M}}
+  \newcommand{\bT}{{\bf T}}
   \newcommand{\balpha}{{\bf \alpha}}
   \newcommand{\bbeta}{{\bf \beta}}
   \newcommand{\blambda}{{\bf \lambda}}
@@ -303,6 +305,7 @@
   \newcommand{\bphi}{{\bf \phi}}
   \newcommand{\bPhi}{{\bf \Phi}}
   \newcommand{\bpsi}{{\bf \psi}}
+  \newcommand{\bPsi}{{\bf \Psi}}
   \newcommand{\avg}[1]{E\left[ #1 \right]}
   \newcommand{\subjto}{\textrm{subject to}}
   \newcommand{\minimize}{\operatorname{\textrm{minimize}}}
@@ -4009,10 +4012,11 @@ where this additional input $\bw$ is the (vector) output of some random process.
       \Pr(s[n+1] = s' | s[n] = s, a[n] = a). \] For discrete systems, this is
       simply a big lookup table.  The cost that we incur for any execution of
       system is now a random variable, and so we formulate the goal of control
-      as optimizing the expected cost, e.g. \[ J^*(s[0]) = \min_{a[\cdot]} E
-      \left[ \sum_{n=0}^\infty g(s[n],a[n]) \right]. \]  Note that there are
-      many other potential objectives, such as minimizing the worst-case error,
-      but the expected cost is special because it preserves the dynamic
+      as optimizing the expected cost, e.g. \begin{equation} J^*(s[0]) =
+      \min_{a[\cdot]} E \left[ \sum_{n=0}^\infty g(s[n],a[n]) \right].
+      \label{eq:stochastic_dp_optimality_cond} \end{equation}  Note that there
+      are many other potential objectives, such as minimizing the worst-case
+      error, but the expected cost is special because it preserves the dynamic
       programming recursion: \[ J^*(s) = \min_a E \left[ g(s,a) + J^*(s')\right]
       = \min_a \left[ g(s,a) + \sum_{s'} \Pr(s'|s,a) J^*(s') \right].\]
       Remarkably, if we use these optimality conditions to construct our value
@@ -4046,7 +4050,40 @@ where this additional input $\bw$ is the (vector) output of some random process.
 
     <section data-type="sect2"><h1>Linear Programming Approach</h1>
 
-      <todo>e.g. as presented here: http://web.hec.ca/pages/erick.delage/LP2ADP_Presentation.pdf</todo>
+      <p>For discrete MDPs, value iteration is a magical algorithm because it is
+      simple, but known to converge to the global optimal, $J^*$.  However,
+      other important algorithms are known; one of the most important is a
+      solution approach using linear programming.  This formulation provides an
+      alternative view, but may also be more generalizable and even more
+      efficient for some instances of the problem.</p>
+
+      <p>Recall the optimality conditions from Eq.
+      (\ref{eq:stochastic_dp_optimality_cond}).  If we describe the cost-to-go
+      function as a vector, $J_i = J(s_i)$, then these optimality conditions can
+      be rewritten in vector form as \begin{equation} \bJ = \min_a \left[ \bg(a)
+      + \bT(a) \bJ \right], \label{eq:vector_stochastic_dp} \end{equation} where
+      $g_i(a) = g(s_i,a)$ is the cost vector, and $T_{i,j}(a) = \Pr(s_j|s_i,a)$
+      is the transition probability matrix.  Let us take $\bJ$ as the vector of
+      decision variables, and replace Eq. (\ref{eq:vector_stochastic_dp}) with
+      the constraints: \begin{equation} \forall a, \bJ \le \bg(a) + \bT(a)
+      \bJ.\end{equation}  Clearly, for finite $a$, this is finite list of linear
+      constraints, and for any vector $\bJ$ satisfying these constraints we have
+      $\bJ \le \bJ^*$ (elementwise).  Now write the linear program:
+      \begin{gather*} \maximize_\bJ \quad \bc^T \bJ, \\ \subjto \quad \forall a,
+      \bJ \le
+      \bg(a) + \bT(a) \bJ, \end{gather*} where $c$ is any positive vector.  The
+      solution to this problem is $\bJ = \bJ^*$.</p>
+
+      <p>Perhaps even more interesting is that this approach can be generalized
+      to linear function approximators.  Taking a vector form of my notation
+      above, now we have a matrix of features with $\bPsi_{i,j} =
+      \psi^T_j(\bx_i)$ and we can write the LP \begin{gather} \maximize_\balpha
+      \quad \bc^T \bPsi \balpha, \\ \subjto \quad \forall a, \bPsi \balpha \le
+      \bg(a) + \bT(a) \bPsi \balpha. \end{gather}  This time the solution is not
+      necessarily optimal, because $\bPsi \balpha*$ only approximates $\bJ^*$,
+      and the relative values of the elements of $\bc$ (called the
+      "state-relevance weights") can determine the relative tightness of the
+      approximation for different features <elib>Farias02</elib>.</p>
 
     </section>
 
