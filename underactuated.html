@@ -3844,11 +3844,11 @@ where this additional input $\bw$ is the (vector) output of some random process.
       cost functions that I find myself choosing to write down can be expressed
       in this form.  Given these assumptions, we can write the HJB as \[ 0 =
       \min_{\bu} \left[ g_1(\bx) + \bu^T {\bf R} \bu + \pd{J}{\bx} \left[
-      f_1(\bx) + f_2(\bx)\bu \right]\right]. \]  Since this is a quadratic
-      function in $\bu$, if the system does not have any constraints on $\bu$,
-      then we can solve in closed-form for the minimizing $\bu$ by taking the
-      gradient of the right-hand size: \[ \pd{}{\bu} = 2\bu^T {\bf R} +
-      \pd{J}{\bx} f_2(\bx) = 0, \] and setting it equal to zero to obtain \[
+      f_1(\bx) + f_2(\bx)\bu \right]\right]. \]  Since this is a positive
+      quadratic function in $\bu$, if the system does not have any constraints
+      on $\bu$, then we can solve in closed-form for the minimizing $\bu$ by
+      taking the gradient of the right-hand side: \[ \pd{}{\bu} = 2\bu^T {\bf R}
+      + \pd{J}{\bx} f_2(\bx) = 0, \] and setting it equal to zero to obtain \[
       \bu^* = -\frac{1}{2}{\bf R}^{-1}f_2^T(\bx) \pd{J}{\bx}^T.\] If there are
       linear constraints on the input, such as torque limits, then more
       generally this could be solved (at any particular $\bx$) as a quadratic
@@ -3879,7 +3879,7 @@ where this additional input $\bw$ is the (vector) output of some random process.
       defined over the state space -- is to define the values on a mesh.  This
       approach then admits algorithms with close ties to the relatively very
       advanced numerical methods used to solve other partial differential
-      equations (PDEs), such as the ones that arrive in finite element modeling
+      equations (PDEs), such as the ones that appear in finite element modeling
       or fluid dynamics. One important difference, however, is that our PDE
       lives in the dimension of the state space, while many of the mesh
       algorithms from the other disciplines are optimized for two or three
@@ -3894,7 +3894,8 @@ where this additional input $\bw$ is the (vector) output of some random process.
       <todo>  (see Appendix C for a brief background on function approximation)
       </todo>
 
-      <section data-type="sect3"><h1>Representing the cost-to-go with function approximation</h1>
+      <section data-type="sect3"><h1>Representing the cost-to-go with function
+      approximation</h1>
 
         <p>If we approximate $J^*$ with a finitely-parameterized function
         $\hat{J}_\balpha^*$, with parameter vector $\balpha$, then   this
@@ -3917,25 +3918,56 @@ where this additional input $\bw$ is the (vector) output of some random process.
         form: \[ \hat{J}^*_\balpha(\bx) = \sum_i \alpha_i \psi_i(\bx) =
         \balpha^T \bpsi(\bx), \] where $\bpsi(\bx)$ is a vector of potentially
         nonlinear features.  Common examples of features include polynomials,
-        radial basis functions, or the most interpolation schemes used on a
-        mesh.  <!-- The distinguishing feature of a linear function approximator
-        is the ability to exactly solve for $\balpha$ in order to represent a
-        desired function optimally, in a least-squares sense.  For instance, if
-        we have a desired set of $K$ input-output points, $(\bx_k,J^d_k)$, then
-        we can write down the closed-form solution to \[ \minimize_\balpha
-        \sum_k \left(\hat{J}_\balpha(\bx_k) - J^d_k \right)^2. \] Using the
-        least squares solution in a value iteration update is sometimes referred
-        to as <i>fitted value iteration</i>. In our case, we might choose to
-        minimize, e.g., the "Bellman residual" -- the right side of the HJB
-        which we hope will equal zero: \[ \balpha \Leftarrow \argmin_\balpha
-        \sum_k \left( \min_\bu \left[ g(x_k,u) + \pd{\hat{J}_\balpha(x_k)}{x}
-        f(x_k,u) \right] \right)^2. \] --> <!-- oops the problem above is
-        quartic in alpha, so not simple least squares --> </p>
+        radial basis functions, or most interpolation schemes used on a mesh.
+        The distinguishing feature of a linear function approximator is the
+        ability to exactly solve for $\balpha$ in order to represent a desired
+        function optimally, in a least-squares sense.  For instance, if we have
+        a desired set of $K$ input-output points, $(\bx_k,J^d_k)$, then we can
+        write down the closed-form solution to \[ \minimize_\balpha \sum_k
+        \left(\hat{J}_\balpha(\bx_k) - J^d_k \right)^2. \] Using the least
+        squares solution in a value iteration update is sometimes referred to as
+        <i>fitted value iteration</i>, where $\bx_k$ are some number of samples
+        taken from the continuous space and the iteration becomes
+        \begin{gather*} J^d_k = \min_\bu \left[ g(\bx_k,\bu) +
+        \hat{J}_\alpha\left({f(\bx_k,\bu)}\right) \right], \\ \balpha \Leftarrow
+        \argmin_\balpha \sum_k \left(\hat{J}_\balpha(\bx_k) - J^d_k \right)^2.
+        \end{gather*} Remarkably, for linear function approximators, this update
+        is still known to converge to the globally optimal $\balpha^*$.</p>
 
+        <!-- Andrew also has fitted value iteration notes:
+        http://cs229.stanford.edu/notes/cs229-notes12.pdf -->
 
         <todo> add citations for convergence results </todo>
+      </section>
+
+      <section data-type="sect3"><h1>Representing the cost-to-go on a mesh</h1>
+
+        <p>Imagine that we use a mesh to approximate the cost-to-go function
+        over that state space with $K$ mesh points $\bx_k$. We would like to
+        perform the value iteration update: \begin{equation} \forall k,
+        \hat{J}^*(\bx_k) \Leftarrow \min_\bu \left[ g(\bx_k,\bu) +
+        \hat{J}^*\left({f(\bx_k,\bu)}\right) \right],
+        \label{eq:mesh_value_iteration} \end{equation} but must deal with the
+        fact that $f(\bx_k,\bu)$ might not result in a next state that is
+        directly at a mesh point.  Most interpolation schemes for a mesh can be
+        written as some weighted combination of the values at nearby mesh
+        points, e.g. \[ \hat{J}^*(\bx) = \sum_i \beta_i(\bx) \hat{J}^*(\bx_i),
+        \quad \sum_i \beta_i = 1 \] with $\beta_i$ the relative weight of the
+        $i$th mesh point.  In <drake></drake> we have implemented <a
+        href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system">
+        barycentric interpolation</a>. Taking $\alpha_i = \hat{J}^*(\bx_i)$, the
+        cost-to-go estimate at mesh point $i$, we can see that this is precisely
+        an important special case of fitted value iteration with linear function
+        approximation.  Furthermore, assuming $\beta_i(\bx_i) = 1,$ (e.g., the
+        only point contributing to the interpolation <i>at a mesh point</i> is
+        the value at the mesh point itself), the update in Eq.
+        (\ref{eq:mesh_value_iteration}) is precisely the least-squares update
+        (and it achieves zero error).
+        </p>
+
 
       </section>
+
     </section> <!-- end function approx -->
 
   </section> <!-- end continuous time DP -->
@@ -3991,38 +4023,18 @@ where this additional input $\bw$ is the (vector) output of some random process.
 
     </section>
 
-    <section data-type="sect2"><h1>MDP approximations of deterministic,
-    continuous-state systems</h1>
+    <section data-type="sect2"><h1>Stochastic interpretation of deterministic,
+    continuous-state value iteration</h1>
 
-      <p> There is a particularly cute trick that takes advantage of the
-      computational simplicity of the discrete MDP value iteration algorithm.
-      Let's assume that we have discrete control inputs and discrete-time
-      dynamics, but a continuous state space.   Imagine that we use a mesh to
-      approximate the cost-to-go function over that state space with $K$ mesh
-      points $\hat{J}(x_k)$. We would like to perform the value iteration
-      update: \[ \forall k, \hat{J}^*(x_k) \Leftarrow \min_{a \in A} \left[
-      g(x_k,a) + \hat{J}^*\left({f(x_k,a)}\right) \right], \] but must deal with
-      the fact that $f(x_k,a)$ might not result in a next state that is directly
-      at a mesh point.  Most interpolation schemes for a mesh can be written as
-      some weighted combination of the values at nearby mesh points, e.g. \[
-      \hat{J}^*(x) = \sum_i \beta_i \hat{J}^*(x_i), \quad \sum_i \beta_i = 1 \]
-      with $\beta_i$ the relative weight of the $i$th mesh point.  The resulting
-      update is exactly the same as if we treated the system as a discrete state
-      MDP with $\beta_i$ representing the probability of transitioning to state
-      $x_i$! </p>
-
-      <p> If you looked at the code powering the numerical value iteration
-      results above, you will see that we used precisely this trick -- the
-      continuous problem is discretized into the corresponding MDP and then
-      solved as a discrete system.  This results in nice clean code, but also
-      sheds light on the impact of discretization on the solutions --
+      <p> There is a particularly cute observation to be made here. Let's assume
+      that we have discrete control inputs and discrete-time dynamics, but a
+      continuous state space.  Recall the fitted value iteration on a mesh
+      algorithm described above. In fact, the resulting update is exactly the
+      same as if we treated the system as a discrete state MDP with $\beta_i$
+      representing the probability of transitioning to state $x_i$! This sheds
+      some light on the impact of discretization on the solutions --
       discretization error here will cause a sort of diffusion corresponding to
       the probability of spreading across neighboring nodes.</p>
-
-      <p>Note that the update above could also be viewed as an approximation of
-      the fitted value iteration algorithm for linear function approximators
-      described above.  It is missing a few terms, but is easier to implement
-      and remarkably, is still known to converge.</p> <todo> add citation</todo>
 
     </section>
 
@@ -4032,42 +4044,11 @@ where this additional input $\bw$ is the (vector) output of some random process.
 
     <todo> add section on extensions.  discounting.  finite-horizon / time-varying dynamics or cost.</todo>
 
+    <section data-type="sect2"><h1>Linear Programming Approach</h1>
 
-<!--
-<section data-type="sect"><h1>{Infinite-Horizon Discounted Problems}
+      <todo>e.g. as presented here: http://web.hec.ca/pages/erick.delage/LP2ADP_Presentation.pdf</todo>
 
-
-<section data-type="sect3"><h1>{The Hamilton-Jacobi-Bellman Equation}
-
-<section data-type="sect3"><h1>{Examples}
-
-\begin{example}[Linear Quadratic Regulator]
-\begin{gather*}
-\dot{\bx} = f(\bx,\bu) \\
-g(\bx,\bu) = \frac{1}{2} \bx^T {\bf Q} \bx + \frac{1}{2} \bu^T {\bf R}
-\bu, {\bf Q} = {\bf Q}^T > 0, {\bf R}={\bf R}^T>0 \\
-J^\pi(\bx_0) = \int_0^\infty e^{-\frac{t}{\tau}} g(\bx(t),\bu(t)) dt,\quad
-\bx(0) = \bx_0\\
-\frac{1}{\tau} J^*(\bx) = \min_\bu \left[ g(\bx,\bu) + \frac{\partial
-J^*}{\partial \bx}^T \dot{\bx} \right] \\
-\frac{\partial}{\partial \bu} = {\bf R}\bu + \bB^T \frac{\partial J^*}{\partial \bx} =
-0 \\
-u = -{\bf R}^{-1} \bB^T \frac{\partial J^*}{\partial \bx}
-\end{gather*}
-
-Now assume $J^*(x) = \frac{1}{2} \bx^T {\bf S} \bx$, with ${\bf
-  S}={\bf S}^T>0$.
-\begin{gather*}
-\frac{\partial J^*}{\partial \bx} = {\bf S}\bx \\
-\frac{1}{2\tau} J^*(x) = \frac{1}{2} \bx^T {\bf Q} \bx - \frac{1}{2}
-\bx^T {\bf S B
-R}^{-1} \bB^T {\bf S} \bx + \bx^T {\bf S A} \bx \\
-\frac{1}{\tau} {\bf S} = {\bf Q} - {\bf SBR}^{-1}\bB^T {\bf S} +
-2{\bf SA}
-\end{gather*}
-This equation can be solved for ${\bf S}$ numerically with the Riccati recursion.
-\end{example}
--->
+    </section>
 
   </section> <!-- end of extensions -->
 
