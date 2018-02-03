@@ -35,13 +35,11 @@ set -eux
 
 pushd /opt
 
-# 'latest' or a date, e.g. '20170719' will work for version
-readonly drake_version='latest'
-readonly drake_tarball="drake-${drake_version}-mac.tar.gz"
-readonly drake_url="https://drake-packages.csail.mit.edu/drake/nightly/${drake_tarball}"
+# load drake url from json
+readonly drake_url=`python -c "import sys, json; drake = json.load(open('drake_version.json')); print(drake['base_url'] + drake['build'] + '/drake-' + drake['version'] + '-mac.tar.gz')"`
 
-curl -O "${drake_url}
-tar -xzf "${drake_tarball}"
-rm -f "${drake_tarball}"
+curl -o drake.tar.gz "${drake_url}"
+tar -xzf drake.tar.gz
+rm -f drake.tar.gz
 
 popd
