@@ -42,6 +42,8 @@ curl -o drake.tar.gz "${drake_url}"
 tar -xzf drake.tar.gz
 rm -f drake.tar.gz
 
-echo "drake/share/doc/drake/VERSION.txt: " && cat drake/share/doc/drake/VERSION.txt && echo ""
+cat /opt/drake/share/doc/drake/VERSION.TXT
 
 popd
+
+

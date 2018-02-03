@@ -37,7 +37,7 @@ if [[ "${EUID}" -ne 0 ]]; then
 fi
 
 apt update -qq
-apt install --no-install-recommends $(tr '\n' ' ' <<EOF
+apt install -qq --no-install-recommends $(tr '\n' ' ' <<EOF
 curl
 software-properties-common
 EOF
@@ -51,7 +51,7 @@ add-apt-repository ppa:dreal/dreal
 apt update -qq
 
 # Install development and Drake dependencies.
-apt install --no-install-recommends $(tr '\n' ' ' <<EOF
+apt install -qq --no-install-recommends $(tr '\n' ' ' <<EOF
 bazel
 bison
 ca-certificates
@@ -124,7 +124,7 @@ echo 'b6b971534ee6bacc68a7c5f9878b0a146fbd7f50c580db76a19823e8541f92f8  tidy-5.4
 dpkg -i tidy-5.4.0-64bit.deb
 
 # Install additional dependencies for various compatibility examples.
-apt install --no-install-recommends $(tr '\n' ' ' <<EOF
+apt install -qq --no-install-recommends $(tr '\n' ' ' <<EOF
 libpcl-dev
 libproj-dev
 EOF
