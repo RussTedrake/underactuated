@@ -33,13 +33,15 @@ set -eux
 
 ./scripts/setup/mac/install_prereqs
 
-pushd /opt
-
 # load drake url from json
 readonly drake_url=`python -c "import sys, json; drake = json.load(open('drake_version.json')); print(drake['base_url'] + drake['build'] + '/drake-' + drake['version'] + '-mac.tar.gz')"`
+
+pushd /opt
 
 curl -o drake.tar.gz "${drake_url}"
 tar -xzf drake.tar.gz
 rm -f drake.tar.gz
+
+echo "drake/share/doc/drake/VERSION.txt: " && cat drake/share/doc/drake/VERSION.txt && echo ""
 
 popd
