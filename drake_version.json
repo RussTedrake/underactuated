@@ -1,7 +1,7 @@
 {
   "base_url" : "https://drake-packages.csail.mit.edu/drake/",
   "build" : "nightly",
-  "version" : "20180131",
+  "version" : "20180203",
   "__comment__build_version__options__" : {
     "nightly" : "'latest' or a date, e.g. '20170719'",
     "continuous" : "'latest'",
