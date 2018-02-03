@@ -122,6 +122,15 @@
           document.getElementById("table_of_contents").innerHTML = toc;
         }
 
+        var elibTags = document.getElementsByTagName('elib');
+        // TODO(russt): identical references should reuse reference numbers.
+        // TODO(russt): create actual bibliography section (similar to how I made the drake example list).
+        for (i = 0; i < elibTags.length; i++) {
+            var c = elibTags[i].innerHTML;
+            elibTags[i].innerHTML = '[<a href="http://groups.csail.mit.edu/locomotion/elib.cgi?b=' + c + '">' + (i + 1) + '</a>]';
+        }
+
+
         MathJax.Hub.Queue(["Typeset",MathJax.Hub,"mathjax_setup"]);
 
         var current_chapter = getParameterByName("chapter");
@@ -171,6 +180,29 @@
                 }
               }
 
+              var drakeTags = chapters[i].getElementsByTagName('drake');
+              for (j = 0; j < drakeTags.length; j++) {
+                  drakeTags[j].innerHTML =
+                      '<a style="font-variant:small-caps; text-decoration:none;" href="http://drake.mit.edu">Drake</a>';
+              }
+
+              var codeTags = chapters[i].getElementsByTagName('drake_code');
+              for (j = 0; j < codeTags.length; j++) {
+                  var file = codeTags[j].innerHTML;
+                  var xhttp = new XMLHttpRequest();
+                  xhttp.onreadystatechange = ( function (j) { return function() {
+                      if (this.readyState == 4 && this.status == 200) {
+                          var text = hljs.highlight('python',this.responseText,true)
+                          codeTags[j].innerHTML =
+                              '<div><pre><code>'+text.value+'</code></pre></div>';
+                      }
+                  } })(j);
+                  xhttp.overrideMimeType('text/plain');
+                  xhttp.open('GET', codeTags[j].innerHTML, true);
+                  // note: only works for files in or below current directory http://jquery-howto.blogspot.com/2008/12/access-to-restricted-uri-denied-code.html
+                  xhttp.send();
+              }
+
 //              document.getElementById("debug_output").innerHTML="got here";
               var display_num = i;
               if (i>=start_appendix) {
@@ -196,8 +228,29 @@
             }
           }
           if (chapters[current_chapter-1].id === "drake") {
-            // then i'm in the drake appendix, so render the list of drake examples
-            document.getElementById("list_of_drake_examples").innerHTML = "<ul>" + list_of_drake_examples + "</ul>";
+            // then i'm in the drake appendix, so fill in that content
+
+            // read drake_version.json and set binaries info
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = ( function (j) { return function() {
+              if (this.readyState == 4 && this.status == 200) {
+                  var data = JSON.parse(this.responseText);
+
+                  document.getElementById("drake-linux-binaries").innerHTML =
+                      data.base_url + data.build + "/drake-" + data.version +
+                      "-xenial.tar.gz";
+                  document.getElementById("drake-mac-binaries").innerHTML =
+                      data.base_url + data.build + "/drake-" + data.version +
+                      "-mac.tar.gz";
+              }
+            } })(j);
+            xhttp.overrideMimeType('text/plain');
+            xhttp.open('GET', 'drake_version.json', true);
+            xhttp.send();
+
+            document.getElementById("list_of_drake_examples").innerHTML =
+                "<ul>" + list_of_drake_examples + "</ul>";
+
           }
         }
       }
@@ -225,46 +278,12 @@
     <script src="highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
     <script>hljs.initHighlightingOnLoad();</script>
 
-    <script type="text/javascript">
-      function myMacros() {
-        var elibTags = document.getElementsByTagName('elib');
-        // TODO(russt): identical references should reuse reference numbers.
-        // TODO(russt): create actual bibliography section (similar to how I made the drake example list).
-        for (i = 0; i < elibTags.length; i++) {
-          var c = elibTags[i].innerHTML;
-          elibTags[i].innerHTML = '[<a href="http://groups.csail.mit.edu/locomotion/elib.cgi?b=' + c + '">' + (i + 1) + '</a>]';
-        }
-
-        var drakeTags = document.getElementsByTagName('drake');
-        for (i = 0; i < drakeTags.length; i++) {
-          drakeTags[i].innerHTML = '<a style="font-variant:small-caps; text-decoration:none;" href="http://drake.mit.edu">Drake</a>';
-        }
-
-        var codeTags = document.getElementsByTagName('drake_code');
-        for (i = 0; i < codeTags.length; i++) {
-          var file = codeTags[i].innerHTML;
-          var xhttp = new XMLHttpRequest();
-          xhttp.onreadystatechange = ( function (i) { return function() {
-            if (this.readyState == 4 && this.status == 200) {
-              var text = hljs.highlight('python',this.responseText,true)
-              codeTags[i].innerHTML =
-                  '<div><pre><code>'+text.value+'</code></pre></div>';
-            }
-          } })(i);
-          xhttp.overrideMimeType('text/plain');
-          xhttp.open('GET', codeTags[i].innerHTML, true);
-          // note: only works for files in or below current directory http://jquery-howto.blogspot.com/2008/12/access-to-restricted-uri-denied-code.html
-          xhttp.send();
-        }
-      }
-    </script>
     <link rel="stylesheet" type="text/css" href="underactuated.css">
 
-    <script src="http://www.w3schools.com/lib/w3data.js"></script> <!-- for w3IncludeHTML -->
   </head>
 
 
-<body data-type="book" class="book" id="htmlbook" onload="myMacros(); revealChapters();">
+<body data-type="book" class="book" id="htmlbook" onload="revealChapters();">
 <section data-type="titlepage" class="titlepage">
   <header>
     <h1><a href="underactuated.html" style="text-decoration:none;">Underactuated Robotics</a></h1>
@@ -3439,12 +3458,12 @@ where this additional input $\bw$ is the (vector) output of some random process.
       possibly at the expense of requiring a longer time to reach the goal (in
       fact it will result in an exponential approach to the goal, where as the
       minimum-time formulation will arrive at the goal in finite time). Note
-      that both optimization problems are only well defined if it is possible
-      for the system to actually reach the origin, otherwise the minimum-time
-      problem cannot satisfy the terminal constraint, and the integral in the
-      quadratic cost would not converge to a finite value as time approaches
-      infinity (fortunately the double integrator system is controllable, and
-      therefore can be driven to the goal in finite time).</p>
+      that both optimization problems only have well-defined solutions if it is
+      possible for the system to actually reach the origin, otherwise the
+      minimum-time problem cannot satisfy the terminal constraint, and the
+      integral in the quadratic cost would not converge to a finite value as
+      time approaches infinity (fortunately the double integrator system is
+      controllable, and therefore can be driven to the goal in finite time).</p>
 
       <p> Note that the input limits, $|u|\le1$ are also required to make this
       problem well-posed; otherwise both optimizations would result in the
@@ -3591,11 +3610,12 @@ where this additional input $\bw$ is the (vector) output of some random process.
       (typically by having an achievable goal that allows the robot to accrue
       zero-cost).</p>
 
-      <p> At first glance, our minimum-time problem formulation for the double
-      integrator does not look like an additive cost problem.  However, we can
-      write in as an additive cost problem using an infinite horizon and the
-      instantaneous cost  $$g(x,u) = \begin{cases} 0 & \text{if } x=0, \\ 1 &
-      \text{otherwise.} \end{cases}$$</p>
+      <p> The quadratic cost function suggested in the double integrator example
+      above is clearly written as an additive cost.  At first glance, our
+      minimum-time problem formulation does appear to be of this form, but we
+      actually can write it as an additive cost problem using an infinite
+      horizon and the instantaneous cost  $$g(x,u) = \begin{cases} 0 & \text{if
+      } x=0, \\ 1 & \text{otherwise.} \end{cases}$$</p>
 
       <p> We will examine a number of approaches to solving optimal control
       problems throughout the next few chapters.  For the remainder of this
@@ -3878,15 +3898,16 @@ where this additional input $\bw$ is the (vector) output of some random process.
       we see that this function might need to be non-smooth for even very simple
       dynamics and objectives.</p>
 
-      <p>One natural way to parameterize $\hat{J}^*$ -- a scalar valued-function
+      <>One natural way to parameterize $\hat{J}^*$ -- a scalar valued-function
       defined over the state space -- is to define the values on a mesh.  This
       approach then admits algorithms with close ties to the relatively very
       advanced numerical methods used to solve other partial differential
       equations (PDEs), such as the ones that appear in finite element modeling
       or fluid dynamics. One important difference, however, is that our PDE
-      lives in the dimension of the state space, while many of the mesh
-      algorithms from the other disciplines are optimized for two or three
-      dimensional space.</p>
+      lives in the dimension of the state space, while many of the <a
+      href="https://en.wikipedia.org/wiki/Types_of_mesh">mesh
+      representations</a> from the other disciplines are optimized for two or
+      three dimensional space.</p>
 
       <p>A slightly more general view of the problem would describe the mesh
       (and the associated interpolation functions) as just one form of
@@ -3956,17 +3977,15 @@ where this additional input $\bw$ is the (vector) output of some random process.
         written as some weighted combination of the values at nearby mesh
         points, e.g. \[ \hat{J}^*(\bx) = \sum_i \beta_i(\bx) \hat{J}^*(\bx_i),
         \quad \sum_i \beta_i = 1 \] with $\beta_i$ the relative weight of the
-        $i$th mesh point.  In <drake></drake> we have implemented <a
-        href="https://en.wikipedia.org/wiki/Barycentric_coordinate_system">
-        barycentric interpolation</a>. Taking $\alpha_i = \hat{J}^*(\bx_i)$, the
-        cost-to-go estimate at mesh point $i$, we can see that this is precisely
-        an important special case of fitted value iteration with linear function
-        approximation.  Furthermore, assuming $\beta_i(\bx_i) = 1,$ (e.g., the
-        only point contributing to the interpolation <i>at a mesh point</i> is
-        the value at the mesh point itself), the update in Eq.
+        $i$th mesh point.  In <drake></drake> we have implemented barycentric
+        interpolation<elib>Munos98</elib>. Taking $\alpha_i = \hat{J}^*(\bx_i)$,
+        the cost-to-go estimate at mesh point $i$, we can see that this is
+        precisely an important special case of fitted value iteration with
+        linear function approximation.  Furthermore, assuming $\beta_i(\bx_i) =
+        1,$ (e.g., the only point contributing to the interpolation <i>at a mesh
+        point</i> is the value at the mesh point itself), the update in Eq.
         (\ref{eq:mesh_value_iteration}) is precisely the least-squares update
-        (and it achieves zero error).
-        </p>
+        (and it achieves zero error). </p>
 
 
       </section>
@@ -6019,9 +6038,44 @@ and Validation</h1>
 
   <section data-type="sect1"><h1>Installation</h1>
 
-    <todo>
-      Following pydrake instructions.
+    <p>Although I hope that power users will build <drake></drake> from source
+    (and contribute back), I recommend using the precompiled binaries to get
+    started.  The links below indicate the specific distributions that the
+    examples in this text have been tested against.</p>
 
+    <section data-type="sect2"><h1>Download the binaries</h1>
+
+      <todo>Show linux OR mac (hide on click).</todo>
+
+      <p><b>Linux</b>
+      <div class="highlight"><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-linux-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-xenial.tar.gz</div></code></pre></div>
+
+      <p><b>Mac</b></p>
+      <div class="highlight"><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-mac-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-mac.tar.gz</div></code></pre></div>
+
+    </section>
+
+    <section data-type="sect2"><h1>Unpack and set your PYTHONPATH</h1>
+
+      <div class="highlight"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
+export PYTHONPATH=/opt/drake/install/lib/python2.7/site-packages:${PYTHONPATH}</code></pre></div>
+
+    </section>
+
+    <section data-type="sect2"><h1>Test for success</h1>
+
+      <div class="highlight"><pre class="highlight"><code>python -c 'import pydrake; print(pydrake.__file__)'
+</code></pre></div>
+
+      <p> Further tips and instructions are available at the <a
+      href="http://drake.mit.edu/python_bindings.html#using-the-python-bindings">python
+      documentation page on the drake website</a>. </p>
+
+    </section>
+
+    <div style="height:30px"></div>
+
+    <todo>
       Docker?
 
       Troubleshooting.
@@ -6582,8 +6636,6 @@ and Validation</h1>
     Tedrake, 2018</td></tr>
 </table>
 </div>
-
-<script> w3IncludeHTML(); </script>
 
 
 </body>
