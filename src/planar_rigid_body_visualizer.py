@@ -17,7 +17,6 @@ import scipy.interpolate
 import pydrake
 import pydrake.rbtree
 from pydrake.rbtree import RigidBodyTree
-from pydrake.parsers import PackageMap
 from pydrake.systems.analysis import Simulator
 from pydrake.systems.framework import (
     Context,

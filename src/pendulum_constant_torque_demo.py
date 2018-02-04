@@ -17,8 +17,12 @@ builder = DiagramBuilder()
 pendulum = builder.AddSystem(PendulumPlant())
 
 torque = 1.0
+simulation_duration = 1000
 if (len(sys.argv)>1):
     torque = float(sys.argv[1])
+if (len(sys.argv)>2):
+    simulation_duration = float(sys.argv[2])
+
 torque_system = builder.AddSystem(ConstantVectorSource([torque]))
 builder.Connect(torque_system.get_output_port(0),
                         pendulum.get_input_port(0))
@@ -38,16 +42,12 @@ simulator.Initialize()
 simulator.set_target_realtime_rate(1.0)
 simulator.set_publish_every_time_step(False)
 
-# TODO(russt): Clean up state vector access below.
-state = simulator.get_mutable_context().get_mutable_state()\
-                 .get_mutable_continuous_state().get_mutable_vector()
+state = simulator.get_mutable_context().get_continuous_state_vector()
 
 initial_state = np.array([1.0, 0.0])
 state.SetFromVector(initial_state)
 
-simulator.StepTo(1.0)
+simulator.StepTo(simulation_duration)
 
 print(state.CopyToVector())
 
-ani = visualizer.animate(signalLogger, signalLogRate, repeat=True)
-plt.show()
