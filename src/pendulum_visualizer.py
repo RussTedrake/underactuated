@@ -43,8 +43,10 @@ class PendulumVisualizer(PyPlotVisualizer):
     def draw(self, context):
         if isinstance(context, Context):
             theta = self.EvalVectorInput(context, 0).get_value()[0]
+            self.ax.set_title('t = {:.1f}'.format(context.get_time()))
         else:
             theta = context
+            self.ax.set_title('')
 
         path = self.arm[0].get_path()
         path.vertices[:,0] = self.arm_x*math.cos(theta)-self.arm_y*math.sin(theta)
