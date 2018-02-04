@@ -706,20 +706,19 @@
 
     <p> Consider the simple robot manipulator illustrated above.  As described
     in <a href="underactuated.html?chapter=multibody">Appendix C</a>, the
-    equations of
-    motion for this system are quite simple to derive, and take the form of the
-    standard "manipulator equations": $${\bf M}(\bq)\ddot\bq +
-    \bC(\bq,\dot\bq)\dot\bq - \btau_g(\bq) = {\bf B}(\bq)\bu.$$ It is well known
-    that the inertia matrix, ${\bf M}(\bq)$ is (always) uniformly symmetric and
+    equations of motion for this system are quite simple to derive, and take the
+    form of the standard "manipulator equations": $${\bf M}(\bq)\ddot\bq +
+    \bC(\bq,\dot\bq)\dot\bq = \btau_g(\bq) + {\bf B}\bu.$$ It is well known that
+    the inertia matrix, ${\bf M}(\bq)$ is (always) uniformly symmetric and
     positive definite, and is therefore invertible. Putting the system into the
     form of equation \ref{eq:f1_plus_f2} yields: \begin{align*}\ddot{\bq} =&
-    -{\bf M}^{-1}(\bq)\left[ \bC(\bq,\dot\bq) \dot\bq + \btau_g(\bq) \right]\\
-    &+ {\bf M}^{-1}(\bq) \bB(\bq) \bu.\end{align*} Because ${\bf M}^{-1}(\bq)$
-    is always full rank, we find that a system described by the manipulator
-    equations is fully-actuated if and only if $\bB(\bq)$ is full row rank.
-    For this particular example, $\bq = [\theta_1,\theta_2]^T$ and $\bu =
-    [\tau_1,\tau_2]^T$ (motor torques at the joints), and $\bB(\bq) = {\bf I}_{2
-    \times 2}$.  The system is fully actuated.</p>
+    {\bf M}^{-1}(\bq)\left[ \btau_g(\bq) + \bB\bu - \bC(\bq,\dot\bq)
+    \right].\end{align*} Because ${\bf M}^{-1}(\bq)$ is always full rank, we
+    find that a system described by the manipulator equations is fully-actuated
+    if and only if $\bB$ is full row rank. For this particular example,
+    $\bq = [\theta_1,\theta_2]^T$ and $\bu = [\tau_1,\tau_2]^T$ (motor torques
+    at the joints), and $\bB = {\bf I}_{2 \times 2}$.  The system is fully
+    actuated.</p>
 
     <todo>make drake elements expandable/collapsible.  nice example here:
     http://quhno.internetstrahlen.de/myopera/csstests/collapsible-paragraph.html</todo>
@@ -6358,14 +6357,16 @@ export PYTHONPATH=/opt/drake/install/lib/python2.7/site-packages:${PYTHONPATH}</
 
     <p>Continuing our abstractions, we find that the equations of motion of a
     general robotic manipulator (without kinematic loops) take the form
-    \begin{equation}{\bf M}(\bq)\ddot{\bq} + \bC(\bq,\dot{\bq})\dot{\bq} -
-    \btau_g(\bq) = {\bf B}(\bq)\bu,\end{equation} where $\bq$ is the state
-    vector, ${\bf M}$ is the inertia matrix, $\bC$ captures Coriolis forces, and
-    $\btau_g$ is the gravity vector.  Note that we place a minus sign in front
-    of the gravity vector in these notes, although it is not as standard,
-    because it permits $\btau_g$ to actually denote the torques due to gravity
-    (instead of the torques required to oppose gravity). The matrix $\bB$ maps
-    control inputs $\bu$ into generalized forces.</p>
+    \begin{equation}{\bf M}(\bq)\ddot{\bq} + \bC(\bq,\dot{\bq})\dot{\bq} =
+    \btau_g(\bq) + {\bf B}\bu, \label{eq:manip} \end{equation} where $\bq$ is
+    the state vector, ${\bf M}$ is the inertia matrix, $\bC$ captures Coriolis
+    forces, and $\btau_g$ is the gravity vector.  The matrix $\bB$ maps control
+    inputs $\bu$ into generalized forces.  Note that we pair $\bM\ddot\bq +
+    \bC\dot\bq$ on the left side because "... the equations of motion depend on
+    the choice of coordinates $\bq$.  For this reason neither $\bM\ddot\bq$ nor
+    $\bC\dot\bq$ individually should be thought of as a generalized force; only
+    their sum is a force"<elib>Choset05</elib>(s.10.2).  Indeed, whenever I
+    write Eq. (\ref{eq:manip}), I see $ma = F$. </p>
 
     <div data-type="example"><h1>Manipulator Equation form of the Simple Double
     Pendulum</h1> The equations of motion from Example 1 can be written
@@ -6397,7 +6398,7 @@ export PYTHONPATH=/opt/drake/install/lib/python2.7/site-packages:${PYTHONPATH}</
     will see that most of the software in <drake></drake> uses the more general
     notation with $\bv$ to represent velocity, $\bq$ to represent positions, and
     the manipulator equations are written as \begin{equation} \bM(\bq) \dot{\bv}
-    + {\bf C}(\bq,\bv)\bv - \btau_g(\bq) = \bB(\bq) \bu, \end{equation} which is
+    + {\bf C}(\bq,\bv)\bv = \btau_g(\bq) + \bB \bu, \end{equation} which is
     not necessarily a second-order system.  See <elib>Duindam06</elib> for a
     nice discussion of this topic.</p>
 
@@ -6420,7 +6421,7 @@ export PYTHONPATH=/opt/drake/install/lib/python2.7/site-packages:${PYTHONPATH}</
       the kinematic constraint that the location of one end of the chain is
       equal to the location of the other end of the chain. The equations of
       motion can be written \begin{equation}\bM({\bq})\ddot{\bq} +
-      \bC(\bq,\dot{\bq})\dot\bq - \btau_g(\bq) = \bB\bu + \bH^T(\bq)
+      \bC(\bq,\dot{\bq})\dot\bq = \btau_g(\bq) + \bB\bu + \bH^T(\bq)
       \blambda,\end{equation} where $\bH(\bq) = \pd\bh{\bq}$ and ${\blambda}$ is
       the constraint force.  Let's use the shorthand \begin{equation}
       \bM({\bq})\ddot{\bq} = \btau(q,\dot{q},u) + \bH^T(\bq) \blambda.
