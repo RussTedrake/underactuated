@@ -1,7 +1,7 @@
 version: 2
 
 jobs:
-  build_and_test:
+  underactuated-with-drake-peg-revision:
     docker:
       - image: robotlocomotion/circleci:xenial
 
@@ -20,11 +20,35 @@ jobs:
           name: build and test
           command: ./scripts/continuous_integration/circle_ci/build_test
 
+  underactuated-with-drake-continuous:
+    docker:
+      - image: robotlocomotion/circleci:xenial
+
+    working_directory: ~/underactuated
+
+    environment:
+      - DRAKE_BINARY_URL: "https://drake-packages.csail.mit.edu/drake/continuous/drake-latest-xenial.tar.gz"
+
+    steps:
+      - checkout
+
+      - run:
+          name: setup
+          command: ./scripts/continuous_integration/circle_ci/setup
+
+      - run: echo 'export PYTHONPATH=/opt/drake/lib/python2.7/site-packages:${PYTHONPATH}' >> $BASH_ENV
+
+      - run:
+          name: build and test
+          command: ./scripts/continuous_integration/circle_ci/build_test
+
+
 workflows:
   version: 2
   pr-workflow:
     jobs:
-       - build_and_test
+       - underactuated-with-drake-peg-revision
+
   nightly-workflow:
     triggers:
       - schedule:
@@ -33,4 +57,4 @@ workflows:
             branches:
               only: master
     jobs:
-      - build_and_test
+       - underactuated-with-drake-continuous

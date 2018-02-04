@@ -35,11 +35,15 @@ export DEBIAN_FRONTEND='noninteractive'
 
 yes | ./scripts/setup/linux/ubuntu/xenial/install_prereqs
 
-readonly drake_url=`python -c "import sys, json; drake = json.load(open('drake_version.json')); print(drake['base_url'] + drake['build'] + '/drake-' + drake['version'] + '-xenial.tar.gz')"`
+set +u
+if [ -z "${DRAKE_BINARY_URL}" ]; then
+    DRAKE_BINARY_URL=`python -c "import sys, json; drake = json.load(open('drake_version.json')); print(drake['base_url'] + drake['build'] + '/drake-' + drake['version'] + '-xenial.tar.gz')"`
+fi
+set -u
 
 pushd /opt
 
-curl -o drake.tar.gz "${drake_url}"
+curl -o drake.tar.gz "${DRAKE_BINARY_URL}"
 tar -xzf drake.tar.gz
 rm -f drake.tar.gz
 
