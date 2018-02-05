@@ -44,6 +44,7 @@ apt update -qq
 apt install -qq --no-install-recommends $(tr '\n' ' ' <<EOF
 apt-transport-https
 curl
+ffmpeg
 python
 python-matplotlib
 EOF
