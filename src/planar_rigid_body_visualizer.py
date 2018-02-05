@@ -135,6 +135,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
             visual_elements = body.get_visual_elements()
             this_body_patches = []
             this_body_colors = []
+            this_color = next(color)
             for element in visual_elements:
                 element_local_tf = element.getLocalTransform()
                 if element.hasGeometry():
@@ -186,7 +187,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
 
                     this_body_patches.append(patch)
                     if use_random_colors:
-                        this_body_colors.append(next(color))
+                        this_body_colors.append(this_color)
                     else:
                         this_body_colors.append(element.getMaterial())
 
@@ -294,7 +295,7 @@ if __name__ == "__main__":
                         type=float,
                         help="Constant torque to apply to all joints.",
                         default=1.0)
-    parser.add_argument("-T", "--time", 
+    parser.add_argument("-T", "--duration",
                         type=float,
                         help="Duration to run sim.",
                         default=1.0)
@@ -366,7 +367,7 @@ if __name__ == "__main__":
             initial_state[0] = 1.0
             state.SetFromVector(initial_state)
 
-        simulator.StepTo(args.time)
+        simulator.StepTo(args.duration)
 
         print(state.CopyToVector())
 

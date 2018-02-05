@@ -2,8 +2,8 @@
 from pydrake.multibody.rigid_body_tree import *
 import numpy as np
 
-def manipulator_dynamics(tree, q, v=[]):
-    if not v:
+def manipulator_dynamics(tree, q, v=None):
+    if v is None:
         v = np.zeros((tree.get_num_velocities(),1))
     kinsol = tree.doKinematics(q,v)
     M = tree.massMatrix(kinsol)
