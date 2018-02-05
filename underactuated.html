@@ -845,16 +845,19 @@
     here would not have been any more difficult if the robot had 100 joints.
     </p>
 
-    <div data-type="drake"><h1>Python Example</h1> You can find scripts which
-    implement both of these examples in <drake></drake>:
+    <div data-type="drake"><h1>Python Example</h1> You can run these examples
+    using:
 
-      (... coming soon)
-      <todo> Convert this to Python...
-        <pre><code class="matlab" testfile="testDoublePendulumSim">
-        cd(fullfile(getDrakePath,'examples','SimpleDoublePendulum')); runSimplePend;
-        % feedback linearization to simulate a pendulum runSimplePendInv; % and a
-        gravity-inverted pendulum </code></pre>
-      </todo>
+    <p>
+    <pre><code class="python">python double_pendulum_as_single_pendulum.py --gravity 9.8</code></pre>
+    </p>
+
+    <p>
+    <pre><code class="python">python double_pendulum_as_single_pendulum.py --gravity -9.8</code></pre>
+    </p>
+
+    <p>As always, make soure you take a moment to <a href="src/double_pendulum_as_single_pendulum.py">read through the source code</a>.</p>
+
     </div>
 
     </div> <!--end example-->
