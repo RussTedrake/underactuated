@@ -9,7 +9,7 @@ builder = DiagramBuilder()
 robot = builder.AddSystem(RigidBodyPlant(tree))
 builder.ExportInput(robot.get_input_port(0))
 visualizer = builder.AddSystem(
-                PlanarRigidBodyVisualizer(tree, xlim=[-3,3], ylim=[-3,3]))
+                PlanarRigidBodyVisualizer(tree, xlim=[-2.8,2.8], ylim=[-2.8,2.8]))
 builder.Connect(robot.get_output_port(0), visualizer.get_input_port(0))
 diagram = builder.Build()
 
