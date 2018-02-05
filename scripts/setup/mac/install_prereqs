@@ -50,37 +50,14 @@ if [[ ! -f /usr/include/expat.h || ! -f /usr/include/zlib.h ]]; then
   exit 3
 fi
 
-brew tap dreal-deps/coinor
-brew tap dreal-deps/ibex
-brew tap dreal/dreal
-brew tap robotlocomotion/director
+# NOTE: Assumes that the drake (binary) install_prereqs script has already been run.  Only install additional components
 
 brew update
 brew upgrade
 
 # Install development and Drake dependencies.
 brew install $(tr '\n' ' ' <<EOF
-bazel
-boost
-clang-format
-cmake
-dreal
-gflags
-glib
-ipopt
-libccd
-libyaml
-nlopt
-numpy
-pkg-config
-protobuf
-python
-scipy
 tidy-html5
-tinyxml
-tinyxml2
-vtk@8.0
-yaml-cpp
 EOF
 )
 
@@ -89,10 +66,7 @@ if [[ ! -f "${HOME}/.bazelrc" ]] || ! grep -q 'build --python_path=/usr/local/op
 fi
 
 pip2 install --upgrade $(tr '\n' ' ' <<EOF
-lxml
 matplotlib
-pip
-PyYAML
 EOF
 )
 
