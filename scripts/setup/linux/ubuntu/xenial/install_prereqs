@@ -123,9 +123,3 @@ trap 'rm -rf tidy-5.4.0-64bit.deb' EXIT
 echo 'b6b971534ee6bacc68a7c5f9878b0a146fbd7f50c580db76a19823e8541f92f8  tidy-5.4.0-64bit.deb' | sha256sum -c
 dpkg -i tidy-5.4.0-64bit.deb
 
-# Install additional dependencies for various compatibility examples.
-apt install -qq --no-install-recommends $(tr '\n' ' ' <<EOF
-libpcl-dev
-libproj-dev
-EOF
-)

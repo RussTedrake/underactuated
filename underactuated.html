@@ -6001,6 +6001,22 @@ and Validation</h1>
   and recommended workflows to get you up and running quickly with the
   examples provided in these notes.</p>
 
+  <section data-type="sect1"><h1>Download the textbook supplement</h1>
+
+    <div><pre class="highlight"><code>git clone https://github.com/RussTedrake/underactuated.git</code></pre></div>
+
+    <p>and install the prerequisites using the platform-specific installation script provided:</p>
+
+    <todo>Show linux OR mac (hide on click).</todo>
+
+    <p><b>Linux</b>
+    <div><pre class="highlight"><code>sudo underactuated/scripts/setup/linux/ubuntu/xenial/install_prereqs</code></pre></div>
+
+    <p><b>Mac (using homebrew)</b></p>
+    <div><pre class="highlight"><code>underactuated/scripts/setup/mac/install_prereqs</code></pre></div>
+
+  </section>
+
   <section data-type="sect1"><h1>Install Drake</h1>
 
     <p>Although I hope that power users will build <drake></drake> from source
@@ -6013,53 +6029,52 @@ and Validation</h1>
       <todo>Show linux OR mac (hide on click).</todo>
 
       <p><b>Linux</b>
-      <div class="highlight"><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-linux-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-xenial.tar.gz</div></code></pre></div>
+      <div><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-linux-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-xenial.tar.gz</div></code></pre></div>
 
       <p><b>Mac</b></p>
-      <div class="highlight"><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-mac-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-mac.tar.gz</div></code></pre></div>
+      <div><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-mac-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-mac.tar.gz</div></code></pre></div>
 
     </section>
 
     <section data-type="sect2"><h1>Unpack and set your PYTHONPATH</h1>
 
-      <div class="highlight"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
+      <div><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
 export PYTHONPATH=/opt/drake/install/lib/python2.7/site-packages:${PYTHONPATH}</code></pre></div>
 
     </section>
 
     <section data-type="sect2"><h1>Test for success</h1>
 
-      <div class="highlight"><pre class="highlight"><code>python -c 'import pydrake; print(pydrake.__file__)'
+      <div><pre class="highlight"><code>python -c 'import pydrake; print(pydrake.__file__)'
 </code></pre></div>
 
       <p> Further tips and instructions are available at the <a
       href="http://drake.mit.edu/python_bindings.html#using-the-python-bindings">python
       documentation page on the drake website</a>. </p>
 
-      <todo>install_prereqs?</todo>
-
     </section>
-
-    <section data-type="sect1"><h1>Download the textbook supplement</h1>
-
-      <div class="highlight"><pre class="highlight"><code>git clone https://github.com/RussTedrake/underactuated.git</code></pre></div>
-
-      <p>No need to build; we're only using the runtime python code.  The
-      examples in this textbook (currently) assume that the working
-      directory of your python interpreter is your <code>underactuated
-        /src</code> directory.</p>
-
-    </section>
-
-    <div style="height:30px"></div>
-
-    <todo>
-      Docker?
-
-      Troubleshooting.
-    </todo>
 
   </section>
+
+  <section data-type="sect1"><h1>Run an example</h1>
+
+    <p>Note: All of the examples in the textbook supplement currently assume
+    that working directory of your python interpreter is the
+    <code>underactuated/src</code> directory.</p>
+
+      <div><pre class="highlight"><code>cd underactuated/src
+python double_pendulum_simulator.py</code></pre></div>
+
+  </section>
+
+  <div style="height:30px"></div>
+
+  <todo>
+    Docker?
+    
+    Troubleshooting.
+  </todo>
+
 
   <section data-type="sect1"><h1>Listing of <drake></drake> examples throughout this text</h1>
 

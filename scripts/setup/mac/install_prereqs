@@ -96,5 +96,3 @@ PyYAML
 EOF
 )
 
-# Install additional dependencies for various compatibility examples.
-brew install pcl
