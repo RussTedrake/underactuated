@@ -77,7 +77,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         offsetting with the projection matrix.
     '''
 
-    def __init__(self, rbtree, Tview, xlim = [-1., 1], ylim = [-1, 1],
+    def __init__(self, rbtree, Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]]), xlim = [-1., 1], ylim = [-1, 1],
             facecolor=[1, 1, 1], use_random_colors=False):
         PyPlotVisualizer.__init__(self)
         self.set_name('planar_rigid_body_visualizer')
@@ -202,8 +202,10 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
             an input context.'''
         if isinstance(context, Context):
             positions = self.EvalVectorInput(context, 0).get_value()[0:self.rbtree.get_num_positions()]
+            self.ax.set_title('t = {:.1f}'.format(context.get_time()))
         else:
             positions = context[0:self.rbtree.get_num_positions()]
+            self.ax.set_title('')
 
         kinsol = self.rbtree.doKinematics(positions)
 
