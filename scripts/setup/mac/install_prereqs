@@ -50,7 +50,7 @@ if [[ ! -f /usr/include/expat.h || ! -f /usr/include/zlib.h ]]; then
   exit 3
 fi
 
-# NOTE: Assumes that the drake (binary) install_prereqs script has already been run.  Only install additional components
+# NOTE: Assumes that the drake (binary) install_prereqs script will also be run.  Only install what we need to download drake and any additional requirements for this package.
 
 brew update
 brew upgrade
