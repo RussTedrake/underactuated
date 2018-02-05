@@ -698,93 +698,59 @@
 
     <div data-type="example" class="drake"><h1>Robot Manipulators</h1>
 
-    <figure>
-    <img style="width:250px;" data-src="figures/simple_double_pend.svg"/>
-    <todo>make this image spring to life with a matlab movie<</todo>
-    <figcaption>Simple double pendulum</figcaption>
-    </figure>
+      <figure>
+      <img style="width:250px;" data-src="figures/simple_double_pend.svg"/>
+      <todo>make this image spring to life with a matlab movie<</todo>
+      <figcaption>Simple double pendulum</figcaption>
+      </figure>
 
-    <p> Consider the simple robot manipulator illustrated above.  As described
-    in <a href="underactuated.html?chapter=multibody">Appendix C</a>, the
-    equations of motion for this system are quite simple to derive, and take the
-    form of the standard "manipulator equations": $${\bf M}(\bq)\ddot\bq +
-    \bC(\bq,\dot\bq)\dot\bq = \btau_g(\bq) + {\bf B}\bu.$$ It is well known that
-    the inertia matrix, ${\bf M}(\bq)$ is (always) uniformly symmetric and
-    positive definite, and is therefore invertible. Putting the system into the
-    form of equation \ref{eq:f1_plus_f2} yields: \begin{align*}\ddot{\bq} =&
-    {\bf M}^{-1}(\bq)\left[ \btau_g(\bq) + \bB\bu - \bC(\bq,\dot\bq)
-    \right].\end{align*} Because ${\bf M}^{-1}(\bq)$ is always full rank, we
-    find that a system described by the manipulator equations is fully-actuated
-    if and only if $\bB$ is full row rank. For this particular example,
-    $\bq = [\theta_1,\theta_2]^T$ and $\bu = [\tau_1,\tau_2]^T$ (motor torques
-    at the joints), and $\bB = {\bf I}_{2 \times 2}$.  The system is fully
-    actuated.</p>
+      <p> Consider the simple robot manipulator illustrated above.  As described
+      in the <a href="underactuated.html?chapter=multibody">Appendix</a>, the
+      equations of motion for this system are quite simple to derive, and take the
+      form of the standard "manipulator equations": $${\bf M}(\bq)\ddot\bq +
+      \bC(\bq,\dot\bq)\dot\bq = \btau_g(\bq) + {\bf B}\bu.$$ It is well known that
+      the inertia matrix, ${\bf M}(\bq)$ is (always) uniformly symmetric and
+      positive definite, and is therefore invertible. Putting the system into the
+      form of equation \ref{eq:f1_plus_f2} yields: \begin{align*}\ddot{\bq} =&
+      {\bf M}^{-1}(\bq)\left[ \btau_g(\bq) + \bB\bu - \bC(\bq,\dot\bq)
+      \right].\end{align*} Because ${\bf M}^{-1}(\bq)$ is always full rank, we
+      find that a system described by the manipulator equations is fully-actuated
+      if and only if $\bB$ is full row rank. For this particular example,
+      $\bq = [\theta_1,\theta_2]^T$ and $\bu = [\tau_1,\tau_2]^T$ (motor torques
+      at the joints), and $\bB = {\bf I}_{2 \times 2}$.  The system is fully
+      actuated.</p>
 
-    <todo>make drake elements expandable/collapsible.  nice example here:
-    http://quhno.internetstrahlen.de/myopera/csstests/collapsible-paragraph.html</todo>
+      <todo>make drake elements expandable/collapsible.  nice example here:
+      http://quhno.internetstrahlen.de/myopera/csstests/collapsible-paragraph.html</todo>
 
-    <div data-type="drake"><h1>Python Example</h1>
+      <div data-type="drake"><h1>Python Example</h1>
 
-    <p> I personally learn best when I can experiment and get some physical
-    intuition.  The <a href="http://drake.mit.edu">companion software for the
-    course</a> should make it easy for you to see this system in action.  To try
-    it, make sure you've installed <drake></drake> and set your PYTHONPATH,
-    then open Python and try the following lines in your Python console:</p>
+      <p> I personally learn best when I can experiment and get some physical
+      intuition.  The <a href="http://drake.mit.edu">companion software for the
+      course</a> should make it easy for you to see this system in action.  To try
+      it, make sure you've followed the installation instructions in the <a
+      href="?chapter=drake">Appendix</a>, then open Python and try the following
+      lines in your Python console:</p>
 
-    <drake_code>src/double_pendulum.py</drake_code>
+      <drake_code>src/double_pendulum_simulator.py</drake_code>
 
-    <todo> Finish porting this...
+      <p>It's worth taking a peek at the <a href="src/double_pendulum.urdf">file
+      that describes the robot</a>. URDF and SDF are two of the standard formats,
+      and they can be used to describe even very complicated robots (like the
+      Boston Dynamics humanoid).</p>
 
-      <pre><code class="python" testfile="testDoublePendulumManipulator"> % a
-      platform independent way to cd into the example directory
-      cd(fullfile(getDrakePath,'examples','SimpleDoublePendulum'));
+      <p>We can also use <drake></drake> to evaluate the manipulator equations
+      .  <drake></drake> actually has a symbolic dynamics engine, but for now
+      we will just evaluate the manipulator equations for a particular robot
+      (with numerical values assigned for mass, link lengths, etc) and for a
+      particular state of the robot:</p>
 
-      % first construct the "robot" or "plant" object
-      plant = DoublePendPlant;  % check out the code in DoublePendPlant.m
+      <drake_code>src/double_pendulum_manipulator.py</drake_code>
 
-      % a visualizer will draw the robot
-      visualizer = DoublePendVisualizer(plant);
-      visualizer.inspector();  % (optional) simple gui to examine the joints
+      <todo>Implement the symbolic version</todo>
 
-      % simulate the robot from time=0 to time=5 seconds from random
-      % initial conditions taken from a Gaussian distribution (using randn).
-      % note that the first simulation you run will take longer because
-      % simulink needs to be started
-      trajectory = simulate(plant, [0 5], randn(4,1));
-
-      % play back the simulation using the cpu clock to get the timing right
-      visualizer.playback(trajectory);
-
-      % if you want to access the manipulator equations programmatically,
-      % you can use, e.g.:
-      [H,C_times_v,G,B] = plant.manipulatorEquations()
-      % which outputs using the abbreviations v for qdot, s1 for sin(q1), etc
-      </code></pre>
-
-      <div data-type="drake"><h1>MATLAB Example (an even simpler version)</h1>
-
-      <p>Note that you don't have to write the dynamics yourself.  The software
-      supports a high-level description format for describing robots.  We could have
-      alternatively done: </p>
-
-      <pre><code class="matlab" testfile="testDoublePendulumUrdf">
-      cd(fullfile(getDrakePath,'examples','SimpleDoublePendulum'));
-
-      % construct the robot from a URDF high-level description file
-      plant = RigidBodyManipulator('SimpleDoublePendulum.urdf');
-      visualizer = plant.constructVisualizer();
-
-      % all of the other commands will work, e.g.:
-      trajectory = simulate(plant, [0 5], randn(4,1));
-      visualizer.playback(trajectory);
-      [H,C_times_v,G,B] = plant.manipulatorEquations()
-      </code></pre>
-    </todo>
-
-    <p>Make sure you take a peek at the file
-    <code>SimpleDoublePendulum.urdf</code>. Documentation for the input format
-    is available on the <a href="http://drake.mit.edu">drake wiki</a>; it
-    supports even quite complex robots.</p>
+      </div>
+    </div>
 
     <p> While the basic double pendulum is fully actuated, imagine the somewhat
     bizarre case that we have a motor to provide torque at the elbow, but no
