@@ -113,7 +113,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
             viewPatches, viewColors = self.getViewPatches(body_i, tf)
             for patch, color in zip(viewPatches, viewColors):
                 self.body_fill_list += self.ax.fill(patch[0, :], patch[1, :], 
-                    zorder=0, color=color, edgecolor='k', closed=False)
+                    zorder=0, edgecolor='k', facecolor=color, closed=True)
 
     def buildViewPatches(self, use_random_colors):
         ''' Generates view patches. self.viewPatches stores a list
@@ -168,6 +168,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                             # visualization. (This could be improved for 
                             # capsules?)
                             patch = geom.getPoints()
+
                     # Convert to homogenous coords and move out of body frame
                     patch = np.vstack((patch, np.ones((1, patch.shape[1]))))
                     patch = np.dot(element_local_tf, patch)
@@ -178,6 +179,11 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                     if patch.shape[1] > 3:
                         hull = sp.spatial.ConvexHull(np.transpose(patch[0:2, :]))
                         patch = np.transpose(np.vstack([patch[:, v] for v in hull.vertices]))
+
+                    # Close path if not closed
+                    if (patch[:, -1] != patch[:, 0]).any():
+                        patch = np.hstack((patch, patch[:, 0][np.newaxis].T))
+
                     this_body_patches.append(patch)
                     if use_random_colors:
                         this_body_colors.append(next(color))
@@ -255,6 +261,7 @@ def setupValkyrieExample():
     # Valkyrie Example
     rbt = RigidBodyTree()
     world_frame = pydrake.rbtree.RigidBodyFrame("world_frame", rbt.world(), [0, 0, 0], [0, 0, 0])
+    from pydrake.multibody.parsers import PackageMap
     pmap = PackageMap()
     pmap.PopulateFromEnvironment("ROS_PACKAGE_PATH")
     drake_base_path = os.path.expandvars("${DRAKE_RESOURCE_ROOT}")

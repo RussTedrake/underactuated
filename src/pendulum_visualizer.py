@@ -33,11 +33,11 @@ class PendulumVisualizer(PyPlotVisualizer):
 
         self.ax.set_xlim([-1.2, 1.2])
         self.ax.set_ylim([-1.2, 1.2])
-        self.base = self.ax.fill(self.base_x, self.base_y, zorder=1, color=(.3, .6, .4), edgecolor='k')
+        self.base = self.ax.fill(self.base_x, self.base_y, zorder=1, facecolor=(.3, .6, .4), edgecolor='k')
         # arm_x and arm_y are closed (last element == first element), but don't pass the
         # last element to the fill command, because it gets closed anyhow (and we want the
         # sizes to match for the update).
-        self.arm = self.ax.fill(self.arm_x[0:-1], self.arm_y[0:-1], zorder=0, color=(.9, .1, 0), edgecolor='k')
+        self.arm = self.ax.fill(self.arm_x[0:-1], self.arm_y[0:-1], zorder=0, facecolor=(.9, .1, 0), edgecolor='k')
         self.center_of_mass = self.ax.plot(0, -self.ac1, zorder=1, color='b', marker='o', markersize=14)
 
     def draw(self, context):
