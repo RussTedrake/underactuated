@@ -6,8 +6,8 @@
   <material name="black">
     <color rgba="0 0 0 1" />
   </material>
-  <material name="blue">
-    <color rgba=".765625 .90429688  1 1" />
+  <material name="MITred">
+    <color rgba=".6 .2 .2 1" />
   </material>
 
   <link name="base">
@@ -35,7 +35,7 @@
       <geometry>
         <sphere radius=".1"/>
       </geometry>
-      <material name="blue" />
+      <material name="MITred" />
     </visual>
   </link>
   <joint name="shoulder" type="continuous">
@@ -68,7 +68,7 @@
       <geometry>
         <sphere radius=".1"/>
       </geometry>
-      <material name="blue" />
+      <material name="MITred" />
     </visual>
   </link>
   <joint name="elbow" type="continuous">
