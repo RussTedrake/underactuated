@@ -33,6 +33,8 @@ set -eux
 
 export DEBIAN_FRONTEND='noninteractive'
 
+yes | ./scripts/setup/linux/ubuntu/xenial/install_prereqs
+
 set +u
 if [ -z "${DRAKE_BINARY_URL}" ]; then
     DRAKE_BINARY_URL=`python -c "import sys, json; drake = json.load(open('drake_version.json')); print(drake['base_url'] + drake['build'] + '/drake-' + drake['version'] + '-xenial.tar.gz')"`
@@ -50,7 +52,5 @@ cat /opt/drake/share/doc/drake/VERSION.TXT && echo ""
 yes | /opt/drake/share/drake/setup/install_prereqs
 
 popd
-
-yes | ./scripts/setup/linux/ubuntu/xenial/install_prereqs
 
 

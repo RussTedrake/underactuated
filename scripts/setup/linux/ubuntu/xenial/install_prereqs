@@ -36,20 +36,21 @@ if [[ "${EUID}" -ne 0 ]]; then
   exit 1
 fi
 
-# NOTE: Assumes that the drake (binary) install_prereqs script has already been run.  Only install additional components
+# NOTE: Assumes that the drake (binary) install_prereqs script will also be run.  Only install what we need to download drake and any additional requirements for this package.
 
 apt update -qq
 
 # Install development and Drake dependencies.
 apt install -qq --no-install-recommends $(tr '\n' ' ' <<EOF
+apt-transport-https
+curl
+python
 python-matplotlib
 EOF
 )
 
-apt remove tidy libtidy-0.99-0
+apt remove -qq tidy libtidy-0.99-0
 curl -LO https://github.com/htacg/tidy-html5/releases/download/5.4.0/tidy-5.4.0-64bit.deb
-trap 'rm -rf tidy-5.4.0-64bit.deb' EXIT
+trap 'rm -f tidy-5.4.0-64bit.deb' EXIT
 echo 'b6b971534ee6bacc68a7c5f9878b0a146fbd7f50c580db76a19823e8541f92f8  tidy-5.4.0-64bit.deb' | sha256sum -c
 dpkg -i tidy-5.4.0-64bit.deb
-
-

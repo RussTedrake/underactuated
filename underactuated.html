@@ -36,7 +36,7 @@
         return -1;
       }
 
-      function setPlatform(is_mac) {  // else mac
+      function setPlatform(is_mac) {  // else display linux
         if (is_mac) {
           to_show = document.getElementsByClassName("mac");
           to_hide = document.getElementsByClassName("linux");
@@ -6057,12 +6057,11 @@ export PYTHONPATH=/opt/drake/lib/python2.7/site-packages:${PYTHONPATH}</code></p
 
       <div class="mac"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
 /opt/drake/share/drake/setup/install_prereqs
-export PYTHONPATH=/opt/drake/lib/python2.7/site-packages:${PYTHONPATH}</code></pre></div>
+export PYTHONPATH=/opt/drake/lib/python2.7/site-packages:${PYTHONPATH}
+export PATH=/usr/local/opt/python/libexec/bin:${PATH}</code></pre></div>
     </section>
 
     <section data-type="sect2"><h1>Test for success</h1>
-
-      <p class="mac">NOTE: You must ensure that you have Homebrew Python installed, and are <a href="http://drake.mit.edu/python_bindings.html#using-the-python-bindings">using python2 from Homebrew Python</a> to execute these scripts, otherwise you python interpreter will crash in the test below.</p>
 
       <p><pre class="highlight"><code>python -c 'import pydrake; print(pydrake.__file__)'
 </code></pre></p>
