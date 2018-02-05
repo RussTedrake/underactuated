@@ -6001,7 +6001,7 @@ and Validation</h1>
   and recommended workflows to get you up and running quickly with the
   examples provided in these notes.</p>
 
-  <section data-type="sect1"><h1>Installation</h1>
+  <section data-type="sect1"><h1>Install Drake</h1>
 
     <p>Although I hope that power users will build <drake></drake> from source
     (and contribute back), I recommend using the precompiled binaries to get
@@ -6035,6 +6035,19 @@ export PYTHONPATH=/opt/drake/install/lib/python2.7/site-packages:${PYTHONPATH}</
       <p> Further tips and instructions are available at the <a
       href="http://drake.mit.edu/python_bindings.html#using-the-python-bindings">python
       documentation page on the drake website</a>. </p>
+
+      <todo>install_prereqs?</todo>
+
+    </section>
+
+    <section data-type="sect1"><h1>Download the textbook supplement</h1>
+
+      <div class="highlight"><pre class="highlight"><code>git clone https://github.com/RussTedrake/underactuated.git</code></pre></div>
+
+      <p>No need to build; we're only using the runtime python code.  The
+      examples in this textbook (currently) assume that the working
+      directory of your python interpreter is your <code>underactuated
+        /src</code> directory.</p>
 
     </section>
 
