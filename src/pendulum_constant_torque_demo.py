@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
-import sys
+import argparse
+import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider
 import numpy as np
+import sys
 
 import pydrake.systems.framework
 from pydrake.examples.pendulum import PendulumPlant
@@ -10,8 +13,6 @@ from pydrake.systems.framework import DiagramBuilder, VectorSystem
 from pydrake.systems.primitives import ConstantVectorSource, SignalLogger
 
 from pendulum_visualizer import PendulumVisualizer
-import matplotlib.pyplot as plt
-from matplotlib.widgets import Slider
 
 class TorqueSlider(VectorSystem):
     def __init__(self, ax):
@@ -31,9 +32,12 @@ class TorqueSlider(VectorSystem):
 builder = DiagramBuilder()
 pendulum = builder.AddSystem(PendulumPlant())
 
-simulation_duration = 1000
-if (len(sys.argv)>2):
-    simulation_duration = float(sys.argv[2])
+parser = argparse.ArgumentParser()
+parser.add_argument("-T", "--duration",
+                    type=float,
+                    help="Duration to run sim.",
+                    default=10000.0)
+args = parser.parse_args()
 
 visualizer = builder.AddSystem(PendulumVisualizer())
 builder.Connect(pendulum.get_output_port(0), visualizer.get_input_port(0))
@@ -59,6 +63,6 @@ state = simulator.get_mutable_context().get_continuous_state_vector()
 initial_state = np.array([1.0, 0.0])
 state.SetFromVector(initial_state)
 
-simulator.StepTo(simulation_duration)
+simulator.StepTo(args.duration)
 
 print(state.CopyToVector())

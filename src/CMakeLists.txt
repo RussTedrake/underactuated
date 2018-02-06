@@ -24,7 +24,7 @@ add_pytest(double_pendulum_simulator.py)
 add_pytest(double_pendulum_manipulator.py)
 add_pytest(double_pendulum_as_single_pendulum.py --duration 1.0)
 
-add_pytest(pendulum_constant_torque_demo.py 1.0 1.0)
+add_pytest(pendulum_constant_torque_demo.py --duration 1.0)
 
 add_pytest(simple_continuous_time_system_simulation.py)
 add_pytest(simple_discrete_time_system_simulation.py)
