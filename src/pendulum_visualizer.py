@@ -14,6 +14,7 @@ from pydrake.systems.framework import (
 import scipy.interpolate
 
 from pyplot_visualizer import PyPlotVisualizer
+
 class PendulumVisualizer(PyPlotVisualizer):
     a1 = 0.75
     ac1 = 0.75
