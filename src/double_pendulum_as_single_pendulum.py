@@ -1,7 +1,8 @@
 import argparse
 from math import sin
 
-from pydrake.all import *
+from pydrake.all import ( DiagramBuilder, FloatingBaseType, RigidBodyPlant,
+                          RigidBodyTree, Simulator, VectorSystem )
 from planar_rigid_body_visualizer import PlanarRigidBodyVisualizer
 from manipulator_dynamics import *
 
