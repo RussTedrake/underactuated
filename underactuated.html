@@ -1038,45 +1038,43 @@ semester.</p>
 <section data-type="chapter" class="chapter" id="pend">
 <h1>The Simple Pendulum</h1>
 
-<section data-type="sect1"><h1>Introduction</h1>
+  <section data-type="sect1"><h1>Introduction</h1>
 
-<p> Our goals for this chapter are modest: we'd like to understand the dynamics
-of a pendulum.</p>
+    <p> Our goals for this chapter are modest: we'd like to understand the
+    dynamics of a pendulum.</p>
 
-<p>Why a pendulum?  In part, because the dynamics of a majority of our
-multi-link robotics manipulators are simply the dynamics of a large number of
-coupled pendula.  Also, the dynamics of a single pendulum are rich enough to
-introduce most of the concepts from nonlinear dynamics that we will use in this
-text, but tractable enough for us to (mostly) understand in the next few pages.
-</p>
+    <p>Why a pendulum?  In part, because the dynamics of a majority of our
+    multi-link robotics manipulators are simply the dynamics of a large number
+    of coupled pendula.  Also, the dynamics of a single pendulum are rich enough
+    to introduce most of the concepts from nonlinear dynamics that we will use
+    in this text, but tractable enough for us to (mostly) understand in the next
+    few pages. </p>
 
-<figure> <img width="30%" data-src="figures/simple_pend.svg"/> <figcaption>The simple
-pendulum</figcaption> </figure>
+    <figure> <img width="30%" data-src="figures/simple_pend.svg"/>
+    <figcaption>The simple pendulum</figcaption> </figure>
 
-<p> The Lagrangian derivation of the equations of motion (as described in the
-appendix) of the simple pendulum yields: \begin{equation*} m l^2 \ddot\theta(t) +
-mgl\sin{\theta(t)} = Q. \end{equation*} We'll consider the case where the
-generalized force, $Q$, models a damping torque (from friction) plus a control
-torque input, $u(t)$: $$Q = -b\dot\theta(t) + u(t).$$ </p>
+    <p> The Lagrangian derivation of the equations of motion (as described in
+    the appendix) of the simple pendulum yields: \begin{equation*} m l^2
+    \ddot\theta(t) + mgl\sin{\theta(t)} = Q. \end{equation*} We'll consider the
+    case where the generalized force, $Q$, models a damping torque (from
+    friction) plus a control torque input, $u(t)$: $$Q = -b\dot\theta(t) +
+    u(t).$$ </p>
 
-</section>
+  </section>
 
-<section data-type="sect1"><h1>Nonlinear dynamics with a constant torque</h1>
+  <section data-type="sect1" class="drake"><h1>Nonlinear dynamics with a
+    constant
+    torque</h1>
 
-<p> Let us first consider the dynamics of the pendulum if it is driven in a
-particular simple way: a torque which does not vary with time: \begin{equation}
-ml^2 \ddot\theta + b\dot\theta + mgl \sin\theta = u_0. \end{equation}
-You can experiment with this system in <drake></drake> using
+    <p> Let us first consider the dynamics of the pendulum if it is driven in a
+    particular simple way: a torque which does not vary with time:
+    \begin{equation} ml^2 \ddot\theta + b\dot\theta + mgl \sin\theta = u_0.
+    \end{equation} You can experiment with this system in <drake></drake> using
 
-<pre><code class="matlab" testfile="testOpenSystem">
-cd(fullfile(getDrakePath,'examples','Pendulum'));
-open_system('constantTorqueDemo');
-% hit play to start the simulation, and click on the boxes labeled as
-% 'slider' to control the torque and damping.
-% if you get an error about not keeping up with real time, then
-% double-click on the realtime block and reduce the realtime factor
-% (e.g. to .5).
-</code></pre>
+    <pre><code class="python">cd underactuated/src
+python pendulum_constant_torque_demo</code></pre>
+
+    <p>(use the slider at the top to adjust the torque input).</p>
 
 <p> These are relatively simple differential equations, so if I give you $\theta(0)$ and
 $\dot\theta(0)$, then you should be able to integrate them to obtain
