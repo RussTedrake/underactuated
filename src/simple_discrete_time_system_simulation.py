@@ -1,14 +1,10 @@
-from simple_discrete_time_system import *
-from pydrake.systems.framework import DiagramBuilder
-from pydrake.systems.primitives import SignalLogger
-from pydrake.systems.analysis import Simulator
 import matplotlib.pyplot as plt
+from pydrake.all import ( DiagramBuilder, SignalLogger, Simulator)
+from simple_discrete_time_system import *
 
 # Create a simple block diagram containing our system.
 builder = DiagramBuilder()
 system = builder.AddSystem(SimpleDiscreteTimeSystem())
-# TODO(russt): add binding then replace the next two lines with
-#   logger = LogOutput(system->get_output_port(0), builder)
 logger = builder.AddSystem(SignalLogger(1))
 builder.Connect(system.get_output_port(0), logger.get_input_port(0))
 diagram = builder.Build()

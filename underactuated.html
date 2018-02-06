@@ -6233,45 +6233,23 @@ jupyter notebook double_pendulum_simulator.ipynb</code></pre></div>
 
     </div>
 
+
+    <p>Although these simple VectorSystems are a nice way to get started, in
+    fact Drake supports authoring a wide variety of systems with multiple inputs
+    and outputs, mixed discrete- and continuous- dynamics, hybrid dynamics with
+    guards and resets, systems with constraints, and even stochastic systems.
+    To expose more of the underlying system framework, you should derive your
+    system from <a
+    href="http://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1_leaf_system.html">LeafSystem</a>
+    directly, instead of using the simplified VectorSystem interface. </p>
+
     <todo>restore/update mixed discrete/continuous, systems with
       constraints, hybrid systems, and stochastic systems.  Also
       RigidBodyPlant (load from urdf/sdf).</todo>
 
   </section>
 
-  <todo>Add section about the Context</todo>
-
-  <section data-type="sect2"><h1>Combinations of Systems</h1>
-
-    <figure>
-      <center><img style="width:250px;" data-src="figures/feedback_system.svg"/></center>
-      <figcaption>Feedback combination</figcaption>
-    </figure>
-    <figure>
-      <center><img style="width:300px;" data-src="figures/cascade_system.svg"/></center>
-      <figcaption>Cascade combination</figcaption>
-    </figure>
-
-    <p>Whenever possible, structure in the equations is preserved on
-    combination.  A polynomial system that is feedback combined with
-    another polynomial system produces a new polynomial system.   However,
-    if a polynomial system is feedback combined with a Simulink Block,
-    then the new system is a DynamicalSystem, but not a PolynomialSystem. </p>
-
-    <p>A combination of two systems should return a system of the type that
-    is the least common ancestor in the <a href="http://drake.mit.edu/doxygen_matlab/inherits.html">class hierarchy</a>.  There are two exceptions:  combinations with
-    a hybrid system stay hybrid, and combinations with a stochastic system
-    stay stochastic.  <!--\todo{Stochastic Hybrid Systems are not implemented yet,
-    but it wouldn't be hard.}--></p>
-
-    <!--
-    \todo{Make sure that feedback and cascade handle all of the cases
-    described above (especially blocks with different sample times,
-    hybrid systems, etc)}
-    -->
-  </section>
-
-  <section data-type="sect2"><h1>Simulation</h1>
+  <section data-type="sect1"><h1>Simulation</h1>
 
     <p>Once you have acquired a System object describing the dynamics of
     interest, the most basic thing that you can do is to simulate it.  This is
@@ -6284,7 +6262,7 @@ jupyter notebook double_pendulum_simulator.ipynb</code></pre></div>
     you should add a <code>pydrake.framework.primitives.SignalLogger</code>
     system to your diagram.</p>
 
-    <div data-type="example" class="drake"><h1>Simulating the simple systems and
+    <div data-type="example" class="drake"><h1>Simulating and
     plotting the results</h1>
 
       <p>Use the following code to instantiate the
@@ -6300,15 +6278,12 @@ jupyter notebook double_pendulum_simulator.ipynb</code></pre></div>
           .</figcaption>
       </figure>
 
+      <p>The code for running the discrete time system is basically identical:</p>
+      <drake_code>src/simple_discrete_time_system_simulation.py</drake_code>
+
     </div>
 
-    <p>The simulator requires that all input ports are properly connected.
-    <code>pydrake.systems.primitives.ConstantVectorSource</code> to provide
-    those inputs, or <drake></drake> also provides a shortcut where you can call
-    <code>FixInputPort</code> directly on the
-    <code>pydrake.systems.framework.Context</code>. </p>
-
-    <p>For simple systems, the simulation will run much faster than real time.
+    <p>For many systems, the simulation will run much faster than real time.
     If you would like to tell the simulator to slow down (if possible) to some
     multiple of the real time clock, then consider using the
     <code>set_target_realtime_rate</code> method of the <code>Simulator</code>.
@@ -6316,6 +6291,76 @@ jupyter notebook double_pendulum_simulator.ipynb</code></pre></div>
     simulates, and would like the benefit of physical intuition, or if you are
     trying to use the simulation as a part of a multi-process real-time control
     system.</p>
+
+  </section>
+
+  <section data-type="sect1"><h1>The System "Context"</h1>
+
+    <p>If you were looking carefully, you might have noticed a few instances of
+    the word "context" in the code snippets above.  The <a
+    href="http://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1_context.html">Context</a>
+    is a core concept in the <drake></drake> systems framework: the Context
+    captures all of the (potentially) dynamic information that a System requires
+    to implement it's core methods: this includes the time, the state, any
+    inputs, and any system parameters.  The Context of a System is everything
+    you need to know for simulation (or control design, ...), and given a
+    Context all methods called on a System should be completely
+    deterministic/repeatable.</p>
+
+    <p>Systems know how to create an instance of a Context (see <a
+    href="http://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1_system.html#ab763e3e9fc29dfc3ccde21ca7501a7e9">CreateDefaultContext</a>).
+    In the simulation example above, the Simulator created a Context for us. We
+    retreived the Context from the Simulator in order to set the initial
+    conditions (state) of the system before running the simulation.</p>
+
+    <p> Note that a Context is not completely defined unless all of the input
+    ports are connected (simulation and other method calls will fail if they are
+    not). For input ports that are not directly tied to the output of anther
+    system, consider using the <a
+    href="http://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1_context.html#ab6431f682a893a81eef20d675c996d8c">FixInputPort</a>
+    method of the Context.</p>
+
+  </section>
+
+  <section data-type="sect1"><h1>Combinations of Systems: Diagram
+  and DiagramBuilder</h1>
+
+    <figure>
+      <center><img style="width:250px;" data-src="figures/feedback_system.svg"/></center>
+      <figcaption>Feedback combination</figcaption>
+    </figure>
+    <figure>
+      <center><img style="width:300px;" data-src="figures/cascade_system.svg"/></center>
+      <figcaption>Cascade combination</figcaption>
+    </figure>
+
+    <p>The real modeling power of <drake></drake> comes from combining many
+    smaller systems together into more complex systems.  The concept is very
+    simple: we use the <code>DiagramBuilder</code> class to <code>AddSystem
+    </code>s and to <code>Connect</code> input ports to output ports or to
+    expose them as inputs/output of the diagram.  Then we call <code>Build
+    </code> to generate the new <code>Diagram</code> instance, which is just
+    another <code>System</code> in the framework, and can be simulated or
+    analyzed using the entire suite of tools.</p>
+
+    <div data-type="example" class="drake"><h1>DiagramBuilder</h1>
+
+      <p>In the example below, we connect two subsystems (the plant and the
+      visualizer), and expose the input of the plant as an input to the
+      <code>Diagram</code> being constructed:</p>
+
+      <drake_code>src/double_pendulum_simulator.py</drake_code>
+
+    </div>
+
+    <p>Just like any other <code>System</code>, a <code>Diagram</code> has
+    a <code>Context</code>.  You can always extract the context of a
+    subsystem using <code>Diagram.GetSubSystemContext</code> or
+    <code>Diagram.GetMutableSubsystemContext</code>.  (If it is not clear
+    yet, "mutable" means you have write access, otherwise the data is
+    <code>const</code>; we go to some length in the systems framework to
+    protect algorithms / users from violating the fundamental systems
+    abstractions).</p>
 
   </section>
 
