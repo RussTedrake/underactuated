@@ -199,12 +199,6 @@
                 }
               }
 
-              var drakeTags = chapters[i].getElementsByTagName('drake');
-              for (j = 0; j < drakeTags.length; j++) {
-                  drakeTags[j].innerHTML =
-                      '<a style="font-variant:small-caps; text-decoration:none;" href="http://drake.mit.edu">Drake</a>';
-              }
-
               var codeTags = chapters[i].getElementsByTagName('drake_code');
               for (j = 0; j < codeTags.length; j++) {
                   var file = codeTags[j].innerHTML;
@@ -271,6 +265,12 @@
                 "<ul>" + list_of_drake_examples + "</ul>";
 
           }
+        }
+
+        var drakeTags = document.getElementsByTagName('drake');
+        for (j = 0; j < drakeTags.length; j++) {
+            drakeTags[j].innerHTML =
+                '<a style="font-variant:small-caps; text-decoration:none;" href="http://drake.mit.edu">Drake</a>';
         }
       }
       </script>
