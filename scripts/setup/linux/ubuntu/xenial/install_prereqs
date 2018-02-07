@@ -42,7 +42,6 @@ apt update -qq
 
 # Install development and Drake dependencies.
 apt install -qq --no-install-recommends $(tr '\n' ' ' <<EOF
-apt-transport-https
 build-essential
 curl
 ffmpeg
