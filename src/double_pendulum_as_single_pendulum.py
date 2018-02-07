@@ -5,6 +5,7 @@ from pydrake.all import ( DiagramBuilder, FloatingBaseType, RigidBodyPlant,
                           RigidBodyTree, Simulator, VectorSystem )
 from planar_rigid_body_visualizer import PlanarRigidBodyVisualizer
 from manipulator_dynamics import *
+import underactuated_utils as utils
 
 class Controller(VectorSystem):
     """ Defines a feedback controller for the double pendulum.
@@ -44,7 +45,7 @@ class Controller(VectorSystem):
 
 
 # Load the double pendulum from Universal Robot Description Format
-tree = RigidBodyTree("double_pendulum.urdf", FloatingBaseType.kFixed)
+tree = RigidBodyTree(utils.findResource("double_pendulum.urdf"), FloatingBaseType.kFixed)
 
 # Set up a block diagram with the robot (dynamics), the controller, and a visualization block.
 builder = DiagramBuilder()
