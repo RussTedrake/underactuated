@@ -1,9 +1,10 @@
 from pydrake.all import ( BasicVector, DiagramBuilder, FloatingBaseType,
                           RigidBodyPlant, RigidBodyTree, Simulator )
 from planar_rigid_body_visualizer import PlanarRigidBodyVisualizer
+import underactuated_utils as utils
 
 # Load the double pendulum from Universal Robot Description Format
-tree = RigidBodyTree("double_pendulum.urdf", FloatingBaseType.kFixed)
+tree = RigidBodyTree(utils.findResource("double_pendulum.urdf"), FloatingBaseType.kFixed)
 
 # Set up a block diagram with the robot (dynamics) and a visualization block.
 builder = DiagramBuilder()
