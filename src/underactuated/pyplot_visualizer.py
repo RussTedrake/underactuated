@@ -43,7 +43,8 @@ class PyPlotVisualizer(LeafSystem):
     def _DoPublish(self, context, event):
         self.draw(context)
         self.fig.canvas.draw()
-        self.fig.canvas.flush_events()
+        if plt.get_backend() != u'template':
+            self.fig.canvas.flush_events()
 
     def draw(self, context):
         print "SUBCLASSES MUST IMPLEMENT."
