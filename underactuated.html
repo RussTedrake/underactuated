@@ -837,14 +837,14 @@ semester.</p>
     you have multiple actuators per joint, then this inverse may not be
     unique.</sidenote>. Consider the nonlinear feedback law: $$\bu = {\bf
     \pi}(\bq,\dot\bq,t) = {\bf f}_2^{-1}(\bq,\dot\bq,t) \left[ \bu' - {\bf
-    f}_1(\bq,\dot\bq,t) \right],$$ where $\bu'$ is some additional control
-    input. Applying this feedback controller to equation \ref{eq:f1_plus_f2}
-    results in the linear, decoupled, second-order system: $$\ddot{\bq} =
-    \bu'.$$ In other words, if ${\bf f}_1$ and ${\bf f}_2$ are known and ${\bf
-    f}_2$ is invertible, then we say that the system is "feedback equivalent" to
-    $\ddot{\bq} = \bu'$.  There are a number of strong results which generalize
-    this idea to the case where ${\bf f}_1$ and ${\bf f}_2$ are estimated,
-    rather than known (e.g, <elib>Slotine90</elib>).</p>
+    f}_1(\bq,\dot\bq,t) \right],$$ where $\bu'$ is the new control input (an
+    input to your controller). Applying this feedback controller to equation
+    \ref{eq:f1_plus_f2} results in the linear, decoupled, second-order system:
+    $$\ddot{\bq} = \bu'.$$ In other words, if ${\bf f}_1$ and ${\bf f}_2$ are
+    known and ${\bf f}_2$ is invertible, then we say that the system is
+    "feedback equivalent" to $\ddot{\bq} = \bu'$.  There are a number of strong
+    results which generalize this idea to the case where ${\bf f}_1$ and ${\bf
+    f}_2$ are estimated, rather than known (e.g, <elib>Slotine90</elib>).</p>
 
     <div data-type="example" class="drake"><h1>Feedback-Cancellation Double
     Pendulum</h1>
