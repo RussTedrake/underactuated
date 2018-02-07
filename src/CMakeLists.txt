@@ -17,11 +17,22 @@ function(add_pytest pyfile)
 
 endfunction(add_pytest)
 
+function(add_nbtest ipynbfile)
+
+  add_test(NAME ${ipynbfile}
+           COMMAND ${PYTHON_EXECUTABLE} test_ipynb.py ${ipynbfile}
+           WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src)
+
+endfunction(add_nbtest)
+
+
 add_subdirectory(underactuated)
 
 # Note: no duration arguments to keep this first textbook example simple.
 # Just pay the 10second cost.
 add_pytest(double_pendulum_simulator.py)
+
+add_nbtest(double_pendulum_simulator.ipynb)
 
 add_pytest(double_pendulum_manipulator.py)
 add_pytest(double_pendulum_as_single_pendulum.py --duration 1.0)
