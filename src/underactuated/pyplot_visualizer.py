@@ -31,6 +31,7 @@ class PyPlotVisualizer(LeafSystem):
     
     def __init__(self, draw_rate=0.0333, facecolor=[1, 1, 1]):
         LeafSystem.__init__(self)
+
         self.set_name('pyplot_visualization')
         self._DeclarePeriodicPublish(draw_rate, 0.0)
 
@@ -42,8 +43,7 @@ class PyPlotVisualizer(LeafSystem):
     def _DoPublish(self, context, event):
         self.draw(context)
         self.fig.canvas.draw()
-        if (plt.get_backend() == u'MacOSX'):
-            plt.pause(1e-10)  # Needed to see anything on mac.
+        self.fig.canvas.flush_events()
 
     def draw(self, context):
         print "SUBCLASSES MUST IMPLEMENT."
