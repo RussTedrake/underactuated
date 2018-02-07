@@ -3,12 +3,8 @@
 import numpy as np
 import math
 import matplotlib.animation as animation
-import matplotlib.pyplot as plt
-import pydrake
 from pydrake.systems.framework import (
     Context,
-    DiagramBuilder,
-    LeafSystem,
     PortDataType,
     )
 import scipy.interpolate

@@ -2,9 +2,6 @@
 
 import argparse
 import math
-import random
-import sys
-import time
 import os.path
 
 import numpy as np
@@ -21,13 +18,13 @@ from pydrake.systems.analysis import Simulator
 from pydrake.systems.framework import (
     Context,
     DiagramBuilder,
-    LeafSystem,
     PortDataType
     )
 from pydrake.systems.primitives import ConstantVectorSource, SignalLogger
 from pydrake.multibody.rigid_body_plant import RigidBodyPlant
 from pydrake.multibody.shapes import Shape
 
+from utils import FindResource
 from pyplot_visualizer import PyPlotVisualizer
 
 class PlanarRigidBodyVisualizer(PyPlotVisualizer):
@@ -247,13 +244,13 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
 
 
 def setupPendulumExample():
-    rbt = RigidBodyTree("pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
+    rbt = RigidBodyTree(FindResource("pendulum.urdf"), floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
     Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
     pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-1.2, 1.2], [-1.2, 1.2])
     return rbt, pbrv
 
 def setupDoublePendulumExample():
-    rbt = RigidBodyTree("double_pendulum.urdf", floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
+    rbt = RigidBodyTree(FindResource("double_pendulum.urdf"), floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
     Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
     pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-2.5, 2.5], [-2.5, 2.5], use_random_colors=True)
     return rbt, pbrv
@@ -264,20 +261,22 @@ def setupValkyrieExample():
     world_frame = pydrake.rbtree.RigidBodyFrame("world_frame", rbt.world(), [0, 0, 0], [0, 0, 0])
     from pydrake.multibody.parsers import PackageMap
     pmap = PackageMap()
-    pmap.PopulateFromEnvironment("ROS_PACKAGE_PATH")
-    drake_base_path = os.path.expandvars("${DRAKE_RESOURCE_ROOT}")
+    # Note: Val model is currently not installed in drake binary distribution.
+    pmap.PopulateFromFolder(os.path.join(pydrake.getDrakePath(),"examples"))
+    # TODO(russt): remove plane.urdf and call AddFlatTerrainTOWorld instead once it lands in pydrake
+    #
     pydrake.rbtree.AddModelInstanceFromUrdfStringSearchingInRosPackages(
-        open("plane.urdf", 'r').read(),
+        open(FindResource(os.path.join("underactuated","plane.urdf")), 'r').read(),
         pmap,
-        drake_base_path + "/examples/",
+        pydrake.getDrakePath() + "/examples/",
         pydrake.rbtree.FloatingBaseType.kFixed,
         world_frame,
         rbt)
     val_start_frame = pydrake.rbtree.RigidBodyFrame("val_start_frame", rbt.world(), [0, 0, 1.5], [0, 0, 0])
     pydrake.rbtree.AddModelInstanceFromUrdfStringSearchingInRosPackages(
-        open(drake_base_path + "/examples/valkyrie/urdf/urdf/valkyrie_A_sim_drake_one_neck_dof_wide_ankle_rom.urdf", 'r').read(),
+        open(pydrake.getDrakePath() + "/examples/valkyrie/urdf/urdf/valkyrie_A_sim_drake_one_neck_dof_wide_ankle_rom.urdf", 'r').read(),
         pmap,
-        drake_base_path + "/examples/",
+        pydrake.getDrakePath() + "/examples/",
         pydrake.rbtree.FloatingBaseType.kRollPitchYaw,
         val_start_frame,
         rbt)
