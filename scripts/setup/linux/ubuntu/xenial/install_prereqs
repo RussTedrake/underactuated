@@ -42,10 +42,25 @@ apt update -qq
 
 # Install development and Drake dependencies.
 apt install -qq --no-install-recommends $(tr '\n' ' ' <<EOF
+build-essential
 curl
 ffmpeg
 python
+python-dev
 python-matplotlib
+python-pip
+EOF
+)
+
+pip install --upgrade $(tr '\n' ' ' <<EOF
+pip
+setuptools
+EOF
+)
+
+
+pip install --upgrade $(tr '\n' ' ' <<EOF
+jupyter
 EOF
 )
 

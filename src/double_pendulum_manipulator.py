@@ -1,12 +1,11 @@
-from pydrake.multibody.rigid_body_tree import RigidBodyTree
-from manipulator_dynamics import *
-import underactuated_utils as utils
+from pydrake.all import ( FloatingBaseType, RigidBodyTree )
+from underactuated import ( FindResource, ManipulatorDynamics )
 
-tree = RigidBodyTree(utils.findResource("double_pendulum.urdf"), FloatingBaseType.kFixed);
+tree = RigidBodyTree(FindResource("double_pendulum.urdf"), FloatingBaseType.kFixed);
 
 q = (1., 1.)
 v = (0.1, 0.1)
-(M, Cv, tauG, B) = manipulator_dynamics(tree,q,v)
+(M, Cv, tauG, B) = ManipulatorDynamics(tree,q,v)
 print("M = " + str(M))
 print("Cv = " + str(Cv))
 print("tauG = " + str(tauG))

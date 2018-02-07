@@ -1,18 +1,10 @@
-#!/usr/bin/env python
-
 import argparse
-import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
 import numpy as np
-import sys
 
-import pydrake.systems.framework
+from pydrake.all import ( DiagramBuilder, Simulator, SignalLogger, VectorSystem )
 from pydrake.examples.pendulum import PendulumPlant
-from pydrake.systems.analysis import Simulator
-from pydrake.systems.framework import DiagramBuilder, VectorSystem
-from pydrake.systems.primitives import ConstantVectorSource, SignalLogger
-
-from pendulum_visualizer import PendulumVisualizer
+from underactuated import PendulumVisualizer
 
 class TorqueSlider(VectorSystem):
     def __init__(self, ax):
