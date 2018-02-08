@@ -5428,7 +5428,7 @@ the instantaneous cost $g(\bx,\bu)$, for a trajectory $\bx(\cdot),\bu(\cdot)$
 defined over $t\in[t_0,t_f]$  to  be optimal it must satisfy the conditions that
 \begin{align*} \forall t\in[t_0,t_f],\quad & \dot{\bx} = f(\bx,\bu), \quad &\bx(0)=\bx_0\\
 \forall t\in[t_0,t_f],\quad & -\dot\lambda = \pd{g}{\bx}^T + \pd{f}{\bx}^T \lambda, \quad &\lambda(T) = 0\\
-\forall t\in[t_0,t_f],\quad & \pd{g}{\bu} + \lambda\pd{f}{\bu} = 0.&
+\forall t\in[t_0,t_f],\quad & \pd{g}{\bu} + \lambda^T\pd{f}{\bu} = 0.&
 \end{align*}</p>
 
 In fact the statement can be generalized even beyond this to the case where $\bu$ has constraints.
