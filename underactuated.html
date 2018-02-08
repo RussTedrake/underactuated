@@ -916,10 +916,12 @@ semester.</p>
     only on position, e.g. $\phi(\bq)\ge0$.</p>
 
     <p>By our generalized definition of underactuation, we can see that input
-    and constraints can certainly cause a system to be underactuated.  State
-    (only) constraints are more subtle -- if properly handled they actual
-    reduce the dimensionality of the state space, therefore requiring less
-    dimensions of actuation to fully control it.</p>
+    constraints can certainly cause a system to be underactuated.  State (only)
+    constraints are more subtle -- in general these actually reduce the
+    dimensionality of the state space, therefore requiring less dimensions of
+    actuation to achieve "full" control, but we only reap the benefits if we are
+    able to perform the control design in the "minimal coordinates" (which is
+    often difficult). </p>
 
     <div data-type="example"><h1>Input limits</h1> Consider the constrained
     second-order linear system \[ \ddot{x} = u, \quad |u| \le 1. \] By our
