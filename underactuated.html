@@ -1107,8 +1107,8 @@ described beautifully in a book by Steve Strogatz<elib>Strogatz94</elib>.</p>
 
 <p> Let's start by studying a special case -- intuitively when $b\dot\theta \gg ml^2\ddot\theta$ --
 which via <a href="https://en.wikipedia.org/wiki/Dimensionless_quantity">dimensional analysis</a>
-(using the characteristic time constant $\sqrt{\frac{l}{g}}$ to match units)
-occurs when $b \sqrt\frac{g}{l} \gg ml^2$. This is the case of heavy damping,
+(using the natural frequency $\sqrt{\frac{g}{l}}$ to match units)
+occurs when $b \sqrt\frac{l}{g} \gg ml^2$. This is the case of heavy damping,
 for instance if the pendulum was moving in molasses.  In this case, the damping
 term dominates the acceleration term, and we have: $$ml^2 \ddot\theta +
 b\dot\theta \approx b\dot\theta = u_0 - mgl\sin\theta.$$ In other words, in the
@@ -1175,7 +1175,7 @@ for a counter-example .  -->  Systems which are stable i.s.L. but not asymptotic
 (or diverge) in finite-time; a so-called <em>finite-time stability</em>; we
 will see examples of this later in the book, but it is a difficult topic to
 penetrate with graphical analysis.  Rigorous nonlinear system analysis is rich with
-subtleties and surprises.</p>
+subtleties and surprises.  Moreover, these differences actually matter -- the code that we will write to stabilize the systems will be subtley different depending on what type of stability we want, and it can make or break the success of our methods.</p>
 
 <p> Our graph of $\dot{x}$ vs. $x$ can be used to convince ourselves of i.s.L.
 and asymptotic stability by visually inspecting $\dot{x}$ in the vicinity of a
