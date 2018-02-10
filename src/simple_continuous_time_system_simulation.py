@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from pydrake.all import ( DiagramBuilder, SignalLogger, Simulator)
+from pydrake.all import (DiagramBuilder, SignalLogger, Simulator)
 from simple_continuous_time_system import *
 
 # Create a simple block diagram containing our system.

@@ -1,9 +1,12 @@
+# -*- coding: utf-8 -*-
+
 import argparse
 from math import sin
 
 from pydrake.all import (DiagramBuilder, FloatingBaseType, RigidBodyTree,
                          RigidBodyPlant, Simulator, VectorSystem)
-from underactuated import (FindResource, ManipulatorDynamics, PlanarRigidBodyVisualizer)
+from underactuated import (FindResource, ManipulatorDynamics,
+                           PlanarRigidBodyVisualizer)
 
 
 class Controller(VectorSystem):
@@ -19,6 +22,7 @@ class Controller(VectorSystem):
     gravity is zero, or even inverting gravity!
 
     """
+
     def __init__(self, rigid_body_tree, gravity):
         # 4 inputs (double pend state), 2 torque outputs.
         VectorSystem.__init__(self, 4, 2)
@@ -29,24 +33,28 @@ class Controller(VectorSystem):
         # Extract manipulator dynamics.
         q = double_pend_state[:2]
         v = double_pend_state[-2:]
-        (M,Cv,tauG,B) = ManipulatorDynamics(self.tree, q, v)
+        (M, Cv, tauG, B) = ManipulatorDynamics(self.tree, q, v)
 
         # Desired pendulum parameters.
-        l = 2.; b = .1;
+        length = 2.
+        b = .1
 
         # Control gains for stabilizing the second joint.
-        kp = 1; kd = .1;
+        kp = 1
+        kd = .1
 
         # Cancel double pend dynamics and inject single pend dynamics.
         torque[:] = Cv - tauG + \
-                    M.dot([-self.g/l*sin(q[0]) - b*v[0], -kp*q[1]+kd*v[1] ])
-
+            M.dot([-self.g / length * sin(q[0]) - b * v[0],
+                   -kp * q[1] + kd * v[1]])
 
 
 # Load the double pendulum from Universal Robot Description Format
-tree = RigidBodyTree(FindResource("double_pendulum.urdf"), FloatingBaseType.kFixed)
+tree = RigidBodyTree(FindResource("double_pendulum.urdf"),
+                     FloatingBaseType.kFixed)
 
-# Set up a block diagram with the robot (dynamics), the controller, and a visualization block.
+# Set up a block diagram with the robot (dynamics), the controller, and a
+# visualization block.
 builder = DiagramBuilder()
 robot = builder.AddSystem(RigidBodyPlant(tree))
 
@@ -65,8 +73,9 @@ controller = builder.AddSystem(Controller(tree, args.gravity))
 builder.Connect(robot.get_output_port(0), controller.get_input_port(0))
 builder.Connect(controller.get_output_port(0), robot.get_input_port(0))
 
-visualizer = builder.AddSystem(
-                PlanarRigidBodyVisualizer(tree, xlim=[-2.8,2.8], ylim=[-2.8,2.8]))
+visualizer = builder.AddSystem(PlanarRigidBodyVisualizer(tree,
+                                                         xlim=[-2.8, 2.8],
+                                                         ylim=[-2.8, 2.8]))
 builder.Connect(robot.get_output_port(0), visualizer.get_input_port(0))
 diagram = builder.Build()
 
@@ -78,7 +87,7 @@ simulator.set_publish_every_time_step(False)
 # Set the initial conditions
 context = simulator.get_mutable_context()
 state = context.get_mutable_continuous_state_vector()
-state.SetFromVector((1.,0.,0.2,0.0))  # (theta1, theta2, theta1dot, theta2dot)
+state.SetFromVector((1., 0., 0.2, 0.))  # (θ₁, θ₂, θ̇₁, θ̇₂)
 
 # Simulate
 simulator.StepTo(args.duration)

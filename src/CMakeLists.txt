@@ -1,10 +1,13 @@
 
+
+
 add_executable(simple_continuous_time_system simple_continuous_time_system.cc)
 target_link_libraries(simple_continuous_time_system
     drake::drake)
 add_test(NAME simple_continuous_time_system COMMAND simple_continuous_time_system)
 
 find_package(PythonInterp REQUIRED)
+find_program(PYCODESTYLE_EXECUTABLE pycodestyle REQUIRED)  # pip install pycodestyle
 
 function(add_pytest pyfile)
 
@@ -15,6 +18,10 @@ function(add_pytest pyfile)
   set_property(TEST ${pyfile}
                PROPERTY ENVIRONMENT "MPLBACKEND=Template")  # So that pyplot.show() does not block
 
+  add_test(NAME ${pyfile}_pycodestyle
+           COMMAND "${PYCODESTYLE_EXECUTABLE}" --count --show-source ${pyfile}
+           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
 endfunction(add_pytest)
 
 function(add_nbtest ipynbfile)
@@ -24,7 +31,6 @@ function(add_nbtest ipynbfile)
            WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/src)
 
 endfunction(add_nbtest)
-
 
 add_subdirectory(underactuated)
 
