@@ -27,6 +27,7 @@ from pydrake.multibody.shapes import Shape
 from utils import FindResource
 from pyplot_visualizer import PyPlotVisualizer
 
+
 class PlanarRigidBodyVisualizer(PyPlotVisualizer):
     '''
         Given a RigidBodyPlant and a view plane,
@@ -74,8 +75,15 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         offsetting with the projection matrix.
     '''
 
-    def __init__(self, rbtree, Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]]), xlim = [-1., 1], ylim = [-1, 1],
-            facecolor=[1, 1, 1], use_random_colors=False):
+    def __init__(self,
+                 rbtree,
+                 Tview=np.array([[1., 0., 0., 0.],
+                                 [0., 0., 1., 0.],
+                                 [0., 0., 0., 1.]]),
+                 xlim=[-1., 1],
+                 ylim=[-1, 1],
+                 facecolor=[1, 1, 1],
+                 use_random_colors=False):
         PyPlotVisualizer.__init__(self)
         self.set_name('planar_rigid_body_visualizer')
 
@@ -83,9 +91,12 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         self.Tview = Tview
         self.Tview_pinv = np.linalg.pinv(self.Tview)
 
-        print "Spawning PlanarRigidBodyVisualizer for tree with %d actuators" % (self.rbtree.get_num_actuators())
+        print "Spawning PlanarRigidBodyVisualizer for tree with" \
+              " %d actuators" % (self.rbtree.get_num_actuators())
 
-        self._DeclareInputPort(PortDataType.kVectorValued, self.rbtree.get_num_positions() + self.rbtree.get_num_velocities())
+        self._DeclareInputPort(PortDataType.kVectorValued,
+                               self.rbtree.get_num_positions() +
+                               self.rbtree.get_num_velocities())
 
         self.ax.set_xlim(xlim)
         self.ax.set_ylim(ylim)
@@ -109,8 +120,12 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
             tf = self.rbtree.relativeTransform(kinsol, 0, body_i+1)
             viewPatches, viewColors = self.getViewPatches(body_i, tf)
             for patch, color in zip(viewPatches, viewColors):
-                self.body_fill_list += self.ax.fill(patch[0, :], patch[1, :], 
-                    zorder=0, edgecolor='k', facecolor=color, closed=True)
+                self.body_fill_list += self.ax.fill(patch[0, :],
+                                                    patch[1, :],
+                                                    zorder=0,
+                                                    edgecolor='k',
+                                                    facecolor=color,
+                                                    closed=True)
 
     def buildViewPatches(self, use_random_colors):
         ''' Generates view patches. self.viewPatches stores a list
@@ -142,28 +157,33 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                         try:
                             points = geom.getPoints()
                             # Unnecessary if we're taking a convex hull
-                            #tris = geom.getFaces()
-                            #for tri in tris:
-                            #    new_pts = np.transpose(np.vstack([points[:, x] for x in tri]))
+                            # tris = geom.getFaces()
+                            # for tri in tris:
+                            #    new_pts = np.transpose(np.vstack([points[:, x]
+                            #                           for x in tri]))
                             #    patch.append(new_pts)
                             patch = points
                         except Exception as e:
-                            print "Exception when loading tris from geometry: ", e
+                            print "Exception when loading tris from " \
+                                  "geometry: ", e
                     else:
                         geom_type = geom.getShape()
                         if geom_type == Shape.SPHERE:
                             # Sphere will return their center as their
-                            # getPoint(). So generate a better patch by sampling
-                            # points around the sphere surface in the view plane.
+                            # getPoint(). So generate a better patch by
+                            # sampling points around the sphere surface
+                            # in the view plane.
                             center = geom.getPoints()
                             sample_pts = np.arange(0., 2.*math.pi, 0.25)
-                            patch = np.vstack([math.cos(pt)*self.Tview[0, 0:3] + math.sin(pt)*self.Tview[1, 0:3] for pt in sample_pts])
+                            patch = np.vstack([math.cos(pt)*self.Tview[0, 0:3]
+                                               + math.sin(pt)*self.Tview[1, 0:3]  # noqa
+                                               for pt in sample_pts])
                             patch = np.transpose(patch)
                             patch *= geom.radius
                         else:
                             # Other geometry types will usually return their
                             # bounding box, which is good enough for basic
-                            # visualization. (This could be improved for 
+                            # visualization. (This could be improved for
                             # capsules?)
                             patch = geom.getPoints()
 
@@ -175,8 +195,10 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
 
                     # Take convhull of resulting points
                     if patch.shape[1] > 3:
-                        hull = sp.spatial.ConvexHull(np.transpose(patch[0:2, :]))
-                        patch = np.transpose(np.vstack([patch[:, v] for v in hull.vertices]))
+                        hull = sp.spatial.ConvexHull(
+                            np.transpose(patch[0:2, :]))
+                        patch = np.transpose(
+                            np.vstack([patch[:, v] for v in hull.vertices]))
 
                     # Close path if not closed
                     if (patch[:, -1] != patch[:, 0]).any():
@@ -191,12 +213,12 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
             self.viewPatches.append(this_body_patches)
             self.viewPatchColors.append(this_body_colors)
 
-
     def getViewPatches(self, body_i, tf):
         ''' Pulls out the view patch verts for the given body index after applying
             the appropriate TF '''
         projected_tf = np.dot(np.dot(self.Tview, tf), self.Tview_pinv)
-        transformed_patches = [np.dot(projected_tf, patch)[0:2] for patch in self.viewPatches[body_i]]
+        transformed_patches = [np.dot(projected_tf, patch)[0:2]
+                               for patch in self.viewPatches[body_i]]
         colors = self.viewPatchColors[body_i]
         return (transformed_patches, colors)
 
@@ -205,7 +227,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
             Can be passed either a raw state vector, or
             an input context.'''
         if isinstance(context, Context):
-            positions = self.EvalVectorInput(context, 0).get_value()[0:self.rbtree.get_num_positions()]
+            positions = self.EvalVectorInput(context, 0).get_value()[0:self.rbtree.get_num_positions()]  # noqa
             self.ax.set_title('t = {:.1f}'.format(context.get_time()))
         else:
             positions = context[0:self.rbtree.get_num_positions()]
@@ -218,7 +240,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
             tf = self.rbtree.relativeTransform(kinsol, 0, body_i+1)
             viewPatches, _ = self.getViewPatches(body_i, tf)
             for patch in viewPatches:
-                self.body_fill_list[body_fill_index].get_path().vertices[:, :] = np.transpose(patch)
+                self.body_fill_list[body_fill_index].get_path().vertices[:, :] = np.transpose(patch)  # noqa
                 body_fill_index += 1
 
     def animate(self, log, rate, resample=True, repeat=False):
@@ -235,58 +257,79 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
 
         if resample:
             t_resample = np.arange(0, t[-1], 1./rate)
-            x = scipy.interpolate.interp1d(t, x, kind='linear', axis=1)(t_resample)
+            x = scipy.interpolate.interp1d(t, x, kind='linear', axis=1)(t_resample)  # noqa
             t = t_resample
 
-        animate_update = lambda i: self.draw(x[:, i])
-        ani = animation.FuncAnimation(self.fig, animate_update, t.shape[0], interval=1000./rate, repeat=repeat)
+        def animate_update(i): self.draw(x[:, i])
+        ani = animation.FuncAnimation(self.fig,
+                                      animate_update,
+                                      t.shape[0],
+                                      interval=1000./rate,
+                                      repeat=repeat)
         return ani
 
 
 def setupPendulumExample():
-    rbt = RigidBodyTree(FindResource("pendulum.urdf"), floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
-    Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
+    rbt = RigidBodyTree(FindResource("pendulum.urdf"),
+                        floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)  # noqa
+    Tview = np.array([[1., 0., 0., 0.],
+                      [0., 0., 1., 0.],
+                      [0., 0., 0., 1.]],
+                     dtype=np.float64)
     pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-1.2, 1.2], [-1.2, 1.2])
     return rbt, pbrv
 
+
 def setupDoublePendulumExample():
-    rbt = RigidBodyTree(FindResource("double_pendulum.urdf"), floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)
-    Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
-    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-2.5, 2.5], [-2.5, 2.5], use_random_colors=True)
+    rbt = RigidBodyTree(FindResource("double_pendulum.urdf"),
+                        floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)  # noqa
+    Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]],
+                     dtype=np.float64)
+    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-2.5, 2.5], [-2.5, 2.5],
+                                     use_random_colors=True)
     return rbt, pbrv
+
 
 def setupValkyrieExample():
     # Valkyrie Example
     rbt = RigidBodyTree()
-    world_frame = pydrake.rbtree.RigidBodyFrame("world_frame", rbt.world(), [0, 0, 0], [0, 0, 0])
+    world_frame = pydrake.rbtree.RigidBodyFrame("world_frame", rbt.world(),
+                                                [0, 0, 0], [0, 0, 0])
     from pydrake.multibody.parsers import PackageMap
     pmap = PackageMap()
     # Note: Val model is currently not installed in drake binary distribution.
-    pmap.PopulateFromFolder(os.path.join(pydrake.getDrakePath(),"examples"))
-    # TODO(russt): remove plane.urdf and call AddFlatTerrainTOWorld instead once it lands in pydrake
-    #
+    pmap.PopulateFromFolder(os.path.join(pydrake. getDrakePath(), "examples"))
+    # TODO(russt): remove plane.urdf and call AddFlatTerrainTOWorld instead
     pydrake.rbtree.AddModelInstanceFromUrdfStringSearchingInRosPackages(
-        open(FindResource(os.path.join("underactuated","plane.urdf")), 'r').read(),
+        open(FindResource(os.path.join("underactuated", "plane.urdf")), 'r').read(),  # noqa
         pmap,
         pydrake.getDrakePath() + "/examples/",
         pydrake.rbtree.FloatingBaseType.kFixed,
         world_frame,
         rbt)
-    val_start_frame = pydrake.rbtree.RigidBodyFrame("val_start_frame", rbt.world(), [0, 0, 1.5], [0, 0, 0])
+    val_start_frame = pydrake.rbtree.RigidBodyFrame("val_start_frame",
+                                                    rbt.world(),
+                                                    [0, 0, 1.5],
+                                                    [0, 0, 0])
     pydrake.rbtree.AddModelInstanceFromUrdfStringSearchingInRosPackages(
-        open(pydrake.getDrakePath() + "/examples/valkyrie/urdf/urdf/valkyrie_A_sim_drake_one_neck_dof_wide_ankle_rom.urdf", 'r').read(),
+        open(pydrake.getDrakePath() + "/examples/valkyrie/urdf/urdf/valkyrie_A_sim_drake_one_neck_dof_wide_ankle_rom.urdf", 'r').read(),  # noqa
         pmap,
         pydrake.getDrakePath() + "/examples/",
         pydrake.rbtree.FloatingBaseType.kRollPitchYaw,
         val_start_frame,
         rbt)
-    Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]], dtype=np.float64)
-    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-2.0, 2.0], [-0.25, 3.0], use_random_colors=True)
+    Tview = np.array([[1., 0., 0., 0.],
+                      [0., 0., 1., 0.],
+                      [0., 0., 0., 1.]],
+                     dtype=np.float64)
+    pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-2.0, 2.0], [-0.25, 3.0],
+                                     use_random_colors=True)
     return rbt, pbrv
 
-if __name__ == "__main__":
-    # Usage demo: load a URDF, rig it up with a constant torque input, and draw it.
 
+if __name__ == "__main__":
+    # Usage demo: load a URDF, rig it up with a constant torque input, and
+    # draw it.
 
     np.set_printoptions(precision=5, suppress=True)
     parser = argparse.ArgumentParser()
@@ -301,11 +344,13 @@ if __name__ == "__main__":
     parser.add_argument("-m", "--models",
                         type=str,
                         nargs="*",
-                        help="Models to run, at least one of [pend, dpend, val]",
+                        help="Models to run, at least one of [pend, dpend, "
+                             "val]",
                         default=["dpend"])
     parser.add_argument("-a", "--animate",
                         action="store_true",
-                        help="Enable real-time looping animation after each simulation.")
+                        help="Enable real-time looping animation after each "
+                             "simulation.")
     args = parser.parse_args()
 
     for model in args.models:
@@ -336,20 +381,24 @@ if __name__ == "__main__":
         rbplant_sys = builder.AddSystem(rbplant)
 
         torque = args.torque
-        torque_system = builder.AddSystem(ConstantVectorSource(np.ones((rbt.get_num_actuators(), 1))*torque))
+        torque_system = builder.AddSystem(ConstantVectorSource(
+                                np.ones((rbt.get_num_actuators(), 1))*torque))
         builder.Connect(torque_system.get_output_port(0),
-                                rbplant_sys.get_input_port(0))
-        print('Simulating with constant torque = ' + str(torque) + ' Newton-meters')
+                        rbplant_sys.get_input_port(0))
+        print('Simulating with constant torque = '
+              + str(torque) + ' Newton-meters')
 
         # Visualize
         visualizer = builder.AddSystem(pbrv)
-        builder.Connect(rbplant_sys.get_output_port(0), visualizer.get_input_port(0))
+        builder.Connect(rbplant_sys.get_output_port(0),
+                        visualizer.get_input_port(0))
 
         # And also log
         signalLogRate = 60
         signalLogger = builder.AddSystem(SignalLogger(nx))
         signalLogger._DeclarePeriodicPublish(1. / signalLogRate, 0.0)
-        builder.Connect(rbplant_sys.get_output_port(0), signalLogger.get_input_port(0))
+        builder.Connect(rbplant_sys.get_output_port(0),
+                        signalLogger.get_input_port(0))
 
         diagram = builder.Build()
         simulator = Simulator(diagram)
@@ -374,5 +423,6 @@ if __name__ == "__main__":
         ani = visualizer.animate(signalLogger, signalLogRate, repeat=True)
 
         if (args.animate):
-            print "Animating the simulation on repeat -- close the plot to continue."
+            print "Animating the simulation on repeat -- " \
+                  "close the plot to continue."
             plt.show()

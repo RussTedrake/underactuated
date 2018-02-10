@@ -58,9 +58,9 @@ setuptools
 EOF
 )
 
-
 pip install --upgrade $(tr '\n' ' ' <<EOF
 jupyter
+pycodestyle
 EOF
 )
 

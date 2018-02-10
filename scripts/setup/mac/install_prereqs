@@ -69,6 +69,7 @@ fi
 pip2 install --upgrade $(tr '\n' ' ' <<EOF
 matplotlib
 jupyter
+pycodestyle
 EOF
 )
 

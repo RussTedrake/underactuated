@@ -2,9 +2,10 @@ import argparse
 from matplotlib.widgets import Slider
 import numpy as np
 
-from pydrake.all import ( DiagramBuilder, Simulator, SignalLogger, VectorSystem )
+from pydrake.all import (DiagramBuilder, Simulator, SignalLogger, VectorSystem)
 from pydrake.examples.pendulum import PendulumPlant
 from underactuated import PendulumVisualizer
+
 
 class TorqueSlider(VectorSystem):
     def __init__(self, ax):
@@ -14,7 +15,7 @@ class TorqueSlider(VectorSystem):
         self.slider = Slider(ax, 'Torque', -5, 5, valinit=self.value)
         self.slider.on_changed(self.update)
 
-    def update(self,val):
+    def update(self, val):
         self.value = val
 
     def _DoCalcVectorOutput(self, context, unused, unused2, torque):
@@ -37,7 +38,7 @@ builder.Connect(pendulum.get_output_port(0), visualizer.get_input_port(0))
 ax = visualizer.fig.add_axes([.2, .95, .6, .025])
 torque_system = builder.AddSystem(TorqueSlider(ax))
 builder.Connect(torque_system.get_output_port(0),
-                        pendulum.get_input_port(0))
+                pendulum.get_input_port(0))
 
 signalLogRate = 60
 signalLogger = builder.AddSystem(SignalLogger(2))
@@ -56,5 +57,3 @@ initial_state = np.array([1.0, 0.0])
 state.SetFromVector(initial_state)
 
 simulator.StepTo(args.duration)
-
-print(state.CopyToVector())
