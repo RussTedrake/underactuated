@@ -2,7 +2,7 @@ import argparse
 from matplotlib.widgets import Slider
 import numpy as np
 
-from pydrake.all import (DiagramBuilder, Simulator, SignalLogger, VectorSystem)
+from pydrake.all import (DiagramBuilder, Simulator, VectorSystem)
 from pydrake.examples.pendulum import PendulumPlant
 from underactuated import PendulumVisualizer
 
@@ -39,11 +39,6 @@ ax = visualizer.fig.add_axes([.2, .95, .6, .025])
 torque_system = builder.AddSystem(TorqueSlider(ax))
 builder.Connect(torque_system.get_output_port(0),
                 pendulum.get_input_port(0))
-
-signalLogRate = 60
-signalLogger = builder.AddSystem(SignalLogger(2))
-signalLogger._DeclarePeriodicPublish(1. / signalLogRate, 0.0)
-builder.Connect(pendulum.get_output_port(0), signalLogger.get_input_port(0))
 
 diagram = builder.Build()
 simulator = Simulator(diagram)
