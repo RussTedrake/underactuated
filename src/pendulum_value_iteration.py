@@ -28,7 +28,7 @@ def quadratic_regulator_cost(context):
     x = context.get_continuous_state_vector().CopyToVector()
     x[0] = x[0] - math.pi
     u = plant.EvalVectorInput(context, 0).CopyToVector()
-    return x.dot(x) + u.dot(u)
+    return x.dot(x) + 10*u.dot(u)
 
 
 if (True):
@@ -54,6 +54,11 @@ ax = fig.gca(projection='3d')
 ax.set_xlabel("theta")
 ax.set_ylabel("thetadot")
 
+fig2 = plt.figure()
+ax2 = fig2.gca(projection='3d')
+ax2.set_xlabel("q")
+ax2.set_ylabel("qdot")
+
 def draw(iteration, mesh, cost_to_go, policy):
     # Drawing is slow, don't draw every frame.
     if iteration % 10 != 0:
@@ -62,9 +67,13 @@ def draw(iteration, mesh, cost_to_go, policy):
     J = np.reshape(cost_to_go, Q.shape)
     surf = ax.plot_surface(Q, Qdot, J, rstride=1, cstride=1,
                            cmap=cm.jet)
+
+    Pi = np.reshape(policy, Q.shape)
+    surf2 = ax2.plot_surface(Q, Qdot, Pi, rstride=1, cstride=1, cmap=cm.jet)
+    
     plt.pause(0.00001)
     surf.remove()
-
+    surf2.remove()
 
 options.visualization_callback = draw
 

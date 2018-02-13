@@ -43,13 +43,13 @@ def quadratic_regulator_cost(context):
     return 2*x.dot(x) + 10*u.dot(u)
 
 
-cost_function = min_time_cost
-options.convergence_tol = 0.001
-#cost_function = quadratic_regulator_cost
-#options.convergence_tol = 0.1
+#cost_function = min_time_cost
+#options.convergence_tol = 0.001
+cost_function = quadratic_regulator_cost
+options.convergence_tol = 0.1
 
 qbins = np.linspace(-3., 3., 31)
-qdotbins = np.linspace(-4., 4., 51)
+qdotbins = np.linspace(-3., 3., 51)
 state_grid = [set(qbins), set(qdotbins)]
 
 input_limit = 1.
@@ -62,6 +62,11 @@ ax = fig.gca(projection='3d')
 ax.set_xlabel("q")
 ax.set_ylabel("qdot")
 
+fig2 = plt.figure()
+ax2 = fig2.gca(projection='3d')
+ax2.set_xlabel("q")
+ax2.set_ylabel("qdot")
+
 def draw(iteration, mesh, cost_to_go, policy):
     # Drawing is slow, don't draw every frame.
     if iteration % 10 != 0:
@@ -70,9 +75,13 @@ def draw(iteration, mesh, cost_to_go, policy):
     J = np.reshape(cost_to_go, Q.shape)
     surf = ax.plot_surface(Q, Qdot, J, rstride=1, cstride=1,
                            cmap=cm.jet)
+
+    Pi = np.reshape(policy, Q.shape)
+    surf2 = ax2.plot_surface(Q, Qdot, Pi, rstride=1, cstride=1, cmap=cm.jet)
+    
     plt.pause(0.00001)
     surf.remove()
-
+    surf2.remove()
 
 options.visualization_callback = draw
 
