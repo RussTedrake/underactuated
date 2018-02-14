@@ -28,16 +28,16 @@ def quadratic_regulator_cost(context):
     x = context.get_continuous_state_vector().CopyToVector()
     x[0] = x[0] - math.pi
     u = plant.EvalVectorInput(context, 0).CopyToVector()
-    return x.dot(x) + 10*u.dot(u)
+    return 2*x.dot(x) + u.dot(u)
 
 
-if (True):
+if (False):
     cost_function = min_time_cost
     input_limit = 1.
     options.convergence_tol = 0.001
 else:
     cost_function = quadratic_regulator_cost
-    input_limit = 2.
+    input_limit = 3.
     options.convergence_tol = 0.1
 
 qbins = np.linspace(0., 2. * math.pi, 51)
@@ -86,44 +86,42 @@ J = np.reshape(cost_to_go, Q.shape)
 surf = ax.plot_surface(Q, Qdot, J, rstride=1, cstride=1,
                        cmap=cm.jet)
 
-# TODO(russt): debug lqr playback
-if (cost_function == min_time_cost):
-    # Animate the resulting policy.
-    builder = DiagramBuilder()
-    pendulum = builder.AddSystem(PendulumPlant())
+# Animate the resulting policy.
+builder = DiagramBuilder()
+pendulum = builder.AddSystem(PendulumPlant())
 
-    #TODO(russt): add wrap-around logic to barycentric mesh (so the policy has it, too)
-    class WrapTheta(VectorSystem):
-        def __init__(self):
-            VectorSystem.__init__(self, 2, 2)
+#TODO(russt): add wrap-around logic to barycentric mesh (so the policy has it, too)
+class WrapTheta(VectorSystem):
+    def __init__(self):
+        VectorSystem.__init__(self, 2, 2)
 
-        def _DoCalcVectorOutput(self, context, input, state, output):
-            output[:] = input
-            twoPI = 2.*math.pi;
-            output[0] = output[0] - twoPI * math.floor( output[0] / twoPI )
+    def _DoCalcVectorOutput(self, context, input, state, output):
+        output[:] = input
+        twoPI = 2.*math.pi;
+        output[0] = output[0] - twoPI * math.floor( output[0] / twoPI )
 
 
-    wrap = builder.AddSystem(WrapTheta())
-    builder.Connect(pendulum.get_output_port(0), wrap.get_input_port(0))
-    vi_policy = builder.AddSystem(policy)
-    builder.Connect(wrap.get_output_port(0), vi_policy.get_input_port(0))
-    builder.Connect(vi_policy.get_output_port(0), pendulum.get_input_port(0))
+wrap = builder.AddSystem(WrapTheta())
+builder.Connect(pendulum.get_output_port(0), wrap.get_input_port(0))
+vi_policy = builder.AddSystem(policy)
+builder.Connect(wrap.get_output_port(0), vi_policy.get_input_port(0))
+builder.Connect(vi_policy.get_output_port(0), pendulum.get_input_port(0))
 
-    visualizer = builder.AddSystem(PendulumVisualizer())
-    builder.Connect(pendulum.get_output_port(0), visualizer.get_input_port(0))
+visualizer = builder.AddSystem(PendulumVisualizer())
+builder.Connect(pendulum.get_output_port(0), visualizer.get_input_port(0))
 
-    diagram = builder.Build()
-    simulator = Simulator(diagram)
-    simulator.Initialize()
-    simulator.set_target_realtime_rate(1.0)
-    simulator.set_publish_every_time_step(False)
+diagram = builder.Build()
+simulator = Simulator(diagram)
+simulator.Initialize()
+simulator.set_target_realtime_rate(1.0)
+simulator.set_publish_every_time_step(False)
 
-    state = simulator.get_mutable_context().get_continuous_state_vector()
+state = simulator.get_mutable_context().get_continuous_state_vector()
 
-    initial_state = np.array([1.0, 0.0])
-    state.SetFromVector(initial_state)
+initial_state = np.array([0.1, 0.0])
+state.SetFromVector(initial_state)
 
-    simulator.StepTo(10.)
+simulator.StepTo(10.)
 
 plt.show()
 

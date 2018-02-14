@@ -48,3 +48,5 @@ add_pytest(pendulum_torque_slider_demo.py --duration 1.0)
 add_pytest(simple_continuous_time_system_simulation.py)
 add_pytest(simple_discrete_time_system_simulation.py)
 
+add_pytest(double_integrator_value_iteration.py)
+add_pytest(pendulum_value_iteration.py)

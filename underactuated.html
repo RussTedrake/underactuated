@@ -3689,14 +3689,7 @@ where this additional input $\bw$ is the (vector) output of some random process.
         value iteration algorithm in action.</em></figcaption>
       </figure>
 
-      <todo>insert value iteration animation for min time and quadratic cost</todo>
-
-      <p>You can experiment with the grid world example in <drake></drake> using
-      <pre><code class="matlab" testfile="testGridWorldValueIteration">
-      cd(fullfile(getDrakePath,'examples'));
-      GridWorld.runValueIteration();
-      </code></pre>
-      <p>I recommend trying to edit the cost function and obstacles.</p>
+      <todo>Port matlab example to pydrake</todo>
 
     </div> <!-- end grid world -->
 
@@ -3709,13 +3702,11 @@ where this additional input $\bw$ is the (vector) output of some random process.
       barycentric interpolation to interpolate between nodes) in <drake></drake>
       using: </p>
 
-      <pre><code class="matlab"
-      testfile="testDoubleIntegratorValueIteration">
-      cd(fullfile(getDrakePath,'examples'));
-      DoubleIntegrator.runValueIteration(); </code></pre>
+    <div><pre
+        class="highlight"><code>python double_integrator_value_iteration.py</code></pre></div>
 
-      <p>Again, you can easily try different cost functions by editing the code
-      yourself.</p>
+      <p>Please do take some time to try different cost functions by
+      editing the code yourself.</p>
 
     </div>
 
@@ -3743,10 +3734,12 @@ where this additional input $\bw$ is the (vector) output of some random process.
     Simple Pendulum</h1>
 
       <p>You can run value iteration for the simple pendulum (using barycentric
-      interpolation to interpolate between nodes) in <drake></drake> using:
-      <pre><code class="matlab" testfile="testPendulumValueIteration">
-      cd(fullfile(getDrakePath,'examples','Pendulum')); runValueIteration();
-      </code></pre> <p>Again, you can easily try different cost functions by
+      interpolation to interpolate between nodes) in <drake></drake> using:</p>
+
+    <div><pre
+        class="highlight"><code>python pendulum_value_iteration.py</code></pre></div>
+
+    <p>Again, you can easily try different cost functions by
       editing the code yourself.</p>
 
     </div>
