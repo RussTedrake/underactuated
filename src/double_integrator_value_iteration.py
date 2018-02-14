@@ -10,6 +10,7 @@ from pydrake.systems.analysis import Simulator
 from pydrake.systems.controllers import (
     DynamicProgrammingOptions, FittedValueIteration)
 
+
 # TODO(russt): add bindings for LinearSystem and use them instead.
 class DoubleIntegrator(VectorSystem):
     def __init__(self):
@@ -26,15 +27,17 @@ class DoubleIntegrator(VectorSystem):
     def _DoCalcVectorOutput(self, context, u, x, y):
         y[:] = x
 
+
 plant = DoubleIntegrator()
 simulator = Simulator(plant)
 options = DynamicProgrammingOptions()
 
+
 def min_time_cost(context):
     x = context.get_continuous_state_vector().CopyToVector()
     if x.dot(x) < .05:
-        return 0.;
-    return 1.;
+        return 0.
+    return 1.
 
 
 def quadratic_regulator_cost(context):
@@ -43,8 +46,8 @@ def quadratic_regulator_cost(context):
     return 2*x.dot(x) + 10*u.dot(u)
 
 
-#cost_function = min_time_cost
-#options.convergence_tol = 0.001
+# cost_function = min_time_cost
+# options.convergence_tol = 0.001
 cost_function = quadratic_regulator_cost
 options.convergence_tol = 0.1
 
@@ -67,6 +70,7 @@ ax2 = fig2.gca(projection='3d')
 ax2.set_xlabel("q")
 ax2.set_ylabel("qdot")
 
+
 def draw(iteration, mesh, cost_to_go, policy):
     # Drawing is slow, don't draw every frame.
     if iteration % 10 != 0:
@@ -78,17 +82,20 @@ def draw(iteration, mesh, cost_to_go, policy):
 
     Pi = np.reshape(policy, Q.shape)
     surf2 = ax2.plot_surface(Q, Qdot, Pi, rstride=1, cstride=1, cmap=cm.jet)
-    
-    plt.draw_all()
-    plt.pause(0.00001)
+
+    if plt.get_backend() != u'template':
+        plt.draw_all()
+        plt.pause(0.00001)
+
     surf.remove()
     surf2.remove()
 
+
 options.visualization_callback = draw
 
-policy, cost_to_go = FittedValueIteration(simulator,
-                                          cost_function,
-                                          state_grid, input_mesh, timestep, options)
+policy, cost_to_go = FittedValueIteration(simulator, cost_function,
+                                          state_grid, input_mesh,
+                                          timestep, options)
 
 J = np.reshape(cost_to_go, Q.shape)
 surf = ax.plot_surface(Q, Qdot, J, rstride=1, cstride=1,
