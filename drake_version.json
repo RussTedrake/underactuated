@@ -1,10 +1,10 @@
 {
   "base_url" : "https://drake-packages.csail.mit.edu/drake/",
-  "build" : "nightly",
-  "version" : "20180206",
+  "build" : "experimental",
+  "version" : "20180214062757-4f5bd182d78cad45072187abfd9c0b3bac860188",
   "__comment__build_version__options__" : {
     "nightly" : "'latest' or a date, e.g. '20170719'",
     "continuous" : "'latest'",
-    "experimental" : "<timestamp>-<commit> as seen on jenkins console output"
+    "experimental" : "<timestamp>-<commit> ; see README.md"
   }
 }
