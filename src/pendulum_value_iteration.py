@@ -70,7 +70,8 @@ def draw(iteration, mesh, cost_to_go, policy):
 
     Pi = np.reshape(policy, Q.shape)
     surf2 = ax2.plot_surface(Q, Qdot, Pi, rstride=1, cstride=1, cmap=cm.jet)
-    
+
+    plt.draw_all()
     plt.pause(0.00001)
     surf.remove()
     surf2.remove()
