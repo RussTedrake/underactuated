@@ -100,6 +100,10 @@ policy, cost_to_go = FittedValueIteration(simulator, cost_function,
 J = np.reshape(cost_to_go, Q.shape)
 surf = ax.plot_surface(Q, Qdot, J, rstride=1, cstride=1,
                        cmap=cm.jet)
+Pi = np.reshape(policy.get_output_values(), Q.shape)
+surf = ax2.plot_surface(Q, Qdot, Pi, rstride=1, cstride=1,
+                        cmap=cm.jet)
+
 plt.show()
 
 # TODO: animate the resulting policy.
