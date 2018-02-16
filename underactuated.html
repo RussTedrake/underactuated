@@ -1417,13 +1417,15 @@ Now let's add damping back.  You can still add torque to move the fixed points
 
 
 <p> Here's a thought exercise.  If $u$ is no longer a constant, but a function
-$\pi(q,\dot{q})$, then how would you choose $\pi$ to stabilize the vertical
-position.  Feedback linearization is the trivial solution, for example: $$u =
-\pi(q,\dot{q}) = 2mgl\sin\theta.$$ But these plots we've been making
-tell a different story.  How would you shape the natural dynamics - at each
-point pick a $u$ from the stack of phase plots - to stabilize the vertical fixed
-point <em>with minimal torque effort</em>?  This is exactly the way that I would
-like you to think about control system design.  And we'll give you your first solution techniques -- using dynamic programming -- in the next lecture.</p>
+$\pi(\theta,\dot{\theta})$, then how would you choose $\pi$ to stabilize the
+vertical position.  Feedback linearization is the trivial solution, for example:
+$$u = \pi(\theta,\dot{\theta}) = 2mgl\sin\theta.$$ But these plots we've been
+making tell a different story.  How would you shape the natural dynamics - at
+each point pick a $u$ from the stack of phase plots - to stabilize the vertical
+fixed point <em>with minimal torque effort</em>?  This is exactly the way that I
+would like you to think about control system design.  And we'll give you your
+first solution techniques -- using dynamic programming -- in the next
+lecture.</p>
 
 </section> <!-- damped pend -->
 
@@ -2748,15 +2750,19 @@ $$\dot\theta^{+}_{n+1} = \cos(2\alpha) \sqrt{
 where the $\dot{\theta}^{+}$ indicates the velocity just
 <em>after</em> the energy loss at impact has occurred.</p>
 
-<p>Using the same analysis for the remaining cases, we can complete the
-return map.  The threshold for taking a step in the opposite
-direction is
-$$\omega_2 = - \sqrt{2 \frac{g}{l} [1 - \cos(\alpha + \gamma)]}.$$
-For $\omega_2 < \dot\theta_n^{+} < \omega_1,$ we have
-$$\dot\theta_{n+1}^{+} = -\dot\theta_n^{+} \cos(2\alpha).$$ Finally, for
-$\dot\theta_n^{+} < \omega_2$, we have $$\dot\theta_{n+1}^{+} = -
-\cos(2\alpha)\sqrt{(\dot\theta_n^{+})^2 - 4 \frac{g}{l} \sin\alpha
-\sin\gamma}.$$</p>
+<p>Using the same analysis for the remaining cases, we can complete the return
+map.  The threshold for taking a step in the opposite direction is $$\omega_2 =
+- \sqrt{2 \frac{g}{l} [1 - \cos(\alpha + \gamma)]}.$$ For $\omega_2 <
+\dot\theta_n^{+} < \omega_1,$ we have $$\dot\theta_{n+1}^{+} = -\dot\theta_n^{+}
+\cos(2\alpha).$$ Finally, for $\dot\theta_n^{+} < \omega_2$, we have
+$$\dot\theta_{n+1}^{+} = - \cos(2\alpha)\sqrt{(\dot\theta_n^{+})^2 - 4
+\frac{g}{l} \sin\alpha \sin\gamma}.$$  Altogether, we have (for $\gamma \le
+\alpha$) $$\dot\theta_{n+1}^{+} = \begin{cases} \cos(2\alpha)
+\sqrt{(\dot\theta_n^{+})^2 + 4 \frac{g}{l} \sin\alpha \sin\gamma}, & \text{ }
+\omega_1 < \dot\theta_n^{+} \\ -\dot\theta_n^{+} \cos(2\alpha), & \text{ }
+\omega_2 < \dot\theta_n^{+} < \omega_1 \\ -\cos(2\alpha)
+\sqrt{(\dot\theta_n^{+})^2 - 4\frac{g}{l} \sin\alpha \sin\gamma}, &
+\dot\theta_n^{+} < w_2 \end{cases}.$$ </p>
 
 <p>Notice that the return map is undefined for $\dot\theta_n = \{
 \omega_1, \omega_2 \}$, because from these configurations, the wheel
@@ -3048,14 +3054,15 @@ the center of pressure is a "zero-moment point" (ZMP) -- a property that we will
 <p>I can re-write the equations of motion as
 \begin{align*}
 m\ddot{x} =& \sum_i F_{i,x} = F_{net,x},\\
-m\ddot{z} =& \sum_i F_{i,z} - mg = F_{net,z},\\
+m\ddot{z} =& \sum_i F_{i,z} - mg = F_{net,z} - mg,\\
 I\ddot\theta =& \sum_i \left[ r_i \times F_i \right]_y = ({\bf r} \times {\bf F}_{net})_y + \tau_{net},
 \end{align*}
 where ${\bf F}_{net} = \sum_i {\bf F}_i$ and the value of $\tau_{net}$ depends on the location ${\bf r}$.  For some choices of ${\bf r}$, we can make $\tau_{net}=0$.  Examining
     \[
     ({\bf r} \times {\bf F}_{net})_y = r_z F_{net,x} - r_x F_{net,z} = \left[ r_i \times F_i \right]_y, \] we can see that when $F_{net,z} > 0$ there is an entire line of solutions, $r_x = a r_z + b$, including one that will intercept the terrain.  For walking robots, it is this point on the ground from which the external wrench can be described by a single force vector (and no moment) that is the famous "zero-moment point" (ZMP).     Substituting the back in to replace $F_{net}$, we can see that
     \[ r_x = \frac{r_z m \ddot{x} - I \ddot\theta}{m\ddot{z} + mg}. \]
-    If we assume that $\ddot{z}=\ddot{theta}=0$ and replace the relative coordinates with the global coordinates ${\bf r} = {\bf p} - [x,0,z]^T$, then we arrive at precisely the equation presented above.</p>
+    If we assume that $\ddot{z}=\ddot{\theta}=0$ and replace the relative
+coordinates with the global coordinates ${\bf r} = {\bf p} - [x,0,z]^T$, then we arrive at precisely the equation presented above.</p>
 
 <p>Furthermore, since
     \[\left[ r_i \times F_i \right]_y = \sum_i \left( r_{i,z} F_{i,x} - r_{i,x} F_{i,z} \right), \] and for <i>flat terrain</i> we have \[ r_z F_{net,x} = \sum_i r_{i,z} F_{i,x}, \] then we can see that this ZMP is exactly the CoP: \[ r_x = \frac{\sum_i r_{i,x} F_{i,z}}{ F_{net,z} }. \]
@@ -4415,18 +4422,18 @@ not yet appeared in any mainstream textbooks.</p>
     which I've written with the damping on the right-hand side to remind us that
     it is an external torque that we've modeled.</p>
 
-    <p>These equations represent a simple
-    second-order differential equation; in chapter 2 we discussed at some length
-    what was known about the solutions to this differential equation--even without
-    damping the equation for $\theta(t)$ as a function of $\theta(0)$, $\dot{\theta}(0)$
-    involves elliptic integrals of the first kind, and with damping we don't even
-    have that.  Since we couldn't provide a solution analytically, in chapter 2
-    we resorted to a graphical analysis, and confirmed the intuition that there
-    are fixed points in the system (at $\theta = k\pi$ for every integer $k$) and that
-    the fixed points at $\theta = 2\pi k$ are asymptotically stable with a large basin of
-    attraction.  The graphical analysis gave us this intuition, but can we actually
-    prove this stability property?  In a way that might also work for much more
-    complicated systems?</p>
+    <p>These equations represent a simple second-order differential equation; in
+    chapter 2 we discussed at some length what was known about the solutions to
+    this differential equation--even without damping the equation for
+    $\theta(t)$ as a function of $\theta(0)$, $\dot{\theta}(0)$, involves
+    elliptic integrals of the first kind, and with damping we don't even have
+    that.  Since we couldn't provide a solution analytically, in chapter 2 we
+    resorted to a graphical analysis, and confirmed the intuition that there are
+    fixed points in the system (at $\theta = k\pi$ for every integer $k$) and
+    that the fixed points at $\theta = 2\pi k$ are asymptotically stable with a
+    large basin of attraction.  The graphical analysis gave us this intuition,
+    but can we actually prove this stability property?  In a way that might also
+    work for much more complicated systems?</p>
 
     <p>One route forward was from looking at the total system energy (kinetic + potential),
       which we can write down: \[ E(\theta,\dot{\theta}) = \frac{1}{2} ml^2\dot{\theta}^2 - mgl \cos\theta. \]
@@ -4482,9 +4489,9 @@ not yet appeared in any mainstream textbooks.</p>
             \dot{V}(\bx) = \pd{V}{\bx} f(\bx) \le 0, \forall \bx \in {\cal B} \ne 0 \quad \dot{V}(0) = 0, \end{gather*}
             then the origin $(\bx = 0)$ is stable in the sense of Lyapunov (i.s.L.).
         </p>
-        <p>If, additionally, we have $$\dot{V}(\bx) = \pd{V}{\bx} f(\bx) < 0, \forall \bx \in {\cal B} \ne 0 \quad \dot{V}(0) = 0,$$
+        <p>If, additionally, we have $$\dot{V}(\bx) = \pd{V}{\bx} f(\bx) < 0, \forall \bx \in {\cal B} \ne 0,$$
         then the origin is (locally) asymptotically stable.  And if we have
-        $$\dot{V}(\bx) = \pd{V}{\bx} f(\bx) \le -\alpha V(x), \forall \bx \in {\cal B} \ne 0 \quad \dot{V}(0) = 0,$$ for some
+        $$\dot{V}(\bx) = \pd{V}{\bx} f(\bx) \le -\alpha V(x), \forall \bx \in {\cal B} \ne 0,$$ for some
             $\alpha>0$, then the origin is (locally) exponentially stable.
         </p>
     </div>
@@ -4620,7 +4627,7 @@ not yet appeared in any mainstream textbooks.</p>
         $$V(\bx) = \bx^T {\bf P} \bx, \quad {\bf P} = {\bf P^T} \succ 0,$$ which also
         satisfies
         $$\dot{V}(\bx) = \bx^T {\bf PA} \bx + \bx^T {\bf A}^T {\bf P}\bx \prec 0.$$
-        Then the original is globally asymptotically stable.</p>
+        Then the origin is globally asymptotically stable.</p>
         </div>
 
         <p>Note that the radially-unbounded condition is satisfied by ${\bf P} \succ 0$,
@@ -4629,7 +4636,7 @@ not yet appeared in any mainstream textbooks.</p>
 
         <p>For stable linear systems the existence of a quadratic Lyapunov function
         is actually a necessary (as well as sufficient) condition. Furthermore,
-        a Lyapunov function can be always be found by finding the positive-definite
+        a Lyapunov function can always be found by finding the positive-definite
         solution to the matrix Lyapunov equation
         \begin{equation}{\bf PA} + {\bf A}^T{\bf P} = - {\bf Q},\label{eq:algebraic_lyapunov} \end{equation} for any ${\bf Q}={\bf Q}^T\succ 0$.</p>
 
@@ -4637,7 +4644,7 @@ not yet appeared in any mainstream textbooks.</p>
 
         <p>This is a very powerful result - for nonlinear systems it will be potentially
           difficult to find a Lyapunov function, but for linear systems it is straight-forward.
-          In fact, this results is often used to propose candidates for non-linear systems,
+          In fact, this result is often used to propose candidates for non-linear systems,
           e.g., by linearizing the equations and solving a local linear Lyapunov function which should be valid
             in the vicinity of a fixed point.</p>
 
@@ -4679,23 +4686,55 @@ commonLyapunovForLinearSystems;
             <p>As always, make sure that you open up the code and take a look.</p>
         </div>
 
-        <p>This example is very important because it establishes a connection between
-            Lyapunov functions and (convex) optimization.  But so far we've only demonstrated this
-            connection for linear systems, where the PSD matrices provide a magical recipe for establishing the positivity of the (quadratic) functions for all $\bx$.  Is there
-            any hope of extending this type of analysis to more general nonlinear systems?  Surprisingly, it turns out that there is.</p>
+        <p>This example is very important because it establishes a connection
+        between Lyapunov functions and (convex) optimization.  But so far we've
+        only demonstrated this connection for linear systems where the PSD
+        matrices provide a magical recipe for establishing the positivity of the
+        (quadratic) functions for all $\bx$.  Is there any hope of extending
+        this type of analysis to more general nonlinear systems?  Surprisingly,
+        it turns out that there is.</p>
 
     </section>
 
     <section data-type="sect2"><h1>Sums-of-squares optimization</h1>
 
-        <p>It turns out that in the same way that we can use SDP to search over the positive quadratic equations, we can generalize this to search over the positive polynomial equations.  To be clear, for quadratic equations we have \[ {\bf P}\succeq 0 \quad \Rightarrow \quad \bx^T {\bf P} \bx \ge 0, \quad \forall \bx. \]  It turns out that
-            we can generalize this to \[ {\bf P}\succeq 0 \quad \Rightarrow \quad {\bf m}^T(\bx) {\bf P} {\bf m}(\bx) \ge 0, \quad \forall \bx, \] where ${\bf m}(\bx)$ is a vector of polynomial equations, typically chosen as a vector of <em>monomials</em> (polynomials with only one term).  The set of positive polynomials parameterized in this way is exactly the set of polynomials that can be written as a <em>sum of squares</em><elib>Parrilo00</elib>.  While it is known that not all positive polynomials can be written in this form, much is known about the gap (and papers have been written about trying to find polynomials which are uniformly positive but not sums of squares).  For our purposes this gap is very small; we should remember that it exists but not worry about it too much for now.</p>
+        <p>It turns out that in the same way that we can use SDP to search over
+        the positive quadratic equations, we can generalize this to search over
+        the positive polynomial equations.  To be clear, for quadratic equations
+        we have \[ {\bf P}\succeq 0 \quad \Rightarrow \quad \bx^T {\bf P} \bx
+        \ge 0, \quad \forall \bx. \]  It turns out that we can generalize this
+        to \[ {\bf P}\succeq 0 \quad \Rightarrow \quad {\bf m}^T(\bx) {\bf P}
+        {\bf m}(\bx) \ge 0, \quad \forall \bx, \] where ${\bf m}(\bx)$ is a
+        vector of polynomial equations, typically chosen as a vector of
+        <em>monomials</em> (polynomials with only one term).  The set of
+        positive polynomials parameterized in this way is exactly the set of
+        polynomials that can be written as a <em>sum of
+        squares</em><elib>Parrilo00</elib>.  While it is known that not all
+        positive polynomials can be written in this form, much is known about
+        the gap (and papers have been written about trying to find polynomials
+        which are uniformly positive but not sums of squares).  For our purposes
+        this gap is very small; we should remember that it exists but not worry
+        about it too much for now.</p>
 
-        <p>Even better, there is quite a bit that is known about how to choose the terms in ${\bf m}(\bx)$.  For example, if you give me the polynomial \[ p(x) = 2 - 4x + 5x^2 \] and ask if it is positive for all real $x$, I can convince you that it is by producing the sums-of-squares factorization \[ p(x) = 1 + (1-2x)^2 + x^2, \] and I know that I can formulate the problem without needing any monomials of degree greater than 1 (the square-root of the degree of $p$) in my monomial vector.  In practice what this means
-            for us is that people have authored optimization front-ends which take a high-level specification with constraints on the positivity of polynomials and they automatically
-            generate the SDP problem for you, without having to think about what terms should appear in ${\bf m}(\bx)$ (c.f. <elib>Prajna04</elib>).  This class of optimization problems is called Sums-of-Squares (SOS) optimization.</p>
+        <p>Even better, there is quite a bit that is known about how to choose
+        the terms in ${\bf m}(\bx)$.  For example, if you give me the polynomial
+        \[ p(x) = 2 - 4x + 5x^2 \] and ask if it is positive for all real $x$, I
+        can convince you that it is by producing the sums-of-squares
+        factorization \[ p(x) = 1 + (1-2x)^2 + x^2, \] and I know that I can
+        formulate the problem without needing any monomials of degree greater
+        than 1 (the square-root of the degree of $p$) in my monomial vector.  In
+        practice, what this means for us is that people have authored
+        optimization front-ends which take a high-level specification with
+        constraints on the positivity of polynomials and they automatically
+        generate the SDP problem for you, without having to think about what
+        terms should appear in ${\bf m}(\bx)$ (c.f. <elib>Prajna04</elib>).
+        This class of optimization problems is called Sums-of-Squares (SOS)
+        optimization.</p>
 
-        <p>We will write optimizations using sums-of-squares constraints as \[ p(\bx) \sos \] as shorthand for the constraint that $p(\bx) \ge 0$ for all $\bx$, as demonstrated by finding a sums-of-squares decomposition.</p>
+        <p>We will write optimizations using sums-of-squares constraints as \[
+        p(\bx) \sos \] as shorthand for the constraint that $p(\bx) \ge 0$ for
+        all $\bx$, as demonstrated by finding a sums-of-squares
+        decomposition.</p>
 
     </section>
 
@@ -4714,29 +4753,37 @@ commonLyapunovForLinearSystems;
             is simply an assumption that points on the same body stay a constant distance apart, and Euclidean distance is certainly
             a polynomial.  For a more thorough discussion see, for instance, <elib>Wampler11,Sommese05</elib>.</p>
 
-            <p>For the purposes of this example, let's change coordinates from $[\theta,\dot\theta]^T$ to $\bx = [s,c,\dot\theta]^t$, where
-            $s \equiv \sin\theta$ and $c \equiv \cos\theta$.  Then we can write the pendulum dynamics as $$\dot\bx = \begin{bmatrix} c \dot\theta \\ -s \dot\theta \\ -\frac{1}{m
-l^2} \left( b \dot\theta + mgls \right) \end{bmatrix}.$$ </p>
+            <p>For the purposes of this example, let's change coordinates from
+            $[\theta,\dot\theta]^T$ to $\bx = [s,c,\dot\theta]^t$, where $s
+            \equiv \sin\theta$ and $c \equiv \cos\theta$.  Then we can write the
+            pendulum dynamics as $$\dot\bx = \begin{bmatrix} c \dot\theta \\ -s
+            \dot\theta \\ -\frac{1}{m l^2} \left( b \dot\theta + mgls \right)
+            \end{bmatrix}.$$ </p>
 
-            <p>Now let's parameterize a Lyapunov candidate $V(s,c,\dot\theta)$ as the polynomial with unknown coefficients which
-            contains all monomials up to degree 2:  $$V = \alpha_1 + \alpha_2 s + \alpha_3 c + ... \alpha_{10} s^2 + \alpha_{11} sc + \alpha_{12} s\dot\theta.$$
-            Now we'll formulate the feasibility problem:
-            \[
-            \find_{\bf \alpha} \quad  \subjto \quad V \sos, \quad -\dot{V} \sos.\]
-            In fact, this is asking too much -- really $\dot{V}$ only needs to be negative when $s^2+c^2=1$.  We can
-            accomplish this with the so-called <i>S-procedure</i>, which we will discuss more below, and instead write
-            \[
-            \find_{{\bf \alpha},\lambda} \quad  \subjto \quad V \sos, \quad -\dot{V} -\lambda(\bx)(s^2+c^2-1) \sos.\]
-            (Here $\lambda(\bx)$ is another polynomial with free coefficients which the optimization can use to make terms
-            arbitrarily more positive when $s^2+c^2 \neq 1$.)
-            Finally, for style points, in the code example in <drake></drake> we ask for exponential stability:</p>
-<pre><code class="matlab" testfile="testPendulumGlobalStability">
-    cd(fullfile(getDrakePath,'examples','Pendulum'));
-    globalStability;
-</code></pre>
-            <p>As always, make sure that you open up the code and take a look.  This example uses our front-end <i>"spotless"</i>
-                ("spot" was "systems polynomial optimization toolbox" written by Prof. Alex Megretski, and this is just a slightly leaner implementation)
-            to construct the SDP from the description as a SOS program.  The result is a Lyapunov function that looks familiar (visualized as a countour plot here):</p>
+            <p>Now let's parameterize a Lyapunov candidate $V(s,c,\dot\theta)$
+            as the polynomial with unknown coefficients which contains all
+            monomials up to degree 2:  $$V = \alpha_0 + \alpha_1 s + \alpha_2 c
+            + ... \alpha_{9} s^2 + \alpha_{10} sc + \alpha_{11} s\dot\theta.$$
+            Now we'll formulate the feasibility problem: \[ \find_{\bf \alpha}
+            \quad  \subjto \quad V \sos, \quad -\dot{V} \sos.\] In fact, this is
+            asking too much -- really $\dot{V}$ only needs to be negative when
+            $s^2+c^2=1$.  We can accomplish this with the so-called
+            <i>S-procedure</i>, which we will discuss more below, and instead
+            write \[ \find_{{\bf \alpha},\lambda} \quad  \subjto \quad V \sos,
+            \quad -\dot{V} -\lambda(\bx)(s^2+c^2-1) \sos.\] (Here $\lambda(\bx)$
+            is another polynomial with free coefficients which the optimization
+            can use to make terms arbitrarily more positive when $s^2+c^2 \neq
+            1$.) Finally, for style points, in the code example in
+            <drake></drake> we ask for exponential stability:</p> <pre><code
+            class="matlab" testfile="testPendulumGlobalStability">
+            cd(fullfile(getDrakePath,'examples','Pendulum')); globalStability;
+            </code></pre> <p>As always, make sure that you open up the code and
+            take a look.  This example uses our front-end <i>"spotless"</i>
+            ("spot" was "systems polynomial optimization toolbox" written by
+            Prof. Alex Megretski, and this is just a slightly leaner
+            implementation) to construct the SDP from the description as a SOS
+            program.  The result is a Lyapunov function that looks familiar
+            (visualized as a countour plot here):</p>
 
             <div  style="text-align:center"><img data-src="figures/global_pend_V.svg" width="400px"/></div>
 
@@ -4806,10 +4853,14 @@ of a Lyapunov function as approximations of the region of attraction for nonline
 
     <div data-type="example"><h1>A one-dimensional system with gain uncertainty</h1>
 
-    <p>Let's consider the same one-dimensional example used above, but add
-    an uncertain parameter into the dynamics.  In particular, consider the system: $$\bx = -x + \alpha x^3, \quad \frac{3}{4} < \alpha < \frac{3}{2}.$$  Plotting the
-    graph of the one-dimensional dynamics for a few values of $\alpha$, we
-    can see that the fixed point at the origin is still stable, but the <em>robust region of attraction</em> to this fixed point (shaded in blue below) is smaller than the region of attraction for the system with $\alpha=1$.</p>
+    <p>Let's consider the same one-dimensional example used above, but add an
+    uncertain parameter into the dynamics.  In particular, consider the system:
+    $$\dot{x} = -x + \alpha x^3, \quad \frac{3}{4} < \alpha < \frac{3}{2}.$$
+    Plotting the graph of the one-dimensional dynamics for a few values of
+    $\alpha$, we can see that the fixed point at the origin is still stable, but
+    the <em>robust region of attraction</em> to this fixed point (shaded in blue
+    below) is smaller than the region of attraction for the system with
+    $\alpha=1$.</p>
 
     <figure>
       <img width="80%" data-src="figures/cubicPolynomialExample_gain_uncertainty.svg"/>
@@ -4822,9 +4873,14 @@ of a Lyapunov function as approximations of the region of attraction for nonline
 
       <div data-type="example"><h1>A one-dimensional system with additive uncertainty</h1>
 
-        <p>Now consider the system: $$\bx = -x + x^3 + \alpha, \quad -\frac{1}{4} < \alpha < \frac{1}{4}.$$  Plotting the
-          graph of the one-dimensional dynamics for a few values of $\alpha$, this time we
-          can see that the fixed point is not necessarily at the origin;  the location of the fixed point moves depending on the value of $\alpha$.  But we should be able to guarantee that the uncertain system will stay near the origin if it starts near the origin, using an invariant set argument.</p>
+        <p>Now consider the system: $$\dot{x} = -x + x^3 + \alpha, \quad
+        -\frac{1}{4} < \alpha < \frac{1}{4}.$$  Plotting the graph of the
+        one-dimensional dynamics for a few values of $\alpha$, this time we can
+        see that the fixed point is not necessarily at the origin;  the location
+        of the fixed point moves depending on the value of $\alpha$.  But we
+        should be able to guarantee that the uncertain system will stay near the
+        origin if it starts near the origin, using an invariant set
+        argument.</p>
 
         <figure>
           <img width="80%" data-src="figures/cubicPolynomialExample_additive_uncertainty.svg"/>
@@ -4846,9 +4902,15 @@ of a Lyapunov function as approximations of the region of attraction for nonline
 
       <section data-type="sect3"><h1>The S-procedure</h1>
 
-    <p>
-      Consider a scalar polynomial, $p(\bx)$, and a semi-algebraic set $g(\bx) \preceq 0$, where $g$ is a vector of polynomials.  If I can find a polynomial "multiplier", $\lambda(\bx)$ such that \[ p(\bx) + \lambda^T(\bx) g(\bx) \sos, \quad \text{and} \quad \lambda(\bx) \sos, \] then this is sufficient to demonstrate that $$p(\bx)\ge 0 \quad \forall \bx \in \{ g(\bx) \le 0 \}.$$  To convince yourself, observe that when $g(\bx) \le 0$, it is only harder to be positive but when $g(\bx) > 0$, it is possible for the combined function to be SOS even if $p(\bx)$ is negative.</p>
-      </section>
+    <p> Consider a scalar polynomial, $p(\bx)$, and a semi-algebraic set $g(\bx)
+    \preceq 0$, where $g$ is a vector of polynomials.  If I can find a
+    polynomial "multiplier", $\lambda(\bx)$, such that \[ p(\bx) +
+    \lambda^T(\bx) g(\bx) \sos, \quad \text{and} \quad \lambda(\bx) \sos, \]
+    then this is sufficient to demonstrate that $$p(\bx)\ge 0 \quad \forall \bx
+    \in \{ g(\bx) \le 0 \}.$$  To convince yourself, observe that when $g(\bx)
+    \le 0$, it is only harder to be positive, but when $g(\bx) > 0$, it is
+    possible for the combined function to be SOS even if $p(\bx)$ is
+    negative.</p> </section>
 
       <section data-type="sect3"><h1>Basic region of attraction formulation</h1>
 
@@ -4860,9 +4922,10 @@ of a Lyapunov function as approximations of the region of attraction for nonline
         fixed point at the origin is $x \in (-1,1)$, using the Lyapunov candidate $V = x^2.$
         </p>
 
-        <p>First, define the multiplier polynomial, \[ \lambda(x) = c_1 + c_2 x + c_3 x^2 + c_4 x^3 + c_5 x^4. \]  Then define the optimization \begin{align*} \find_{\bf c} \quad & \\  \subjto \quad& - \dot{V}(x) - \lambda(x) (1-V(x)) \sos \\
-          & \lambda(x) \sos \end{align*}
-        </p>
+        <p>First, define the multiplier polynomial, \[ \lambda(x) = c_0 + c_1 x
+        + c_2 x^2 + c_3 x^3 + c_4 x^4. \]  Then define the optimization
+        \begin{align*} \find_{\bf c} \quad & \\  \subjto \quad& - \dot{V}(x) -
+        \lambda(x) (1-V(x)) \sos \\ & \lambda(x) \sos \end{align*} </p>
 
         <p>Try it yourself:</p>
         <pre><code class="matlab" testfile="testCubicPolynomialSos">
