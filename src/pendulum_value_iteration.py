@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 
-from pydrake.all import (DiagramBuilder, Simulator, VectorSystem)
+from pydrake.all import (DiagramBuilder, SignalLogger, Simulator, VectorSystem)
 from pydrake.examples.pendulum import PendulumPlant
 from pydrake.systems.controllers import (
     DynamicProgrammingOptions, FittedValueIteration)
@@ -41,12 +41,12 @@ else:
     input_limit = 3.
     options.convergence_tol = 0.1
 
-qbins = np.linspace(0., 2. * math.pi, 51)
-qdotbins = np.linspace(-10., 10., 51)
+qbins = np.linspace(0., 2. * math.pi, 21)
+qdotbins = np.linspace(-10., 10., 21)
 state_grid = [set(qbins), set(qdotbins)]
 options.state_indices_with_periodic_boundary_conditions = {0}
 
-input_mesh = [set(np.linspace(-input_limit, input_limit, 9))]
+input_grid = [set(np.linspace(-input_limit, input_limit, 9))]
 timestep = 0.01
 
 [Q, Qdot] = np.meshgrid(qbins, qdotbins)
@@ -84,7 +84,7 @@ def draw(iteration, mesh, cost_to_go, policy):
 options.visualization_callback = draw
 
 policy, cost_to_go = FittedValueIteration(simulator, cost_function,
-                                          state_grid, input_mesh,
+                                          state_grid, input_grid,
                                           timestep, options)
 
 J = np.reshape(cost_to_go, Q.shape)
@@ -93,6 +93,7 @@ surf = ax.plot_surface(Q, Qdot, J, rstride=1, cstride=1,
 Pi = np.reshape(policy.get_output_values(), Q.shape)
 surf = ax2.plot_surface(Q, Qdot, Pi, rstride=1, cstride=1,
                         cmap=cm.jet)
+
 
 # Animate the resulting policy.
 builder = DiagramBuilder()
@@ -117,20 +118,23 @@ vi_policy = builder.AddSystem(policy)
 builder.Connect(wrap.get_output_port(0), vi_policy.get_input_port(0))
 builder.Connect(vi_policy.get_output_port(0), pendulum.get_input_port(0))
 
-visualizer = builder.AddSystem(PendulumVisualizer())
-builder.Connect(pendulum.get_output_port(0), visualizer.get_input_port(0))
+# The logger needs to be told to expect a 4-element input
+# (the 4-element double pendulum state, in this case).
+logger = builder.AddSystem(SignalLogger(2))
+logger._DeclarePeriodicPublish(0.033333, 0.0)
+builder.Connect(pendulum.get_output_port(0), logger.get_input_port(0))
 
 diagram = builder.Build()
 simulator = Simulator(diagram)
-simulator.Initialize()
-simulator.set_target_realtime_rate(1.0)
 simulator.set_publish_every_time_step(False)
 
-state = simulator.get_mutable_context().get_continuous_state_vector()
-
-initial_state = np.array([0.1, 0.0])
-state.SetFromVector(initial_state)
+state = simulator.get_mutable_context().get_mutable_continuous_state_vector()
+state.SetFromVector([0.1, 0.0])
 
 simulator.StepTo(10.)
+
+# Visualize the result as a video.
+vis = PendulumVisualizer()
+ani = vis.animate(logger, 60, repeat=True)
 
 plt.show()

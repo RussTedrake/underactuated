@@ -42,13 +42,10 @@ builder.Connect(torque_system.get_output_port(0),
 
 diagram = builder.Build()
 simulator = Simulator(diagram)
-simulator.Initialize()
 simulator.set_target_realtime_rate(1.0)
 simulator.set_publish_every_time_step(False)
 
-state = simulator.get_mutable_context().get_continuous_state_vector()
-
-initial_state = np.array([1.0, 0.0])
-state.SetFromVector(initial_state)
+state = simulator.get_mutable_context().get_mutable_continuous_state_vector()
+state.SetFromVector([1., 0.])
 
 simulator.StepTo(args.duration)
