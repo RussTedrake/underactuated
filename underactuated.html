@@ -716,10 +716,14 @@ semester.</p>
     on the state of the system or even on time, although for most systems
     (including all of the systems in this book) underactuation is a global
     property of the system.  We will refer to a system as underactuated if it is
-    underactuated in <i>any</i> state or time.  In practice, we often refer
-    informally to systems as fully-actuated as long as they are fully-actuated
-    in <i>most</i> states (e.g., a "fully-actuated" system might still lose rank
-    at a kinematic singularity)</p>
+    underactuated in <i>all</i> states and times.  In practice, we often refer
+    informally to systems as fully actuated as long as they are fully actuated
+    in <i>most</i> states (e.g., a "fully-actuated" system might still have
+    joint limits or lose rank at a kinematic singularity).  Admittedly, this
+    permits the existence of a gray area, where we would prefer to avoid
+    describing the <i>system</i> as either fully- or underactuated (we should
+    instead only describe its states); but if you find a physical system that is
+    sort of "half and half", then do let me know!</p>
 
     <div data-type="example" class="drake"><h1>Robot Manipulators</h1>
 
