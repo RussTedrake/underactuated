@@ -1576,18 +1576,11 @@ Solving directly for the accelerations, we have
   \right]
 \end{gather} -->
 
-<div data-type="example" class="drake"><h1>The Acrobot in MATLAB</h1>
+<div data-type="example" class="drake"><h1>The Acrobot in Python</h1>
 <p>You can experiment with the Acrobot dynamics in <drake></drake> using, e.g.
-<pre id="acrobot_passive">
-<code class="matlab" testfile="testAcrobotPassive">
-cd(fullfile(getDrakePath,'examples','Acrobot'));
 
-plant=AcrobotPlant();
-[H,C_times_v,G,B] = plant.manipulatorEquations()
-
-runPassive();  % simulate with torque=0 (and display the results)
-</code>
-</pre>
+      <div><pre class="highlight"><code>cd underactuated/src/acrobot
+python torque_slider_demo.py</code></pre></div>
 
 </div>
 
@@ -6786,11 +6779,17 @@ jupyter notebook simulator.ipynb</code></pre></div>
 
 </section> <!-- end optimization chapter -->
 
-<section data-type="chapter" class="chapter"><h1>Machine Learning Preliminaries</h1>
+<section data-type="chapter" class="chapter" id="playbook"><h1>An Optimization
+  Playbook</h1>
 
-  <todo>Function approximation, sample complexity, ...</todo>
+  <p>Coming soon... a collection of tips and formulations that can make
+  seemingly non-smooth constraints smooth, seemingly non-convex constraints
+  convex, etc.</p>
 
-</section> <!-- end machine learning -->
+  <todo>PQ trick from LQR</todo>
+  <todo>Hongkai's smooth non-penetration constraints for polygons</todo>
+
+</section> <!-- end playbook -->
 
 
 </appendix>

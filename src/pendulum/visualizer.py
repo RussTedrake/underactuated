@@ -1,5 +1,3 @@
-# -*- coding: utf8 -*-
-
 import numpy as np
 import math
 import matplotlib.animation as animation
@@ -9,7 +7,7 @@ from pydrake.systems.framework import (
     )
 import scipy.interpolate
 
-from pyplot_visualizer import PyPlotVisualizer
+from underactuated.pyplot_visualizer import PyPlotVisualizer
 
 class PendulumVisualizer(PyPlotVisualizer):
     a1 = 0.75

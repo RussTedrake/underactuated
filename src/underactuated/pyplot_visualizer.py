@@ -4,11 +4,13 @@ import numpy as np
 import math
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider
 import pydrake
 from pydrake.systems.framework import (
     DiagramBuilder,
     LeafSystem,
     PortDataType,
+    VectorSystem,
     )
 
 class PyPlotVisualizer(LeafSystem):
@@ -48,3 +50,19 @@ class PyPlotVisualizer(LeafSystem):
 
     def draw(self, context):
         print "SUBCLASSES MUST IMPLEMENT."
+
+
+
+class SliderSystem(VectorSystem):
+    def __init__(self, ax, title, min, max):
+        # 0 inputs, 1 output.
+        VectorSystem.__init__(self, 0, 1)
+        self.value = 0
+        self.slider = Slider(ax, title, min, max, valinit=self.value)
+        self.slider.on_changed(self.update)
+
+    def update(self, val):
+        self.value = val
+
+    def _DoCalcVectorOutput(self, context, unused, unused2, output):
+        output[:] = self.value
