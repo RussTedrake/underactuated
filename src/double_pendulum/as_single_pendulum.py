@@ -50,7 +50,7 @@ class Controller(VectorSystem):
 
 
 # Load the double pendulum from Universal Robot Description Format
-tree = RigidBodyTree(FindResource("double_pendulum.urdf"),
+tree = RigidBodyTree(FindResource("double_pendulum/double_pendulum.urdf"),
                      FloatingBaseType.kFixed)
 
 # Set up a block diagram with the robot (dynamics), the controller, and a

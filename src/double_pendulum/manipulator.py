@@ -1,7 +1,7 @@
 from pydrake.all import (FloatingBaseType, RigidBodyTree)
 from underactuated import (FindResource, ManipulatorDynamics)
 
-tree = RigidBodyTree(FindResource("double_pendulum.urdf"),
+tree = RigidBodyTree(FindResource("double_pendulum/double_pendulum.urdf"),
                      FloatingBaseType.kFixed)
 
 q = (1., 1.)
