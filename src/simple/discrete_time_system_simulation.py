@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 from pydrake.all import (DiagramBuilder, SignalLogger, Simulator)
-from simple_discrete_time_system import *
+from discrete_time_system import *
 
 # Create a simple block diagram containing our system.
 builder = DiagramBuilder()

@@ -270,7 +270,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
 
 
 def setupPendulumExample():
-    rbt = RigidBodyTree(FindResource("pendulum.urdf"),
+    rbt = RigidBodyTree(FindResource("pendulum/pendulum.urdf"),
                         floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)  # noqa
     Tview = np.array([[1., 0., 0., 0.],
                       [0., 0., 1., 0.],
@@ -281,7 +281,7 @@ def setupPendulumExample():
 
 
 def setupDoublePendulumExample():
-    rbt = RigidBodyTree(FindResource("double_pendulum.urdf"),
+    rbt = RigidBodyTree(FindResource("double_pendulum/double_pendulum.urdf"),
                         floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)  # noqa
     Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]],
                      dtype=np.float64)

@@ -757,9 +757,9 @@ semester.</p>
       href="?chapter=drake">Appendix</a>, then open Python and try the following
       lines in your Python console:</p>
 
-      <drake_code>src/double_pendulum_simulator.py</drake_code>
+      <drake_code>src/double_pendulum/simulator.py</drake_code>
 
-      <p>It's worth taking a peek at the <a href="src/double_pendulum.urdf">file
+      <p>It's worth taking a peek at the <a href="src/double_pendulum/double_pendulum.urdf">file
       that describes the robot</a>. URDF and SDF are two of the standard formats,
       and they can be used to describe even very complicated robots (like the
       Boston Dynamics humanoid).</p>
@@ -770,7 +770,7 @@ semester.</p>
       (with numerical values assigned for mass, link lengths, etc) and for a
       particular state of the robot:</p>
 
-      <drake_code>src/double_pendulum_manipulator.py</drake_code>
+      <drake_code>src/double_pendulum/manipulator.py</drake_code>
 
       <todo>Implement the symbolic version</todo>
 
@@ -874,14 +874,16 @@ semester.</p>
     using:
 
     <p>
-    <pre><code class="python">python double_pendulum_as_single_pendulum.py --gravity 9.8</code></pre>
+      <pre><code class="python">cd underactuated/src/double_pendulum
+python as_single_pendulum.py --gravity 9.8</code></pre>
     </p>
 
     <p>
-    <pre><code class="python">python double_pendulum_as_single_pendulum.py --gravity -9.8</code></pre>
+      <pre><code class="python">cd underactuated/src/double_pendulum
+python as_single_pendulum.py --gravity -9.8</code></pre>
     </p>
 
-    <p>As always, make soure you take a moment to <a href="src/double_pendulum_as_single_pendulum.py">read through the source code</a>.</p>
+    <p>As always, make soure you take a moment to <a href="src/double_pendulum/as_single_pendulum.py">read through the source code</a>.</p>
 
     </div>
 
@@ -1078,8 +1080,8 @@ semester.</p>
     \begin{equation} ml^2 \ddot\theta + b\dot\theta + mgl \sin\theta = u_0.
     \end{equation} You can experiment with this system in <drake></drake> using
 
-    <pre><code class="python">cd underactuated/src
-python pendulum_torque_slider_demo.py</code></pre>
+    <pre><code class="python">cd underactuated/src/pendulum
+python torque_slider_demo.py</code></pre>
 
     <p>(use the slider at the top to adjust the torque input).</p>
 
@@ -3709,8 +3711,8 @@ where this additional input $\bw$ is the (vector) output of some random process.
       barycentric interpolation to interpolate between nodes) in <drake></drake>
       using: </p>
 
-    <div><pre
-        class="highlight"><code>python double_integrator_value_iteration.py</code></pre></div>
+    <div><pre class="highlight"><code>cd underactuated/src/double_integrator
+python value_iteration.py</code></pre></div>
 
       <p>Please do take some time to try different cost functions by
       editing the code yourself.</p>
@@ -3744,7 +3746,8 @@ where this additional input $\bw$ is the (vector) output of some random process.
       interpolation to interpolate between nodes) in <drake></drake> using:</p>
 
     <div><pre
-        class="highlight"><code>python pendulum_value_iteration.py</code></pre></div>
+        class="highlight"><code>cd underactuated/src/pendulum
+python value_iteration.py</code></pre></div>
 
     <p>Again, you can easily try different cost functions by
       editing the code yourself.</p>
@@ -6114,9 +6117,11 @@ and Validation</h1>
 
     <p>and install the prerequisites using the platform-specific installation script provided:</p>
 
-    <div class="linux"><pre class="highlight"><code>sudo underactuated/scripts/setup/linux/ubuntu/xenial/install_prereqs</code></pre></div>
+    <div class="linux"><pre class="highlight"><code>sudo underactuated/scripts/setup/linux/ubuntu/xenial/install_prereqs
+export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
 
-    <div class="mac"><pre class="highlight"><code>underactuated/scripts/setup/mac/install_prereqs</code></pre></div>
+    <div class="mac"><pre class="highlight"><code>underactuated/scripts/setup/mac/install_prereqs
+export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
 
   </section>
 
@@ -6166,8 +6171,8 @@ export PATH=/usr/local/opt/python/libexec/bin:${PATH}</code></pre></div>
     that working directory of your python interpreter is the
     <code>underactuated/src</code> directory.</p>
 
-      <div><pre class="highlight"><code>cd underactuated/src
-python double_pendulum_simulator.py</code></pre></div>
+      <div><pre class="highlight"><code>cd underactuated/src/double_pendulum
+python simulator.py</code></pre></div>
 
   </section>
 
@@ -6178,12 +6183,12 @@ python double_pendulum_simulator.py</code></pre></div>
     <i>love</i> the <a href="http://jupyter.org/">Jupyter Notebook</a>
     workflow, and the code should work for you there, as well.</p>
 
-    <p><a href="src/double_pendulum_simulator.ipynb">Here is an example</a> that
+    <p><a href="src/double_pendulum/simulator.ipynb">Here is an example</a> that
     shows you how to tell <code>matplotlib</code> to perform well in the
     notebook (including with animations).</p>
 
-    <div><pre class="highlight"><code>cd underactuated/src
-jupyter notebook double_pendulum_simulator.ipynb</code></pre></div>
+    <div><pre class="highlight"><code>cd underactuated/src/double_pendulum
+jupyter notebook simulator.ipynb</code></pre></div>
 
   </section>
 
@@ -6276,7 +6281,7 @@ jupyter notebook double_pendulum_simulator.ipynb</code></pre></div>
       variable, and one output.  It can be implemented in <drake></drake> using
       the following code:</p>
 
-      <drake_code>src/simple_continuous_time_system.py</drake_code>
+      <drake_code>src/simple/continuous_time_system.py</drake_code>
 
     </div>
 
@@ -6295,7 +6300,7 @@ jupyter notebook double_pendulum_simulator.ipynb</code></pre></div>
       variable, and one output.  It can be implemented in <drake></drake> using
       the following code:</p>
 
-      <drake_code>src/simple_discrete_time_system.py</drake_code>
+      <drake_code>src/simple/discrete_time_system.py</drake_code>
 
     </div>
 
@@ -6334,7 +6339,7 @@ jupyter notebook double_pendulum_simulator.ipynb</code></pre></div>
       <p>Use the following code to instantiate the
       <code>SimpleContinuousTimeSystem </code>, simulate it, and plot the
       results:</p>
-      <drake_code>src/simple_continuous_time_system_simulation.py</drake_code>
+      <drake_code>src/simple/continuous_time_system_simulation.py</drake_code>
 
       <p>This should generate the plot below</p>
       <figure>
@@ -6345,7 +6350,7 @@ jupyter notebook double_pendulum_simulator.ipynb</code></pre></div>
       </figure>
 
       <p>The code for running the discrete time system is basically identical:</p>
-      <drake_code>src/simple_discrete_time_system_simulation.py</drake_code>
+      <drake_code>src/simple/discrete_time_system_simulation.py</drake_code>
 
     </div>
 
@@ -6415,7 +6420,7 @@ jupyter notebook double_pendulum_simulator.ipynb</code></pre></div>
       visualizer), and expose the input of the plant as an input to the
       <code>Diagram</code> being constructed:</p>
 
-      <drake_code>src/double_pendulum_simulator.py</drake_code>
+      <drake_code>src/double_pendulum/simulator.py</drake_code>
 
     </div>
 

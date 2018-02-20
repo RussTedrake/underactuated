@@ -8,7 +8,7 @@ from matplotlib import cm
 from pydrake.all import (DiagramBuilder, SignalLogger, Simulator, VectorSystem)
 from pydrake.examples.pendulum import PendulumPlant
 from pydrake.systems.controllers import (
-    DynamicProgrammingOptions, FittedValueIteration)
+    DynamicProgrammingOptions, FittedValueIteration, PeriodicBoundaryCondition)
 from underactuated import PendulumVisualizer
 
 
@@ -44,8 +44,9 @@ else:
 qbins = np.linspace(0., 2. * math.pi, 21)
 qdotbins = np.linspace(-10., 10., 21)
 state_grid = [set(qbins), set(qdotbins)]
-options.state_indices_with_periodic_boundary_conditions = {0}
-
+options.periodic_boundary_conditions = [
+    PeriodicBoundaryCondition(0, 0., 2.*math.pi),
+]
 input_grid = [set(np.linspace(-input_limit, input_limit, 9))]
 timestep = 0.01
 
