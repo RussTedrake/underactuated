@@ -1,26 +1,10 @@
 import argparse
-from matplotlib.widgets import Slider
 import numpy as np
 
-from pydrake.all import (DiagramBuilder, Simulator, VectorSystem)
+from pydrake.all import (DiagramBuilder, Simulator)
 from pydrake.examples.pendulum import PendulumPlant
-from underactuated import PendulumVisualizer
-
-
-class TorqueSlider(VectorSystem):
-    def __init__(self, ax):
-        # 0 inputs, 1 output.
-        VectorSystem.__init__(self, 0, 1)
-        self.value = 0
-        self.slider = Slider(ax, 'Torque', -5, 5, valinit=self.value)
-        self.slider.on_changed(self.update)
-
-    def update(self, val):
-        self.value = val
-
-    def _DoCalcVectorOutput(self, context, unused, unused2, torque):
-        torque[:] = self.value
-
+from underactuated import SliderSystem
+from visualizer import PendulumVisualizer
 
 builder = DiagramBuilder()
 pendulum = builder.AddSystem(PendulumPlant())
@@ -36,7 +20,7 @@ visualizer = builder.AddSystem(PendulumVisualizer())
 builder.Connect(pendulum.get_output_port(0), visualizer.get_input_port(0))
 
 ax = visualizer.fig.add_axes([.2, .95, .6, .025])
-torque_system = builder.AddSystem(TorqueSlider(ax))
+torque_system = builder.AddSystem(SliderSystem(ax, 'Torque', -5., 5.))
 builder.Connect(torque_system.get_output_port(0),
                 pendulum.get_input_port(0))
 
