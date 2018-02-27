@@ -2,7 +2,8 @@ import math
 import numpy as np
 
 from pydrake.all import (DiagramBuilder, FloatingBaseType,
-                         LinearQuadraticRegulator, RigidBodyTree, Simulator)
+                         LinearQuadraticRegulator, RigidBodyTree,
+                         Saturation, Simulator, WrapToSystem)
 from pydrake.examples.acrobot import (AcrobotInput, AcrobotPlant, AcrobotState)
 from underactuated import (FindResource, PlanarRigidBodyVisualizer)
 
@@ -38,9 +39,17 @@ if __name__ == "__main__":
     builder = DiagramBuilder()
 
     acrobot = builder.AddSystem(AcrobotPlant())
+    saturation = builder.AddSystem(Saturation(min_value = [-10],
+                                              max_value = [10]))
+    builder.Connect(saturation.get_output_port(0), acrobot.get_input_port(0))
+    wrapangles = WrapToSystem(4)
+    wrapangles.set_interval(0, 0, 2.*math.pi)
+    wrapangles.set_interval(1, -math.pi, math.pi)
+    wrapto = builder.AddSystem(wrapangles)
+    builder.Connect(acrobot.get_output_port(0), wrapto.get_input_port(0))
     controller = builder.AddSystem(BalancingLQR())
-    builder.Connect(acrobot.get_output_port(0), controller.get_input_port(0))
-    builder.Connect(controller.get_output_port(0), acrobot.get_input_port(0))
+    builder.Connect(wrapto.get_output_port(0), controller.get_input_port(0))
+    builder.Connect(controller.get_output_port(0), saturation.get_input_port(0))
 
     tree = RigidBodyTree(FindResource("acrobot/acrobot.urdf"),
                          FloatingBaseType.kFixed)
@@ -59,5 +68,5 @@ if __name__ == "__main__":
 
     for i in range(5):
         context.set_time(0.)
-        state.SetFromVector(UprightState().CopyToVector() + 0.1*np.random.randn(4,))
-        simulator.StepTo(10.)
+        state.SetFromVector(UprightState().CopyToVector() + 0.05*np.random.randn(4,))
+        simulator.StepTo(4.)
