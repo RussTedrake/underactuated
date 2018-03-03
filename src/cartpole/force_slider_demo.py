@@ -21,8 +21,8 @@ parser.add_argument("-T", "--duration",
 args = parser.parse_args()
 
 visualizer = builder.AddSystem(PlanarRigidBodyVisualizer(tree,
-                                                         xlim = [-2.5, 2.5],
-                                                         ylim = [-1, 2.5]))
+                                                         xlim=[-2.5, 2.5],
+                                                         ylim=[-1, 2.5]))
 builder.Connect(cartpole.get_output_port(0), visualizer.get_input_port(0))
 
 ax = visualizer.fig.add_axes([.2, .95, .6, .025])

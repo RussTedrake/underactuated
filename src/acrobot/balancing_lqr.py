@@ -1,3 +1,4 @@
+import argparse
 import math
 import numpy as np
 
@@ -16,6 +17,7 @@ def UprightState():
     state.set_theta2dot(0.)
     return state
 
+
 def BalancingLQR():
     # Design an LQR controller for stabilizing the Acrobot around the upright.
     # Returns a (static) AffineSystem that implements the controller (in
@@ -28,19 +30,21 @@ def BalancingLQR():
     input.set_tau(0.)
     context.FixInputPort(0, input)
 
-    context.get_mutable_continuous_state_vector().SetFromVector(UprightState().CopyToVector())
+    context.get_mutable_continuous_state_vector()\
+        .SetFromVector(UprightState().CopyToVector())
 
-    Q = np.diag((10.,10.,1.,1.))
+    Q = np.diag((10., 10., 1., 1.))
     R = [1]
 
     return LinearQuadraticRegulator(acrobot, context, Q, R)
+
 
 if __name__ == "__main__":
     builder = DiagramBuilder()
 
     acrobot = builder.AddSystem(AcrobotPlant())
-    saturation = builder.AddSystem(Saturation(min_value = [-10],
-                                              max_value = [10]))
+    saturation = builder.AddSystem(Saturation(min_value=[-10],
+                                              max_value=[10]))
     builder.Connect(saturation.get_output_port(0), acrobot.get_input_port(0))
     wrapangles = WrapToSystem(4)
     wrapangles.set_interval(0, 0, 2.*math.pi)
@@ -49,7 +53,8 @@ if __name__ == "__main__":
     builder.Connect(acrobot.get_output_port(0), wrapto.get_input_port(0))
     controller = builder.AddSystem(BalancingLQR())
     builder.Connect(wrapto.get_output_port(0), controller.get_input_port(0))
-    builder.Connect(controller.get_output_port(0), saturation.get_input_port(0))
+    builder.Connect(controller.get_output_port(0),
+                    saturation.get_input_port(0))
 
     tree = RigidBodyTree(FindResource("acrobot/acrobot.urdf"),
                          FloatingBaseType.kFixed)
@@ -66,7 +71,19 @@ if __name__ == "__main__":
 
     state = context.get_mutable_continuous_state_vector()
 
-    for i in range(5):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-N", "--trials",
+                        type=int,
+                        help="Number of trials to run.",
+                        default=5)
+    parser.add_argument("-T", "--duration",
+                        type=float,
+                        help="Duration to run each sim.",
+                        default=4.0)
+    args = parser.parse_args()
+
+    for i in range(args.trials):
         context.set_time(0.)
-        state.SetFromVector(UprightState().CopyToVector() + 0.05*np.random.randn(4,))
-        simulator.StepTo(4.)
+        state.SetFromVector(UprightState().CopyToVector() +
+                            0.05*np.random.randn(4,))
+        simulator.StepTo(args.duration)
