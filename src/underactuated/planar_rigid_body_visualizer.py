@@ -56,7 +56,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         and should be a 3x4 matrix:
         [ <x axis select> x_axis_shift
           <y axis select> y_axis_shift
-           0, 0, 0 1]  homogenizer
+           0, 0, 0, 1]  homogenizer
 
         e.g.
 
