@@ -1,3 +1,4 @@
+import argparse
 import math
 import numpy as np
 
@@ -11,6 +12,7 @@ def UprightState():
     state = (0, math.pi, 0, 0)
     return state
 
+
 def BalancingLQR(robot):
     # Design an LQR controller for stabilizing the CartPole around the upright.
     # Returns a (static) AffineSystem that implements the controller (in
@@ -21,10 +23,11 @@ def BalancingLQR(robot):
 
     context.get_mutable_continuous_state_vector().SetFromVector(UprightState())
 
-    Q = np.diag((10.,10.,1.,1.))
+    Q = np.diag((10., 10., 1., 1.))
     R = [1]
 
     return LinearQuadraticRegulator(robot, context, Q, R)
+
 
 if __name__ == "__main__":
     builder = DiagramBuilder()
@@ -50,7 +53,18 @@ if __name__ == "__main__":
 
     state = context.get_mutable_continuous_state_vector()
 
-    for i in range(5):
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-N", "--trials",
+                        type=int,
+                        help="Number of trials to run.",
+                        default=5)
+    parser.add_argument("-T", "--duration",
+                        type=float,
+                        help="Duration to run each sim.",
+                        default=10.0)
+    args = parser.parse_args()
+
+    for i in range(args.trials):
         context.set_time(0.)
         state.SetFromVector(UprightState() + 0.1*np.random.randn(4,))
-        simulator.StepTo(10.)
+        simulator.StepTo(args.duration)

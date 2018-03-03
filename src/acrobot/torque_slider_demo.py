@@ -21,8 +21,8 @@ parser.add_argument("-T", "--duration",
 args = parser.parse_args()
 
 visualizer = builder.AddSystem(PlanarRigidBodyVisualizer(tree,
-                                                         xlim = [-4., 4.],
-                                                         ylim = [-4., 4.]))
+                                                         xlim=[-4., 4.],
+                                                         ylim=[-4., 4.]))
 builder.Connect(acrobot.get_output_port(0), visualizer.get_input_port(0))
 
 ax = visualizer.fig.add_axes([.2, .95, .6, .025])

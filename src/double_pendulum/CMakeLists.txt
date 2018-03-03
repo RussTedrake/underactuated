@@ -1,6 +1,6 @@
 
 # Note: no duration arguments to keep this first textbook example simple.
-# Just pay the 10second cost.
+# Just pay the 10 second cost.
 add_pytest(simulator.py)
 
 add_nbtest(simulator.ipynb)
