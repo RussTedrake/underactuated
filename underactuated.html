@@ -329,6 +329,7 @@
   \newcommand{\bz}{{\bf z}}
   \newcommand{\bB}{{\bf B}}
   \newcommand{\bC}{{\bf C}}
+  \newcommand{\bH}{{\bf H}}
   \newcommand{\bI}{{\bf I}}
   \newcommand{\bJ}{{\bf J}}
   \newcommand{\bK}{{\bf K}}
@@ -2021,6 +2022,8 @@ python balancing_lqr.py</code></pre></div>
       to distribute a 3D visualizer with the binary releases of
       <drake></drake>.</p>
 
+      <todo>Add the LQR examples.</todo>
+
       </div>
 
       <p> Note that LQR, although it is optimal for the linearized system, is
@@ -2035,449 +2038,442 @@ python balancing_lqr.py</code></pre></div>
 
   </section> <!-- end balancing -->
 
-<section data-type="sect1"><h1>Partial feedback linearization</h1>
-
-<p>
-In the introductory chapters, we made the point that the underactuated
-systems are not feedback linearizable.  At least not completely.
-Although we cannot linearize the full dynamics of the system, it is
-still possible to linearize a portion of the system dynamics.  The
-technique is called <em>partial feedback linearization</em>.</p>
-
-<p>
-Consider the cart-pole example.  The dynamics of the cart are affected
-by the motions of the pendulum.  If we know the model, then it seems
-quite reasonable to think that we could create a feedback controller
-which would push the cart in exactly the way necessary to counter-act
-the dynamic contributions from the pendulum - thereby linearizing the
-cart dynamics.  What we will see, which is potentially more
-surprising, is that we can also use a feedback law for the cart to
-feedback linearize the dynamics of the passive pendulum joint.</p>
-
-<p>
-We'll use the term <em>collocated</em> partial feedback linearization to
-describe a controller which linearizes the dynamics of the actuated
-joints.  What's more surprising is that it is often possible to
-achieve <em>non-collocated</em> partial feedback linearization - a
-controller which linearizes the dynamics of the unactuated joints.
-The treatment presented here follows from <elib>Spong94a</elib>.</p>
-
-<section data-type="sect2"><h1>PFL for the Cart-Pole System</h1>
-
-<section data-type="sect3"><h1>Collocated</h1>
-
-<p>
-Starting from the equations \ref{eq:simple} and \ref{eq:simple2}, we have
-\begin{gather*}
-\ddot\theta = -\ddot{x}c - s \\
-% \ddot\theta = -\frac{1}{l} (\ddot{x} c + g s)
-\ddot{x}(2-c^2) - sc - \dot\theta^2 s = f
-\end{gather*}
-Therefore, applying the feedback control law
-\begin{equation}
-f = (2 - c^2) \ddot{x}^d - sc - \dot\theta^2 s
-% f = (m_c + m_p) u + m_p (u c + g s) c - m_p l \dot\theta^2 s
-\end{equation}
-results in
-\begin{align*}
-\ddot{x} =& \ddot{x}^d \\ \ddot{\theta} =& -\ddot{x}^dc - s,
-\end{align*}
-which are valid globally.</p>
-
-</section>
-
-
-<section data-type="sect3"><h1>Non-collocated</h1>
-
-<p>
-Starting again from equations \ref{eq:simple} and \ref{eq:simple2}, we have
-\begin{gather*}
-\ddot{x} = -\frac{\ddot\theta + s}{c} \\
-\ddot\theta(c - \frac{2}{c}) - 2 \tan\theta - \dot\theta^2 s = f
-\end{gather*}
-Applying the feedback control law \begin{equation} f = (c - \frac{2}{c})
-\ddot\theta^d - 2 \tan\theta - \dot\theta^2 s \end{equation} results in
-\begin{align*} \ddot\theta =& \ddot\theta^d \\ \ddot{x} =& -\frac{1}{c} \ddot\theta^d -
-\tan\theta. \end{align*} Note that this expression is only valid when
-$\cos\theta \neq 0$.  This is not surprising, as we know that the
-force cannot create a torque when the beam is perfectly horizontal.</p>
-
-</section>
-
-</section> <!-- end PFL for the cart-pole -->
-
-<section data-type="sect2"><h1>General form</h1>
-
-<p>
-For systems that are trivially underactuated (torques on some joints,
-no torques on other joints), we can, without loss of generality,
-reorganize the joint coordinates in any underactuated system described
-by the manipulator equations into the form:
-\begin{align}
-\bM_{11} \ddot{\bq}_1 + \bM_{12} \ddot{\bq}_2 + \bphi_1 = 0, \label{eq:passive_dyn}\\
-\bM_{21} \ddot{\bq}_1 + \bM_{22} \ddot{\bq}_2 + \bphi_2 =
-\btau, \label{eq:active_dyn}
-\end{align}
-with $\bq \in \Re^n$, $\bq_1 \in \Re^m$, $\bq_2 \in \Re^l$, $l=n-m$.
-$\bq_1$ represents all of the passive joints, and $\bq_2$ represents
-all of the actuated joints, and the $\phi$ terms capture all of the
-Coriolis and gravitational terms, and $$\bM(\bq) =
-\begin{bmatrix} \bM_{11} & \bM_{12} \\ \bM_{21} & \bM_{22} \end{bmatrix}.$$
-Fortunately, because $\bM$ is uniformly (e.g. for all $\bq$) positive definite, $\bM_{11}$
-and $\bM_{22}$ are also positive definite.</p>
-
-<section data-type="sect3"><h1>Collocated linearization</h1>
-
-<p>
-Performing the same substitutions into the full manipulator equations,
-we get:
-\begin{gather}
-\ddot\bq_1 = -\bM_{11}^{-1} \left[ \bM_{12} \ddot\bq_2 + \bphi_1
-  \right] \\
-(\bM_{22} - \bM_{21} \bM_{11}^{-1} \bM_{12})
-  \ddot\bq_2 + {\bf \phi_2} - \bM_{21} \bM_{11}^{-1} {\bf
-  \phi}_1 = \btau
-\end{gather}
-It can be easily shown that the matrix $(\bM_{22} - \bM_{21}
-\bM_{11}^{-1} \bM_{12})$ is invertible<elib>Spong94a</elib>; we can
-see from inspection that it is symmetric.  PFL follows naturally, and
-is valid globally.</p>
-
-</section>
-
-
-<section data-type="sect3"><h1>Non-collocated linearization</h1>
-
-<p>
-\begin{gather}
-\ddot\bq_2 = -\bM_{12}^+ \left[ \bM_{11} \ddot\bq_1 + \bphi_1
-  \right] \\
-(\bM_{21} - \bM_{22} \bM_{12}^+ \bM_{11})
-  \ddot\bq_1 + {\bf \phi_2} - \bM_{22} \bM_{12}^+ {\bf
-  \phi}_1 = \btau
-\end{gather}
-where $\bM_{12}^+$ is a Moore-Penrose pseudo-inverse.  This
-inverse provides a unique solution when the rank of $\bM_{12}$
-equals $l$, the number of passive degrees of freedom in the system (it
-cannot be more, since the matrix only has $l$ rows).  This rank
-condition is sometimes called the property of "Strong Inertial
-Coupling".  It is state dependent. A system has Global Strong Inertial Coupling
-if it exhibits Strong Inertial Coupling in every state.</p>
-
-</section>
-
-<section data-type="sect3"><h1>Task-space partial feedback linearization</h1>
-
-<p>
-In general, we can define some combination of active and passive
-joints that we would like to control.  This combination is sometimes
-called a "task space". <todo>cite some task space refs here?</todo>
-Consider an output function of the form, $${\bf y} = {\bf
-f}(\bq),$$ with ${\bf y} \in \Re^p$, which defines the task space.  Define
-$\bJ_1 = \frac{\partial {\bf f}}{\partial \bq_1}$, $\bJ_2 =
-\frac{\partial {\bf f}}{\partial \bq_2}$, $\bJ = [\bJ_1,\bJ_2]$.</p>
-
-<div data-type="theorem"><h1>Task Space PFL</h1>
-
-<p>
-If the actuated joints are commanded so that
- \begin{equation} \ddot\bq_2 = \bar\bJ^+ \left [{\bf v} -
-    \dot\bJ\dot\bq + \bJ_1 \bM_{11}^{-1}\bphi_1 \right],  \label{eq:q2cmd} \end{equation}
-where $\bar{\bJ} = \bJ_2 - \bJ_1 \bM_{11}^{-1} \bM_{12}.$
-and $\bar\bJ^+$ is the right Moore-Penrose pseudo-inverse, $$\bar\bJ^+
-= \bar\bJ^T (\bar\bJ \bar\bJ^T)^{-1},$$ then we have \begin{equation} \ddot{\bf y} = {\bf v}.\end{equation}
-subject to
-\begin{equation}\text{rank}\left(\bar{\bJ} \right) = p, \label{eq:rank_condition}\end{equation}
-</p>
-
-<p><b>Proof Sketch.</b>
-  Differentiating the output function we have
-  \begin{gather*}
-  \dot{\bf y} = \bJ \dot\bq \\
-  \ddot{\bf y} = \dot\bJ \dot\bq + \bJ_1 \ddot\bq_1 + \bJ_2 \ddot\bq_2.
-  \end{gather*}
-  Solving \ref{eq:passive_dyn} for the dynamics of the unactuated joints
-  we have:
-  \begin{equation}
-  \ddot\bq_1 = - \bM_{11}^{-1} (\bM_{12} \ddot\bq_2 + \bphi_1)  \label{eq:q1cmd}
-  \end{equation}
-  Substituting, we have
-  \begin{align}
-  \ddot{\bf y} =& \dot\bJ \dot\bq - \bJ_1 \bM_{11}^{-1}({\bf
-    H}_{12}\ddot\bq_2 + \bphi_1) + \bJ_2 \ddot\bq_2 \\
-  =& \dot\bJ \dot\bq + \bar{\bJ} \ddot\bq_2 - \bJ_1 \bM_{11}^{-1}\bphi_1 \\
-  =& {\bf v}
-  \end{align}
-  Note that the last line required the rank condition
-  ($\ref{eq:rank_condition}$) on $\bar\bJ$ to ensure that the rows
-  of $\bar{\bJ}$ are linearly independent, allowing $\bar\bJ
-  \bar\bJ^+ = {\bf I}$.</p>
-
-</div>
-
-<p>
-In order to execute a task space trajectory one could command $${\bf
-v} = \ddot{\bf y}^d + {\bf K}_d (\dot{\bf y}^d - \dot{\bf y}) + {\bf K}_p ({\bf y}^d -{\bf y}).$$ Assuming the internal dynamics are stable, this yields
-converging error dynamics, $({\bf y}_d - {\bf y})$, when ${\bf K}_p,{\bf K}_d
-> 0$<elib>Slotine90</elib>.  For a position control robot, the
-acceleration command of ($\ref{eq:q2cmd}$) suffices. Alternatively, a
-torque command follows by substituting ($\ref{eq:q2cmd}$) and
-($\ref{eq:q1cmd}$) into ($\ref{eq:active_dyn}$).</p>
-
-<div data-type="example"><h1>End-point trajectory following with the Cart-Pole system</h1>
-
-<p>
-Consider the task of trying to track a desired kinematic trajectory
-with the endpoint of pendulum in the cart-pole system.  With one
-actuator and kinematic constraints, we might be hard-pressed to track
-a trajectory in both the horizontal and vertical coordinates.  But we
-can at least try to track a trajectory in the vertical position of the
-end-effector.</p>
-
-
-<p>Using the task-space PFL derivation, we have:
-\begin{gather*}
-y = f(\bq) = -l \cos\theta \\
-\dot{y} = l \dot\theta \sin\theta
-\end{gather*}
-If we define a desired trajectory:
-$$y^d(t) = \frac{l}{2} + \frac{l}{4} \sin(t),$$
-then the task-space controller is easily implemented using the
-derivation above.</p>
-
-<todo>add results here</todo>
-</div> <!-- end example-->
-
-<p>
-The task space derivation above provides a convenient generalization
-of the partial feedback linearization (PFL) <elib>Spong94a</elib>, which
-encompasses both the collocated and non-collocated results.  If we
-choose ${\bf y} = \bq_2$ (collocated), then we have $$\bJ_1 = 0, \bJ_2 =
-{\bf I}, \dot\bJ = 0, \bar\bJ = {\bf I}, \bar\bJ^+ = {\bf I}.$$ From this, the command
-in ($\ref{eq:q2cmd}$) reduces to $\ddot\bq_2 = v$. The torque command
-is then
-$$ \tau = - \bM_{21} \bM_{11}^{-1} (\bM_{12} v + \bphi_1) +
-\bM_{22} v + \bphi_2,$$ and the rank condition
-($\ref{eq:rank_condition}$) is always met.</p>
-
-<p>
-If we choose ${\bf y} = \bq_1$ (non-collocated), we have $$\bJ_1 =
-{\bf I}, \bJ_2
-= 0, \dot\bJ = 0, \bar{\bJ}=-\bM_{11}^{-1}\bM_{12}.$$ The rank
-condition ($\ref{eq:rank_condition}$) requires that
-$\text{rank}(\bM_{12}) = l$, in which case we can write
-$\bar{\bJ}^+=-\bM_{12}^+\bM_{11}$, reducing the rank condition to
-precisely the "Strong Inertial Coupling" condition described in
-<elib>Spong94a</elib>. Now the command in ($\ref{eq:q2cmd}$) reduces to
-\begin{equation}
-\ddot\bq_2 = -\bM_{12}^+ \left [ \bM_{11}{\bf v} + \bphi_1 \right] \label{eq:q2ddnonco}
-\end{equation}
-The torque command is found by substituting $\ddot\bq_1 = v$ and
-($\ref{eq:q2ddnonco}$) into ($\ref{eq:active_dyn}$), yielding the same
-results as in <elib>Spong94a</elib>.</p>
-
-</section> <!-- task space PFL -->
-</section>
-</section>
-
-
-<section data-type="sect1"><h1>Swing-up control</h1>
-
-<section data-type="sect2"><h1>Energy shaping</h1>
-
-<p>
-Recall the phase portraits that we used to understand the dynamics of
-the undamped, unactuated, simple pendulum ($u=b=0$).  The orbits of this phase plot were defined by
-contours of constant energy.  One very special orbit, known as a
-<em>homoclinic</em> orbit, is the orbit which passes through the
-unstable fixed point.  In fact, visual inspection will reveal that any
-state that lies on this homoclinic orbit must pass into the unstable
-fixed point.  Therefore, if we seek to design a nonlinear feedback
-control policy which drives the simple pendulum from any initial
-condition to the unstable fixed point, a very reasonable strategy
-would be to use actuation to regulate the energy of the pendulum to
-place it on this homoclinic orbit, then allow the system dynamics to
-carry us to the unstable fixed point.</p>
-
-<p>
-This idea turns out to be a bit more general than just for the simple
-pendulum. As we will see, we can use similar concepts of `energy
-shaping' to produce swing-up controllers for the acrobot and cart-pole
-systems.  It's important to note that it only takes one actuator to
-change the total energy of a system.</p>
-
-<p>
-Although a large variety of swing-up controllers have been proposed
-for these model
-systems (c.f. <elib>Fantoni02</elib>,<elib>Araki05</elib>,<elib>Xin04</elib>,<elib>Spong94</elib>,<elib>Mahindrakar05</elib>,<elib>Berkemeier99</elib>,<elib>Murray91</elib>,<elib>Lai06</elib>),
-the energy shaping controllers tend to be the most natural to derive
-and perhaps the most well-known.</p>
-
-</section>
-
-<section data-type="sect2" id="s:pend_energy_shaping"><h1>Simple pendulum</h1>
-
-<p>
-Recall the equations of motion for the undamped simple pendulum were given
-by $$ml^2 \ddot\theta + mgl\sin\theta = u.$$  The total energy of the
-simple pendulum is given by $$E = \frac{1}{2} m l^2 \dot\theta^2 -
-mgl\cos\theta.$$  To understand how to control the energy, observe
-that \begin{align*} \dot{E} =& ml^2\dot\theta \ddot\theta + \dot\theta
-  mgl\sin\theta \\ =& \dot\theta \left[ u - mgl\sin\theta \right] +
-  \dot\theta mgl\sin\theta \\ =& u\dot\theta. \end{align*}
-In words, adding energy to the system is simple - simply apply torque
-in the same direction as $\dot\theta$.  To remove energy, simply apply
-torque in the opposite direction (e.g., damping).</p>
-
-<p>
-  To drive the system to the homoclinic orbit, we must regulate the
-energy of the system to a particular desired energy, $$E^d = mgl.$$ If
-we define $\tilde{E} = E - E^d$, then we have $$\dot{\tilde{E}} =
-\dot{E} = u\dot\theta.$$ If we apply a feedback controller of the
-form $$u = -k \dot\theta \tilde{E},\quad k>0,$$ then the resulting
-error dynamics are $$\dot{\tilde{E}} = - k \dot\theta^2 \tilde{E}.$$
-These error dynamics imply an exponential convergence: $$\tilde{E}
-\rightarrow 0,$$ except for states where $\dot\theta=0$.  The
-essential property is that when $E > E^d$, we should remove energy from
-the system (damping) and when $E < E^d$, we should add energy (negative
-damping).  Even if the control actions are bounded, the convergence is
-easily preserved.</p>
-
-<p>
-This is a nonlinear controller that will push all system trajectories
-to the unstable equilibrium.  But does it make the unstable
-equilibrium locally stable?  <em>No.</em>  Small perturbations may cause
-the system to drive all of the way around the circle in order to once
-again return to the unstable equilibrium.  For this reason, once
-trajectories come into the vicinity of our swing-up controller, we
-prefer to switch to our LQR balancing controller to performance to
-complete the task.</p>
-
-</section>
-
-<section data-type="sect2"><h1>Cart-Pole</h1>
-
-<p>
-Having thought about the swing-up problem for the simple pendulum,
-let's try to apply the same ideas to the cart-pole system.  The basic
-idea, from <elib>Chung95</elib>, is to use collocated PFL to simplify the
-dynamics, use energy shaping to regulate the pendulum to its
-homoclinic orbit, then to add a few terms to make sure that the cart
-stays near the origin.  The collocated PFL (when all parameters
-are set to 1) left us with:
-\begin{gather}
-\ddot{x} = u \\
-\ddot\theta = - u c - s
-%\ddot\theta = -\frac{1}{l}( u c + g s )
-\end{gather}
-The energy <em>of the pendulum</em> (a unit mass, unit length, simple
-pendulum in unit gravity) is given by: $$E(\bx) = \frac{1}{2}
-\dot\theta^2 - \cos\theta.$$
-<!-- E = \frac{1}{2}ml^2\dot\theta^2 - mgl\cos\theta -->
-The desired
-energy, equivalent to the energy at the desired fixed-point, is
-$$E^d = 1.$$
-<!--  E^d = m_p g l -->
-Again defining $\tilde{E}(\bx) = E(\bx) - E^d$, we now observe
-that
-\begin{align*}
-\dot{\tilde{E}}(\bx) =& \dot{E}(\bx) = \dot\theta \ddot\theta +
-\dot\theta s \\
-% \dot\tilde{E} = ml^2 \dot\theta \ddot\theta + mgl s
-=& \dot\theta [ -uc - s] + \dot\theta s \\
-% - ml \dot\theta [ u c + g s ] + mgl s
-=& - u\dot\theta \cos\theta.
-% - ml u \dot\theta c
-\end{align*}
-Therefore, if we design a controller of the form
-$$u = k \dot\theta\cos\theta \tilde{E},\quad k>0$$
-the result is
-$$\dot{\tilde{E}} = - k \dot\theta^2 \cos^2\theta \tilde{E}.$$  <!-- times ml -->
-This guarantees that $| \tilde{E} |$ is
-non-increasing, but isn't quite enough to guarantee that it will go
-to zero.  For example, if $\theta = \dot\theta = 0$, the system will
-never move.  However, if we have that $$\int_0^t \dot\theta^2(t')
-\cos^2 \theta(t') dt' \rightarrow \infty,\quad \text{as } t
-\rightarrow \infty,$$ then we have $\tilde{E}(t) \rightarrow 0$. This
-condition is satisfied for all but the trivial constant trajectories at fixed points.</p>
-
-<p>
-Now we return to the full system dynamics (which includes the
-cart).  <elib>Chung95</elib> and <elib>Spong96</elib> use the simple pendulum
-energy controller with an addition PD controller designed to regulate
-the cart: $$\ddot{x}^d = k_E \dot\theta \cos\theta \tilde{E} - k_p x -
-k_d \dot{x}.$$ <elib>Chung95</elib> provides a proof of convergence for this
-controller with some nominal parameters.</p>
-
-<figure>
-<img width="70%" data-src="figures/cartpole_swingup_phase.svg"/>
-
-<figcaption>Cart-Pole Swingup: Example phase plot of the pendulum subsystem using
-  energy shaping control.  The controller drives the system to the
-  homoclinic orbit, then switches to an LQR balancing controller near
-  the top.</figcaption>
-</figure>
-
-</section>
-
-<section data-type="sect2"><h1>Acrobot</h1>
-
-<p>
-Swing-up control for the acrobot can be accomplished in much the same
-way.  <elib>Spong94</elib> - pump energy.  Clean and simple.  No proof.
-Slightly modified version (uses arctan instead of sat) in <elib>Spong95</elib>.
-Clearest presentation in <elib>Spong96</elib>.</p>
-
-<p>
-Use collocated PFL.  ($\ddot{q}_2 = \ddot{q}_2^d$).
-$$E(\bx) = \frac{1}{2}\dot\bq^T\bM\dot{\bq} + U(\bx).$$
-$$ E_d = U(\bx^*).$$
-$$\bar{u} = \dot{q}_1 \tilde{E}.$$
-$$\ddot{q}_2^d  = - k_1 q_2 - k_2 \dot{q}_2 + k_3 \bar{u},$$</p>
-
-<p>
-Extra PD terms prevent proof of asymptotic convergence to homoclinic
-orbit.  Proof of another energy-based controller in <elib>Xin04</elib>.</p>
-
-</section>
-
-<section data-type="sect2"><h1>Discussion</h1>
-
-<p>
-The energy shaping controller for swing-up presented here is a pretty
-faithful representative from the field of nonlinear underactuated
-control.  Typically these control derivations require some clever
-tricks for simplifying or canceling out terms in the nonlinear
-equations, then some clever Lyapunov function to prove stability.  In
-these cases, PFL was used to simplify the equations, and therefore the
-controller design.</p>
-
-<p>
-These controllers are important, representative, and relevant.  But
-clever tricks with nonlinear equations seem to be fundamentally
-limited.  Most of the rest of the material presented in this book will
-emphasize more general computational approaches to formulating and
-solving these and other control problems.
-</p>
-
-</section>
-
-</section>
-
-<section data-type="sect1"><h1>Other model systems</h1>
-
-<p>
-The acrobot and cart-pole systems are just two of the model systems
-used heavily in underactuated control research.  Other examples include:</p>
-<ul>
-  <li>Pendubot</li>
-  <li>Inertia wheel pendulum</li>
-  <li>Furuta pendulum (horizontal rotation and vertical pendulum)</li>
-  <li>Hovercraft</li>
-</ul>
-
-
-</section>
+  <section data-type="sect1"><h1>Partial feedback linearization</h1>
+
+    <p> In the introductory chapters, we made the point that the underactuated
+    systems are not feedback linearizable.  At least not completely. Although we
+    cannot linearize the full dynamics of the system, it is still possible to
+    linearize a portion of the system dynamics.  The technique is called
+    <em>partial feedback linearization</em>.</p>
+
+    <p> Consider the cart-pole example.  The dynamics of the cart are affected
+    by the motions of the pendulum.  If we know the model, then it seems quite
+    reasonable to think that we could create a feedback controller which would
+    push the cart in exactly the way necessary to counter-act the dynamic
+    contributions from the pendulum - thereby linearizing the cart dynamics.
+    What we will see, which is potentially more surprising, is that we can also
+    use a feedback law for the cart to feedback linearize the dynamics of the
+    passive pendulum joint.</p>
+
+    <p> We'll use the term <em>collocated</em> partial feedback linearization to
+    describe a controller which linearizes the dynamics of the actuated joints.
+    What's more surprising is that it is often possible to achieve
+    <em>non-collocated</em> partial feedback linearization - a controller which
+    linearizes the dynamics of the unactuated joints. The treatment presented
+    here follows from <elib>Spong94a</elib>.</p>
+
+    <section data-type="sect2"><h1>PFL for the Cart-Pole System</h1>
+
+      <section data-type="sect3"><h1>Collocated</h1>
+
+        <p> Starting from the equations \ref{eq:simple} and \ref{eq:simple2}, we
+        have
+
+          \begin{gather*}
+          \ddot\theta = -\ddot{x}c - s \\
+          % \ddot\theta = -\frac{1}{l} (\ddot{x} c + g s)
+          \ddot{x}(2-c^2) - sc - \dot\theta^2 s = f
+          \end{gather*}
+          Therefore, applying the feedback control law
+          \begin{equation}
+          f = (2 - c^2) \ddot{x}^d - sc - \dot\theta^2 s
+          % f = (m_c + m_p) u + m_p (u c + g s) c - m_p l \dot\theta^2 s
+          \end{equation}
+          results in
+          \begin{align*}
+          \ddot{x} =& \ddot{x}^d \\ \ddot{\theta} =& -\ddot{x}^dc - s,
+          \end{align*}
+
+        which are valid globally.</p>
+
+      </section>
+
+      <section data-type="sect3"><h1>Non-collocated</h1>
+
+        <p> Starting again from equations \ref{eq:simple} and \ref{eq:simple2},
+        we have
+
+        \begin{gather*}
+        \ddot{x} = -\frac{\ddot\theta + s}{c} \\
+        \ddot\theta(c - \frac{2}{c}) - 2 \tan\theta - \dot\theta^2 s = f
+        \end{gather*}
+
+        Applying the feedback control law
+
+        \begin{equation}
+          f = (c - \frac{2}{c}) \ddot\theta^d - 2 \tan\theta - \dot\theta^2 s
+        \end{equation} results in
+        \begin{align*}
+          \ddot\theta =& \ddot\theta^d \\ \ddot{x} =&
+          -\frac{1}{c} \ddot\theta^d - \tan\theta.
+        \end{align*}
+
+        Note that this expression is only valid when $\cos\theta \neq 0$. This
+        is not surprising, as we know that the force cannot create a torque when
+        the beam is perfectly horizontal.</p>
+
+      </section>
+
+    </section> <!-- end PFL for the cart-pole -->
+
+    <section data-type="sect2"><h1>General form</h1>
+
+      <p> For systems that are trivially underactuated (torques on some joints,
+      no torques on other joints), we can, without loss of generality,
+      reorganize the joint coordinates in any underactuated system described by
+      the manipulator equations into the form:
+
+      \begin{align}
+      \bM_{11} \ddot{\bq}_1 + \bM_{12} \ddot{\bq}_2 &= \btau_1, \label{eq:passive_dyn}\\
+      \bM_{21} \ddot{\bq}_1 + \bM_{22} \ddot{\bq}_2 &= \btau_2 + \bu, \label{eq:active_dyn}
+      \end{align}
+
+      with $\bq \in \Re^n$, $\bq_1 \in \Re^m$, $\bq_2 \in \Re^l$, $l=n-m$.
+      $\bq_1$ represents all of the passive joints, and $\bq_2$ represents all
+      of the actuated joints, and the $\btau = \btau_g - \bC\dot\bq$ terms
+      capture all of the Coriolis and gravitational terms, and $$\bM(\bq) =
+      \begin{bmatrix} \bM_{11} & \bM_{12} \\ \bM_{21} & \bM_{22}
+      \end{bmatrix}.$$ Fortunately, because $\bM$ is uniformly (e.g. for all
+      $\bq$) positive definite, $\bM_{11}$ and $\bM_{22}$ are also positive
+      definite.</p>
+
+      <section data-type="sect3"><h1>Collocated linearization</h1>
+
+        <p> Performing the same substitutions into the full manipulator
+        equations, we get:
+
+        \begin{gather}
+        \ddot\bq_1 = \bM_{11}^{-1} \left[ \btau_1 - \bM_{12} \ddot\bq_2
+          \right] \\
+        (\bM_{22} - \bM_{21} \bM_{11}^{-1} \bM_{12})
+          \ddot\bq_2 - \btau_2 + \bM_{21} \bM_{11}^{-1} \btau_1 = \bu
+        \end{gather}
+
+        It can be easily shown that the matrix $(\bM_{22} - \bM_{21}
+        \bM_{11}^{-1} \bM_{12})$ is invertible<elib>Spong94a</elib>; we can see
+        from inspection that it is symmetric.  PFL follows naturally, and is
+        valid globally.</p>
+
+      </section>
+
+      <section data-type="sect3"><h1>Non-collocated linearization</h1>
+
+        <p>
+        \begin{gather}
+        \ddot\bq_2 = \bM_{12}^+ \left[ \btau_1 - \bM_{11} \ddot\bq_1
+          \right] \\
+        (\bM_{21} - \bM_{22} \bM_{12}^+ \bM_{11})
+          \ddot\bq_1 - \btau_2 + \bM_{22} \bM_{12}^+ \btau_1 = \bu
+        \end{gather}
+
+        where $\bM_{12}^+$ is a Moore-Penrose pseudo-inverse.  This inverse
+        provides a unique solution when the rank of $\bM_{12}$ equals $l$, the
+        number of passive degrees of freedom in the system (it cannot be more,
+        since the matrix only has $l$ rows).  This rank condition is sometimes
+        called the property of "Strong Inertial Coupling".  It is state
+        dependent. A system has Global Strong Inertial Coupling if it exhibits
+        Strong Inertial Coupling in every state.</p>
+
+      </section>
+
+      <section data-type="sect3"><h1>Task-space partial feedback linearization</h1>
+
+        <p> In general, we can define some combination of active and passive
+        joints that we would like to control.  This combination is sometimes
+        called a "task space". <todo>cite some task space refs here?</todo>
+        Consider an output function of the form, $$\by = \bh(\bq),$$ with ${\bf
+        y} \in \Re^p$, which defines the task space.  Define $\bH_1 =
+        \frac{\partial \bh}{\partial \bq_1}$, $\bH_2 = \frac{\partial
+        \bh}{\partial \bq_2}$, $\bH = [\bH_1,\bH_2]$.</p>
+
+        <div data-type="theorem"><h1>Task Space PFL</h1>
+
+        <p> If the actuated joints are commanded so that \begin{equation}
+        \ddot\bq_2 = \bar\bH^+ \left [\ddot\by^d - \dot\bH\dot\bq - \bH_1
+        \bM_{11}^{-1}\btau_1 \right],  \label{eq:q2cmd} \end{equation} where
+        $\bar{\bH} = \bH_2 - \bH_1 \bM_{11}^{-1} \bM_{12}.$ and $\bar\bH^+$ is
+        the right Moore-Penrose pseudo-inverse, $$\bar\bH^+ = \bar\bH^T (\bar\bH
+        \bar\bH^T)^{-1},$$ then we have \begin{equation} \ddot\by =
+        \ddot\by^d.\end{equation} subject to \begin{equation}\text{rank}\left(\bar{\bH}
+        \right) = p, \label{eq:rank_condition}\end{equation} </p>
+
+        <p><b>Proof Sketch.</b>
+        Differentiating the output function we have
+        \begin{gather*}
+        \dot\by = \bH \dot\bq \\
+        \ddot\by = \dot\bH \dot\bq + \bH_1 \ddot\bq_1 + \bH_2 \ddot\bq_2.
+        \end{gather*}
+        Solving \ref{eq:passive_dyn} for the dynamics of the unactuated joints
+        we have:
+        \begin{equation}
+        \ddot\bq_1 = \bM_{11}^{-1} (\btau_1 - \bM_{12} \ddot\bq_2) \label{eq:q1cmd}
+        \end{equation}
+        Substituting, we have
+        \begin{align}
+        \ddot\by =& \dot\bH \dot\bq + \bH_1 \bM_{11}^{-1}(\btau_1 -
+          \bM_{12}\ddot\bq_2) + \bH_2 \ddot\bq_2 \\
+        =& \dot\bH \dot\bq + \bar{\bH} \ddot\bq_2 + \bH_1 \bM_{11}^{-1}\btau_1 \\
+        =& \ddot\by^d
+        \end{align}
+        Note that the last line required the rank condition
+        ($\ref{eq:rank_condition}$) on $\bar\bH$ to ensure that the rows
+        of $\bar{\bH}$ are linearly independent, allowing $\bar\bH
+        \bar\bH^+ = \bI$.</p>
+
+        </div>
+
+        <p> In order to execute a task space trajectory one could command
+        $$\ddot\by^d = \ddot{\bar{\by}}^d + \bK_d (\dot{\bar{\by}}^d - \dot\by) +
+        \bK_p (\bar{\by}^d -\by).$$ Assuming the internal dynamics are stable,
+        this yields converging error dynamics, $(\bar{\by}^d - \by)$, when
+        $\bK_p,\bK_d > 0$<elib>Slotine90</elib>.  For a position control robot,
+        the acceleration command of ($\ref{eq:q2cmd}$) suffices. Alternatively,
+        a torque command follows by substituting ($\ref{eq:q2cmd}$) and
+        ($\ref{eq:q1cmd}$) into ($\ref{eq:active_dyn}$).</p>
+
+        <div data-type="example"><h1>End-point trajectory following with the Cart-Pole system</h1>
+
+        <p> Consider the task of trying to track a desired kinematic trajectory
+        with the endpoint of pendulum in the cart-pole system.  With one
+        actuator and kinematic constraints, we might be hard-pressed to track a
+        trajectory in both the horizontal and vertical coordinates.  But we can
+        at least try to track a trajectory in the vertical position of the
+        end-effector.</p>
+
+        <p>Using the task-space PFL derivation, we have:
+        \begin{gather*}
+        y = h(\bq) = -l \cos\theta \\
+        \dot{y} = l \dot\theta \sin\theta
+        \end{gather*}
+        If we define a desired trajectory:
+        $$\bar{y}^d(t) = \frac{l}{2} + \frac{l}{4} \sin(t),$$
+        then the task-space controller is easily implemented using the
+        derivation above.</p>
+
+        <todo>add results here</todo>
+        </div> <!-- end example-->
+
+        <p> The task space derivation above provides a convenient generalization
+        of the partial feedback linearization (PFL) <elib>Spong94a</elib>, which
+        encompasses both the collocated and non-collocated results.  If we
+        choose $\by = \bq_2$ (collocated), then we have $$\bH_1 = 0, \bH_2 =
+        \bI, \dot\bH = 0, \bar\bH = \bI, \bar\bH^+ = \bI.$$ From this, the
+        command in ($\ref{eq:q2cmd}$) reduces to $\ddot\bq_2 = \ddot\bq_2^d$.
+        The actuator command is then $$ \bu = \bM_{21} \bM_{11}^{-1} (\btau_1 -
+        \bM_{12} \ddot\bq_2^d) + \bM_{22} \ddot\bq_2^d + \btau_2,$$ and the rank
+        condition ($\ref{eq:rank_condition}$) is always met.</p>
+
+        <p> If we choose ${\bf y} = \bq_1$ (non-collocated), we have $$\bH_1 =
+        \bI, \bH_2 = 0, \dot\bH = 0, \bar{\bH}=-\bM_{11}^{-1}\bM_{12}.$$ The
+        rank condition ($\ref{eq:rank_condition}$) requires that
+        $\text{rank}(\bM_{12}) = l$, in which case we can write
+        $\bar{\bH}^+=-\bM_{12}^+\bM_{11}$, reducing the rank condition to
+        precisely the "Strong Inertial Coupling" condition described in
+        <elib>Spong94a</elib>. Now the command in ($\ref{eq:q2cmd}$) reduces to
+        \begin{equation} \ddot\bq_2 = \bM_{12}^+ \left [ \btau_1 -
+        \bM_{11}\ddot\bq_1^d \right] \label{eq:q2ddnonco} \end{equation} The
+        actuator command is found by substituting ($\ref{eq:q2ddnonco}$) into
+        ($\ref{eq:active_dyn}$), yielding the same results as in
+        <elib>Spong94a</elib>.</p>
+
+      </section> <!-- task space PFL -->
+    </section>
+  </section>
+
+  <section data-type="sect1"><h1>Swing-up control</h1>
+
+    <section data-type="sect2"><h1>Energy shaping</h1>
+
+      <p> Recall the phase portraits that we used to understand the dynamics of
+      the undamped, unactuated, simple pendulum ($u=b=0$).  The orbits of this
+      phase plot were defined by contours of constant energy.  One very special
+      orbit, known as a <em>homoclinic</em> orbit, is the orbit which passes
+      through the unstable fixed point.  In fact, visual inspection will reveal
+      that any state that lies on this homoclinic orbit must pass into the
+      unstable fixed point.  Therefore, if we seek to design a nonlinear
+      feedback control policy which drives the simple pendulum from any initial
+      condition to the unstable fixed point, a very reasonable strategy would be
+      to use actuation to regulate the energy of the pendulum to place it on
+      this homoclinic orbit, then allow the system dynamics to carry us to the
+      unstable fixed point.</p>
+
+      <p> This idea turns out to be a bit more general than just for the simple
+      pendulum. As we will see, we can use similar concepts of `energy shaping'
+      to produce swing-up controllers for the acrobot and cart-pole systems.
+      It's important to note that it only takes one actuator to change the total
+      energy of a system.</p>
+
+      <p> Although a large variety of swing-up controllers have been proposed
+      for these model systems (c.f. <elib>Fantoni02</elib>,
+      <elib>Araki05</elib>, <elib>Xin04</elib>, <elib>Spong94</elib>,
+      <elib>Mahindrakar05</elib>, <elib>Berkemeier99</elib>,
+      <elib>Murray91</elib>, <elib>Lai06</elib>), the energy shaping controllers
+      tend to be the most natural to derive and perhaps the most well-known.</p>
+
+    </section>
+
+    <section data-type="sect2" id="s:pend_energy_shaping"><h1>Simple pendulum</h1>
+
+      <p> Recall the equations of motion for the undamped simple pendulum were
+      given by $$ml^2 \ddot\theta + mgl\sin\theta = u.$$  The total energy of
+      the simple pendulum is given by $$E = \frac{1}{2} m l^2 \dot\theta^2 -
+      mgl\cos\theta.$$  To understand how to control the energy, observe that
+      \begin{align*} \dot{E} =& ml^2\dot\theta \ddot\theta + \dot\theta
+      mgl\sin\theta \\ =& \dot\theta \left[ u - mgl\sin\theta \right] +
+      \dot\theta mgl\sin\theta \\ =& u\dot\theta. \end{align*} In words, adding
+      energy to the system is simple - simply apply torque in the same direction
+      as $\dot\theta$.  To remove energy, simply apply torque in the opposite
+      direction (e.g., damping).</p>
+
+      <p> To drive the system to the homoclinic orbit, we must regulate the
+      energy of the system to a particular desired energy, $$E^d = mgl.$$ If we
+      define $\tilde{E} = E - E^d$, then we have $$\dot{\tilde{E}} = \dot{E} =
+      u\dot\theta.$$ If we apply a feedback controller of the form $$u = -k
+      \dot\theta \tilde{E},\quad k>0,$$ then the resulting error dynamics are
+      $$\dot{\tilde{E}} = - k \dot\theta^2 \tilde{E}.$$ These error dynamics
+      imply an exponential convergence: $$\tilde{E} \rightarrow 0,$$ except for
+      states where $\dot\theta=0$.  The essential property is that when $E >
+      E^d$, we should remove energy from the system (damping) and when $E <
+      E^d$, we should add energy (negative damping).  Even if the control
+      actions are bounded, the convergence is easily preserved.</p>
+
+      <p> This is a nonlinear controller that will push all system trajectories
+      to the unstable equilibrium.  But does it make the unstable equilibrium
+      locally stable?  <em>It is asymptotically stable, but not stable
+      i.s.L.</em>  Small perturbations may cause the system to drive all of the
+      way around the circle in order to once again return to the unstable
+      equilibrium.  For this reason, once trajectories come into the vicinity of
+      our swing-up controller, we prefer to switch to our LQR balancing
+      controller to performance to complete the task.</p>
+
+      <div data-type="example" class="drake"><h1>Energy Shaping for the
+      Pendulum</h1>
+
+      <p>Take a minute to play around with the energy shaping + LQR controller
+      for swinging up the pendulum</p>
+
+      <div><pre class="highlight"><code>cd underactuated/src/pendulum
+python energy_swingup_and_balance.py</code></pre></div>
+
+      <p>Make sure that you take a minute to look at the code which runs during
+      these examples.  Note the somewhat arbitrary threshold for switching to
+      the LQR controller.  We'll give a much more satisfying answer for that in
+      the <a href="?chapter=lyapunov">chapter on Lyapunov methods</a>.</p>
+
+      </div>
+
+    </section>
+
+    <section data-type="sect2"><h1>Cart-Pole</h1>
+
+      <p> Having thought about the swing-up problem for the simple pendulum,
+      let's try to apply the same ideas to the cart-pole system.  The basic
+      idea, from <elib>Chung95</elib>, is to use collocated PFL to simplify the
+      dynamics, use energy shaping to regulate the pendulum to its homoclinic
+      orbit, then to add a few terms to make sure that the cart stays near the
+      origin.  The collocated PFL (when all parameters are set to 1) left us
+      with:
+
+      \begin{gather}
+      \ddot{x} = u \\
+      \ddot\theta = - u c - s
+      %\ddot\theta = -\frac{1}{l}( u c + g s )
+      \end{gather}
+
+      The energy <em>of the pendulum</em> (a unit mass, unit length, simple
+      pendulum in unit gravity) is given by: $$E(\bx) = \frac{1}{2} \dot\theta^2
+      - \cos\theta.$$ <!-- E = \frac{1}{2}ml^2\dot\theta^2 - mgl\cos\theta -->
+      The desired energy, equivalent to the energy at the desired fixed-point,
+      is $$E^d = 1.$$ <!--  E^d = m_p g l --> Again defining $\tilde{E}(\bx) =
+      E(\bx) - E^d$, we now observe that
+
+      \begin{align*}
+      \dot{\tilde{E}}(\bx) =& \dot{E}(\bx) = \dot\theta \ddot\theta +
+      \dot\theta s \\
+      % \dot\tilde{E} = ml^2 \dot\theta \ddot\theta + mgl s
+      =& \dot\theta [ -uc - s] + \dot\theta s \\
+      % - ml \dot\theta [ u c + g s ] + mgl s
+      =& - u\dot\theta \cos\theta.
+      % - ml u \dot\theta c
+      \end{align*}
+
+      Therefore, if we design a controller of the form $$u = k
+      \dot\theta\cos\theta \tilde{E},\quad k>0$$ the result is $$\dot{\tilde{E}}
+      = - k \dot\theta^2 \cos^2\theta \tilde{E}.$$  <!-- times ml --> This
+      guarantees that $| \tilde{E} |$ is non-increasing, but isn't quite enough
+      to guarantee that it will go to zero.  For example, if $\theta =
+      \dot\theta = 0$, the system will never move.  However, if we have that
+      $$\int_0^t \dot\theta^2(t') \cos^2 \theta(t') dt' \rightarrow \infty,\quad
+      \text{as } t \rightarrow \infty,$$ then we have $\tilde{E}(t) \rightarrow
+      0$. This condition is satisfied for all but the trivial constant
+      trajectories at fixed points.</p>
+
+      <p> Now we return to the full system dynamics (which includes the cart).
+      <elib>Chung95</elib> and <elib>Spong96</elib> use the simple pendulum
+      energy controller with an addition PD controller designed to regulate the
+      cart: $$\ddot{x}^d = k_E \dot\theta \cos\theta \tilde{E} - k_p x - k_d
+      \dot{x}.$$ <elib>Chung95</elib> provides a proof of convergence for this
+      controller with some nominal parameters.  <elib>Fantoni02</elib> provides
+      a slightly different controller derived directly from a Lyapunov
+      argument.</p>
+
+      <figure>
+      <img width="70%" data-src="figures/cartpole_swingup_phase.svg"/>
+
+      <figcaption>Cart-Pole Swingup: Example phase plot of the pendulum
+      subsystem using energy shaping control.  The controller drives the system
+      to the homoclinic orbit, then switches to an LQR balancing controller near
+      the top.</figcaption>
+      </figure>
+
+    </section>
+
+    <section data-type="sect2"><h1>Acrobot</h1>
+
+      <p> Swing-up control for the acrobot can be accomplished in much the same
+      way.  <elib>Spong94</elib> - pump energy.  Clean and simple.  No proof.
+      Slightly modified version (uses arctan instead of sat) in
+      <elib>Spong95</elib>. Clearest presentation in <elib>Spong96</elib>.</p>
+
+      <p> Use collocated PFL.  ($\ddot{q}_2 = \ddot{q}_2^d$). $$E(\bx) =
+      \frac{1}{2}\dot\bq^T\bM\dot{\bq} + U(\bx).$$ $$ E_d = U(\bx^*).$$
+      $$\bar{u} = \dot{q}_1 \tilde{E}.$$ $$\ddot{q}_2^d  = - k_1 q_2 - k_2
+      \dot{q}_2 + k_3 \bar{u},$$</p>
+
+      <p> Extra PD terms prevent proof of asymptotic convergence to homoclinic
+      orbit.  Proof of another energy-based controller in
+      <elib>Xin04</elib>.</p>
+
+    </section>
+
+    <section data-type="sect2"><h1>Discussion</h1>
+
+      <p> The energy shaping controller for swing-up presented here is a pretty
+      faithful representative from the field of nonlinear underactuated control.
+      Typically these control derivations require some clever tricks for
+      simplifying or canceling out terms in the nonlinear equations, then some
+      clever Lyapunov function to prove stability.  In these cases, PFL was used
+      to simplify the equations, and therefore the controller design.</p>
+
+      <p> These controllers are important, representative, and relevant.  But
+      clever tricks with nonlinear equations seem to be fundamentally limited.
+      Most of the rest of the material presented in this book will emphasize
+      more general computational approaches to formulating and solving these and
+      other control problems. </p>
+
+    </section>
+
+  </section>
+
+  <section data-type="sect1"><h1>Other model systems</h1>
+
+    <p> The acrobot and cart-pole systems are just two of the model systems used
+    heavily in underactuated control research.  Other examples include:</p> <ul>
+    <li>Pendubot</li> <li>Inertia wheel pendulum</li> <li>Furuta pendulum
+    (horizontal rotation and vertical pendulum)</li> <li>Hovercraft</li> </ul>
+
+
+  </section>
 
 </section> <!-- ***************  end of acrobot/cartpole/quadrotor chapter **************   -->
 
