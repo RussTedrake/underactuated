@@ -15,7 +15,7 @@ x = prog.NewIndeterminates(1, "x")
 # Define the Lyapunov function.
 V = x.dot(x)
 
-# Short circuit until I have symbolic::Polynomial::Jacobian
+# Short circuit until I have symbolic::Expression::Jacobian
 # Vdot = V.Jacobian(x).dot(dynamics(x))
 Vdot = 2.*x.dot(dynamics(x))
 rho = prog.NewContinuousVariables(1, "rho")[0]
