@@ -15,7 +15,7 @@ else:
     A.append = np.array(((-1, .5), (-3, -1)))
     A.append = np.array(((-1, .1), (-10, -1)))
     # Interesting for 2D plotting (a two element parameterization of stable
-    # linear systems)
+    # linear systems).  Stable iff ab < 1.
     # a = randn;  ab = 2*rand - 1;  b=ab/a;
     # A{i} = [-1 a; b -1];
 

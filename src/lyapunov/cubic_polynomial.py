@@ -2,7 +2,8 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-from pydrake.all import (MathematicalProgram, SolutionResult, Variables)
+from pydrake.all import (Jacobian, MathematicalProgram, SolutionResult,
+                         Variables)
 
 
 def dynamics(x):
@@ -11,14 +12,13 @@ def dynamics(x):
 
 prog = MathematicalProgram()
 x = prog.NewIndeterminates(1, "x")
+rho = prog.NewContinuousVariables(1, "rho")[0]
 
 # Define the Lyapunov function.
 V = x.dot(x)
+Vdot = Jacobian([V], x).dot(dynamics(x))[0]
 
-# Short circuit until I have symbolic::Expression::Jacobian
-# Vdot = V.Jacobian(x).dot(dynamics(x))
-Vdot = 2.*x.dot(dynamics(x))
-rho = prog.NewContinuousVariables(1, "rho")[0]
+# Define the Lagrange multipliers.
 (lambda_, constraint) = prog.NewSosPolynomial(Variables(x), 4)
 
 prog.AddSosConstraint((V-rho) * x.dot(x) - lambda_.ToExpression() * Vdot)
