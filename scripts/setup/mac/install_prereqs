@@ -62,8 +62,8 @@ tidy-html5
 EOF
 )
 
-if [[ ! -f "${HOME}/.bazelrc" ]] || ! grep -q 'build --python_path=/usr/local/opt/python/libexec/bin/python' "${HOME}/.bazelrc"; then
-  echo 'build --python_path=/usr/local/opt/python/libexec/bin/python' >> "${HOME}/.bazelrc"
+if [[ ! -f "${HOME}/.bazelrc" ]] || ! grep -q 'build --python_path=/usr/local/opt/python@2/libexec/bin/python' "${HOME}/.bazelrc"; then
+  echo 'build --python_path=/usr/local/opt/python@2/libexec/bin/python' >> "${HOME}/.bazelrc"
 fi
 
 pip2 install --upgrade $(tr '\n' ' ' <<EOF
