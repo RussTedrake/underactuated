@@ -9,7 +9,6 @@ import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import scipy as sp
 import scipy.spatial
-import scipy.interpolate
 
 import pydrake
 import pydrake.rbtree
@@ -243,32 +242,6 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                 self.body_fill_list[body_fill_index].get_path().vertices[:, :] = np.transpose(patch)  # noqa
                 body_fill_index += 1
 
-    def animate(self, log, rate, resample=True, repeat=False):
-        # log - a reference to a pydrake.systems.primitives.SignalLogger that
-        # constains the plant state after running a simulation.
-        # rate - the frequency of frames in the resulting animation
-        # resample -- should we do a resampling operation to make
-        # the samples more consistent in time? This can be disabled
-        # if you know the sampling rate is exactly the rate you supply
-        # as an argument.
-        # repeat - should the resulting animation repeat?
-        t = log.sample_times()
-        x = log.data()
-
-        if resample:
-            t_resample = np.arange(0, t[-1], 1./rate)
-            x = scipy.interpolate.interp1d(t, x, kind='linear', axis=1)(t_resample)  # noqa
-            t = t_resample
-
-        def animate_update(i): self.draw(x[:, i])
-        ani = animation.FuncAnimation(self.fig,
-                                      animate_update,
-                                      t.shape[0],
-                                      interval=1000./rate,
-                                      repeat=repeat)
-        return ani
-
-
 def setupPendulumExample():
     rbt = RigidBodyTree(FindResource("pendulum/pendulum.urdf"),
                         floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)  # noqa
@@ -420,7 +393,7 @@ if __name__ == "__main__":
         print(state.CopyToVector())
 
         # Generate an animation of whatever happened
-        ani = visualizer.animate(signalLogger, signalLogRate, repeat=True)
+        ani = visualizer.animate(signalLogger, repeat=True)
 
         if (args.animate):
             print "Animating the simulation on repeat -- " \

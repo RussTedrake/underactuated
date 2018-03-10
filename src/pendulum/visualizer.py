@@ -5,7 +5,6 @@ from pydrake.systems.framework import (
     Context,
     PortDataType,
     )
-import scipy.interpolate
 
 from underactuated.pyplot_visualizer import PyPlotVisualizer
 
@@ -40,31 +39,10 @@ class PendulumVisualizer(PyPlotVisualizer):
             theta = self.EvalVectorInput(context, 0).get_value()[0]
             self.ax.set_title('t = {:.1f}'.format(context.get_time()))
         else:
-            theta = context
+            theta = context[0]
             self.ax.set_title('')
 
         path = self.arm[0].get_path()
         path.vertices[:,0] = self.arm_x*math.cos(theta)-self.arm_y*math.sin(theta)
         path.vertices[:,1] = self.arm_x*math.sin(theta)+self.arm_y*math.cos(theta)
         self.center_of_mass[0].set_data(self.ac1*math.sin(theta),-self.ac1*math.cos(theta))
-
-    def animate(self, log, rate, resample=True, repeat=False):
-        # log - a reference to a pydrake.systems.primitives.SignalLogger that
-        # constains the plant state after running a simulation.
-        # rate - the frequency of frames in the resulting animation
-        # resample -- should we do a resampling operation to make
-        # the samples more consistent in time? This can be disabled
-        # if you know the sampling rate is exactly the rate you supply
-        # as an argument.
-        # repeat - should the resulting animation repeat?
-        t = log.sample_times()
-        x = log.data()
-
-        if resample:
-            t_resample = np.arange(0, t[-1], 1./rate)
-            x = scipy.interpolate.interp1d(t, x, kind='linear', axis=1)(t_resample)
-            t = t_resample
-
-        animate_update = lambda i: self.draw(x[0, i])
-        ani = animation.FuncAnimation(self.fig, animate_update, t.shape[0], interval=1000./rate, repeat=repeat)
-        return ani

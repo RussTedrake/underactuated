@@ -54,10 +54,15 @@ result = dircol.Solve()
 assert(result == SolutionResult.kSolutionFound)
 
 x_trajectory = dircol.ReconstructStateTrajectory()
+
+from visualizer import PendulumVisualizer
+vis = PendulumVisualizer()
+ani = vis.animate(x_trajectory, repeat=True)
+
 x_knots = np.hstack([x_trajectory.value(t) for t in
                      np.linspace(x_trajectory.start_time(),
                                  x_trajectory.end_time(), 100)])
-
+plt.figure()
 plt.plot(x_knots[0, :], x_knots[1, :])
 
 plt.show()

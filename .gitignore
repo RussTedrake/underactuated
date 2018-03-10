@@ -3,3 +3,4 @@
 *.pyc
 build/
 examples/
+*/.ipynb_checkpoints
