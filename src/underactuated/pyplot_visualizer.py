@@ -26,12 +26,12 @@ class PyPlotVisualizer(LeafSystem):
         state.
     '''
     
-    def __init__(self, draw_rate=60, facecolor=[1, 1, 1]):
+    def __init__(self, draw_timestep=0.033333, facecolor=[1, 1, 1]):
         LeafSystem.__init__(self)
 
         self.set_name('pyplot_visualization')
-        self.rate = draw_rate
-        self._DeclarePeriodicPublish(1./draw_rate, 0.0)
+        self.timestep = draw_timestep
+        self._DeclarePeriodicPublish(draw_timestep, 0.0)
 
         (self.fig, self.ax) = plt.subplots(facecolor=facecolor)
         self.ax.axis('equal')
@@ -50,11 +50,10 @@ class PyPlotVisualizer(LeafSystem):
     def animate(self, log, resample=True, repeat=False):
         # log - a reference to a pydrake.systems.primitives.SignalLogger that
         # contains the plant state after running a simulation.
-        # rate - the frequency of frames in the resulting animation
         # resample -- should we do a resampling operation to make
         # the samples more consistent in time? This can be disabled
-        # if you know the sampling rate is exactly the rate you supply
-        # as an argument.
+        # if you know the draw_timestep passed into the constructor exactly
+        # matches the sample timestep of the log.
         # repeat - should the resulting animation repeat?
 
         if type(log) is SignalLogger:
@@ -64,14 +63,14 @@ class PyPlotVisualizer(LeafSystem):
             if resample:
                 import scipy.interpolate
 
-                t_resample = np.arange(0, t[-1], 1./self.rate)
+                t_resample = np.arange(0, t[-1], self.timestep)
                 x = scipy.interpolate.interp1d(t, x, kind='linear', axis=1)(t_resample)  # noqa
                 t = t_resample
 
         # TODO(russt): Replace PiecewisePolynomial with Trajectory if I ever
         # add the pydrake bindings for the base class.
         elif type(log) is PiecewisePolynomial:
-            t = np.arange(log.start_time(), log.end_time(), 1./self.rate)
+            t = np.arange(log.start_time(), log.end_time(), self.timestep)
             x = np.hstack([log.value(time) for time in t])
 
         def animate_update(i):
@@ -80,7 +79,7 @@ class PyPlotVisualizer(LeafSystem):
         ani = animation.FuncAnimation(self.fig,
                                       animate_update,
                                       t.shape[0],
-                                      interval=1000./self.rate,
+                                      interval=1000*self.timestep,
                                       repeat=repeat)
         return ani
 
