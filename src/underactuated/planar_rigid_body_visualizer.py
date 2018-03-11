@@ -242,6 +242,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                 self.body_fill_list[body_fill_index].get_path().vertices[:, :] = np.transpose(patch)  # noqa
                 body_fill_index += 1
 
+
 def setupPendulumExample():
     rbt = RigidBodyTree(FindResource("pendulum/pendulum.urdf"),
                         floating_base_type=pydrake.rbtree.FloatingBaseType.kFixed)  # noqa
