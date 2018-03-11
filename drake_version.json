@@ -2,6 +2,7 @@
   "base_url" : "https://drake-packages.csail.mit.edu/drake/",
   "build" : "continuous",
   "version" : "latest",
+  "mac_version" : "latest",
   "__comment__build_version__options__" : {
     "nightly" : "'latest' or a date, e.g. '20170719'.  Nightlies have the date of the prior evening (not the morning after)",
     "continuous" : "'latest'",
