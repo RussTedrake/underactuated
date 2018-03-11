@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from pydrake.examples.pendulum import (PendulumPlant, PendulumState)
 from pydrake.all import (DirectCollocation, PiecewisePolynomial,
                          SolutionResult)
+from visualizer import PendulumVisualizer
 
 plant = PendulumPlant()
 context = plant.CreateDefaultContext()
@@ -55,7 +56,6 @@ assert(result == SolutionResult.kSolutionFound)
 
 x_trajectory = dircol.ReconstructStateTrajectory()
 
-from visualizer import PendulumVisualizer
 vis = PendulumVisualizer()
 ani = vis.animate(x_trajectory, repeat=True)
 
