@@ -136,6 +136,6 @@ simulator.StepTo(10.)
 
 # Visualize the result as a video.
 vis = PendulumVisualizer()
-ani = vis.animate(logger, resample=False, repeat=True)
+ani = vis.animate(logger, repeat=True)
 
 plt.show()
