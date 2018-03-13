@@ -10,19 +10,15 @@ from visualizer import PendulumVisualizer
 plant = PendulumPlant()
 context = plant.CreateDefaultContext()
 
-kNumTimeSamples = 21
-kMinimumTimeStep = 0.2
-kMaximumTimeStep = 0.5
-
-dircol = DirectCollocation(plant, context, kNumTimeSamples, kMinimumTimeStep,
-                           kMaximumTimeStep)
+dircol = DirectCollocation(plant, context, num_time_samples=21,
+                           minimum_timestep=0.2, maximum_timestep=0.5)
 
 dircol.AddEqualTimeIntervalsConstraints()
 
-kTorqueLimit = 3.0  # N*m.
+torque_limit = 3.0  # N*m.
 u = dircol.input()
-dircol.AddConstraintToAllKnotPoints(-kTorqueLimit <= u[0])
-dircol.AddConstraintToAllKnotPoints(u[0] <= kTorqueLimit)
+dircol.AddConstraintToAllKnotPoints(-torque_limit <= u[0])
+dircol.AddConstraintToAllKnotPoints(u[0] <= torque_limit)
 
 initial_state = PendulumState()
 initial_state.set_theta(0.0)

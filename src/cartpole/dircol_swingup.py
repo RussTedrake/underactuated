@@ -12,12 +12,8 @@ tree = RigidBodyTree(FindResource("cartpole/cartpole.urdf"),
 plant = RigidBodyPlant(tree)
 context = plant.CreateDefaultContext()
 
-kNumTimeSamples = 21
-kMinimumTimeStep = 0.1
-kMaximumTimeStep = 0.4
-
-dircol = DirectCollocation(plant, context, kNumTimeSamples, kMinimumTimeStep,
-                           kMaximumTimeStep)
+dircol = DirectCollocation(plant, context, num_time_samples=21,
+                           minimum_timestep=0.1, maximum_timestep=0.4)
 
 dircol.AddEqualTimeIntervalsConstraints()
 

@@ -11,20 +11,16 @@ from underactuated import (FindResource, PlanarRigidBodyVisualizer)
 plant = AcrobotPlant()
 context = plant.CreateDefaultContext()
 
-kNumTimeSamples = 21
-kMinimumTimeStep = 0.2
-kMaximumTimeStep = 0.5
-
-dircol = DirectCollocation(plant, context, kNumTimeSamples, kMinimumTimeStep,
-                           kMaximumTimeStep)
+dircol = DirectCollocation(plant, context, num_time_samples=21,
+                           minimum_timestep=0.2, maximum_timestep=0.5)
 
 dircol.AddEqualTimeIntervalsConstraints()
 
 # Add input limits.
-kTorqueLimit = 8.0  # N*m.
+torque_limit = 8.0  # N*m.
 u = dircol.input()
-dircol.AddConstraintToAllKnotPoints(-kTorqueLimit <= u[0])
-dircol.AddConstraintToAllKnotPoints(u[0] <= kTorqueLimit)
+dircol.AddConstraintToAllKnotPoints(-torque_limit <= u[0])
+dircol.AddConstraintToAllKnotPoints(u[0] <= torque_limit)
 
 initial_state = (0., 0., 0., 0.)
 dircol.AddBoundingBoxConstraint(initial_state, initial_state,
