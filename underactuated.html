@@ -67,8 +67,8 @@
 
           var list_of_drake_examples = "";
 
-	  // Set platform to linux unless I detect mac. 
-	  setPlatform(navigator.appVersion.indexOf("Mac")!=1);
+          // Set platform to linux unless I detect mac.
+          setPlatform(navigator.appVersion.indexOf("Mac")!=1);
 
           for (i = 0; i < chapters.length; i++) {
             var titles=chapters[i].getElementsByTagName("h1");
@@ -199,22 +199,35 @@
                 }
               }
 
-              var codeTags = chapters[i].getElementsByTagName('drake_code');
+              var codeTags = chapters[i].getElementsByTagName('pysrcinclude');
               for (j = 0; j < codeTags.length; j++) {
-                  var file = codeTags[j].innerHTML;
+                  var file = 'src/' + codeTags[j].innerHTML;
                   var xhttp = new XMLHttpRequest();
                   xhttp.onreadystatechange = ( function (j) { return function() {
                       if (this.readyState == 4 && this.status == 200) {
                           var text = hljs.highlight('python',this.responseText,true)
                           codeTags[j].innerHTML =
-                              '<div><pre><code>'+text.value+'</code></pre></div>';
+                              '<div><pre><code class="python">'+text.value+'</code></pre></div>';
                       }
                   } })(j);
                   xhttp.overrideMimeType('text/plain');
-                  xhttp.open('GET', codeTags[j].innerHTML, true);
+                  xhttp.open('GET', file, true);
                   // note: only works for files in or below current directory http://jquery-howto.blogspot.com/2008/12/access-to-restricted-uri-denied-code.html
                   xhttp.send();
               }
+
+              var pysrcTags = chapters[i].getElementsByTagName('pysrc');
+              for (j = 0; j < pysrcTags.length; j++) {
+                  var file = pysrcTags[j].innerHTML;
+                  // TODO(russt): Consider checking that the file exists.
+                  pysrcTags[j].innerHTML =
+                              '<p><pre style="margin-left:6px"><code>python <a href="src/'+ file + '">' + file + '</a>';
+                  if (pysrcTags[j].hasAttribute("args")) {
+                      pysrcTags[j].innerHTML += ' '+ pysrcTags[j].getAttribute("args");
+                  }
+                  pysrcTags[j].innerHTML += '</code></pre></p>';
+              }
+
 
 //              document.getElementById("debug_output").innerHTML="got here";
               var display_num = i;
@@ -763,7 +776,7 @@ semester.</p>
       href="?chapter=drake">Appendix</a>, then open Python and try the following
       lines in your Python console:</p>
 
-      <drake_code>src/double_pendulum/simulator.py</drake_code>
+      <pysrcinclude>double_pendulum/simulator.py</pysrcinclude>
 
       <p>It's worth taking a peek at the <a
       href="src/double_pendulum/double_pendulum.urdf">file that describes the
@@ -777,7 +790,7 @@ semester.</p>
       (with numerical values assigned for mass, link lengths, etc) and for a
       particular state of the robot:</p>
 
-      <drake_code>src/double_pendulum/manipulator.py</drake_code>
+      <pysrcinclude>double_pendulum/manipulator.py</pysrcinclude>
 
       <todo>Implement the symbolic version</todo>
 
@@ -880,19 +893,12 @@ semester.</p>
     <div data-type="drake"><h1>Python Example</h1> You can run these examples
     using:
 
-    <p>
-      <pre><code class="python">cd underactuated/src/double_pendulum
-python as_single_pendulum.py --gravity 9.8</code></pre>
-    </p>
+    <pysrc args="--gravity 9.8">double_pendulum/as_single_pendulum.py</pysrc>
 
-    <p>
-      <pre><code class="python">cd underactuated/src/double_pendulum
-python as_single_pendulum.py --gravity -9.8</code></pre>
-    </p>
+    <pysrc args="--gravity -9.8">double_pendulum/as_single_pendulum.py</pysrc>
 
-    <p>As always, make soure you take a moment to <a
-    href="src/double_pendulum/as_single_pendulum.py">read through the source
-    code</a>.</p>
+    <p>As always, make soure you take a moment to read through the source
+    code (linked above).</p>
 
     </div>
 
@@ -1087,12 +1093,18 @@ python as_single_pendulum.py --gravity -9.8</code></pre>
     <p> Let us first consider the dynamics of the pendulum if it is driven in a
     particular simple way: a torque which does not vary with time:
     \begin{equation} ml^2 \ddot\theta + b\dot\theta + mgl \sin\theta = u_0.
-    \end{equation} You can experiment with this system in <drake></drake> using
+      \end{equation} </p>.
 
-    <pre><code class="python">cd underactuated/src/pendulum
-python torque_slider_demo.py</code></pre>
 
-    <p>(use the slider at the top to adjust the torque input).</p>
+    <div data-type="example" class="drake"><h1>Simple Pendulum in Python</h1>
+
+      <p>You can experiment with this system in <drake></drake> using</p>
+
+      <pysrc>pendulum/torque_slider_demo.py</pysrc>
+
+      <p>(use the slider at the top to adjust the torque input).</p>
+
+    </div>
 
     <p> These are relatively simple differential equations, so if I give you
     $\theta(0)$ and $\dot\theta(0)$, then you should be able to integrate them
@@ -1629,10 +1641,9 @@ complete trajectory.</p>
       <div data-type="example" class="drake"><h1>The Acrobot in Python</h1>
 
       <p>You can experiment with the Acrobot dynamics in <drake></drake> using,
-      e.g.
+        e.g.</p>
 
-      <div><pre class="highlight"><code>cd underactuated/src/acrobot
-python torque_slider_demo.py</code></pre></div>
+      <pysrc>acrobot/torque_slider_demo.py</pysrc>
 
       </div>
 
@@ -1709,10 +1720,9 @@ python torque_slider_demo.py</code></pre></div>
       Python</h1>
 
       <p>You can experiment with the Cart-Pole dynamics in <drake></drake> using,
-      e.g.
+        e.g.</p>
 
-      <div><pre class="highlight"><code>cd underactuated/src/cartpole
-python force_slider_demo.py</code></pre></div>
+      <pysrc>cartpole/force_slider_demo.py</pysrc>
 
       </div>
 
@@ -1992,11 +2002,11 @@ python force_slider_demo.py</code></pre></div>
 
       <p>Take a minute to play around with the LQR controller for the Acrobot</p>
 
-      <div><pre class="highlight"><code>cd underactuated/src/acrobot
-python balancing_lqr.py</code></pre></div>
-      and Cart-Pole
-      <div><pre class="highlight"><code>cd underactuated/src/cartpole
-python balancing_lqr.py</code></pre></div>
+      <pysrc>acrobot/balancing_lqr.py</pysrc>
+
+      <p>and Cart-Pole</p>
+
+      <pysrc>cartpole/balancing_lqr.py</pysrc>
 
       <p>Make sure that you take a minute to look at the code which runs during
       these examples.  Can you set the ${\bf Q}$ and ${\bf R}$ matrices
@@ -2353,8 +2363,7 @@ python balancing_lqr.py</code></pre></div>
       <p>Take a minute to play around with the energy shaping + LQR controller
       for swinging up the pendulum</p>
 
-      <div><pre class="highlight"><code>cd underactuated/src/pendulum
-python energy_swingup_and_balance.py</code></pre></div>
+      <pysrc>pendulum/energy_swingup_and_balance.py</pysrc>
 
       <p>Make sure that you take a minute to look at the code which runs during
       these examples.  Note the somewhat arbitrary threshold for switching to
@@ -3739,8 +3748,7 @@ where this additional input $\bw$ is the (vector) output of some random process.
       barycentric interpolation to interpolate between nodes) in <drake></drake>
       using: </p>
 
-    <div><pre class="highlight"><code>cd underactuated/src/double_integrator
-python value_iteration.py</code></pre></div>
+      <pysrc>double_integrator/value_iteration.py</pysrc>
 
       <p>Please do take some time to try different cost functions by
       editing the code yourself.</p>
@@ -3773,8 +3781,7 @@ python value_iteration.py</code></pre></div>
       <p>You can run value iteration for the simple pendulum (using barycentric
       interpolation to interpolate between nodes) in <drake></drake> using:</p>
 
-    <div><pre class="highlight"><code>cd underactuated/src/pendulum
-python value_iteration.py</code></pre></div>
+      <pysrc>pendulum/value_iteration.py</pysrc>
 
     <p>Again, you can easily try different cost functions by
       editing the code yourself.</p>
@@ -4804,8 +4811,7 @@ python value_iteration.py</code></pre></div>
 
         <p> You can try this example for yourself in <drake></drake>.</p>
 
-        <div><pre class="highlight"><code>cd underactuated/src/lyapunpv
-python linear_systems_common_lyapunov.py</code></pre></div>
+        <pysrc>lyapunov/linear_systems_common_lyapunov.py</pysrc>
 
         <p>As always, make sure that you open up the code and take a look.</p>
 
@@ -5154,8 +5160,7 @@ python linear_systems_common_lyapunov.py</code></pre></div>
 
           <p>You can try this example for yourself in <drake></drake>.</p>
 
-          <div><pre class="highlight"><code>cd underactuated/src/lyapunpv
-python cubic_polynomial.py</code></pre></div>
+          <pysrc>lyapunov/cubic_polynomial.py</pysrc>
 
         </div>
 
@@ -6413,8 +6418,7 @@ export PATH=/usr/local/opt/python/libexec/bin:${PATH}</code></pre></div>
     that working directory of your python interpreter is the
     <code>underactuated/src</code> directory.</p>
 
-      <div><pre class="highlight"><code>cd underactuated/src/double_pendulum
-python simulator.py</code></pre></div>
+      <pysrc>double_pendulum/simulator.py</pysrc>
 
   </section>
 
@@ -6523,7 +6527,7 @@ jupyter notebook simulator.ipynb</code></pre></div>
       variable, and one output.  It can be implemented in <drake></drake> using
       the following code:</p>
 
-      <drake_code>src/simple/continuous_time_system.py</drake_code>
+      <pysrcinclude>simple/continuous_time_system.py</pysrcinclude>
 
     </div>
 
@@ -6542,7 +6546,7 @@ jupyter notebook simulator.ipynb</code></pre></div>
       variable, and one output.  It can be implemented in <drake></drake> using
       the following code:</p>
 
-      <drake_code>src/simple/discrete_time_system.py</drake_code>
+      <pysrcinclude>simple/discrete_time_system.py</pysrcinclude>
 
     </div>
 
@@ -6581,7 +6585,7 @@ jupyter notebook simulator.ipynb</code></pre></div>
       <p>Use the following code to instantiate the
       <code>SimpleContinuousTimeSystem </code>, simulate it, and plot the
       results:</p>
-      <drake_code>src/simple/continuous_time_system_simulation.py</drake_code>
+      <pysrcinclude>simple/continuous_time_system_simulation.py</pysrcinclude>
 
       <p>This should generate the plot below</p>
       <figure>
@@ -6592,7 +6596,7 @@ jupyter notebook simulator.ipynb</code></pre></div>
       </figure>
 
       <p>The code for running the discrete time system is basically identical:</p>
-      <drake_code>src/simple/discrete_time_system_simulation.py</drake_code>
+      <pysrcinclude>simple/discrete_time_system_simulation.py</pysrcinclude>
 
     </div>
 
@@ -6662,7 +6666,7 @@ jupyter notebook simulator.ipynb</code></pre></div>
       visualizer), and expose the input of the plant as an input to the
       <code>Diagram</code> being constructed:</p>
 
-      <drake_code>src/double_pendulum/simulator.py</drake_code>
+      <pysrcinclude>double_pendulum/simulator.py</pysrcinclude>
 
     </div>
 
