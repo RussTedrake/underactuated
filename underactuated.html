@@ -1908,11 +1908,11 @@ complete trajectory.</p>
         represented by this finite sum; the derivation uses Sylvester's Theorem
         <elib>Ogata96</elib>, <elib>Chen98a</elib>.  Then we have,
         \begin{align*} \bx(0) =& - \sum_{k=0}^{n-1} {\bf A}^k \bB \int_0^{t_f}
-        \alpha_k(\tau) u(\tau) d\tau \\ =& -\sum_{k=0}^{n-1} {\bf A}^k \bB w_k
-        \text{, where } w_k = \int_0^{t_f} \alpha_k(\tau) u(\tau) d\tau \\ =& -
+        \alpha_k(\tau) \bu(\tau) d\tau \\ =& -\sum_{k=0}^{n-1} {\bf A}^k \bB w_k
+        \text{, where } \bw_k = \int_0^{t_f} \alpha_k(\tau) \bu(\tau) d\tau \\ =& -
         \begin{bmatrix} \bB & {\bf AB} & {\bf A}^2\bB & \cdots & {\bf
-        A}^{n-1}\bB \end{bmatrix}_{n \times (nm)} \begin{bmatrix} w_0 \\ w_1 \\
-        w_2 \\ \vdots \\ w_{n-1} \end{bmatrix} \end{align*} The matrix
+        A}^{n-1}\bB \end{bmatrix}_{n \times (nm)} \begin{bmatrix} \bw_0 \\ \bw_1 \\
+        \bw_2 \\ \vdots \\ \bw_{n-1} \end{bmatrix} \end{align*} The matrix
         containing the vectors $\bB$, ${\bf AB}$, ... ${\bf A}^{n-1}\bB$ is
         called the controllability matrix.  In order for the system to be
         controllable, for every initial condition $\bx(0)$ we must be able to
