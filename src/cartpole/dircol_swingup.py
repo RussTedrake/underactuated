@@ -36,7 +36,9 @@ dircol.AddRunningCost(R*u[0]**2)
 dircol.AddFinalCost(dircol.time())
 
 initial_x_trajectory = \
-    PiecewisePolynomial.FirstOrderHold([0., 4.], [initial_state, final_state])
+    PiecewisePolynomial.FirstOrderHold([0., 4.],
+                                       np.column_stack((initial_state,
+                                                        final_state)))
 dircol.SetInitialTrajectory(PiecewisePolynomial(), initial_x_trajectory)
 
 result = dircol.Solve()
