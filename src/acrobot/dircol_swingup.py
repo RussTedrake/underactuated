@@ -39,13 +39,28 @@ dircol.AddRunningCost(R*u[0]**2)
 # Add a final cost equal to the total duration.
 dircol.AddFinalCost(dircol.time())
 
-initial_x_trajectory = \
-    PiecewisePolynomial.FirstOrderHold([0., 4.],
+initial_x_trajectories = \
+    [PiecewisePolynomial.FirstOrderHold([0., 4.],
                                        np.column_stack((initial_state,
-                                                        final_state)))
-dircol.SetInitialTrajectory(PiecewisePolynomial(), initial_x_trajectory)
+                                                        final_state)))]
 
-result = dircol.Solve()
+initial_x_trajectories.append(PiecewisePolynomial.FirstOrderHold([0., 4.],
+                                       np.column_stack((initial_state,
+                                                        initial_state))))
+
+initial_x_trajectories.append(PiecewisePolynomial.FirstOrderHold([0., 4.],
+                                       np.column_stack((final_state,
+                                                        final_state))))
+
+result = SolutionResult.kUnknownError
+for initial_x_trajectory in initial_x_trajectories:
+    dircol.SetInitialTrajectory(PiecewisePolynomial(), initial_x_trajectory)
+
+    result = dircol.Solve()
+
+    if (result == SolutionResult.kSolutionFound):
+        break
+
 assert(result == SolutionResult.kSolutionFound)
 
 x_trajectory = dircol.ReconstructStateTrajectory()
