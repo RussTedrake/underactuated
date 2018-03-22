@@ -41,14 +41,16 @@ dircol.AddFinalCost(dircol.time())
 
 initial_x_trajectories = \
     [PiecewisePolynomial.FirstOrderHold([0., 4.],
-                                       np.column_stack((initial_state,
-                                                        final_state)))]
+                                        np.column_stack((initial_state,
+                                                         final_state)))]
 
-initial_x_trajectories.append(PiecewisePolynomial.FirstOrderHold([0., 4.],
+initial_x_trajectories.append(
+    PiecewisePolynomial.FirstOrderHold([0., 4.],
                                        np.column_stack((initial_state,
                                                         initial_state))))
 
-initial_x_trajectories.append(PiecewisePolynomial.FirstOrderHold([0., 4.],
+initial_x_trajectories.append(
+    PiecewisePolynomial.FirstOrderHold([0., 4.],
                                        np.column_stack((final_state,
                                                         final_state))))
 
