@@ -33,6 +33,8 @@ dircol.AddBoundingBoxConstraint(final_state, final_state,
                                 dircol.final_state())
 # dircol.AddLinearConstraint(dircol.final_state() == final_state)
 
+dircol.AddDurationBounds(0.5, 6)
+
 R = 10  # Cost on input "effort".
 dircol.AddRunningCost(R*u[0]**2)
 
@@ -43,9 +45,11 @@ initial_x_trajectory = \
     PiecewisePolynomial.FirstOrderHold([0., 4.],
                                        np.column_stack((initial_state,
                                                         final_state)))
+
 dircol.SetInitialTrajectory(PiecewisePolynomial(), initial_x_trajectory)
 
 result = dircol.Solve()
+
 assert(result == SolutionResult.kSolutionFound)
 
 x_trajectory = dircol.ReconstructStateTrajectory()
