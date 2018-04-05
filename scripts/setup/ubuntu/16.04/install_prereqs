@@ -60,6 +60,7 @@ EOF
 pip install --upgrade --disable-pip-version-check $(tr '\n' ' ' <<EOF
 jupyter
 pycodestyle
+meshcat
 EOF
 )
 
