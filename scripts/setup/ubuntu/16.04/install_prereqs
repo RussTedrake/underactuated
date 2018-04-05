@@ -45,6 +45,7 @@ apt install -qq --no-install-recommends $(tr '\n' ' ' <<EOF
 build-essential
 curl
 ffmpeg
+libzmq3
 python
 python-dev
 python-matplotlib
