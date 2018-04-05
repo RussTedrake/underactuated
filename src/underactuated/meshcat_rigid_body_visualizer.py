@@ -203,9 +203,11 @@ def setupValkyrieExample():
 
 
 if __name__ == "__main__":
+    print "Warning: if you have not yet run meshcat-server in another " \
+          "terminal, this will hang."
+          
     # Usage demo: load a URDF, rig it up with a constant torque input, and
     # draw it.
-
     np.set_printoptions(precision=5, suppress=True)
     parser = argparse.ArgumentParser()
     parser.add_argument("-t", "--torque",
