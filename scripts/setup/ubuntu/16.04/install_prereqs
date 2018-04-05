@@ -61,6 +61,7 @@ EOF
 pip install --upgrade $(tr '\n' ' ' <<EOF
 jupyter
 pycodestyle
+meshcat
 EOF
 )
 
