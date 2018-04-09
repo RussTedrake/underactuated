@@ -1,8 +1,8 @@
 {
   "base_url" : "https://drake-packages.csail.mit.edu/drake/",
   "build" : "nightly",
-  "version" : "20180325",
-  "mac_version" : "20180325",
+  "version" : "20180410",
+  "mac_version" : "20180410",
   "__comment__build_version__options__" : {
     "nightly" : "'latest' or a date, e.g. '20170719'.  Nightlies have the date of the prior evening (not the morning after)",
     "continuous" : "'latest'",
