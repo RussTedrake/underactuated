@@ -2890,8 +2890,8 @@ complete trajectory.</p>
     (pre-impact) swing toe as a function $\bphi(\bq_{fb})$.  Define the Jacobian
     of this function: $\bJ = \frac{\partial \bphi}{\partial \bq_{fb}}.$</li>
     <li>The post-impact velocity that ensures that $\dot\bphi = 0$ after the
-    collision is given by $$\dot\bq^+ = \left[ I -
-    \bM_{fb}^{-1}J^T[JM_{fb}^{-1}J^T]^{-1}J\right] \dot\bq^-,$$ noting that
+    collision is given by $$\dot\bq^+ = \left[ \bI -
+    \bM_{fb}^{-1}\bJ^T[\bJ\bM_{fb}^{-1}\bJ^T]^{-1}\bJ\right] \dot\bq^-,$$ noting that
     $\dot{x}^- = \dot{y}^- = 0$, and that you need only read out the last two
     elements of $\dot{\bq}^+$.  The velocity of the post-impact stance foot will
     be zero by definition, and the new velocity of the pre-impact stance foot
@@ -6967,9 +6967,9 @@ jupyter notebook simulator.ipynb</code></pre></div>
       both sides of the equation over that (instantaneous) interval:
       \begin{align*}\int_{t_c^-}^{t_c^+} dt\left[  \bM \ddot{\bq} \right] =
       \int_{t_c^-}^{t_c^+} dt \left[ \btau + \Phi^T \lambda \right] \end{align*}
-      Since $\bM$ and $\btau$ are constants over this interval, we are left with
-      $$\bM\dot{\bq}^+ - \bM\dot{\bq}^- = \Phi^T \int_{t_c^-}^{t_c^+} \lambda
-      dt,$$ where $\dot{\bq}^+$ is short-hand for $\dot{\bq}(t_c^+)$.
+      Since $\bM$, $\btau$, and $\bPhi$ are constants over this interval, we are
+      left with $$\bM\dot{\bq}^+ - \bM\dot{\bq}^- = \Phi^T \int_{t_c^-}^{t_c^+}
+      \lambda dt,$$ where $\dot{\bq}^+$ is short-hand for $\dot{\bq}(t_c^+)$.
       Multiplying both sides by $\Phi \bM^{-1}$, we have $$ \Phi \dot{\bq}^+ -
       \Phi\dot{\bq}^- = \Phi \bM^{-1} \Phi^T \int_{t_c^-}^{t_c^+} \lambda dt.$$
       After the collision, we have $\dot\phi^+ = -e \dot\phi^-$, with $0 \le e
