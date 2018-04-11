@@ -215,8 +215,8 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
             self.viewPatchColors.append(this_body_colors)
 
     def getViewPatches(self, body_i, tf):
-        ''' Pulls out the view patch verts for the given body index after applying
-            the appropriate TF '''
+        ''' Pulls out the view patch verts for the given body index after
+            applying the appropriate TF '''
         projected_tf = np.dot(np.dot(self.Tview, tf), self.Tview_pinv)
         transformed_patches = [np.dot(projected_tf, patch)[0:2]
                                for patch in self.viewPatches[body_i]]
@@ -356,7 +356,7 @@ if __name__ == "__main__":
 
         torque = args.torque
         torque_system = builder.AddSystem(ConstantVectorSource(
-                                np.ones((rbt.get_num_actuators(), 1))*torque))
+            np.ones((rbt.get_num_actuators(), 1))*torque))
         builder.Connect(torque_system.get_output_port(0),
                         rbplant_sys.get_input_port(0))
         print('Simulating with constant torque = '
