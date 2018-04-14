@@ -2,8 +2,8 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-from pydrake.all import (Jacobian, MathematicalProgram, SolutionResult,
-                         Variables)
+from pydrake.all import (Expression, Jacobian, MathematicalProgram,
+                         SolutionResult, Variables)
 
 
 def dynamics(x):
@@ -12,16 +12,17 @@ def dynamics(x):
 
 prog = MathematicalProgram()
 x = prog.NewIndeterminates(1, "x")
+xe = x.astype(Expression)
 rho = prog.NewContinuousVariables(1, "rho")[0]
 
 # Define the Lyapunov function.
-V = x.dot(x)
+V = xe.dot(xe)
 Vdot = Jacobian([V], x).dot(dynamics(x))[0]
 
 # Define the Lagrange multipliers.
 (lambda_, constraint) = prog.NewSosPolynomial(Variables(x), 4)
 
-prog.AddSosConstraint((V-rho) * x.dot(x) - lambda_.ToExpression() * Vdot)
+prog.AddSosConstraint((V-rho) * xe.dot(xe) - lambda_.ToExpression() * Vdot)
 prog.AddLinearCost(-rho)
 
 result = prog.Solve()

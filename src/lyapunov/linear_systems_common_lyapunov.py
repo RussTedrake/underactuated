@@ -1,5 +1,5 @@
 import numpy as np
-from pydrake.all import (MathematicalProgram, SolutionResult)
+from pydrake.all import (Expression, MathematicalProgram, SolutionResult)
 
 A = []
 if (True):
@@ -27,16 +27,17 @@ prog = MathematicalProgram()
 # variables.
 num_states = A[0].shape[0]
 P = prog.NewSymmetricContinuousVariables(num_states, "P")
+Pe = P.astype(Expression)
 prog.AddPositiveSemidefiniteConstraint(P - .01*np.identity(num_states))
 
 # Add the common Lyapunov conditions.
 for i in range(len(A)):
-    prog.AddPositiveSemidefiniteConstraint(-A[i].transpose().dot(P)
-                                           - P.dot(A[i])
+    prog.AddPositiveSemidefiniteConstraint(-A[i].transpose().dot(Pe)
+                                           - Pe.dot(A[i])
                                            - .01*np.identity(num_states))
 
 # Add an objective.
-prog.AddLinearCost(np.trace(P))
+prog.AddLinearCost(np.trace(Pe))
 
 # Run the optimization.
 result = prog.Solve()
