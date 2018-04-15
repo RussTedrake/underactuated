@@ -5907,21 +5907,17 @@ for Limit Cycles</h1>
       <p>Formulate the direct collocation optimization:
         \begin{align*}
           \find_{\bx_0,...,\bx_N,dt} \quad \\
-          \subjto \quad    & q_0 = 0, \quad q_N = 0, \\
-          & \dot{q}_0 = \dot{q}_N, \quad \dot{q}_0 > 0, \\
+          \subjto \quad    & q_0 = 0, \quad \dot{q}_0 > 0, \\
+          & \bx_N = \bx_0, \text{(periodicity constraint)}\\
           & \text{collocation dynamic constraints}
         \end{align*}
       </p>
 
-      <p>Try it yourself: <pre><code class="matlab"
-      testfile="testVanDerPolDircol"> cd(fullfile(getDrakePath,'examples'));
-      VanDerPol.runDircol(); </code></pre>
+      <p>Try it yourself:</p>
+        <pysrc>van_der_pol/dircol.py</pysrc>
 
-      <p><a href="figures/vanDerPolDircol.swf">Click here to see an animation of
-      the result.</a>  The red dots are the initial and final conditions (which
-      appear as one dot once the constraints are satisfied).  As always, make
-      sure that you take a look at the code.  Poke around.  Try changing some
-      things.</p>
+      <p>As always, make sure that you take a look at the code.  Poke around.
+      Try changing some things.</p>
 
       <p>One of the things that you should notice in the code is that I provide
       an initial guess for the solver.  In most of the examples so far I've been
