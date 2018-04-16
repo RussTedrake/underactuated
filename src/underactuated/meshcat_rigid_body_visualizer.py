@@ -88,6 +88,8 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
                         element_local_tf[0:3, 0:3] = element_local_tf[0:3, 0:3].dot(extra_rotation[0:3,0:3])
                     elif geom_type == Shape.MESH:
                         meshcat_geom = meshcat.geometry.ObjMeshGeometry.from_file(geom.resolved_filename[0:-3] + "obj")
+                        # respect mesh scale
+                        element_local_tf[0:3, 0:3] *= geom.scale
                     else:
                         print "UNSUPPORTED GEOMETRY TYPE ", geom.getShape(), " IGNORED"
                         continue
