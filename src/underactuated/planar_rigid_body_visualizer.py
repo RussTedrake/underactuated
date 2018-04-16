@@ -99,8 +99,12 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                                self.rbtree.get_num_positions() +
                                self.rbtree.get_num_velocities())
 
+        # Achieve the desired view limits
         self.ax.set_xlim(xlim)
         self.ax.set_ylim(ylim)
+        default_size = self.fig.get_size_inches()
+        scalefactor = (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
+        self.fig.set_size_inches(default_size[0], default_size[0]*scalefactor)
 
         # Populate body patches
         self.buildViewPatches(use_random_colors)
