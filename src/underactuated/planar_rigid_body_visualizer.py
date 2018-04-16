@@ -272,9 +272,10 @@ def setupValkyrieExample():
     world_frame = RigidBodyFrame("world_frame", rbt.world(),
                                  [0, 0, 0], [0, 0, 0])
     from pydrake.multibody.parsers import PackageMap
+    import pydrake
     pmap = PackageMap()
     # Note: Val model is currently not installed in drake binary distribution.
-    pmap.PopulateFromFolder(os.path.join(pydrake. getDrakePath(), "examples"))
+    pmap.PopulateFromFolder(os.path.join(pydrake.getDrakePath(), "examples"))
     # TODO(russt): remove plane.urdf and call AddFlatTerrainTOWorld instead
     AddModelInstanceFromUrdfStringSearchingInRosPackages(
         open(FindResource(os.path.join("underactuated", "plane.urdf")), 'r').read(),  # noqa
