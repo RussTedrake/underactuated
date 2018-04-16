@@ -33,6 +33,7 @@ add_subdirectory(underactuated)
 
 add_subdirectory(acrobot)
 add_subdirectory(cartpole)
+add_subdirectory(compass_gait)
 add_subdirectory(double_integrator)
 add_subdirectory(double_pendulum)
 add_subdirectory(lyapunov)

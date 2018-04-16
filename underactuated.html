@@ -2841,7 +2841,7 @@ complete trajectory.</p>
     frame).</p>
 
     <figure>
-    <img width="45%" data-src="figures/compassGait.svg"/>
+    <img width="45%" data-src="figures/compass_gait.svg"/>
     <figcaption>The compass gait</figcaption>
     </figure>
 
@@ -2871,7 +2871,8 @@ complete trajectory.</p>
     <p>The foot collision is an instantaneous change of velocity caused by a
     impulsive force at the foot that brings the foot to rest.  The update to the
     velocities can be calculated using the derivation for impulsive collisions
-      derived in the appendix.  To use it, we proceed with the following steps:</p>
+    derived in the appendix.  To use it, we proceed with the following
+    steps:</p>
 
     <ul> <li>Add a "floating base" to the system by adding a free (x,y) joint at
     the pre-impact stance toe, $\bq_{fb} =
@@ -2881,27 +2882,38 @@ complete trajectory.</p>
     of this function: $\bJ = \frac{\partial \bphi}{\partial \bq_{fb}}.$</li>
     <li>The post-impact velocity that ensures that $\dot\bphi = 0$ after the
     collision is given by $$\dot\bq^+ = \left[ \bI -
-    \bM_{fb}^{-1}\bJ^T[\bJ\bM_{fb}^{-1}\bJ^T]^{-1}\bJ\right] \dot\bq^-,$$ noting that
-    $\dot{x}^- = \dot{y}^- = 0$, and that you need only read out the last two
-    elements of $\dot{\bq}^+$.  The velocity of the post-impact stance foot will
-    be zero by definition, and the new velocity of the pre-impact stance foot
-    can be completley determined from the minimal coordinates.</li> <li>Switch
-    the stance and swing leg positions and velocities.</li> </ul>
+    \bM_{fb}^{-1}\bJ^T[\bJ\bM_{fb}^{-1}\bJ^T]^{-1}\bJ\right] \dot\bq^-,$$ noting
+    that $\dot{x}^- = \dot{y}^- = 0$, and that you need only read out the last
+    two elements of $\dot{\bq}^+$.  The velocity of the post-impact stance foot
+    will be zero by definition, and the new velocity of the pre-impact stance
+    foot can be completely determined from the minimal coordinates.</li>
+    <li>Switch the stance and swing leg positions and velocities.</li> </ul>
 
     <!-- My derivation is here: https://www.wolframcloud.com/objects/60e3d6c1-156f-4604-bf70-1e374f471407 -->
 
-    <p>Numerical integration of these equations reveals a stable limit cycle,
-    plotted below.  The cycle is composed of a swing phase (top) and a stance
-    phase (bottom), punctuated by two instantaneous changes in velocity which
-    correspond to the ground collisions.  The dependence of this limit cycle on
-    the system parameters has been studied extensively in
-    <elib>Goswami96a</elib>.</p>
+    <div data-type="example" class="drake"><h1>Numerical simulation of the
+      compass gait</h1>
 
-    <figure> <img width="80%" data-src="figures/compassGaitLimitCycle.svg"/>
-    <figcaption>Limit cycle trajectory of the compass gait.
-    ($m=5$kg,$m_h=10$kg,$a=b=0.5$m,$\phi=0.03$deg. $\bx(0)=[0,0,2,-0.4]^T$).
-    $\theta_{lPitch}$ is the pitch angle of the left leg, which is recovered
-    from $\theta_{st}$ and $\theta_{sw}$ in the simulation with some simple
+      You can simulate the passive compass gait using:
+
+      <pysrc>compass_gait/simulate.py</pysrc>
+
+    </div>
+
+    <p>Numerical integration of these equations reveals a stable limit cycle,
+    plotted below.  Notice that when the left leg is in stance (top part of the
+    plot), the trajectory quite resembles the familiar pendulum dynamics of the
+    rimless wheel.  But this time, when the leg impacts, it takes a long arc
+    around as the swing leg before returning to stance.  The impacts are also
+    clearly visible as discontinuous changes (decreases) in velocity. The
+    dependence of this limit cycle on the system parameters has been studied
+    extensively in <elib>Goswami96a</elib>.</p>
+
+    <figure> <img width="90%" data-src="figures/compass_gait_limit_cycle.svg"/>
+    <figcaption>Passive limit cycle trajectory of the compass gait. ($m=5$kg,
+    $m_h=10$kg, $a=b=0.5$m, $\phi=0.0525$rad. $\bx(0)=[0,0,0.4,-2.0]^T$).
+    Drawn is the phase portait of the left leg angle, which is recovered from
+    $\theta_{st}$ and $\theta_{sw}$ in the simulation with some simple
     book-keeping.</figcaption> </figure>
 
     <p>The basin of attraction of the stable limit cycle is a narrow band of
