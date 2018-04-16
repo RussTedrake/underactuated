@@ -119,8 +119,6 @@ vi_policy = builder.AddSystem(policy)
 builder.Connect(wrap.get_output_port(0), vi_policy.get_input_port(0))
 builder.Connect(vi_policy.get_output_port(0), pendulum.get_input_port(0))
 
-# The logger needs to be told to expect a 4-element input
-# (the 4-element double pendulum state, in this case).
 logger = builder.AddSystem(SignalLogger(2))
 logger._DeclarePeriodicPublish(0.033333, 0.0)
 builder.Connect(pendulum.get_output_port(0), logger.get_input_port(0))
