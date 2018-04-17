@@ -53,7 +53,7 @@ EOF
 )
 
 pip install --upgrade $(tr '\n' ' ' <<EOF
-pip
+pip==9.0.3
 setuptools
 EOF
 )
