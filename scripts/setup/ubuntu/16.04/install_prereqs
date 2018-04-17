@@ -52,13 +52,12 @@ python-pip
 EOF
 )
 
-pip install --upgrade $(tr '\n' ' ' <<EOF
-pip==9.0.3
+pip install --upgrade --disable-pip-version-check $(tr '\n' ' ' <<EOF
 setuptools
 EOF
 )
 
-pip install --upgrade $(tr '\n' ' ' <<EOF
+pip install --upgrade --disable-pip-version-check $(tr '\n' ' ' <<EOF
 jupyter
 pycodestyle
 EOF
