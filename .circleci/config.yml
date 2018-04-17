@@ -7,12 +7,12 @@ jobs:
 
     working_directory: ~/underactuated
 
-    checkout:
-      post:
-        git pull --ff-only origin "refs/pull/${CI_PULL_REQUEST//*pull\//}/merge"
-
     steps:
       - checkout
+
+      - run:
+          name: test prospective merge instead of PR branch
+          command: git rebase master
 
       - run:
           name: setup
