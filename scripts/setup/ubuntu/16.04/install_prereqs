@@ -50,11 +50,8 @@ python
 python-dev
 python-matplotlib
 python-pip
-EOF
-)
-
-pip install --upgrade --disable-pip-version-check $(tr '\n' ' ' <<EOF
-setuptools
+python-setuptools
+python-wheel
 EOF
 )
 
