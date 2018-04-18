@@ -1,5 +1,22 @@
 # -*- coding: utf8 -*-
 
+'''
+
+Usage:
+
+MeshcatRigidBodyVisualizer acts identically to PyPlotVisualizer
+from the perspective of the code: it is a System block that consumes
+system state and visualizes that state at every publish step.
+
+However, where PyPlotVisualizer opens its own visualizer window,
+MeshcatRigidBodyVisualizer expects the command `meshcat-server`
+to already be running in another terminal. The visualization
+will be available at the web url provided by that server in real
+time (either when the system is being simulated, or when the
+animate() method is called).
+
+'''
+
 import argparse
 import math
 import os.path
@@ -29,7 +46,6 @@ from pydrake.all import (
 )
 
 from underactuated.utils import FindResource
-from underactuated.pyplot_visualizer import PyPlotVisualizer
 
 import meshcat
 import meshcat.transformations as tf
@@ -298,5 +314,6 @@ if __name__ == "__main__":
 
         print(state.CopyToVector())
 
-        # Generate an animation of whatever happened
-        ani = visualizer.animate(signalLogger)
+        if (args.animate):
+            # Generate an animation of whatever happened
+            ani = visualizer.animate(signalLogger)
