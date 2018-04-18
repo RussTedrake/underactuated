@@ -8,6 +8,7 @@ from matplotlib.widgets import Slider
 from pydrake.all import (LeafSystem, PiecewisePolynomial, SignalLogger,
                          VectorSystem)
 
+
 class PyPlotVisualizer(LeafSystem):
     '''
         Base class from planar visualization
@@ -25,7 +26,7 @@ class PyPlotVisualizer(LeafSystem):
         input and draw the robot in the appropriate
         state.
     '''
-    
+
     def __init__(self, draw_timestep=0.033333, facecolor=[1, 1, 1],
                  figsize=None):
         LeafSystem.__init__(self)
@@ -35,7 +36,7 @@ class PyPlotVisualizer(LeafSystem):
         self._DeclarePeriodicPublish(draw_timestep, 0.0)
 
         (self.fig, self.ax) = plt.subplots(facecolor=facecolor,
-                                           figsize = figsize)
+                                           figsize=figsize)
         self.ax.axis('equal')
         self.ax.axis('off')
         self.fig.show()

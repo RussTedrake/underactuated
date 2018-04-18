@@ -87,7 +87,6 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                  facecolor=[1, 1, 1],
                  use_random_colors=False):
 
-
         default_size = matplotlib.rcParams['figure.figsize']
         scalefactor = (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
         figsize = (default_size[0], default_size[0]*scalefactor)
