@@ -221,8 +221,6 @@ def setupValkyrieExample():
 
 
 if __name__ == "__main__":
-    print "Warning: if you have not yet run meshcat-server in another " \
-          "terminal, this will hang."
           
     # Usage demo: load a URDF, rig it up with a constant torque input, and
     # draw it.
@@ -246,7 +244,21 @@ if __name__ == "__main__":
                         action="store_true",
                         help="Enable real-time looping animation after each "
                              "simulation.")
+    parser.add_argument("--test",
+                        action="store_true",
+                        help="Help out CI by launching a meshcat server for "
+                             "the duration of the test.")
     args = parser.parse_args()
+
+    meshcat_server_p = None
+    if args.test:
+        print "Spawning"
+        import subprocess
+        meshcat_server_p = subprocess.Popen(["meshcat-server"])
+    else:
+        print "Warning: if you have not yet run meshcat-server in another " \
+              "terminal, this will hang."
+
 
     for model in args.models:
         if model == "pend":
@@ -317,3 +329,7 @@ if __name__ == "__main__":
         if (args.animate):
             # Generate an animation of whatever happened
             ani = visualizer.animate(signalLogger)
+
+    if meshcat_server_p is not None:
+        meshcat_server_p.kill()
+        meshcat_server_p.wait()
