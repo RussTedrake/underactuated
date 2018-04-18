@@ -42,6 +42,7 @@ class PyPlotVisualizer(LeafSystem):
 
     def _DoPublish(self, context, event):
         self.draw(context)
+        self.fig.canvas.flush_events()
         self.fig.canvas.draw()
         if plt.get_backend() == u'MacOSX':
             plt.pause(1e-10)
