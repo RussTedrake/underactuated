@@ -5,6 +5,7 @@ import math
 import os.path
 
 import numpy as np
+import matplotlib
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import scipy as sp
@@ -85,7 +86,13 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                  ylim=[-1, 1],
                  facecolor=[1, 1, 1],
                  use_random_colors=False):
-        PyPlotVisualizer.__init__(self, facecolor=facecolor)
+
+
+        default_size = matplotlib.rcParams['figure.figsize']
+        scalefactor = (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
+        figsize = (default_size[0], default_size[0]*scalefactor)
+
+        PyPlotVisualizer.__init__(self, facecolor=facecolor, figsize=figsize)
         self.set_name('planar_rigid_body_visualizer')
 
         self.rbtree = rbtree
@@ -102,9 +109,6 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         # Achieve the desired view limits
         self.ax.set_xlim(xlim)
         self.ax.set_ylim(ylim)
-        default_size = self.fig.get_size_inches()
-        scalefactor = (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
-        self.fig.set_size_inches(default_size[0], default_size[0]*scalefactor)
 
         # Populate body patches
         self.buildViewPatches(use_random_colors)
