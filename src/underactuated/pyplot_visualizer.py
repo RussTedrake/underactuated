@@ -26,14 +26,16 @@ class PyPlotVisualizer(LeafSystem):
         state.
     '''
     
-    def __init__(self, draw_timestep=0.033333, facecolor=[1, 1, 1]):
+    def __init__(self, draw_timestep=0.033333, facecolor=[1, 1, 1],
+                 figsize=None):
         LeafSystem.__init__(self)
 
         self.set_name('pyplot_visualization')
         self.timestep = draw_timestep
         self._DeclarePeriodicPublish(draw_timestep, 0.0)
 
-        (self.fig, self.ax) = plt.subplots(facecolor=facecolor)
+        (self.fig, self.ax) = plt.subplots(facecolor=facecolor,
+                                           figsize = figsize)
         self.ax.axis('equal')
         self.ax.axis('off')
         self.fig.show()
