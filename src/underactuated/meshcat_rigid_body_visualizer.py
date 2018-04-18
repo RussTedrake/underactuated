@@ -50,31 +50,31 @@ from underactuated.utils import FindResource
 import meshcat
 import meshcat.transformations as tf
 
+
 class MeshcatRigidBodyVisualizer(LeafSystem):
     def __init__(self,
                  rbtree,
                  draw_timestep=0.033333,
                  tree_prefix="RBViz",
-                 zmq_url = "tcp://127.0.0.1:6000"):
+                 zmq_url="tcp://127.0.0.1:6000"):
         LeafSystem.__init__(self)
         self.set_name('meshcat_visualization')
         self.timestep = draw_timestep
         self._DeclarePeriodicPublish(draw_timestep, 0.0)
         self.rbtree = rbtree
-        
+
         self._DeclareInputPort(PortDataType.kVectorValued,
                                self.rbtree.get_num_positions() +
                                self.rbtree.get_num_velocities())
 
         # Set up meshcat
-        self.vis = meshcat.Visualizer(zmq_url = zmq_url)
+        self.vis = meshcat.Visualizer(zmq_url=zmq_url)
         self.vis.delete()
 
         # Publish the tree geometry to get the visualizer started
         self.PublishAllGeometry()
 
     def PublishAllGeometry(self):
-        
         n_bodies = self.rbtree.get_num_bodies()-1
         all_meshcat_geometry = {}
         for body_i in range(n_bodies):
@@ -88,31 +88,40 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
                 element_local_tf = element.getLocalTransform()
                 if element.hasGeometry():
                     geom = element.getGeometry()
-                    
+
                     geom_type = geom.getShape()
                     if geom_type == Shape.SPHERE:
                         meshcat_geom = meshcat.geometry.Sphere(geom.radius)
                     elif geom_type == Shape.BOX:
                         meshcat_geom = meshcat.geometry.Box(geom.size)
                     elif geom_type == Shape.CYLINDER:
-                        meshcat_geom = meshcat.geometry.Cylinder(geom.length, geom.radius)
+                        meshcat_geom = meshcat.geometry.Cylinder(
+                            geom.length, geom.radius)
                         # In Drake, cylinders are along +z
                         # In meshcat, cylinders are along +y
                         # Rotate to fix this misalignment
-                        extra_rotation = tf.rotation_matrix(math.pi/2., [1, 0, 0])
+                        extra_rotation = tf.rotation_matrix(
+                            math.pi/2., [1, 0, 0])
                         print extra_rotation
-                        element_local_tf[0:3, 0:3] = element_local_tf[0:3, 0:3].dot(extra_rotation[0:3,0:3])
+                        element_local_tf[0:3, 0:3] = \
+                            element_local_tf[0:3, 0:3].dot(
+                                extra_rotation[0:3, 0:3])
                     elif geom_type == Shape.MESH:
-                        meshcat_geom = meshcat.geometry.ObjMeshGeometry.from_file(geom.resolved_filename[0:-3] + "obj")
+                        meshcat_geom = \
+                            meshcat.geometry.ObjMeshGeometry.from_file(
+                                geom.resolved_filename[0:-3] + "obj")
                         # respect mesh scale
                         element_local_tf[0:3, 0:3] *= geom.scale
                     else:
-                        print "UNSUPPORTED GEOMETRY TYPE ", geom.getShape(), " IGNORED"
+                        print "UNSUPPORTED GEOMETRY TYPE ",\
+                              geom.getShape(), " IGNORED"
                         continue
 
-                    self.vis[body_name][str(element_i)].set_object(meshcat_geom)
+                    self.vis[body_name][str(element_i)].set_object(
+                        meshcat_geom)
                     print body_name, element_i, element_local_tf
-                    self.vis[body_name][str(element_i)].set_transform(element_local_tf)
+                    self.vis[body_name][str(element_i)].set_transform(
+                        element_local_tf)
 
     def _DoPublish(self, context, event):
         self.draw(context)
@@ -165,6 +174,7 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
         for i in range(t.shape[0]):
             animate_update(i)
             time.sleep(self.timestep)
+
 
 def setupPendulumExample():
     rbt = RigidBodyTree(FindResource("pendulum/pendulum.urdf"),
@@ -221,7 +231,7 @@ def setupValkyrieExample():
 
 
 if __name__ == "__main__":
-          
+
     # Usage demo: load a URDF, rig it up with a constant torque input, and
     # draw it.
     np.set_printoptions(precision=5, suppress=True)
@@ -258,7 +268,6 @@ if __name__ == "__main__":
     else:
         print "Warning: if you have not yet run meshcat-server in another " \
               "terminal, this will hang."
-
 
     for model in args.models:
         if model == "pend":
