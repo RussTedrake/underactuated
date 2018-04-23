@@ -6382,21 +6382,49 @@ for Limit Cycles</h1>
 </section> <!-- end limit cycles -->
 
 <section data-type="chapter" class="chapter" id="contact"><h1>Planning and
-  Control
-  through Contact</h1>
+Control through Contact</h1>
 
-<section data-type="sect1"><h1>The hybrid system's approach</h1>
+  <section data-type="sect1"><h1>Modeling and Simulating Contact Dynamics</h1>
 
-  <p>Transverse stabilization is more natural than full LQR
+    <p>There are roughly two main approaches to modeling contact between two
+    rigid bodies.  The first is to allow some penetration, and compute the
+    contact forces with stiff springs/dampers that resist the penetration.  The
+    second is to explicitly compute the contact forces required to resist
+    penetration completely.  Frictional forces can be added to both of these
+    models, typically using a Coulomb model.</p>
+
+    <p>An essential component for all of these models is a collision-detection
+    engine that can, by inspecting the pose of the rigid bodies, evaluate which
+    bodies are in or near collision, and return pairs of points on the rigid
+    bodies that represent points of near collision or the points of deepest
+    penetration.</p>
+
+    <todo>Insert diagram for closest points/deepest penetration between two
+    bodies.</todo>
+
+    <section data-type="sect2"><h1>Compliant Contact</h1>
+
+      <p>The "stiff springs" approach, which is also refered to as "compliant
+      contact" or "soft contact" is appealing due to the simplicity of
+      implementation.  Given the current pose of the bodies, a </p>
+
+    </section>
+
+
+  </section>
+
+  <section data-type="sect1"><h1>The hybrid system's approach</h1>
+
+    <p>Transverse stabilization is more natural than full LQR
+
+  </section>
+
+  <section data-type="sect1"><h1>The measure differential inclusions approach</h1>
+  </section>
 
 </section>
 
-<section data-type="sect1"><h1>The measure differential inclusions approach</h1>
-</section>
-
-</section>
-
-<!-- ***************  end of hybrid systems **************   -->
+<!-- ***************  end of contact **************   -->
 
 <section data-type="chapter" class="chapter" id="search"><h1>Motion Planning as
   Search</h1>
