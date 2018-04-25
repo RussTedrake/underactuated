@@ -85,13 +85,16 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                  xlim=[-1., 1],
                  ylim=[-1, 1],
                  facecolor=[1, 1, 1],
-                 use_random_colors=False):
+                 use_random_colors=False,
+                 fig=None,
+                 ax=None):
 
         default_size = matplotlib.rcParams['figure.figsize']
         scalefactor = (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
         figsize = (default_size[0], default_size[0]*scalefactor)
 
-        PyPlotVisualizer.__init__(self, facecolor=facecolor, figsize=figsize)
+        PyPlotVisualizer.__init__(self, facecolor=facecolor, figsize=figsize,
+                                  fig=fig, ax=ax)
         self.set_name('planar_rigid_body_visualizer')
 
         self.rbtree = rbtree
@@ -111,6 +114,11 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         # Achieve the desired view limits
         self.ax.set_xlim(xlim)
         self.ax.set_ylim(ylim)
+        if self.fig is not None:
+            default_size = self.fig.get_size_inches()
+            scalefactor = (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
+            self.fig.set_size_inches(default_size[0],
+                                     default_size[0]*scalefactor)
 
         # Populate body patches
         self.buildViewPatches(use_random_colors)
