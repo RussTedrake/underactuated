@@ -28,21 +28,33 @@ class PyPlotVisualizer(LeafSystem):
     '''
 
     def __init__(self, draw_timestep=0.033333, facecolor=[1, 1, 1],
-                 figsize=None):
+                 figsize=None, fig=None, ax=None):
         LeafSystem.__init__(self)
 
         self.set_name('pyplot_visualization')
         self.timestep = draw_timestep
         self._DeclarePeriodicPublish(draw_timestep, 0.0)
 
-        (self.fig, self.ax) = plt.subplots(facecolor=facecolor,
-                                           figsize=figsize)
-        self.fig.show()
+        if ax is None:
+            if fig is not None:
+                print "Error: supplied fig but not ax."
+            (self.fig, self.ax) = plt.subplots(facecolor=facecolor,
+                                               figsize=figsize)
+        else:
+            self.fig = fig
+            self.ax = ax
+
+        self.ax.axis('equal')
+        self.ax.axis('off')
+
+        if self.fig is not None:
+            self.fig.show()
 
     def _DoPublish(self, context, event):
         self.draw(context)
-        self.fig.canvas.draw()
-        plt.pause(1e-10)
+        if self.fig is not None:
+            self.fig.canvas.draw()
+            plt.pause(1e-10)
 
     def draw(self, context):
         print "SUBCLASSES MUST IMPLEMENT."
