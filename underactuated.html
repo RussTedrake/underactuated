@@ -871,12 +871,12 @@ semester.</p>
 
     <p> Let's say that we would like our simple double pendulum to act like a
     simple single pendulum (with damping), whose dynamics are given by:
-    \begin{align*} \ddot \theta_1 &= -\frac{g}{l}\cos\theta_1 -b\dot\theta_1 \\
+    \begin{align*} \ddot \theta_1 &= -\frac{g}{l}\sin\theta_1 -b\dot\theta_1 \\
     \ddot\theta_2 &= 0. \end{align*} This is easily achieved using
     <sidenote>Note that our chosen dynamics do not actually stabilize $\theta_2$
     - this detail was left out for clarity, but would be necessary for any real
     implementation.</sidenote> $$\bu = \bB^{-1}\left[ \bC\dot{\bq} - \btau_g +
-    {\bf M}\begin{bmatrix} -\frac{g}{l}c_1 - b\dot{q}_1 \\ 0 \end{bmatrix}
+    {\bf M}\begin{bmatrix} -\frac{g}{l}s_1 - b\dot{q}_1 \\ 0 \end{bmatrix}
     \right].$$ </p>
 
     <p> Since we are embedding a nonlinear dynamics (not a linear one), we refer
