@@ -3296,38 +3296,37 @@ Driving</h1>
 </section> <!-- ***************  end of soft robots **************   -->
 
 <section data-type="chapter" class="chapter" id="stochastic"><h1>Model Systems
-  with
-  Stochasticity</h1>
+with Stochasticity</h1>
 
-<p>My goals for this chapter are to build intuition for the beautiful and rich behavior of nonlinear dynamical system
-  that are subjected to random (noise/disturbance) inputs.  So far we have focused primarily
-on systems described by \[ \dot{\bx}(t) = f(\bx(t),\bu(t)) \quad \text{or} \quad \bx[n+1] = f(\bx[n],\bu[n]). \]
-In this chapter, I would like to broaden the scope to think about
-  \[ \dot{\bx}(t) = f(\bx(t),\bu(t),\bw(t)) \quad \text{or} \quad \bx[n+1] = f(\bx[n],\bu[n],\bw[n]), \]
-where this additional input $\bw$ is the (vector) output of some random process.  In other words,
-  we can begin thinking about stochastic systems by simply understanding the dynamics of
-  our existing ODEs subjected to an additional random input.
-</p>
+  <p>My goals for this chapter are to build intuition for the beautiful and rich
+  behavior of nonlinear dynamical system that are subjected to random
+  (noise/disturbance) inputs.  So far we have focused primarily on systems
+  described by \[ \dot{\bx}(t) = f(\bx(t),\bu(t)) \quad \text{or} \quad \bx[n+1]
+  = f(\bx[n],\bu[n]). \] In this chapter, I would like to broaden the scope to
+  think about \[ \dot{\bx}(t) = f(\bx(t),\bu(t),\bw(t)) \quad \text{or} \quad
+  \bx[n+1] = f(\bx[n],\bu[n],\bw[n]), \] where this additional input $\bw$ is
+  the (vector) output of some random process.  In other words, we can begin
+  thinking about stochastic systems by simply understanding the dynamics of our
+  existing ODEs subjected to an additional random input. </p>
 
-  <p>
-    This form is extremely general as written.  $\bw(t)$ can represent time-varying random disturbances
-    (e.g. gusts of wind), or even constant model errors/uncertainty.  One thing that we are not adding, yet,
-    is measurement uncertainty.  There is a great deal of work on observability and state estimation that study
-    the question of how you can infer the true state of the system given noise sensor readings.  For this chapter we
-    are assuming perfect measurements of the full state, and are focused instead on the way that "process noise"
-    shapes the long-term dynamics of the system.
-  </p>
+  <p> This form is extremely general as written.  $\bw(t)$ can represent
+  time-varying random disturbances (e.g. gusts of wind), or even constant model
+  errors/uncertainty.  One thing that we are not adding, yet, is measurement
+  uncertainty.  There is a great deal of work on observability and state
+  estimation that study the question of how you can infer the true state of the
+  system given noise sensor readings.  For this chapter we are assuming perfect
+  measurements of the full state, and are focused instead on the way that
+  "process noise" shapes the long-term dynamics of the system. </p>
 
-  <p>
-    I will also stick primarily to discrete time dynamics for this chapter, simply because it is
-    easier to think about the output of a discrete-time random process, $\bw[n]$, than a $\bw(t)$.
-    But you should know that all of the ideas work in continuous time, too.  Also, most of our examples
-    will take the form of <i>additive noise</i>:
-    \[ \bx[n+1] = f(\bx[n],\bu[n]) + \bw[n], \]
-    which is a particular useful and common specialization of our general form.  And this form
-    doesn't give up much -- the disturbance on step $k$ can pass through the nonlinear function $f$ on step $k+1$
-    giving rich results -- but is often much easier to work with.
-  </p>
+  <p> I will also stick primarily to discrete time dynamics for this chapter,
+  simply because it is easier to think about the output of a discrete-time
+  random process, $\bw[n]$, than a $\bw(t)$. But you should know that all of the
+  ideas work in continuous time, too.  Also, most of our examples will take the
+  form of <i>additive noise</i>: \[ \bx[n+1] = f(\bx[n],\bu[n]) + \bw[n], \]
+  which is a particular useful and common specialization of our general form.
+  And this form doesn't give up much -- the disturbance on step $k$ can pass
+  through the nonlinear function $f$ on step $k+1$ giving rich results -- but is
+  often much easier to work with. </p>
 
   <section data-type="sect1"><h1>The Master Equation</h1>
 
@@ -3335,31 +3334,29 @@ where this additional input $\bw$ is the (vector) output of some random process.
 
     <div data-type="example"><h1>A Bistable System + Noise</h1>
 
-      <p>Let's consider (a time-reversed version of) one of my favorite one-dimensional systems:
-      \[ \dot{x} = x - x^3. \]
-        <todo>add plot</todo>
-        This deterministic system has stable fixed points at $x^* = \{-1,1\}$ and an unstable fixed point at $x^* = 0$.
-      </p>
-      <p>
-      A reasonable discrete-time approximation of these dynamics, now with additive noise, is
-      \[ x[n+1] = x[n] + h (x[n] - x[n]^3 + w[n]). \]
-      When $w[n]=0$, this system has the same fixed points and stability properties as the continuous time system.
-      But let's examine the system when $w[n]$ is instead the result of a <i>zero-mean Gaussian white noise process</i>, defined by:
-      \begin{gather*}
-      \forall n, E\left[ w[n] \right] = 0,\\
-      E\left[ w[i]w[j] \right] = \begin{cases} \sigma^2, & \text{ if } i=j,\\ 0, & \text{ otherwise.} \end{cases}
-      \end{gather*}
-      Here $\sigma$ is the standard deviation of the Gaussian.
-      </p>
-      <p>When you simulate this system for small values of $\sigma$, you will see trajectories move roughly towards one of the two
-      fixed points (for the deterministic system), but every step is modified by the noise.  In fact, even if the trajectory were to
-      arrive exactly at what was once a fixed point, it is almost surely going to move again on the very next step.  In fact,
-      if we plot many runs of the simulation from different initial conditions all on the same plot,
-      we will see something like the figure below.</p>
-      <figure>
-        <img width="80%" data-src="figures/cubic_bistable_particles_time.svg"/>
-        <figcaption>Simulation of the bistable system with noise ($\sigma = 0.01$) from many initial conditions.</figcaption>
-      </figure>
+      <p>Let's consider (a time-reversed version of) one of my favorite
+      one-dimensional systems: \[ \dot{x} = x - x^3. \] <todo>add plot</todo>
+      This deterministic system has stable fixed points at $x^* = \{-1,1\}$ and
+      an unstable fixed point at $x^* = 0$. </p> <p> A reasonable discrete-time
+      approximation of these dynamics, now with additive noise, is \[ x[n+1] =
+      x[n] + h (x[n] - x[n]^3 + w[n]). \] When $w[n]=0$, this system has the
+      same fixed points and stability properties as the continuous time system.
+      But let's examine the system when $w[n]$ is instead the result of a
+      <i>zero-mean Gaussian white noise process</i>, defined by: \begin{gather*}
+      \forall n, E\left[ w[n] \right] = 0,\\ E\left[ w[i]w[j] \right] =
+      \begin{cases} \sigma^2, & \text{ if } i=j,\\ 0, & \text{ otherwise.}
+      \end{cases} \end{gather*} Here $\sigma$ is the standard deviation of the
+      Gaussian. </p> <p>When you simulate this system for small values of
+      $\sigma$, you will see trajectories move roughly towards one of the two
+      fixed points (for the deterministic system), but every step is modified by
+      the noise.  In fact, even if the trajectory were to arrive exactly at what
+      was once a fixed point, it is almost surely going to move again on the
+      very next step.  In fact, if we plot many runs of the simulation from
+      different initial conditions all on the same plot, we will see something
+      like the figure below.</p> <figure> <img width="80%"
+      data-src="figures/cubic_bistable_particles_time.svg"/>
+      <figcaption>Simulation of the bistable system with noise ($\sigma = 0.01$)
+      from many initial conditions.</figcaption> </figure>
 
       <p>You can run this example yourself</p>
       <pre><code class="matlab" testfile="simpleCTParticleDemo">
@@ -3369,116 +3366,151 @@ where this additional input $\bw$ is the (vector) output of some random process.
         simpleCTParticleDemo(options);
       </code></pre>
 
-      <p>During any individual simulation, the state jumps around randomly for all time, and could even transition from the vicinity of one fixed point to the other fixed point.  Another way to visualize this output is to animate a histogram of the particles over time.</p>
+      <p>During any individual simulation, the state jumps around randomly for
+      all time, and could even transition from the vicinity of one fixed point
+      to the other fixed point.  Another way to visualize this output is to
+      animate a histogram of the particles over time.</p>
 
-      <figure>
-          <img width="80%" data-src="figures/cubic_bistable_histogram.svg"/>
-          <figcaption>Histogram of the states of the bistable system with noise ($\sigma = 0.01$) after simulating from random initial conditions until $t=30$.
-          <br/><a href="figures/cubic_bistable_histogram.swf">Click here to see the animation</a></figcaption>
-        </figure>
+      <figure> <img width="80%"
+      data-src="figures/cubic_bistable_histogram.svg"/> <figcaption>Histogram of
+      the states of the bistable system with noise ($\sigma = 0.01$) after
+      simulating from random initial conditions until $t=30$. <br/><a
+      href="figures/cubic_bistable_histogram.swf">Click here to see the
+      animation</a></figcaption> </figure>
+
       <pre><code class="matlab" testfile="simpleCTParticleDemoHist">
-        cd(fullfile(getDrakePath,'examples','test'));
-        options.plot_histogram = true;
-        options.time_reversed_system = true;
-        simpleCTParticleDemo(options);
-      </code></pre>
-    </div>
+      cd(fullfile(getDrakePath,'examples','test')); options.plot_histogram =
+      true; options.time_reversed_system = true; simpleCTParticleDemo(options);
+      </code></pre> </div>
 
-    <p>Let's take a moment to appreciate the implications of what we've just observed.
-      Every time that we've analyzed a system to date, we've asked questions like "given x[0], what is the long-term behavior of the system, $\lim_{n\rightarrow\infty} x[n]$?",
-      but now $x[n]$ is a <i>random variable</i>. The trajectories of this system do not converge, and the system does not exhibit any form of stability that we've introduced so far.
-      </p>
-
-    <p>All is not lost.  If you watch the animation closely, you might notice the <i>distribution</i> of this random variable is actually very well behaved.  This is the key idea for this chapter.</p>
-
-    <p>Let us use $p_n(x)$ to denote the <a href="https://en.wikipedia.org/wiki/Probability_density_function">probability density function</a> over the random variable $x$ at time $n$.
-      Note that this density function must satisfy \[ \int_{-\infty}^\infty p_n(x) dx = 1.\]
-      It is actually possible to write the <i>dynamics of the probability density</i> with the simple relation
-      \[ p_{n+1}(x) = \int_{-\infty}^\infty p(x|x') p_n(x') dx', \]
-      where $p(x|x')$ encodes the stochastic dynamics as a conditional distribution of the next state (here $x$) as a function
-      of the current state (here $x'$).  Dynamical systems that can be encoded in this way are known as <i>continuous-state Markov Processes</i>,
-      and the governing equation above is often referred to as the "<a href="https://en.wikipedia.org/wiki/Master_equation">master equation</a>" for the stochastic process.  In fact this update is even linear(!) ; a fact that can enable
-      closed-form solutions to some impressive long-term statistics, like mean time to failure or first passage times<elib>Byl08a</elib>.
-      Unfortunately, it is often difficult to perform the integral in closed form, so we must often resort to
-      discretation or numerical analysis.
+    <p>Let's take a moment to appreciate the implications of what we've just
+    observed. Every time that we've analyzed a system to date, we've asked
+    questions like "given x[0], what is the long-term behavior of the system,
+    $\lim_{n\rightarrow\infty} x[n]$?", but now $x[n]$ is a <i>random
+    variable</i>. The trajectories of this system do not converge, and the
+    system does not exhibit any form of stability that we've introduced so far.
     </p>
 
-    <p>The slightly more general form of the master equation, which works for multivariable distributions
-    with state-domain ${\cal X}$, and systems with control inputs $\bu$, is \[ p_{n+1}(\bx) = \int_{\cal X} p(\bx|\bx',\bu) p_n(\bx') d\bx'. \]
-    This is a (continuous-state) Markov Decision Process.</p>
+    <p>All is not lost.  If you watch the animation closely, you might notice
+    the <i>distribution</i> of this random variable is actually very well
+    behaved.  This is the key idea for this chapter.</p>
 
-    </section>
+    <p>Let us use $p_n(x)$ to denote the <a
+    href="https://en.wikipedia.org/wiki/Probability_density_function">
+    probability density function</a> over the random variable $x$ at time $n$.
+    Note that this density function must satisfy \[ \int_{-\infty}^\infty p_n(x)
+    dx = 1.\] It is actually possible to write the <i>dynamics of the
+    probability density</i> with the simple relation \[ p_{n+1}(x) =
+    \int_{-\infty}^\infty p(x|x') p_n(x') dx', \] where $p(x|x')$ encodes the
+    stochastic dynamics as a conditional distribution of the next state (here
+    $x$) as a function of the current state (here $x'$).  Dynamical systems that
+    can be encoded in this way are known as <i>continuous-state Markov
+    Processes</i>, and the governing equation above is often referred to as the
+    "<a href="https://en.wikipedia.org/wiki/Master_equation">master
+    equation</a>" for the stochastic process.  In fact this update is even
+    linear(!) ; a fact that can enable closed-form solutions to some impressive
+    long-term statistics, like mean time to failure or first passage
+    times<elib>Byl08a</elib>. Unfortunately, it is often difficult to perform
+    the integral in closed form, so we must often resort to discretation or
+    numerical analysis. </p>
 
-    <section data-type="sect1"><h1>Stationary Distributions</h1>
+    <p>The slightly more general form of the master equation, which works for
+    multivariable distributions with state-domain ${\cal X}$, and systems with
+    control inputs $\bu$, is \[ p_{n+1}(\bx) = \int_{\cal X} p(\bx|\bx',\bu)
+    p_n(\bx') d\bx'. \] This is a (continuous-state) Markov Decision
+    Process.</p>
 
-    <p>In the example above, the histogram is our numerical approximation of the probability density. If you simulate
-    it a few times, you will probably believe that, although the individual trajectories of the system
-    <i>do not</i> converge, the probability distribution actually <i>does</i> converge to what's known
-    as a <i>stationary distribution</i> -- a fixed point of the master equation.  Instead of thinking about
-    the dynamics of the trajectories, we need to start thinking about the dynamics of the distribution.</p>
+  </section>
+
+  <section data-type="sect1"><h1>Stationary Distributions</h1>
+
+    <p>In the example above, the histogram is our numerical approximation of the
+    probability density. If you simulate it a few times, you will probably
+    believe that, although the individual trajectories of the system <i>do
+    not</i> converge, the probability distribution actually <i>does</i> converge
+    to what's known as a <i>stationary distribution</i> -- a fixed point of the
+    master equation.  Instead of thinking about the dynamics of the
+    trajectories, we need to start thinking about the dynamics of the
+    distribution.</p>
 
     <div data-type="example"><h1>The Linear Gaussian System</h1>
+
       <p>Let's consider the one-dimensional linear system with additive noise:
-        \[ x[n+1] = a x[n] + w[n]. \]
-        When $w[n]=0$, the system is stable (to the origin) for $-1 < a < 1$.  Let's make sure
-        that we can understand the dynamics of the master equation for the case when $w[n]$ is
-        Gaussian white noise with standard deviation $\sigma$.
-      </p>
-      <p>First, recall that the probability density function of a Gaussian with mean $\mu$ is given by
-      \[ p(w) = \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(w-\mu)^2}{2\sigma^2}}. \]
-        When conditioned on $x[n]$, the distribution given by the dynamics subjected to mean-zero Gaussian white noise
-        is simply another Gaussian, with the mean given by $ax[n]$:
-        \[ p(x[n+1]|x[n]) = \frac{1}{\sqrt{2 \pi \sigma^2}} e^{-\frac{(x[n+1]-ax[n])^2}{2\sigma^2}}, \]
-        yielding the master equation
-        \[ p_{n+1}(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \int_{-\infty}^\infty e^{-\frac{(x-ax')^2}{2\sigma^2}} p_n(x') dx'. \]
-      </p>
-      <p>Now here's the magic.  Let's push a distribution, $p_n(x)$, which is zero-mean, with standard deviation $\sigma_n$, through the master equation:
-        \begin{align*}
-        p_{n+1}(x) =& \frac{1}{\sqrt{2 \pi \sigma^2}}\frac{1}{\sqrt{2 \pi \sigma_n^2}} \int_{-\infty}^\infty e^{-\frac{(x-ax')^2}{2\sigma^2}} e^{-\frac{(x')^2}{2\sigma_n^2}} dx',\\
-        =& \frac{1}{\sqrt{2 \pi (\sigma^2+a^2 \sigma_n^2)}} e^{-\frac{x^2}{2(\sigma^2 + a^2 \sigma_n^2)}}.
-        \end{align*}
-        The result is another mean-zero Gaussian with $\sigma_{n+1}^2 = \sigma^2 + a^2 \sigma_n^2$.  This
-        result generalizes to the multi-variate case, too, and might be familiar to you e.g. from the process update of the <a href="https://en.wikipedia.org/wiki/Kalman_filter">Kalman filter</a>.
-      </p>
-      <p>Taking it a step further, we can see that a stationary distribution for this system
-      is given by a mean-zero Gaussian with \[ \sigma_*^2 = \frac{\sigma}{1-a^2}. \]
-      Note that this distribution is well defined when $-1 < a < 1$ (only when the system is stable).</p>
+      \[ x[n+1] = a x[n] + w[n]. \] When $w[n]=0$, the system is stable (to the
+      origin) for $-1 < a < 1$.  Let's make sure that we can understand the
+      dynamics of the master equation for the case when $w[n]$ is Gaussian white
+      noise with standard deviation $\sigma$. </p>
+
+      <p>First, recall that the probability density function of a Gaussian with
+      mean $\mu$ is given by \[ p(w) = \frac{1}{\sqrt{2 \pi \sigma^2}}
+      e^{-\frac{(w-\mu)^2}{2\sigma^2}}. \] When conditioned on $x[n]$, the
+      distribution given by the dynamics subjected to mean-zero Gaussian white
+      noise is simply another Gaussian, with the mean given by $ax[n]$: \[
+      p(x[n+1]|x[n]) = \frac{1}{\sqrt{2 \pi \sigma^2}}
+      e^{-\frac{(x[n+1]-ax[n])^2}{2\sigma^2}}, \] yielding the master equation
+      \[ p_{n+1}(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \int_{-\infty}^\infty
+      e^{-\frac{(x-ax')^2}{2\sigma^2}} p_n(x') dx'. \] </p>
+
+      <p>Now here's the magic.  Let's push a distribution, $p_n(x)$, which is
+      zero-mean, with standard deviation $\sigma_n$, through the master
+      equation: \begin{align*} p_{n+1}(x) =& \frac{1}{\sqrt{2 \pi
+      \sigma^2}}\frac{1}{\sqrt{2 \pi \sigma_n^2}} \int_{-\infty}^\infty
+      e^{-\frac{(x-ax')^2}{2\sigma^2}} e^{-\frac{(x')^2}{2\sigma_n^2}} dx',\\ =&
+      \frac{1}{\sqrt{2 \pi (\sigma^2+a^2 \sigma_n^2)}} e^{-\frac{x^2}{2(\sigma^2
+      + a^2 \sigma_n^2)}}. \end{align*} The result is another mean-zero Gaussian
+      with $\sigma_{n+1}^2 = \sigma^2 + a^2 \sigma_n^2$.  This result
+      generalizes to the multi-variate case, too, and might be familiar to you
+      e.g. from the process update of the <a
+      href="https://en.wikipedia.org/wiki/Kalman_filter">Kalman filter</a>. </p>
+
+      <p>Taking it a step further, we can see that a stationary distribution for
+      this system is given by a mean-zero Gaussian with \[ \sigma_*^2 =
+      \frac{\sigma}{1-a^2}. \] Note that this distribution is well defined when
+      $-1 < a < 1$ (only when the system is stable).</p>
+
     </div>
 
-    <p>The stationary distribution of the linear Gaussian system reveals the fundamental and general balance between two terms
-      in the governing
-    equations of any stochastic dynamical system: the stability of the deterministic system is bringing trajectories together
-      (smaller $a$ means faster convergence of the deterministic system and results in a more narrow distribution), but the noise in the system is forcing trajectories apart (larger $\sigma$ means larger noise and results in a wider distribution).
+    <p>The stationary distribution of the linear Gaussian system reveals the
+    fundamental and general balance between two terms in the governing equations
+    of any stochastic dynamical system: the stability of the deterministic
+    system is bringing trajectories together (smaller $a$ means faster
+    convergence of the deterministic system and results in a more narrow
+    distribution), but the noise in the system is forcing trajectories apart
+    (larger $\sigma$ means larger noise and results in a wider distribution).
     </p>
 
-    <p>Given how rich the dynamics can be for deterministic nonlinear systems, you can probably imagine
-      that the possible long-term dynamics of the probability are also extremely rich.  If we simply flip the
-    signs in the dynamics we examined above, we'll get our next example:</p>
+    <p>Given how rich the dynamics can be for deterministic nonlinear systems,
+    you can probably imagine that the possible long-term dynamics of the
+    probability are also extremely rich.  If we simply flip the signs in the
+    dynamics we examined above, we'll get our next example:</p>
 
     <div data-type="example"><h1>The Cubic Example + Noise</h1>
 
-      <p>Now let's consider the discrete-time approximation of
-        \[ \dot{x} = -x + x^3, \]
-        again with additive noise:
-        \[ x[n+1] = x[n] + h (-x[n] + x[n]^3 + w[n]). \]
-        With $w[n]=0$, the system has only a single stable fixed point (at the origin),
-        whose deterministic region of attraction is given by $x \in (-1,1)$.  If we again simulate
-        the system from a set of random initial conditions and plot the histogram, we will
-        see something like the figure below.
-      </p>
-      <figure>
-        <img width="80%" data-src="figures/cubic_histogram.svg"/>
-        <figcaption>Histogram of the states of the bistable system with noise ($\sigma = 0.01$) after simulating from random initial conditions until $t=30$.
-          <br/><a href="figures/cubic_histogram.swf">Click here to see the animation</a></figcaption>
-      </figure>
+      <p>Now let's consider the discrete-time approximation of \[ \dot{x} = -x +
+      x^3, \] again with additive noise: \[ x[n+1] = x[n] + h (-x[n] + x[n]^3 +
+      w[n]). \] With $w[n]=0$, the system has only a single stable fixed point
+      (at the origin), whose deterministic region of attraction is given by $x
+      \in (-1,1)$.  If we again simulate the system from a set of random initial
+      conditions and plot the histogram, we will see something like the figure
+      below. </p>
+
+      <figure> <img width="80%" data-src="figures/cubic_histogram.svg"/>
+      <figcaption>Histogram of the states of the bistable system with noise
+      ($\sigma = 0.01$) after simulating from random initial conditions until
+      $t=30$. <br/><a href="figures/cubic_histogram.swf">Click here to see the
+      animation</a></figcaption> </figure>
+
       <p>Be sure to watch the animation (or run the simulation):</p>
+
       <pre><code class="matlab" testfile="simpleCTParticleDemoHist2">
         cd(fullfile(getDrakePath,'examples','test'));
         options.plot_histogram = true;
         options.time_reversed_system = false;
         simpleCTParticleDemo(options);
       </code></pre>
+
       <p>Now try increasing the noise covariance:</p>
+
       <pre><code class="matlab" testfile="simpleCTParticleDemoHist3">
         cd(fullfile(getDrakePath,'examples','test'));
         options.plot_histogram = true;
@@ -3486,65 +3518,101 @@ where this additional input $\bw$ is the (vector) output of some random process.
         options.noise_covariance = 2;
         simpleCTParticleDemo(options);
       </code></pre>
-      <p style="text-align:center"><a href="figures/cubic_histogram_more_noise.swf">Click here to see the animation</a></p>
-      <p>What is the stationary distribution for this system?  In fact, there isn't one.  Although
-      we initially collect probability density around the stable fixed point, you should notice a slow
-      leak -- on every step there is some probability of transitioning past unstable fixed points and
-      getting driven by the unstable dynamics off towards infinity.  If we run the simulation long enough,
-      there won't be any probability density left at $x=0$.</p>
-      </div>
 
-      <div data-type="example"><h1>The Stochastic Van der Pol Oscillator</h1>
+      <p style="text-align:center"><a
+      href="figures/cubic_histogram_more_noise.swf">Click here to see the
+      animation</a></p>
 
-        <p>One more example; this is a fun one.  Let's think about one of the simplest examples
-        that we had for a system that demonstrates limit cycle stability -- the Van der Pol oscillator -- but
-        now we'll add Gaussian white noise,
-        $$\ddot{q} + (q^2 - 1)\dot{q} + q = w(t),$$
-        Here's the question: if we
-          start with a small set of initial conditions centered around one point on the limit cycle,
-          then what is the long-term behavior of this distribution?
-        </p>
-        <figure>
-          <img width="80%" data-src="figures/vanderpol_particles.svg"/>
-          <figcaption>Randomly sampled initial conditions pictured with the stable limit cycle
-          of the Van der Pol oscillator.</figcaption>
-        </figure>
+      <p>What is the stationary distribution for this system?  In fact, there
+      isn't one.  Although we initially collect probability density around the
+      stable fixed point, you should notice a slow leak -- on every step there
+      is some probability of transitioning past unstable fixed points and
+      getting driven by the unstable dynamics off towards infinity.  If we run
+      the simulation long enough, there won't be any probability density left at
+      $x=0$.</p>
+    </div>
 
-        <p>Since the long-term behavior of the deterministic system is periodic, it would
-        be very logical to think that the state distribution for this stochastic system
-        would fall into a stable periodic solution, too.  But think about it a little more,
-        and then watch the animation (or run the simulation yourself).</p>
+    <div data-type="example"><h1>The Stochastic Van der Pol Oscillator</h1>
+
+      <p>One more example; this is a fun one.  Let's think about one of the
+      simplest examples that we had for a system that demonstrates limit cycle
+      stability -- the Van der Pol oscillator -- but now we'll add Gaussian
+      white noise, $$\ddot{q} + (q^2 - 1)\dot{q} + q = w(t),$$ Here's the
+      question: if we start with a small set of initial conditions centered
+      around one point on the limit cycle, then what is the long-term behavior
+      of this distribution? </p>
+
+      <figure> <img width="80%" data-src="figures/vanderpol_particles.svg"/>
+      <figcaption>Randomly sampled initial conditions pictured with the stable
+      limit cycle of the Van der Pol oscillator.</figcaption> </figure>
+
+      <p>Since the long-term behavior of the deterministic system is periodic,
+      it would be very logical to think that the state distribution for this
+      stochastic system would fall into a stable periodic solution, too.  But
+      think about it a little more, and then watch the animation (or run the
+      simulation yourself).</p>
+
       <pre><code class="matlab" testfile="vanderpol_particlesim">
         cd(fullfile(getDrakePath,'examples'));
         VanDerPol.particleDemo();
       </code></pre>
-      <p style="text-align:center"><a href="figures/vanderpol_particles.swf">Click here to see the animation (first 20 seconds)</a></p>
-      <p style="text-align:center"><a href="figures/vanderpol_particles_mixed.svg">Click here to see the particles after 2000 seconds of simulation</a></p>
 
-      <p>The explanation is simple: the periodic solution of the system is only <i>orbitally stable</i>; there
-      is no stability along the limit cycle.  So any disturbances that push the particles along the limit
-      cycle will go unchecked.  Eventually, the distribution will "mix" along the entire cycle.
-      Perhaps surprisingly, this system that has a limit cycle stability when $w=0$ eventually
-      reaches a stationary distribution (fixed point) in the master equation.</p>
-      </div>
+      <p style="text-align:center"><a
+      href="figures/vanderpol_particles.swf">Click here to see the animation
+      (first 20 seconds)</a></p>
 
-    </section>
+      <p style="text-align:center"><a
+      href="figures/vanderpol_particles_mixed.svg">Click here to see the
+      particles after 2000 seconds of simulation</a></p>
 
-    <section data-type="sect1"><h1>Analysis</h1>
+       <p>The explanation is simple: the periodic solution of the system is only
+       <i>orbitally stable</i>; there is no stability along the limit cycle.  So
+       any disturbances that push the particles along the limit cycle will go
+       unchecked.  Eventually, the distribution will "mix" along the entire
+       cycle. Perhaps surprisingly, this system that has a limit cycle stability
+       when $w=0$ eventually reaches a stationary distribution (fixed point) in
+       the master equation.</p>
 
-      <p>Coming soon.  Discretize, then closed form solutions using the transition matrix.  Finite-time verification with sums of squares.</p>
+    </div>
 
-    </section>
+  </section>
 
-    <section data-type="sect1"><h1>Extended Example: The Rimless Wheel on Rough Terrain</h1>
+  <section data-type="sect1"><h1>Extended Example: The Rimless Wheel on Rough
+  Terrain</h1>
 
-      <p>Coming soon.  Read the paper <elib>Byl08f</elib> and/or watch the <a href="https://youtu.be/TaaJgvjYBQc">video</a>.</p>
+    <p>Coming soon.  Read the paper <elib>Byl08f</elib> and/or watch the <a
+        href="https://youtu.be/TaaJgvjYBQc">video</a>.</p>
 
-    </section>
+  </section>
 
-    <section data-type="sect1"><h1>Control Design (a preview)</h1>
+  <section data-type="sect1"><h1>Noise models for real robots/systems.</h1>
 
-    </section>
+    <p>Sensor models.  Beam model from probabilistic robotics.  RGB-D
+    dropouts.</p>
+
+    <p>Perception subsystem.  Output of a
+    perception system is not Gaussian noise, it's missed
+    detections/drop-outs...</p>
+
+    <p>Distributions over tasks/environments.</p>
+
+  </section>
+
+  <section data-type="sect1"><h1>Analysis (a preview)</h1>
+
+    <p>Coming soon.  Uncertainty quantification (e.g., linear guassian
+    approximation; discretize then closed form solutions using the transition
+    matrix....).  Monte-Carlo. Particle sim/filter. Rare event simulation </p>
+
+    <p>L2-gain with dissipation inequalities.  Finite-time verification with
+    sums of squares.</p>
+
+  </section>
+
+
+  <section data-type="sect1"><h1>Control Design (a preview)</h1>
+
+  </section>
 
 </section> <!-- ***************  end of stochasticity **************   -->
 
