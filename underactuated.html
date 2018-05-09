@@ -6591,81 +6591,305 @@ and Validation</h1>
 </section>
 
 <section data-type="chapter" class="chapter"
-         id="policy_gradient"><h1>Model-Free Policy Search</h1>
+         id="policy_search"><h1>Model-Free Policy Search</h1>
 
-  <section data-type="sect1"><h1>Direct Policy Search</h1>
+  <p>Reinforcement learning (RL) is a collection of algorithms for solving the
+  same optimal control problem that we've focused on through the text, but the
+  real gems from the RL literature are the algorithms for (almost) <i>black-box
+  optimization</i> of stochastic optimal control problems. The idea of an
+  algorithm that only has a "black-box" interface to the optimization problem
+  means that it can obtain (potentially noisy) samples of the optimal cost via
+  trial and error, but does not have access to the underlying model, and does
+  not have direct access to complete gradient information.</p>
 
-    <p>In the chapter on <a href="underactuated.html?chapter=trajopt">trajectory
-    optimization</a>, we formulated the search for a about policy search as a
-    nonlinear optimization problem, and discussed efficient ways to calculate
-    the gradient of the long-term cost: $$J^{\balpha}(\bx_0) = \int_0^T
-    g(\bx,\pi_\balpha(\bx,t)) dt, \text{ s.t. } \bx(0) = \bx_0.$$ Assuming
-    $J^\balpha(\bx_0)$ is smooth over $\bw$, we derived updates of the form:
-    $$\Delta \balpha = -\eta
-    \left[\pd{J^\balpha}{\balpha}\right]_{\bx_0,\balpha}^T.$$ But it may not
-    always be possible, or practical, to compute the gradients exactly.</p>
+  <p>This is a hard problem!   In general we cannot expect RL algorithms to
+  optimize as quickly as more structured optimization, and we can typically only
+  guarantee convergence to a local optima at best.  But the framework is
+  extremely general, so it can be applied to problems that are inaccessible to
+  any of the other algorithms we've examined so far.  My favorite examples for
+  reinforcement learning are control in complex fluid dynamics (e.g.
+  <elib>Roberts09a</elib>). These systems are often very difficult to model, or
+  the model is so high-dimensional and complicated so that it's prohibitive for
+  control design. In these problems, it might actually be faster to optimize via
+  trial-and-error in physical experiments. </p>
 
-    <p>A standard technique for estimating the gradients, in lieu of analytical
-    gradient information, is the method of finite
-      differences<elib>Press92</elib>.
-    The finite differences approach to estimating the gradient involves making
-    the same small perturbation, $\epsilon$ to the input parameters in every
-    dimension independently, and using: $$\pd{J^\balpha}{\alpha_i} \approx
-    \frac{J^{\balpha+{\bf \epsilon}_i}(\bx_0) - J^\balpha(\bx_0)}{\epsilon},$$
-    where ${\bf \epsilon_i}$ is the column vector with $\epsilon$ in the $i$th
-    row, and zeros everywhere else.  Finite difference methods can be
-    computationally very expensive, requiring $n+1$ evaluations of the function
-    for every gradient step, where $n$ is the length of the input vector.</p>
+  <p>In this chapter we will examine one particular style of reinforcement
+  learning that attempts to find good controllers by explicitly parameterizing a
+  family of policies (e.g. via a parameter vector $\alpha$), then searching
+  directly for the parameters that optimize the long-term cost.  For a
+  stochastic optimal control problem with our favorite additive form of the
+  objective, this might look like: \begin{equation} \min_\alpha E \left[
+    \sum_{n=0}^N
+  g(\bx[n],\bu[n]) \right]\end{equation} where the random variables are drawn
+    from
+  probability densities \begin{gather*}\bx[0] \sim p_0(\bx),\\ \bx[n] \sim
+  p(\bx[n] | \bx[n-1], \bu[n-1]), \\ \bu[n] \sim p_\alpha(\bu[n] |
+  \bx[n]).\end{gather*}  The last equation is a probabilistic representation of
+  the control policy -- on each time-step actions $\bu$ are drawn from a
+  distribution that is conditioned on the current state, $\bx$.</p>
 
-    <p>In this chapter we will develop <i>stochastic</i> gradient descent
-    algorithms which can, in expectation, descend a policy gradient with
-    considerably less evaluations than those required for finite differences.
-    In addition, we will develop methods that are robust to stochasticity in the
-    function evaluation, which is inevitable if one is trying to descend a
-    policy gradient on a real robot.  This allows for the exciting possibility
-    of optimizing a control policy for a system without requiring any model of
-    the plant.</p>
+  <p>Of course, the controls community has investigated ideas like this, too,
+  for instance under the umbrellas of <i>extremum-seeking control</i> and
+  <i>iterative learning control</i>.  I'll try to make connections whenever
+  possible.</p>
+
+  <section data-type="sect1"><h1>Policy Gradient Methods</h1>
+
+    <p>One of the standard approaches to policy search in RL is to estimate the
+    gradient of the expected long-term cost with respect to the policy
+    parameters by evaluating some number of sample trajectories, then performing
+    (stochastic) gradient descent.  Many of these so-called "policy gradient"
+    algorithms leverage a derivation that was first described in the context of
+    the REINFORCE algorithm <elib>Williams92</elib>.  It is based on what looks
+    like a trick with logarithms to estimate the gradient; I feel like this
+    trick is often presented with an air of mystery about it.  Let's try to make
+    sure we understand it.</p>
+
+    <section data-type="sect2"><h1>The Policy Gradient "Trick" (aka
+      REINFORCE)</h1>
+
+      <p>Let's start with a simpler optimization over a stochastic function:
+      $$\min_\alpha E\left[ g(\bx) \right] \text{ with } \bx \sim p_\alpha(\bx)
+      $$  I hope the notation is clear?  $\bx$ is a random vector, drawn from
+      the distribution $p_\alpha(\bx)$, with the subscript indicating that the
+      distribution depends on the parameter vector $\alpha$.  What is the
+      gradient of this function?  The REINFORCE derivation is \begin{align*}
+      \frac{\partial}{\partial \alpha} E \left[ g(\bx) \right] =&
+      \frac{\partial}{\partial \alpha} \int d\bx ~ g(\bx) p_\alpha(\bx) \\ =&
+      \int  d\bx ~ g(\bx) \frac{\partial}{\partial \alpha} p_\alpha(\bx)  \\ =&
+      \int d\bx ~ g(\bx) p_\alpha(\bx) \frac{\partial}{\partial \alpha}  \log
+      p_\alpha(\bx)   \\ =& E\left[ g(\bx) \frac{\partial}{\partial \alpha} \log
+      p_\alpha(\bx) \right]. \end{align*} To achieve this, we used the
+      derivative of the logarithm: \begin{gather*} y = \log u \\ \frac{\partial
+      y}{\partial u} = \frac{1}{u} \frac{\partial u}{\partial x} \end{gather*}
+      to write $$\frac{\partial}{\partial \alpha} p_\alpha(\bx) = p_\alpha(\bx)
+      \frac{\partial}{\partial \alpha} \log p_\alpha(\bx).$$ This suggests a
+      simple Monte Carlo algorithm for estimating the policy gradient: draw $N$
+      random samples $\bx_i$ then estimate the gradient as $$
+      \frac{\partial}{\partial \alpha} E \left[ g(\bx) \right] \approx
+      \frac{1}{N} \sum_i g(\bx_i) \frac{\partial}{\partial \alpha} \log
+      p_\alpha(\bx_i).$$</p>
+
+      <p>This trick is even more potent in the optimal control case.  For a
+      finite-horizon problem we have \begin{align*} \frac{\partial}{\partial
+      \alpha} E \left[ \sum_{n=0}^N g(\bx[n], \bu[n]) \right] =& \sum_{n=0}^N
+      \int d\bx[n] d\bu[n] ~ g(\bx[n],\bu[n]) \frac{\partial}{\partial \alpha}
+      p_\alpha(\bx[n],\bu[n]) \\ =& E\left[ \sum_{n=0}^N g(\bx[n],\bu[n])
+      \frac{\partial}{\partial \alpha} \log p_\alpha(\bx[n],\bu[n]) \right],
+      \end{align*} where $$ p_\alpha(\bx[n],\bu[n]) = p_0(\bx[0]) \left(
+      \prod_{k=1}^n p(\bx[k] | \bx[k-1],\bu[k-1]) \right) \left(\prod_{k=0}^n
+      p_\alpha(\bu[k] | \bx[k]) \right).$$ Taking the $\log$ we have $$\log
+      p_\alpha(\bx[n],\bu[n]) = \log p_0(\bx[0]) + \sum_{k=1}^n \log p(\bx[k] |
+      \bx[k-1],\bu[k-1]) + \sum_{k=0}^n \log p_\alpha(\bu[k] | \bx[k]).$$  Only
+      the last terms depend on $\alpha$, which yields $$\frac{\partial}{\partial
+      \alpha} E \left[ \sum_{n=0}^N g(\bx[n], \bu[n]) \right] = E\left[
+      \sum_{n=0}^N g(\bx[n],\bu[n]) \sum_{k=0}^n \frac{\partial}{\partial
+      \alpha} \log p_\alpha(\bu[k]|\bx[k]) \right]. $$</p>
+
+      <p>This update should surprise you.  It says that I can find the gradient
+      of the long-term cost by taking only the gradient of the policy... but not
+      the gradient of the plant, etc!  The intuition is that one can obtain the
+      gradient by evaluating the policy along a number of (random) trajectory
+      roll-outs of the closed-loop system, evaluating the cost on each, then
+      increasing the probability in the policy of taking the actions correlated
+      with lower long-term costs.</p>
+
+      <p>This derivation is often presented as <b>the</b> policy gradient
+      derivation.  The identity is certainly correct, but I'd prefer that you
+      think of this as just one way to obtain the policy gradient. It's a
+      particularly clever one in that it uses exactly the information that we
+      have available in reinforcement learning -- we have access to the
+      instantaneous costs, $g(\bx[n], \bu[n])$, and to the policy -- so are
+      allowed to take gradients of the policy -- but does not require any
+      understanding whatsoever of the plant model.   Although it's clever, it is
+      not particularly efficient -- the Monte Carlo approximations of the
+      expected value have a high variance, so many samples are required for an
+      accurate estimate.  Other derivations are possible, some even simpler, and
+      others that <b>do</b> make use of the plant gradients if you have access
+      to them, and these will perform differently in the finite-sample
+      approximations.</p>
+
+      <p>For the remainder of this section, I'd like to dig in and try to
+      understand the nature of the stochastic update a little better, to help
+      you understand what I mean. </p>
+
+    </section>
+
+    <section data-type="sect2"><h1>Sample efficiency</h1>
+
+      <p>Let's take a step back and think more generally about how one can use
+      gradient descent in black-box (unconstrained) optimization. Imagine you
+      have a simple optimization problem: $$\min_\alpha g(\alpha),$$ and you can
+      directly evaluate $g()$, but not $\frac{\partial g}{\partial \alpha}$.
+      How can you perform gradient descent?</p>
+
+      <p>A standard technique for estimating the gradients, in lieu of
+      analytical gradient information, is the method of finite
+      differences<elib>Press92</elib>. The finite differences approach to
+      estimating the gradient involves making the same small perturbation,
+      $\epsilon$ to the input parameters in every dimension independently, and
+      using: $$\pd{g}{\alpha_i} \approx \frac{g(\balpha+{\bf \epsilon}_i) -
+      g(\alpha)}{\epsilon},$$ where ${\bf \epsilon_i}$ is the column vector with
+      $\epsilon$ in the $i$th row, and zeros everywhere else.  Finite difference
+      methods can be computationally very expensive, requiring $n+1$ evaluations
+      of the function for every gradient step, where $n$ is the length of the
+      input vector.</p>
+
+      <p>What if each function evaluation is expensive?  Perhaps it means
+      picking up a physical robot and running it for 10 seconds for each
+      evaluation of $g()$.  Suddenly there is a premium on trying to optimize
+      the cost function with the fewest number of evaluations on $g()$.  This is
+      the name of the game in reinforcement learning -- it's often called RL's
+      <i>sample complexity</i>.  Can we perform gradient descent using less
+      evaluations?</p>
+
+    </section>
+
+    <section data-type="sect2"><h1>Stochastic Gradient Descent</h1>
+
+      <p>This leads us to the question of doing approximate gradient descent, or
+      "stochastic" gradient descent.  Thinking of the cost landscape as a
+      Lyapunov function&dagger;<sidenote>&dagger; the Lyapunov function $V
+      (\alpha) = g(\alpha) - g(\alpha^*)$ is commonly used in
+      convergence/stability analysis of optimization algorithms <todo>cite e.g.
+      Ben Recht?</todo></sidenote>, then any update that moves downhill on each
+      step will eventually reach the optimal.  More generally, any update that
+      moves downhill on average will eventually reach a minimum... and sometimes
+      "stochastic" gradient descent updates that occassionally go uphill but go
+      downhill on average can even have desirable properties like bouncing out
+      of small local minima.  The figure below gives some graphical intuition;
+      for a formal treatment of stochastic gradient methods, see e.g.
+      <elib>Bertsikas99</elib>.</p>
+
+      <figure>
+        <img width="90%" data-src="figures/weight_perturbation_quadratic_a.jpg"/>
+        <figcaption>Stochastic gradient descent of a quadratic cost function .</figcaption>
+      </figure>
+
+    </section>
+
+    <section data-type="sect2"><h1>The Weight Pertubation Algorithm</h1>
+
+      <p>Instead of sampling each dimension independently, consider making a
+      single small random change, $\bbeta$, to the parameter vector, $\balpha$.
+      Now consider the update of the form: $$\Delta \balpha= -\eta [ g(\balpha +
+      \bbeta) - g(\balpha)]\bbeta.$$  The intuition here is that if
+      $g(\balpha+\bbeta) < g(\balpha)$, then $\bbeta$ was a good change and
+      we'll move in the direction of $\bbeta$.  If the cost increased, then
+      we'll move in the opposite direction.  Assuming the function is smooth and
+      $\bbeta$ is small, then we will always move downhill on the Lyapunov
+      function.</p>
+
+      <p>Even more interesting, on average, the update is actually in the
+      direction of the true gradient.  To see this, again we can assume the
+      function is locally smooth and $\bbeta$ is small to write the Taylor
+      expansion: $$g(\balpha + \bbeta) \approx g(\balpha) +
+      \pd{g}{\balpha}\bbeta.$$  Now we have \begin{align*}\Delta \balpha
+      \approx& -\eta \left[ \pd{g}{\alpha} \bbeta \right] \bbeta = -\eta \bbeta
+      \bbeta^T \pd{g}{\balpha}^T \\ \avg{\Delta \balpha} \approx& -\eta
+      \avg{\bbeta \bbeta^T} \pd{g}{\balpha}^T \end{align*} If we select each
+      element of $\bbeta$ independently from a distribution with zero mean and
+      variance $\sigma_\beta^2$, or $\avg{ \beta_i } = 0, \avg{ \beta_i \beta_j
+      } = \sigma_\beta^2 \delta_{ij}$, then we have $$\avg{\Delta \balpha}
+      \approx -\eta \sigma_\beta^2 \pd{g}{\balpha}^T.$$ Note that the
+      distribution $p_{\alpha}(\bx)$ need not be Gaussian, but it is the
+      variance of the distribution which determines the scaling on the
+      gradient.</p>
+
+    </section>
+
+    <section data-type="sect2"><h1>Weight Perturbation with an Estimated
+      Baseline</h1>
+
+      <p>The weight perturbation update above requires us to evaluate the
+      function $g$ twice for every update of the parameters.  This is low
+      compared to the method of finite differences, but let us see if we can do
+      better.  What if, instead of evaluating the function twice per update
+      [$g(\balpha+\bbeta)$ and $g(\balpha)$], we replace the evaluation of
+      $g(\balpha)$ with an estimator, $b = \hat{g}(\balpha)$, obtained from
+      previous trials?  In other words, consider an update of the form:
+      \begin{equation} \Delta \balpha= - \frac{\eta}{\sigma_\beta^2}
+      [ g(\balpha + \bbeta) - b]\bbeta
+      \label{eq:weight_perturbation_baseline} \end{equation} The estimator can
+      take any of a number of forms, but perhaps the simplest is based on the
+      update (after the $n$th trial): $$b[n+1] = \gamma g[n] + (1 -
+      \gamma)b[n],\quad b[0] = 0, 0\le\gamma\le1,$$ where $\gamma$ parameterizes
+      the moving average.  Let's compute the expected value of the update, using
+      the same Taylor expansion that we used above: \begin{align*} E[\Delta
+      \balpha] =& -\frac{\eta}{\sigma_\beta^2}  \avg{ [g(\balpha) +
+      \pd{g}{\balpha}\bbeta - b]\bbeta} \\ =& -\frac{\eta}{\sigma_\beta^2}
+      \avg{(g(\balpha-b)\bbeta} -\frac{\eta}{\sigma_\beta^2} \avg{\bbeta
+        \bbeta^T}\pd{g}{\balpha}^T \\
+      =& - \eta \pd{g}{\balpha}^T \end{align*} In other words, the baseline does
+      not effect our basic result - that the expected update is in the direction
+      of the gradient.  Note that this computation works for any baseline
+      estimator which is uncorrelated with $\bbeta$, as it should be if the
+      estimator is a function of the performance in previous trials.</p>
+
+      <p>Although using an estimated baseline doesn't effect the average update,
+      it can have a dramatic effect on the performance of the algorithm.
+        As we will see in a later section, if the evaluation of $g$ is
+      stochastic, then the update with a baseline estimator can actually
+      outperform an update using straight function evaluations.</p>
+
+      <todo>
+  % Note: it would be very interesting to look at the performance of
+  % estimated baselines vs. perfect baselines (one has higher variance,
+  % but allows 2x the updates for the same number of function evaluations).
+      </todo>
+
+      <p>Let's take the extreme case of $b=0$.  This seems like a very bad
+      idea... on each step we will move in the direction of every random
+      perturbation, but we will move more or less in that direction based on the
+      evaluated cost. In average, we will still move in the direction of the
+      true gradient, but only because we will eventually move more downhill than
+      we move uphill.  It feels very naive.</p>
+
+    </section>
+
+    <section data-type="sect2"><h1>REINFORCE w/ additive Gaussian noise</h1>
+
+      <p>Now let's consider the simple form of the REINFORCE update:
+      \begin{align*} \frac{\partial}{\partial \alpha} E \left[ g(\bx) \right] =
+      E\left[ g(\bx) \frac{\partial}{\partial \alpha} \log p_\alpha(\bx)
+      \right]. \end{align*}  It turns out that weight perturbation is a
+      REINFORCE algorithm.  To see this, take $\bx = \balpha + \bbeta$, $\bbeta
+      \in N(0,\sigma^2)$, to have \begin{gather*} p_{\balpha}(\bx) =
+      \frac{1}{(2\pi\sigma^2)^N} e^{\frac{-(\bx-\balpha)^T(\bx -
+      \balpha)}{2\sigma^2}} \\ \log p_{\balpha}(\bx) =
+      \frac{-(\bx-\balpha)^T(\bx - \balpha)}{2\sigma^2} + \text{terms that don't
+      depend on }\balpha \\ \pd{}{\balpha} \ln p_{\balpha}(\bx) =
+      \frac{1}{\sigma^2} (\balpha - \bx)^T = \frac{1}{\sigma^2} \bbeta^T. \\
+      \end{gather*} If we use only a single trial for each Monte-Carlo
+      evaluation, then the REINFORCE update is $$\Delta \balpha =
+      -\frac{\eta}{\sigma^2} y(\balpha + \bbeta) \bbeta$$, which is precisely
+      the weight perturbation update (the crazy version with $b=0$ discussed
+      above).  Although it will move in the direction of the gradient on
+      average, it can be highly inefficient.</p>
+
+    </section>
+
+    <section data-type="sect2"><h1>Summary</h1>
+
+      <p>The policy gradient "trick" from REINFORCE using log probabilities
+      provides one means of estimating the true policy gradient.  It is not the
+      only way to obtain the policy gradient... in fact the trivial
+      weight-perturbation update obtains the same gradient.  It's cleverness
+      lies in the fact that it makes use of the information we do have
+      (instantaneous cost values and the gradients of the policy), but it's
+      inefficiency comes from having a potentially very high variance Variance
+      reduction for policy gradient, often through baseline estimation,
+      continues to be an active area of research.</p>
+
+    </section>
 
   </section>
 
-  <section data-type="sect1"><h1>Stochastic Gradient Descent</h1>
+  <todo>REINFORCE for LTI systems</todo>
 
-    <p>Requirements and guarantees.  For a formal treatment, see Bertsekas.</p>
 
-    <figure>
-      <img width="90%" data-src="figures/weight_perturbation_quadratic_a.jpg"/>
-      <figcaption>Stochastic gradient descent of a quadratic cost function .</figcaption>
-    </figure>
-
-  </section>
-
-  <section data-type="sect1"><h1>The Weight Pertubation Algorithm</h1>
-
-    <p>Instead of sampling each dimension independently, consider making a
-    single small random change, $\bbeta$, to the parameter vector, $\balpha$.
-    Assuming that the function is locally smooth, we can approximate the result
-    of this experiment using a Taylor expansion: $$J^{\balpha + \bbeta}(\bx_0)
-    \approx J^\balpha(\bx_0) + \pd{J^\balpha (\bx_0)}{\balpha}\bbeta.$$ Now
-    consider the update of the form: $$\Delta \balpha= -\eta [ J^{\balpha +
-    \bbeta}(\bx_0) - J^\balpha(\bx_0)]\bbeta.$$ Since $J^{\balpha + \bbeta} -
-    J^\balpha$ is (approximately) the dot product between
-    $\pd{J^\alpha}{\balpha}$ and $\bbeta$, the sign of this term ensures that
-    $\Delta \balpha$ is always within 90 degrees of true gradient descent.</p>
-
-    <p>Furthermore, on average, the update is in the direction of the true
-    gradient: \begin{align*}\Delta \balpha \approx& -\eta \bbeta \bbeta^T
-    \pd{J}{\balpha}^T \\ \avg{\Delta \balpha} \approx& -\eta \avg{\bbeta
-    \bbeta^T} \pd{J}{\balpha}^T \end{align*} If we select each element of
-    $\bbeta$ independently from a distribution with zero mean and variance
-    $\sigma_\beta^2$, or $\avg{ \beta_i } = 0, \avg{ \beta_i \beta_j } =
-    \sigma_\beta^2 \delta_{ij}$, then we have $$\avg{\Delta \balpha} \approx
-    -\eta \sigma_\beta^2 \pd{J}{\balpha}^T.$$ Note that the distribution
-    $f_{\alpha_i}(\alpha_i)$ need not be Gaussian, but it is the variance of the
-    distribution which determines the scaling on the gradient.  Bringing the
-    $\sigma_\beta^2$ into the update, we have the weight perturbation algorithm:
-    \begin{equation} \Delta \balpha= - \frac{\eta}{\sigma_\beta^2} [
-    J^{\balpha + \bbeta}(\bx_0) - J^\balpha(\bx_0)]\bbeta
-    \label{eq:weight_perturbation} \end{equation}</p>
+  <section data-type="sect1"><h1>Sample performance via the signal-to-noise
+  ratio.</h1>
 
     <section data-type="sect2"><h1>Performance of Weight Perturbation</h1>
 
@@ -6680,40 +6904,40 @@ and Validation</h1>
       (SNR).  The SNR is the ratio of the power in the signal (here desired
       update in the direction of the true gradient) and the power in the noise
       (the remaining component of the update, so that $\Delta\balpha =
-      -\eta\pd{J}{\balpha}^T + $noise)&dagger;<sidenote>&dagger; SNR could
+      -\eta\pd{g}{\balpha}^T + $ noise)&dagger;<sidenote>&dagger; SNR could
       alternatively be defined as the ratio of the power of the component of the
       update in the direction of the signal and the component orthogonal to the
       signal (does not penalize the magnitudes of the updates):
       $$\frac{E[a^2]}{E\left[\left|\Delta\balpha - a{\bf v} \right|^2\right]},$$
       where ${\bf v} =
-      \frac{\pd{J}{\balpha}^T}{\left|\pd{J}{\balpha}^T\right|},$ $a = \Delta
+      \frac{\pd{g}{\balpha}^T}{\left|\pd{g}{\balpha}^T\right|},$ $a = \Delta
       \balpha \cdot {\bf v}$.  This form is probably a better definition, but is
       more difficult to work with.</sidenote> $$\text{SNR} = \frac{\left|-\eta
-      \pd{J}{\balpha}^T\right|^2}{\avg{\left|\Delta \balpha + \eta
-      \pd{J}{\balpha}^T \right|^2}}.$$ In the special case of the unbiased
+      \pd{g}{\balpha}^T\right|^2}{\avg{\left|\Delta \balpha + \eta
+      \pd{g}{\balpha}^T \right|^2}}.$$ In the special case of the unbiased
       update, the equation reduces to: $$\text{SNR} =
       \frac{\avg{\Delta\balpha}^T\avg{\Delta\balpha}}
       {\avg{(\Delta\balpha)^T(\Delta\balpha)} -
       \avg{\Delta\balpha}^T\avg{\Delta\balpha}}.$$</p>
 
       <p>For the weight perturbation update we have: $$\avg{\Delta
-      \balpha}^T\avg{\Delta \balpha} = \eta^2 \pd{J}{\balpha} \pd{J}{\balpha}^T
-      = \eta^2 \sum_{i=1}^{N} \left( \pd{J}{\alpha_i} \right)^2,$$
+      \balpha}^T\avg{\Delta \balpha} = \eta^2 \pd{g}{\balpha} \pd{g}{\balpha}^T
+      = \eta^2 \sum_{i=1}^{N} \left( \pd{g}{\alpha_i} \right)^2,$$
       \begin{align*} \avg{(\Delta \balpha)^T(\Delta \balpha)} =&
-      \frac{\eta^2}{\sigma_\beta^4} \avg{\left[J^{\balpha+\bbeta} -
-      J^\balpha\right]^2 \bbeta^T\bbeta} \\ \approx&
-      \frac{\eta^2}{\sigma_\beta^4} \avg{ \left[ \pd{J}{\balpha} \bbeta
+      \frac{\eta^2}{\sigma_\beta^4} \avg{\left[g(\balpha+\bbeta) -
+      g(\balpha)\right]^2 \bbeta^T\bbeta} \\ \approx&
+      \frac{\eta^2}{\sigma_\beta^4} \avg{ \left[ \pd{g}{\balpha} \bbeta
       \right]^2 \bbeta^T\bbeta } \\ =& \frac{\eta^2}{\sigma_\beta^4} \avg{
-      \left(\sum_i \pd{J}{\alpha_i}\beta_i\right) \left( \sum_j \pd{J}{\alpha_j}
+      \left(\sum_i \pd{g}{\alpha_i}\beta_i\right) \left( \sum_j \pd{g}{\alpha_j}
       \beta_j\right) \left(\sum_k \beta_k^2 \right) } \\ =&
-      \frac{\eta^2}{\sigma_\beta^4} \avg{ \sum_i \pd{J}{\alpha_i}\beta_i \sum_j
-      \pd{J}{\alpha_j} \beta_j \sum_k \beta_k^2 } \\ =&
-      \frac{\eta^2}{\sigma_\beta^4} \sum_{i,j,k} \pd{J}{\alpha_i}
-      \pd{J}{\alpha_j} \avg{ \beta_i \beta_j \beta_k^2 }\\ \avg{\beta_i \beta_j
+      \frac{\eta^2}{\sigma_\beta^4} \avg{ \sum_i \pd{g}{\alpha_i}\beta_i \sum_j
+      \pd{g}{\alpha_j} \beta_j \sum_k \beta_k^2 } \\ =&
+      \frac{\eta^2}{\sigma_\beta^4} \sum_{i,j,k} \pd{g}{\alpha_i}
+      \pd{g}{\alpha_j} \avg{ \beta_i \beta_j \beta_k^2 }\\ \avg{\beta_i \beta_j
       \beta_k^2} = \begin{cases} 0 & i \neq j \\ \sigma_\beta^4 & i=j\neq k \\
       \mu_4(\beta) & i = j =k \end{cases}& \\ =& \eta^2 (N-1) \sum_i \left(
-      \pd{J}{\alpha_i} \right)^2 +  \frac{\eta^2 \mu_4(z)}{\sigma_\beta^4}
-      \sum_i \left(\pd{J}{\alpha_i}\right)^2 \end{align*} where $\mu_n(z)$ is
+      \pd{g}{\alpha_i} \right)^2 +  \frac{\eta^2 \mu_4(z)}{\sigma_\beta^4}
+      \sum_i \left(\pd{g}{\alpha_i}\right)^2 \end{align*} where $\mu_n(z)$ is
       the $n$th central moment of $z$: $$\mu_n(z) = \avg{(z - \avg{z})^n}.$$
       Putting it all together, we have: $$\text{SNR} = \frac{1}{N - 2 +
       \frac{\mu_4(\beta_i)}{\sigma_\beta^4}}.$$</p>
@@ -6731,9 +6955,9 @@ and Validation</h1>
         noise</h1>
 
         <p>For $\beta_i$ drawn from a uniform distribution over [-a,a], we have
-  $\mu_1 = 0, \mu_2 = \frac{a^2}{3} = \sigma_\beta^2, \mu_3 = 0, \mu_4 =
-  \frac{a^4}{5} = \frac{9}{5}\sigma_\beta^4,$ simplifying the above to:
-          $$\text{SNR} = \frac{1}{N-\frac{1}{5}}.$$</p>
+        $\mu_1 = 0, \mu_2 = \frac{a^2}{3} = \sigma_\beta^2, \mu_3 = 0, \mu_4 =
+        \frac{a^4}{5} = \frac{9}{5}\sigma_\beta^4,$ simplifying the above to:
+        $$\text{SNR} = \frac{1}{N-\frac{1}{5}}.$$</p>
 
       </div>
 
@@ -6755,176 +6979,6 @@ and Validation</h1>
 
     </section>
 
-    <section data-type="sect2"><h1>Weight Perturbation with an Estimated
-      Baseline</h1>
-
-      <p>The weight perturbation update above requires us to evaluate the
-      function $J$ twice for every update of the parameters.  This is low
-      compared to the method of finite differences, but let us see if we can do
-      better.  What if, instead of evaluating the function twice per update
-      [$J^{\balpha+\bbeta}$ and $J^\balpha$], we replace the evaluation of
-      $J^\balpha$ with an estimator, $b = \hat{J}(\balpha)$, obtained from
-      previous trials?  In other words, consider an update of the form:
-      \begin{equation} \Delta \balpha= - \frac{\eta}{\sigma_\beta^2}
-      [ J^{\balpha + \bbeta} - b]\bbeta
-      \label{eq:weight_perturbation_baseline} \end{equation} The estimator can
-      take any of a number of forms, but perhaps the simplest is based on the
-      update (after the $n$th trial): $$b[n+1] = \gamma J[n] + (1 -
-      \gamma)b[n],\quad b[0] = 0, 0\le\gamma\le1,$$ where $\gamma$ parameterizes
-      the moving average.  Let's compute the expected value of the update, using
-      the same Taylor expansion that we used above: \begin{align*} E[\Delta
-      \balpha] =& -\frac{\eta}{\sigma_\beta^2}  \avg{ [J^\balpha +
-      \pd{J}{\balpha}\bbeta - b]\bbeta} \\ =& -\frac{\eta}{\sigma_\beta^2}
-      \avg{J^\balpha-b}\avg{\bbeta} + \avg{\bbeta \bbeta^T}\pd{J}{\balpha}^T \\
-      =& - \eta \pd{J}{\balpha}^T \end{align*} In other words, the baseline does
-      not effect our basic result - that the expected update is in the direction
-      of the gradient.  Note that this computation works for any baseline
-      estimator which is uncorrelated with $\bbeta$, as it should be if the
-      estimator is a function of the performance in previous trials.</p>
-
-      <p>Although using an estimated baseline doesn't effect the average update,
-      it can have a dramatic effect on the performance of the algorithm.
-      Although it is left as an exercise for the reader, the results are...</p>P
-
-      <p>As we will see in a later section, if the evalution of $J$ is
-      stochastic, then the update with a baseline estimator can actually
-      outperform an update using straight function evaluations.</p>
-
-      <todo>
-  % Note: it would be very interesting to look at the performance of
-  % estimated baselines vs. perfect baselines (one has higher variance,
-  % but allows 2x the updates for the same number of function evaluations).
-      </todo>
-
-    </section>
-
-  </section>
-
-  <section data-type="sect1"><h1>The REINFORCE Algorithm</h1>
-
-    <p>The weight perturbation algorithm used only additive noise in the
-    parameters.  It also assumed that this noise was small and that $J$ was
-    smoothly differientable.  More generally, we can minimize the expected value
-    of a scalar deterministic function $y(\bz)$, where $\bz$ is a vector random
-    variable which depends on $\balpha$ through the conditional probability
-    density function $f_{\bz|\balpha}(\bz|\balpha)$.  Note that $\bz = \balpha +
-    \bbeta$, is a special case of this general form. Consider the gradient of
-    the expected value of $y$: \begin{align*} \pd{}{\balpha}\avg{y} =&
-    \int_{-\infty}^{+\infty} y(\bz) \pd{}{\balpha} f_{\bz|\balpha} (\bz|\balpha)
-    dz \\ =& \int_{-\infty}^{+\infty} y(\bz) f_{\bz|\balpha}(\bz|\balpha)
-    \pd{}{\balpha} \ln f_{\bz|\balpha}(\bz|\balpha) dz \\ =& \avg{y(\bz) \left[
-    \pd{}{\balpha} \ln f_{\bz|\balpha}(\bz|\balpha)\right]^T}, \end{align*}
-    where the second line used the identity $\pd{}{z} \ln(z) = \frac{1}{z}$.
-    Therefore, the update for the REINFORCE algorithm is: \begin{equation}
-    \Delta \balpha = - \eta \left[ y(\bx) - b \right]
-    \left[\pd{}{\balpha} \ln f_{\bx|\balpha}(\bx|\balpha)\right]^T
-    \label{eq:REINFORCE} \end{equation} which will have the property that
-    $$\avg{\Delta \balpha} = - \eta \pd{}{\balpha} \avg{y}.$$ This derivation
-    generalizes our weight perturbation algorithm, removing the assumption on
-    small $\bbeta$ and allowing more general forms for
-    $f_{\bx|\balpha}(\bx|\balpha)$.  The caveat is that the update is only
-    well-defined for probability densities which are smoothly differentiable in
-    $\balpha$.</p>
-
-    <div data-type="example"><h1>REINFORCE with additive Gaussian noise</h1>
-
-      <p>When $\bx = \balpha + \bbeta$, $\bbeta \in N(0,\sigma^2)$, we have
-      \begin{gather*} f_{\bx|\balpha}(\bx|\balpha) = \frac{1}{(2\pi\sigma^2)^N}
-      e^{\frac{-(\bx-\balpha)^T(\bx - \balpha)}{2\sigma^2}} \\ \ln
-      f_{\bx|\balpha}(\bx|\balpha) = \frac{-(\bx-\balpha)^T(\bx -
-      \balpha)}{2\sigma^2} + \text{terms that don't depend on }\balpha \\
-      \pd{}{\balpha} \ln f_{\bx|\balpha}(\bx|\balpha) = \frac{1}{\sigma^2}
-      (\balpha - \bx)^T = \frac{1}{\sigma^2} \bbeta^T. \\ \end{gather*}
-      Therefore, the update $$\Delta \balpha = -\frac{\eta}{\sigma^2} y(\balpha
-      + \bbeta) \bbeta$$ will perform gradient descent (in expectation).  Since
-      $$\avg{y(\balpha) \bbeta} = y(\balpha) \avg{\bbeta} = {\bf 0},$$ the
-      update from Equation \ref{eq:weight_perturbation} will also perform
-      stochastic gradient descent on $y$.</p>
-
-    </div>
-
-    <todo>
-    %\begin{example}[Finite differences]
-    %Show that finite differences fits into the weight-perturbation algorithm.
-    %\end{example}</todo>
-
-    <section data-type="sect2"><h1>Optimizing a stochastic function</h1>
-
-      <p>To generalize our weight perturbation results, now consider the case
-      where $y$ is not a deterministic function of $\bx$, but rather is
-      described by the joint density function:
-      $$f_{y,\bx|\balpha}(y,\bx|\balpha) = f_{y|\bx}(y|\bx)
-      f_{\bx|\balpha}(\bx|\balpha).$$  Repeating the recipe above, we have:
-      \begin{align*} \pd{}{\balpha}\avg{y} =& \int_{-\infty}^{+\infty}
-      \int_{-\infty}^{+\infty} y(\bx) f_{y|\bx}(y|\bx) \pd{}{\balpha}
-      f_{\bx|\balpha} (\bx,\balpha) dx dy \\ =& \int_{-\infty}^{+\infty}
-      \int_{-\infty}^{+\infty} y(\bx) f_{y|\bx}(y|\bx)
-      f_{\bx|\balpha}(\bx|\balpha) \pd{}{\balpha} \ln
-      f_{\bx|\balpha}(\bx|\balpha) dx dy \\ =& \avg{y(\bx) \left[ \pd{}{\balpha}
-      \ln f_{\bx|\balpha}(\bx|\balpha)\right]^T}, \end{align*} Therefore, the
-      weight perturbation algorithm derived still achieves stochastic gradient
-      descent despite stochasticity in $y$.</p>
-
-      <todo>
-  %\subsection{Interpretation as a covariance rule}
-
-  %Maintaining our small perturbation/local linearity assumption, we can
-  %also think of this as a covariance rule.  Recall that the covariance
-  %matrix between two random vectors, ${\bf a}$ and ${\bf b}$ is given by
-  %$$\sigma_{{\bf a},{\bf b}} = \avg{({\bf a} - \avg{\bf a})({\bf b} -
-  %\avg{\bf b})^T}.$$ Therefore, the algorithm is (on average) using the
-  %covariance between the changes in parameters and the error to descend
-  %the gradient: $$\avg{\Delta \balpha} = -\eta \sigma_{\bbeta, E(\balpha + \bbeta)}.$$
-
-
-  %What happens if there is stochasticity in $E(\balpha)$?  To maintain our idea of this being a covariance algorithm, we should have an update of the form:
-  %$$\Delta \balpha = -\eta [ E(\balpha + \bbeta) - \avg{E(\balpha)} ] \bbeta.$$
-  %More generally, we write this as
-  %$$\Delta \balpha = -\eta [ E(\balpha + \bbeta) - b ] \bbeta,$$
-  %where ${\bf b}$ is some baseline vector which approximates $\avg{E(\balpha)}$.  So long as $b$ is updated based only on previous trials, it will be uncorrelated with $\bbeta$, and therefore it will not effect the average update: $$\avg{b\bbeta} = 0.$$
-
-
-  %Importance of baseline subtraction.
-
-  %Comparison w/ finite differences.
-      </todo>
-
-    </section>
-
-    <section data-type="sect2"><h1>Adding noise to the outputs</h1>
-
-    </section>
-
-    <section data-type="sect2"><h1>Episodic REINFORCE</h1>
-
-      <p>Evaluating our control system many times per trial.  Can we do better
-      by performing multiple perturbation ``tests" during a single trial?
-      Stochastic processes are harder (but not impossible) to define in
-      continuous time, and our control systems are (mostly) implemented on
-      digital machines, so let's discretize time.  $$E_\balpha = \sum_{n=0}^N
-      g(\bx[n],\bu[n]),$$ subject to $$\bu[n] = \pi_\balpha (\bx[n],n), \bx[n+1]
-      = f(\bx[n],\bu[n],n), \bx[0] = \bx_0.$$</p>
-
-      <p>To match our previous derivation, let us rewrite this as
-      $$E_\balpha(\bar\bx,\bar\bu) = \sum g(\bx[n],\bu[n])\text{, and }
-      P_\balpha(\bar\bx,\bar\bu)$$ where $\bar\bx = \{x_0, x_1, ... x_N\}$ and
-      $\bar\bu = \{u_0,u_1, ... u_N\}$.  The first task is to compute
-      $\pd{}{\balpha}\log P_\balpha(\bar\bx,\bar\bu)$.</p>
-
-      <p>End up with a rule of the form $$\Delta w = -\eta \sum_{n=0}^N g(x,u)
-      {\bf e}(k),$$ where $${\bf e}(0) = 0, {\bf e}(k+1) = \left[ \pd{}{\balpha}
-        \log P_\balpha(x(k)) \right]^T + {\bf e}(k).$$</p>
-
-    </section>
-
-    <section data-type="sect2"><h1>Infinite-horizon REINFORCE</h1>
-
-
-    </section>
-
-    <div data-type="example"><h1>REINFORCE for LTI systems</h1>
-
-    </div>
   </section>
 
   <todo>Better baselines with Importance sampling</todo>
@@ -7063,7 +7117,7 @@ and Validation</h1>
   \end{exercises}
   -->
 
-
+  <todo>Covariance Matrix Adaptation</todo>
   <todo>Policy Improvement with Path Integrals</todo>
 
 </section>
