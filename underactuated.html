@@ -6751,7 +6751,7 @@ and Validation</h1>
       "stochastic" gradient descent.  Thinking of the cost landscape as a
       Lyapunov function&dagger;<sidenote>&dagger; the Lyapunov function $V
       (\alpha) = g(\alpha) - g(\alpha^*)$ is commonly used in
-      convergence/stability analysis of optimization algorithms <todo>cite e.g.
+      convergence/stability analysis of optimization algorithms. <todo>cite e.g.
       Ben Recht?</todo></sidenote>, then any update that moves downhill on each
       step will eventually reach the optimal.  More generally, any update that
       moves downhill on average will eventually reach a minimum... and sometimes
@@ -6818,7 +6818,7 @@ and Validation</h1>
       the same Taylor expansion that we used above: \begin{align*} E[\Delta
       \balpha] =& -\frac{\eta}{\sigma_\beta^2}  \avg{ [g(\balpha) +
       \pd{g}{\balpha}\bbeta - b]\bbeta} \\ =& -\frac{\eta}{\sigma_\beta^2}
-      \avg{(g(\balpha-b)\bbeta} -\frac{\eta}{\sigma_\beta^2} \avg{\bbeta
+      \avg{[g(\balpha)-b]\bbeta} -\frac{\eta}{\sigma_\beta^2} \avg{\bbeta
         \bbeta^T}\pd{g}{\balpha}^T \\
       =& - \eta \pd{g}{\balpha}^T \end{align*} In other words, the baseline does
       not effect our basic result - that the expected update is in the direction
@@ -6862,7 +6862,7 @@ and Validation</h1>
       \frac{1}{\sigma^2} (\balpha - \bx)^T = \frac{1}{\sigma^2} \bbeta^T. \\
       \end{gather*} If we use only a single trial for each Monte-Carlo
       evaluation, then the REINFORCE update is $$\Delta \balpha =
-      -\frac{\eta}{\sigma^2} y(\balpha + \bbeta) \bbeta$$, which is precisely
+      -\frac{\eta}{\sigma^2} g(\balpha + \bbeta) \bbeta,$$ which is precisely
       the weight perturbation update (the crazy version with $b=0$ discussed
       above).  Although it will move in the direction of the gradient on
       average, it can be highly inefficient.</p>
@@ -6874,11 +6874,12 @@ and Validation</h1>
       <p>The policy gradient "trick" from REINFORCE using log probabilities
       provides one means of estimating the true policy gradient.  It is not the
       only way to obtain the policy gradient... in fact the trivial
-      weight-perturbation update obtains the same gradient.  It's cleverness
-      lies in the fact that it makes use of the information we do have
-      (instantaneous cost values and the gradients of the policy), but it's
-      inefficiency comes from having a potentially very high variance Variance
-      reduction for policy gradient, often through baseline estimation,
+      weight-perturbation update obtains the same gradient for the case of a
+      policy with a mean linear in $\alpha$ and a fixed diagonal covariance.
+      It's cleverness lies in the fact that it makes use of the information we
+      do have (instantaneous cost values and the gradients of the policy), but
+      it's inefficiency comes from having a potentially very high variance.
+      Variance reduction for policy gradient, often through baseline estimation,
       continues to be an active area of research.</p>
 
     </section>
@@ -6893,23 +6894,25 @@ and Validation</h1>
 
     <section data-type="sect2"><h1>Performance of Weight Perturbation</h1>
 
-      <p>The simplicity of the weight perturbation update makes it tempting to
-      apply it to problems of arbitrary complexity.  But a major concern for the
-      algorithm is its performance - although we have shown that the update is
-      in the direction of the true gradient <i>on average</i>, it may still
-      require a prohibitive number of computations to obtain a local minima.</p>
+      <p>The simplicity of the REINFORCE / weight perturbation updates makes it
+      tempting to apply them to problems of arbitrary complexity.  But a major
+      concern for the algorithm is its performance - although we have shown that
+      the update is in the direction of the true gradient <i>on average</i>, it
+      may still require a prohibitive number of computations to obtain a local
+      minima.</p>
 
       <p>In this section, we will investigate the performance of the weight
       perturbation algorithm by investigating its <i>signal-to-noise</i> ratio
-      (SNR).  The SNR is the ratio of the power in the signal (here desired
-      update in the direction of the true gradient) and the power in the noise
-      (the remaining component of the update, so that $\Delta\balpha =
-      -\eta\pd{g}{\balpha}^T + $ noise)&dagger;<sidenote>&dagger; SNR could
-      alternatively be defined as the ratio of the power of the component of the
-      update in the direction of the signal and the component orthogonal to the
-      signal (does not penalize the magnitudes of the updates):
-      $$\frac{E[a^2]}{E\left[\left|\Delta\balpha - a{\bf v} \right|^2\right]},$$
-      where ${\bf v} =
+      (SNR).   This idea was explored in <elib>Roberts09a</elib> -- my goal is
+      just to give you a taste here. The SNR is the ratio of the power in the
+      signal (here desired update in the direction of the true gradient) and the
+      power in the noise (the remaining component of the update, so that
+      $\Delta\balpha = -\eta\pd{g}{\balpha}^T + $
+      noise)&dagger;<sidenote>&dagger; SNR could alternatively be defined as the
+      ratio of the power of the component of the update in the direction of the
+      signal and the component orthogonal to the signal (does not penalize the
+      magnitudes of the updates): $$\frac{E[a^2]}{E\left[\left|\Delta\balpha -
+      a{\bf v} \right|^2\right]},$$ where ${\bf v} =
       \frac{\pd{g}{\balpha}^T}{\left|\pd{g}{\balpha}^T\right|},$ $a = \Delta
       \balpha \cdot {\bf v}$.  This form is probably a better definition, but is
       more difficult to work with.</sidenote> $$\text{SNR} = \frac{\left|-\eta
