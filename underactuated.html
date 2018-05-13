@@ -741,7 +741,7 @@ semester.</p>
 
       <figure>
       <img style="width:250px;" data-src="figures/simple_double_pend.svg"/>
-      <todo>make this image spring to life with a matlab movie<</todo>
+      <todo>make this image spring to life with a python movie<</todo>
       <figcaption>Simple double pendulum</figcaption>
       </figure>
 
@@ -3358,14 +3358,6 @@ with Stochasticity</h1>
       <figcaption>Simulation of the bistable system with noise ($\sigma = 0.01$)
       from many initial conditions.</figcaption> </figure>
 
-      <p>You can run this example yourself</p>
-      <pre><code class="matlab" testfile="simpleCTParticleDemo">
-        cd(fullfile(getDrakePath,'examples','test'));
-        options.plot_histogram = false;
-        options.time_reversed_system = true;
-        simpleCTParticleDemo(options);
-      </code></pre>
-
       <p>During any individual simulation, the state jumps around randomly for
       all time, and could even transition from the vicinity of one fixed point
       to the other fixed point.  Another way to visualize this output is to
@@ -3378,10 +3370,10 @@ with Stochasticity</h1>
       href="figures/cubic_bistable_histogram.swf">Click here to see the
       animation</a></figcaption> </figure>
 
-      <pre><code class="matlab" testfile="simpleCTParticleDemoHist">
-      cd(fullfile(getDrakePath,'examples','test')); options.plot_histogram =
-      true; options.time_reversed_system = true; simpleCTParticleDemo(options);
-      </code></pre> </div>
+      <p>You can run this demo for yourself:</p>
+      <pysrc>simple/stochastic_system_particle_demo.py</pysrc>
+
+    </div>
 
     <p>Let's take a moment to appreciate the implications of what we've just
     observed. Every time that we've analyzed a system to date, we've asked
@@ -3500,24 +3492,14 @@ with Stochasticity</h1>
       $t=30$. <br/><a href="figures/cubic_histogram.swf">Click here to see the
       animation</a></figcaption> </figure>
 
-      <p>Be sure to watch the animation (or run the simulation):</p>
+      <p>Be sure to watch the animation.  Or better yet, run the simulation
+        for yourself by changing the sign of the derivative in the example
+        and re-running:</p>
 
-      <pre><code class="matlab" testfile="simpleCTParticleDemoHist2">
-        cd(fullfile(getDrakePath,'examples','test'));
-        options.plot_histogram = true;
-        options.time_reversed_system = false;
-        simpleCTParticleDemo(options);
-      </code></pre>
+      <pysrc>simple/stochastic_system_particle_demo.py</pysrc>
 
-      <p>Now try increasing the noise covariance:</p>
-
-      <pre><code class="matlab" testfile="simpleCTParticleDemoHist3">
-        cd(fullfile(getDrakePath,'examples','test'));
-        options.plot_histogram = true;
-        options.time_reversed_system = false;
-        options.noise_covariance = 2;
-        simpleCTParticleDemo(options);
-      </code></pre>
+      <p>Now try increasing the noise (e.g. pre-multiply the noise input,
+        $w$, in the dynamics by a scalar like 2).</p>
 
       <p style="text-align:center"><a
       href="figures/cubic_histogram_more_noise.swf">Click here to see the
