@@ -37,8 +37,6 @@ class PyPlotVisualizer(LeafSystem):
 
         (self.fig, self.ax) = plt.subplots(facecolor=facecolor,
                                            figsize=figsize)
-        self.ax.axis('equal')
-        self.ax.axis('off')
         self.fig.show()
 
     def _DoPublish(self, context, event):

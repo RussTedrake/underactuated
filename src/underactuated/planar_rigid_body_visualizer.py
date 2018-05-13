@@ -105,6 +105,9 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                                self.rbtree.get_num_positions() +
                                self.rbtree.get_num_velocities())
 
+        self.ax.axis('equal')
+        self.ax.axis('off')
+
         # Achieve the desired view limits
         self.ax.set_xlim(xlim)
         self.ax.set_ylim(ylim)
