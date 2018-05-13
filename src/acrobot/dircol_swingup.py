@@ -12,10 +12,9 @@ plant = AcrobotPlant()
 context = plant.CreateDefaultContext()
 
 dircol = DirectCollocation(plant, context, num_time_samples=21,
-                           minimum_timestep=0.2, maximum_timestep=0.5)
+                           minimum_timestep=0.05, maximum_timestep=0.2)
 
 dircol.AddEqualTimeIntervalsConstraints()
-dircol.AddDurationBounds(0.5, 4)
 
 # Add input limits.
 torque_limit = 8.0  # N*m.
