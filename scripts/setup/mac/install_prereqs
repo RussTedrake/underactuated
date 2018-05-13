@@ -63,10 +63,6 @@ zmq
 EOF
 )
 
-if [[ ! -f "${HOME}/.bazelrc" ]] || ! grep -q 'build --python_path=/usr/local/bin/python2' "${HOME}/.bazelrc"; then
-  echo 'build --python_path=/usr/local/bin/python2' >> "${HOME}/.bazelrc"
-fi
-
 pip2 install --upgrade $(tr '\n' ' ' <<EOF
 autopep8
 jupyter

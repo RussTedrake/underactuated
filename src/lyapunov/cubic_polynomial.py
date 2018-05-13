@@ -1,6 +1,4 @@
 import math
-import numpy as np
-import matplotlib.pyplot as plt
 
 from pydrake.all import (Jacobian, MathematicalProgram, SolutionResult,
                          Variables)
