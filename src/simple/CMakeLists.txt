@@ -6,4 +6,4 @@ add_test(NAME simple_continuous_time_system COMMAND simple_continuous_time_syste
 
 add_pytest(continuous_time_system_simulation.py)
 add_pytest(discrete_time_system_simulation.py)
-
+add_pytest(stochastic_system_particles.py)

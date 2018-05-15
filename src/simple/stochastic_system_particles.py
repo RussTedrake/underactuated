@@ -13,7 +13,7 @@ from pydrake.all import (
 from underactuated.pyplot_visualizer import PyPlotVisualizer
 
 
-def dynamics(x,w):
+def dynamics(x, w):
     return x - x**3 + .3*w
 
 
@@ -47,7 +47,7 @@ class HistogramVisualizer(PyPlotVisualizer):
             self._DeclareInputPort(PortDataType.kVectorValued, 1)
         self.num_samples = num_samples
         self.bins = bins
-        self.data = array.array('d',(0,)*num_samples)
+        self.data = array.array('d', (0,)*num_samples)
         self.limits = xlim
         self.ax.set_xlim(xlim)
         self.ax.set_ylim(ylim)
@@ -58,9 +58,11 @@ class HistogramVisualizer(PyPlotVisualizer):
             t = [p.remove() for p in self.patches]
         for i in range(0, self.num_samples):
             self.data[i] = self.EvalVectorInput(context, i).GetAtIndex(0)
-        count, bins, self.patches = self.ax.hist(self.data, bins=self.bins,
-                                       range=self.limits,
-                     density=True, facecolor='b')
+        count, bins, self.patches = self.ax.hist(self.data,
+                                                 bins=self.bins,
+                                                 range=self.limits,
+                                                 density=True,
+                                                 facecolor='b')
         self.ax.set_title('t = ' + str(context.get_time()))
 
 
@@ -73,7 +75,7 @@ ylim = [-2, 4.5]
 draw_timestep = .25
 visualizer = builder.AddSystem(HistogramVisualizer(num_particles, num_bins,
                                                    xlim, ylim, draw_timestep))
-x = np.linspace(xlim[0],xlim[1],100)
+x = np.linspace(xlim[0], xlim[1], 100)
 visualizer.ax.plot(x, dynamics(x, 0), 'k', linewidth=2)
 
 for i in range(0, num_particles):
