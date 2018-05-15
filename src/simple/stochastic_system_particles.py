@@ -58,10 +58,12 @@ class HistogramVisualizer(PyPlotVisualizer):
             t = [p.remove() for p in self.patches]
         for i in range(0, self.num_samples):
             self.data[i] = self.EvalVectorInput(context, i).GetAtIndex(0)
+        # TODO(russt): switch 'normed' to 'density' once the ubuntu version
+        # supports it.
         count, bins, self.patches = self.ax.hist(self.data,
                                                  bins=self.bins,
                                                  range=self.limits,
-                                                 density=True,
+                                                 normed=True,
                                                  facecolor='b')
         self.ax.set_title('t = ' + str(context.get_time()))
 
