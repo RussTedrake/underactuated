@@ -121,14 +121,14 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
                               geom.getShape(), " IGNORED"
                         continue
 
-                    def rgba2hex(rgba):
+                    def rgba2hex(rgb):
                         ''' Turn a list of R,G,B elements (any indexable
                         list of >= 3 elements will work), where each element
                         is specified on range [0., 1.], into the equivalent
                         24-bit value 0xRRGGBB. '''
                         val = 0.
                         for i in range(3):
-                            val += (256**(2 - i)) * (255. * rgba[i])
+                            val += (256**(2 - i)) * (255. * rgb[i])
                         return val
                     self.vis[body_name][str(element_i)].set_object(
                         meshcat_geom,
