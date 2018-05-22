@@ -80,6 +80,10 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
         for body_i in range(n_bodies):
 
             body = self.rbtree.get_body(body_i+1)
+            # TODO(gizatt) Replace these body-unique indices
+            # with more readable body.get_model_name() or other
+            # model index information when an appropriate
+            # function gets bound in pydrake.
             body_name = body.get_name() + ("(%d)" % body_i)
 
             visual_elements = body.get_visual_elements()
