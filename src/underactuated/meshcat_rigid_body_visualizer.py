@@ -80,7 +80,7 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
         for body_i in range(n_bodies):
 
             body = self.rbtree.get_body(body_i+1)
-            body_name = body.get_name()
+            body_name = body.get_name() + ("(%d)" % body_i)
 
             visual_elements = body.get_visual_elements()
             this_body_patches = []
@@ -117,9 +117,19 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
                               geom.getShape(), " IGNORED"
                         continue
 
+                    def rgba2hex(rgba):
+                        ''' Turn a list of R,G,B elements (any indexable
+                        list of >= 3 elements will work), where each element
+                        is specified on range [0., 1.], into the equivalent
+                        24-bit value 0xRRGGBB. '''
+                        val = 0.
+                        for i in range(3):
+                            val += (256**(2 - i)) * (255. * rgba[i])
+                        return val
                     self.vis[body_name][str(element_i)].set_object(
-                        meshcat_geom)
-                    print body_name, element_i, element_local_tf
+                        meshcat_geom,
+                        meshcat.geometry.MeshLambertMaterial(
+                            color=rgba2hex(element.getMaterial())))
                     self.vis[body_name][str(element_i)].set_transform(
                         element_local_tf)
 
@@ -140,7 +150,8 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
         body_fill_index = 0
         for body_i in range(self.rbtree.get_num_bodies()-1):
             tf = self.rbtree.relativeTransform(kinsol, 0, body_i+1)
-            body_name = self.rbtree.get_body(body_i+1).get_name()
+            body_name = self.rbtree.get_body(body_i+1).get_name() \
+                + ("(%d)" % body_i)
             self.vis[body_name].set_transform(tf)
 
     def animate(self, log, resample=True):
