@@ -55,7 +55,7 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
     def __init__(self,
                  rbtree,
                  draw_timestep=0.033333,
-                 tree_prefix="RBViz",
+                 prefix="RBViz",
                  zmq_url="tcp://127.0.0.1:6000"):
         LeafSystem.__init__(self)
         self.set_name('meshcat_visualization')
@@ -68,8 +68,9 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
                                self.rbtree.get_num_velocities())
 
         # Set up meshcat
+        self.prefix = prefix
         self.vis = meshcat.Visualizer(zmq_url=zmq_url)
-        self.vis.delete()
+        self.vis[self.prefix].delete()
 
         # Publish the tree geometry to get the visualizer started
         self.PublishAllGeometry()
@@ -130,12 +131,12 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
                         for i in range(3):
                             val += (256**(2 - i)) * (255. * rgb[i])
                         return val
-                    self.vis[body_name][str(element_i)].set_object(
-                        meshcat_geom,
-                        meshcat.geometry.MeshLambertMaterial(
-                            color=rgba2hex(element.getMaterial())))
-                    self.vis[body_name][str(element_i)].set_transform(
-                        element_local_tf)
+                    self.vis[self.prefix][body_name][str(element_i)]\
+                        .set_object(meshcat_geom,
+                                    meshcat.geometry.MeshLambertMaterial(
+                                        color=rgba2hex(element.getMaterial())))
+                    self.vis[self.prefix][body_name][str(element_i)].\
+                        set_transform(element_local_tf)
 
     def _DoPublish(self, context, event):
         self.draw(context)
@@ -156,7 +157,7 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
             tf = self.rbtree.relativeTransform(kinsol, 0, body_i+1)
             body_name = self.rbtree.get_body(body_i+1).get_name() \
                 + ("(%d)" % body_i)
-            self.vis[body_name].set_transform(tf)
+            self.vis[self.prefix][body_name].set_transform(tf)
 
     def animate(self, log, resample=True):
         # log - a reference to a pydrake.systems.primitives.SignalLogger that
