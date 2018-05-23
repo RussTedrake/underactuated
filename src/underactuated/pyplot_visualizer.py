@@ -17,6 +17,9 @@ class PyPlotVisualizer(LeafSystem):
         In the configuration set up here,
         this visualizer provides one visualization
         window (self.fig) with axes (self.ax).
+        The axes can optionally be supplied externally to
+        allow other visualizers to overlay additional
+        information.
 
         Subclasses must:
         - During initialization, set up the figure
@@ -28,7 +31,7 @@ class PyPlotVisualizer(LeafSystem):
     '''
 
     def __init__(self, draw_timestep=0.033333, facecolor=[1, 1, 1],
-                 figsize=None, fig=None, ax=None):
+                 figsize=None, ax=None):
         LeafSystem.__init__(self)
 
         self.set_name('pyplot_visualization')
@@ -36,25 +39,20 @@ class PyPlotVisualizer(LeafSystem):
         self._DeclarePeriodicPublish(draw_timestep, 0.0)
 
         if ax is None:
-            if fig is not None:
-                print "Error: supplied fig but not ax."
             (self.fig, self.ax) = plt.subplots(facecolor=facecolor,
                                                figsize=figsize)
         else:
-            self.fig = fig
             self.ax = ax
+            self.fig = ax.get_figure()
 
         self.ax.axis('equal')
         self.ax.axis('off')
-
-        if self.fig is not None:
-            self.fig.show()
+        self.fig.show()
 
     def _DoPublish(self, context, event):
         self.draw(context)
-        if self.fig is not None:
-            self.fig.canvas.draw()
-            plt.pause(1e-10)
+        self.fig.canvas.draw()
+        plt.pause(1e-10)
 
     def draw(self, context):
         print "SUBCLASSES MUST IMPLEMENT."

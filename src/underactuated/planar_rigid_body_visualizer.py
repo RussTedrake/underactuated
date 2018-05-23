@@ -51,6 +51,13 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         - facecolor is passed through to figure() and sets
         background color. Both color name strings and
         RGB triplets are allowed. Defaults to white.
+        - use_random_colors, if set to True, will render
+        each body with a different color. (Multiple visual
+        elements on the same body will be the same color.)
+        - if ax is supplied, the visualizer will draw
+        onto those axes instead of creating a new
+        set of axes. The visualizer will still change
+        the view range and figure size of those axes.
 
         Specifics on view setup:
 
@@ -86,7 +93,6 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                  ylim=[-1, 1],
                  facecolor=[1, 1, 1],
                  use_random_colors=False,
-                 fig=None,
                  ax=None):
 
         default_size = matplotlib.rcParams['figure.figsize']
@@ -94,7 +100,7 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         figsize = (default_size[0], default_size[0]*scalefactor)
 
         PyPlotVisualizer.__init__(self, facecolor=facecolor, figsize=figsize,
-                                  fig=fig, ax=ax)
+                                  ax=ax)
         self.set_name('planar_rigid_body_visualizer')
 
         self.rbtree = rbtree
@@ -114,11 +120,10 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         # Achieve the desired view limits
         self.ax.set_xlim(xlim)
         self.ax.set_ylim(ylim)
-        if self.fig is not None:
-            default_size = self.fig.get_size_inches()
-            scalefactor = (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
-            self.fig.set_size_inches(default_size[0],
-                                     default_size[0]*scalefactor)
+        default_size = self.fig.get_size_inches()
+        scalefactor = (ylim[1]-ylim[0])/(xlim[1]-xlim[0])
+        self.fig.set_size_inches(default_size[0],
+                                 default_size[0]*scalefactor)
 
         # Populate body patches
         self.buildViewPatches(use_random_colors)
@@ -279,8 +284,9 @@ def setupDoublePendulumExample():
                         floating_base_type=FloatingBaseType.kFixed)  # noqa
     Tview = np.array([[1., 0., 0., 0.], [0., 0., 1., 0.], [0., 0., 0., 1.]],
                      dtype=np.float64)
+    fig, ax = plt.subplots(1, 1)
     pbrv = PlanarRigidBodyVisualizer(rbt, Tview, [-2.5, 2.5], [-2.5, 2.5],
-                                     use_random_colors=True)
+                                     use_random_colors=True, ax=ax)
     return rbt, pbrv
 
 
