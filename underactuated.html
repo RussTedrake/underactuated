@@ -7829,6 +7829,13 @@ jupyter notebook simulator.ipynb</code></pre></div>
   <todo>PQ trick from LQR</todo>
   <todo>Hongkai's smooth non-penetration constraints for polygons</todo>
 
+  <todo>"Soft" absolute value: $|x|_epsilon \approx \sqrt{x^2 +
+    \epsilon}$.
+    import numpy as np
+    import matplotlib.pyplot as plt
+    x = np.linspace(-2.,2.,101)
+    plt.plot(x, np.sqrt(np.power(x,2) + 0.01))
+  </todo>
 </section> <!-- end playbook -->
 
 
