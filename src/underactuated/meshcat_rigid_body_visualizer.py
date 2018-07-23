@@ -61,6 +61,7 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
         self.timestep = draw_timestep
         self._DeclarePeriodicPublish(draw_timestep, 0.0)
         self.rbtree = rbtree
+        self.draw_collision = draw_collision
 
         self._DeclareInputPort(PortDataType.kVectorValued,
                                self.rbtree.get_num_positions() +
