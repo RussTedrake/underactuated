@@ -200,9 +200,13 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
         def animate_update(i):
             self.draw(x[:, i])
 
+        start_time = time.time()
+        sim_start_time = t[0]
         for i in range(t.shape[0]):
             animate_update(i)
-            time.sleep(self.timestep)
+            sim_time = t[i] - sim_start_time
+            real_time = time.time() - start_time
+            time.sleep(max(0, sim_time/time_scaling - real_time))
 
 
 def setupPendulumExample():
