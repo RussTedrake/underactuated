@@ -53,7 +53,9 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
                  rbtree,
                  draw_timestep=0.033333,
                  prefix="RBViz",
-                 zmq_url="tcp://127.0.0.1:6000"):
+                 zmq_url="tcp://127.0.0.1:6000",
+                 draw_collision=False,
+                 clear_vis=True):
         LeafSystem.__init__(self)
         self.set_name('meshcat_visualization')
         self.timestep = draw_timestep
@@ -67,7 +69,8 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
         # Set up meshcat
         self.prefix = prefix
         self.vis = meshcat.Visualizer(zmq_url=zmq_url)
-        self.vis[self.prefix].delete()
+        if clear_vis:
+            self.vis[self.prefix].delete()
 
         # Publish the tree geometry to get the visualizer started
         self.PublishAllGeometry()
@@ -84,9 +87,13 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
             # function gets bound in pydrake.
             body_name = body.get_name() + ("(%d)" % body_i)
 
-            visual_elements = body.get_visual_elements()
-            this_body_patches = []
-            for element_i, element in enumerate(visual_elements):
+            if self.draw_collision:
+                draw_elements = [self.rbtree.FindCollisionElement(k)
+                                 for k in body.get_collision_element_ids()]
+            else:
+                draw_elements = body.get_visual_elements()
+
+            for element_i, element in enumerate(draw_elements):
                 element_local_tf = element.getLocalTransform()
                 if element.hasGeometry():
                     geom = element.getGeometry()
@@ -127,10 +134,13 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
                         for i in range(3):
                             val += (256**(2 - i)) * (255. * rgb[i])
                         return val
+                    rgba = [1., 0.7, 0., 1.]
+                    if not self.draw_collision:
+                        rgba = element.getMaterial()
                     self.vis[self.prefix][body_name][str(element_i)]\
                         .set_object(meshcat_geom,
                                     meshcat.geometry.MeshLambertMaterial(
-                                        color=rgba2hex(element.getMaterial())))
+                                        color=rgba2hex(rgba)))
                     self.vis[self.prefix][body_name][str(element_i)].\
                         set_transform(element_local_tf)
 
@@ -141,6 +151,7 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
         ''' Evaluates the robot state and draws it.
             Can be passed either a raw state vector, or
             an input context.'''
+
         if isinstance(context, Context):
             positions = self.EvalVectorInput(context, 0).get_value()[0:self.rbtree.get_num_positions()]  # noqa
         else:
@@ -151,11 +162,16 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
         body_fill_index = 0
         for body_i in range(self.rbtree.get_num_bodies()-1):
             tf = self.rbtree.relativeTransform(kinsol, 0, body_i+1)
-            body_name = self.rbtree.get_body(body_i+1).get_name() \
-                + ("(%d)" % body_i)
-            self.vis[self.prefix][body_name].set_transform(tf)
+            body = self.rbtree.get_body(body_i+1)
+            if ((self.draw_collision and
+                 len(body.get_collision_element_ids()) > 0)
+                or
+                (not self.draw_collision and
+                 len(body.get_visual_elements()) > 0)):
+                body_name = body.get_name() + ("(%d)" % body_i)
+                self.vis[self.prefix][body_name].set_transform(tf)
 
-    def animate(self, log, resample=True):
+    def animate(self, log, resample=True, time_scaling=1.0):
         # log - a reference to a pydrake.systems.primitives.SignalLogger that
         # contains the plant state after running a simulation.
         # resample -- should we do a resampling operation to make
@@ -238,7 +254,7 @@ def setupValkyrieExample():
                       [0., 0., 1., 0.],
                       [0., 0., 0., 1.]],
                      dtype=np.float64)
-    pbrv = MeshcatRigidBodyVisualizer(rbt)
+    pbrv = MeshcatRigidBodyVisualizer(rbt, draw_collision=True)
     return rbt, pbrv
 
 
@@ -344,8 +360,6 @@ if __name__ == "__main__":
             state.SetFromVector(initial_state)
 
         simulator.StepTo(args.duration)
-
-        print(state.CopyToVector())
 
         if (args.animate):
             # Generate an animation of whatever happened
