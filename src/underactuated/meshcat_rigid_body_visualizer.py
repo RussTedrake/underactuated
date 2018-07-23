@@ -54,8 +54,7 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
                  draw_timestep=0.033333,
                  prefix="RBViz",
                  zmq_url="tcp://127.0.0.1:6000",
-                 draw_collision=False,
-                 clear_vis=True):
+                 draw_collision=False):
         LeafSystem.__init__(self)
         self.set_name('meshcat_visualization')
         self.timestep = draw_timestep
@@ -70,8 +69,7 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
         # Set up meshcat
         self.prefix = prefix
         self.vis = meshcat.Visualizer(zmq_url=zmq_url)
-        if clear_vis:
-            self.vis[self.prefix].delete()
+        self.vis[self.prefix].delete()
 
         # Publish the tree geometry to get the visualizer started
         self.PublishAllGeometry()
