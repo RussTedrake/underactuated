@@ -39,13 +39,15 @@ from pydrake.all import (
 
 from pydrake.common import FindResourceOrThrow
 from pydrake.geometry import (
-    GeometryVisualizationImpl, SceneGraph)
-from pydrake.lcm import DrakeLcm
+    ConnectVisualization, DispatchLoadMessage, SceneGraph)
+from pydrake.lcm import DrakeMockLcm
 from pydrake.multibody.multibody_tree import UniformGravityFieldElement
 from pydrake.multibody.multibody_tree.multibody_plant import MultibodyPlant
 from pydrake.multibody.multibody_tree.parsing import AddModelFromSdfFile
 from pydrake.systems.framework import DiagramBuilder
 from pydrake.systems.analysis import Simulator
+
+from drake import lcmt_viewer_load_robot
 
 from underactuated.utils import FindResource
 
@@ -61,9 +63,6 @@ class MeshcatVisualizer(LeafSystem):
                  zmq_url="tcp://127.0.0.1:6000"):
         LeafSystem.__init__(self)
 
-        load_robot_msg = GeometryVisualizationImpl.BuildLoadMessage(
-            scene_graph)
-
         self.set_name('meshcat_visualization')
         self.timestep = draw_timestep
         self._DeclarePeriodicPublish(draw_timestep, 0.0)
@@ -75,7 +74,20 @@ class MeshcatVisualizer(LeafSystem):
         self.prefix = prefix
         self.vis = meshcat.Visualizer(zmq_url=zmq_url)
         self.vis[self.prefix].delete()
+        self._scene_graph = scene_graph
 
+    def load(self):
+        """
+        Loads `meshcat` visualization elements.
+        @pre The `scene_graph` used to construct this object must be part of a
+        fully constructed diagram (e.g. via `DiagramBuilder.Build()`).
+        """
+        # Intercept load message via mock LCM.
+        mock_lcm = DrakeMockLcm()
+        DispatchLoadMessage(self._scene_graph, mock_lcm)
+        load_robot_msg = lcmt_viewer_load_robot.decode(
+            mock_lcm.get_last_published_message("DRAKE_VIEWER_LOAD_ROBOT"))
+        # Translate elements to `meshcat`.
         for i in range(load_robot_msg.num_links):
             link = load_robot_msg.link[i]
             [source_name, frame_name] = link.name.split("::")
@@ -83,16 +95,16 @@ class MeshcatVisualizer(LeafSystem):
             for j in range(link.num_geom):
                 geom = link.geom[j]
                 element_local_tf = RigidTransform(
-                    RotationMatrix(Quaternion(geom.quaternion())),
-                    geom.position()).GetAsMatrix4()
+                    RotationMatrix(Quaternion(geom.quaternion)),
+                    geom.position).GetAsMatrix4()
 
-                if geom.type == 1:  # geom.BOX:
+                if geom.type == geom.BOX:
                     assert geom.num_float_data == 3
                     meshcat_geom = meshcat.geometry.Box(geom.float_data)
-                elif geom.type == 2:  # geom.SPHERE:
+                elif geom.type == geom.SPHERE:
                     assert geom.num_float_data == 1
                     meshcat_geom = meshcat.geometry.Sphere(geom.float_data[0])
-                elif geom.type == 3:  # geom.CYLINDER:
+                elif geom.type == geom.CYLINDER:
                     assert geom.num_float_data == 2
                     meshcat_geom = meshcat.geometry.Cylinder(
                         geom.float_data[1],
@@ -105,7 +117,7 @@ class MeshcatVisualizer(LeafSystem):
                     element_local_tf[0:3, 0:3] = \
                         element_local_tf[0:3, 0:3].dot(
                             extra_rotation[0:3, 0:3])
-                elif geom.type == 4:  # geom.MESH:
+                elif geom.type == geom.MESH:
                     meshcat_geom = \
                         meshcat.geometry.ObjMeshGeometry.from_file(
                             geom.string_data[0:-3] + "obj")
@@ -127,7 +139,7 @@ class MeshcatVisualizer(LeafSystem):
                 self.vis[self.prefix][source_name][frame_name][str(j)] \
                     .set_object(meshcat_geom,
                                 meshcat.geometry.MeshLambertMaterial(
-                                    color=rgba2hex(geom.color())))
+                                    color=rgba2hex(geom.color)))
                 self.vis[self.prefix][source_name][frame_name][str(j)]. \
                     set_transform(element_local_tf)
 
@@ -158,8 +170,7 @@ class MeshcatVisualizer(LeafSystem):
         # from SignalLogger?
 
 
-if __name__ == "__main__":
-
+def main():
     # Usage demo: simulate and then animate a simple cartpole.
 
     np.set_printoptions(precision=5, suppress=True)
@@ -211,6 +222,7 @@ if __name__ == "__main__":
                     visualizer.get_input_port(0))
 
     diagram = builder.Build()
+    visualizer.load()
 
     diagram_context = diagram.CreateDefaultContext()
     cart_pole_context = diagram.GetMutableSubsystemContext(
@@ -237,3 +249,7 @@ if __name__ == "__main__":
     if meshcat_server_p is not None:
         meshcat_server_p.kill()
         meshcat_server_p.wait()
+
+
+if __name__ == "__main__":
+    main()
