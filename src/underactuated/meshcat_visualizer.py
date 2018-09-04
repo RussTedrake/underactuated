@@ -49,7 +49,7 @@ from pydrake.systems.analysis import Simulator
 
 from drake import lcmt_viewer_load_robot
 
-from underactuated.utils import FindResource
+from underactuated.utils import FindResource, Rgba2Hex
 
 import meshcat
 import meshcat.transformations as tf
@@ -126,20 +126,10 @@ class MeshcatVisualizer(LeafSystem):
                         geom.type, " IGNORED"
                     continue
 
-                def rgba2hex(rgb):
-                    ''' Turn a list of R,G,B elements (any indexable
-                    list of >= 3 elements will work), where each element
-                    is specified on range [0., 1.], into the equivalent
-                    24-bit value 0xRRGGBB. '''
-                    val = 0.
-                    for i in range(3):
-                        val += (256**(2 - i)) * (255. * rgb[i])
-                    return val
-
                 self.vis[self.prefix][source_name][frame_name][str(j)] \
                     .set_object(meshcat_geom,
                                 meshcat.geometry.MeshLambertMaterial(
-                                    color=rgba2hex(geom.color)))
+                                    color=Rgba2Hex(geom.color)))
                 self.vis[self.prefix][source_name][frame_name][str(j)]. \
                     set_transform(element_local_tf)
 
