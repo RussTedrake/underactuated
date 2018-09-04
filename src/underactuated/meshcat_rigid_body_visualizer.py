@@ -153,11 +153,13 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
         for body_i in range(self.rbtree.get_num_bodies()-1):
             tf = self.rbtree.relativeTransform(kinsol, 0, body_i+1)
             body = self.rbtree.get_body(body_i+1)
+            # Don't try to update the transform of geometry
+            # that doesn't exist.
             if ((self.draw_collision and
-                 len(body.get_collision_element_ids()) > 0)
+                    len(body.get_collision_element_ids()) > 0)
                 or
                 (not self.draw_collision and
-                 len(body.get_visual_elements()) > 0)):
+                    len(body.get_visual_elements()) > 0)):
                 body_name = body.get_name() + ("(%d)" % body_i)
                 self.vis[self.prefix][body_name].set_transform(tf)
 
@@ -189,6 +191,9 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
         def animate_update(i):
             self.draw(x[:, i])
 
+        # Keep track of real elapsed vs sim elapsed time when playing back
+        # animation, and sleep whenever we get ahead of the simulation
+        # time (scaled by the time scaling factor).
         start_time = time.time()
         sim_start_time = t[0]
         for i in range(t.shape[0]):
