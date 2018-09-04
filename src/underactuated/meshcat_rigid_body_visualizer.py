@@ -22,10 +22,7 @@ import math
 import os.path
 import time
 
-import matplotlib.animation as animation
 import numpy as np
-import scipy as sp
-import scipy.spatial
 
 import pydrake
 from pydrake.all import (
@@ -107,7 +104,6 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
                         # Rotate to fix this misalignment
                         extra_rotation = tf.rotation_matrix(
                             math.pi/2., [1, 0, 0])
-                        print extra_rotation
                         element_local_tf[0:3, 0:3] = \
                             element_local_tf[0:3, 0:3].dot(
                                 extra_rotation[0:3, 0:3])
