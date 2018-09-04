@@ -11,7 +11,10 @@ function(add_pytest pyfile)
            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
   set_property(TEST ${pydir}_${pyfile}
-               PROPERTY ENVIRONMENT "MPLBACKEND=Template")  # So that pyplot.show() does not block
+               PROPERTY ENVIRONMENT
+                 "MPLBACKEND=Template"  # So that pyplot.show() does not block
+                 "PYTHONPATH=${PYTHONPATH}"
+              )
 
   add_test(NAME ${pydir}_${pyfile}_pycodestyle
            COMMAND "${PYCODESTYLE_EXECUTABLE}" --count --show-source ${pyfile}
