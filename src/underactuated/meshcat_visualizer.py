@@ -170,38 +170,8 @@ class MeshcatVisualizer(LeafSystem):
         # from SignalLogger?
 
 
-def main():
-    # Usage demo: simulate and then animate a simple cartpole.
-
-    np.set_printoptions(precision=5, suppress=True)
-    parser = argparse.ArgumentParser()
-    parser.add_argument(
-        "--target_realtime_rate", type=float, default=1.0,
-        help="Desired rate relative to real time.  See documentation for "
-             "Simulator::set_target_realtime_rate() for details.")
-    parser.add_argument("-T", "--duration",
-                        type=float,
-                        help="Duration to run sim.",
-                        default=10.0)
-    parser.add_argument("-a", "--animate",
-                        action="store_true",
-                        help="Enable real-time looping animation after each "
-                             "simulation.")
-    parser.add_argument("--test",
-                        action="store_true",
-                        help="Help out CI by launching a meshcat server for "
-                             "the duration of the test.")
-    args = parser.parse_args()
-
-    meshcat_server_p = None
-    if args.test:
-        print "Spawning"
-        import subprocess
-        meshcat_server_p = subprocess.Popen(["meshcat-server"])
-    else:
-        print "Warning: if you have not yet run meshcat-server in another " \
-              "terminal, this will hang."
-
+# Cart-Pole with simple geometry.
+def cartPoleTest(args):
     file_name = FindResourceOrThrow(
         "drake/examples/multibody/cart_pole/cart_pole.sdf")
     builder = DiagramBuilder()
@@ -242,9 +212,78 @@ def main():
     simulator.Initialize()
     simulator.StepTo(args.duration)
 
-    if (args.animate):
-        # Generate an animation of whatever happened
-        ani = visualizer.animate(signalLogger)
+
+# Kuka IIWA with mesh geometry.
+def kukaTest(args):
+    file_name = FindResourceOrThrow(
+        "drake/manipulation/models/iiwa_description/sdf/iiwa14_no_collision"
+        ".sdf")
+    builder = DiagramBuilder()
+    scene_graph = builder.AddSystem(SceneGraph())
+    kuka = builder.AddSystem(MultibodyPlant())
+    AddModelFromSdfFile(
+        file_name=file_name, plant=kuka, scene_graph=scene_graph)
+    kuka.AddForceElement(UniformGravityFieldElement([0, 0, -9.81]))
+    kuka.Finalize(scene_graph)
+    assert kuka.geometry_source_is_registered()
+
+    builder.Connect(
+        kuka.get_geometry_poses_output_port(),
+        scene_graph.get_source_pose_port(kuka.get_source_id()))
+
+    visualizer = builder.AddSystem(MeshcatVisualizer(scene_graph))
+    builder.Connect(scene_graph.get_pose_bundle_output_port(),
+                    visualizer.get_input_port(0))
+
+    diagram = builder.Build()
+    visualizer.load()
+
+    diagram_context = diagram.CreateDefaultContext()
+    kuka_context = diagram.GetMutableSubsystemContext(
+        kuka, diagram_context)
+
+    kuka_context.FixInputPort(
+        kuka.get_actuation_input_port().get_index(), np.zeros(
+            kuka.get_actuation_input_port().size()))
+
+    simulator = Simulator(diagram, diagram_context)
+    simulator.set_publish_every_time_step(False)
+    simulator.set_target_realtime_rate(args.target_realtime_rate)
+    simulator.Initialize()
+    simulator.StepTo(args.duration)
+
+
+def main():
+    # Usage demo: simulate and then animate a simple cartpole.
+
+    np.set_printoptions(precision=5, suppress=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--target_realtime_rate", type=float, default=1.0,
+        help="Desired rate relative to real time.  See documentation for "
+             "Simulator::set_target_realtime_rate() for details.")
+    parser.add_argument("-T", "--duration",
+                        type=float,
+                        help="Duration to run sim.",
+                        default=10.0)
+    parser.add_argument("--test",
+                        action="store_true",
+                        help="Help out CI by launching a meshcat server for "
+                             "the duration of the test.")
+    args = parser.parse_args()
+
+    meshcat_server_p = None
+    if args.test:
+        print "Spawning"
+        import subprocess
+        meshcat_server_p = subprocess.Popen(["meshcat-server"])
+    else:
+        print "Warning: if you have not yet run meshcat-server in another " \
+              "terminal, this will hang."
+
+    cartPoleTest(args)
+
+    kukaTest(args)
 
     if meshcat_server_p is not None:
         meshcat_server_p.kill()
