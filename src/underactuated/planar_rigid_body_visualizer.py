@@ -107,9 +107,6 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         self.Tview = Tview
         self.Tview_pinv = np.linalg.pinv(self.Tview)
 
-        print "Spawning PlanarRigidBodyVisualizer for tree with" \
-              " %d actuators" % (self.rbtree.get_num_actuators())
-
         self._DeclareInputPort(PortDataType.kVectorValued,
                                self.rbtree.get_num_positions() +
                                self.rbtree.get_num_velocities())
