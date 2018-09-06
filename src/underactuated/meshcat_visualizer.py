@@ -126,12 +126,13 @@ class MeshcatVisualizer(LeafSystem):
                         geom.type, " IGNORED"
                     continue
 
-                self.vis[self.prefix][source_name][frame_name][str(j)] \
+                self.vis[self.prefix][source_name][str(link.robot_num)][
+                    frame_name][str(j)]\
                     .set_object(meshcat_geom,
                                 meshcat.geometry.MeshLambertMaterial(
                                     color=Rgba2Hex(geom.color)))
-                self.vis[self.prefix][source_name][frame_name][str(j)]. \
-                    set_transform(element_local_tf)
+                self.vis[self.prefix][source_name][str(link.robot_num)][
+                    frame_name][str(j)].set_transform(element_local_tf)
 
     def _DoPublish(self, context, event):
             self.draw(context)
@@ -146,11 +147,12 @@ class MeshcatVisualizer(LeafSystem):
             #    "get_source_name::frame_name".
             [source_name, frame_name] = pose_bundle.get_name(frame_i)\
                 .split("::")
+            model_id = pose_bundle.get_model_instance_id(frame_i)
             # The MBP parsers only register the plant as a nameless source.
             # TODO(russt): path should say a lot more about the MultiBodyTree.
             # TODO(russt): short term: add model instance id?
-            self.vis[self.prefix][source_name][frame_name].set_transform(
-                pose_bundle.get_pose(frame_i).matrix())
+            self.vis[self.prefix][source_name][str(model_id)][frame_name]\
+                .set_transform(pose_bundle.get_pose(frame_i).matrix())
 
     def animate(self, log, resample=True):
         # TODO(russt): Finish this.
