@@ -27,19 +27,15 @@ import numpy as np
 from pydrake.all import (
     Context,
     DiagramBuilder,
-    FindResourceOrThrow,
     LeafSystem,
     PortDataType,
     Quaternion,
     RigidTransform,
-    RotationMatrix,
-    SignalLogger,
-    Simulator,
+    RotationMatrix
 )
 
 from pydrake.common import FindResourceOrThrow
-from pydrake.geometry import (
-    ConnectVisualization, DispatchLoadMessage, SceneGraph)
+from pydrake.geometry import (DispatchLoadMessage, SceneGraph)
 from pydrake.lcm import DrakeMockLcm
 from pydrake.multibody.multibody_tree import UniformGravityFieldElement
 from pydrake.multibody.multibody_tree.multibody_plant import MultibodyPlant
