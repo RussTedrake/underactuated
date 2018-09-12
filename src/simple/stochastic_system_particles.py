@@ -21,7 +21,9 @@ class SimpleStochasticSystem(LeafSystem):
     def __init__(self):
         LeafSystem.__init__(self)
         self._DeclareInputPort(PortDataType.kVectorValued,
-                               1, RandomDistribution.kGaussian)
+                               1,
+                               "noise",
+                               RandomDistribution.kGaussian)
         self._DeclareContinuousState(1)
         self._DeclareVectorOutputPort(BasicVector(1), self.CopyStateOut)
 
