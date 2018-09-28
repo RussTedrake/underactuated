@@ -59,12 +59,13 @@ class MeshcatVisualizer(LeafSystem):
                  zmq_url="tcp://127.0.0.1:6000"):
         LeafSystem.__init__(self)
 
-        self.set_name('meshcat_visualization')
+        self.set_name('Meshcat')
         self.timestep = draw_timestep
         self._DeclarePeriodicPublish(draw_timestep, 0.0)
 
         # Pose bundle (from SceneGraph) input port.
-        self._DeclareInputPort(PortDataType.kAbstractValued, 0)
+        self._DeclareInputPort("lcm_visualization",
+                               PortDataType.kAbstractValued, 0)
 
         # Set up meshcat.
         self.prefix = prefix
