@@ -16,9 +16,9 @@ from underactuated.pyplot_visualizer import PyPlotVisualizer
 class VanDerPolParticles(LeafSystem):
     def __init__(self, num_particles, mu=1.0):
         LeafSystem.__init__(self)
-        self._DeclareInputPort(PortDataType.kVectorValued,
+        self._DeclareInputPort("noise",
+                               PortDataType.kVectorValued,
                                num_particles,
-                               "noise",
                                RandomDistribution.kGaussian)
         self._DeclareContinuousState(num_particles, num_particles, 0)
         self._DeclareVectorOutputPort(BasicVector(2*num_particles),
