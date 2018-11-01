@@ -56,7 +56,8 @@ class MeshcatVisualizer(LeafSystem):
                  scene_graph,
                  draw_timestep=0.033333,
                  prefix="SceneGraph",
-                 zmq_url="tcp://127.0.0.1:6000"):
+                 zmq_url="tcp://127.0.0.1:6000",
+                 min_alpha=0.0):
         LeafSystem.__init__(self)
 
         self.set_name('Meshcat')
@@ -69,6 +70,7 @@ class MeshcatVisualizer(LeafSystem):
 
         # Set up meshcat.
         self.prefix = prefix
+        self.min_alpha = min_alpha
         self.vis = meshcat.Visualizer(zmq_url=zmq_url)
         self.vis[self.prefix].delete()
         self._scene_graph = scene_graph
@@ -91,6 +93,10 @@ class MeshcatVisualizer(LeafSystem):
 
             for j in range(link.num_geom):
                 geom = link.geom[j]
+                alpha = geom.color[3]
+                if alpha < self.min_alpha:
+                    continue
+
                 element_local_tf = RigidTransform(
                     RotationMatrix(Quaternion(geom.quaternion)),
                     geom.position).GetAsMatrix4()
