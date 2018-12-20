@@ -24,14 +24,14 @@ jobs:
           name: build and test
           command: ./scripts/continuous_integration/circle_ci/build_test
 
-  underactuated-with-drake-continuous:
+  underactuated-with-drake-nightly:
     docker:
       - image: robotlocomotion/circleci:xenial
 
     working_directory: ~/underactuated
 
     environment:
-      - DRAKE_BINARY_URL: "https://drake-packages.csail.mit.edu/drake/continuous/drake-latest-xenial.tar.gz"
+      - DRAKE_BINARY_URL: "https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-xenial.tar.gz"
 
     steps:
       - checkout
@@ -61,4 +61,4 @@ workflows:
             branches:
               only: master
     jobs:
-       - underactuated-with-drake-continuous
+       - underactuated-with-drake-nightly
