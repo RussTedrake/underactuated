@@ -45,11 +45,6 @@ if ! command -v brew &>/dev/null; then
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 fi
 
-if [[ ! -f /usr/include/expat.h || ! -f /usr/include/zlib.h ]]; then
-  echo 'Command Line Tools for Xcode are NOT installed' >&2
-  exit 3
-fi
-
 # NOTE: Assumes that the drake (binary) install_prereqs script will also be run.  Only install what we need to download drake and any additional requirements for this package.
 
 brew update
