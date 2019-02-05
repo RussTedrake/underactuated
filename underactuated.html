@@ -685,10 +685,12 @@ semester.</p>
       understand how to design control systems which take advantage of the
       dynamics, not cancel them out.  That is the topic of this course. </p>
 
-      <p> Surprisingly, there are relatively few formal control ideas that
-      consider "exploiting" the dynamics.  In order to convince a control
-      theorist to consider the dynamics (efficiency arguments are not enough),
-      you have to do something drastic, like taking away his control authority -
+      <p> Surprisingly, many formal control ideas do not support the idea of
+      "exploiting" the dynamics.  Optimal control formulations (which we will
+      study in depth) allow it in principle, but optimal control of nonlinear
+      systems is still a relatively ad hoc discipline.  Sometimes I joke that
+      in order to convince a control theorist to consider the dynamics, you
+      have to do something drastic, like taking away her control authority -
       remove a motor, or enforce a torque-limit.  These issues have created a
       formal class of systems, the underactuated systems, for which people have
       begun to more carefully consider the dynamics of their machines in the
@@ -1034,6 +1036,15 @@ semester.</p>
     systems can be improved using the lessons from underactuated systems,
     particularly if there is a need to increase the efficiency of their motions
     or reduce the complexity of their designs.</p>
+
+    <p>I have a confession: I actually think that the material we'll cover in
+    these notes is valuable far beyond robotics.  I think that systems theory
+    provides a powerful language for organizing computation in exceedingly
+    complex systems -- especially when one is trying to program and/or analyze
+    systems with continuous variables in a feedback loop (which happens
+    throughout computer science and engineering, by the way).  I hope you find
+    these tools to be broadly useful, even if you don't have a humanoid robot
+    capable of performing a backflip at your immediate disposal.</p>
 
   </section>
 
