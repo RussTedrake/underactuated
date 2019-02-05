@@ -50,6 +50,8 @@ class PyPlotVisualizer(LeafSystem):
         self.fig.show()
 
     def _DoPublish(self, context, event):
+        LeafSystem._DoPublish(self, context, event)
+        
         self.draw(context)
         self.fig.canvas.draw()
         plt.pause(1e-10)
