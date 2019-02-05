@@ -354,6 +354,7 @@
   \newcommand{\btau}{{\bf \tau}}
   \newcommand{\bphi}{{\bf \phi}}
   \newcommand{\bPhi}{{\bf \Phi}}
+  \newcommand{\bpi}{{\bf \pi}}
   \newcommand{\bpsi}{{\bf \psi}}
   \newcommand{\bPsi}{{\bf \Psi}}
   \newcommand{\avg}[1]{E\left[ #1 \right]}
@@ -3300,6 +3301,10 @@ Driving</h1>
 
 <section data-type="chapter" class="chapter" id="stochastic"><h1>Model Systems
 with Stochasticity</h1>
+
+  <!-- TODO: Adopt more of the 6.437 notation; it's excellent and compatible:
+  https://stellar.mit.edu/S/course/6/sp19/6.437/courseMaterial/topics/topic5/readings/Preliminaries/Preliminaries.pdf
+   -->
 
   <p>My goals for this chapter are to build intuition for the beautiful and rich
   behavior of nonlinear dynamical system that are subjected to random
@@ -6510,13 +6515,99 @@ until we understand geometric and dynamic planning better.</p>
 
 <!-- ***************  end of feedback motion planning **************   -->
 
-<section data-type="chapter" class="chapter" id="output"><h1>Output
-  Feedback</h1>
+<section data-type="chapter" class="chapter" id="policy_search"><h1>Policy
+  Search</h1>
+
+  <p>So far, most of our recommendations for control design have been
+  relatively "local" -- leveraging trajectory planning/optimization as a tool
+  and our ability to locally stabilize trajectories for even very complex
+  systems using linear optimal control.  This is in stark contrast to the
+  dynamic programming / value iteration methods that we started with, which
+  attempt to solve for a control policy for every possible state;
+  unfortunately, the dynamic programming methods as presented are restricted to
+  relatively low dimensional state spaces.  What is missing so far is
+  algorithms for synthesizing feedback controllers that scale to large state
+  spaces and produce controllers that are, hopefully, less "local" than
+  trajectory stabilization.</p>
+
+  <p>In this chapter, we will explore another very natural idea: let us
+  parameterize a controller with some decision variables, and then search over
+  those decision variables directly in order to achieve a task and/or optimize
+  a performance objective.  We'll refer to this broad class of methods as
+  "policy search" or, when optimization methods are used, "policy
+  optimization". </p>
+
+  <section data-type="sect1"><h1>Problem formulation</h1>
+
+    <p>Consider a static full-state feedback policy, $$\bu =
+    \bpi_\balpha(\bx),$$ where $\bpi$ is potentially a nonlinear function, and
+    $\balpha$ is the vector of parameters that describe the controller.  The
+    control might take time as an input, or might even have it's own internal
+    state, but let's start with this simple form.  </p>
+
+    <p>How should we write an objective function for optimizing $\balpha$?  The
+    approach that we used for trajectory optimization is quite reasonable --
+    the objective was typically to minimize an integral cost over some time
+    horizon (be it finite or infinite).  But in trajectory optimization, the
+    cost is only ever defined based on forward simulation from a single initial
+    condition.  We used the same additive cost structures in dynamic
+    programming, where the Hamilton-Bellman-Jacobi equation provided optimality
+    conditions for optimizing an additive cost from <i>every</i> initial
+    condition; at least in the idealized equations, we were able to get away
+    with saying $\forall \bx, \minimize_\bu ...$. </p>
+
+    <p>But now we are playing a different game.  If we are searching over
+      the some finitely parameterized policy, $\bpi_{\balpha}$, we can almost
+      never expect to be optimal for every state -- and we need to incorporate
+    </p>
+
+    <p>Need to define the relevant importance of different states.  For
+    finite-time, a distribution over initial conditions.  For infinite horizon,
+    what really matters is the stationary distribution (which depends on the
+    policy).  Let's start with the distribution over initial conditions.</p>
+
+
+
+  </section>
+
+  <section data-type="sect1"><h1>Controller parameterizations</h1>
+
+    <p>Searching directly for $K$ with an LQR objective is known to be bad.
+      The objective is non-convex, and the set of stabilizing controllers is
+      not even a connected set <elib>Roberts11</elib>. (TODO: Give the 2D
+      example)
+    </p>
+
+  </section>
+
+  <section data-type="sect1"><h1>Trajectory-based policy search</h1>
+
+
+  </section>
+
+  <section data-type="sect1"><h1>Lyapunov-based approaches to policy
+    search.</h1>
+
+
+  </section>
+
+  <section data-type="sect1"><h1>Approximate Dynamic Programming</h1>
+
+  </section>
+
+  <section data-type="sect1"><h1>Output Feedback</h1>
+
+  </section>
+
+  <!-- TODO:
+  Guided Policy Search, etc (see Robert V's review);
+  PILCO and PIPPS (arxiv from Doya).
+  -->
 
 </section>
 
 
-<!-- ***************  end of output feedback **************   -->
+<!-- ***************  end of policy search **************   -->
 
 <section data-type="chapter" class="chapter" id="robust"><h1>Robust and
   Stochastic
@@ -6574,7 +6665,7 @@ and Validation</h1>
 </section>
 
 <section data-type="chapter" class="chapter"
-         id="policy_search"><h1>Model-Free Policy Search</h1>
+         id="rl_policy_search"><h1>Model-Free Policy Search</h1>
 
   <p>Reinforcement learning (RL) is a collection of algorithms for solving the
   same optimal control problem that we've focused on through the text, but the
