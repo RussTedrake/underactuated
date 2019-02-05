@@ -685,10 +685,12 @@ semester.</p>
       understand how to design control systems which take advantage of the
       dynamics, not cancel them out.  That is the topic of this course. </p>
 
-      <p> Surprisingly, there are relatively few formal control ideas that
-      consider "exploiting" the dynamics.  In order to convince a control
-      theorist to consider the dynamics (efficiency arguments are not enough),
-      you have to do something drastic, like taking away his control authority -
+      <p> Surprisingly, many formal control ideas do not support the idea of
+      "exploiting" the dynamics.  Optimal control formulations (which we will
+      study in depth) allow it in principle, but optimal control of nonlinear
+      systems is still a relatively ad hoc discipline.  Sometimes I joke that
+      in order to convince a control theorist to consider the dynamics, you
+      have to do something drastic, like taking away her control authority -
       remove a motor, or enforce a torque-limit.  These issues have created a
       formal class of systems, the underactuated systems, for which people have
       begun to more carefully consider the dynamics of their machines in the
@@ -727,15 +729,18 @@ semester.</p>
     <p>Notice that whether or not a control system is underactuated may depend
     on the state of the system or even on time, although for most systems
     (including all of the systems in this book) underactuation is a global
-    property of the system.  We will refer to a system as underactuated if it is
-    underactuated in <i>all</i> states and times.  In practice, we often refer
-    informally to systems as fully actuated as long as they are fully actuated
-    in <i>most</i> states (e.g., a "fully-actuated" system might still have
-    joint limits or lose rank at a kinematic singularity).  Admittedly, this
-    permits the existence of a gray area, where we would prefer to avoid
-    describing the <i>system</i> as either fully- or underactuated (we should
-    instead only describe its states); but if you find a physical system that is
-    sort of "half and half", then do let me know!</p>
+    property of the system.  We will refer to a system as underactuated if it
+    is underactuated in <i>all</i> states and times.  In practice, we often
+    refer informally to systems as fully actuated as long as they are fully
+    actuated in <i>most</i> states (e.g., a "fully-actuated" system might still
+    have joint limits or lose rank at a kinematic singularity).  Admittedly,
+    this permits the existence of a gray area, where it might feel awkward to
+    describe the <i>system</i> as either fully- or underactuated (we should
+    instead only describe its states); we'll see examples, for instance, of
+    hybrid systems like walking robots that are fully-actuated in some modes
+    but underactuated in others.  I will still informally refer to these
+    systems as being underactuated whenever reasoning about the underactuation
+    is useful/necessary for developing a control strategy.</p>
 
     <div data-type="example" class="drake"><h1>Robot Manipulators</h1>
 
@@ -1047,6 +1052,15 @@ semester.</p>
     mechanical/aero students pursuing research in robotics.  Although I assume a
     comfort with linear algebra, ODEs, and Python, the course notes aim to
     provide most of the material and references required for the course. </p>
+
+    <p>I have a confession: I actually think that the material we'll cover in
+      these notes is valuable far beyond robotics.  I think that systems theory
+      provides a powerful language for organizing computation in exceedingly
+      complex systems -- especially when one is trying to program and/or analyze
+      systems with continuous variables in a feedback loop (which happens
+      throughout computer science and engineering, by the way).  I hope you find
+      these tools to be broadly useful, even if you don't have a humanoid robot
+      capable of performing a backflip at your immediate disposal.</p>
 
   </section>
 
@@ -3457,8 +3471,8 @@ with Stochasticity</h1>
 
       <p>Taking it a step further, we can see that a stationary distribution for
       this system is given by a mean-zero Gaussian with \[ \sigma_*^2 =
-      \frac{\sigma}{1-a^2}. \] Note that this distribution is well defined when
-      $-1 < a < 1$ (only when the system is stable).</p>
+      \frac{\sigma^2}{1-a^2}. \] Note that this distribution is well defined
+      when $-1 < a < 1$ (only when the system is stable).</p>
 
     </div>
 
@@ -4484,15 +4498,16 @@ with Stochasticity</h1>
 
       <p>The derivation above holds even if the dynamics are given by
       $$\dot{\bx} = {\bf A}(t)\bx + {\bf B(t)}\bu.$$  Similarly, the cost
-      functions ${\bf Q}$ and ${\bf R}$ can also be time-varying.  This is quite
-      surprising, as the class of time-varying linear systems is a quite general
-      class of systems. It requires essentially no assumptions on how the
-      time-dependence enters, except perhaps that if ${\bf A}$ or $\bB$ is
+      functions ${\bf Q}$ and ${\bf R}$ can also be time-varying.  This is
+      quite surprising, as the class of time-varying linear systems is a quite
+      general class of systems. It requires essentially no assumptions on how
+      the time-dependence enters, except perhaps that if ${\bf A}$ or $\bB$ is
       discontinuous in time then one would have to use the proper techniques to
-      accurately integrate the differential equation. As we will see in the next
-      chapter, one of the most powerful applications involves linearizing around
-      a nominal trajectory of a nonlinear system and using LQR to provide a
-      trajectory controller.</p>
+      accurately integrate the differential equation. As we will see in the <a
+      href="underactuated.html?chapter=trajopt">chapter on trajectory
+      optimization</a>, one of the most powerful applications involves
+      linearizing around a nominal trajectory of a nonlinear system and using
+      LQR to provide a trajectory controller.</p>
 
     </section>
 
@@ -7679,84 +7694,157 @@ jupyter notebook simulator.ipynb</code></pre></div>
   </section>
   <section data-type="sect1"><h1>Contact Models</h1>
 
+    <p>Now let $\phi(\bq)$ indicate the relative (signed) distance between
+      two rigid bodies.  For rigid contact, we would like to enforce the
+      unilateral constraint: \begin{equation} \phi(\bq) \geq 0.
+      \end{equation}</p>
+
     <p>There are three main approaches used to modeling contact with "rigid"
     body systems:  1) rigid contact approximated with stiff compliant contact,
-    2) rigid contact approximated with time-averaged forces (time-stepping), 3)
-    hybrid models with collision event detection, impulsive reset maps, and
-    continuous (constrained) dynamics between collision events.  Each modeling
-    approach has advantages for different applications...</p>
+    2) hybrid models with collision event detection, impulsive reset maps, and
+    continuous (constrained) dynamics between collision events, and 3) rigid
+    contact approximated with time-averaged forces (time-stepping).  Each
+    modeling approach has advantages/disadvantages for different
+    applications...</p>
 
-    <todo>Finish this</todo>
+    <section data-type="sect2"><h1>Compliant Contact Models</h1>
 
-    <section data-type="sect2"><h1>Impulsive Collisions</h1>
+      <p>Most compliant contact models are conceptually straight-forward: we
+      will implement contact forces using a stiff spring (and damper) that
+      produces forces to resist penetration (and grossly model the dissipation
+      of collision and/or friction).  However, the devil is in the details.</p>
 
-      <p>Now let $\phi(\bq)$ indicate the relative (signed) distance between two
-      rigid bodies.  For rigid contact, we would like to enforce the unilateral
-      constraint that \begin{equation} \phi(\bq) \geq 0. \end{equation} The
-      collision event is described by the zero-crossings (from positive to
-      negative) of $\phi$. Let us start by assuming frictionless collisions,
-      allowing us to write \begin{equation}\bM\ddot{\bq} = \btau + \Phi^T
-      \lambda,\end{equation} where $\Phi = \pd{\phi}{\bq}$ and $\lambda \ge 0$
-      is now a (scalar) impulsive force that is well-defined when integrated
-      over the time of the collision (denoted $t_c^-$ to $t_c^+$).  Integrate
-      both sides of the equation over that (instantaneous) interval:
-      \begin{align*}\int_{t_c^-}^{t_c^+} dt\left[  \bM \ddot{\bq} \right] =
-      \int_{t_c^-}^{t_c^+} dt \left[ \btau + \Phi^T \lambda \right] \end{align*}
-      Since $\bM$, $\btau$, and $\bPhi$ are constants over this interval, we are
-      left with $$\bM\dot{\bq}^+ - \bM\dot{\bq}^- = \Phi^T \int_{t_c^-}^{t_c^+}
-      \lambda dt,$$ where $\dot{\bq}^+$ is short-hand for $\dot{\bq}(t_c^+)$.
-      Multiplying both sides by $\Phi \bM^{-1}$, we have $$ \Phi \dot{\bq}^+ -
-      \Phi\dot{\bq}^- = \Phi \bM^{-1} \Phi^T \int_{t_c^-}^{t_c^+} \lambda dt.$$
-      After the collision, we have $\dot\phi^+ = -e \dot\phi^-$, with $0 \le e
-      \le 1$ denoting the <a
-      href="https://en.wikipedia.org/wiki/Coefficient_of_restitution">coefficient
-      of restitution</a>, yielding: $$ \Phi \dot{\bq}^+ - \Phi\dot{\bq}^- =
-      -(1+e)\Phi\dot{\bq}^-,$$ and therefore $$\int_{t_c^-}^{t_c^+} \lambda dt =
-      - (1+e)\left[ \Phi \bM^{-1} \Phi^T \right]^+ \Phi \dot{\bq}^-.$$
-      Substituting this back in above results in \begin{equation}\dot{\bq}^+ =
-      \left[ \bI - (1+e)\bM^{-1} \Phi^T \left[ \Phi \bM^{-1} \Phi^T \right]^+
-      \Phi \right] \dot{\bq}^-.\end{equation}</p>
+      <p>The first detail comes in defining the signed distance function,
+      $\phi(\bq)$.  It is natural to define the distance between two objects
+      that are not in collision as the smallest Euclidean distance between any
+      two points on the bodies, and the distance for two bodies in collision as
+      the (negative) maximum penetration depth.  Unfortunately, computing the
+      penetration depth for arbitrary bodies is a very complex numerical
+      geometry problem, and is generally considered too expensive to be
+      computed exactly inside, for instance, a simulation loop.</p>
 
-      <p>We can add friction at the contact.  Rigid bodies will almost always
-      experience contact at only a point, so we typically ignore torsional
-      friction <elib>Featherstone06</elib>, and model only tangential friction
-      by replacing $\Phi$ with a matrix $\bJ$ that has $\Phi$ as one row, but
-      two additional rows to capture the gradient of the contact location
-      tangent to the contact surface, written in joint coordinates (c.f.
-      <elib>Stewart96</elib>). Then $\blambda$ becomes a Cartesian force vector,
-      but the equations above remain unchanged. If $\blambda$ is restricted to a
-      friction cone, as in Coulomb friction, in general we have to solve an
-      optimization to solve for $\dot\bq^+$ subject to the inequality
-      constraints. </p>
+      <p>The second detail is about where we should put the spring/dampers. One
+      candidate would be to add a spring along the line of maximal penetration,
+      but even if one could compute it accurately this line might not be
+      unique, and can move discontinuously with small changes in $\bq$. (This
+      is one of the reasons that simulated robots can "explode" in a number of
+      modern simulators; as we will see the time-stepping methods can have the
+      same pitfall).  Also a single point force cannot capture effects like
+      torsional friction, and performs badly in some very simple cases (imaging
+      a box sitting on a table).  As a result, many of the most effective
+      algorithms for contact restrict themselves to very limited/simplified
+      geometry.  For instance, one can place "point contacts" (zero-radius
+      spheres) in the four corners of a robot's foot; in this case adding
+      forces at exactly those four points as they penetrate some other
+      body/mesh can give more consistent contact force locations/directions. A
+      surprising number of simulators, especially for legged robots, do
+      this.</p>
 
-    </section>
+      <p>In practice, most collision detection algorithms will return a list of
+      "collision point pairs" given the list of bodies (with one point pair per
+      pair of bodies in collision, or more if they are using the aforementioned
+      "multi-contact" heuristics), and our contact force model simply attaches
+      springs between these pairs. Given a point-pair, $p_A$ and $p_B$, both in
+      world coordinates, ...</p>
 
-    <section data-type="sect2"><h1>Hybrid Dynamics</h1>
+      <todo>Some diagrams could help a LOT here.</todo>
 
-      <p> We can put the bilateral constraint equations and the impulsive
-      collision equations together to implement a hybrid model for unilateral
-      constraints of the form. Let us generalize \begin{equation}\bphi(\bq) \ge
-      0,\end{equation} to be the vector of all pairwise (signed) distance
-      functions between rigid bodies; this vector describes all possible
-      contacts. At every moment, some subset of the contacts are active, and can
-      be treated as a bilateral constraint ($\bphi_i=0$). The guards of the
-      hybrid model are when an inactive constraint becomes active ($\bphi_i>0
-      \rightarrow \bphi_i=0$), or when an active constraint becomes inactive
-      ($\blambda_i>0 \rightarrow \blambda_i=0$ and $\dot\phi_i > 0$). Note that
-      collision events will (almost always) only result in new active
-      constraints when $e=0$, e.g. we have pure inelastic collisions, because
-      elastic collisions will rarely permit sustained contact.</p>
+      <p>For this simple case, we can define the normal force direction as...
+      the frictional force as... and write a spring-law...</p>
 
-      <p>If the contact involves Coulomb friction, then the transitions between
-      sticking and sliding can be modeled as additional hybrid guards, or can be
-      solved efficiently as a complementarity problem
-      <elib>Stewart96</elib>.</p>
+      <p>In order to tightly approximate the (nearly) rigid contact that most
+      robots make with the world, the stiffness of these springs must be quite
+      high.  For instance, I might want my 180kg humanoid robot model to
+      penetrate into the ground no more than 1mm during steady-state standing.
+      The challenge with adding stiff springs to our model is that this results
+      in <a href="https://en.wikipedia.org/wiki/Stiff_equation">stiff
+      differential equations</a> (it is not a coincidence that the word
+      <em>stiff</em> is the common term for this in both springs and ODEs). As
+      a result, the best implementations of compliant contact for simulation
+      must use stiff ODE solvers, and these models are often difficult or
+      impossible to use in e.g. trajectory/feedback optimization.</p>
+
+      <p>Some of the advantages of this approach include (1) the fact that it
+      is easy to implement, at least for simple geometries, (2) by virtue of
+      being a continuous-time model it can be simulated with error-controlled
+      integrators, and (3) the tightness of the approximation of "rigid"
+      contact can be controlled through relatively intuitive parameters.</p>
 
     </section>
 
+    <section data-type="sect2"><h1>Rigid Contact with Event Detection</h1>
 
-    <section data-type="sect2"><h1>Compliant Contact Models</h1></section>
+      <section data-type="sect3"><h1>Impulsive Collisions</h1>
 
+        <p>The collision event is described by the zero-crossings (from
+        positive to negative) of $\phi$. Let us start by assuming frictionless
+        collisions, allowing us to write \begin{equation}\bM\ddot{\bq} = \btau
+        + \Phi^T \lambda,\end{equation} where $\Phi = \pd{\phi}{\bq}$ and
+        $\lambda \ge 0$ is now a (scalar) impulsive force that is well-defined
+        when integrated over the time of the collision (denoted $t_c^-$ to
+        $t_c^+$).  Integrate both sides of the equation over that
+        (instantaneous) interval: \begin{align*}\int_{t_c^-}^{t_c^+} dt\left[
+        \bM \ddot{\bq} \right] = \int_{t_c^-}^{t_c^+} dt \left[ \btau + \Phi^T
+        \lambda \right] \end{align*} Since $\bM$, $\btau$, and $\bPhi$ are
+        constants over this interval, we are left with $$\bM\dot{\bq}^+ -
+        \bM\dot{\bq}^- = \Phi^T \int_{t_c^-}^{t_c^+} \lambda dt,$$ where
+        $\dot{\bq}^+$ is short-hand for $\dot{\bq}(t_c^+)$. Multiplying both
+        sides by $\Phi \bM^{-1}$, we have $$ \Phi \dot{\bq}^+ - \Phi\dot{\bq}^-
+        = \Phi \bM^{-1} \Phi^T \int_{t_c^-}^{t_c^+} \lambda dt.$$ After the
+        collision, we have $\dot\phi^+ = -e \dot\phi^-$, with $0 \le e \le 1$
+        denoting the <a
+        href="https://en.wikipedia.org/wiki/Coefficient_of_restitution">coefficient
+        of restitution</a>, yielding: $$ \Phi \dot{\bq}^+ - \Phi\dot{\bq}^- =
+        -(1+e)\Phi\dot{\bq}^-,$$ and therefore $$\int_{t_c^-}^{t_c^+} \lambda
+        dt = - (1+e)\left[ \Phi \bM^{-1} \Phi^T \right]^+ \Phi \dot{\bq}^-.$$
+        Substituting this back in above results in \begin{equation}\dot{\bq}^+
+        = \left[ \bI - (1+e)\bM^{-1} \Phi^T \left[ \Phi \bM^{-1} \Phi^T
+        \right]^+ \Phi \right] \dot{\bq}^-.\end{equation}</p>
+
+        <p>We can add friction at the contact.  Rigid bodies will almost always
+        experience contact at only a point, so we typically ignore torsional
+        friction <elib>Featherstone06</elib>, and model only tangential
+        friction by replacing $\Phi$ with a matrix $\bJ$ that has $\Phi$ as one
+        row, but two additional rows to capture the gradient of the contact
+        location tangent to the contact surface, written in joint coordinates
+        (c.f. <elib>Stewart96</elib>). Then $\blambda$ becomes a Cartesian
+        force vector, but the equations above remain unchanged. If $\blambda$
+        is restricted to a friction cone, as in Coulomb friction, in general we
+        have to solve an optimization to solve for $\dot\bq^+$ subject to the
+        inequality constraints. </p>
+
+      </section>
+
+      <section data-type="sect3"><h1>Putting it all together</h1>
+
+        <p> We can put the bilateral constraint equations and the impulsive
+        collision equations together to implement a hybrid model for unilateral
+        constraints of the form. Let us generalize \begin{equation}\bphi(\bq)
+        \ge 0,\end{equation} to be the vector of all pairwise (signed) distance
+        functions between rigid bodies; this vector describes all possible
+        contacts. At every moment, some subset of the contacts are active, and
+        can be treated as a bilateral constraint ($\bphi_i=0$). The guards of
+        the hybrid model are when an inactive constraint becomes active
+        ($\bphi_i>0 \rightarrow \bphi_i=0$), or when an active constraint
+        becomes inactive ($\blambda_i>0 \rightarrow \blambda_i=0$ and
+        $\dot\phi_i > 0$). Note that collision events will (almost always) only
+        result in new active constraints when $e=0$, e.g. we have pure
+        inelastic collisions, because elastic collisions will rarely permit
+        sustained contact.</p>
+
+        <p>If the contact involves Coulomb friction, then the transitions
+        between sticking and sliding can be modeled as additional hybrid
+        guards, or can be solved efficiently as a complementarity problem
+        <elib>Stewart96</elib>.</p>
+
+      </section>
+
+    </section>
+
+    <section data-type="sect2"><h1>Time-stepping Approximations for Rigid
+      Contact</h1>
+
+    </section>
 
   </section>
 
