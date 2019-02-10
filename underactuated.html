@@ -860,7 +860,7 @@ semester.</p>
     <p>The trick is called feedback linearization.  When ${\bf f}_2$ is full row
     rank, it is invertible<sidenote>If ${\bf f}_2$ is not square, for instance
     you have multiple actuators per joint, then this inverse may not be
-    unique.</sidenote>. Consider the nonlinear feedback law: $$\bu = {\bf
+    unique.</sidenote>. Consider the nonlinear feedback control: $$\bu = {\bf
     \pi}(\bq,\dot\bq,t) = {\bf f}_2^{-1}(\bq,\dot\bq,t) \left[ \bu' - {\bf
     f}_1(\bq,\dot\bq,t) \right],$$ where $\bu'$ is the new control input (an
     input to your controller). Applying this feedback controller to equation
@@ -1515,9 +1515,9 @@ complete trajectory.</p>
   <section data-type="sect1"><h1>The torque-limited simple pendulum</h1>
 
     <p>The simple pendulum is fully actuated.  Given enough torque, we can
-    produce any number of control solutions to stabilize the originally unstable
-    fixed point at the top (such as designing a feedback law to effectively
-    invert gravity).</p>
+    produce any number of control solutions to stabilize the originally
+    unstable fixed point at the top (such as designing a feedback controller to
+    effectively invert gravity).</p>
 
     <p>The problem begins to get interesting (a.k.a. becomes underactuated)
     if we impose a torque-limit constraint, $|u|\le u_{max}$.  Looking at the
@@ -2074,8 +2074,8 @@ complete trajectory.</p>
     push the cart in exactly the way necessary to counter-act the dynamic
     contributions from the pendulum - thereby linearizing the cart dynamics.
     What we will see, which is potentially more surprising, is that we can also
-    use a feedback law for the cart to feedback linearize the dynamics of the
-    passive pendulum joint.</p>
+    use a feedback controller for the cart to feedback linearize the dynamics
+    of the passive pendulum joint.</p>
 
     <p> We'll use the term <em>collocated</em> partial feedback linearization to
     describe a controller which linearizes the dynamics of the actuated joints.
@@ -2096,7 +2096,7 @@ complete trajectory.</p>
           % \ddot\theta = -\frac{1}{l} (\ddot{x} c + g s)
           \ddot{x}(2-c^2) - sc - \dot\theta^2 s = f
           \end{gather*}
-          Therefore, applying the feedback control law
+          Therefore, applying the feedback control
           \begin{equation}
           f = (2 - c^2) \ddot{x}^d - sc - \dot\theta^2 s
           % f = (m_c + m_p) u + m_p (u c + g s) c - m_p l \dot\theta^2 s
@@ -2120,7 +2120,7 @@ complete trajectory.</p>
         \ddot\theta(c - \frac{2}{c}) - 2 \tan\theta - \dot\theta^2 s = f
         \end{gather*}
 
-        Applying the feedback control law
+        Applying the feedback control
 
         \begin{equation}
           f = (c - \frac{2}{c}) \ddot\theta^d - 2 \tan\theta - \dot\theta^2 s
@@ -4607,7 +4607,7 @@ with Stochasticity</h1>
       before time $T$, then this inverse Riccati equation becomes a linear ODE
       which can be solved explicitly. <todo>% add explicit solution here</todo>
       These relationships are used in the derivation of the controllability
-      Grammian, but here we use them to design a feedback law.</p>
+      Grammian, but here we use them to design a feedback controller.</p>
 
     </section>
 
