@@ -32,9 +32,9 @@ def quadratic_regulator_cost(context):
     return 2*x.dot(x) + u.dot(u)
 
 
-if (False):
+if (True):
     cost_function = min_time_cost
-    input_limit = 1.
+    input_limit = 3.
     options.convergence_tol = 0.001
 else:
     cost_function = quadratic_regulator_cost
@@ -55,16 +55,18 @@ fig = plt.figure()
 ax = fig.gca(projection='3d')
 ax.set_xlabel("theta")
 ax.set_ylabel("thetadot")
+ax.set_title("Cost-to-Go")
 
 fig2 = plt.figure()
 ax2 = fig2.gca(projection='3d')
 ax2.set_xlabel("q")
 ax2.set_ylabel("qdot")
+ax2.set_title("Policy")
 
 
 def draw(iteration, mesh, cost_to_go, policy):
     # Drawing is slow, don't draw every frame.
-    if iteration % 10 != 0:
+    if iteration % 20 != 0:
         return
     plt.title("iteration " + str(iteration))
     J = np.reshape(cost_to_go, Q.shape)
