@@ -6,3 +6,5 @@ build/
 examples/
 */.ipynb_checkpoints
 venv
+
+cmake-build-debug/

@@ -35,6 +35,7 @@ endfunction(add_nbtest)
 add_subdirectory(underactuated)
 
 add_subdirectory(acrobot)
+add_subdirectory(autapse)
 add_subdirectory(cartpole)
 add_subdirectory(compass_gait)
 add_subdirectory(double_integrator)
