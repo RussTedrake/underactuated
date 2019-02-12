@@ -43,7 +43,7 @@ def min_time_cost(context):
 def quadratic_regulator_cost(context):
     x = context.get_continuous_state_vector().CopyToVector()
     u = plant.EvalVectorInput(context, 0).CopyToVector()
-    return 2*x.dot(x) + 10*u.dot(u)
+    return x.dot(x) + 20*u.dot(u)
 
 
 cost_function = min_time_cost
@@ -63,16 +63,18 @@ fig = plt.figure()
 ax = fig.gca(projection='3d')
 ax.set_xlabel("q")
 ax.set_ylabel("qdot")
+ax.set_title("Cost-to-Go")
 
 fig2 = plt.figure()
 ax2 = fig2.gca(projection='3d')
 ax2.set_xlabel("q")
 ax2.set_ylabel("qdot")
+ax2.set_title("Policy")
 
 
 def draw(iteration, mesh, cost_to_go, policy):
     # Drawing is slow, don't draw every frame.
-    if iteration % 10 != 0:
+    if iteration % 20 != 0:
         return
     plt.title("iteration " + str(iteration))
     J = np.reshape(cost_to_go, Q.shape)
@@ -91,6 +93,7 @@ def draw(iteration, mesh, cost_to_go, policy):
 
 
 options.visualization_callback = draw
+options.convergence_tol = 0.1
 
 policy, cost_to_go = FittedValueIteration(simulator, cost_function,
                                           state_grid, input_grid,
