@@ -41,8 +41,8 @@ else:
     input_limit = 3.
     options.convergence_tol = 0.1
 
-qbins = np.linspace(0., 2. * math.pi, 21)
-qdotbins = np.linspace(-10., 10., 21)
+qbins = np.linspace(0., 2. * math.pi, 51)
+qdotbins = np.linspace(-10., 10., 51)
 state_grid = [set(qbins), set(qdotbins)]
 options.periodic_boundary_conditions = [
     PeriodicBoundaryCondition(0, 0., 2.*math.pi),

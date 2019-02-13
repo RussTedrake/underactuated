@@ -46,8 +46,12 @@ def quadratic_regulator_cost(context):
     return x.dot(x) + 20*u.dot(u)
 
 
-cost_function = min_time_cost
-# cost_function = quadratic_regulator_cost
+if (True):
+    cost_function = min_time_cost
+    options.convergence_tol = 0.001
+else:
+    cost_function = quadratic_regulator_cost
+    options.convergence_tol = 0.1
 
 qbins = np.linspace(-3., 3., 31)
 qdotbins = np.linspace(-3., 3., 51)
@@ -93,7 +97,6 @@ def draw(iteration, mesh, cost_to_go, policy):
 
 
 options.visualization_callback = draw
-options.convergence_tol = 0.1
 
 policy, cost_to_go = FittedValueIteration(simulator, cost_function,
                                           state_grid, input_grid,
