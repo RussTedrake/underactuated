@@ -4193,14 +4193,17 @@ with Stochasticity</h1>
         a desired set of $K$ input-output points, $(\bx_k,J^d_k)$, then we can
         write down the closed-form solution to \[ \minimize_\balpha \sum_k
         \left(\hat{J}_\balpha(\bx_k) - J^d_k \right)^2. \] Using the least
-        squares solution in a value iteration update is sometimes referred to
-        as <i>fitted value iteration</i>, where $\bx_k$ are some number of
-        samples taken from the continuous space and the iteration becomes
+        squares solution in a value iteration update is sometimes referred to as
+        <i>fitted value iteration</i>, where $\bx_k$ are some number of samples
+        taken from the continuous space and for discrete-time systems the
+        iterative approximate solution to \begin{gather*} J^*(\bx_0) =
+        \min_{u[\cdot]} \sum_{n=0}^\infty g(\bx[n],\bu[n]), \\ \text{ s.t. }
+        \bx[n+1] = f(\bx[n], \bu[n]), \bx[0] = \bx_0\end{gather*} becomes
         \begin{gather*} J^d_k = \min_\bu \left[ g(\bx_k,\bu) +
-        \hat{J}_\alpha\left({f(\bx_k,\bu)}\right) \right], \\ \balpha
-        \Leftarrow \argmin_\balpha \sum_k \left(\hat{J}_\balpha(\bx_k) - J^d_k
+        \hat{J}^*_\alpha\left({f(\bx_k,\bu)}\right) \right], \\ \balpha
+        \Leftarrow \argmin_\balpha \sum_k \left(\hat{J}^*_\balpha(\bx_k) - J^d_k
         \right)^2. \end{gather*} For linear function approximators, this is
-        simply:         \begin{gather*} \balpha \Leftarrow \begin{bmatrix}
+        simply: \begin{gather*} \balpha \Leftarrow \begin{bmatrix}
         \bpsi^T(\bx_1) \\ \vdots \\ \bpsi^T(\bx_K)\end{bmatrix}^+
         \begin{bmatrix} J^d_1 \\ \vdots \\ J^d_K \end{bmatrix}, \end{gather*}
         where the $^+$ notation refers to a Moore-Penrose pseudoinverse.
@@ -4236,6 +4239,42 @@ with Stochasticity</h1>
         (\ref{eq:mesh_value_iteration}) is precisely the least-squares update
         (and it achieves zero error). </p>
 
+      </section>
+
+      <section data-type="sect3"><h1>Continuous-time systems</h1>
+
+        <p>For solutions to systems with continuous-time dynamics, I have to
+        uncover one of the details that I've so far been hiding to keep the
+        notation simpler. Let us consider a problem with a finite-horizon:
+        \begin{gather*} \min_{\bu[\cdot]} \sum_{n=0}^N g(\bx[n],\bu[n]), \\
+        \text{ s.t. } \bx[n+1] = f(\bx[n], \bu[n]), \bx[0] = \bx_0\end{gather*}
+        In fact, the way that we compute this is by solving the <em>time-varying
+        cost-to-go function</em> backwards in time: \begin{gather*}J^*(\bx,N) =
+        \min_\bu g(\bx, \bu) \\ J^*(\bx,n-1) = \min_\bu \left[ g(\bx, \bu) +
+        J^*(f(\bx,\bu), n) \right]. \end{gather*} The convergence of the value
+        iteration update is equivalent to solving this time-varying cost-to-go
+        backwards in time until it reaches a steady-state solution (the
+        infinite-horizon solution).  Which explains why value iteration only
+        converges if the optimal cost-to-go is bounded.</p>
+
+        <p>Now let's consider the continuous-time version.  Again, we have a
+        time-varying cost-to-go, $J^*(\bx,t)$.  Now $$\frac{dJ^*}{dt} =
+        \pd{J^*}{\bx}f(\bx,\bu) + \pd{J^*}{t},$$ and our sufficiency condition
+        is $$0 = \min_\bu \left[g(\bx, \bu) + \pd{J^*}{\bx}f(\bx,\bu) +
+        \pd{J^*}{t} \right].$$  But since $\pd{J^*}{t}$ doesn't depend on $\bu$,
+        we can pull it out of the $\min$ and write the (true) HJB:
+        $$-\pd{J^*}{t} = \min_\bu \left[g(\bx, \bu) + \pd{J^*}{\bx}f(\bx,\bu)
+        \right].$$ The standard numerical recipe <elib>Osher03 </elib> for
+        solving this is to approximate $\hat{J}^*(\bx,t)$ on a mesh and then
+        integrate the equations backwards in time (until convergence, if the
+        goal is to find the infinite-horizon solution).  If, for mesh point
+        $\bx_i$ we have $\alpha_i(t) = \hat{J}^*(\bx_i, t)$, then:
+        $$-\dot\alpha_i(t) = \min_\bu \left[g(\bx_i, \bu) + \pd{J^*(\bx_i,
+        t)}{\bx}f(\bx_i,\bu) \right],$$ where the partial derivative is
+        estimated with a suitable finite-difference approximation on the mesh
+        and often some "viscosity" terms are added to the right-hand side to
+        provide additional numerical robustness; see the Lax-Friedrichs scheme
+        <elib>Osher03 </elib> (section 5.3.1) for an example. </p>
 
       </section>
 
