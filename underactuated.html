@@ -3637,11 +3637,14 @@ with Stochasticity</h1>
     reasons. First and foremost, it is very general - allowing us to   specify
     the goal of control equally well for fully- or under-actuated,   linear or
     nonlinear, deterministic or stochastic, and continuous or   discrete
-    systems. Second, it permits concise descriptions of potentially very complex
-    desired behaviours, specifying the goal of control as an scalar objective
-    (plus a list of constraints).  Finally, and most importantly, optimal
-    control is very amenable to numerical solutions. <elib>Bertsekas00a</elib>
-    is a fantastic reference on this material.</p>
+    systems. Second, it permits concise descriptions of potentially very
+    complex desired behaviours, specifying the goal of control as an scalar
+    objective (plus a list of constraints).  Finally, and most importantly,
+    optimal control is very amenable to numerical solutions.
+    <elib>Bertsekas00a</elib> is a fantastic reference on this material for
+    those who want a somewhat rigorous treatment; <elib>Sutton18</elib> is an
+    excellent (free) reference for those who want something more
+    approachable.</p>
 
     <p>The fundamental idea in optimal control is to formulate the goal of
     control as the <em>long-term</em> optimization of a scalar cost function.
@@ -3991,13 +3994,17 @@ with Stochasticity</h1>
       analogous set of conditions for the continuous systems.  For a system
       $\dot{\bx} = f(\bx,\bu)$ and an infinite-horizon additive cost
       $\int_0^\infty g(\bx,\bu)dt$, we have: \begin{gather} 0 = \min_\bu \left[
-      g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right], \label{eq:HJB} \\ \pi^*(\bx)
-      = \argmin_\bu \left[ g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right].
-      \end{gather} Equation \ref{eq:HJB} is known as the
-      <em>Hamilton-Jacobi-Bellman</em> (HJB) equation.  <elib>Bertsekas05</elib>
+      g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right], \label{eq:HJB} \\
+      \pi^*(\bx) = \argmin_\bu \left[ g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu)
+      \right]. \end{gather} Equation \ref{eq:HJB} is known as the
+      <em>Hamilton-Jacobi-Bellman</em> (HJB) equation. <elib>Bertsekas05</elib>
+      <sidenote>Technically, a Hamilton-Jacobi equation is a PDE whose <em>time
+      derivative</em> depends on the first-order partial derivatives over
+      state, which we get in the finite-time deriviation; Eq \ref{eq:HJB} is
+      the steady-state solution of the Hamilton-Jacobi equation.</sidenote>
       <!-- chapter 3 --> gives an informal derivation of these equations as the
-      limit of a discrete-time approximation of the dynamics, and also gives the
-      following sufficiency theorem:</p>
+      limit of a discrete-time approximation of the dynamics, and also gives
+      the following sufficiency theorem:</p>
 
       <div data-type="theorem"><h1>HJB Sufficiency Theorem</h1>
 
@@ -4128,6 +4135,16 @@ with Stochasticity</h1>
       three dimensional space.  Also, our PDE may have discontinuities (or at
       least discontinuous gradients) at locations in the state space which are
       not known apriori.</p>
+
+      <p>Probably most visible and consistent campaign using numerical HJB
+      solutions in applied control (at least in robotics) has come from Claire
+      Tomlin's group at Berkeley.  Their work leverages Ian Mitchell's Level
+      Set Toolbox, which even includes the minimum-time problem for the double
+      integrator as a tutorial example<elib>Mitchell05</elib>.  However, if you
+      want to understand the numerical approach, which does represent the
+      solution on a Cartesian mesh, I recommend you start directly with the
+      books that they cite, e.g. <elib>Osher03</elib> or
+      <elib>Sethian99</elib>.</p>
 
       <p>A slightly more general view of the problem would describe the mesh
       (and the associated interpolation functions) as just one form of
