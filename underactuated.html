@@ -64,6 +64,7 @@
           var part_number = 1;
 
           var list_of_drake_examples = "";
+          var bib = new Map();
 
           // Set platform to linux unless I detect mac.
           setPlatform(navigator.appVersion.indexOf("Mac")!=1);
@@ -83,17 +84,17 @@
             }
 
 //            toc = toc + chapters[i].parentNode.tagName.toLowerCase();
-            var chapter_link = "";
-            if (chapters[i].parentNode.tagName.toLowerCase() == "appendix") {
-              chapter_link =
-                  "<li><a href=underactuated.html?chapter="+chapterNumberToID(i+1)+">";
-              chapter_link += "Appendix " + String.fromCharCode(64 + i+1-start_appendix);
+            var chapter_link = "<li><a href=underactuated.html?chapter="+chapterNumberToID(i+1)+">";
+            if (chapterNumberToID(i+1) === "bib") {
+              chapter_link = "<p/>" + chapter_link;
+            } else if (chapters[i].parentNode.tagName.toLowerCase() ==
+                    "appendix") {
+              chapter_link += "Appendix " +
+                      String.fromCharCode(64 + i+1-start_appendix) + ": ";
             } else {
-              chapter_link =
-                  "<li><a href=underactuated.html?chapter="+chapterNumberToID(i+1)+">";
-              chapter_link += "Chapter " + (i+1);
+              chapter_link += "Chapter " + (i+1) + ": ";
             }
-            chapter_link += ": " + titles[0].innerHTML + "</a>\n";
+            chapter_link += titles[0].innerHTML + "</a>\n";
             toc += chapter_link;
 
             var sections = chapters[i].getElementsByTagName("section");
@@ -140,18 +141,23 @@
         }
 
         var elibTags = document.getElementsByTagName('elib');
-        // TODO(russt): create actual bibliography section (similar to how I made the drake example list).
-        var bib = new Map();
         for (i = 0; i < elibTags.length; i++) {
             var c = elibTags[i].innerHTML;
+            var str = "";
             var index;
-            if (bib.has(c)) {
-              index = bib.get(c);
-            } else {
-              index = bib.size+1;
-              bib.set(c, index);
-            }
-            elibTags[i].innerHTML = '[<a href="http://groups.csail.mit.edu/locomotion/elib.cgi?b=' + c + '">' + index + '</a>]';
+            c.split("+").forEach(function(b) {
+              if (bib.has(b)) {
+                index = bib.get(b);
+              } else {
+                index = bib.size+1;
+                bib.set(b, index);
+              }
+              if (str.length > 0) {
+                str += ", ";
+              }
+              str += '<a href="http://groups.csail.mit.edu/locomotion/elib.cgi?b=' + b + '">' + index + '</a>';
+            });
+          elibTags[i].innerHTML = '[' + str + ']';
         }
 
 
@@ -281,6 +287,19 @@
             document.getElementById("list_of_drake_examples").innerHTML =
                 "<ul>" + list_of_drake_examples + "</ul>";
 
+          }
+          if (chapters[current_chapter-1].id === "bib") {
+            // TODO(russt): Embed the bibliography in the page (and make sure the reference numbers match up).
+            bibtags = "";
+            function addbib(value, key) {
+              bibtags += key + "+";
+            }
+            bib.forEach(addbib);
+            bibtags = bibtags.slice(0, -1);
+
+            document.getElementById("bibliography").innerHTML =
+                    "<p>I'm working on a satisfying solution for this.  For now, <a href=http://groups.csail.mit.edu/locomotion/elib.cgi?b=" +
+                    bibtags + ">click here</a>.</p>";
           }
         }
 
@@ -7213,6 +7232,13 @@ and Validation</h1>
 
 
 </div> <!-- end of part III -->
+
+<section data-type="chapter" class="chapter"
+         id="bib"><h1>Bibliography</h1>
+
+  <div id="bibliography"><center>Coming soon!</center></div>
+
+</section>
 
 <appendix class="part" title="Appendix">
 
