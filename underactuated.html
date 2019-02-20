@@ -42,11 +42,11 @@
           to_show = document.getElementsByClassName("linux");
           to_hide = document.getElementsByClassName("mac");
         }
-	for (i=0; i<to_show.length; i++) {
-          to_show[i].style.display = "inline";
-	}
-	for (i=0; i<to_hide.length; i++) {
-	  to_hide[i].style.display = "none";
+        for (i=0; i<to_show.length; i++) {
+              to_show[i].style.display = "inline";
+        }
+        for (i=0; i<to_hide.length; i++) {
+          to_hide[i].style.display = "none";
         }
       }
 
@@ -140,11 +140,18 @@
         }
 
         var elibTags = document.getElementsByTagName('elib');
-        // TODO(russt): identical references should reuse reference numbers.
         // TODO(russt): create actual bibliography section (similar to how I made the drake example list).
+        var bib = new Map();
         for (i = 0; i < elibTags.length; i++) {
             var c = elibTags[i].innerHTML;
-            elibTags[i].innerHTML = '[<a href="http://groups.csail.mit.edu/locomotion/elib.cgi?b=' + c + '">' + (i + 1) + '</a>]';
+            var index;
+            if (bib.has(c)) {
+              index = bib.get(c);
+            } else {
+              index = bib.size+1;
+              bib.set(c, index);
+            }
+            elibTags[i].innerHTML = '[<a href="http://groups.csail.mit.edu/locomotion/elib.cgi?b=' + c + '">' + index + '</a>]';
         }
 
 
