@@ -4136,16 +4136,6 @@ with Stochasticity</h1>
       least discontinuous gradients) at locations in the state space which are
       not known apriori.</p>
 
-      <p>Probably most visible and consistent campaign using numerical HJB
-      solutions in applied control (at least in robotics) has come from Claire
-      Tomlin's group at Berkeley.  Their work leverages Ian Mitchell's Level
-      Set Toolbox, which even includes the minimum-time problem for the double
-      integrator as a tutorial example<elib>Mitchell05</elib>.  However, if you
-      want to understand the numerical approach, which does represent the
-      solution on a Cartesian mesh, I recommend you start directly with the
-      books that they cite, e.g. <elib>Osher03</elib> or
-      <elib>Sethian99</elib>.</p>
-
       <p>A slightly more general view of the problem would describe the mesh
       (and the associated interpolation functions) as just one form of
       representations for <a
@@ -4275,6 +4265,16 @@ with Stochasticity</h1>
         and often some "viscosity" terms are added to the right-hand side to
         provide additional numerical robustness; see the Lax-Friedrichs scheme
         <elib>Osher03 </elib> (section 5.3.1) for an example. </p>
+
+        <p>Probably most visible and consistent campaign using numerical HJB
+        solutions in applied control (at least in robotics) has come from <a
+        href="http://hybrid.eecs.berkeley.edu/index.html">Claire Tomlin's group
+        at Berkeley</a>. Their work leverages <a
+        href="https://www.cs.ubc.ca/~mitchell/ToolboxLS/">Ian Mitchell's Level
+        Set Toolbox</a>, which solves the Hamilton-Jacobi PDEs on a Cartesian
+        mesh using the technique cartooned above, and even includes the
+        minimum-time problem for the double integrator as a tutorial
+        example<elib>Mitchell05</elib>.</p>
 
       </section>
 
