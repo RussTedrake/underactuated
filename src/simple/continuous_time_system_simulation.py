@@ -9,14 +9,12 @@ logger = builder.AddSystem(SignalLogger(1))
 builder.Connect(system.get_output_port(0), logger.get_input_port(0))
 diagram = builder.Build()
 
-# Create the simulator.
-simulator = Simulator(diagram)
-
 # Set the initial conditions, x(0).
-state = simulator.get_mutable_context().get_mutable_continuous_state_vector()
-state.SetFromVector([0.9])
+context = diagram.CreateDefaultContext()
+context.SetContinuousState([0.9])
 
-# Simulate for 10 seconds.
+# Create the simulator, and simulate for 10 seconds.
+simulator = Simulator(diagram, context)
 simulator.StepTo(10)
 
 # Plot the results.

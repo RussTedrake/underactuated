@@ -1,4 +1,4 @@
-from pydrake.all import (BasicVector, DiagramBuilder, FloatingBaseType,
+from pydrake.all import (DiagramBuilder, FloatingBaseType,
                          RigidBodyPlant, RigidBodyTree, Simulator)
 from underactuated import (FindResource, PlanarRigidBodyVisualizer)
 
@@ -23,9 +23,9 @@ simulator.set_publish_every_time_step(False)
 
 # Set the initial conditions
 context = simulator.get_mutable_context()
-context.FixInputPort(0, BasicVector([0., 0.]))  # Zero input torques
-state = context.get_mutable_continuous_state_vector()
-state.SetFromVector((1., 1., 0., 0.))  # (theta1, theta2, theta1dot, theta2dot)
+# state is (theta1, theta2, theta1dot, theta2dot)
+context.SetContinuousState([1., 1., 0., 0.])
+context.FixInputPort(0, [0., 0.])  # Zero input torques
 
 # Simulate for 10 seconds
 simulator.StepTo(10)

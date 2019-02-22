@@ -48,9 +48,9 @@ diagram = builder.Build()
 simulator = Simulator(diagram)
 simulator.set_target_realtime_rate(1.0)
 simulator.set_publish_every_time_step(True)
-simulator.get_mutable_context().set_accuracy(1e-4)
 
-state = simulator.get_mutable_context().get_mutable_continuous_state_vector()
-state.SetFromVector([0., 0., 0.4, -2.])
+context = simulator.get_mutable_context()
+context.set_accuracy(1e-4)
+context.SetContinuousState([0., 0., 0.4, -2.])
 
 simulator.StepTo(args.duration)

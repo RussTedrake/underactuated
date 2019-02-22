@@ -29,7 +29,7 @@ simulator = Simulator(diagram)
 simulator.set_target_realtime_rate(1.0)
 simulator.set_publish_every_time_step(False)
 
-state = simulator.get_mutable_context().get_mutable_continuous_state_vector()
-state.SetFromVector([1., 0.])
+context = simulator.get_mutable_context()
+context.SetContinuousState([1., 0.])
 
 simulator.StepTo(args.duration)
