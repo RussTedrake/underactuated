@@ -56,9 +56,9 @@ diagram = builder.Build()
 simulator = Simulator(diagram)
 simulator.set_target_realtime_rate(1.0)
 simulator.set_publish_every_time_step(False)
-simulator.get_mutable_context().set_accuracy(1e-4)
 
-state = simulator.get_mutable_context().get_mutable_continuous_state_vector()
-state.SetFromVector([args.initial_angle, args.initial_angular_velocity])
+context = simulator.get_mutable_context()
+context.set_accuracy(1e-4)
+context.SetContinuousState([args.initial_angle, args.initial_angular_velocity])
 
 simulator.StepTo(args.duration)

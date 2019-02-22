@@ -4,14 +4,14 @@ import matplotlib.pyplot as plt
 
 from pydrake.all import (DirectCollocation, FloatingBaseType,
                          PiecewisePolynomial, RigidBodyTree, RigidBodyPlant,
-                         SolutionResult)
+                         Solve)
 from pydrake.examples.acrobot import AcrobotPlant
 from underactuated import (FindResource, PlanarRigidBodyVisualizer)
 
 plant = AcrobotPlant()
 context = plant.CreateDefaultContext()
 
-dircol = DirectCollocation(plant, context, num_time_samples=21,
+dircol = DirectCollocation(plant, context, num_time_samples=25,
                            minimum_timestep=0.05, maximum_timestep=0.2)
 
 dircol.AddEqualTimeIntervalsConstraints()
@@ -45,17 +45,19 @@ initial_x_trajectory = \
                                                         final_state)))
 dircol.SetInitialTrajectory(PiecewisePolynomial(), initial_x_trajectory)
 
-result = dircol.Solve()
-assert(result == SolutionResult.kSolutionFound)
+result = Solve(dircol)
+print(result.get_solver_id().name())
+print(result.get_solution_result())
+assert(result.is_success())
 
-x_trajectory = dircol.ReconstructStateTrajectory()
+x_trajectory = dircol.ReconstructStateTrajectory(result)
 
 tree = RigidBodyTree(FindResource("acrobot/acrobot.urdf"),
                      FloatingBaseType.kFixed)
 vis = PlanarRigidBodyVisualizer(tree, xlim=[-4., 4.], ylim=[-4., 4.])
 ani = vis.animate(x_trajectory, repeat=True)
 
-u_trajectory = dircol.ReconstructInputTrajectory()
+u_trajectory = dircol.ReconstructInputTrajectory(result)
 times = np.linspace(u_trajectory.start_time(), u_trajectory.end_time(), 100)
 u_lookup = np.vectorize(u_trajectory.value)
 u_values = u_lookup(times)

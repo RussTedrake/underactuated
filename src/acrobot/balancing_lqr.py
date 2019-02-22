@@ -69,8 +69,6 @@ if __name__ == "__main__":
     simulator.set_publish_every_time_step(False)
     context = simulator.get_mutable_context()
 
-    state = context.get_mutable_continuous_state_vector()
-
     parser = argparse.ArgumentParser()
     parser.add_argument("-N", "--trials",
                         type=int,
@@ -84,6 +82,6 @@ if __name__ == "__main__":
 
     for i in range(args.trials):
         context.set_time(0.)
-        state.SetFromVector(UprightState().CopyToVector() +
-                            0.05*np.random.randn(4,))
+        context.SetContinuousState(UprightState().CopyToVector() +
+                                   0.05*np.random.randn(4,))
         simulator.StepTo(args.duration)
