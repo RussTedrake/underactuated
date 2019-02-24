@@ -2,6 +2,16 @@
 find_package(PythonInterp REQUIRED)
 find_program(PYCODESTYLE_EXECUTABLE pycodestyle REQUIRED)  # pip install pycodestyle
 
+function(add_pystyle_test pyfile)
+
+  get_filename_component(pydir ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+
+  add_test(NAME ${pydir}_${pyfile}_pycodestyle
+           COMMAND "${PYCODESTYLE_EXECUTABLE}" --count --show-source ${pyfile}
+           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+endfunction(add_pystyle_test)
+
 function(add_pytest pyfile)
 
   get_filename_component(pydir ${CMAKE_CURRENT_SOURCE_DIR} NAME)
@@ -16,9 +26,7 @@ function(add_pytest pyfile)
                  "PYTHONPATH=${PYTHONPATH}"
               )
 
-  add_test(NAME ${pydir}_${pyfile}_pycodestyle
-           COMMAND "${PYCODESTYLE_EXECUTABLE}" --count --show-source ${pyfile}
-           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+  add_pystyle_test(${pyfile})
 
 endfunction(add_pytest)
 
@@ -42,6 +50,7 @@ add_subdirectory(double_integrator)
 add_subdirectory(double_pendulum)
 add_subdirectory(lyapunov)
 add_subdirectory(pendulum)
+add_subdirectory(quadrotor2d)
 add_subdirectory(rimless_wheel)
 add_subdirectory(simple)
 add_subdirectory(van_der_pol)
