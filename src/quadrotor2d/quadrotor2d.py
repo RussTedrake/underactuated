@@ -47,7 +47,7 @@ def Quadrotor2D_(T):
             qddot = np.array([-np.sin(q[2])/self.mass*(u[0] + u[1]),
                               np.cos(x[2])/self.mass*(u[0] + u[1])
                               - self.gravity,
-                              self.length/self.inertia*(-u[0] + u[1])])
+                              self.length/self.inertia*(u[0] - u[1])])
             derivatives.get_mutable_vector().SetFromVector(
                 np.concatenate((qdot, qddot)))
 

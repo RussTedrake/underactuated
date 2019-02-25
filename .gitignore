@@ -8,3 +8,5 @@ examples/
 venv
 
 cmake-build-debug/
+
+\.DS_Store

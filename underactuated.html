@@ -1768,6 +1768,63 @@ complete trajectory.</p>
 
   </section> <!-- end cart-pole -->
 
+  <section data-type="sect1"><h1>Quadrotors</h1>
+
+    <p>Quadrotors have become immensely popular over the last few years --
+    advances in outrunner motors from the hobby community made them powerful,
+    light-weight, and inexpensive!  They are strong enough to carry an
+    interesting payload (e.g. of sensors for mapping / photographing the
+    environment), but dynamic enough to move relatively quickly.  The most
+    interesting dynamics start showing up at higher speeds, when the propellors
+    start achieving lift from the airflow across them due to horizontal motion,
+    or when they are close enough to the ground to experience significant
+    ground-effect, but we won't try to capture those effects (yet) here.</p>
+
+    <p>When the quadrotor revolution started to happen, I predicted that it
+    would be followed quickly by a realization that fixed-wing vehicles are
+    better for most applications.  Propellors are almost optimally efficient
+    for producing thrust -- making quadrotors very efficient for hovering --
+    but to be efficient in forward flight you probably want to have an airfoil.
+    Wings are a really good idea!  But I was wrong -- quadrotors have
+    completely dominated fixed-wings for commercial UAVs.  Perhaps it's only
+    because they are easier to control?  Maybe there is still hope...</p>
+
+    <section data-type="sect2"><h1>The Planar Quadrotor</h1>
+
+      <p>We can get started with an extremely simple model of a quadrotor that
+      is restricted to live in the plane.  In that case, it actually only needs
+      two propellors, but calling it a "birotor" doesn't have the same ring to
+      it.  The equations of motion are almost trivial, since it is only a
+      single rigid body, and certainly fit into our standard manipulator
+      equations:
+        \begin{gather*}
+        m \ddot{x} = (u_1 + u_2)\sin\theta, \\
+        m \ddot{y} = (u_1 + u_2)\cos\theta - mg, \\
+        I \ddot\theta = l u_1 - l u_2
+        \end{gather*}
+      </p>
+
+      <figure> <img width="50%" data-src="figures/quadrotor2d.svg"/>
+      <figcaption>The Planar Quadrotor System (which we also refer to as
+      "Quadrotor2D").  The model parameters are mass, $m$, moment of inertia,
+      $I$, and the distance from the center to the base of the propellor, $l$.
+      </figcaption> </figure>
+
+
+    </section>
+
+    <section data-type="sect2"><h1>The Full 3D Quadrotor</h1>
+
+      <p>See <code>drake/examples/Quadrotor</code>.  Will fill in the text
+      description/derivation here soon!  The most interesting part is that the
+      model needs to include the moment produced by the rotating props,
+      otherwise the system linearized about the hovering configuration is
+      actually not controllable.</p>
+
+    </section>
+
+  </section> <!-- end quadrotor2d -->
+
   <section data-type="sect1"><h1>Balancing</h1>
 
     <p> For both the Acrobot and the Cart-Pole systems, we will begin by
@@ -2064,12 +2121,16 @@ complete trajectory.</p>
 
       <p>LQR works essentially out of the box for Quadrotors, if linearized
       around a nominal fixed point (where the non-zero thrust from the
-      propellers is balancing gravity).  We have code for the standard Quadrotor
-      model in <drake></drake>, and for <a
+      propellers is balancing gravity).</p>
+
+      <pysrc>quadrotor2d/lqr.py</pysrc>
+
+      <p>We have code for the standard 3D Quadrotor model in <drake></drake>,
+      and for <a
       href="https://github.com/RobotLocomotion/drake/blob/master/examples/quadrotor/run_quadrotor_lqr.cc">stabilizing
-      it with LQR</a>.  I'll include them again here as soon as I figure out how
-      to distribute a 3D visualizer with the binary releases of
-      <drake></drake>.</p>
+      it with LQR</a>.  I'll include them again here as soon as I add support
+      for meshcat visualization (since drake_visualizer doesn't ship with the
+      binary release of drake).</p>
 
       <todo>Add the LQR examples.</todo>
 
