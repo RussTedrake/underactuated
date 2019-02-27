@@ -2072,26 +2072,27 @@ complete trajectory.</p>
       We have to pick one.</p>
 
       <p> The tools for controller design in linear systems are very advanced.
-      In particular, as we describe in the <a href="?chapter=lqr">linear optimal
-      control chapter</a>, one can easily design an optimal feedback controller
-      for a regulation task like balancing, so long as we are willing to
-      linearize the system around the operating point and define optimality in
-      terms of a quadratic cost function: $$J(\bx_0) = \int_0^\infty \left[
-      \bx^T(t) \bQ \bx(t) + \bu^T(t) \bR \bu(t) \right]dt, \quad \bx(0)=\bx_0,
-      \bQ=\bQ^T>0, \bR=\bR^T>0.$$ The linear feedback matrix $\bK$ used as
-      $$\bu(t) = - \bK\bx(t),$$ is the so-called optimal linear quadratic
-      regulator (LQR).  Even without understanding the detailed derivation, we
-      can quickly become practitioners of LQR. <drake></drake> provides a
-      function, <code>K = LinearQuadraticRegulator(system,context,Q,R)</code>
-      for linear systems.  It also provides a version <code>controller =
-      LinearQuadraticRegulator(system,context,Q,R)</code> that will linearize
-      the system for you around an equilibrium and return the controller (in the
-      original coordinates).  Therefore, to use LQR, one simply needs to define
-      the symmetric positive-definite cost matrices, ${\bf Q}$ and ${\bf R}$. In
-      their most common form, ${\bf Q}$ and ${\bf R}$ are positive diagonal
-      matrices, where the entries $Q_{ii}$ penalize the relative errors in state
-      variable $x_i$ compared to the other state variables, and the entries
-      $R_{ii}$ penalize actions in $u_i$.</p>
+      In particular, as we describe in the <a href="?chapter=lqr">linear
+      optimal control chapter</a>, one can easily design an optimal feedback
+      controller for a regulation task like balancing, so long as we are
+      willing to linearize the system around the operating point and define
+      optimality in terms of a quadratic cost function: $$J(\bx_0) =
+      \int_0^\infty \left[ \bx^T(t) \bQ \bx(t) + \bu^T(t) \bR \bu(t) \right]dt,
+      \quad \bx(0)=\bx_0, \bQ=\bQ^T>0, \bR=\bR^T>0.$$ The linear feedback
+      matrix $\bK$ used as $$\bu(t) = - \bK\bx(t),$$ is the so-called optimal
+      linear quadratic regulator (LQR).  Even without understanding the
+      detailed derivation, we can quickly become practitioners of LQR.
+      <drake></drake> provides a function, <blockquote><code>K =
+      LinearQuadraticRegulator(A, B, Q, R)</code></blockquote> for linear
+      systems.  It also provides a version <blockquote><code>controller =
+      LinearQuadraticRegulator(system, context, Q, R)</code></blockquote> that
+      will linearize the system for you around an equilibrium and return the
+      controller (in the original coordinates).  Therefore, to use LQR, one
+      simply needs to define the symmetric positive-definite cost matrices,
+      ${\bf Q}$ and ${\bf R}$. In their most common form, ${\bf Q}$ and ${\bf
+      R}$ are positive diagonal matrices, where the entries $Q_{ii}$ penalize
+      the relative errors in state variable $x_i$ compared to the other state
+      variables, and the entries $R_{ii}$ penalize actions in $u_i$.</p>
 
       <div data-type="example" class="drake"><h1>LQR for the Acrobot and Cart-Pole</h1>
 
@@ -2123,16 +2124,12 @@ complete trajectory.</p>
       around a nominal fixed point (where the non-zero thrust from the
       propellers is balancing gravity).</p>
 
+      <p>For the planar quadrotor, try:</p>
       <pysrc>quadrotor2d/lqr.py</pysrc>
 
-      <p>We have code for the standard 3D Quadrotor model in <drake></drake>,
-      and for <a
-      href="https://github.com/RobotLocomotion/drake/blob/master/examples/quadrotor/run_quadrotor_lqr.cc">stabilizing
-      it with LQR</a>.  I'll include them again here as soon as I add support
-      for meshcat visualization (since drake_visualizer doesn't ship with the
-      binary release of drake).</p>
-
-      <todo>Add the LQR examples.</todo>
+      <p>For the 3D quadrotor, try:</p> <pysrc>quadrotor/lqr.py</pysrc>
+      <p>Note: you'll need to open a web-browser to see the 3D visualization;
+      the instructions are printed to the console output </p>
 
       </div>
 
