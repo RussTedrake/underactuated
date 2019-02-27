@@ -36,32 +36,10 @@ builder.Connect(controller.get_output_port(0), plant.get_input_port(0))
 builder.Connect(plant.get_output_port(0), controller.get_input_port(0))
 
 # Set up visualization in MeshCat
-# TODO(russt): simplify this (by teaching QuadrotorPlant about SceneGraph)
-# and/or hide the details.
-
-
-class QuadrotorStateToPose(VectorSystem):
-    def __init__(self):
-        VectorSystem.__init__(self, 12, 7)
-
-    def _DoCalcVectorOutput(self, context, u, x, y):
-        y[:] = np.hstack((RollPitchYaw(u[3:6]).ToQuaternion().wxyz(), u[:3]))
-
-
 scene_graph = builder.AddSystem(SceneGraph())
-mbp = MultibodyPlant()
-mbp.RegisterAsSourceForSceneGraph(scene_graph)
-parser = Parser(mbp)
-parser.AddModelFromFile(FindResourceOrThrow(
-    "drake/examples/quadrotor/quadrotor.urdf"))
-mbp.Finalize(scene_graph)
-to_mbp_pose = builder.AddSystem(QuadrotorStateToPose())
-builder.Connect(plant.get_output_port(0), to_mbp_pose.get_input_port(0))
-to_geom_pose = builder.AddSystem(MultibodyPositionToGeometryPose(mbp))
-builder.Connect(to_mbp_pose.get_output_port(0), to_geom_pose.get_input_port())
-builder.Connect(
-    to_geom_pose.get_output_port(),
-    scene_graph.get_source_pose_port(mbp.get_source_id()))
+plant.RegisterGeometry(scene_graph)
+builder.Connect(plant.get_geometry_pose_output_port(),
+                scene_graph.get_source_pose_port(plant.source_id()))
 meshcat = builder.AddSystem(MeshcatVisualizer(
     scene_graph, zmq_url=args.meshcat,
     open_browser=args.open_browser))
