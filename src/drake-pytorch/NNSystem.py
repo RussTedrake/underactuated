@@ -221,7 +221,7 @@ def NNInferenceHelper_autodiff(network, in_vec, param_vec=np.array([]), debug=Fa
     out_vec = np.array([AutoDiffXd(out_vec[j], out_deriv_jac[j]) for j in range(n_outputs)])
     if debug: print("out_vec: ", out_vec)
 
-    return out_vec
+    return out_vec, out_in_jac, out_param_jac
 
 
 
