@@ -74,7 +74,7 @@ class SwingUpAndBalanceController(VectorSystem):
             theta = pendulum_state[0]
             thetadot = pendulum_state[1]
 
-            total_energy = TotalEnergy([theta, thetadot], self.params)
+            total_energy = TotalEnergy(pendulum_state, self.params)
             desired_energy = TotalEnergy(UprightState().CopyToVector(),
                                          self.params)
             output[:] = self.params.damping() * thetadot + \
@@ -129,11 +129,7 @@ if __name__ == "__main__":
 
     diagram = builder.Build()
     simulator = Simulator(diagram)
-#    simulator.set_target_realtime_rate(1.0)
-#    simulator.set_publish_every_time_step(False)
     context = simulator.get_mutable_context()
-
-    state = context.get_mutable_continuous_state_vector()
 
     parser = argparse.ArgumentParser()
     parser.add_argument("-N", "--trials",
@@ -150,7 +146,7 @@ if __name__ == "__main__":
     for i in range(args.trials):
         # plt.waitforbuttonpress()
         context.set_time(0.)
-        state.SetFromVector(UprightState().CopyToVector() +
+        context.SetContinuousState(UprightState().CopyToVector() +
                             math.pi*np.random.randn(2,))
         simulator.StepTo(args.duration)
         ax.plot(logger.data()[0, :], logger.data()[1, :])
