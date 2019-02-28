@@ -1798,16 +1798,17 @@ complete trajectory.</p>
       single rigid body, and certainly fit into our standard manipulator
       equations:
         \begin{gather*}
-        m \ddot{x} = (u_1 + u_2)\sin\theta, \\
+        m \ddot{x} = -(u_1 + u_2)\sin\theta, \\
         m \ddot{y} = (u_1 + u_2)\cos\theta - mg, \\
-        I \ddot\theta = l u_1 - l u_2
+        I \ddot\theta = R (u_1 - u_2)
         \end{gather*}
       </p>
 
       <figure> <img width="50%" data-src="figures/quadrotor2d.svg"/>
-      <figcaption>The Planar Quadrotor System (which we also refer to as
-      "Quadrotor2D").  The model parameters are mass, $m$, moment of inertia,
-      $I$, and the distance from the center to the base of the propellor, $l$.
+      <figcaption>The Planar Quadrotor System (which we also refer to in the
+      code as "Quadrotor2D", to keep it next to "Quadrotor" in the directory
+      listing). The model parameters are mass, $m$, moment of inertia, $I$, and
+      the distance from the center to the base of the propellor, $r$.
       </figcaption> </figure>
 
 
@@ -2568,6 +2569,12 @@ complete trajectory.</p>
       other control problems. </p>
 
     </section>
+
+  </section>
+
+  <section data-type="sect1"><h1>Differential Flatness</h1>
+
+    <p>Coming soon... (presented in 2019 lecture 07).</p>
 
   </section>
 
