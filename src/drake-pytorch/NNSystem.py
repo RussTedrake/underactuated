@@ -1,7 +1,8 @@
-import numpy as np
+# Std
 import sys
-import torch
 
+# 3rd Party
+import numpy as np
 from pydrake.all import (
     AbstractValue,
     AutoDiffXd,
@@ -11,6 +12,8 @@ from pydrake.all import (
     PortDataType,
 )
 from pydrake.systems.scalar_conversion import TemplateSystem
+import torch # Import torch after pydrake
+
 
 def np_hash(np_obj):
     return hash(np_obj.to_string())
@@ -102,7 +105,7 @@ def NNSystem_(T):
                 if self.declare_params and isinstance(self.get_params()[0], AutoDiffXd):
                     # Make sure derivatives vectors have the same size.
                     assert in_vec[0].derivatives().shape == self.get_params()[0].derivatives().shape
-                out_vec = NNInferenceHelper_autodiff(self.network, in_vec, param_vec=self.get_params())
+                out_vec = NNInferenceHelper_autodiff(self.network, in_vec, param_vec=self.get_params())[0]
             else:
                 out_vec = NNInferenceHelper_double(self.network, in_vec)
 

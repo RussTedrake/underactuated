@@ -65,7 +65,7 @@ in_vec_autodiff = np.array([
     AutoDiffXd(1., [0., 1.])
 ])
 out_vec_double   = NNInferenceHelper_double(network,   in_vec_double)
-out_vec_autodiff = NNInferenceHelper_autodiff(network, in_vec_autodiff)
+out_vec_autodiff = NNInferenceHelper_autodiff(network, in_vec_autodiff)[0]
 np.testing.assert_allclose(out_vec_double, [elem.value() for elem in out_vec_autodiff])
 
 
@@ -112,7 +112,7 @@ def finite_difference_check_autodiffs(autodiff_params=False, debug=False):
             nn_loader(param_vec, network)
 
         # First, generate all the AutoDiffXd outputs.
-        out_vec = NNInferenceHelper_autodiff(network, in_vec, param_vec=param_vec, debug=debug)
+        out_vec = NNInferenceHelper_autodiff(network, in_vec, param_vec=param_vec, debug=debug)[0]
         if debug: print("param grads: ", [param.grad for param in network.parameters()])
 
         # f     : function(np.array of AutoDiffXd's) -> array of size one of AutoDiffXd
@@ -152,7 +152,7 @@ def finite_difference_check_autodiffs(autodiff_params=False, debug=False):
             return NNInferenceHelper_autodiff(network,
                                               in_vec,
                                               param_vec=param_vec,
-                                              debug=False)
+                                              debug=False)[0]
         fd_hess = np.array([finite_difference(fn, np.hstack((in_vec, param_vec)), inp_idx) for inp_idx in range(total_params)]) 
 
         # Do our comparison.
