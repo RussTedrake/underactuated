@@ -58,8 +58,8 @@ Quadrotor2D = Quadrotor2D_[None]  # Default instantiation
 
 
 class Quadrotor2DVisualizer(PyPlotVisualizer):
-    def __init__(self):
-        PyPlotVisualizer.__init__(self)
+    def __init__(self, ax=None):
+        PyPlotVisualizer.__init__(self, ax=ax)
         self._DeclareInputPort(PortDataType.kVectorValued, 6)
         self.ax.set_aspect('equal')
         self.ax.set_xlim(-2, 2)
