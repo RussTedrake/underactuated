@@ -129,18 +129,16 @@ class PlanarMultibodyVisualizer(PyPlotVisualizer):
         # order they were spawned (i.e. by body, and then by
         # order of viewPatches). Drawing the tree should update them
         # by iterating over bodies and patches in the same order.
-        self.body_fill_list = []
-        n_bodies = len(self.viewPatches)
+        self.body_fill_dict = {}
+        n_bodies = len(self.viewPatches.keys())
         tf = np.eye(4)
-        for body_i in range(n_bodies):
-            viewPatches, viewColors = self.getViewPatches(body_i, tf)
+        for full_name in self.viewPatches.keys():
+            viewPatches, viewColors = self.getViewPatches(full_name, tf)
+            self.body_fill_dict[full_name] = []
             for patch, color in zip(viewPatches, viewColors):
-                self.body_fill_list += self.ax.fill(patch[0, :],
-                                                    patch[1, :],
-                                                    zorder=0,
-                                                    edgecolor='k',
-                                                    facecolor=color,
-                                                    closed=True)
+                self.body_fill_dict[full_name] += self.ax.fill(
+                    patch[0, :], patch[1, :], zorder=0, edgecolor='k',
+                    facecolor=color, closed=True)
 
     def buildViewPatches(self, use_random_colors):
         ''' Generates view patches. self.viewPatches stores a list of
@@ -148,8 +146,8 @@ class PlanarMultibodyVisualizer(PyPlotVisualizer):
         list of 2D coordinates in counterclockwise order forming the boundary
         of a filled polygon representing a piece of visual geometry. '''
 
-        self.viewPatches = []
-        self.viewPatchColors = []
+        self.viewPatches = {}
+        self.viewPatchColors = {}
 
         mock_lcm = DrakeMockLcm()
         DispatchLoadMessage(self._scene_graph, mock_lcm)
@@ -164,7 +162,6 @@ class PlanarMultibodyVisualizer(PyPlotVisualizer):
 
         for i in range(load_robot_msg.num_links):
             link = load_robot_msg.link[i]
-            [source_name, frame_name] = self._parse_name(link.name)
 
             this_body_patches = []
             this_body_colors = []
@@ -183,7 +180,13 @@ class PlanarMultibodyVisualizer(PyPlotVisualizer):
 
                 if geom.type == geom.BOX:
                     assert geom.num_float_data == 3
-                    meshcat_geom = meshcat.geometry.Box(geom.float_data)
+
+                    # Draw a bounding box.
+                    patch = np.vstack((
+                        geom.float_data[0]/2.*np.array([1, 1, 1, 1, -1, -1, -1, -1]),
+                        geom.float_data[1]/2.*np.array([1, 1, 1, 1, -1, -1, -1, -1]),
+                        geom.float_data[2]/2.*np.array([1, 1, -1, -1, -1, -1, 1, 1])))
+
                 elif geom.type == geom.SPHERE:
                     assert geom.num_float_data == 1
                     radius = geom.float_data[0]
@@ -193,6 +196,7 @@ class PlanarMultibodyVisualizer(PyPlotVisualizer):
                                        for pt in sample_pts])
                     patch = np.transpose(patch)
                     patch *= radius
+
                 elif geom.type == geom.CYLINDER:
                     assert geom.num_float_data == 2
                     radius = geom.float_data[0]
@@ -221,18 +225,17 @@ class PlanarMultibodyVisualizer(PyPlotVisualizer):
                         patch = np.vstack((
                             radius*np.array([1, 1, 1, 1, -1, -1, -1, -1]),
                             radius*np.array([1, 1, 1, 1, -1, -1, -1, -1]),
-                            (length/2)*np.array([1, 1, -1, -1, -1, -1, 1, 1]),
-                            np.ones((1, 8))))
-
-                        # Project into body coordinates
-                        patch = np.dot(element_local_tf.GetAsMatrix4(), patch)
-                        # Project into 2D
-                        patch = np.dot(self.Tview, patch)
+                            (length/2)*np.array([1, 1, -1, -1, -1, -1, 1, 1])))
 
                 else:
                     print("UNSUPPORTED GEOMETRY TYPE {} IGNORED".format(
                         geom.type))
                     continue
+
+                patch = np.vstack((patch, np.ones((1, patch.shape[1]))))
+                patch = np.dot(element_local_tf.GetAsMatrix4(), patch)
+                # Project into 2D
+                patch = np.dot(self.Tview, patch)
 
                 # Close path if not closed
                 if (patch[:, -1] != patch[:, 0]).any():
@@ -244,27 +247,16 @@ class PlanarMultibodyVisualizer(PyPlotVisualizer):
                 else:
                     this_body_colors.append(geom.color)
 
-            self.viewPatches.append(this_body_patches)
-            self.viewPatchColors.append(this_body_colors)
+            self.viewPatches[link.name] = this_body_patches
+            self.viewPatchColors[link.name] = this_body_colors
 
-    def _parse_name(self, name):
-        # Parse name, split on the first (required) occurrence of `::` to get
-        # the source name, and let the rest be the frame name.
-        # TODO(eric.cousineau): Remove name parsing once #9128 is resolved.
-        delim = "::"
-        assert delim in name
-        pos = name.index(delim)
-        source_name = name[:pos]
-        frame_name = name[pos + len(delim):]
-        return source_name, frame_name
-
-    def getViewPatches(self, body_i, tf):
+    def getViewPatches(self, full_name, tf):
         ''' Pulls out the view patch verts for the given body index after
             applying the appropriate TF '''
         projected_tf = np.dot(np.dot(self.Tview, tf), self.Tview_pinv)
         transformed_patches = [np.dot(projected_tf, patch)[0:2]
-                               for patch in self.viewPatches[body_i]]
-        colors = self.viewPatchColors[body_i]
+                               for patch in self.viewPatches[full_name]]
+        colors = self.viewPatchColors[full_name]
         return (transformed_patches, colors)
 
     def draw(self, context):
@@ -277,30 +269,19 @@ class PlanarMultibodyVisualizer(PyPlotVisualizer):
         for frame_i in range(pose_bundle.get_num_poses()):
             # SceneGraph currently sets the name in PoseBundle as
             #    "get_source_name::frame_name".
-            [source_name, frame_name] = self._parse_name(
-                pose_bundle.get_name(frame_i))
+            full_name = pose_bundle.get_name(frame_i)
             model_id = pose_bundle.get_model_instance_id(frame_i)
-            # The MBP parsers only register the plant as a nameless source.
-            # TODO(russt): Use a more textual naming convention here?
-            self.vis[self.prefix][source_name][str(model_id)][frame_name] \
-                .set_transform(pose_bundle.get_pose(frame_i).matrix())
+
+            viewPatches, _ = self.getViewPatches(
+                full_name,
+                pose_bundle.get_pose(frame_i).matrix())
+            for i, patch in enumerate(viewPatches):
+                self.body_fill_dict[full_name][i].get_path().vertices[:, :] = np.transpose(patch)  # noqa
 
         if isinstance(context, Context):
-            positions = self.EvalVectorInput(context, 0).get_value()[0:self.rbtree.get_num_positions()]  # noqa
             self.ax.set_title('t = {:.1f}'.format(context.get_time()))
         else:
-            positions = context[0:self.rbtree.get_num_positions()]
             self.ax.set_title('')
-
-        kinsol = self.rbtree.doKinematics(positions)
-
-        body_fill_index = 0
-        for body_i in range(self.rbtree.get_num_bodies()):
-            tf = self.rbtree.relativeTransform(kinsol, 0, body_i)
-            viewPatches, _ = self.getViewPatches(body_i, tf)
-            for patch in viewPatches:
-                self.body_fill_list[body_fill_index].get_path().vertices[:, :] = np.transpose(patch)  # noqa
-                body_fill_index += 1
 
 
 def setupPendulumExample(plant):
