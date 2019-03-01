@@ -11,13 +11,10 @@ from pydrake.all import (
     DiagramBuilder, SignalLogger, Simulator, VectorSystem,
 )
 
-from NNSystemHelper import (
-    make_NN_constraint,
-)
-
-import sys, os
-sys.path.append('..')
 from networks import *
+from nn_costs_and_constraints import make_NN_constraint
+
+#import sys, os
 
 num_inputs = 1
 num_states = 4

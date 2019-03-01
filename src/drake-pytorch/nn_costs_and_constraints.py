@@ -26,7 +26,6 @@ from pydrake.examples.pendulum import PendulumPlant
 # Local
 from networks import *
 from NNSystem import NNSystem, NNInferenceHelper_autodiff
-from visualizer import PendulumVisualizer # TODO: get rid of the copy of visualizer
 
 
 # TODO:
