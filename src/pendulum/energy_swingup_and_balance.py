@@ -147,7 +147,7 @@ if __name__ == "__main__":
         # plt.waitforbuttonpress()
         context.set_time(0.)
         context.SetContinuousState(UprightState().CopyToVector() +
-                            math.pi*np.random.randn(2,))
+                                   math.pi*np.random.randn(2,))
         simulator.StepTo(args.duration)
         ax.plot(logger.data()[0, :], logger.data()[1, :])
         # plt.pause(0.001)
