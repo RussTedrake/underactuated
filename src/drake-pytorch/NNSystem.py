@@ -125,11 +125,13 @@ NNSystem = NNSystem_[None]
 
 # Helper function for loading a list of AutoDiffXd parameters into a network.
 def nn_loader(param_list, network):
+    if param_list.dtype == np.object:
+        param_list = np.array([p.value() for p in param_list])
+
     params_loaded = 0
     for param in network.parameters():
-        T_slice = np.array([param_list[i].value() for i in range(
-            params_loaded, params_loaded+param.data.nelement())])
-        param.data = torch.from_numpy( T_slice.reshape(list(param.data.size())) )
+        param_slice = np.array(param_list[params_loaded : params_loaded+param.data.nelement()])
+        param.data = torch.from_numpy( param_slice.reshape(list(param.data.size())) )
         params_loaded += param.data.nelement() 
 
 

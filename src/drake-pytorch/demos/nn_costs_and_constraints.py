@@ -25,12 +25,8 @@ from pydrake.examples.pendulum import PendulumPlant
 
 # Local
 from networks import *
-from NNSystem import NNSystem, NNInferenceHelper_autodiff
+from NNSystem import NNSystem, NNInferenceHelper_autodiff, nn_loader
 
-
-# TODO:
-# 1) get rid of set default tensor type to double?
-# Get rid of assert statements?
 
 # Return a one-hot vector of length n, with index i set.
 def one_hot(n, i):
@@ -38,20 +34,6 @@ def one_hot(n, i):
     ret[i] = 1
     return ret
 
-# Create a network
-# @param kNetConstructor: Constructor for a PyTorch Neural Network
-# @param params_list: double or AutoDiffXd list of parameter values
-def create_nn(kNetConstructor, params_list):
-    # Construct a model with params T
-    net = kNetConstructor()
-    params_loaded = 0
-    for param in net.parameters():
-        param_slice = np.array(params_list[params_loaded : params_loaded+param.data.nelement()]) \
-                .reshape(list(param.data.size()))
-        param.data = torch.from_numpy(param_slice)
-        params_loaded += param.data.nelement()
-
-    return net
 
 # This function, makes a custom constraint that can be given to a Drake MathematicalProgram.
 def make_NN_constraint(kNetConstructor, num_inputs, num_states, num_params, debug=False):
@@ -65,9 +47,10 @@ def make_NN_constraint(kNetConstructor, num_inputs, num_states, num_params, debu
         x = uxT[num_inputs:num_inputs+num_states]
         T = uxT[num_inputs+num_states:]
         
-        # Construct a model with params T
-        params_list = np.array([param.value() for param in T])
-        network = create_nn(kNetConstructor, params_list)
+        # Construct a network with params T
+        param_list = np.array([param.value() for param in T])
+        network = kNetConstructor()
+        nn_loader(param_list, network)
         out_vec, out_in_jac, out_param_jac = NNInferenceHelper_autodiff(network, x, param_vec=T, debug=debug)
            
         # Create output
@@ -148,7 +131,7 @@ def make_pendulum_dircol_prog():
     return dircol
 
 
-def make_constrained_opt(kNetConstructor):
+def make_constrained_opt(kNetConstructor, use_cost=False, use_constraint=False):
     dircol = make_pendulum_dircol_prog()
     num_samples = len(dircol.time())
     num_inputs  = len(dircol.input())
@@ -174,11 +157,13 @@ def make_constrained_opt(kNetConstructor):
     for i in range(num_samples):
         # Now let's add on the policy deviation cost... 
         constraint = make_NN_constraint(kNetConstructor, num_inputs, num_states, num_params)
-        lb         = np.array([-.0001])
-        ub         = np.array([.0001])
         var_list   = np.hstack((dircol.input(i), dircol.state(i), T))
-        dircol.AddConstraint(lambda x: [constraint(x)], lb, ub, var_list)
-        #dircol.AddCost(lambda x: constraint(x)[0]**2, var_list)
+        if use_cost:
+            dircol.AddCost(lambda x: constraint(x)[0]**2, var_list)
+        if use_constraint:
+            lb         = np.array([-.0001])
+            ub         = np.array([.0001])
+            dircol.AddConstraint(lambda x: [constraint(x)], lb, ub, var_list)
 
     return dircol
 
