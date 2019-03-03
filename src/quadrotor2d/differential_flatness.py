@@ -139,19 +139,19 @@ for t in np.linspace(0, tf, 7):
 # Draw the (imaginary) obstacles
 ax.fill(2+np.array([-.1, -.1, .1, .1, -.1]),
         1.25*np.array([0, 1, 1, 0, 0]),
-        facecolor='darkorange',
+        facecolor='darkred',
         edgecolor='k')
 ax.fill(2+np.array([-.1, -.1, .1, .1, -.1]),
         1.75+1.25*np.array([0, 1, 1, 0, 0]),
-        facecolor='darkorange',
+        facecolor='darkred',
         edgecolor='k')
 ax.fill(4+np.array([-.1, -.1, .1, .1, -.1]),
         .75*np.array([0, 1, 1, 0, 0]),
-        facecolor='darkorange',
+        facecolor='darkred',
         edgecolor='k')
 ax.fill(4+np.array([-.1, -.1, .1, .1, -.1]),
         1.25+1.75*np.array([0, 1, 1, 0, 0]),
-        facecolor='darkorange',
+        facecolor='darkred',
         edgecolor='k')
 ax.set_xlim([-1, 7])
 ax.set_ylim([-.25, 3])
