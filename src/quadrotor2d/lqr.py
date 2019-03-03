@@ -52,4 +52,5 @@ context = simulator.get_mutable_context()
 for i in range(args.trials):
     context.set_time(0.)
     context.SetContinuousState(np.random.randn(6,))
+    simulator.Initialize()
     simulator.StepTo(args.duration)

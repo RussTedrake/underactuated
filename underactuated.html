@@ -1797,11 +1797,11 @@ complete trajectory.</p>
       it.  The equations of motion are almost trivial, since it is only a
       single rigid body, and certainly fit into our standard manipulator
       equations:
-        \begin{gather*}
-        m \ddot{x} = -(u_1 + u_2)\sin\theta, \\
-        m \ddot{y} = (u_1 + u_2)\cos\theta - mg, \\
-        I \ddot\theta = R (u_1 - u_2)
-        \end{gather*}
+        \begin{gather}
+        m \ddot{x} = -(u_1 + u_2)\sin\theta, \label{eq:quad_x}\\
+        m \ddot{y} = (u_1 + u_2)\cos\theta - mg, \label{eq:quad_y}\\
+        I \ddot\theta = r (u_1 - u_2) \label{eq:quad_theta}
+        \end{gather}
       </p>
 
       <figure> <img width="50%" data-src="figures/quadrotor2d.svg"/>
@@ -2574,7 +2574,141 @@ complete trajectory.</p>
 
   <section data-type="sect1"><h1>Differential Flatness</h1>
 
-    <p>Coming soon... (presented in 2019 lecture 07).</p>
+    <p>Although the "swing up and balance" task is quite interesting for the
+    acrobot and cart-pole systems, quadrotors tend to inspire a slightly
+    different question.  First of all, stabilizing a hovering fixed point is
+    relatively easy on a quadrotor -- even our LQR controller will have an
+    extremely large region of attraction.  But people also tend to want to do
+    more with their quadrotors than just have them hover in place.  The task
+    we'll consider here is trajectory planning: how can you find a feasible
+    trajectory through state space for the quadrotor, even if there are
+    obstacles to avoid that are only known at runtime? </p>
+
+    <p>Trajectory design, and especially trajectory optimization, is a big idea
+    that we will <a href="underactuated.html?chapter=trajopt">explore more
+    thoroughly later in the text.</a>  But there is one idea that I would like
+    to present here, because in addition to being a very satisfying solution
+    for quadrotors, it is philosophically quite close to the idea of partial
+    feedback linearization.  That idea is called differential flatness.</p>
+
+    <p>One of the most important lessons from partial feedback linearization,
+    is the idea that if you have $m$ actuators, then you basically get to
+    control exactly $m$ quantities of your system.  With the "task space"
+    partial feedback linearization, we showed that these can be chosen in a
+    fairly general way.  Of course there are some requirements -- captured
+    above by the rank condition which checks for "inertial coupling".
+    Differential flatness exploits this same idea (choosing $m$ outputs), but
+    in the opposite direction.  The idea is that, for some systems, if you give
+    me a trajectory in those $m$ coordinates, it may in fact dictate what all
+    of the states/actuators must have been doing.  The fact that you can only
+    execute a subset of possible trajectories can, in this case, make
+    trajectory planning much easier!</p>
+
+    <p>Let's start with an example...</p>
+
+    <div data-type="example" class="drake"><h1>Differential flatness for
+      the Planar Quadrotor</h1>
+
+      <p>The planar quadrotor model described above has 3 degrees of freedom
+      ($x,y,\theta$) but only two actuators (one for each propellor).  My claim
+      is that, if you give me a trajectory for just the location of the center
+      of mass: $x(t), y(t), \forall t \in [t_0, t_f],$ then I will be able to
+      infer what $\theta(t)$ must be over that same interval in order to be
+      feasible.  Furthermore, I can even infer $\bu(t)$. There is one technical
+      condition required: the trajectory you give me for $x(t)$ and $y(t)$
+      needs to be continuously differentiable (four times).</p>
+
+      <p>To see this, first observe that from ($\ref{eq:quad_x}$) and
+      ($\ref{eq:quad_y}$) we have $$\frac{-m \ddot{x}}{ m \ddot{y} + mg} =
+      \frac{(u_1 + u_2)\sin\theta}{(u_1+u_2)\cos\theta} = \tan\theta.$$ In
+      words, given $\ddot{x}(t)$ and $\ddot{y}(t)$, I can solve for
+      $\theta$(t).  I can differentiate this relationship (in time) twice more
+      to obtain $\ddot\theta$.  Using ($\ref{eq:quad_theta}$) with
+      ($\ref{eq:quad_x}$) or ($\ref{eq:quad_y}$) give us two linear equations
+      for $u_1$ and $u_2$ which are easily solved.</p>
+
+      <p>Now you can see why we need the original trajectories to be smooth --
+      the solution to $\bu(t)$ depends on $\ddot\theta(t)$ which depends on
+      $\frac{d^4 x(t)}{dt^4}$ and $\frac{d^4 y(t)}{dt^4}$; we need those
+      derivatives to exist along the entire trajectory.</p>
+
+      <p>What's more -- if we ignore input limits for a moment -- <i>any</i>
+      sufficiently smooth trajectory of $x(t), y(t)$ is feasible, so if I can
+      simply find one that avoids the obstacles, then I have designed my state
+      trajectory.  As we will see, optimizing even high-degree
+      piecewise-polynomials is actually an easy problem (it works out to be a
+      quadratic program), assuming the constraints are convex.  In practice,
+      this means that once you have determined whether to go left or right
+      around the obstacles, trajectory design is easy and fast.</p>
+
+      <p>I've coded up a simple example of that for you here:</p>
+
+      <pysrc>quadrotor2d/differential_flatness.py</pysrc>
+
+      <figure> <img width="100%" data-src="figures/differential_flatness.svg"/>
+      <figcaption>Differential flatness for the planar quadrotor -- by solving
+      a simple optimization to find a smooth trajectory for $x(t)$ and $y(t)$,
+      I can back out $\theta(t)$ and even $\bu(t)$. </figcaption> </figure>
+
+    </div>
+
+    <p>The example above demonstrates that the planar quadrotor system is
+    differentially flat in the outputs $x(t)$, $y(t)$.  More generally, if we
+    have a dynamical system $$\dot{\bx} = f(\bx, \bu),$$ and we design some
+    output coordinates (essentially "task-space"): $$\bz(t) = h\left(\bx, \bu,
+    \frac{d\bu}{dt}, ..., \frac{d^k\bu}{dt^k}\right),$$ such that
+    \begin{gather*} \bx (t) = \bx\left(\bz, \frac{d\bz}{dt}, ...,
+    \frac{d^k\bz}{dt^k}\right), \\ \bu (t) = \bu\left(\bz, \frac{d\bz}{dt}, ..,
+    \frac{d^k\bz}{dt^k}\right),\end{gather*} then we say that the system $f$ is
+    differentially flat in the outputs $\bz$ <elib>Murray95</elib>.  Notice
+    that, in the general form, the flat outputs can also depend on the input
+    and it's time derivatives, but in our first example, they were a simple
+    function of the positions only.  And the requirement for showing that a
+    system is differentially flat in those outputs is to write the function
+    which solves for $\bx(t)$ and $\bu(t)$ as a function of only $\bz(t)$ and
+    its time derivatives.</p>
+
+    <p>I'm not aware of any numerical recipes for showing that a system is
+    differentially flat nor for finding potential flat outputs, but I admit I
+    haven't worked on it nor looked for those recipes.  That would be
+    interesting!  I think of differential flatness as a property that one must
+    find for your system -- typically via a little mechanical intuition and a
+    lot of algebra.  Once found, it can be very useful.</p>
+
+    <div data-type="example"><h1>Differential flatness for
+      the 3D Quadrotor</h1>
+
+      <p>Probably the most famous example of differential flatness is on
+        the full 3D quadrotors. <elib>Mellinger11</elib> showed that the 3D
+        quadrotor is differentially flat in the outputs
+        $\{x,y,z,\theta_{yaw}\}$.  And they used this, to dramatic effect,
+        to perform all sorts of acrobatics.  The resulting videos are
+        awesome (and probably deserve a lot of credit for the widespread
+        popularity of quadrotors in academia and industry over the next few
+        years).
+      </p>
+
+      <figure>
+        <iframe width="560" height="315"
+                src="https://www.youtube.com/embed/MvRTALJp8DM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <iframe width="560" height="315"
+                src="https://www.youtube.com/embed/geqip_0Vjec" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <figcaption>Aggressive quadrotor trajectories using differential
+          flatness from <elib>Mellinger11</elib>.</figcaption>
+      </figure>
+
+      <p>A few things to note about these examples, just so we also understand
+      the limitations.  First, the technique above is great for designing
+      trajectories, but additional work is required to stabilizing those
+      trajectories (we'll cover that topic in more detail later in the notes).
+      Trajectory stabilization benefits greatly from good state estimation, and
+      the examples above were all performed in a motion capture arena. Also,
+      the "simple" version of the trajectory design that is fast enough to be
+      used for flying through moving hoops is restricted to convex optimization
+      formulations -- which means one has to hard-code apriori the decisions
+      about whether to go left or right / up or down around each obstacle.</p>
+
+    </div>
 
   </section>
 
