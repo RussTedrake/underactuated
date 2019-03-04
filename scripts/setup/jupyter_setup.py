@@ -14,9 +14,9 @@ def setup_drake():
         import pydrake
     except ImportError:
         if platform.system() is 'Darwin':
-            get_ipython().system(u'!if [ ! -d "/opt/drake" ]; then curl -o drake.tar.gz https://drake-packages.csail.mit.edu/drake/continuous/drake-latest-mac.tar.gz && tar -xzf drake.tar.gz -C /opt && /opt/drake/share/drake/setup/install_prereqs; fi')
+            get_ipython().system(u'if [ ! -d "/opt/drake" ]; then curl -o drake.tar.gz https://drake-packages.csail.mit.edu/drake/continuous/drake-latest-mac.tar.gz && tar -xzf drake.tar.gz -C /opt && /opt/drake/share/drake/setup/install_prereqs; fi')
         else:
-            get_ipython().system(u'!if [ ! -d "/opt/drake" ]; then curl -o drake.tar.gz https://drake-packages.csail.mit.edu/drake/continuous/drake-latest-bionic.tar.gz && tar -xzf drake.tar.gz -C /opt && /opt/drake/share/drake/setup/install_prereqs; fi')
+            get_ipython().system(u'if [ ! -d "/opt/drake" ]; then curl -o drake.tar.gz https://drake-packages.csail.mit.edu/drake/continuous/drake-latest-bionic.tar.gz && tar -xzf drake.tar.gz -C /opt && /opt/drake/share/drake/setup/install_prereqs; fi')
         sys.path.append("/opt/drake/lib/python2.7/site-packages/")
 
 def setup_underactuated():
