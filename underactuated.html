@@ -238,6 +238,17 @@
                   pysrcTags[j].innerHTML = tmp + '</code></pre></p>';
               }
 
+              var jupyterTags = chapters[i].getElementsByTagName('jupyter');
+              for (j = 0; j < jupyterTags.length; j++) {
+                var file = jupyterTags[j].innerHTML;
+                // TODO(russt): Consider checking that the file exists.
+                var tmp =
+                        '<p><pre style="margin-left:6px; display:inline"><code>jupyter notebook src/'
+                        + file;
+                jupyterTags[j].innerHTML = tmp + '</code></pre>\n' +
+                        '&nbsp;&nbsp;<a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/src/' + file + '">\n' +
+                        '  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>';
+              }
 
 //              document.getElementById("debug_output").innerHTML="got here";
               var display_num = i;
@@ -5399,15 +5410,14 @@ with Stochasticity</h1>
         $s^2+c^2 \neq 1$.) Finally, for style points, in the code example in
         <drake></drake> we ask for exponential stability:</p>
 
-        <todo>Add python example</todo>
-        <p><b>Python version coming soon (try src/lypunov/cubic_polyonomial.py
-        if your eager).</b></p>
+        <jupyter>pendulum/global_sums_of_squares.ipynb</jupyter>
 
         <p>As always, make sure that you open up the code and take a look.  The
         result is a Lyapunov function that looks familiar (visualized as a
-        countour plot here):</p>
+        contour plot here):</p>
 
-        <div  style="text-align:center"><img data-src="figures/global_pend_V.svg" width="400px"/></div>
+        <div  style="text-align:center"><img
+                data-src="figures/pend_global_sos.svg" width="400px"/></div>
 
         <p>Aha!  Not only does the optimization finds us coefficients for the
         Lyapunov function which satisfy our Lyapunov conditions, but the result
