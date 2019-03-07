@@ -231,13 +231,14 @@
               for (j = 0; j < pysrcTags.length; j++) {
                 var file = pysrcTags[j].innerHTML;
                 // TODO(russt): Consider checking that the file exists.
-                var tmp = '<p><pre style="margin-left:6px; display:inline"><code>python <a target="_blank" href="src/'+ file + '">' + file + '</a>';
+                var tmp =
+                        '<p><pre style="margin-left:6px; display:inline"><code>python <a target="' + file +'" href="src/'+ file + '">' + file + '</a>';
                 if (pysrcTags[j].hasAttribute("args")) {
                     tmp += ' '+ pysrcTags[j].getAttribute("args");
                 }
                 pysrcTags[j].innerHTML = tmp + '</code></pre>';
                 pysrcTags[j].innerHTML +=
-                        '&nbsp;&nbsp;<a target="_blank" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/src/underactuated_scratchpad.ipynb">\n' +
+                        '&nbsp;&nbsp;<a target="scratchpad" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/src/underactuated_scratchpad.ipynb">\n' +
                         '  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>';
               }
 
@@ -245,10 +246,11 @@
               for (j = 0; j < jupyterTags.length; j++) {
                 var file = jupyterTags[j].innerHTML;
                 // TODO(russt): Consider checking that the file exists.
-                var tmp = '<p><pre style="margin-left:6px; display:inline"><code>jupyter notebook <a target="_blank" href="http://github.com/RussTedrake/underactuated/blob/master/src/' + file + '">src/'
+                var tmp =
+                        '<p><pre style="margin-left:6px; display:inline"><code>jupyter notebook <a target="' + file + '" href="http://github.com/RussTedrake/underactuated/blob/master/src/' + file + '">src/'
                         + file + '</a>';
                 jupyterTags[j].innerHTML = tmp + '</code></pre>\n' +
-                        '&nbsp;&nbsp;<a target="_blank" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/src/' + file + '">\n' +
+                        '&nbsp;&nbsp;<a target="' + file + '_colab" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/src/' + file + '">\n' +
                         '  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>';
               }
 
