@@ -243,10 +243,10 @@
                 var file = jupyterTags[j].innerHTML;
                 // TODO(russt): Consider checking that the file exists.
                 var tmp =
-                        '<p><pre style="margin-left:6px; display:inline"><code>jupyter notebook src/'
-                        + file;
+                        '<p><pre style="margin-left:6px; display:inline"><code>jupyter notebook <a target="_blank" href="http://github.com/RussTedrake/underactuated/blob/master/src/' + file + '">src/'
+                        + file + '</a>';
                 jupyterTags[j].innerHTML = tmp + '</code></pre>\n' +
-                        '&nbsp;&nbsp;<a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/src/' + file + '">\n' +
+                        '&nbsp;&nbsp;<a target="_blank" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/src/' + file + '">\n' +
                         '  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>';
               }
 
@@ -8195,10 +8195,10 @@ jupyter notebook simulator.ipynb</code></pre></div>
 
   <section data-type="sect1"><h1>Optimization software</h1>
 
-    <p>Please check out <a
-    href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/src/mathematical_program_examples.ipynb">
-    this short introduction to mathematical programming</a> in <drake></drake>.
-    </p>
+    <p>We have a short introduction to mathematical programming in
+      <drake></drake> here.</p>
+
+      <jupyter>mathematical_program_examples.ipynb</jupyter>
 
   </section>
 
