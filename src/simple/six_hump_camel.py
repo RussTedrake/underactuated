@@ -25,8 +25,6 @@ prog.AddCost(-pmin)
 result = Solve(prog)
 assert(result.is_success())
 print("Minimum value (lower bound): " + str(result.GetSolution(pmin)))
-print("Min sampled value: " + str(np.min(P)))
-
 
 
 # Now, let's plot it.
@@ -42,5 +40,7 @@ for i in range(len(xs)):
         P[i, j] = p.Evaluate({x: X[i, j], y: Y[i, j]})
 ax0.plot_surface(X, Y, P)
 ax1.contour(X, Y, P, 100)
+
+print("Minimum sampled value: " + str(np.min(P)))
 
 plt.show()
