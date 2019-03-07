@@ -401,7 +401,7 @@
   \newcommand{\subjto}{\textrm{subject to}}
   \newcommand{\minimize}{\operatorname{\textrm{minimize}}}
   \newcommand{\maximize}{\operatorname{\textrm{maximize}}}
-  \newcommand{\find}{\operatorname{\textrm{find}}}
+  \DeclareMathOperator*{\find}{find}
   \newcommand{\argmax}{\operatorname{\textrm{argmax}}}
   \newcommand{\argmin}{\operatorname{\textrm{argmin}}}
   \newcommand{\sgn}{\operatorname{\textrm{sgn}}}
@@ -5366,7 +5366,7 @@ with Stochasticity</h1>
         SOS</h1>
 
         <p>Consider the following famous non-linear function of two variables
-        (called the "six-hump-camel": $$p(x) = 4x^2 + xy - 4x^2 - 2.1x^4 + 4y^4
+        (called the "six-hump-camel": $$p(x) = 4x^2 + xy - 4y^2 - 2.1x^4 + 4y^4
         + \frac{1}{3}x^6.$$  This function has six local minima, two of them
         being global minima <elib>Henrion09a</elib>.</p>
 
@@ -5407,71 +5407,54 @@ with Stochasticity</h1>
       \sos. \end{align*}  Because this is a convex optimization, the solver will
       return a solution if one exists.</p>
 
-      <div data-type="example" class="drake"><h1>Global stability of the simple
-      pendulum via SOS</h1>
+      <div data-type="example" class="drake"><h1>Verifying a Lyapunov candidate
+        via SOS</h1>
 
-        <p> We opened this chapter using our intuition about energy to discuss
-        stability on the simple pendulum. Now we'll replace that intuition with
-        convex optimization (because it will also work for more difficult
-        systems where our intuition fails).</p>
+        <p>This example is example 7.2 from <elib>Parrilo00</elib>. Consider
+        the nonlinear system: \begin{align*} \dot{x}_0 =& -x_0 - 2x_1^2 \\
+        \dot{x}_1 =& -x_1 - x_0 x_1 - 2x_1^3,\end{align*} and the <i>fixed
+        </i> Lyapunov function $V(x) = x_0^2 + 2x_1^2$, test if $\dot{V}(x)$ is
+        negative definite.</p>
 
-        <p>But wait!  The equations of motion of the simple pendulum are not
-        polynomial, are they (they have a $\sin(\theta)$ in them)?  Actually
-        nearly all rigid-body systems can be written as polynomials given a
-        change of coordinates.  Indeed, the rigid-body-assumption is simply an
-        assumption that points on the same body stay a constant distance apart,
-        and Euclidean distance is certainly a polynomial.  For a more thorough
-        discussion see, for instance, <elib>Wampler11</elib> and
-        <elib>Sommese05</elib>.</p>
+        <p>The numerical solution can be written in a few lines of code, and
+        is a convex optimization.</p>
 
-        <p>For the purposes of this example, let's change coordinates from
-        $[\theta,\dot\theta]^T$ to $\bx = [s,c,\dot\theta]^t$, where $s \equiv
-        \sin\theta$ and $c \equiv \cos\theta$.  Then we can write the pendulum
-        dynamics as $$\dot\bx = \begin{bmatrix} c \dot\theta \\ -s \dot\theta \\
-        -\frac{1}{m l^2} \left( b \dot\theta + mgls \right) \end{bmatrix}.$$
-        </p>
-
-        <p>Now let's parameterize a Lyapunov candidate $V(s,c,\dot\theta)$ as
-        the polynomial with unknown coefficients which contains all monomials up
-        to degree 2:  $$V = \alpha_0 + \alpha_1 s + \alpha_2 c + ... \alpha_{9}
-        s^2 + \alpha_{10} sc + \alpha_{11} s\dot\theta.$$ Now we'll formulate
-        the feasibility problem: \[ \find_{\bf \alpha} \quad  \subjto \quad V
-        \sos, \quad -\dot{V} \sos.\] In fact, this is asking too much -- really
-        $\dot{V}$ only needs to be negative when $s^2+c^2=1$.  We can accomplish
-        this with the so-called <i>S-procedure</i>, which we will discuss more
-        below, and instead write \[ \find_{{\bf \alpha},\lambda} \quad  \subjto
-        \quad V \sos, \quad -\dot{V} -\lambda(\bx)(s^2+c^2-1) \sos.\] (Here
-        $\lambda(\bx)$ is another polynomial with free coefficients which the
-        optimization can use to make terms arbitrarily more positive when
-        $s^2+c^2 \neq 1$.) Finally, for style points, in the code example in
-        <drake></drake> we ask for exponential stability:</p>
-
-        <pysrc>pendulum/global_sums_of_squares.py</pysrc>
-
-        <p>As always, make sure that you open up the code and take a look.  The
-        result is a Lyapunov function that looks familiar (visualized as a
-        contour plot here):</p>
-
-        <div  style="text-align:center"><img
-                data-src="figures/pend_global_sos.svg" width="400px"/></div>
-
-        <p>Aha!  Not only does the optimization finds us coefficients for the
-        Lyapunov function which satisfy our Lyapunov conditions, but the result
-        looks a lot like mechanical energy.  In fact, the result is a little
-        better than energy... there are some small extra terms added which prove
-        exponential stability without having to invoke LaSalle's Theorem.</p>
+        <pysrc>lyapunov/verify_global_polynomial.py</pysrc>
 
       </div>
+
+      <div data-type="example" class="drake"><h1>Searching for a Lyapunov
+        function via SOS</h1>
+
+        <p>Verifying a candidate Lyapunov function is all well and good, but
+        the real excitement starts when we use optimization to <i>find</i> the
+        Lyapunov function.  In the following code, we parameterize $V(x)$ as
+        the polynomial containing all monomials up to degree 2, with the
+        coefficients as decision variables: $$V(x) = c_0 + c_1x_0 + c_2x_1 +
+        c_3x_0^2 + c_4 x_0x_1 + c_5 x_1^2.$$  We will set the scaling
+        (arbitrarily) to avoid numerical issues by setting $V(0)=0$, $V([1,0])
+        = 1$.  Then we write: \begin{align*} \find_{\bc} \ \ \subjto \ \ &
+        V\text{ is sos, } \\ & -\dot{V} \text{ is sos.}\end{align*}</p>
+
+        <pysrc>lyapunov/search_global_polynomial.py</pysrc>
+
+        <p>Up to numerical convergence tolerance, it discovers the same
+        coefficients that we chose above (zeroing out the unnecessary
+        terms).</p>
+
+      </div>
+
 
       <p>It is important to remember that there are a handful of gaps which make
       the existence of this solution a sufficient condition (for proving that
       every sub-level set of $V$ is an invariant set of $f$) instead of a
       necessary one.  First, there is no guarantee that a stable polynomial
       system can be verified using a polynomial Lyapunov function (of any
-      degree, and in fact there are known counter-examples <todo>add ref</todo>)
-      and here we are only searching over a fixed-degree polynomial.  Second,
-      even if a polynomial Lyapunov function does exist, there is a gap between
-      the SOS polynomials and the positive polynomials.</p>
+      degree, and in fact there are known counter-examples
+      <elib>Ahmadi11a</elib>) and here we are only searching over a fixed-degree
+      polynomial.  Second, even if a polynomial Lyapunov function does exist,
+      there is a gap between the SOS polynomials and the positive
+      polynomials.</p>
 
       <p>Despite these caveats, I have found this formulation to be surprisingly
       effective in practice.  Intuitively, I think that this is because there is
@@ -5767,6 +5750,62 @@ with Stochasticity</h1>
       polynomial, see <elib>Wampler11</elib>.  Looking at the Lagrangian, you
       can see that if the kinematics are polynomial, then the dynamics will be,
       too.</p>
+
+      <div data-type="example" class="drake"><h1>Global stability of the simple
+        pendulum via SOS</h1>
+
+        <p> We opened this chapter using our intuition about energy to discuss
+          stability on the simple pendulum. Now we'll replace that intuition with
+          convex optimization (because it will also work for more difficult
+          systems where our intuition fails).</p>
+
+        <p>But wait!  The equations of motion of the simple pendulum are not
+          polynomial, are they (they have a $\sin(\theta)$ in them)?  Actually
+          nearly all rigid-body systems can be written as polynomials given a
+          change of coordinates.  Indeed, the rigid-body-assumption is simply an
+          assumption that points on the same body stay a constant distance apart,
+          and Euclidean distance is certainly a polynomial.  For a more thorough
+          discussion see, for instance, <elib>Wampler11</elib> and
+          <elib>Sommese05</elib>.</p>
+
+        <p>For the purposes of this example, let's change coordinates from
+          $[\theta,\dot\theta]^T$ to $\bx = [s,c,\dot\theta]^t$, where $s \equiv
+          \sin\theta$ and $c \equiv \cos\theta$.  Then we can write the pendulum
+          dynamics as $$\dot\bx = \begin{bmatrix} c \dot\theta \\ -s \dot\theta \\
+          -\frac{1}{m l^2} \left( b \dot\theta + mgls \right) \end{bmatrix}.$$
+        </p>
+
+        <p>Now let's parameterize a Lyapunov candidate $V(s,c,\dot\theta)$ as
+          the polynomial with unknown coefficients which contains all monomials up
+          to degree 2:  $$V = \alpha_0 + \alpha_1 s + \alpha_2 c + ... \alpha_{9}
+          s^2 + \alpha_{10} sc + \alpha_{11} s\dot\theta.$$ Now we'll formulate
+          the feasibility problem: \[ \find_{\bf \alpha} \quad  \subjto \quad V
+          \sos, \quad -\dot{V} \sos.\] In fact, this is asking too much -- really
+          $\dot{V}$ only needs to be negative when $s^2+c^2=1$.  We can accomplish
+          this with the so-called <i>S-procedure</i>, which we will discuss more
+          below, and instead write \[ \find_{{\bf \alpha},\lambda} \quad  \subjto
+          \quad V \sos, \quad -\dot{V} -\lambda(\bx)(s^2+c^2-1) \sos.\] (Here
+          $\lambda(\bx)$ is another polynomial with free coefficients which the
+          optimization can use to make terms arbitrarily more positive when
+          $s^2+c^2 \neq 1$.) Finally, for style points, in the code example in
+          <drake></drake> we ask for exponential stability:</p>
+
+        <pysrc>pendulum/global_sums_of_squares.py</pysrc>
+
+        <p>As always, make sure that you open up the code and take a look.  The
+          result is a Lyapunov function that looks familiar (visualized as a
+          contour plot here):</p>
+
+        <div  style="text-align:center"><img
+            data-src="figures/pend_global_sos.svg" width="400px"/></div>
+
+        <p>Aha!  Not only does the optimization finds us coefficients for the
+          Lyapunov function which satisfy our Lyapunov conditions, but the result
+          looks a lot like mechanical energy.  In fact, the result is a little
+          better than energy... there are some small extra terms added which prove
+          exponential stability without having to invoke LaSalle's Theorem.</p>
+
+      </div>
 
       <p>In practice, you can also Taylor approximate any smooth nonlinear
       function using polynomials.  This can be an effective strategy in
