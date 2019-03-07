@@ -212,38 +212,40 @@
 
               var codeTags = chapters[i].getElementsByTagName('pysrcinclude');
               for (j = 0; j < codeTags.length; j++) {
-                  var file = 'src/' + codeTags[j].innerHTML;
-                  var xhttp = new XMLHttpRequest();
-                  xhttp.onreadystatechange = ( function (j) { return function() {
-                      if (this.readyState == 4 && this.status == 200) {
-                          var text = hljs.highlight('python',this.responseText,true)
-                          codeTags[j].innerHTML =
-                              '<div><pre><code class="python">'+text.value+'</code></pre></div>';
-                      }
-                  } })(j);
-                  xhttp.overrideMimeType('text/plain');
-                  xhttp.open('GET', file, true);
-                  // note: only works for files in or below current directory http://jquery-howto.blogspot.com/2008/12/access-to-restricted-uri-denied-code.html
-                  xhttp.send();
+                var file = 'src/' + codeTags[j].innerHTML;
+                var xhttp = new XMLHttpRequest();
+                xhttp.onreadystatechange = ( function (j) { return function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        var text = hljs.highlight('python',this.responseText,true)
+                        codeTags[j].innerHTML =
+                            '<div><pre><code class="python">'+text.value+'</code></pre></div>';
+                    }
+                } })(j);
+                xhttp.overrideMimeType('text/plain');
+                xhttp.open('GET', file, true);
+                // note: only works for files in or below current directory http://jquery-howto.blogspot.com/2008/12/access-to-restricted-uri-denied-code.html
+                xhttp.send();
               }
 
               var pysrcTags = chapters[i].getElementsByTagName('pysrc');
               for (j = 0; j < pysrcTags.length; j++) {
-                  var file = pysrcTags[j].innerHTML;
-                  // TODO(russt): Consider checking that the file exists.
-                  var tmp = '<p><pre style="margin-left:6px"><code>python <a href="src/'+ file + '">' + file + '</a>';
-                  if (pysrcTags[j].hasAttribute("args")) {
-                      tmp += ' '+ pysrcTags[j].getAttribute("args");
-                  }
-                  pysrcTags[j].innerHTML = tmp + '</code></pre></p>';
+                var file = pysrcTags[j].innerHTML;
+                // TODO(russt): Consider checking that the file exists.
+                var tmp = '<p><pre style="margin-left:6px; display:inline"><code>python <a target="_blank" href="src/'+ file + '">' + file + '</a>';
+                if (pysrcTags[j].hasAttribute("args")) {
+                    tmp += ' '+ pysrcTags[j].getAttribute("args");
+                }
+                pysrcTags[j].innerHTML = tmp + '</code></pre>';
+                pysrcTags[j].innerHTML +=
+                        '&nbsp;&nbsp;<a target="_blank" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/src/underactuated_scratchpad.ipynb">\n' +
+                        '  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>';
               }
 
               var jupyterTags = chapters[i].getElementsByTagName('jupyter');
               for (j = 0; j < jupyterTags.length; j++) {
                 var file = jupyterTags[j].innerHTML;
                 // TODO(russt): Consider checking that the file exists.
-                var tmp =
-                        '<p><pre style="margin-left:6px; display:inline"><code>jupyter notebook <a target="_blank" href="http://github.com/RussTedrake/underactuated/blob/master/src/' + file + '">src/'
+                var tmp = '<p><pre style="margin-left:6px; display:inline"><code>jupyter notebook <a target="_blank" href="http://github.com/RussTedrake/underactuated/blob/master/src/' + file + '">src/'
                         + file + '</a>';
                 jupyterTags[j].innerHTML = tmp + '</code></pre>\n' +
                         '&nbsp;&nbsp;<a target="_blank" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/src/' + file + '">\n' +
@@ -5410,7 +5412,7 @@ with Stochasticity</h1>
         $s^2+c^2 \neq 1$.) Finally, for style points, in the code example in
         <drake></drake> we ask for exponential stability:</p>
 
-        <jupyter>pendulum/global_sums_of_squares.ipynb</jupyter>
+        <pysrc>pendulum/global_sums_of_squares.py</pysrc>
 
         <p>As always, make sure that you open up the code and take a look.  The
         result is a Lyapunov function that looks familiar (visualized as a
@@ -7551,8 +7553,7 @@ export PATH=/usr/local/opt/python/libexec/bin:${PATH}</code></pre></div>
     shows you how to tell <code>matplotlib</code> to perform well in the
     notebook (including with animations).</p>
 
-    <div><pre class="highlight"><code>cd underactuated/src/double_pendulum
-jupyter notebook simulator.ipynb</code></pre></div>
+    <jupyter>double_pendulum/simulator.ipynb</jupyter>
 
   </section>
 
