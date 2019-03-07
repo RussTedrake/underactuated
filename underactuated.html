@@ -238,8 +238,8 @@
                 }
                 pysrcTags[j].innerHTML = tmp + '</code></pre>';
                 pysrcTags[j].innerHTML +=
-                        '&nbsp;&nbsp;<a target="scratchpad" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/src/underactuated_scratchpad.ipynb">\n' +
-                        '  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>';
+                        '<sidenote><a style="font-size:8pt; margin-left:50%" target="scratchpad" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/src/underactuated_scratchpad.ipynb">' +
+                        'Colab scratchpad</a></sidenote></p>';
               }
 
               var jupyterTags = chapters[i].getElementsByTagName('jupyter');
@@ -250,7 +250,7 @@
                         '<p><pre style="margin-left:6px; display:inline"><code>jupyter notebook <a target="' + file + '" href="http://github.com/RussTedrake/underactuated/blob/master/src/' + file + '">src/'
                         + file + '</a>';
                 jupyterTags[j].innerHTML = tmp + '</code></pre>\n' +
-                        '&nbsp;&nbsp;<a target="' + file + '_colab" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/src/' + file + '">\n' +
+                        '<a target="' + file + '_colab" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/src/' + file + '">\n' +
                         '  <img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open In Colab"/></a></p>';
               }
 
@@ -5357,6 +5357,38 @@ with Stochasticity</h1>
       <p>We will write optimizations using sums-of-squares constraints as \[
       p(\bx) \sos \] as shorthand for the constraint that $p(\bx) \ge 0$ for all
       $\bx$, as demonstrated by finding a sums-of-squares decomposition.</p>
+
+      <p>This is surprisingly powerful.  It allows us to use convex
+      optimization to solve what appear to be very non-convex optimization
+      problems.</p>
+
+      <div data-type="example" class="drake"><h1>Global minimization via
+        SOS</h1>
+
+        <p>Consider the following famous non-linear function of two variables
+        (called the "six-hump-camel": $$p(x) = 4x^2 + xy - 4x^2 - 2.1x^4 + 4y^4
+        + \frac{1}{3}x^6.$$  This function has six local minima, two of them
+        being global minima <elib>Henrion09a</elib>.</p>
+
+        <div  style="text-align:center"><img
+                data-src="figures/six_hump_camel.svg" width="90%"/></div>
+
+        <p>By formulating a simple sums-of-squares optimization, we can
+        actually find the minimum value of this function (technically, it is
+        only a lower bound, but in this case and many cases, it is surprisingly
+        tight) by writing: \begin{align*} \max_\lambda \ \ & \lambda \\
+        \text{s.t. } & p(x) - \lambda \text{ is sos.} \end{align*}  Go ahead
+        and play with the code (most of the lines are only for plotting; the
+        actual optimization problem is nice and simple to formulate). </p>
+
+        <pysrc>simple/six_hump_camel.py</pysrc>
+
+        <p>Note that this finds the minimum value, but does not actually
+        produce the $\bx$ value which mimimizes it.  This is possible
+        <elib>Henrion09a</elib>, but it requires examining the dual of the
+        sums-of-squares solutions (which we don't need for the goals of this
+        chapter).</p>
+      </div>
 
     </section>
 
