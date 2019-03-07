@@ -1,7 +1,6 @@
 import math
 
-from pydrake.all import (Jacobian, MathematicalProgram, SolutionResult,
-                         Variables)
+from pydrake.all import Jacobian, MathematicalProgram, Solve, Variables
 
 
 def dynamics(x):
@@ -22,11 +21,11 @@ Vdot = Jacobian([V], x).dot(dynamics(x))[0]
 prog.AddSosConstraint((V-rho) * x.dot(x) - lambda_.ToExpression() * Vdot)
 prog.AddLinearCost(-rho)
 
-result = prog.Solve()
+result = Solve(prog)
 
-assert(result == SolutionResult.kSolutionFound)
+assert(result.is_success())
 
-print("Verified that " + str(V) + " < " + str(prog.GetSolution(rho)) +
+print("Verified that " + str(V) + " < " + str(result.GetSolution(rho)) +
       " is in the region of attraction.")
 
-assert(math.fabs(prog.GetSolution(rho) - 1) < 1e-5)
+assert(math.fabs(result.GetSolution(rho) - 1) < 1e-5)
