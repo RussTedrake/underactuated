@@ -15,8 +15,7 @@ To view the text locally
 Make sure to initialize the submodules:
 
 ```
-git submodule init
-git submodule update
+git submodule update --init --recursive
 ```
 
 The textbook should then be viewable by opening `underactuated.html` in your
