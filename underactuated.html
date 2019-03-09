@@ -5132,7 +5132,6 @@ with Stochasticity</h1>
 
       </div>
 
-
       <p>It is important to remember that there are a handful of gaps which make
       the existence of this solution a sufficient condition (for proving that
       every sub-level set of $V$ is an invariant set of $f$) instead of a
@@ -5329,7 +5328,7 @@ with Stochasticity</h1>
 
       <section data-type="sect3"><h1>The S-procedure</h1>
 
-        <p> Consider a scalar polynomial, $p(\bx)$, and a semi-algebraic set
+        <p>Consider a scalar polynomial, $p(\bx)$, and a semi-algebraic set
         $g(\bx) \preceq 0$, where $g$ is a vector of polynomials.  If I can find
         a polynomial "multiplier", $\lambda(\bx)$, such that \[ p(\bx) +
         \lambda^T(\bx) g(\bx) \sos, \quad \text{and} \quad \lambda(\bx) \sos, \]
@@ -5338,6 +5337,15 @@ with Stochasticity</h1>
         $g(\bx) \le 0$, it is only harder to be positive, but when $g(\bx) > 0$,
         it is possible for the combined function to be SOS even if $p(\bx)$ is
         negative.</p>
+
+        <p>We can also handle equality constraints with only a minor
+        modification -- we no longer require the multiplier to be positive. If
+        I can find a polynomial "multiplier", $\lambda(\bx)$, such that \[
+        p(\bx) + \lambda^T(\bx) g(\bx) \sos \] then this is sufficient to
+        demonstrate that $$p(\bx)\ge 0 \quad \forall \bx \in \{ g(\bx) = 0
+        \}.$$  Here the intuition is that $\lambda(x)$ can add arbitrary
+        positive terms to help me be SOS, but those terms contribute nothing
+        precisely when $g(x)=0$.</p>
 
       </section>
 
@@ -5464,19 +5472,19 @@ with Stochasticity</h1>
         </p>
 
         <p>Now let's parameterize a Lyapunov candidate $V(s,c,\dot\theta)$ as
-          the polynomial with unknown coefficients which contains all monomials up
-          to degree 2:  $$V = \alpha_0 + \alpha_1 s + \alpha_2 c + ... \alpha_{9}
-          s^2 + \alpha_{10} sc + \alpha_{11} s\dot\theta.$$ Now we'll formulate
-          the feasibility problem: \[ \find_{\bf \alpha} \quad  \subjto \quad V
-          \sos, \quad -\dot{V} \sos.\] In fact, this is asking too much -- really
-          $\dot{V}$ only needs to be negative when $s^2+c^2=1$.  We can accomplish
-          this with the so-called <i>S-procedure</i>, which we will discuss more
-          below, and instead write \[ \find_{{\bf \alpha},\lambda} \quad  \subjto
-          \quad V \sos, \quad -\dot{V} -\lambda(\bx)(s^2+c^2-1) \sos.\] (Here
-          $\lambda(\bx)$ is another polynomial with free coefficients which the
-          optimization can use to make terms arbitrarily more positive when
-          $s^2+c^2 \neq 1$.) Finally, for style points, in the code example in
-          <drake></drake> we ask for exponential stability:</p>
+        the polynomial with unknown coefficients which contains all monomials
+        up to degree 2:  $$V = \alpha_0 + \alpha_1 s + \alpha_2 c + ...
+        \alpha_{9} s^2 + \alpha_{10} sc + \alpha_{11} s\dot\theta.$$ Now we'll
+        formulate the feasibility problem: \[ \find_{\bf \alpha} \quad  \subjto
+        \quad V \sos, \quad -\dot{V} \sos.\] In fact, this is asking too much
+        -- really $\dot{V}$ only needs to be negative when $s^2+c^2=1$.  We can
+        accomplish this with the S-procedure, and instead write \[ \find_{{\bf
+        \alpha},\lambda} \quad  \subjto \quad V \sos, \quad -\dot{V}
+        -\lambda(\bx)(s^2+c^2-1) \sos.\] (Recall that $\lambda(\bx)$ is another
+        polynomial with free coefficients which the optimization can use to
+        make terms arbitrarily more positive when $s^2+c^2 \neq 1$.) Finally,
+        for style points, in the code example in <drake></drake> we ask for
+        exponential stability:</p>
 
         <pysrc>pendulum/global_sums_of_squares.py</pysrc>
 
