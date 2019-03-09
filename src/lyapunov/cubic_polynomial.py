@@ -1,6 +1,6 @@
 import math
 
-from pydrake.all import Jacobian, MathematicalProgram, Solve, Variables
+from pydrake.all import Jacobian, MathematicalProgram, Solve
 
 
 def dynamics(x):
@@ -15,10 +15,11 @@ rho = prog.NewContinuousVariables(1, "rho")[0]
 V = x.dot(x)
 Vdot = Jacobian([V], x).dot(dynamics(x))[0]
 
-# Define the Lagrange multipliers.
-(lambda_, constraint) = prog.NewSosPolynomial(Variables(x), 4)
+# Define the Lagrange multiplier.
+lambda_ = prog.NewContinuousVariables(1, "lambda")[0]
+prog.AddConstraint(lambda_ >= 0)
 
-prog.AddSosConstraint((V-rho) * x.dot(x) - lambda_.ToExpression() * Vdot)
+prog.AddSosConstraint((V-rho) * x.dot(x) - lambda_ * Vdot)
 prog.AddLinearCost(-rho)
 
 result = Solve(prog)

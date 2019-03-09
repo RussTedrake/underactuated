@@ -5340,19 +5340,26 @@ with Stochasticity</h1>
       our purposes this gap is very small; we should remember that it exists but
       not worry about it too much for now.</p>
 
-      <p>Even better, there is quite a bit that is known about how to choose the
-      terms in ${\bf m}(\bx)$.  For example, if you give me the polynomial \[
-      p(x) = 2 - 4x + 5x^2 \] and ask if it is positive for all real $x$, I can
-      convince you that it is by producing the sums-of-squares factorization \[
-      p(x) = 1 + (1-2x)^2 + x^2, \] and I know that I can formulate the problem
-      without needing any monomials of degree greater than 1 (the square-root of
-      the degree of $p$) in my monomial vector.  In practice, what this means
-      for us is that people have authored optimization front-ends which take a
-      high-level specification with constraints on the positivity of polynomials
-      and they automatically generate the SDP problem for you, without having to
-      think about what terms should appear in ${\bf m}(\bx)$ (c.f.
-      <elib>Prajna04</elib>). This class of optimization problems is called
-      Sums-of-Squares (SOS) optimization.</p>
+      <p>Even better, there is quite a bit that is known about how to choose
+      the terms in ${\bf m}(\bx)$.  For example, if you give me the polynomial
+      \[ p(x) = 2 - 4x + 5x^2 \] and ask if it is positive for all real $x$, I
+      can convince you that it is by producing the sums-of-squares
+      factorization \[ p(x) = 1 + (1-2x)^2 + x^2, \] and I know that I can
+      formulate the problem without needing any monomials of degree greater
+      than 1 (the square-root of the degree of $p$) in my monomial vector.  In
+      practice, what this means for us is that people have authored
+      optimization front-ends which take a high-level specification with
+      constraints on the positivity of polynomials and they automatically
+      generate the SDP problem for you, without having to think about what
+      terms should appear in ${\bf m}(\bx)$ (c.f. <elib>Prajna04</elib>).
+      This class of optimization problems is called Sums-of-Squares (SOS)
+      optimization.</p>
+
+      <p>As it happens, the particular choice of ${\bf m}(\bx)$ can have a huge
+      impact on the numerics of the resulting semidefinite program (and on your
+      ability to solve it with commercial solvers). <drake></drake> implements
+      some particularly novel/advanced algorithms to make this work well
+      <elib>Permenter17</elib>.</p>
 
       <p>We will write optimizations using sums-of-squares constraints as \[
       p(\bx) \sos \] as shorthand for the constraint that $p(\bx) \ge 0$ for all
