@@ -1,3 +1,3 @@
-[submodule "MathJax"]
-	path = htmlbook/MathJax
-	url = https://github.com/mathjax/MathJax
+[submodule "htmlbook"]
+	path = htmlbook
+	url = http://github.com/RussTedrake/htmlbook
