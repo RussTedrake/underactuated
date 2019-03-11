@@ -24,7 +24,7 @@ from pydrake.all import (
     DiagramBuilder, SignalLogger, Simulator, VectorSystem,
 )
 
-from NNSystem import NNSystem, NNSystem_, NNInferenceHelper_double, NNInferenceHelper_autodiff, nn_loader
+from NNSystem import NNSystem, NNSystem_, nn_inference_double, nn_inference_autodiff, nn_loader
 from networks import FC, FCBIG, MLPSMALL, MLP
 
 
@@ -57,15 +57,15 @@ print()
 
 
 # Test 2
-# Check that only difference between NNInferenceHelper_double and NNInferenceHelper_autodiff is zero gradients.
+# Check that only difference between nn_inference_double and nn_inference_autodiff is zero gradients.
 network = FCBIG(2)
 in_vec_double = np.array([1., 1.])
 in_vec_autodiff = np.array([
     AutoDiffXd(1., [1., 0.]),
     AutoDiffXd(1., [0., 1.])
 ])
-out_vec_double   = NNInferenceHelper_double(network,   in_vec_double)
-out_vec_autodiff = NNInferenceHelper_autodiff(network, in_vec_autodiff)[0]
+out_vec_double   = nn_inference_double(network,   in_vec_double)
+out_vec_autodiff = nn_inference_autodiff(network, in_vec_autodiff)[0]
 np.testing.assert_allclose(out_vec_double, [elem.value() for elem in out_vec_autodiff])
 
 
@@ -112,7 +112,7 @@ def finite_difference_check_autodiffs(autodiff_params=False, debug=False):
             nn_loader(param_vec, network)
 
         # First, generate all the AutoDiffXd outputs.
-        out_vec = NNInferenceHelper_autodiff(network, in_vec, param_vec=param_vec, debug=debug)[0]
+        out_vec = nn_inference_autodiff(network, in_vec, param_vec=param_vec, debug=debug)[0]
         if debug: print("param grads: ", [param.grad for param in network.parameters()])
 
         # f     : function(np.array of AutoDiffXd's) -> array of size one of AutoDiffXd
@@ -142,14 +142,14 @@ def finite_difference_check_autodiffs(autodiff_params=False, debug=False):
 
         # Make Finite Difference Hessian, (n_input x n_output)
         def fn(x):
-            # Wrapper for NNInferenceHelper_autodiff that accepts a single list of gradients and
+            # Wrapper for nn_inference_autodiff that accepts a single list of gradients and
             # assigns first n_inputs to in_list, and all the rest to param_list.
             # Also creates a fresh NN using param_list.
             in_vec    = x[:n_inputs]
             param_vec = x[n_inputs:]
             if param_vec.size:
                 nn_loader(param_vec, network)
-            return NNInferenceHelper_autodiff(network,
+            return nn_inference_autodiff(network,
                                               in_vec,
                                               param_vec=param_vec,
                                               debug=False)[0]

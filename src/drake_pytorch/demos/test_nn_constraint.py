@@ -11,7 +11,7 @@ from pydrake.all import (
     DiagramBuilder, SignalLogger, Simulator, VectorSystem,
 )
 
-from networks import *
+from networks import FC, FCBIG, MLPSMALL, MLP
 from nn_costs_and_constraints import make_NN_constraint
 
 #import sys, os

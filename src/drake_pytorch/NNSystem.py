@@ -105,9 +105,9 @@ def NNSystem_(T):
                 if self.declare_params and isinstance(self.get_params()[0], AutoDiffXd):
                     # Make sure derivatives vectors have the same size.
                     assert in_vec[0].derivatives().shape == self.get_params()[0].derivatives().shape
-                out_vec = NNInferenceHelper_autodiff(self.network, in_vec, param_vec=self.get_params())[0]
+                out_vec = nn_inference_autodiff(self.network, in_vec, param_vec=self.get_params())[0]
             else:
-                out_vec = NNInferenceHelper_double(self.network, in_vec)
+                out_vec = nn_inference_double(self.network, in_vec)
 
             # Pack output
             for j in range(self.n_outputs):
@@ -135,7 +135,7 @@ def nn_loader(param_list, network):
         params_loaded += param.data.nelement() 
 
 
-def NNInferenceHelper_double(network, in_vec, debug=False):
+def nn_inference_double(network, in_vec, debug=False):
     # Ensure that all network weights are doubles.
     network = network.double()
 
@@ -158,7 +158,7 @@ def NNInferenceHelper_double(network, in_vec, debug=False):
 # This function is broken out from NNSystem and has this interface because
 # having a function like this is super helpful for creating custom MathematicalProgram
 # Costs and Cosntraints that use neural networks.
-def NNInferenceHelper_autodiff(network, in_vec, param_vec=np.array([]), debug=False):
+def nn_inference_autodiff(network, in_vec, param_vec=np.array([]), debug=False):
     # Do forward pass.
     network   = network.double()
     values    = np.array([item.value() for item in in_vec])
