@@ -24,8 +24,7 @@ from pydrake.all import (
 from pydrake.examples.pendulum import PendulumPlant
 
 # Local
-from networks import *
-from NNSystem import NNSystem, NNInferenceHelper_autodiff, nn_loader
+from NNSystem import NNSystem, nn_inference_autodiff, nn_loader
 
 
 # Return a one-hot vector of length n, with index i set.
@@ -51,7 +50,7 @@ def make_NN_constraint(kNetConstructor, num_inputs, num_states, num_params, debu
         param_list = np.array([param.value() for param in T])
         network = kNetConstructor()
         nn_loader(param_list, network)
-        out_vec, out_in_jac, out_param_jac = NNInferenceHelper_autodiff(network, x, param_vec=T, debug=debug)
+        out_vec, out_in_jac, out_param_jac = nn_inference_autodiff(network, x, param_vec=T, debug=debug)
            
         # Create output
         y_values = np.array([elem.value() for elem in out_vec])
