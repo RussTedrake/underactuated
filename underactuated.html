@@ -5541,32 +5541,27 @@ with Stochasticity</h1>
 
   <p>The big change that is going to allow us to scale to high-dimensional
   systems is that we are going to give up the goal of solving for the optimal
-  feedback controller for the entire state space, and instead attempt to find an
-  optimal control solution that is valid from only a single initial condition.
-  Instead of representing this as a feedback control function, we can represent
-  this solution as a <em>trajectory</em>, $\bx(\cdot), \bu(\cdot)$, typically
-  defined over a finite interval.  In our graph-search dynamic programming
-  algorithms, we discretized the dynamics of the system on a mesh spread across
-  the state space.  This does not scale to high-dimensional systems, and it was
-  difficult to bound the errors due to the discretization.  If we instead
-  restrict ourselves to optimizing only a single initial condition, then a
-  different discretization scheme emerges: we can discretize the state and input
-  trajectories <em>over time</em>.</p>
+  feedback controller for the entire state space, and instead attempt to find
+  an optimal control solution that is valid from only a single initial
+  condition. Instead of representing this as a feedback control function, we
+  can represent this solution as a <em>trajectory</em>, $\bx(t), \bu(t)$,
+  typically defined over a finite interval.</p>
 
   <section data-type="sect1"><h1>Problem Formulation</h1>
 
-    <p>Given an initial condition, $\bx_0$, and an input trajectory $u(t)$
+    <p>Given an initial condition, $\bx_0$, and an input trajectory $\bu(t)$
     defined over a finite interval, $t\in[t_0,t_f]$,   we can compute the
     long-term (finite-horizon) cost of executing that trajectory   using the
-    standard additive-cost optimal control objective, \[ J_{\bu(\cdot)}(\bx_0) =
-    \int_{t_0}^{t_f} g(\bx(t),\bu(t)) dt. \]  We will write the trajectory
-    optimization problem as \begin{align*} \minimize_{u(\cdot)} \quad &
+    standard additive-cost optimal control objective, \[ J_{\bu(\cdot)}(\bx_0)
+    = \int_{t_0}^{t_f} g(\bx(t),\bu(t)) dt. \]  We will write the trajectory
+    optimization problem as \begin{align*} \min_{\bu(\cdot)} \quad &
     \int_{t_0}^{t_f} g(\bx(t),\bu(t)) dt \\ \subjto \quad & \forall t,
-    \dot{\bx}(t) = f(\bx(t),\bu(t)), \\ & \bx(t_0) = \bx_0. \\ \end{align*} Some
-    trajectory optimization problems may also include additional constraints,
-    such as collision avoidance ($\bx$ can not cause the robot to be inside an
-    obstacle) or input limits (e.g. $\bu_{min} \le \bu \le \bu_{max}$ ), which
-    can be defined for all time or some subset of the trajectory.</p>
+    \dot{\bx}(t) = f(\bx(t),\bu(t)), \\ & \bx(t_0) = \bx_0. \\ \end{align*}
+    Some trajectory optimization problems may also include additional
+    constraints, such as collision avoidance ($\bx$ should not describe a state
+    where the robot's geometry overlaps with an obstacle) or input limits (e.g.
+    $\bu_{min} \le \bu \le \bu_{max}$ ), which can be defined for all time or
+    some subset of the trajectory.</p>
 
     <p> As written, the optimization above is an optimization over continuous
     trajectories.  In order to formulate this as a numerical optimization, we
@@ -5574,8 +5569,13 @@ with Stochasticity</h1>
     surprisingly, there are many different ways to write down this
     parameterization, with a variety of different properties in terms of speed,
     robustness, and accuracy of the results. We will outline just a few of the
-    most popular below.  I would recommend <elib>Betts98+Betts01</elib> for
-    additional details.</p>
+    most popular below; I would recommend <elib>Betts98+Betts01</elib> for
+    additional details.  In our graph-search dynamic programming algorithms, we
+    discretized the dynamics of the system on a mesh spread across the state
+    space; in addition to not scaling well, we also found it difficult to bound
+    the errors due to the discretization.  Now we are in the space of
+    discretizing/parameterizing over time; conveniently we know relatively much
+    more about the numerics of integration along a trajectory.</p>
 
   </section>
 
@@ -5599,7 +5599,7 @@ with Stochasticity</h1>
     solution.</p>
 
     <p>The generic formulation of a nonlinear optimization problem is     \[
-    \minimize_z c(z) \quad \subjto \quad \bphi(z) \le 0, \]     where $z$ is a
+    \min_z c(z) \quad \subjto \quad \bphi(z) \le 0, \]     where $z$ is a
     vector of <em>decision variables</em>, $c$ is a scalar <em>objective
     function</em> and $\phi$ is a vector     of <em>constraints</em>.  Note
     that, although we write $\phi \le 0$, this formulation     captures
