@@ -4796,11 +4796,11 @@ with Stochasticity</h1>
       <div data-type="theorem"><h1>LaSalle's Theorem</h1>
 
         <p>Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous. If we can
-        produce a scalar function $V(\bx)$ with continuous derivatives for which
-        over an open-subset ${\cal B}\in \mathbf{R}^n$ we have $$V(\bx) \succ
-        0,\quad \dot{V}(\bx) \preceq 0,$$ and $V(\bx)\rightarrow \infty$ as
-        $||\bx||\rightarrow \infty$, then $\bx$ will converge to the largest
-        <i>invariant set</i> where $\dot{V}(\bx) = 0$.</p>
+        produce a scalar function $V(\bx)$ with continuous derivatives for
+        which we have $$V(\bx) \succ 0,\quad \dot{V}(\bx) \preceq 0,$$ and
+        $V(\bx)\rightarrow \infty$ as $||\bx||\rightarrow \infty$, then $\bx$
+        will converge to the largest <i>invariant set</i> where $\dot{V}(\bx) =
+        0$.</p>
 
       </div>
 
@@ -4810,7 +4810,8 @@ with Stochasticity</h1>
       leave.  The "largest invariant set" need not be connected; in fact for the
       pendulum example each fixed point is an invariant set, so the largest
       invariant set is the <em>union</em> of all the fixed points of the
-      system.</p>
+      system.  There are also variants of LaSalle's Theorem which work over
+      a region.</p>
 
       <p>Finding a Lyapunov function which $\dot{V} \prec 0$ is more difficult
       than finding one that has $\dot{V} \preceq 0$.  LaSalle's theorem gives us
