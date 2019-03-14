@@ -77,8 +77,8 @@ class SwingUpAndBalanceController(VectorSystem):
             total_energy = TotalEnergy(pendulum_state, self.params)
             desired_energy = TotalEnergy(UprightState().CopyToVector(),
                                          self.params)
-            output[:] = self.params.damping() * thetadot + \
-                .1 * thetadot * (desired_energy - total_energy)
+            output[:] = self.params.damping() * thetadot - \
+                .1 * thetadot * (total_energy - desired_energy)
 
 
 def PhasePlot(pendulum):
