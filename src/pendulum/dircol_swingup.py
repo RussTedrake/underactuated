@@ -4,14 +4,17 @@ import matplotlib.pyplot as plt
 
 from pydrake.examples.pendulum import (PendulumPlant, PendulumState)
 from pydrake.all import (DirectCollocation, PiecewisePolynomial,
-                         SolutionResult)
+                         Solve)
 from visualizer import PendulumVisualizer
 
 plant = PendulumPlant()
 context = plant.CreateDefaultContext()
 
-dircol = DirectCollocation(plant, context, num_time_samples=21,
-                           minimum_timestep=0.2, maximum_timestep=0.5)
+N = 21
+max_dt = 0.5
+max_tf = N*max_dt
+dircol = DirectCollocation(plant, context, num_time_samples=N,
+                           minimum_timestep=0.05, maximum_timestep=max_dt)
 
 dircol.AddEqualTimeIntervalsConstraints()
 
@@ -47,18 +50,20 @@ initial_x_trajectory = \
                                         final_state.get_value()])
 dircol.SetInitialTrajectory(PiecewisePolynomial(), initial_x_trajectory)
 
-result = dircol.Solve()
-assert(result == SolutionResult.kSolutionFound)
+result = Solve(dircol)
+assert result.is_success()
 
-x_trajectory = dircol.ReconstructStateTrajectory()
+x_trajectory = dircol.ReconstructStateTrajectory(result)
 
-vis = PendulumVisualizer()
+fig, ax = plt.subplots(1, 2)
+
+vis = PendulumVisualizer(ax[0])
 ani = vis.animate(x_trajectory, repeat=True)
 
 x_knots = np.hstack([x_trajectory.value(t) for t in
                      np.linspace(x_trajectory.start_time(),
                                  x_trajectory.end_time(), 100)])
-plt.figure()
-plt.plot(x_knots[0, :], x_knots[1, :])
+
+ax[1].plot(x_knots[0, :], x_knots[1, :])
 
 plt.show()
