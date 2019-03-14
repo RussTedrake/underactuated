@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from pydrake.all import (DirectCollocation, FloatingBaseType,
                          PiecewisePolynomial, RigidBodyTree, RigidBodyPlant,
-                         SolutionResult)
+                         Solve)
 from underactuated import (FindResource, PlanarRigidBodyVisualizer)
 
 tree = RigidBodyTree(FindResource("cartpole/cartpole.urdf"),
@@ -41,22 +41,24 @@ initial_x_trajectory = \
                                                         final_state)))
 dircol.SetInitialTrajectory(PiecewisePolynomial(), initial_x_trajectory)
 
-result = dircol.Solve()
-assert(result == SolutionResult.kSolutionFound)
+result = Solve(dircol)
+assert result.is_success()
 
-x_trajectory = dircol.ReconstructStateTrajectory()
+x_trajectory = dircol.ReconstructStateTrajectory(result)
 
-vis = PlanarRigidBodyVisualizer(tree, xlim=[-2.5, 2.5], ylim=[-1, 2.5])
+fig, ax = plt.subplots(2, 1)
+
+vis = PlanarRigidBodyVisualizer(tree, xlim=[-1.5, 1.5], ylim=[-.5, 2],
+                                ax=ax[0])
 ani = vis.animate(x_trajectory, repeat=True)
 
-u_trajectory = dircol.ReconstructInputTrajectory()
+u_trajectory = dircol.ReconstructInputTrajectory(result)
 times = np.linspace(u_trajectory.start_time(), u_trajectory.end_time(), 100)
 u_lookup = np.vectorize(u_trajectory.value)
 u_values = u_lookup(times)
 
-plt.figure()
-plt.plot(times, u_values)
-plt.xlabel('time (seconds)')
-plt.ylabel('force (Newtons)')
+ax[1].plot(times, u_values)
+ax[1].set_xlabel('time (seconds)')
+ax[1].set_ylabel('force (Newtons)')
 
 plt.show()

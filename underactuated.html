@@ -5553,16 +5553,16 @@ with Stochasticity</h1>
     <p>Given an initial condition, $\bx_0$, and an input trajectory $\bu(t)$
     defined over a finite interval, $t\in[t_0,t_f]$,   we can compute the
     long-term (finite-horizon) cost of executing that trajectory   using the
-    standard additive-cost optimal control objective, \[ J_{\bu(\cdot)}(\bx_0)
-    = \int_{t_0}^{t_f} g(\bx(t),\bu(t)) dt. \]  We will write the trajectory
+    standard additive-cost optimal control objective, \[ J_{\bu(\cdot)}(\bx_0) =
+    \int_{t_0}^{t_f} g(\bx(t),\bu(t)) dt. \]  We will write the trajectory
     optimization problem as \begin{align*} \min_{\bu(\cdot)} \quad &
     \int_{t_0}^{t_f} g(\bx(t),\bu(t)) dt \\ \subjto \quad & \forall t,
-    \dot{\bx}(t) = f(\bx(t),\bu(t)), \\ & \bx(t_0) = \bx_0. \\ \end{align*}
-    Some trajectory optimization problems may also include additional
-    constraints, such as collision avoidance ($\bx$ should not describe a state
-    where the robot's geometry overlaps with an obstacle) or input limits (e.g.
-    $\bu_{min} \le \bu \le \bu_{max}$ ), which can be defined for all time or
-    some subset of the trajectory.</p>
+    \dot{\bx}(t) = f(\bx(t),\bu(t)), \\ & \bx(t_0) = \bx_0. \\ \end{align*} Some
+    trajectory optimization problems may also include additional constraints,
+    such as collision avoidance (e.g., where the constraint is that the signed
+    distance between the robot's geometry and the obstacles stays positive) or
+    input limits (e.g. $\bu_{min} \le \bu \le \bu_{max}$ ), which can be defined
+    for all time or some subset of the trajectory.</p>
 
     <p> As written, the optimization above is an optimization over continuous
     trajectories.  In order to formulate this as a numerical optimization, we

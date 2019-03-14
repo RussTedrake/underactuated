@@ -20,8 +20,8 @@ class PendulumVisualizer(PyPlotVisualizer):
     arm_x = np.concatenate((aw*np.sin(av-math.pi/2), aw*np.sin(av+math.pi/2)))
     arm_y = np.concatenate((aw*np.cos(av-math.pi/2), -a1+aw*np.cos(av+math.pi/2)))
 
-    def __init__(self):
-        PyPlotVisualizer.__init__(self)
+    def __init__(self, ax=None):
+        PyPlotVisualizer.__init__(self, ax=ax)
         self.set_name('pendulum_visualizer')
         self._DeclareInputPort(PortDataType.kVectorValued, 2)
 
