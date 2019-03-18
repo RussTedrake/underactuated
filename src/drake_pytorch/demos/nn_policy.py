@@ -3,8 +3,10 @@ from IPython.display import HTML
 import math
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 import time
 
+from pydrake import getDrakePath
 from pydrake.all import (
     DiagramBuilder,
     FindResourceOrThrow,
@@ -26,7 +28,7 @@ from underactuated import (
 from pydrake.examples.pendulum import PendulumPlant
 
 from NNSystem import NNSystem
-
+from networks import FC
 
 def RenderSystemWithGraphviz(system, output_file="system_view.gz"):
     ''' Renders the Drake system (presumably a diagram,
@@ -146,3 +148,7 @@ def NNTestSetupAcrobot(network=None, real_time_rate=1.0):
         simulator.StepTo(sim_duration)
         print("Stepping Complete")
 
+if __name__ == "__main__":
+    net = FC()
+    #NNTestSetupPendulum(net)
+    NNTestSetupAcrobot(net)

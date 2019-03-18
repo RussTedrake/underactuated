@@ -16,7 +16,7 @@ import torch # Import torch after pydrake
 
 
 def np_hash(np_obj):
-    return hash(np_obj.to_string())
+    return hash(np_obj.tostring())
 
 @TemplateSystem.define("NNSystem_", T_list=[float, AutoDiffXd])
 def NNSystem_(T):
@@ -73,8 +73,10 @@ def NNSystem_(T):
         def get_params(self):
             return self.params
         def set_params(self, params):
+            self.declare_params = True
             self.params = params
             self.param_hash = np_hash(self.params)
+            nn_loader(self.get_params(), self.network)
 
         def EvalOutput(self, context, output):
             '''
@@ -91,7 +93,7 @@ def NNSystem_(T):
             # or to install some callback that will do the copy when the context is changed?
             # OnContextChange(), something like that?
             if self.declare_params and np_hash(self.params) != self.param_hash:
-                nn_loader(self.get_params(), network)
+                nn_loader(self.get_params(), self.network)
 
             # Pack input
             in_vec = np.array([drake_in.GetAtIndex(i) for i in range(self.n_inputs)])
