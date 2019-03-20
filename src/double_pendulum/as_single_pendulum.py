@@ -46,7 +46,7 @@ class Controller(VectorSystem):
         # Cancel double pend dynamics and inject single pend dynamics.
         torque[:] = Cv - tauG + \
             M.dot([-self.g / length * sin(q[0]) - b * v[0],
-                   -kp * q[1] + kd * v[1]])
+                   -kp * q[1] - kd * v[1]])
 
 
 # Load the double pendulum from Universal Robot Description Format
