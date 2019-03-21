@@ -40,16 +40,17 @@ parser.add_argument("-T", "--duration",
 args = parser.parse_args()
 
 visualizer = builder.AddSystem(PlanarRigidBodyVisualizer(tree,
-                                                         xlim=[-8., 8.],
-                                                         ylim=[-4., 4.]))
+                                                         xlim=[-1., 5.],
+                                                         ylim=[-1., 2.],
+                                                         figsize_multiplier=2))
 builder.Connect(compass_gait.get_output_port(1), visualizer.get_input_port(0))
 
 diagram = builder.Build()
 simulator = Simulator(diagram)
 simulator.set_target_realtime_rate(1.0)
-simulator.set_publish_every_time_step(True)
 
 context = simulator.get_mutable_context()
+diagram.Publish(context)  # draw once to get the window open
 context.set_accuracy(1e-4)
 context.SetContinuousState([0., 0., 0.4, -2.])
 
