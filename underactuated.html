@@ -3744,18 +3744,18 @@ with Stochasticity</h1>
 
       <p> As we begin to develop theoretical and algorithmic tools for optimal
       control, we will see that some formulations are much easier to deal with
-      than others. One important example is the dramatic simplification that can
-      come from formulating objective functions using <em>additive cost</em>,
-      because they often yield recursive solutions.  In the additive cost
-      formulation, the long-term "score" for a trajectory can be written as
-      $$\int_0^T g(x(t),u(t)) dt,$$ where $g()$ is the instantaneous cost, and
-      $T$ can be either a finite real number or $\infty$.  We will call a
-      problem specification with a finite $T$ a "finite-horizon" problem, and
-      $T=\infty$ an "infinite-horizon" problem.  Problems and solutions for
-      infinite-horizon problems tend to be more elegant, but care is required to
-      make sure that the integral converges for the optimal controller
-      (typically by having an achievable goal that allows the robot to accrue
-      zero-cost).</p>
+      than others. One important example is the dramatic simplification that
+      can come from formulating objective functions using <em>additive
+      cost</em>, because they often yield recursive solutions.  In the additive
+      cost formulation, the long-term "score" for a trajectory can be written
+      as $$\int_0^T g(x(t),u(t)) dt,$$ where $g()$ is the instantaneous cost
+      (also referred to as the "running cost"), and $T$ can be either a finite
+      real number or $\infty$.  We will call a problem specification with a
+      finite $T$ a "finite-horizon" problem, and $T=\infty$ an
+      "infinite-horizon" problem.  Problems and solutions for infinite-horizon
+      problems tend to be more elegant, but care is required to make sure that
+      the integral converges for the optimal controller (typically by having an
+      achievable goal that allows the robot to accrue zero-cost).</p>
 
       <p> The quadratic cost function suggested in the double integrator example
       above is clearly written as an additive cost.  At first glance, our
@@ -3798,23 +3798,23 @@ with Stochasticity</h1>
     <p>There are many algorithms for finding (or approximating) the optimal
     path from a start to a goal on directed graphs.  In dynamic programming,
     the key insight is that we can find the shortest path from every node by
-    solving recursively for the optimal <em>cost-to-go</em> from every node to
-    the goal. One such algorithm starts by initializing an estimate
-    $\hat{J}^*=0$ for all $s_i$, then proceeds with an iterative algorithm
-    which sets \begin{equation} \hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[
-    g(s_i,a) + \hat{J}^*\left({f(s_i,a)}\right) \right].
-    \label{eq:value_update} \end{equation} In software, $\hat{J}^*$ can be
-    represented as a vector with dimension equal to the number of discrete
-    states.  This algorithm, appropriately known as <em>value iteration</em>,
-    is guaranteed to converge to the optimal cost-to-go up to a constant
-    factor, $\hat{J}^* \rightarrow J^* + c$ <elib>Bertsekas96</elib>, and in
-    practice does so rapidly. Typically the update is done in <em>batch</em> --
-    e.g. the estimate is updated for all $i$ at once -- but the
-    <em>asynchronous</em> version where states are updated one at a time is
-    also known to converge, so long as every state is eventually updated
-    infinitely often.  Assuming the graph has a goal state with a zero-cost
-    self-transition, then this cost-to-go function represents the weighted
-    shortest distance to the goal. </p>
+    solving recursively for the optimal <em>cost-to-go</em> (the cost that will
+    be accumulated when running the optimal controller) from every node to the
+    goal. One such algorithm starts by initializing an estimate $\hat{J}^*=0$
+    for all $s_i$, then proceeds with an iterative algorithm which sets
+    \begin{equation} \hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[ g(s_i,a) +
+    \hat{J}^*\left({f(s_i,a)}\right) \right]. \label{eq:value_update}
+    \end{equation} In software, $\hat{J}^*$ can be represented as a vector with
+    dimension equal to the number of discrete states.  This algorithm,
+    appropriately known as <em>value iteration</em>, is guaranteed to converge
+    to the optimal cost-to-go up to a constant factor, $\hat{J}^* \rightarrow
+    J^* + c$ <elib>Bertsekas96</elib>, and in practice does so rapidly.
+    Typically the update is done in <em>batch</em> -- e.g. the estimate is
+    updated for all $i$ at once -- but the <em>asynchronous</em> version where
+    states are updated one at a time is also known to converge, so long as
+    every state is eventually updated infinitely often.  Assuming the graph has
+    a goal state with a zero-cost self-transition, then this cost-to-go
+    function represents the weighted shortest distance to the goal. </p>
 
     <p> Value iteration is an amazingly simple algorithm, but it accomplishes
     something quite amazing: it efficiently computes the long-term cost of an
@@ -3959,9 +3959,9 @@ with Stochasticity</h1>
         without input limits) to the origin   using a quadratic cost: $$
         g(\bx,\bu) = q^2 + \dot{q}^2 + u^2. $$  I claim   (without derivation)
         that the optimal controller for this objective is $$\pi(\bx) = -q -
-        \sqrt{3}\dot{q}.$$   To convince you that this is indeed optimal, I have
-        produced   the following cost-to-go function: $$J(\bx) = \sqrt{3} q^2 +
-        2 q \dot{q} + \sqrt{3} \dot{q}^2.$$</p>
+        \sqrt{3}\dot{q}.$$   To convince you that this is indeed optimal, I
+        have produced the following cost-to-go function: $$J(\bx) = \sqrt{3}
+        q^2 + 2 q \dot{q} + \sqrt{3} \dot{q}^2.$$</p>
 
         <p>Taking \begin{gather*} \pd{J}{q} = 2\sqrt{3} q + 2\dot{q}, \qquad
         \pd{J}{\dot{q}} = 2q + 2\sqrt{3}\dot{q}, \end{gather*}   we can write
