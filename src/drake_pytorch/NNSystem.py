@@ -34,7 +34,7 @@ def NNSystem_(T):
         The user can set the context parameters to be AutoDiffXd's to calculate
         gradients w.r.t. network parameters.
         '''
-        def _construct(self, pytorch_nn_object, declare_params=False, converter=None):
+        def _construct(self, pytorch_nn_object, converter=None):
             '''
                 pytorch_nn_object: a function(inputs) -> outputs
             '''
@@ -45,14 +45,7 @@ def NNSystem_(T):
             param_dims = list(param.size() for param in pytorch_nn_object.parameters())
             self.n_inputs  = param_dims[0][-1]
             self.n_outputs = param_dims[-1][-1]
-
-            # Optionally expose parameters in Context.
-            # TODO(rverkuil): Expose bindings for DeclareNumericParameter and use that here.
-            self.declare_params = declare_params
-            self.params = np.array([])
-            if self.declare_params:
-                params = np.hstack([param.data.numpy().flatten() for param in self.network.parameters()])
-                self.set_params(params)
+            self.declare_params = False
 
             # Input Ports
             self.NN_in_input_port = \
@@ -66,17 +59,13 @@ def NNSystem_(T):
 
         # Necessary for System Scalar Conversion
         def _construct_copy(self, other, converter=None):
-            Impl._construct(
-                self, other.network, other.declare_params, converter=converter)
+            Impl._construct(self, other.network, converter=converter)
 
-        # Currently using these as a stand in until bindings for DeclareNumeriParameter is added.
-        def get_params(self):
-            return self.params
-        def set_params(self, params):
+        def DeclareNetworkParameters(self, params):
             self.declare_params = True
-            self.params = params
-            self.param_hash = np_hash(self.params)
-            nn_loader(self.get_params(), self.network)
+            self.param_hash = np_hash(params)
+            self._DeclareNumericParameter(BasicVector_[T](params))
+            nn_loader(params, self.network)
 
         def EvalOutput(self, context, output):
             '''
@@ -92,8 +81,10 @@ def NNSystem_(T):
             # TODO: there must be a more intelligent way to detect change in the context,
             # or to install some callback that will do the copy when the context is changed?
             # OnContextChange(), something like that?
-            if self.declare_params and np_hash(self.params) != self.param_hash:
-                nn_loader(self.get_params(), self.network)
+            if self.declare_params:
+                params = context.get_numeric_parameter(0).CopyToVector()
+                if np_hash(params) != self.param_hash:
+                    nn_loader(params, self.network)
 
             # Pack input
             in_vec = np.array([drake_in.GetAtIndex(i) for i in range(self.n_inputs)])
@@ -104,10 +95,13 @@ def NNSystem_(T):
             #    2) AutoDiffXd, Params are floats or not in context = Can flow derivs of inputs only.
             #    3) Double                                          = No derivs
             if isinstance(in_vec[0], AutoDiffXd):
-                if self.declare_params and isinstance(self.get_params()[0], AutoDiffXd):
+                params = context.get_numeric_parameter(0).CopyToVector()
+                if self.declare_params and isinstance(params[0], AutoDiffXd):
                     # Make sure derivatives vectors have the same size.
-                    assert in_vec[0].derivatives().shape == self.get_params()[0].derivatives().shape
-                out_vec = nn_inference_autodiff(self.network, in_vec, param_vec=self.get_params())[0]
+                    assert in_vec[0].derivatives().shape == params[0].derivatives().shape, \
+                        'Declared parameters and Input vector have different sized derivative vectors {} != {}'.format(
+                                in_vec[0].derivatives().shape, params[0].derivatives().shape)
+                out_vec = nn_inference_autodiff(self.network, in_vec, param_vec=params)[0]
             else:
                 out_vec = nn_inference_double(self.network, in_vec)
 
@@ -125,8 +119,9 @@ def NNSystem_(T):
 NNSystem = NNSystem_[None]
 
 
-# Helper function for loading a list of AutoDiffXd parameters into a network.
+# Helper function for loading a list of  parameters into a network.
 def nn_loader(param_list, network):
+    # If params are, AutoDiffXd only extract values
     if param_list.dtype == np.object:
         param_list = np.array([p.value() for p in param_list])
 
@@ -228,6 +223,8 @@ def nn_inference_autodiff(network, in_vec, param_vec=np.array([]), debug=False):
     out_vec = np.array([AutoDiffXd(out_vec[j], out_deriv_jac[j]) for j in range(n_outputs)])
     if debug: print("out_vec: ", out_vec)
 
+    #print('val: ', out_vec[0].value())
+    #print('derivs: ', out_vec[0].derivatives())
     return out_vec, out_in_jac, out_param_jac
 
 

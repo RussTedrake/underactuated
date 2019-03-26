@@ -1,3 +1,7 @@
+<!-- TODO: remove this file once PR #11009 lands. 
+This file was taken from SHA1: f8d3d0f 
+url: https://github.com/RobotLocomotion/drake/blob/4c62461/multibody/benchmarks/acrobot/acrobot.sdf -->
+
 <?xml version="1.0"?>
 <robot name='acrobot'>
 <!-- This urdf file produces a model with the default parameters documented
