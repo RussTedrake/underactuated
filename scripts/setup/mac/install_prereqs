@@ -65,6 +65,8 @@ matplotlib
 meshcat
 pycodestyle
 scipy
+torch
+torchvision
 EOF
 )
 

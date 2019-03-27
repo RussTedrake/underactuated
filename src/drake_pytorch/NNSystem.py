@@ -95,12 +95,14 @@ def NNSystem_(T):
             #    2) AutoDiffXd, Params are floats or not in context = Can flow derivs of inputs only.
             #    3) Double                                          = No derivs
             if isinstance(in_vec[0], AutoDiffXd):
-                params = context.get_numeric_parameter(0).CopyToVector()
-                if self.declare_params and isinstance(params[0], AutoDiffXd):
-                    # Make sure derivatives vectors have the same size.
-                    assert in_vec[0].derivatives().shape == params[0].derivatives().shape, \
-                        'Declared parameters and Input vector have different sized derivative vectors {} != {}'.format(
-                                in_vec[0].derivatives().shape, params[0].derivatives().shape)
+                params = np.array([])
+                if self.declare_params:
+                    params = context.get_numeric_parameter(0).CopyToVector()
+                    if isinstance(params[0], AutoDiffXd):
+                        # Make sure derivatives vectors have the same size.
+                        assert in_vec[0].derivatives().shape == params[0].derivatives().shape, \
+                            'Declared parameters and Input vector have different sized derivative vectors {} != {}'.format(
+                                    in_vec[0].derivatives().shape, params[0].derivatives().shape)
                 out_vec = nn_inference_autodiff(self.network, in_vec, param_vec=params)[0]
             else:
                 out_vec = nn_inference_double(self.network, in_vec)

@@ -70,3 +70,7 @@ curl -LO https://github.com/htacg/tidy-html5/releases/download/5.4.0/tidy-5.4.0-
 trap 'rm -f tidy-5.4.0-64bit.deb' EXIT
 echo 'b6b971534ee6bacc68a7c5f9878b0a146fbd7f50c580db76a19823e8541f92f8  tidy-5.4.0-64bit.deb' | sha256sum -c
 dpkg -i tidy-5.4.0-64bit.deb
+
+# Installation instructions from: https://pytorch.org/
+pip install https://download.pytorch.org/whl/cpu/torch-1.0.1.post2-cp27-cp27mu-linux_x86_64.whl
+pip install torchvision 
