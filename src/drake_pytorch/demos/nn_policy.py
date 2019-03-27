@@ -40,12 +40,9 @@ def RenderSystemWithGraphviz(system, output_file="system_view.gz"):
     src.render(output_file, view=False)
 
 
-def NNTestSetupPendulum(network=None, real_time_rate=1.0):
+def NNTestSetupPendulum(network=None, real_time_rate=1.0, isIpython=False):
     # Animate the resulting policy.
     builder = DiagramBuilder()
-    # tree = RigidBodyTree("/opt/underactuated/src/cartpole/cartpole.urdf",
-    #                      FloatingBaseType.kFixed)
-    # plant = RigidBodyPlant(tree)
     plant_system = builder.AddSystem(PendulumPlant())
 
 
@@ -64,7 +61,6 @@ def NNTestSetupPendulum(network=None, real_time_rate=1.0):
     wrap = builder.AddSystem(WrapTheta())
     builder.Connect(plant_system.get_output_port(0), wrap.get_input_port(0))
     vi_policy = builder.AddSystem(NNSystem(network))
-    # vi_policy = builder.AddSystem(policy)
     builder.Connect(wrap.get_output_port(0), vi_policy.get_input_port(0))
     builder.Connect(vi_policy.get_output_port(0), plant_system.get_input_port(0))
 
@@ -86,10 +82,11 @@ def NNTestSetupPendulum(network=None, real_time_rate=1.0):
     vis = PendulumVisualizer()
     ani = vis.animate(logger, repeat=True)
 
-    # plt.show()
-    # Things added to get visualizations in an ipynb
-    plt.close(vis.fig)
-    return HTML(ani.to_html5_video())
+    if isIpython:
+        plt.close(vis.fig)
+        return HTML(ani.to_html5_video())
+    else:
+        plt.show()
 
 
 def NNTestSetupAcrobot(network=None, real_time_rate=1.0):
@@ -141,7 +138,7 @@ def NNTestSetupAcrobot(network=None, real_time_rate=1.0):
         simulator = Simulator(diagram)
 
         simulator.set_publish_every_time_step(False)
-        #simulator.set_target_realtime_rate(real_time_rate)
+        simulator.set_target_realtime_rate(real_time_rate)
         simulator.Initialize()
 
         sim_duration = 15.
@@ -149,6 +146,16 @@ def NNTestSetupAcrobot(network=None, real_time_rate=1.0):
         print("Stepping Complete")
 
 if __name__ == "__main__":
-    net = FC()
-    #NNTestSetupPendulum(net)
-    NNTestSetupAcrobot(net)
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("plant", type=str, choices=["pendulum", "acrobot"],
+                        help="Plant to drive with an NNSystem.")
+    args = parser.parse_args()
+
+    if args.plant == "pendulum":
+        net = FC(n_inputs=2)
+        NNTestSetupPendulum(net)
+    elif args.plant == "acrobot":
+        net = FC()
+        NNTestSetupAcrobot(net)
+
