@@ -1,5 +1,5 @@
 import numpy as np
-from pydrake.all import (MathematicalProgram, SolutionResult)
+from pydrake.all import MathematicalProgram, Solve
 
 A = []
 if (True):
@@ -39,10 +39,10 @@ for i in range(len(A)):
 prog.AddLinearCost(np.trace(P))
 
 # Run the optimization.
-result = prog.Solve()
+result = Solve(prog)
 
-if result == SolutionResult.kSolutionFound:
-    P = prog.GetSolution(P)
+if result.is_success():
+    P = result.GetSolution(P)
     print("eig(P) =" + str(np.linalg.eig(P)[0]))
     for i in range(len(A)):
         print("eig(Pdot" + str(i) + ") = " +

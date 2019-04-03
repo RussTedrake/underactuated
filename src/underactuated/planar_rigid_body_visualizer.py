@@ -109,9 +109,9 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
         self.Tview = Tview
         self.Tview_pinv = np.linalg.pinv(self.Tview)
 
-        self._DeclareInputPort(PortDataType.kVectorValued,
-                               self.rbtree.get_num_positions() +
-                               self.rbtree.get_num_velocities())
+        self.DeclareInputPort(PortDataType.kVectorValued,
+                              self.rbtree.get_num_positions() +
+                              self.rbtree.get_num_velocities())
 
         self.ax.axis('equal')
         self.ax.axis('off')
@@ -394,7 +394,7 @@ if __name__ == "__main__":
         # And also log
         signalLogRate = 60
         signalLogger = builder.AddSystem(SignalLogger(nx))
-        signalLogger._DeclarePeriodicPublish(1. / signalLogRate, 0.0)
+        signalLogger.DeclarePeriodicPublish(1. / signalLogRate, 0.0)
         builder.Connect(rbplant_sys.get_output_port(0),
                         signalLogger.get_input_port(0))
 

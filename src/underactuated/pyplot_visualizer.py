@@ -36,7 +36,7 @@ class PyPlotVisualizer(LeafSystem):
 
         self.set_name('pyplot_visualization')
         self.timestep = draw_timestep
-        self._DeclarePeriodicPublish(draw_timestep, 0.0)
+        self.DeclarePeriodicPublish(draw_timestep, 0.0)
 
         if ax is None:
             (self.fig, self.ax) = plt.subplots(facecolor=facecolor,
@@ -49,9 +49,8 @@ class PyPlotVisualizer(LeafSystem):
         self.ax.axis('off')
         self.fig.show()
 
-    def _DoPublish(self, context, event):
-        LeafSystem._DoPublish(self, context, event)
-        
+    def DoPublish(self, context, event):
+        LeafSystem.DoPublish(self, context, event)
         self.draw(context)
         self.fig.canvas.draw()
         plt.pause(1e-10)
@@ -107,5 +106,5 @@ class SliderSystem(VectorSystem):
     def update(self, val):
         self.value = val
 
-    def _DoCalcVectorOutput(self, context, unused, unused2, output):
+    def DoCalcVectorOutput(self, context, unused, unused2, output):
         output[:] = self.value

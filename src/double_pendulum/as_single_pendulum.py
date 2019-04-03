@@ -29,7 +29,7 @@ class Controller(VectorSystem):
         self.tree = rigid_body_tree
         self.g = gravity
 
-    def _DoCalcVectorOutput(self, context, double_pend_state, unused, torque):
+    def DoCalcVectorOutput(self, context, double_pend_state, unused, torque):
         # Extract manipulator dynamics.
         q = double_pend_state[:2]
         v = double_pend_state[-2:]

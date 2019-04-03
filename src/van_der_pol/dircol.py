@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 from pydrake.examples.van_der_pol import (VanDerPolOscillator)
 from pydrake.all import (DirectCollocation, PiecewisePolynomial,
-                         SolutionResult)
+                         Solve)
 
 plant = VanDerPolOscillator()
 context = plant.CreateDefaultContext()
@@ -47,10 +47,10 @@ def draw_trajectory(t, x):
 
 dircol.AddStateTrajectoryCallback(draw_trajectory)
 
-result = dircol.Solve()
-assert(result == SolutionResult.kSolutionFound)
+result = Solve(dircol)
+assert result.is_success()
 
-x_trajectory = dircol.ReconstructStateTrajectory()
+x_trajectory = dircol.ReconstructStateTrajectory(result)
 
 x_knots = np.hstack([x_trajectory.value(t) for t in
                      np.linspace(x_trajectory.start_time(),

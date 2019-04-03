@@ -62,7 +62,7 @@ class SwingUpAndBalanceController(VectorSystem):
         # TODO(russt): Add a witness function to tell the simulator about the
         # discontinuity when switching to LQR.
 
-    def _DoCalcVectorOutput(self, context, pendulum_state, unused, output):
+    def DoCalcVectorOutput(self, context, pendulum_state, unused, output):
 
         xbar = copy(pendulum_state)
         xbar[0] = wrap_to(xbar[0], 0, 2.*math.pi) - math.pi

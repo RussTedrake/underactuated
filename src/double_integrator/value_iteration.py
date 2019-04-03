@@ -16,15 +16,15 @@ class DoubleIntegrator(VectorSystem):
     def __init__(self):
         # One input, one output, two state variables.
         VectorSystem.__init__(self, 1, 1)
-        self._DeclareContinuousState(2)
+        self.DeclareContinuousState(2)
 
     # qqdot(t) = u(t)
-    def _DoCalcVectorTimeDerivatives(self, context, u, x, xdot):
+    def DoCalcVectorTimeDerivatives(self, context, u, x, xdot):
         xdot[0] = x[1]
         xdot[1] = u
 
     # y(t) = x(t)
-    def _DoCalcVectorOutput(self, context, u, x, y):
+    def DoCalcVectorOutput(self, context, u, x, y):
         y[:] = x
 
 

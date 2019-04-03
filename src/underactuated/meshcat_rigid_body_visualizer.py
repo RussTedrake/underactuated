@@ -58,13 +58,13 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
         LeafSystem.__init__(self)
         self.set_name('meshcat_visualization')
         self.timestep = draw_timestep
-        self._DeclarePeriodicPublish(draw_timestep, 0.0)
+        self.DeclarePeriodicPublish(draw_timestep, 0.0)
         self.rbtree = rbtree
         self.draw_collision = draw_collision
 
-        self._DeclareInputPort(PortDataType.kVectorValued,
-                               self.rbtree.get_num_positions() +
-                               self.rbtree.get_num_velocities())
+        self.DeclareInputPort(PortDataType.kVectorValued,
+                              self.rbtree.get_num_positions() +
+                              self.rbtree.get_num_velocities())
 
         # Set up meshcat
         self.prefix = prefix
@@ -134,7 +134,7 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
                     self.vis[self.prefix][body_name][str(element_i)].\
                         set_transform(element_local_tf)
 
-    def _DoPublish(self, context, event):
+    def DoPublish(self, context, event):
         self.draw(context)
 
     def draw(self, context):
@@ -339,7 +339,7 @@ if __name__ == "__main__":
         # And also log
         signalLogRate = 60
         signalLogger = builder.AddSystem(SignalLogger(nx))
-        signalLogger._DeclarePeriodicPublish(1. / signalLogRate, 0.0)
+        signalLogger.DeclarePeriodicPublish(1. / signalLogRate, 0.0)
         builder.Connect(rbplant_sys.get_output_port(0),
                         signalLogger.get_input_port(0))
 

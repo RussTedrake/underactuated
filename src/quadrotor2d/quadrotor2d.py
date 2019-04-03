@@ -19,12 +19,12 @@ def Quadrotor2D_(T):
         def _construct(self, converter=None):
             LeafSystem_[T].__init__(self, converter)
             # two inputs (thrust)
-            self._DeclareVectorInputPort("u", BasicVector_[T](2))
+            self.DeclareVectorInputPort("u", BasicVector_[T](2))
             # six outputs (full state)
-            self._DeclareVectorOutputPort("x", BasicVector_[T](6),
-                                          self._CopyStateOut)
+            self.DeclareVectorOutputPort("x", BasicVector_[T](6),
+                                         self.CopyStateOut)
             # three positions, three velocities
-            self._DeclareContinuousState(3, 3, 0)
+            self.DeclareContinuousState(3, 3, 0)
 
             # parameters based on [Bouadi, Bouchoucha, Tadjine, 2007]
             self.length = 0.25      # length of rotor arm
@@ -35,11 +35,11 @@ def Quadrotor2D_(T):
         def _construct_copy(self, other, converter=None):
             Impl._construct(self, converter=converter)
 
-        def _CopyStateOut(self, context, output):
+        def CopyStateOut(self, context, output):
             x = context.get_continuous_state_vector().CopyToVector()
             y = output.SetFromVector(x)
 
-        def _DoCalcTimeDerivatives(self, context, derivatives):
+        def DoCalcTimeDerivatives(self, context, derivatives):
             x = context.get_continuous_state_vector().CopyToVector()
             u = self.EvalVectorInput(context, 0).CopyToVector()
             q = x[:3]
@@ -60,7 +60,7 @@ Quadrotor2D = Quadrotor2D_[None]  # Default instantiation
 class Quadrotor2DVisualizer(PyPlotVisualizer):
     def __init__(self, ax=None):
         PyPlotVisualizer.__init__(self, ax=ax)
-        self._DeclareInputPort(PortDataType.kVectorValued, 6)
+        self.DeclareInputPort(PortDataType.kVectorValued, 6)
         self.ax.set_aspect('equal')
         self.ax.set_xlim(-2, 2)
         self.ax.set_ylim(-1, 1)
