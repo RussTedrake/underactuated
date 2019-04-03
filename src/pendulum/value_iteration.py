@@ -109,7 +109,7 @@ class WrapTheta(VectorSystem):
     def __init__(self):
         VectorSystem.__init__(self, 2, 2)
 
-    def _DoCalcVectorOutput(self, context, input, state, output):
+    def DoCalcVectorOutput(self, context, input, state, output):
         output[:] = input
         twoPI = 2.*math.pi
         output[0] = output[0] - twoPI * math.floor(output[0] / twoPI)
@@ -122,7 +122,7 @@ builder.Connect(wrap.get_output_port(0), vi_policy.get_input_port(0))
 builder.Connect(vi_policy.get_output_port(0), pendulum.get_input_port(0))
 
 logger = builder.AddSystem(SignalLogger(2))
-logger._DeclarePeriodicPublish(0.033333, 0.0)
+logger.DeclarePeriodicPublish(0.033333, 0.0)
 builder.Connect(pendulum.get_output_port(0), logger.get_input_port(0))
 
 diagram = builder.Build()

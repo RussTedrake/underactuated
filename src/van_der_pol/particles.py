@@ -16,19 +16,19 @@ from underactuated.pyplot_visualizer import PyPlotVisualizer
 class VanDerPolParticles(LeafSystem):
     def __init__(self, num_particles, mu=1.0):
         LeafSystem.__init__(self)
-        self._DeclareInputPort("noise",
-                               PortDataType.kVectorValued,
-                               num_particles,
-                               RandomDistribution.kGaussian)
-        self._DeclareContinuousState(num_particles, num_particles, 0)
-        self._DeclareVectorOutputPort(BasicVector(2*num_particles),
-                                      self.CopyStateOut)
+        self.DeclareInputPort("noise",
+                              PortDataType.kVectorValued,
+                              num_particles,
+                              RandomDistribution.kGaussian)
+        self.DeclareContinuousState(num_particles, num_particles, 0)
+        self.DeclareVectorOutputPort(BasicVector(2*num_particles),
+                                     self.CopyStateOut)
         self.num_particles = num_particles
         self.mu = mu
 
     # TODO(russt):  SetRandomState to  [-0.1144;2.0578] + 0.01*randn(...)
 
-    def _DoCalcTimeDerivatives(self, context, derivatives):
+    def DoCalcTimeDerivatives(self, context, derivatives):
         # TODO(russt):  Update this to get_position/velocity once those are
         # bound.
         x = context.get_continuous_state_vector().CopyToVector()
@@ -50,7 +50,7 @@ class VanDerPolParticles(LeafSystem):
 class Particle2DVisualizer(PyPlotVisualizer):
     def __init__(self, num_particles, xlim, ylim, draw_timestep):
         PyPlotVisualizer.__init__(self, draw_timestep)
-        self._DeclareInputPort(PortDataType.kVectorValued, 2*num_particles)
+        self.DeclareInputPort(PortDataType.kVectorValued, 2*num_particles)
         self.num_particles = num_particles
         self.ax.set_xlim(xlim)
         self.ax.set_ylim(ylim)

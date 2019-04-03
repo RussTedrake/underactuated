@@ -20,15 +20,15 @@ def dynamics(x, w):
 class SimpleStochasticSystem(LeafSystem):
     def __init__(self):
         LeafSystem.__init__(self)
-        self._DeclareInputPort("noise",
-                               PortDataType.kVectorValued,
-                               1,
-                               RandomDistribution.kGaussian)
-        self._DeclareContinuousState(1)
-        self._DeclareVectorOutputPort(BasicVector(1), self.CopyStateOut)
+        self.DeclareInputPort("noise",
+                              PortDataType.kVectorValued,
+                              1,
+                              RandomDistribution.kGaussian)
+        self.DeclareContinuousState(1)
+        self.DeclareVectorOutputPort(BasicVector(1), self.CopyStateOut)
 
     # xdot(t) = x(t) - x^3(t) + w(t)
-    def _DoCalcTimeDerivatives(self, context, derivatives):
+    def DoCalcTimeDerivatives(self, context, derivatives):
         x = context.get_continuous_state_vector().GetAtIndex(0)
         w = self.EvalVectorInput(context, 0).GetAtIndex(0)
         xdot = dynamics(x, w)
@@ -46,7 +46,7 @@ class HistogramVisualizer(PyPlotVisualizer):
     def __init__(self, num_samples, bins, xlim, ylim, draw_timestep):
         PyPlotVisualizer.__init__(self, draw_timestep)
         for i in range(0, num_samples):
-            self._DeclareInputPort(PortDataType.kVectorValued, 1)
+            self.DeclareInputPort(PortDataType.kVectorValued, 1)
         self.num_samples = num_samples
         self.bins = bins
         self.data = array.array('d', (0,)*num_samples)

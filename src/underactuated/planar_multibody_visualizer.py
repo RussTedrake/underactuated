@@ -97,8 +97,8 @@ class PlanarMultibodyVisualizer(PyPlotVisualizer):
         self.Tview_pinv = np.linalg.pinv(self.Tview)
 
         # Pose bundle (from SceneGraph) input port.
-        self._DeclareAbstractInputPort("lcm_visualization",
-                                       AbstractValue.Make(PoseBundle(0)))
+        self.DeclareAbstractInputPort("lcm_visualization",
+                                      AbstractValue.Make(PoseBundle(0)))
 
         self.ax.axis('equal')
         self.ax.axis('off')
