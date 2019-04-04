@@ -24,6 +24,7 @@ dircol.AddLinearConstraint(
 dircol.AddLinearConstraint(
     dircol.final_state()[1] == dircol.initial_state()[1])
 
+# Help the solver with an initial guess (circular trajectory).
 samples = np.linspace(0, 2*math.pi, 10)
 x_guess = np.vstack(([2*math.sin(t) for t in samples],
                      [2*math.cos(t) for t in samples]))
