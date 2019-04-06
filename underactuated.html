@@ -5746,40 +5746,69 @@ with Stochasticity</h1>
 
     </section> <!-- end dirtran -->
 
-    <section data-type="sect2"><h1>Direct Collocation</h1>
+    <section data-type="sect2" id="direct_collocation"><h1>Direct
+    Collocation</h1>
 
-      <p> In direct collocation (c.f., <elib>Hargraves87</elib>), both the input
-      trajectory and the state trajectory are   represented explicitly as
-      piecewise polynomial functions.  In particular, the sweet   spot for this
-      algorithm is taking $\bu(t)$ to be a first-order polynomial -- allowing it
-      to   be completely defined by the values at the knot points -- and
-      $\bx(t)$ to be a Hermite   cubic polynomial -- completely defined by the
-      values and derivatives at the knot points.  The state derivatives at the
-      knot points are given as a function of $\bx$ and $\bu$ by the plant
-      dynamics, so the entire spline   is completely defined by the values of
-      $\bx$ and $\bu$ at the knot points.  To add the additional constraint that
-      $\bx_{n+1}$ is dynamically consistent with $\bx_{n}$ and $\bu_{n}$, we add
-      an additional set of constraints that the derivative at a set of
-      <em>collocation points</em> also matches the plant dynamics.  For the
-      special case of cubic polynomial state trajectories and piecewise linear
-      input trajectories, the derivative at the midpoint of each segment is
-      particularly easy to compute, making it the natural choice.</p>
+      <p> In direct collocation (c.f., <elib>Hargraves87</elib>), both the
+      input trajectory and the state trajectory are represented explicitly as
+      piecewise polynomial functions.  In particular, the sweet spot for this
+      algorithm is taking $\bu(t)$ to be a first-order polynomial and $\bx(t)$
+      to be a cubic polynomial.</p>
+
+      <p>It turns out that in this sweet spot, the only decision variables we
+      need in our optimization are the values $\bu(t)$ and $\bx(t)$ at the
+      break points of the spline.  You might think that you would need the
+      coefficients of the cubic spline parameters, but you do not.  For the
+      first order interpolation on $\bu(t)$, given $\bu(t_k)$ and
+      $\bu(t_{k+1})$, we can solve for every value $\bu(t)$ over the internval
+      $t \in [k, k+1]$.  But we also have everything that we need for the cubic
+      spline: given $\bx(t_k)$ and $\bu(t_k)$, we can compute $\dot\bx(t_k) = f
+      (\bx(t_k), \bu(t_k))$; and the four values $\bx(t_k), \bx(t_{k+1}),
+      \dot\bx (t_k), \dot\bx(t_{k+1})$ completely define all of the parameters
+      of the cubic spline over the interval $t\in[k, k+1]$.  This is very
+      convenient, because it is easy for us to add additional constraints to
+      $\bu$ and $\bx$ at the knot points (and would have been relatively harder
+      to have to convert every constraint into constraints on the spline
+      coefficients.</p>
 
       <figure>
         <img width="80%" data-src="figures/dircol.svg">
         <figcaption>Cubic spline parameters used in the direct collocation method.</figcaption>
       </figure>
 
+      <p>So far, given $\dot{\bx} = f(\bx,\bu)$, a list of break points $t_0, .
+      t_N$, and arbitrary values $\bx(t_k), \bu(t_k)$, we can extract the
+      spline representation of $\bu(t)$ and $\bx(t)$.  So far we haven't added
+      any actual constraints to our mathematical program.  Now, just like in
+      direct transcription, we need a constraint that will tell the optimizer
+      how $\bx(t_{k+1})$ is related to $\bx(t_k)$, etc.  In direct collocation,
+      the constraint that we add is that the derivative of the spline at the
+      <i>collocation points</i> matches the dynamics.  In particular, for our
+      sweet spot, if we choose the collocation points to be the midpoints of
+      the spline, then we have that \begin{gather*} t_{c} =
+      \frac{1}{2}\left(t_k + t_{k+1}\right), \qquad h = t_{k+1} - t_k, \\
+      \bu(t_c) = \frac{1}{2}\left(\bu(t_k) + \bu(t_{k+1})\right), \\ \bx(t_c) =
+      \frac{1}{2}\left(\bx(t_k) + \bx(t_{k+1})\right) + \frac{h}{8}
+      \left(\dot\bx(t_k) - \dot\bx(t_{k+1})\right), \\ \dot\bx(t_c) =
+      -\frac{3}{2h}\left(\bx(t_k) - \bx(t_{k+1})\right) - \frac{1}{4}
+      \left(\dot\bx(t_k) + \dot\bx(t_{k+1})\right). \end{gather*} These
+      equations come directly from the equations that fit the cubic spline to
+      the end points/derivatives then interpolate them at the midpoint.  They
+      give us precisely what we need to add the constraint to our optimization
+      that $\dot{\bx(t_c}) = f(\bx(t_c), \bu(t_c))$, for each segment of the
+      spline.</p>
+
       <p>Once again, direct collocation effectively integrates the equations of
       motion by satisfying the constraints of the optimization -- this time
-      producing a third-order approximation of the dynamics with effectively two
-      evaluations of the plant dynamics per segment.  <elib>Hargraves87</elib>
+      producing an integration of the dynamics that is accurate to third-order
+      with effectively two evaluations of the plant dynamics per segment (since
+      we use $\dot\bx(t_k)$ for two intervals). <elib> Hargraves87</elib>
       claims, without proof, that as the break points are brought closer
       together, the trajectory will converge to a true solution of the
-      differential equation.  Once again it is very natural to add additional
-      terms to the cost function or additional input/state constraints, and very
-      easy to calculate the gradients of the objective and constraints.   I
-      personally find it very nice to explicitly account for the parametric
+      differential equation. Once again it is very natural to add additional
+      terms to the cost function or additional input/state constraints, and
+      very easy to calculate the gradients of the objective and constraints.
+      I personally find it very nice to explicitly account for the parametric
       encoding of the trajectory in the solution technique.</p>
 
       <div data-type="example" class="drake"><h1>Direct Collocation for the
@@ -5797,7 +5826,6 @@ with Stochasticity</h1>
         <pysrc>cartpole/dircol_swingup.py</pysrc>
 
         As always, make sure you take a look at the code!
-
       </div>
 
     </section> <!-- end dircol -->
