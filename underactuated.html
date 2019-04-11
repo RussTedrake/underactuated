@@ -2929,6 +2929,26 @@ of Walking and Running</h1>
     <section
         data-type="sect2"><h1>The Spring-Loaded Inverted Pendulum</h1></section>
 
+      <p>The model is a point mass, $m$, on top of a massless, springy leg with
+      rest length of $l_0$, and spring constant $k$.  The state of the system
+      is given by the $x,y$ position of the center of mass, and the length,
+      $l$, and angle $\theta$ of the leg.  Like the rimless wheel, the dynamics
+      are modeled piecewise - with one dynamics governing the flight phase, and
+      another governing the stance phase.</p>
+
+      <p>Flight Phase.  State variables: $\bx = [x,y,\dot{x},\dot{y}]^T.$
+      Dynamics are $$\dot{\bx} = \begin{bmatrix} \dot{x} \\ \dot{y} \\ 0 \\ - g
+      \end{bmatrix}.$$</p>
+
+      <p>Stance Phase. State variables: $\bx = [r, \theta, \dot{r},
+      \dot\theta]^T.$ Kinematics are $$x = \begin{bmatrix} - r \sin\theta \\ r
+      \cos\theta \end{bmatrix},$$ Energy is given by $$T = \frac{1}{2} m
+      (\dot{r}^2 + r^2 \dot\theta^2 ), \quad U = mgr\cos\theta +
+      \frac{k}{2}(r_0 - r)^2.$$ Plugging these into Lagrange yields:
+      \begin{gather} m \ddot{r} - m r \dot\theta^2 + m g \cos\theta - k (r_0 -
+      r) = 0 \\ m r^2 \ddot{\theta} + 2mr\dot{r}\dot\theta - mgr \sin\theta = 0
+      \end{gather}</p>
+
     <section
         data-type="sect2"><h1>The Planar Monopod Hopper</h1></section>
 
@@ -6748,42 +6768,37 @@ for Limit Cycles</h1>
 <section data-type="chapter" class="chapter" id="contact"><h1>Planning and
 Control through Contact</h1>
 
-  <section data-type="sect1"><h1>Modeling and Simulating Contact Dynamics</h1>
+  <p>So far we have developed a fairly strong toolbox for planning and control
+  with "smooth" systems -- systems where the equations of motion are described
+  by a function $\dot{\bx} = f(\bx,\bu)$ which is smooth everywhere.  But our
+  discussion of the simple models of legged robots illustrated that the
+  dynamics of making and breaking contact with the world are more complex --
+  these are often modeled as hybrid dynamics with impact discontinuities at the
+  collision event and constrained dynamics during contact (with either soft or
+  hard constraints).</p>
 
-    <p>There are roughly two main approaches to modeling contact between two
-    rigid bodies.  The first is to allow some penetration, and compute the
-    contact forces with stiff springs/dampers that resist the penetration.  The
-    second is to explicitly compute the contact forces required to resist
-    penetration completely.  Frictional forces can be added to both of these
-    models, typically using a Coulomb model.</p>
+  <p>My goal for this chapter is to extend our computational tools into this
+  richer class of models.  Many of our core tools still work: trajectory
+  optimization, Lyapunov analysis (e.g. with sums-of-squares), and LQR all have
+  natural equivalents. </p>
 
-    <p>An essential component for all of these models is a collision-detection
-    engine that can, by inspecting the pose of the rigid bodies, evaluate which
-    bodies are in or near collision, and return pairs of points on the rigid
-    bodies that represent points of near collision or the points of deepest
-    penetration.</p>
+  <section data-type="sect1"><h1>Simulating through Contact</h1>
 
-    <todo>Insert diagram for closest points/deepest penetration between two
-    bodies.</todo>
+  </section>
 
-    <section data-type="sect2"><h1>Compliant Contact</h1>
+  <section data-type="sect1"><h1>Trajectory Optimization</h1>
 
-      <p>The "stiff springs" approach, which is also refered to as "compliant
-      contact" or "soft contact" is appealing due to the simplicity of
-      implementation.  Given the current pose of the bodies, a </p>
-
-    </section>
 
 
   </section>
 
-  <section data-type="sect1"><h1>The hybrid system's approach</h1>
+  <section data-type="sect1"><h1>Stabilizing a Fixed-Point</h1>
 
     <p>Transverse stabilization is more natural than full LQR
 
   </section>
 
-  <section data-type="sect1"><h1>The measure differential inclusions approach</h1>
+  <section data-type="sect1"><h1>Stabilizing a Trajectory or Limit Cycle</h1>
   </section>
 
 </section>
