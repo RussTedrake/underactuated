@@ -34,8 +34,6 @@ class SpringLoadedInvertedPendulum(LeafSystem):
 
         self.last_apex = None  # placeholder for writing return map result.
 
-        # TODO(russt): Debug the simultaneous touchdown resets that show up in
-        #  the apex map example.
         self.touchdown_witness = self.MakeWitnessFunction(
             "touchdown", WitnessFunctionDirection.kPositiveThenNonPositive,
             self.foot_height, UnrestrictedUpdateEvent(self.touchdown))

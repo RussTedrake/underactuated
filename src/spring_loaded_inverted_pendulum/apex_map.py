@@ -30,6 +30,10 @@ for i in range(len(zs)):
     context.SetTime(0.)
     context.get_mutable_continuous_state_vector().SetFromVector(s[:])
     simulator.Initialize()
+    # Note: With this duration, I sometimes get an extra "touchdown" after the
+    # apex, which results in apex-touchdown; touchdown-takeoff-apex on the
+    # console.  It's not a double reset, the consecutive touchdowns are two
+    # different sims.
     simulator.StepTo(0.6)
     zns[i] = plant.last_apex
     plant.last_apex = None
