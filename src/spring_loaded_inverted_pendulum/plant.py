@@ -1,6 +1,6 @@
 import numpy as np
 
-from namedview import namedview
+from pydrake.common.containers import namedview
 from pydrake.systems.framework import (BasicVector,
                                        LeafSystem,
                                        PublishEvent,
