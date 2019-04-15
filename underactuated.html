@@ -2942,12 +2942,26 @@ of Walking and Running</h1>
 
       <p>Stance Phase. State variables: $\bx = [r, \theta, \dot{r},
       \dot\theta]^T.$ Kinematics are $$x = \begin{bmatrix} - r \sin\theta \\ r
-      \cos\theta \end{bmatrix},$$ Energy is given by $$T = \frac{1}{2} m
+      \cos\theta \end{bmatrix},$$ Energy is given by $$T = \frac{m}{2}
       (\dot{r}^2 + r^2 \dot\theta^2 ), \quad U = mgr\cos\theta +
       \frac{k}{2}(r_0 - r)^2.$$ Plugging these into Lagrange yields:
       \begin{gather} m \ddot{r} - m r \dot\theta^2 + m g \cos\theta - k (r_0 -
       r) = 0 \\ m r^2 \ddot{\theta} + 2mr\dot{r}\dot\theta - mgr \sin\theta = 0
       \end{gather}</p>
+
+    <div data-type="example" class="drake"><h1>Simulation of the
+      SLIP model</h1>
+
+      You can simulate the spring-loaded inverted pendulum using:
+
+      <pysrc>spring_loaded_inverted_pendulum/simulate.py</pysrc>
+
+      Or plot the apex-to-apex return map with:
+
+      <pysrc>spring_loaded_inverted_pendulum/apex_map.py</pysrc>
+
+    </div>
+
 
     <section
         data-type="sect2"><h1>The Planar Monopod Hopper</h1></section>

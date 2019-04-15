@@ -54,6 +54,7 @@ add_subdirectory(quadrotor)
 add_subdirectory(quadrotor2d)
 add_subdirectory(rimless_wheel)
 add_subdirectory(simple)
+add_subdirectory(spring_loaded_inverted_pendulum)
 add_subdirectory(van_der_pol)
 
 add_nbtest(mathematical_program_examples.ipynb)
