@@ -304,7 +304,6 @@ if __name__ == "__main__":
     parser = Parser(plant)
     parser.AddModelFromFile(FindResource("pendulum/pendulum.urdf"))
     plant.AddForceElement(UniformGravityFieldElement())
-    plant.WeldFrames(plant.world_frame(), plant.GetFrameByName("base_part2"))
     plant.Finalize()
 
     Tview = np.array([[1., 0., 0., 0.],

@@ -1,5 +1,6 @@
 from meshcat_rigid_body_visualizer import MeshcatRigidBodyVisualizer
 from planar_rigid_body_visualizer import PlanarRigidBodyVisualizer
+from planar_multibody_visualizer import PlanarMultibodyVisualizer
 from pyplot_visualizer import (PyPlotVisualizer, SliderSystem)
-from rigid_body_tree import ManipulatorDynamics
+from multibody import ManipulatorDynamics
 from utils import FindResource
