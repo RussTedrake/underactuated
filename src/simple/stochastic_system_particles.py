@@ -43,8 +43,9 @@ class SimpleStochasticSystem(LeafSystem):
 
 # Note: This is a candidate for moving to a more central location.
 class HistogramVisualizer(PyPlotVisualizer):
-    def __init__(self, num_samples, bins, xlim, ylim, draw_timestep):
-        PyPlotVisualizer.__init__(self, draw_timestep)
+    def __init__(self, num_samples, bins, xlim, ylim, draw_timestep,
+                 figsize=None):
+        PyPlotVisualizer.__init__(self, draw_timestep, figsize=figsize)
         for i in range(0, num_samples):
             self.DeclareInputPort(PortDataType.kVectorValued, 1)
         self.num_samples = num_samples
@@ -52,6 +53,7 @@ class HistogramVisualizer(PyPlotVisualizer):
         self.data = array.array('d', (0,)*num_samples)
         self.limits = xlim
         self.ax.set_xlim(xlim)
+        self.ax.axis('auto')
         self.ax.set_ylim(ylim)
         self.patches = None
 
@@ -74,11 +76,12 @@ builder = DiagramBuilder()
 
 num_particles = 1000
 num_bins = 100
-xlim = [-1.5, 1.5]
-ylim = [-2, 4.5]
+xlim = [-2, 2]
+ylim = [-1, 3.5]
 draw_timestep = .25
 visualizer = builder.AddSystem(HistogramVisualizer(num_particles, num_bins,
-                                                   xlim, ylim, draw_timestep))
+                                                   xlim, ylim,
+                                                   draw_timestep))
 x = np.linspace(xlim[0], xlim[1], 100)
 visualizer.ax.plot(x, dynamics(x, 0), 'k', linewidth=2)
 
@@ -90,7 +93,6 @@ AddRandomInputs(.1, builder)
 
 diagram = builder.Build()
 simulator = Simulator(diagram)
-simulator.set_publish_every_time_step(False)
 simulator.get_mutable_integrator().set_fixed_step_mode(True)
 simulator.get_mutable_integrator().set_maximum_step_size(0.1)
 
