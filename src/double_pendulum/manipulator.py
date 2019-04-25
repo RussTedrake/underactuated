@@ -1,13 +1,20 @@
-from pydrake.all import (FloatingBaseType, RigidBodyTree)
-from underactuated import (FindResource, ManipulatorDynamics)
+from pydrake.all import MultibodyPlant, Parser, UniformGravityFieldElement
+from underactuated import FindResource, ManipulatorDynamics
 
-tree = RigidBodyTree(FindResource("double_pendulum/double_pendulum.urdf"),
-                     FloatingBaseType.kFixed)
+plant = MultibodyPlant()
+parser = Parser(plant)
+parser.AddModelFromFile(FindResource("double_pendulum/double_pendulum.urdf"))
+plant.AddForceElement(UniformGravityFieldElement())
+plant.Finalize()
 
-q = (1., 1.)
-v = (0.1, 0.1)
-(M, Cv, tauG, B) = ManipulatorDynamics(tree, q, v)
-print("M = " + str(M))
+q = [0.1, 0.1]
+v = [1, 1]
+(M, Cv, tauG, B, tauExt) = ManipulatorDynamics(plant, q, v)
+
+print("M = \n" + str(M))
 print("Cv = " + str(Cv))
-print("tauG = " + str(tauG))
+print("tau_G = " + str(tauG))
 print("B = " + str(B))
+print("tau_ext = " + str(tauExt))
+
+# TODO(russt): add symbolic version pending resolution of drake #11240

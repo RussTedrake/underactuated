@@ -1,9 +1,10 @@
 
 # Note: no duration arguments to keep this first textbook example simple.
 # Just pay the 10 second cost.
-add_pytest(simulator.py)
+add_pytest(simulate.py)
 
-add_nbtest(simulator.ipynb)
+# TODO(russt): Figure out how to run this without blocking on meshcat.
+# add_nbtest(simulate.ipynb)
 
 add_pytest(manipulator.py)
 add_pytest(as_single_pendulum.py --duration 1.0)

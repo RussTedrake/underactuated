@@ -12,15 +12,7 @@
   <material name="blue">
     <color rgba="0 0 1 1"/>
   </material>
-  <link drake_ignore="true" name="world">
-    <inertial>
-      <!-- drc-viewer needs this to have inertia to parse properly. Remove it when that bug is fixed. -->
-      <origin xyz="0 0 0"/>
-      <mass value="0.01"/>
-      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0" iyz="0" izz="0"/>
-    </inertial>
-  </link>
-  <link name="base_part2">
+  <link name="base">
     <inertial>
       <origin rpy="0 0 0" xyz="0 0 .015"/>
       <mass value="1"/>
@@ -34,10 +26,10 @@
       <material name="green"/>
     </visual>
   </link>
-  <joint drake_ignore="true" name="base_weld" type="fixed">
+  <joint name="base_weld" type="fixed">
     <parent link="world"/>
-    <child link="base_part2"/>
-    <origin xyz="0 0 1"/>
+    <child link="base"/>
+    <origin xyz="0 0 0"/>
   </joint>
   <link name="arm">
     <inertial>
@@ -60,7 +52,7 @@
     </collision>
   </link>
   <joint name="theta" type="continuous">
-    <parent link="base_part2"/>
+    <parent link="base"/>
     <child link="arm"/>
     <axis xyz="0 1 0"/>
     <dynamics damping="0.1"/>
