@@ -3,7 +3,7 @@ version: 2
 jobs:
   underactuated-with-drake-peg-revision:
     docker:
-      - image: robotlocomotion/circleci:xenial
+      - image: robotlocomotion/circleci:bionic
 
     working_directory: ~/underactuated
 
@@ -16,7 +16,7 @@ jobs:
 
       - run:
           name: setup
-          command: ./scripts/continuous_integration/circle_ci/setup
+          command: ./scripts/continuous_integration/circle_ci/setup_bionic
 
       - run: echo 'export PYTHONPATH=/root/underactuated/src:/opt/drake/lib/python2.7/site-packages:${PYTHONPATH}' >> $BASH_ENV
 
@@ -25,6 +25,28 @@ jobs:
           command: ./scripts/continuous_integration/circle_ci/build_test
 
   underactuated-with-drake-nightly:
+    docker:
+      - image: robotlocomotion/circleci:bionic
+
+    working_directory: ~/underactuated
+
+    environment:
+      - DRAKE_BINARY_URL: "https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-bionic.tar.gz"
+
+    steps:
+      - checkout
+
+      - run:
+          name: setup
+          command: ./scripts/continuous_integration/circle_ci/setup_bionic
+
+      - run: echo 'export PYTHONPATH=/root/underactuated/src:/opt/drake/lib/python2.7/site-packages:${PYTHONPATH}' >> $BASH_ENV
+
+      - run:
+          name: build and test
+          command: ./scripts/continuous_integration/circle_ci/build_test
+
+  underactuated-with-drake-nightly-xenial:
     docker:
       - image: robotlocomotion/circleci:xenial
 
@@ -38,14 +60,13 @@ jobs:
 
       - run:
           name: setup
-          command: ./scripts/continuous_integration/circle_ci/setup
+          command: ./scripts/continuous_integration/circle_ci/setup_xenial
 
       - run: echo 'export PYTHONPATH=/root/underactuated/src:/opt/drake/lib/python2.7/site-packages:${PYTHONPATH}' >> $BASH_ENV
 
       - run:
           name: build and test
           command: ./scripts/continuous_integration/circle_ci/build_test
-
 
 workflows:
   version: 2
@@ -62,3 +83,4 @@ workflows:
               only: master
     jobs:
        - underactuated-with-drake-nightly
+       - underactuated-with-drake-nightly-xenial
