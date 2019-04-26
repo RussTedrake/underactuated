@@ -64,7 +64,7 @@ context = simulator.get_mutable_context()
 diagram.Publish(context)  # draw once to get the window open
 diagram.GetMutableSubsystemContext(
     rimless_wheel, context).get_numeric_parameter(0).set_slope(args.slope)
-context.set_accuracy(1e-4)
+context.SetAccuracy(1e-4)
 context.SetContinuousState([args.initial_angle, args.initial_angular_velocity])
 
 simulator.StepTo(args.duration)

@@ -26,6 +26,10 @@ function(add_pytest pyfile)
                  "PYTHONPATH=${PYTHONPATH}"
               )
 
+  set_tests_properties(${pydir}_${pyfile} PROPERTIES
+            FAIL_REGULAR_EXPRESSION "DrakeDeprecationWarning"
+          )
+
   add_pystyle_test(${pyfile})
 
 endfunction(add_pytest)
@@ -37,6 +41,10 @@ function(add_nbtest ipynbfile)
   add_test(NAME ${pydir}_${ipynbfile}
            COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/src/test_ipynb.py ${ipynbfile}
            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+  set_tests_properties(${pydir}_${ipynbfile} PROPERTIES
+          FAIL_REGULAR_EXPRESSION "DrakeDeprecationWarning"
+          )
 
 endfunction(add_nbtest)
 

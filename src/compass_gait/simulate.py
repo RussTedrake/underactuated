@@ -51,7 +51,7 @@ simulator.set_target_realtime_rate(1.0)
 
 context = simulator.get_mutable_context()
 diagram.Publish(context)  # draw once to get the window open
-context.set_accuracy(1e-4)
+context.SetAccuracy(1e-4)
 context.SetContinuousState([0., 0., 0.4, -2.])
 
 simulator.StepTo(args.duration)
