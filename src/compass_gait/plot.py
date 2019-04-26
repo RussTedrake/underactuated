@@ -25,7 +25,7 @@ builder.Connect(compass_gait.get_output_port(1), logger.get_input_port(0))
 diagram = builder.Build()
 simulator = Simulator(diagram)
 simulator.set_publish_every_time_step(True)
-simulator.get_mutable_context().set_accuracy(1e-4)
+simulator.get_mutable_context().SetAccuracy(1e-4)
 
 state = simulator.get_mutable_context().get_mutable_continuous_state_vector()
 state.SetFromVector([0., 0., 0.4, -2.])

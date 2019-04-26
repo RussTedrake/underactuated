@@ -63,7 +63,7 @@ simulator.set_target_realtime_rate(1.0)
 context = simulator.get_mutable_context()
 
 for i in range(args.trials):
-    context.set_time(0.)
+    context.SetTime(0.)
     context.SetContinuousState(np.random.randn(12,))
     simulator.Initialize()
     simulator.StepTo(args.duration)

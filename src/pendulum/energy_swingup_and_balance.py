@@ -145,7 +145,7 @@ if __name__ == "__main__":
     # print("Click in the figure to advance.")
     for i in range(args.trials):
         # plt.waitforbuttonpress()
-        context.set_time(0.)
+        context.SetTime(0.)
         context.SetContinuousState(UprightState().CopyToVector() +
                                    math.pi*np.random.randn(2,))
         simulator.StepTo(args.duration)

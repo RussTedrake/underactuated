@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from drake import lcmt_viewer_load_robot
 from pydrake.common.eigen_geometry import Quaternion
 from pydrake.geometry import DispatchLoadMessage, SceneGraph
-from pydrake.lcm import DrakeMockLcm
+from pydrake.lcm import DrakeMockLcm, Subscriber
 from pydrake.math import RigidTransform, RotationMatrix
 from pydrake.systems.rendering import PoseBundle
 
@@ -143,9 +143,13 @@ class PlanarMultibodyVisualizer(PyPlotVisualizer):
         self.viewPatchColors = {}
 
         mock_lcm = DrakeMockLcm()
+        mock_lcm_subscriber = Subscriber(lcm=mock_lcm,
+                                         channel="DRAKE_VIEWER_LOAD_ROBOT",
+                                         lcm_type=lcmt_viewer_load_robot)
         DispatchLoadMessage(self._scene_graph, mock_lcm)
-        load_robot_msg = lcmt_viewer_load_robot.decode(
-            mock_lcm.get_last_published_message("DRAKE_VIEWER_LOAD_ROBOT"))
+        mock_lcm.HandleSubscriptions(0)
+        assert mock_lcm_subscriber.count > 0
+        load_robot_msg = mock_lcm_subscriber.message
 
         # Spawn a random color generator, in case we need to pick
         # random colors for some bodies. Each body will be given

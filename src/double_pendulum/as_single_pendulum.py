@@ -75,7 +75,7 @@ plant.AddForceElement(UniformGravityFieldElement())
 plant.Finalize()
 
 controller = builder.AddSystem(Controller(plant, args.gravity))
-builder.Connect(plant.get_continuous_state_output_port(),
+builder.Connect(plant.get_state_output_port(),
                 controller.get_input_port(0))
 builder.Connect(controller.get_output_port(0),
                 plant.get_actuation_input_port())
