@@ -2,6 +2,7 @@
 
 import numpy as np
 import math
+import matplotlib
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
@@ -47,13 +48,16 @@ class PyPlotVisualizer(LeafSystem):
 
         self.ax.axis('equal')
         self.ax.axis('off')
-        self.fig.show()
+        self.show = (matplotlib.get_backend().lower() != 'template')
+        if self.show:
+            self.fig.show()
 
     def DoPublish(self, context, event):
         LeafSystem.DoPublish(self, context, event)
         self.draw(context)
         self.fig.canvas.draw()
-        plt.pause(1e-10)
+        if self.show:
+            plt.show(block=False)
 
     def draw(self, context):
         print "SUBCLASSES MUST IMPLEMENT."
