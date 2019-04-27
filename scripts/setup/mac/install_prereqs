@@ -52,17 +52,13 @@ brew upgrade
 
 # Install development and Drake dependencies.
 brew install $(tr '\n' ' ' <<EOF
-ffmpeg
 tidy-html5
-zmq
 EOF
 )
 
 pip2 install --upgrade $(tr '\n' ' ' <<EOF
 autopep8
 jupyter
-matplotlib
-meshcat
 pycodestyle
 scipy
 EOF
