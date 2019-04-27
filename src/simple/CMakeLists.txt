@@ -1,9 +1,4 @@
 
-add_executable(simple_continuous_time_system continuous_time_system.cc)
-target_link_libraries(simple_continuous_time_system
-    drake::drake)
-add_test(NAME simple_continuous_time_system COMMAND simple_continuous_time_system)
-
 add_pytest(continuous_time_system_simulation.py)
 add_pytest(discrete_time_system_simulation.py)
 add_pytest(six_hump_camel.py)
