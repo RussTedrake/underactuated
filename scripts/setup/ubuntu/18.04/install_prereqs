@@ -43,6 +43,7 @@ apt update -qq
 # Install development and Drake dependencies.
 apt install -qq --no-install-recommends $(tr '\n' ' ' <<EOF
 curl
+tidy
 libzmq5
 python
 python-dev
@@ -61,9 +62,3 @@ pycodestyle
 tornado<6
 EOF
 )
-
-apt remove -qq tidy libtidy-0.99-0
-curl -LO https://github.com/htacg/tidy-html5/releases/download/5.4.0/tidy-5.4.0-64bit.deb
-trap 'rm -f tidy-5.4.0-64bit.deb' EXIT
-echo 'b6b971534ee6bacc68a7c5f9878b0a146fbd7f50c580db76a19823e8541f92f8  tidy-5.4.0-64bit.deb' | sha256sum -c
-dpkg -i tidy-5.4.0-64bit.deb
