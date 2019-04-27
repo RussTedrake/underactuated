@@ -1,12 +1,14 @@
 # -*- coding: utf8 -*-
 
 import numpy as np
-import math
+
 import matplotlib
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider
-from pydrake.all import (LeafSystem, PiecewisePolynomial, SignalLogger,
+
+from pydrake.all import (LeafSystem, PiecewisePolynomial,
+                         PublishEvent, SignalLogger, TriggerType,
                          VectorSystem)
 
 
@@ -48,19 +50,56 @@ class PyPlotVisualizer(LeafSystem):
 
         self.ax.axis('equal')
         self.ax.axis('off')
+        self.record = False
+        self.recorded_contexts = []
         self.show = (matplotlib.get_backend().lower() != 'template')
-        if self.show:
-            self.fig.show()
+
+        def on_initialize(context, event):
+            if self.show:
+                self.fig.show()
+
+        self.DeclareInitializationEvent(
+            event=PublishEvent(
+                trigger_type=TriggerType.kInitialization,
+                callback=on_initialize))
 
     def DoPublish(self, context, event):
         LeafSystem.DoPublish(self, context, event)
-        self.draw(context)
-        self.fig.canvas.draw()
         if self.show:
+            self.draw(context)
+            self.fig.canvas.draw()
             plt.pause(1e-10)
+        if self.record:
+            snapshot = self.AllocateContext()
+            snapshot.SetTimeStateAndParametersFrom(context)
+            self.FixInputPortsFrom(self, context, snapshot)
+            self.recorded_contexts.append(snapshot)
 
     def draw(self, context):
+        '''' Return a list of updated artists if blitting is used '''
         print "SUBCLASSES MUST IMPLEMENT."
+
+    def start_recording(self, show=True):
+        self.show = show
+        self.record = True
+
+    def stop_recording(self):
+        self.record = False
+        self.show = (matplotlib.get_backend().lower() != 'template')
+
+    def reset_recording(self):
+        self.recorded_contexts = []  # reset recorded data
+
+    def draw_recorded_frame(self, i):
+        return self.draw(self.recorded_contexts[i])
+
+    def get_recording(self, **kwargs):
+        ani = animation.FuncAnimation(fig=self.fig,
+                                      func=self.draw_recorded_frame,
+                                      frames=len(self.recorded_contexts),
+                                      interval=1000*self.timestep,
+                                      **kwargs)
+        return ani
 
     def animate(self, log, resample=True, repeat=False):
         # log - a reference to a pydrake.systems.primitives.SignalLogger that

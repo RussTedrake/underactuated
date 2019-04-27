@@ -52,6 +52,7 @@ brew upgrade
 
 # Install development and Drake dependencies.
 brew install $(tr '\n' ' ' <<EOF
+ffmpeg
 tidy-html5
 zmq
 EOF
