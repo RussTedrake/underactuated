@@ -42,13 +42,10 @@ apt update -qq
 
 # Install development and Drake dependencies.
 apt install -qq --no-install-recommends $(tr '\n' ' ' <<EOF
-build-essential
 curl
-ffmpeg
 libzmq5
 python
 python-dev
-python-matplotlib
 python-pip
 python-setuptools
 python-wheel
@@ -59,8 +56,8 @@ pip install --upgrade --disable-pip-version-check $(tr '\n' ' ' <<EOF
 ipython==5.8.0
 ipykernel==4.8.2
 jupyter
-pycodestyle
 meshcat
+pycodestyle
 tornado<6
 EOF
 )
