@@ -43,6 +43,7 @@ apt update -qq
 # Install development and Drake dependencies.
 apt install -qq --no-install-recommends $(tr '\n' ' ' <<EOF
 curl
+ffmpeg
 libzmq5
 python
 python-dev
