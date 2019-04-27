@@ -57,7 +57,7 @@ class PyPlotVisualizer(LeafSystem):
         self.draw(context)
         self.fig.canvas.draw()
         if self.show:
-            plt.show(block=False)
+            plt.pause(1e-10)
 
     def draw(self, context):
         print "SUBCLASSES MUST IMPLEMENT."
