@@ -28,7 +28,7 @@ from utils import FindResource
 from pyplot_visualizer import PyPlotVisualizer
 
 
-class PlanarMultibodyVisualizer(PyPlotVisualizer):
+class PlanarSceneGraphVisualizer(PyPlotVisualizer):
 
     '''
     Given a SceneGraph and a view plane, provides a view of the robot by
@@ -314,7 +314,7 @@ if __name__ == "__main__":
                       [0., 0., 1., 0.],
                       [0., 0., 0., 1.]],
                      dtype=np.float64)
-    visualizer = builder.AddSystem(PlanarMultibodyVisualizer(
+    visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(
         scene_graph, Tview=Tview, xlim=[-1.2, 1.2], ylim=[-1.2, 1.2]))
     builder.Connect(scene_graph.get_pose_bundle_output_port(),
                     visualizer.get_input_port(0))
