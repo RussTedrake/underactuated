@@ -11,7 +11,7 @@ from pydrake.all import (AddMultibodyPlantSceneGraph,
                          VectorSystem)
 from underactuated import (FindResource,
                            ManipulatorDynamics,
-                           PlanarMultibodyVisualizer)
+                           PlanarSceneGraphVisualizer)
 
 
 class Controller(VectorSystem):
@@ -80,9 +80,9 @@ builder.Connect(plant.get_state_output_port(),
 builder.Connect(controller.get_output_port(0),
                 plant.get_actuation_input_port())
 
-visualizer = builder.AddSystem(PlanarMultibodyVisualizer(scene_graph,
-                                                         xlim=[-2.8, 2.8],
-                                                         ylim=[-2.8, 2.8]))
+visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(scene_graph,
+                                                          xlim=[-2.8, 2.8],
+                                                          ylim=[-2.8, 2.8]))
 builder.Connect(scene_graph.get_pose_bundle_output_port(),
                 visualizer.get_input_port(0))
 
