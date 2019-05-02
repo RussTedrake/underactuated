@@ -15,7 +15,7 @@ from pydrake.systems.controllers import (
 class DoubleIntegrator(VectorSystem):
     def __init__(self):
         # One input, one output, two state variables.
-        VectorSystem.__init__(self, 1, 1)
+        VectorSystem.__init__(self, 1, 2)
         self.DeclareContinuousState(2)
 
     # qqdot(t) = u(t)
