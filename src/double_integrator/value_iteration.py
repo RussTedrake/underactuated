@@ -5,17 +5,20 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 
-from pydrake.systems.framework import VectorSystem
+from pydrake.systems.framework import (DiagramBuilder, VectorSystem)
 from pydrake.systems.analysis import Simulator
 from pydrake.systems.controllers import (
     DynamicProgrammingOptions, FittedValueIteration)
+from pydrake.systems.primitives import LogOutput
+
+from visualizer import DoubleIntegratorVisualizer
 
 
 # TODO(russt): add bindings for LinearSystem and use them instead.
 class DoubleIntegrator(VectorSystem):
     def __init__(self):
         # One input, one output, two state variables.
-        VectorSystem.__init__(self, 1, 2)
+        VectorSystem.__init__(self, 1, 2, direct_feedthrough=False)
         self.DeclareContinuousState(2)
 
     # qqdot(t) = u(t)
@@ -109,6 +112,23 @@ Pi = np.reshape(policy.get_output_values(), Q.shape)
 surf = ax2.plot_surface(Q, Qdot, Pi, rstride=1, cstride=1,
                         cmap=cm.jet)
 
-plt.show()
+# animate the resulting policy.
+builder = DiagramBuilder()
+plant = builder.AddSystem(DoubleIntegrator())
+logger = LogOutput(plant.get_output_port(0), builder)
+vi_policy = builder.AddSystem(policy)
+builder.Connect(vi_policy.get_output_port(0), plant.get_input_port(0))
+builder.Connect(plant.get_output_port(0), vi_policy.get_input_port(0))
 
-# TODO: animate the resulting policy.
+diagram = builder.Build()
+simulator = Simulator(diagram)
+
+state = simulator.get_mutable_context().SetContinuousState([-10.0, 0.0])
+
+simulator.StepTo(10.)
+
+# Visualize the result as a video.
+vis = DoubleIntegratorVisualizer()
+ani = vis.animate(logger, repeat=True)
+
+plt.show()
