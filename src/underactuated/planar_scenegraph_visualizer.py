@@ -150,8 +150,7 @@ class PlanarSceneGraphVisualizer(PyPlotVisualizer):
     def buildViewPatches(self, use_random_colors):
         ''' Generates view patches. self.viewPatches stores a list of
         viewPatches for each body (starting at body id 1). A viewPatch is a
-        list of 2D coordinates in counterclockwise order forming the boundary
-        of a filled polygon representing a piece of visual geometry. '''
+        list of all 3D vertices of a piece of visual geometry. '''
 
         self.viewPatches = {}
         self.viewPatchColors = {}
@@ -286,24 +285,26 @@ class PlanarSceneGraphVisualizer(PyPlotVisualizer):
             pose = pose_bundle.get_pose(frame_i).matrix()
             viewPatches, _ = self.getViewPatches(full_name, pose)
             for i, patch in enumerate(viewPatches):
-                # Project the object verts to 2d.
+                # Project the object vertices to 2d.
                 patch_proj = np.dot(self.Tview, patch)
-                # Perspective transformation. Leave bottom row of
-                # Tview as [0, 0, 0, 1] for orthographic projection.
+                # Applies normalization in the perspective transformation
+                # to make each projected point have z = 1. If the bottom row
+                # of Tview is [0, 0, 0, 1], this will result in an
+                # orthographic projection.
                 patch_proj[0, :] /= patch_proj[2, :]
                 patch_proj[1, :] /= patch_proj[2, :]
+                # Cut patch_proj down to 2xN.
                 patch_proj = patch_proj[:2, :]
                 # Take a convex hull to get an accurate shape for drawing,
                 # with verts coming out in ccw order.
                 if patch_proj.shape[1] > 3:
-                    hull = sp.spatial.ConvexHull(
-                        np.transpose(patch_proj[0:2, :]))
+                    hull = sp.spatial.ConvexHull(np.transpose(patch_proj))
                     patch_proj = np.transpose(
                         np.vstack([patch_proj[:, v] for v in hull.vertices]))
                 n_verts = self.body_fill_dict[full_name][i].get_path().\
                     vertices.shape[0]
                 # Update the verts, padding out to the appropriate full # of
-                # verts by replacting the final vertex.
+                # verts by replicating the final vertex.
                 patch_proj = np.pad(
                     patch_proj, ((0, 0), (0, n_verts - patch_proj.shape[1])),
                     mode="edge")
