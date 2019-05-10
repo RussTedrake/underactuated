@@ -2,6 +2,7 @@
 
 import argparse
 import math
+import time
 
 import numpy as np
 import matplotlib
@@ -36,11 +37,15 @@ class PlanarSceneGraphVisualizer(PyPlotVisualizer):
     Given a SceneGraph and a view plane, provides a view of the robot by
     projecting all geometry onto the view plane.
 
-    This is intended to be used for robots that operate in the plane, and won't
-    render out-of-plane transformations correctly. (It precomputes how geometry
-    looks on the projected plane and assumes it won't be rotated out of plane.
-    It'll *work* for out-of-plane transformations, but render things
-    increasingly inaccurately.)
+    This is intended to be used for robots that operate in the plane, but
+    should render any robot approximately correctly. It has the following
+    caveats:
+    - z-ordering of objects is done based on the object centroid, which
+    is not perfect for non-planar scenes.
+    - Object geometry is projected onto the view plane, then a chull is taken,
+    and finally that chull is drawn as a patch. Nonconvex geometry will thus be
+    drawn incorrectly, and geometry with many vertices will slow down the
+    visualizer.
 
     Params:
     - Tview, xlim, and ylim set up view into scene.
@@ -54,8 +59,8 @@ class PlanarSceneGraphVisualizer(PyPlotVisualizer):
 
      Specifics on view setup:
 
-    TView specifies the view projection matrix,
-    and should be a 3x4 matrix:
+    TView specifies the 3x4 view projection matrix. For planar orthographic
+    projection, use:
     [ <x axis select> x_axis_shift
       <y axis select> y_axis_shift
        0, 0, 0, 1]  % homogenizer
@@ -64,10 +69,13 @@ class PlanarSceneGraphVisualizer(PyPlotVisualizer):
 
     [ 1 0 0 0.5
       0 1 0 0
-      0 0 0 1]
+      0 0 0 1].
 
     would give a top-down view (i.e squashing the z axis), and would shift
     things in the x axis positively by 0.5.
+
+    TView can be any valid view projection matrix. If the bottom row is
+    [0, 0, 0, 1], the view projection will be an orthographic projection.
 
     xlim and ylim don't technically provide extra functionality, but I think
     it's easier to keep handle scaling with xlim and ylim and view plane
@@ -281,7 +289,7 @@ class PlanarSceneGraphVisualizer(PyPlotVisualizer):
                 # Project the object verts to 2d.
                 patch_proj = np.dot(self.Tview, patch)
                 # Perspective transformation. Leave bottom row of
-                # Tview as [0, 0, 0, 1] for orthogonal projection.
+                # Tview as [0, 0, 0, 1] for orthographic projection.
                 patch_proj[0, :] /= patch_proj[2, :]
                 patch_proj[1, :] /= patch_proj[2, :]
                 patch_proj = patch_proj[:2, :]
