@@ -12,19 +12,20 @@ import trimesh
 
 from drake import lcmt_viewer_load_robot
 from pydrake.common.eigen_geometry import Quaternion
-from pydrake.geometry import DispatchLoadMessage, SceneGraph
+from pydrake.examples.manipulation_station import ManipulationStation
+from pydrake.geometry import DispatchLoadMessage
 from pydrake.lcm import DrakeMockLcm, Subscriber
 from pydrake.math import RigidTransform, RotationMatrix
 from pydrake.systems.rendering import PoseBundle
 
 from pydrake.all import (
+    AddMultibodyPlantSceneGraph,
     AbstractValue,
     DiagramBuilder,
     Parser,
     PortDataType,
-    MultibodyPlant,
     UniformGravityFieldElement,
-    Simulator,
+    Simulator
 )
 
 from utils import FindResource
@@ -234,6 +235,9 @@ class PlanarSceneGraphVisualizer(PyPlotVisualizer):
                          for pt in sample_pts])
 
                 elif geom.type == geom.MESH:
+                    # TODO(gizatt): Remove trimesh dependency when vertex
+                    # information is accessible from the SceneGraph / Shape
+                    # interface.
                     mesh = trimesh.load(geom.string_data)
                     patch = mesh.vertices.T
                     # Apply scaling
@@ -314,41 +318,22 @@ class PlanarSceneGraphVisualizer(PyPlotVisualizer):
         self.ax.set_title('t = {:.1f}'.format(context.get_time()))
 
 
-if __name__ == "__main__":
-    # Usage demo: load a URDF, rig it up with a constant torque input, and
-    # draw it.
-
-    np.set_printoptions(precision=5, suppress=True)
-    parser = argparse.ArgumentParser()
-    parser.add_argument("-T", "--duration",
-                        type=float,
-                        help="Duration to run sim.",
-                        default=1.0)
-    args = parser.parse_args()
-
+def runPendulumExample(args):
     builder = DiagramBuilder()
-
-    plant = builder.AddSystem(MultibodyPlant())
-    scene_graph = builder.AddSystem(SceneGraph())
-    plant.RegisterAsSourceForSceneGraph(scene_graph)
-    builder.Connect(plant.get_geometry_poses_output_port(),
-                    scene_graph.get_source_pose_port(
-                        plant.get_source_id()))
-    builder.Connect(scene_graph.get_query_output_port(),
-                    plant.get_geometry_query_input_port())
-
+    plant, scene_graph = AddMultibodyPlantSceneGraph(builder)
     parser = Parser(plant)
     parser.AddModelFromFile(FindResource("pendulum/pendulum.urdf"))
     plant.AddForceElement(UniformGravityFieldElement())
     plant.Finalize()
 
+    pose_bundle_output_port = scene_graph.get_pose_bundle_output_port()
     Tview = np.array([[1., 0., 0., 0.],
                       [0., 0., 1., 0.],
                       [0., 0., 0., 1.]],
                      dtype=np.float64)
     visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(
         scene_graph, Tview=Tview, xlim=[-1.2, 1.2], ylim=[-1.2, 1.2]))
-    builder.Connect(scene_graph.get_pose_bundle_output_port(),
+    builder.Connect(pose_bundle_output_port,
                     visualizer.get_input_port(0))
 
     diagram = builder.Build()
@@ -359,8 +344,76 @@ if __name__ == "__main__":
     # Fix the input port to zero.
     plant_context = diagram.GetMutableSubsystemContext(
         plant, simulator.get_mutable_context())
-    plant_context.FixInputPort(plant.get_actuation_input_port().get_index(),
-                               np.zeros(plant.num_actuators()))
+    plant_context.FixInputPort(
+        plant.get_actuation_input_port().get_index(),
+        np.zeros(plant.num_actuators()))
     plant_context.SetContinuousState([0.5, 0.1])
-
     simulator.StepTo(args.duration)
+
+
+def runManipulationExample(args):
+    builder = DiagramBuilder()
+    station = builder.AddSystem(ManipulationStation(time_step=0.005))
+    station.SetupDefaultStation()
+    station.Finalize()
+
+    plant = station.get_multibody_plant()
+    scene_graph = station.get_scene_graph()
+    pose_bundle_output_port = station.GetOutputPort("pose_bundle")
+
+    # Side-on view of the station.
+    Tview = np.array([[1., 0., 0., 0.],
+                      [0., 0., 1., 0.],
+                      [0., 0., 0., 1.]],
+                     dtype=np.float64)
+    visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(
+        scene_graph, Tview=Tview, xlim=[-0.5, 1.0], ylim=[-1.2, 1.2],
+        draw_period=0.1))
+    builder.Connect(pose_bundle_output_port,
+                    visualizer.get_input_port(0))
+
+    diagram = builder.Build()
+    simulator = Simulator(diagram)
+    simulator.Initialize()
+    simulator.set_target_realtime_rate(1.0)
+
+    # Fix the control inputs to zero.
+    station_context = diagram.GetMutableSubsystemContext(
+        station, simulator.get_mutable_context())
+    station.GetInputPort("iiwa_position").FixValue(
+        station_context, station.GetIiwaPosition(station_context))
+    station.GetInputPort("iiwa_feedforward_torque").FixValue(
+        station_context, np.zeros(7))
+    station.GetInputPort("wsg_position").FixValue(
+        station_context, np.zeros(1))
+    station.GetInputPort("wsg_force_limit").FixValue(
+        station_context, [40.0])
+    simulator.StepTo(args.duration)
+
+
+if __name__ == "__main__":
+    # Usage demo: load a URDF, rig it up with a constant torque input, and
+    # draw it.
+
+    np.set_printoptions(precision=5, suppress=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-T", "--duration",
+                        type=float,
+                        help="Duration to run sim.",
+                        default=1.0)
+    parser.add_argument("-m", "--models",
+                        type=str,
+                        nargs="*",
+                        help="Models to run, at least one of [pend, manip]",
+                        default=["pend"])
+    args = parser.parse_args()
+
+    for model in args.models:
+        if model == "pend":
+            runPendulumExample(args)
+        elif model == "manip":
+            runManipulationExample(args)
+        else:
+            print "Unrecognized model %s." % model
+            parser.print_usage()
+            exit(1)
