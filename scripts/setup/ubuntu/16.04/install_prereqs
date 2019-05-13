@@ -60,6 +60,7 @@ jupyter
 meshcat
 pycodestyle
 tornado<6
+trimesh
 EOF
 )
 
