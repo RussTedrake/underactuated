@@ -3,6 +3,11 @@
 import argparse
 import math
 import time
+# TODO(gizatt) logging.basicConfig() sets up basic logging handlers
+# that trimesh expects to be present, and allows trimesh errors
+# and warnings to make it to the console.
+import logging
+logging.basicConfig()  # noqa
 
 import numpy as np
 import matplotlib
@@ -235,8 +240,8 @@ class PlanarSceneGraphVisualizer(PyPlotVisualizer):
                          for pt in sample_pts])
 
                 elif geom.type == geom.MESH:
-                    # TODO(gizatt): Remove trimesh dependency when vertex
-                    # information is accessible from the SceneGraph / Shape
+                    # TODO(gizatt): Remove trimesh and shapely dependency when
+                    # vertex information is accessible from the SceneGraph
                     # interface.
                     mesh = trimesh.load(geom.string_data)
                     patch = mesh.vertices.T
