@@ -58,6 +58,7 @@ ipython==5.8.0
 ipykernel==4.8.2
 jupyter
 meshcat
+networkx==2.2
 pycodestyle
 shapely
 tornado<6
