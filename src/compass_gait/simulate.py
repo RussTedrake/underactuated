@@ -3,6 +3,7 @@ import math
 import numpy as np
 
 from pydrake.all import (Box,
+                         ConstantVectorSource,
                          DiagramBuilder,
                          FindResourceOrThrow,
                          FloatingBaseType,
@@ -31,6 +32,9 @@ tree.compile()
 
 builder = DiagramBuilder()
 compass_gait = builder.AddSystem(CompassGait())
+
+hip_torque = builder.AddSystem(ConstantVectorSource([0.0]))
+builder.Connect(hip_torque.get_output_port(0), compass_gait.get_input_port(0))
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-T", "--duration",

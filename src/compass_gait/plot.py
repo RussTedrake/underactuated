@@ -1,7 +1,8 @@
 import argparse
 import matplotlib.pyplot as plt
 
-from pydrake.all import (DiagramBuilder,
+from pydrake.all import (ConstantVectorSource,
+                         DiagramBuilder,
                          SignalLogger,
                          Simulator)
 from pydrake.examples.compass_gait import (CompassGait)
@@ -19,16 +20,18 @@ parser.add_argument("-T", "--duration",
                     default=10.0)
 args = parser.parse_args()
 
+hip_torque = builder.AddSystem(ConstantVectorSource([0.0]))
+builder.Connect(hip_torque.get_output_port(0), compass_gait.get_input_port(0))
+
 logger = builder.AddSystem(SignalLogger(14))
 builder.Connect(compass_gait.get_output_port(1), logger.get_input_port(0))
 
 diagram = builder.Build()
 simulator = Simulator(diagram)
 simulator.set_publish_every_time_step(True)
-simulator.get_mutable_context().SetAccuracy(1e-4)
-
-state = simulator.get_mutable_context().get_mutable_continuous_state_vector()
-state.SetFromVector([0., 0., 0.4, -2.])
+context = simulator.get_mutable_context()
+context.SetAccuracy(1e-4)
+context.SetContinuousState([0., 0., 0.4, -2.])
 
 simulator.StepTo(args.duration)
 
