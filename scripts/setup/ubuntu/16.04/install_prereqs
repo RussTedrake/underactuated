@@ -53,7 +53,7 @@ python-wheel
 EOF
 )
 
-pip install --upgrade --disable-pip-version-check $(tr '\n' ' ' <<EOF
+pip2 install -qq --upgrade --disable-pip-version-check $(tr '\n' ' ' <<EOF
 ipython==5.8.0
 ipykernel==4.8.2
 jupyter
