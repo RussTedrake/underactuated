@@ -60,6 +60,7 @@ jupyter
 meshcat
 networkx==2.2
 pycodestyle
+scipy==1.2.1
 shapely
 tornado<6
 trimesh
