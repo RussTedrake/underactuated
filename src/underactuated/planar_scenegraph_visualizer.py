@@ -328,7 +328,6 @@ def runPendulumExample(args):
     plant, scene_graph = AddMultibodyPlantSceneGraph(builder)
     parser = Parser(plant)
     parser.AddModelFromFile(FindResource("pendulum/pendulum.urdf"))
-    plant.AddForceElement(UniformGravityFieldElement())
     plant.Finalize()
 
     pose_bundle_output_port = scene_graph.get_pose_bundle_output_port()

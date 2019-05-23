@@ -1,10 +1,9 @@
-from pydrake.all import MultibodyPlant, Parser, UniformGravityFieldElement
+from pydrake.all import MultibodyPlant, Parser
 from underactuated import FindResource, ManipulatorDynamics
 
 plant = MultibodyPlant()
 parser = Parser(plant)
 parser.AddModelFromFile(FindResource("double_pendulum/double_pendulum.urdf"))
-plant.AddForceElement(UniformGravityFieldElement())
 plant.Finalize()
 
 q = [0.1, 0.1]

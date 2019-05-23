@@ -1,8 +1,7 @@
 from pydrake.all import (AddMultibodyPlantSceneGraph,
                          DiagramBuilder,
                          Parser,
-                         Simulator,
-                         UniformGravityFieldElement)
+                         Simulator)
 from underactuated import FindResource, PlanarSceneGraphVisualizer
 
 # Set up a block diagram with the robot (dynamics) and a visualization block.
@@ -12,7 +11,6 @@ plant, scene_graph = AddMultibodyPlantSceneGraph(builder)
 # Load the double pendulum from Universal Robot Description Format
 parser = Parser(plant, scene_graph)
 parser.AddModelFromFile(FindResource("double_pendulum/double_pendulum.urdf"))
-plant.AddForceElement(UniformGravityFieldElement())
 plant.Finalize()
 
 builder.ExportInput(plant.get_actuation_input_port())
