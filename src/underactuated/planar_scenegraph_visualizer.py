@@ -29,7 +29,6 @@ from pydrake.all import (
     DiagramBuilder,
     Parser,
     PortDataType,
-    UniformGravityFieldElement,
     Simulator
 )
 
