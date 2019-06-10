@@ -34,6 +34,6 @@ def setup_underactuated():
         if platform.system() is 'Darwin':
             get_ipython().system(u'if [ ! -d "/opt/underactuated" ]; then git clone https://github.com/RussTedrake/underactuated.git /opt/underactuated && /opt/underactuated/scripts/setup/mac/install_prereqs; fi')
         else:
-            get_ipython().system(u'if [ ! -d "/opt/underactuated" ]; then git clone https://github.com/RussTedrake/underactuated.git /opt/underactuated && /opt/underactuated/scripts/setup/ubuntu/16.04/install_prereqs; fi')
+            get_ipython().system(u'if [ ! -d "/opt/underactuated" ]; then git clone https://github.com/RussTedrake/underactuated.git /opt/underactuated && /opt/underactuated/scripts/setup/ubuntu/18.04/install_prereqs; fi')
         sys.path.append("/opt/underactuated/src")
 
