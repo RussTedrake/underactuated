@@ -18,7 +18,7 @@ jobs:
           name: setup
           command: ./scripts/continuous_integration/circle_ci/setup_bionic
 
-      - run: echo 'export PYTHONPATH=/root/underactuated/src:/opt/drake/lib/python2.7/site-packages:${PYTHONPATH}' >> $BASH_ENV
+      - run: echo 'export PYTHONPATH=/root/underactuated/src:/opt/drake/lib/python3.6/site-packages:${PYTHONPATH}' >> $BASH_ENV
 
       - run:
           name: build and test
@@ -40,7 +40,7 @@ jobs:
           name: setup
           command: ./scripts/continuous_integration/circle_ci/setup_bionic
 
-      - run: echo 'export PYTHONPATH=/root/underactuated/src:/opt/drake/lib/python2.7/site-packages:${PYTHONPATH}' >> $BASH_ENV
+      - run: echo 'export PYTHONPATH=/root/underactuated/src:/opt/drake/lib/python3.6/site-packages:${PYTHONPATH}' >> $BASH_ENV
 
       - run:
           name: build and test

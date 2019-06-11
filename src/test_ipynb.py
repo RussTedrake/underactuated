@@ -3,29 +3,31 @@ import subprocess
 import sys
 import tempfile
 
+from nbconvert.preprocessors import ExecutePreprocessor
 import nbformat
 
-if (len(sys.argv) < 2):
-    print("Usage: test_ipynb file")
-    exit(-1)
-path = os.path.abspath(sys.argv[1])
-print(path)
 
-# Logic below is adapted from https://blog.thedataincubator.com/2016/06/testing-jupyter-notebooks/
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: test_ipynb file")
+        exit(-1)
+    path = os.path.abspath(sys.argv[1])
+    print(path)
 
-dirname, __ = os.path.split(path)
-os.chdir(dirname)
-with tempfile.NamedTemporaryFile(suffix=".ipynb") as fout:
-    args = ["jupyter", "nbconvert", "--to", "notebook", "--execute",
-      "--ExecutePreprocessor.timeout=60",
-      "--output", fout.name, path]
-    subprocess.check_call(args)
+    # Logic below is adapted from TRI Anzu code, which just follows:
+    # https://nbconvert.readthedocs.io/en/latest/execute_api.html
+    # N.B. `os.environ["IPYTHONDIR"]` should be set if this is to not write to
+    # $HOME.
+    dirname, __ = os.path.split(path)
+    os.chdir(dirname)
+    with open(path) as fout:
+        nb = nbformat.read(fout, as_version=4)
+    ep = ExecutePreprocessor(
+        timeout=60,
+        kernel_name="python{}".format(sys.version_info.major))
+    # Any errors encountered will raise a `CellExecutionError`.
+    ep.preprocess(nb, {"metadata": {"path": os.getcwd()}})
 
-    fout.seek(0)
-    nb = nbformat.read(fout, nbformat.current_nbformat)
 
-errors = [output for cell in nb.cells if "outputs" in cell
-                 for output in cell["outputs"]\
-                 if output.output_type == "error"]
-
-assert errors == []
+if __name__ == "__main__":
+    main()

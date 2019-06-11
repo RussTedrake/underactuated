@@ -26,8 +26,8 @@ from pydrake.all import (
     Simulator,
 )
 
-from utils import FindResource
-from pyplot_visualizer import PyPlotVisualizer
+from underactuated.utils import FindResource
+from underactuated.pyplot_visualizer import PyPlotVisualizer
 
 
 class PlanarRigidBodyVisualizer(PyPlotVisualizer):
@@ -187,8 +187,8 @@ class PlanarRigidBodyVisualizer(PyPlotVisualizer):
                             #    patch.append(new_pts)
                             patch = points
                         except Exception as e:
-                            print "Exception when loading tris from " \
-                                  "geometry: ", e
+                            print("Exception when loading tris from "
+                                  "geometry: ", e)
                     else:
                         geom_type = geom.getShape()
                         if geom_type == Shape.SPHERE:
@@ -368,7 +368,7 @@ if __name__ == "__main__":
             # but I just want to hack the Val planar viz into working...
             set_initial_state = False
         else:
-            print "Unrecognized model %s." % model
+            print("Unrecognized model %s." % model)
             parser.print_usage()
             exit(1)
 
@@ -421,6 +421,6 @@ if __name__ == "__main__":
         ani = visualizer.animate(signalLogger, repeat=True)
 
         if (args.animate):
-            print "Animating the simulation on repeat -- " \
-                  "close the plot to continue."
+            print("Animating the simulation on repeat -- "
+                  "close the plot to continue.")
             plt.show()
