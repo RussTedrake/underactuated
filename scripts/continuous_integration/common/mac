@@ -34,7 +34,7 @@ set -eux
 ./scripts/setup/mac/install_prereqs
 
 # load drake url from json
-readonly drake_url=`python -c "import sys, json; drake = json.load(open('drake_version.json')); print(drake['base_url'] + drake['build'] + '/drake-' + drake['mac_version'] + '-mac.tar.gz')"`
+readonly drake_url=`python3 -c "import sys, json; drake = json.load(open('drake_version.json')); print(drake['base_url'] + drake['build'] + '/drake-' + drake['mac_version'] + '-mac.tar.gz')"`
 
 pushd /usr/local
 
@@ -47,6 +47,3 @@ cat ./drake/share/doc/drake/VERSION.TXT
 ./drake/share/drake/setup/install_prereqs
 
 popd
-
-
-

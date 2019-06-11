@@ -31,4 +31,4 @@
 
 set -eux
 
-sudo ./scripts/continuous_integration/common/linux_ubuntu_xenial
+sudo ./scripts/continuous_integration/common/linux_ubuntu_bionic

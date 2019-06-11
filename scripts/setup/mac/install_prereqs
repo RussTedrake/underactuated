@@ -58,7 +58,7 @@ zmq
 EOF
 )
 
-pip2 install --upgrade $(tr '\n' ' ' <<EOF
+pip3 install --upgrade $(tr '\n' ' ' <<EOF
 autopep8
 jupyter
 meshcat
