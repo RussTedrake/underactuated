@@ -7617,22 +7617,31 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
 
     </section>
 
-    <section data-type="sect2"><h1>Unpack and set your PYTHONPATH</h1>
+    <section data-type="sect2"><h1>Unpack and set your PYTHONPATH and Test</h1>
 
-      <div class="bionic xenial"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
+      <div class="xenial"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
 sudo /opt/drake/share/drake/setup/install_prereqs
-export PYTHONPATH=/opt/drake/lib/python2.7/site-packages:${PYTHONPATH}</code></pre></div>
+export PYTHONPATH=/opt/drake/lib/python2.7/site-packages:${PYTHONPATH}
+
+python2 -c 'import pydrake; print(pydrake.__file__)
+</code></pre></div>
+
+      <div class="bionic"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
+sudo /opt/drake/share/drake/setup/install_prereqs
+export PYTHONPATH=/opt/drake/lib/python3.6/site-packages:${PYTHONPATH}
+
+python3 -c 'import pydrake; print(pydrake.__file__)
+</code></pre></div>
 
       <div class="mac"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
 /opt/drake/share/drake/setup/install_prereqs
-export PYTHONPATH=/opt/drake/lib/python2.7/site-packages:${PYTHONPATH}
+export PYTHONPATH=/opt/drake/lib/python3.7/site-packages:${PYTHONPATH}
 export PATH=/usr/local/opt/python/libexec/bin:${PATH}</code></pre></div>
+
+python3 -c 'import pydrake; print(pydrake.__file__)
     </section>
 
-    <section data-type="sect2"><h1>Test for success</h1>
-
-      <p><pre class="highlight"><code>python -c 'import pydrake; print(pydrake.__file__)'
-</code></pre></p>
+    <section data-type="sect2"><h1>See Also</h1>
 
       <p> Further tips and instructions are available at the <a
       href="http://drake.mit.edu/python_bindings.html#using-the-python-bindings">python

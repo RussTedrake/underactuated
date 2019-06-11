@@ -46,7 +46,7 @@ As described at http://github.com/RobotLocomotion/drake/issues/7926, use
 
 On your drake PR, use
 ```
-@drake-jenkins-bot linux-xenial-unprovisioned-gcc-bazel-experimental-snopt-packaging please
+@drake-jenkins-bot linux-bionic-unprovisioned-gcc-bazel-experimental-snopt-packaging please
 @drake-jenkins-bot mac-mojave-unprovisioned-clang-bazel-experimental-snopt-packaging please
 ```
 Then examine the last lines of the console output from those builds for the 

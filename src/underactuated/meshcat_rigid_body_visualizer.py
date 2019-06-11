@@ -120,8 +120,8 @@ class MeshcatRigidBodyVisualizer(LeafSystem):
                         # respect mesh scale
                         element_local_tf[0:3, 0:3] *= geom.scale
                     else:
-                        print "UNSUPPORTED GEOMETRY TYPE ",\
-                              geom.getShape(), " IGNORED"
+                        print("UNSUPPORTED GEOMETRY TYPE ",
+                              geom.getShape(), " IGNORED")
                         continue
 
                     rgba = [1., 0.7, 0., 1.]
@@ -289,12 +289,12 @@ if __name__ == "__main__":
 
     meshcat_server_p = None
     if args.test:
-        print "Spawning"
+        print("Spawning")
         import subprocess
         meshcat_server_p = subprocess.Popen(["meshcat-server"])
     else:
-        print "Warning: if you have not yet run meshcat-server in another " \
-              "terminal, this will hang."
+        print("Warning: if you have not yet run meshcat-server in another "
+              "terminal, this will hang.")
 
     for model in args.models:
         if model == "pend":
@@ -313,7 +313,7 @@ if __name__ == "__main__":
             # but I just want to hack the Val planar viz into working...
             set_initial_state = False
         else:
-            print "Unrecognized model %s." % model
+            print("Unrecognized model %s." % model)
             parser.print_usage()
             exit(1)
 

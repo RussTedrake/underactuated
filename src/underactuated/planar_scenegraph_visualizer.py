@@ -32,8 +32,8 @@ from pydrake.all import (
     Simulator
 )
 
-from utils import FindResource
-from pyplot_visualizer import PyPlotVisualizer
+from underactuated.utils import FindResource
+from underactuated.pyplot_visualizer import PyPlotVisualizer
 
 
 class PlanarSceneGraphVisualizer(PyPlotVisualizer):
@@ -417,6 +417,6 @@ if __name__ == "__main__":
         elif model == "manip":
             runManipulationExample(args)
         else:
-            print "Unrecognized model %s." % model
+            print("Unrecognized model %s." % model)
             parser.print_usage()
             exit(1)

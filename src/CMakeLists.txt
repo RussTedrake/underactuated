@@ -42,6 +42,11 @@ function(add_nbtest ipynbfile)
            COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/src/test_ipynb.py ${ipynbfile}
            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
+  set_property(TEST ${pydir}_${ipynbfile}
+               PROPERTY ENVIRONMENT
+                 "PYTHONPATH=${PYTHONPATH}"
+              )
+
   set_tests_properties(${pydir}_${ipynbfile} PROPERTIES
           FAIL_REGULAR_EXPRESSION "DrakeDeprecationWarning"
           )

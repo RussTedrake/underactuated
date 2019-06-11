@@ -77,7 +77,7 @@ class PyPlotVisualizer(LeafSystem):
 
     def draw(self, context):
         '''' Return a list of updated artists if blitting is used '''
-        print "SUBCLASSES MUST IMPLEMENT."
+        print("SUBCLASSES MUST IMPLEMENT.")
 
     def start_recording(self, show=True):
         self.show = show

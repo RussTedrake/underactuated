@@ -5,8 +5,9 @@
 
 # Alternatively, you may start the 3D visualizer yourself by running
 # `meshcat-server` in your shell, and then opening the url printed to the
-# screen in your web browser. Then use `python lqr.py --meshcat default` to run
-# this script and see that visualization.
+# screen in your web browser. Then use `<python> lqr.py --meshcat default` to
+# run this script and see that visualization, where `<python>` is either
+# `python2` or `python3`.
 
 import argparse
 import numpy as np

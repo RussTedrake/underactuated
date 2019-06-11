@@ -2,7 +2,7 @@
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
   "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <!-- Created with matplotlib (http://matplotlib.org/) -->
-<svg height="345.6pt" version="1.1" viewBox="0 0 460.8 345.6" width="460.8pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<svg height="345pt" version="1.1" viewBox="0 0 460 345" width="460pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
  <defs>
   <style type="text/css">
 *{stroke-linecap:butt;stroke-linejoin:round;}
@@ -15,11 +15,11 @@ L 460.8 345.6
 L 460.8 0 
 L 0 0 
 z
-" style="fill:#ffffff;"/>
+" style="fill:none;opacity:0;"/>
   </g>
   <g id="axes_1">
    <g id="patch_2">
-    <path clip-path="url(#p0ee43c44b1)" d="M 134.169456 226.406912 
+    <path clip-path="url(#p5ef771abc5)" d="M 134.169456 226.406912 
 L 158.716043 271.33914 
 L 154.222821 273.793798 
 L 129.676233 228.861571 
@@ -27,7 +27,7 @@ z
 " style="stroke:#000000;stroke-linejoin:miter;"/>
    </g>
    <g id="patch_3">
-    <path clip-path="url(#p0ee43c44b1)" d="M 358.830592 103.673975 
+    <path clip-path="url(#p5ef771abc5)" d="M 358.830592 103.673975 
 L 383.377179 148.606202 
 L 378.883957 151.06086 
 L 354.337369 106.128633 
@@ -35,7 +35,7 @@ z
 " style="stroke:#000000;stroke-linejoin:miter;"/>
    </g>
    <g id="patch_4">
-    <path clip-path="url(#p0ee43c44b1)" d="M 206.80989 186.723262 
+    <path clip-path="url(#p5ef771abc5)" d="M 206.80989 186.723262 
 L 204.949797 184.779688 
 L 201.95161 183.651455 
 L 197.921575 183.461456 
@@ -88,7 +88,7 @@ z
 " style="fill:#0000ff;stroke:#000000;stroke-linejoin:miter;"/>
    </g>
    <g id="patch_5">
-    <path clip-path="url(#p0ee43c44b1)" d="M 431.471026 63.990325 
+    <path clip-path="url(#p5ef771abc5)" d="M 431.471026 63.990325 
 L 429.610933 62.04675 
 L 426.612746 60.918517 
 L 422.582711 60.728518 
@@ -141,7 +141,7 @@ z
 " style="fill:#0000ff;stroke:#000000;stroke-linejoin:miter;"/>
    </g>
    <g id="patch_6">
-    <path clip-path="url(#p0ee43c44b1)" d="M 397.460035 126.32718 
+    <path clip-path="url(#p5ef771abc5)" d="M 397.460035 126.32718 
 L 127.866672 273.606706 
 L 140.139965 296.07282 
 L 409.733328 148.793294 
@@ -149,7 +149,7 @@ z
 " style="fill:#999999;stroke:#000000;stroke-linejoin:miter;"/>
    </g>
    <g id="patch_7">
-    <path clip-path="url(#p0ee43c44b1)" d="M 320.991428 39.749574 
+    <path clip-path="url(#p5ef771abc5)" d="M 320.991428 39.749574 
 L 338.777227 56.287089 
 L 334.284004 58.741747 
 L 383.377179 148.606202 
@@ -160,7 +160,7 @@ z
 " style="fill:#993333;stroke:#993333;stroke-linejoin:miter;"/>
    </g>
    <g id="patch_8">
-    <path clip-path="url(#p0ee43c44b1)" d="M 96.330293 162.482512 
+    <path clip-path="url(#p5ef771abc5)" d="M 96.330293 162.482512 
 L 114.116091 179.020026 
 L 109.622868 181.474685 
 L 158.716043 271.33914 
@@ -171,7 +171,7 @@ z
 " style="fill:#993333;stroke:#993333;stroke-linejoin:miter;"/>
    </g>
    <g id="patch_9">
-    <path clip-path="url(#p0ee43c44b1)" d="M 12.8 222.72 
+    <path clip-path="url(#p5ef771abc5)" d="M 12.8 222.72 
 L 8.96 211.2 
 L 11.52 211.2 
 L 11.52 57.6 
@@ -182,17 +182,17 @@ z
 " style="stroke:#000000;stroke-linejoin:miter;"/>
    </g>
    <g id="line2d_1">
-    <path clip-path="url(#p0ee43c44b1)" d="M 268.8 211.2 
+    <path clip-path="url(#p5ef771abc5)" d="M 268.8 211.2 
 L 460.8 211.2 
 " style="fill:none;stroke:#000000;stroke-linecap:square;"/>
    </g>
    <g id="line2d_2">
-    <path clip-path="url(#p0ee43c44b1)" d="M 268.8 211.2 
+    <path clip-path="url(#p5ef771abc5)" d="M 268.8 211.2 
 L 437.295852 119.150297 
 " style="fill:none;stroke:#000000;stroke-linecap:square;"/>
    </g>
    <g id="line2d_3">
-    <path clip-path="url(#p0ee43c44b1)" d="M 364.8 211.2 
+    <path clip-path="url(#p5ef771abc5)" d="M 364.8 211.2 
 L 364.779167 209.200145 
 L 364.716679 207.201157 
 L 364.612561 205.203905 
@@ -461,7 +461,7 @@ z
   </g>
  </g>
  <defs>
-  <clipPath id="p0ee43c44b1">
+  <clipPath id="p5ef771abc5">
    <rect height="345.6" width="460.8" x="0" y="0"/>
   </clipPath>
  </defs>

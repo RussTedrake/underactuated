@@ -37,7 +37,7 @@ yes | ./scripts/setup/ubuntu/18.04/install_prereqs
 
 set +u
 if [ -z "${DRAKE_BINARY_URL}" ]; then
-    DRAKE_BINARY_URL=`python -c "import sys, json; drake = json.load(open('drake_version.json')); print(drake['base_url'] + drake['build'] + '/drake-' + drake['version'] + '-bionic.tar.gz')"`
+    DRAKE_BINARY_URL=`python3 -c "import sys, json; drake = json.load(open('drake_version.json')); print(drake['base_url'] + drake['build'] + '/drake-' + drake['version'] + '-bionic.tar.gz')"`
 fi
 set -u
 
