@@ -357,7 +357,7 @@ def runPendulumExample(args):
 def runManipulationExample(args):
     builder = DiagramBuilder()
     station = builder.AddSystem(ManipulationStation(time_step=0.005))
-    station.SetupDefaultStation()
+    station.SetupManipulationClassStation()
     station.Finalize()
 
     plant = station.get_multibody_plant()
