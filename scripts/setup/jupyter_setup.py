@@ -16,7 +16,7 @@ def setup_drake():
         if platform.system() is 'Darwin':
             get_ipython().system(u'if [ ! -d "/opt/drake" ]; then curl -o drake.tar.gz https://drake-packages.csail.mit.edu/drake/continuous/drake-latest-mac.tar.gz && tar -xzf drake.tar.gz -C /opt && /opt/drake/share/drake/setup/install_prereqs; fi')
         elif platform.linux_distribution() == ('Ubuntu', '18.04', 'bionic'):
-            get_ipython().system(u'if [ ! -d "/opt/drake" ]; then curl -o drake.tar.gz https://drake-packages.csail.mit.edu/drake/continuous/drake-{date}-bionic.tar.gz && tar -xzf drake.tar.gz -C /opt && /opt/drake/share/drake/setup/install_prereqs; fi'.format(date=date))
+            get_ipython().system(u'if [ ! -d "/opt/drake" ]; then curl -o drake.tar.gz https://drake-packages.csail.mit.edu/drake/continuous/drake-latest-bionic.tar.gz && tar -xzf drake.tar.gz -C /opt && /opt/drake/share/drake/setup/install_prereqs; fi')
         else:
             assert False, "Unsupported platform"
         v = sys.version_info
