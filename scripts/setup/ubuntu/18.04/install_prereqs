@@ -55,13 +55,13 @@ EOF
 )
 
 pip3 install -qq --upgrade --disable-pip-version-check $(tr '\n' ' ' <<EOF
-ipython==5.8.0
-ipykernel==4.8.2
+ipython~=5.5.0
+ipykernel~=4.6.0
 jupyter
 meshcat
 pycodestyle
 shapely
-tornado<6
+tornado~=4.5.0
 trimesh
 EOF
 )
