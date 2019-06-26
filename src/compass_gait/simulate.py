@@ -2,8 +2,7 @@ import argparse
 import math
 import numpy as np
 
-from pydrake.all import (Box,
-                         ConstantVectorSource,
+from pydrake.all import (ConstantVectorSource,
                          DiagramBuilder,
                          FindResourceOrThrow,
                          FloatingBaseType,
@@ -12,6 +11,7 @@ from pydrake.all import (Box,
                          SignalLogger,
                          Simulator,
                          VisualElement)
+from pydrake.attic.multibody.shapes import Box
 from pydrake.examples.compass_gait import (CompassGait, CompassGaitParams)
 from underactuated import (PlanarRigidBodyVisualizer)
 

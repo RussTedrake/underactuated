@@ -1,5 +1,5 @@
 
-from pydrake.multibody.rigid_body_tree import *
+from pydrake.attic.multibody.rigid_body_tree import RigidBodyTree
 from pydrake.multibody.tree import MultibodyForces
 from pydrake.multibody.plant import MultibodyPlant
 import numpy as np

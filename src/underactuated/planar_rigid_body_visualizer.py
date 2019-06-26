@@ -18,13 +18,15 @@ from pydrake.all import (
     DiagramBuilder,
     FloatingBaseType,
     PortDataType,
-    RigidBodyFrame,
-    RigidBodyPlant,
-    RigidBodyTree,
-    Shape,
     SignalLogger,
     Simulator,
 )
+from pydrake.attic.multibody.rigid_body_tree import (
+    RigidBodyFrame,
+    RigidBodyTree,
+)
+from pydrake.attic.multibody.rigid_body_plant import RigidBodyPlant
+from pydrake.attic.multibody.shapes import Shape
 
 from underactuated.utils import FindResource
 from underactuated.pyplot_visualizer import PyPlotVisualizer

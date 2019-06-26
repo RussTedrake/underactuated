@@ -2,14 +2,14 @@ import argparse
 import math
 import numpy as np
 
-from pydrake.all import (Box,
-                         DiagramBuilder,
+from pydrake.all import (DiagramBuilder,
                          FindResourceOrThrow,
                          FloatingBaseType,
                          Isometry3,
                          RigidBodyTree,
                          Simulator,
                          VisualElement)
+from pydrake.attic.multibody.shapes import Box
 from pydrake.examples.rimless_wheel import (RimlessWheel, RimlessWheelParams)
 from underactuated import (PlanarRigidBodyVisualizer)
 
