@@ -31,7 +31,7 @@
 
 set -eux
 
-export DEBIAN_FRONTEND='noninteractive'
+export DEBIAN_FRONTEND=noninteractive
 
 yes | ./scripts/setup/ubuntu/18.04/install_prereqs
 
