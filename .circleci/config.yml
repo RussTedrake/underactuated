@@ -46,27 +46,6 @@ jobs:
           name: build and test
           command: ./scripts/continuous_integration/circle_ci/build_test
 
-  underactuated-with-drake-nightly-xenial:
-    docker:
-      - image: robotlocomotion/circleci:xenial
-
-    working_directory: ~/underactuated
-
-    environment:
-      - DRAKE_BINARY_URL: "https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-xenial.tar.gz"
-
-    steps:
-      - checkout
-
-      - run:
-          name: setup
-          command: ./scripts/continuous_integration/circle_ci/setup_xenial
-
-      - run: echo 'export PYTHONPATH=/root/underactuated/src:/opt/drake/lib/python2.7/site-packages:${PYTHONPATH}' >> $BASH_ENV
-
-      - run:
-          name: build and test
-          command: ./scripts/continuous_integration/circle_ci/build_test
 
 workflows:
   version: 2
@@ -83,4 +62,3 @@ workflows:
               only: master
     jobs:
        - underactuated-with-drake-nightly
-       - underactuated-with-drake-nightly-xenial
