@@ -214,8 +214,8 @@ class PlanarSceneGraphVisualizer(PyPlotVisualizer):
                     lati = lati.ravel()
                     longi = longi.ravel()
                     patch = np.vstack([
-                        np.sin(longi)*np.cos(lati),
-                        np.sin(longi)*np.sin(lati),
+                        np.sin(lati)*np.cos(longi),
+                        np.sin(lati)*np.sin(longi),
                         np.cos(lati)])
                     patch *= radius
 
