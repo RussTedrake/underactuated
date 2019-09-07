@@ -39,7 +39,7 @@ context.SetAccuracy(1e-10)
 context.get_mutable_continuous_state_vector().SetFromVector(s[:])
 
 simulator.set_target_realtime_rate(1.0)
-simulator.StepTo(0.6)
+simulator.AdvanceTo(0.6)
 
 print("apex: " + str(plant.last_apex))
 

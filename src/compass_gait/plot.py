@@ -33,7 +33,7 @@ context = simulator.get_mutable_context()
 context.SetAccuracy(1e-4)
 context.SetContinuousState([0., 0., 0.4, -2.])
 
-simulator.StepTo(args.duration)
+simulator.AdvanceTo(args.duration)
 
 plt.figure()
 plt.plot(logger.data()[4, :], logger.data()[11, :])

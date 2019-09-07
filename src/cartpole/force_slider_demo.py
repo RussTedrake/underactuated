@@ -38,4 +38,4 @@ simulator.set_publish_every_time_step(False)
 context = simulator.get_mutable_context()
 context.SetContinuousState([0., 1., 0., 0.])
 
-simulator.StepTo(args.duration)
+simulator.AdvanceTo(args.duration)

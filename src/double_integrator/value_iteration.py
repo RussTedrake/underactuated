@@ -125,7 +125,7 @@ simulator = Simulator(diagram)
 
 state = simulator.get_mutable_context().SetContinuousState([-10.0, 0.0])
 
-simulator.StepTo(10.)
+simulator.AdvanceTo(10.)
 
 # Visualize the result as a video.
 vis = DoubleIntegratorVisualizer()

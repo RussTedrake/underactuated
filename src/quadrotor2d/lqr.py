@@ -53,4 +53,4 @@ for i in range(args.trials):
     context.SetTime(0.)
     context.SetContinuousState(np.random.randn(6,))
     simulator.Initialize()
-    simulator.StepTo(args.duration)
+    simulator.AdvanceTo(args.duration)

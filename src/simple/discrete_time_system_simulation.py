@@ -17,7 +17,7 @@ state = simulator.get_mutable_context().get_mutable_discrete_state_vector()
 state.SetFromVector([0.9])
 
 # Simulate for 10 seconds.
-simulator.StepTo(10)
+simulator.AdvanceTo(10)
 
 # Plot the results.
 plt.stem(logger.sample_times(), logger.data().transpose())

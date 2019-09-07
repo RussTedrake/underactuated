@@ -66,4 +66,4 @@ if __name__ == "__main__":
         context.SetTime(0.)
         context.SetContinuousState(UprightState() + 0.1*np.random.randn(4,))
         simulator.Initialize()
-        simulator.StepTo(args.duration)
+        simulator.AdvanceTo(args.duration)

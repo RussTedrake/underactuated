@@ -85,4 +85,4 @@ if __name__ == "__main__":
         context.SetContinuousState(UprightState().CopyToVector() +
                                    0.05*np.random.randn(4,))
         simulator.Initialize()
-        simulator.StepTo(args.duration)
+        simulator.AdvanceTo(args.duration)

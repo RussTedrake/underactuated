@@ -95,4 +95,4 @@ context = simulator.get_mutable_context()
 context.SetContinuousState((1., 0., 0.2, 0.))  # (θ₁, θ₂, θ̇₁, θ̇₂)
 
 # Simulate
-simulator.StepTo(args.duration)
+simulator.AdvanceTo(args.duration)

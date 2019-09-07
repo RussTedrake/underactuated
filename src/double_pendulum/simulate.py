@@ -32,4 +32,4 @@ context.SetContinuousState([1., 1., 0., 0.])
 context.FixInputPort(0, [0., 0.])  # Zero input torques
 
 # Simulate for 10 seconds
-simulator.StepTo(10)
+simulator.AdvanceTo(10)

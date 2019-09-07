@@ -67,4 +67,4 @@ diagram.GetMutableSubsystemContext(
 context.SetAccuracy(1e-4)
 context.SetContinuousState([args.initial_angle, args.initial_angular_velocity])
 
-simulator.StepTo(args.duration)
+simulator.AdvanceTo(args.duration)

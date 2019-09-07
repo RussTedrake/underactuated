@@ -148,7 +148,7 @@ if __name__ == "__main__":
         context.SetTime(0.)
         context.SetContinuousState(UprightState().CopyToVector() +
                                    math.pi*np.random.randn(2,))
-        simulator.StepTo(args.duration)
+        simulator.AdvanceTo(args.duration)
         ax.plot(logger.data()[0, :], logger.data()[1, :])
         # plt.pause(0.001)
         logger.reset()

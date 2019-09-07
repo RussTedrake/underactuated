@@ -58,4 +58,4 @@ diagram.Publish(context)  # draw once to get the window open
 context.SetAccuracy(1e-4)
 context.SetContinuousState([0., 0., 0.4, -2.])
 
-simulator.StepTo(args.duration)
+simulator.AdvanceTo(args.duration)

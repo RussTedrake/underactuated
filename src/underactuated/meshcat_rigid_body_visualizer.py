@@ -360,7 +360,7 @@ if __name__ == "__main__":
             initial_state[0] = 1.0
             state.SetFromVector(initial_state)
 
-        simulator.StepTo(args.duration)
+        simulator.AdvanceTo(args.duration)
 
         if (args.animate):
             # Generate an animation of whatever happened

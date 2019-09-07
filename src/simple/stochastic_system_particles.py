@@ -96,5 +96,5 @@ simulator = Simulator(diagram)
 simulator.get_mutable_integrator().set_fixed_step_mode(True)
 simulator.get_mutable_integrator().set_maximum_step_size(0.1)
 
-simulator.StepTo(20)
+simulator.AdvanceTo(20)
 plt.show()

@@ -132,7 +132,7 @@ simulator.set_publish_every_time_step(False)
 state = simulator.get_mutable_context().get_mutable_continuous_state_vector()
 state.SetFromVector([0.1, 0.0])
 
-simulator.StepTo(10.)
+simulator.AdvanceTo(10.)
 
 # Visualize the result as a video.
 vis = PendulumVisualizer()

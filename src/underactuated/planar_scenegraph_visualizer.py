@@ -351,7 +351,7 @@ def runPendulumExample(args):
         plant.get_actuation_input_port().get_index(),
         np.zeros(plant.num_actuators()))
     plant_context.SetContinuousState([0.5, 0.1])
-    simulator.StepTo(args.duration)
+    simulator.AdvanceTo(args.duration)
 
 
 def runManipulationExample(args):
@@ -391,7 +391,7 @@ def runManipulationExample(args):
         station_context, np.zeros(1))
     station.GetInputPort("wsg_force_limit").FixValue(
         station_context, [40.0])
-    simulator.StepTo(args.duration)
+    simulator.AdvanceTo(args.duration)
 
 
 if __name__ == "__main__":

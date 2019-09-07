@@ -15,7 +15,7 @@ context.SetContinuousState([0.9])
 
 # Create the simulator, and simulate for 10 seconds.
 simulator = Simulator(diagram, context)
-simulator.StepTo(10)
+simulator.AdvanceTo(10)
 
 # Plot the results.
 plt.plot(logger.sample_times(), logger.data().transpose())
