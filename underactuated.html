@@ -7612,22 +7612,21 @@ python3 -c 'import pydrake; print(pydrake.__file__)
       <div class="mac"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
 /opt/drake/share/drake/setup/install_prereqs
 export PYTHONPATH=/opt/drake/lib/python3.7/site-packages:${PYTHONPATH}
-export PATH=/usr/local/opt/python/libexec/bin:${PATH}</code></pre></div>
+export PATH=/usr/local/opt/python/libexec/bin:${PATH}
 
 python3 -c 'import pydrake; print(pydrake.__file__)
+</code></pre></div>
     </section>
 
     <section data-type="sect2"><h1>See Also</h1>
 
-      <p> Further tips and instructions are available at the <a
-      href="http://drake.mit.edu/python_bindings.html#using-the-python-bindings">python
-      documentation page on the drake website</a>. </p>
+      <p>There are a number of <a href="https://nbviewer.jupyter.org/github/RobotLocomotion/drake/tree/master/tutorials/">tutorials</a> in <drake></drake> that can help you get started.</p>
 
     </section>
 
   </section>
 
-  <section data-type="sect1"><h1>Run an example</h1>
+  <section data-type="sect1"><h1>Run a textbook example</h1>
 
     <p>Note: All of the examples in the textbook supplement currently assume
     that working directory of your python interpreter is the
@@ -7660,9 +7659,6 @@ python3 -c 'import pydrake; print(pydrake.__file__)
     Troubleshooting.
   </todo>
 
-  <p>The next chapter in the Appendix provides a tutorial for working with
-  dynamical systems in <drake></drake>.</p>
-
   <section data-type="sect1"><h1>Listing of <drake></drake> examples throughout this text</h1>
 
     <p>The best overview we have for the remaining capabilities in <drake></drake> are the main chapters of these notes.  For convenience, here is a list of software examples that are sprinkled throughout the text:</p>
@@ -7672,231 +7668,6 @@ python3 -c 'import pydrake; print(pydrake.__file__)
   </section>
 
 </section> <!-- end chapter on drake -->
-
-<section data-type="chapter" class="chapter" id="systems"><h1>Modeling
-  Input-Output Dynamical Systems in Drake</h1>
-
-  <p>This chapter provides a short tutorial for modeling input-output dynamical
-  systems in <drake></drake>. <drake></drake> includes a set of C++ classes in
-  <code>drake::systems</code> that provide an API for building complex dynamical
-  systems by connecting simple dynamical systems into a block diagram.  The
-  modeling approach is very much inspired by MATLAB's Simulink (though without
-  the graphical user interface).  Like Simulink, <code>drake::systems</code>
-  provides a library of existing systems and also makes it easy for you to
-  define your own new dynamical systems.  The python wrappers in
-  <code>pydrake</code> used in these notes provide a convenient set of
-  bindings on top of this systems framework, allowing you to write new
-  systems in either Python or C++, and to use them interchangeably.</p>
-
-  <p>A major difference between modeling dynamical systems in
-  <drake></drake> vs Simulink (or most other system modeling
-  languages) is that there is a considerable emphasis in <drake></drake> on
-  exposing the underlying structure in the governing equations.  For example, if
-  certain outputs of a dynamical system depend on only a small fraction of the
-  inputs, then we attempt to expose this sparsity directly.  Similarly, if the
-  dynamics of a system can be described by a polynomial vector field (or linear,
-  or at least differentiable, ...), then <drake></drake> aims to expose this
-  structure as well, and to preserve this structure when systems are combined
-  into a diagram. Exposing this structure may have only modest benefit for
-  numerical simulation, but it is incredibly enabling for more sophisticated
-  algorithms for analysis, system identification, and feedback or state
-  estimator design. </p>
-
-  <p>We'll return to the more advanced modeling tools in a minute, but let us
-  start with some very simple examples.</p>
-
-  <p>A quick note on documentation.  The C++ classes are beautifully documented
-  in <a href="http://drake.mit.edu/doxygen_cxx">doxygen</a>.  I <a
-  href="https://github.com/RobotLocomotion/drake/issues/7915">currently
-  recommend</a> using this doxygen as the primary source of documentation even
-  for your Python development... most of the <code>pydrake</code> API maps
-  directly to that C++ API.</p>
-
-  <section data-type="sect1"><h1>Writing your own dynamics</h1>
-
-    <p> In this section, we will describe how you can write your own dynamics
-    class in pydrake.  Every user system should derive from the
-    <code>pydrake.systems.framework.LeafSystem</code> class.</p>
-
-    <p> However, many dynamical systems we are interested in are represented by
-    a simple vector field in state-space form, where we often use $x$ to denote the
-    state vector, $u$ for the input vector, and $y$ for the output vector.  To
-    make it even easier to implement systems in this form, we provide another
-    subclass <code>pydrake.systems.framework.VectorSystem</code> that provides
-    an excellent starting point. </p>
-
-    <center><img style="width:250px;" data-src="figures/input_output_system.svg"/></center>
-
-    <p> <b>Continuous-Time Systems.</b> Consider a basic continuous-time
-    nonlinear input-output dynamical system described by the following
-    state-space equations: \begin{gather*} \dot{x} = f(t,x,u), \\ y = g(t,x,u).
-    \end{gather*} In <code>pydrake</code>, you can instantiate a system of this
-    form where $f()$ and $g()$ are anything that you can write into a Python
-    function, as illustrated by the following example:
-
-    <div data-type="example" class="drake"><h1>A simple continuous-time system</h1>
-
-      <p>Consider the system \begin{gather*}\dot{x} = -x + x^3,\\ y =
-      x.\end{gather*}  This system has zero inputs, one (continuous) state
-      variable, and one output.  It can be implemented in <drake></drake> using
-      the following code:</p>
-
-      <pysrcinclude>simple/continuous_time_system.py</pysrcinclude>
-
-    </div>
-
-
-    <p><b>Discrete-Time Systems</b>. Implementing a basic discrete-time system
-    in <drake></drake> is very analogous to implementing a continuous-time
-    system.  The discrete-time system given by: \begin{gather*} x[n+1] =
-    f(n,x,u),\\ y[n] = g(n,x,u), \end{gather*} can be implemented as seen in the
-    following example.</p>
-
-    <div data-type="example" class="drake"><h1>A simple discrete-time
-    system</h1>
-
-      <p>Consider the system \begin{gather*}x[n+1] = x^3[n],\\ y[n] =
-      x[n].\end{gather*}  This system has zero inputs, one (discrete) state
-      variable, and one output.  It can be implemented in <drake></drake> using
-      the following code:</p>
-
-      <pysrcinclude>simple/discrete_time_system.py</pysrcinclude>
-
-    </div>
-
-
-    <p>Although these simple VectorSystems are a nice way to get started, in
-    fact Drake supports authoring a wide variety of systems with multiple inputs
-    and outputs, mixed discrete- and continuous- dynamics, hybrid dynamics with
-    guards and resets, systems with constraints, and even stochastic systems.
-    To expose more of the underlying system framework, you should derive your
-    system from <a
-    href="http://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1_leaf_system.html">LeafSystem</a>
-    directly, instead of using the simplified VectorSystem interface. </p>
-
-    <todo>restore/update mixed discrete/continuous, systems with
-      constraints, hybrid systems, and stochastic systems.  Also
-      RigidBodyPlant (load from urdf/sdf).</todo>
-
-  </section>
-
-  <section data-type="sect1"><h1>Simulation</h1>
-
-    <p>Once you have acquired a System object describing the dynamics of
-    interest, the most basic thing that you can do is to simulate it.  This is
-    accomplished with the <code>pydrake.framework.analysis.Simulator</code>
-    class. This class provides access to a rich suite of numerical integration
-    routines, with support for variable-step integration, stiff solvers, and
-    event detection.</p>
-
-    <p>In order to view the data from a simulation after the simulation has run,
-    you should add a <code>pydrake.framework.primitives.SignalLogger</code>
-    system to your diagram.</p>
-
-    <div data-type="example" class="drake"><h1>Simulating and
-    plotting the results</h1>
-
-      <p>Use the following code to instantiate the
-      <code>SimpleContinuousTimeSystem </code>, simulate it, and plot the
-      results:</p>
-      <pysrcinclude>simple/continuous_time_system_simulation.py</pysrcinclude>
-
-      <p>This should generate the plot below</p>
-      <figure>
-        <img style="width:500px"
-             data-src="figures/simple_continuous_time_system_simulation.svg"/>
-        <figcaption>Simulation and plot the simple continuous time system
-          .</figcaption>
-      </figure>
-
-      <p>The code for running the discrete time system is basically identical:</p>
-      <pysrcinclude>simple/discrete_time_system_simulation.py</pysrcinclude>
-
-    </div>
-
-    <p>For many systems, the simulation will run much faster than real time.
-    If you would like to tell the simulator to slow down (if possible) to some
-    multiple of the real time clock, then consider using the
-    <code>set_target_realtime_rate</code> method of the <code>Simulator</code>.
-    This is useful, for example, if you are trying to animate your robot as it
-    simulates, and would like the benefit of physical intuition, or if you are
-    trying to use the simulation as a part of a multi-process real-time control
-    system.</p>
-
-  </section>
-
-  <section data-type="sect1"><h1>The System "Context"</h1>
-
-    <p>If you were looking carefully, you might have noticed a few instances of
-    the word "context" in the code snippets above.  The <a
-    href="http://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1_context.html">Context</a>
-    is a core concept in the <drake></drake> systems framework: the Context
-    captures all of the (potentially) dynamic information that a System requires
-    to implement it's core methods: this includes the time, the state, any
-    inputs, and any system parameters.  The Context of a System is everything
-    you need to know for simulation (or control design, ...), and given a
-    Context all methods called on a System should be completely
-    deterministic/repeatable.</p>
-
-    <p>Systems know how to create an instance of a Context (see <a
-    href="http://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1_system.html#ab763e3e9fc29dfc3ccde21ca7501a7e9">CreateDefaultContext</a>).
-    In the simulation example above, the Simulator created a Context for us. We
-    retreived the Context from the Simulator in order to set the initial
-    conditions (state) of the system before running the simulation.</p>
-
-    <p> Note that a Context is not completely defined unless all of the input
-    ports are connected (simulation and other method calls will fail if they are
-    not). For input ports that are not directly tied to the output of anther
-    system, consider using the <a
-    href="http://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1_context.html#ab6431f682a893a81eef20d675c996d8c">FixInputPort</a>
-    method of the Context.</p>
-
-  </section>
-
-  <section data-type="sect1"><h1>Combinations of Systems: Diagram
-  and DiagramBuilder</h1>
-
-    <figure>
-      <center><img style="width:250px;" data-src="figures/feedback_system.svg"/></center>
-      <figcaption>Feedback combination</figcaption>
-    </figure>
-    <figure>
-      <center><img style="width:300px;" data-src="figures/cascade_system.svg"/></center>
-      <figcaption>Cascade combination</figcaption>
-    </figure>
-
-    <p>The real modeling power of <drake></drake> comes from combining many
-    smaller systems together into more complex systems.  The concept is very
-    simple: we use the <code>DiagramBuilder</code> class to <code>AddSystem
-    </code>s and to <code>Connect</code> input ports to output ports or to
-    expose them as inputs/output of the diagram.  Then we call <code>Build
-    </code> to generate the new <code>Diagram</code> instance, which is just
-    another <code>System</code> in the framework, and can be simulated or
-    analyzed using the entire suite of tools.</p>
-
-    <div data-type="example" class="drake"><h1>DiagramBuilder</h1>
-
-      <p>In the example below, we connect two subsystems (the plant and the
-      visualizer), and expose the input of the plant as an input to the
-      <code>Diagram</code> being constructed:</p>
-
-      <pysrcinclude>double_pendulum/simulate.py</pysrcinclude>
-
-    </div>
-
-    <p>Just like any other <code>System</code>, a <code>Diagram</code> has
-    a <code>Context</code>.  You can always extract the context of a
-    subsystem using <code>Diagram.GetSubSystemContext</code> or
-    <code>Diagram.GetMutableSubsystemContext</code>.  (If it is not clear
-    yet, "mutable" means you have write access, otherwise the data is
-    <code>const</code>; we go to some length in the systems framework to
-    protect algorithms / users from violating the fundamental systems
-    abstractions).</p>
-
-  </section>
-
-
-</section> <!-- end chapter on modeling dynamical systems -->
 
 <section data-type="chapter" class="chapter" id="multibody"><h1>Rigid-Body
   Dynamics</h1>
@@ -8292,9 +8063,7 @@ python3 -c 'import pydrake; print(pydrake.__file__)
   <section data-type="sect1"><h1>Optimization software</h1>
 
     <p>We have a short introduction to mathematical programming in
-      <drake></drake> here.</p>
-
-      <jupyter>mathematical_program_examples.ipynb</jupyter>
+      <drake></drake> <a href="https://nbviewer.jupyter.org/github/RobotLocomotion/drake/blob/master/tutorials/mathematical_program.ipynb">here</a>.</p>
 
   </section>
 
