@@ -61,9 +61,7 @@ EOF
 pip3 install --upgrade $(tr '\n' ' ' <<EOF
 autopep8
 jupyter
-meshcat
 pycodestyle
-scipy
 shapely
 trimesh
 EOF

@@ -44,27 +44,21 @@ apt-get update -qq
 apt-get install -qq --no-install-recommends $(tr '\n' ' ' <<EOF
 curl
 ffmpeg
-libzmq5
-python3
+jupyter
+jupyter-notebook
+pycodestyle
 python3-dev
+python3-ipykernel
+python3-networkx
 python3-pip
 python3-setuptools
+python3-shapely
 python3-wheel
 tidy
 EOF
 )
 
 pip3 install -qq --upgrade --disable-pip-version-check $(tr '\n' ' ' <<EOF
-ipykernel<5
-ipython<6
-jupyter
-meshcat
-networkx<2.3
-notebook<6
-pycodestyle
-scipy<1.3
-shapely
-tornado<6
 trimesh
 EOF
 )
