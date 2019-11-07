@@ -23,6 +23,7 @@ function(add_pytest pyfile)
   set_property(TEST ${pydir}_${pyfile}
                PROPERTY ENVIRONMENT
                  "MPLBACKEND=Template"  # So that pyplot.show() does not block
+                 "PATH=${PATH}"
                  "PYTHONPATH=${PYTHONPATH}"
               )
 
