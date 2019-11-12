@@ -7758,14 +7758,14 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
     general robotic manipulator (without kinematic loops) take the form
     \begin{equation}{\bf M}(\bq)\ddot{\bq} + \bC(\bq,\dot{\bq})\dot{\bq} =
     \btau_g(\bq) + {\bf B}\bu, \label{eq:manip} \end{equation} where $\bq$ is
-    the state vector, ${\bf M}$ is the inertia matrix, $\bC$ captures Coriolis
-    forces, and $\btau_g$ is the gravity vector.  The matrix $\bB$ maps control
-    inputs $\bu$ into generalized forces.  Note that we pair $\bM\ddot\bq +
-    \bC\dot\bq$ on the left side because "... the equations of motion depend on
-    the choice of coordinates $\bq$.  For this reason neither $\bM\ddot\bq$ nor
-    $\bC\dot\bq$ individually should be thought of as a generalized force; only
-    their sum is a force"<elib>Choset05</elib>(s.10.2).  Indeed, whenever I
-    write Eq. (\ref{eq:manip}), I see $ma = F$. </p>
+    the joint position vector, ${\bf M}$ is the inertia matrix, $\bC$ captures
+    Coriolis forces, and $\btau_g$ is the gravity vector.  The matrix $\bB$ maps
+    control inputs $\bu$ into generalized forces.  Note that we pair
+    $\bM\ddot\bq + \bC\dot\bq$ on the left side because "... the equations of
+    motion depend on the choice of coordinates $\bq$.  For this reason neither
+    $\bM\ddot\bq$ nor $\bC\dot\bq$ individually should be thought of as a
+    generalized force; only their sum is a force"<elib>Choset05</elib>(s.10.2).
+    Indeed, whenever I write Eq. (\ref{eq:manip}), I see $ma = F$. </p>
 
     <div data-type="example"><h1>Manipulator Equation form of the Simple Double
     Pendulum</h1> The equations of motion from Example 1 can be written
