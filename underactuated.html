@@ -4441,7 +4441,7 @@ with Stochasticity</h1>
     <p>If the appearance of the quadratic form of the cost-to-go seemed
     mysterious, consider that the solution to the linear system $\dot\bx = (\bA
     - \bB\bK)\bx$ takes the form $\bx(t) = e^{(\bA-\bB\bK)t}\bx(0)$, and try
-    inserting this back into the integral cost function.</p>
+    inserting this back into the integral cost function.  You'll see that the cost takes the form $J=\bx^T(0) {\bf S} \bx(0)$.</p>
 
     <p>It is worth examining the form of the optimal policy more closely. Since
     the value function represents cost-to-go, it would be sensible to move down
@@ -4671,6 +4671,18 @@ with Stochasticity</h1>
     </section>
 
   </section> <!-- end finite horizon -->
+
+  <section data-type="section1"><h1>Related variations on linear optimal control</h1>
+
+    <todo>
+      LMI formulation of LQR
+      Localized LQR / SLS (though perhaps it's best in the robust/stochastic chapter?)
+      Risk LQR
+      Minimum-time LQR
+      Elad's regret formulation? (or save this for adaptive control section?)
+    </todo>
+    
+  </section>
 
 </section> <!-- ***************  end of LQR **************   -->
 
@@ -4927,7 +4939,7 @@ with Stochasticity</h1>
     arbitrarily complicated nonlinear function over a vector $\bx$?</p>
 
     <p>In this section, we'll look at some computational approaches to verifying
-    the Lyapunov conditions, and even to searching for the description of the
+    the Lyapunov conditions, and even to searching for (the coefficients of) the
     Lyapunov functions themselves.</p>
 
     <p>If you're imagining numerical algorithms to check the Lyapunov conditions
