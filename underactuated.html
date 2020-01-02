@@ -4672,14 +4672,13 @@ with Stochasticity</h1>
 
   </section> <!-- end finite horizon -->
 
-  <section data-type="section1"><h1>Related variations on linear optimal control</h1>
+  <section data-type="sect1"><h1>Variations and extensions</h1>
+
 
     <todo>
       LMI formulation of LQR
       Localized LQR / SLS (though perhaps it's best in the robust/stochastic chapter?)
-      Risk LQR
       Minimum-time LQR
-      Elad's regret formulation? (or save this for adaptive control section?)
     </todo>
     
   </section>
@@ -6559,9 +6558,6 @@ Output Feedback (aka Pixels-to-Torques)</h1>
   <section data-type="sect1"><h1>Static Output Feedback for Linear
   Systems</h1></section>
 
-  <section
-          data-type="sect1"><h1>Linear Quadratic Gaussian (LQG)</h1></section>
-
 
 </section>
 
@@ -6946,15 +6942,45 @@ Control through Contact</h1>
   Stochastic
   Control</h1>
 
-<todo>
-Stochastic optimal control.  Stochastic HJB.  Graph search.  LQR + Gaussian noise.  Whitening filters.
-Stochastic trajectory optimization.
+  <section data-type="sect1"><h1>Linear Quadratic Gaussian (LQG)</h1></section>
 
-Stochastic verification. (Having bounds on expected value does yield bounds on system state).
+  <section data-type="sect1"><h1>Linear Exponential-Quadratic Gaussian (LEQG)</h1>
 
+    <p><elib>Jacobson73</elib> observed that it is also straight-forward to minimize the objective:
+      $$J = E\left[ \prod_{n=0}^\infty e^{\bx^T[n] {\bf Q} \bx[n]} e^{\bu^T[n] {\bf R} \bu[n]} \right] 
+      = E\left[ e^{\sum_{n=0}^\infty \bx^T[n] {\bf Q} \bx[n] + \bu^T[n] {\bf R} \bu[n]} \right],$$
+      with ${\bf Q} = {\bf Q}^T \ge {\bf 0}, {\bf R} = {\bf R}^T > 0,$
+      by observing that the cost is monotonically related to $\log{J}$, 
+      and therefore has the same minima 
+      (this same trick forms the basis for "geometric programming" <elib>Boyd07</elib>).
+      This is known as the "Linear Exponential-Quadratic Gaussian" (LEG or LEQG), and for 
+      the deterministic version of the problem (no process nor measurement noise) the solution is identical
+      to the LQR problem; it adds no new modeling power.  But with noise, the LEQG optimal controllers are
+      different from the LQG controllers; they depend explicitly on the covariance of the noise.  
+      
+      <todo>introduce the coefficient \sigma here, instead of just throwing it in from the start.
+      The 
+      coefficient $\sigma$ in the objective is referred to as the "risk-sensitivity parameter" <elib>Whittle90</elib>.
+    </todo>
+    </p>
 
-Robust control.  Common Lyapunov functions.  Dissipation inequalities.  Guaranteed-cost control for linear systems. H-infinity.
-</todo>
+    <todo>Insert simplest form of the derivation here, plus an example.</todo>
+
+    <p><elib>Whittle90</elib> provides an extensive treatment of this framework; nearly all of the 
+    analysis from LQR/LQG (including Riccati equations, Hamiltonian formulations, etc) have analogs
+    for their versions with exponential cost, and he argues that LQG and H-infinity control can (should?)
+    be understood as special cases of this approach.</p>
+  </section>
+
+  <todo>
+  Stochastic optimal control.  Stochastic HJB.  Graph search.  LQR + Gaussian noise.  Whitening filters.
+  Stochastic trajectory optimization.  iLQG, iLEQG/iLEG.
+
+  Stochastic verification. (Having bounds on expected value does yield bounds on system state).
+
+  Robust control.  Common Lyapunov functions.  Dissipation inequalities.  Guaranteed-cost control for linear systems. H-infinity.
+  Elad's regret formulation? (or save this for adaptive control section?)
+  </todo>
 
 </section>
 
@@ -6965,7 +6991,7 @@ Uncertainty</h1>
 
   <todo>POMDP, SLAG, Belief-space sample-based planning, ...</todo>
 
-  <todo>iLQG (following LQG from Output Feedback chapter)</todo>
+  <todo>iLQG (following LQG from Output Feedback chapter), iLEG (papers by Buchli, then Righetti)</todo>
 </section>
 
 <!-- ***************  end of planning under uncertainty **************   -->
