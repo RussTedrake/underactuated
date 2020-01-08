@@ -1,7 +1,7 @@
 from pydrake.all import MultibodyPlant, Parser
 from underactuated import FindResource, ManipulatorDynamics
 
-plant = MultibodyPlant()
+plant = MultibodyPlant(time_step=0)
 parser = Parser(plant)
 parser.AddModelFromFile(FindResource("double_pendulum/double_pendulum.urdf"))
 plant.Finalize()
