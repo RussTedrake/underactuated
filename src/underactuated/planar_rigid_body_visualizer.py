@@ -27,9 +27,9 @@ from pydrake.attic.multibody.rigid_body_tree import (
 )
 from pydrake.attic.multibody.rigid_body_plant import RigidBodyPlant
 from pydrake.attic.multibody.shapes import Shape
+from pydrake.systems.pyplot_visualizer import PyPlotVisualizer
 
 from underactuated.utils import FindResource
-from underactuated.pyplot_visualizer import PyPlotVisualizer
 
 
 class PlanarRigidBodyVisualizer(PyPlotVisualizer):

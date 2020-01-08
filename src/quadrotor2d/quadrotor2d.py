@@ -1,8 +1,8 @@
 
 import numpy as np
 
-from underactuated import PyPlotVisualizer
 from pydrake.systems.framework import BasicVector_, LeafSystem_, PortDataType
+from pydrake.systems.pyplot_visualizer import PyPlotVisualizer
 from pydrake.systems.scalar_conversion import TemplateSystem
 
 

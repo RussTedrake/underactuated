@@ -1,8 +1,9 @@
 from pydrake.all import (AddMultibodyPlantSceneGraph,
                          DiagramBuilder,
                          Parser,
+                         PlanarSceneGraphVisualizer,
                          Simulator)
-from underactuated import FindResource, PlanarSceneGraphVisualizer
+from underactuated import FindResource
 
 # Set up a block diagram with the robot (dynamics) and a visualization block.
 builder = DiagramBuilder()

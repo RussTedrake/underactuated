@@ -2,7 +2,7 @@ import copy
 import numpy as np
 
 from pydrake.systems.framework import PortDataType
-from underactuated import PyPlotVisualizer
+from pydrake.systems.pyplot_visualizer import PyPlotVisualizer
 
 from plant import SLIPState
 

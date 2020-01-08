@@ -7,10 +7,10 @@ from pydrake.all import (
     DiagramBuilder,
     LeafSystem,
     PortDataType,
+    PyPlotVisualizer,
     RandomDistribution,
     Simulator
 )
-from underactuated.pyplot_visualizer import PyPlotVisualizer
 
 
 def dynamics(x, w):

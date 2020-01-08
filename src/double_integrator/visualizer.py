@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from underactuated import PyPlotVisualizer
+from pydrake.systems.pyplot_visualizer import PyPlotVisualizer
 from pydrake.systems.framework import (Context, PortDataType)
 
 

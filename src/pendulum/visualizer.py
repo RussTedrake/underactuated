@@ -5,8 +5,8 @@ from pydrake.systems.framework import (
     Context,
     PortDataType,
     )
+from pydrake.systems.pyplot_visualizer import PyPlotVisualizer
 
-from underactuated.pyplot_visualizer import PyPlotVisualizer
 
 class PendulumVisualizer(PyPlotVisualizer):
     a1 = 0.75

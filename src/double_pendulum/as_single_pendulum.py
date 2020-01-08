@@ -6,11 +6,10 @@ from math import sin
 from pydrake.all import (AddMultibodyPlantSceneGraph,
                          DiagramBuilder,
                          Parser,
+                         PlanarSceneGraphVisualizer,
                          Simulator,
                          VectorSystem)
-from underactuated import (FindResource,
-                           ManipulatorDynamics,
-                           PlanarSceneGraphVisualizer)
+from underactuated import FindResource, ManipulatorDynamics
 
 
 class Controller(VectorSystem):
