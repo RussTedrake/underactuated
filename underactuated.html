@@ -4674,9 +4674,64 @@ with Stochasticity</h1>
 
   <section data-type="sect1"><h1>Variations and extensions</h1>
 
+    <section data-type="sect2"><h1>LQR as a convex optimization</h1>
+      <p>Solving the algebraic Riccati equation is the preferred way of
+      computing thse LQR solution.  But it is helpful to know that one <i>could
+      </i> also compute it with convex optimization, specifically by formulating
+      the optimality conditions as a Linear Matrix Inequality (LMI).  In
+      addition to deepening our understanding, this can be useful if we want to
+      extend the LQR solution or solve for the LQR gains jointly as part of a
+      bigger optimization.</p>
+      
+      <p>Derivation coming soon...</p>
 
+    </section>
+
+    <section data-type="sect2"><h1>Finite-horizon LQR via least
+    squares</h1>
+  
+      <p>We can also obtain the solution to the discrete-time finite-horizon
+      (including the time-varying or tracking variants) LQR problem using
+      optimization -- in this case it actually reduces to a simple least-squares
+      problem.  This idea plays an important role in the minimax variants of LQR
+      (which optimize a worst-case performance), which we will discuss in the
+      robust control chapter (e.g. <elib>Lofberg03+Sadraddini20</elib>).</p>
+
+      <p>First, let us appreciate that the default parameterization is not
+      convex.  Given \begin{gather*} \min \sum_{n=0}^{N-1} \bx^T[n] {\bf Q}
+      \bx[n] + \bu^T[n] {\bf R} \bu[n] \\ \subjto \quad \bx[n+1] = {\bf A}
+      \bx[n] + {\bf B}\bu[n], \\ \bx[0] = \bx_0 \end{gather*} if we wish to
+      search over controllers of the form $$\bu[n] = {\bf K}_n \bx[n],$$ then we
+      have \begin{align*}\bx[1] &= {\bf A}\bx_0 + {\bf B}{\bf K}_0\bx_0, \\
+      \bx[2] &= {\bf A}({\bf A} + {\bf BK}_0)\bx_0 + {\bf BK}_1({\bf A} + {\bf
+      BK}_0)\bx_0 \\ \bx[n] &= \left( \prod_{i=0}^{n-1} ({\bf A} + {\bf BK}_i)
+      \right) \bx[0] \end{align*} As you can see, the $\bx[n]$ terms in the cost
+      function include our decision variables multiplied together -- resulting
+      in a non-convex objective.  The trick is to re-parameterize the decision
+      variables, and write the feedback in the form: $$\bu[n] = \tilde{\bf K}_n
+      \bx[0],$$ leading to \begin{align*}\bx[1] &= {\bf A}\bx_0 + {\bf
+      B}\tilde{\bf K}_0\bx_0, \\ \bx[2] &= {\bf A}({\bf A} + {\bf B}\tilde{\bf
+      K}_0)\bx_0 + {\bf B}\tilde{\bf K}_1 \bx_0 \\ \bx[n] &= {\bf A}^n +
+      \sum_{i=0}^{n-1}{\bf A}^{n-i-1}{\bf B}\tilde{\bf K}_{i} \bx[0]
+      \end{align*}  Now all of the decision variables, $\tilde{\bf K}_i$, appear
+      linearly in the solution to $\bx[n]$ and therefore (convex) quadratically
+      in the objective.</p>
+
+      <p>If you need to recover the original ${\bf K}_i$ parameters, you can
+      extract them recursively with \begin{align*} \tilde{\bf K}_0 &= {\bf K}_0,
+      \\ \tilde{\bf K}_n &= {\bf K}_n \prod_{i=0}^{n-1} ({\bf A} + {\bf BK}_i),
+      \qquad 0 < n \le N-1. \end{align*}  But often this is not actually
+      necessary.  In some applications it's enough to know the performance cost
+      under LQR control, or to handle the response to disturbances explicitly
+      with the disturbance-based feedback (which I've already promised for the
+      robust control chapter).  Afterall, the problem formulation that we've
+      written here, which makes no mention of disturbances, assumes the model is
+      perfect and the controls $\tilde{\bf K}_n \bx_0$ are just as suitable for
+      deployment as ${\bf K}_n\bx[n]$.</p>
+      
+    </section>
+    
     <todo>
-      LMI formulation of LQR
       Localized LQR / SLS (though perhaps it's best in the robust/stochastic chapter?)
       Minimum-time LQR
     </todo>
@@ -6939,47 +6994,53 @@ Control through Contact</h1>
 
 
 <section data-type="chapter" class="chapter" id="robust"><h1>Robust and
-  Stochastic
-  Control</h1>
+Stochastic Control</h1>
 
   <section data-type="sect1"><h1>Linear Quadratic Gaussian (LQG)</h1></section>
 
   <section data-type="sect1"><h1>Linear Exponential-Quadratic Gaussian (LEQG)</h1>
 
-    <p><elib>Jacobson73</elib> observed that it is also straight-forward to minimize the objective:
-      $$J = E\left[ \prod_{n=0}^\infty e^{\bx^T[n] {\bf Q} \bx[n]} e^{\bu^T[n] {\bf R} \bu[n]} \right] 
-      = E\left[ e^{\sum_{n=0}^\infty \bx^T[n] {\bf Q} \bx[n] + \bu^T[n] {\bf R} \bu[n]} \right],$$
-      with ${\bf Q} = {\bf Q}^T \ge {\bf 0}, {\bf R} = {\bf R}^T > 0,$
-      by observing that the cost is monotonically related to $\log{J}$, 
-      and therefore has the same minima 
-      (this same trick forms the basis for "geometric programming" <elib>Boyd07</elib>).
-      This is known as the "Linear Exponential-Quadratic Gaussian" (LEG or LEQG), and for 
-      the deterministic version of the problem (no process nor measurement noise) the solution is identical
-      to the LQR problem; it adds no new modeling power.  But with noise, the LEQG optimal controllers are
-      different from the LQG controllers; they depend explicitly on the covariance of the noise.  
+    <p><elib>Jacobson73</elib> observed that it is also straight-forward to
+    minimize the objective: $$J = E\left[ \prod_{n=0}^\infty e^{\bx^T[n] {\bf Q}
+    \bx[n]} e^{\bu^T[n] {\bf R} \bu[n]} \right] = E\left[ e^{\sum_{n=0}^\infty
+    \bx^T[n] {\bf Q} \bx[n] + \bu^T[n] {\bf R} \bu[n]} \right],$$ with ${\bf Q}
+    = {\bf Q}^T \ge {\bf 0}, {\bf R} = {\bf R}^T > 0,$ by observing that the
+    cost is monotonically related to $\log{J}$, and therefore has the same
+    minima (this same trick forms the basis for "geometric programming"
+    <elib>Boyd07</elib>). This is known as the "Linear Exponential-Quadratic
+    Gaussian" (LEG or LEQG), and for the deterministic version of the problem
+    (no process nor measurement noise) the solution is identical to the LQR
+    problem; it adds no new modeling power.  But with noise, the LEQG optimal
+    controllers are different from the LQG controllers; they depend explicitly
+    on the covariance of the noise.  
       
-      <todo>introduce the coefficient \sigma here, instead of just throwing it in from the start.
-      The 
-      coefficient $\sigma$ in the objective is referred to as the "risk-sensitivity parameter" <elib>Whittle90</elib>.
+    <todo>introduce the coefficient \sigma here, instead of just throwing it in
+    from the start. The coefficient $\sigma$ in the objective is referred to as
+    the "risk-sensitivity parameter" <elib>Whittle90</elib>.
     </todo>
     </p>
 
     <todo>Insert simplest form of the derivation here, plus an example.</todo>
 
-    <p><elib>Whittle90</elib> provides an extensive treatment of this framework; nearly all of the 
-    analysis from LQR/LQG (including Riccati equations, Hamiltonian formulations, etc) have analogs
-    for their versions with exponential cost, and he argues that LQG and H-infinity control can (should?)
-    be understood as special cases of this approach.</p>
+    <p><elib>Whittle90</elib> provides an extensive treatment of this framework;
+    nearly all of the analysis from LQR/LQG (including Riccati equations,
+    Hamiltonian formulations, etc) have analogs for their versions with
+    exponential cost, and he argues that LQG and H-infinity control can
+    (should?) be understood as special cases of this approach.</p>
   </section>
 
   <todo>
-  Stochastic optimal control.  Stochastic HJB.  Graph search.  LQR + Gaussian noise.  Whitening filters.
-  Stochastic trajectory optimization.  iLQG, iLEQG/iLEG.
+  Stochastic optimal control.  Stochastic HJB.  Graph search.  LQR + Gaussian
+  noise.  Whitening filters. Stochastic trajectory optimization.  iLQG,
+  iLEQG/iLEG.
 
-  Stochastic verification. (Having bounds on expected value does yield bounds on system state).
+  Stochastic verification. (Having bounds on expected value does yield bounds on
+  system state).
 
-  Robust control.  Common Lyapunov functions.  Dissipation inequalities.  Guaranteed-cost control for linear systems (minimax). Loftberg 2003 for constrained version (w/ disturbance feedback). H-infinity.
-  Elad's regret formulation? (or save this for adaptive control section?)
+  Robust control.  Common Lyapunov functions.  Dissipation inequalities.
+  Guaranteed-cost control for linear systems (minimax). Loftberg 2003 for
+  constrained version (w/ disturbance feedback). H-infinity. Elad's regret
+  formulation? (or save this for adaptive control section?)
   </todo>
 
 </section>
@@ -6991,7 +7052,8 @@ Uncertainty</h1>
 
   <todo>POMDP, SLAG, Belief-space sample-based planning, ...</todo>
 
-  <todo>iLQG (following LQG from Output Feedback chapter), iLEG (papers by Buchli, then Righetti)</todo>
+  <todo>iLQG (following LQG from Output Feedback chapter), iLEG (papers by
+  Buchli, then Righetti)</todo>
 </section>
 
 <!-- ***************  end of planning under uncertainty **************   -->
