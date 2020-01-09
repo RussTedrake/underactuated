@@ -4490,9 +4490,11 @@ with Stochasticity</h1>
       systems (including block diagrams built up of many subsystems); it will
       perform the linearization for you.</p>
 
+      <todo>Add examples (from pend, acro, quadrotor)</todo>
+
     </section>
 
-    <todo> add discrete time derivation? </todo>
+    <todo> add discrete time derivation </todo>
 
   </section> <!-- end basic derivation -->
 
@@ -4673,6 +4675,39 @@ with Stochasticity</h1>
   </section> <!-- end finite horizon -->
 
   <section data-type="sect1"><h1>Variations and extensions</h1>
+
+    <section data-type="sect2"><h1>LQR with input and state constraints</h1>
+      <p>A natural extension for linear optimal control is the consideration of
+      strict constraints on the inputs or state trajectory.  Most common are
+      linear inequality constraints, such as $\forall n, |\bu[n]| \le 1$ or
+      $\forall n, \bx[n] \ge -2$ (any linear constraints of the form ${\bf Cx} +
+      {\bf Du} \le {\bf e}$ can be solved with the same tools).  Much is known
+      about the solution to this problem in the discrete-time case, but it's
+      computation is signficantly harder than the unconstrained case.  Almost
+      always, we give up on solving for the best control policy in closed form,
+      and instead solve for the optimal control trajectory $\bu[\cdot]$ from a
+      particular initial condition $\bx[0]$ over some finite horizon.
+      Fortunately, this problem is a convex optimization and we can often solve
+      it quickly and reliably enough to solve it at every timestep, effectively
+      turning a motion planning algorithm into a feedback controller; this idea
+      is famously known as model-predictive control (MPC).  We will provide the
+      details in the <a href="underactuated.html?chapter=trajopt">trajectory
+      optimization chapter</a>.</p>
+        
+      <p>We do actually understand what the optimal policy of the
+      inequality-constrained LQR problem looks like, thanks to work on "explicit
+      MPC" <elib>Alessio09</elib> -- the optimal policy is now piecewise-linear
+      (though still continuous), with each piece describe by a polytope, and the
+      optimal cost-to-go is piecewise-quadratic on the same polytopes.
+      Unfortunately, the number of pieces grows exponentially with the number of
+      constraints and the horizon of the problem, making it impractical to
+      compute for all but very small problems.  There are, howeer, a number of promising approaches to approximate explicit MPC (c.f. <elib>Marcucci17</elib>).</p>
+
+      <p>One important case that does have closed-form solutions is LQR with linear <i>equality</i> constraints (c.f. <elib>Posa15</elib>, section IIIb).  This is particularly relevant in the case of stabilizing robots with kinematic constraints such as a closed kinematic chain, which appears in four-bar linkages or even for the linearization of a biped robot with two feet on the ground.</p>
+
+      <todo>Add the equality-constrained LQR derivation here.</todo>
+
+    </section>
 
     <section data-type="sect2"><h1>LQR as a convex optimization</h1>
       <p>Solving the algebraic Riccati equation is the preferred way of
