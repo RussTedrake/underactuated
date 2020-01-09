@@ -4746,8 +4746,8 @@ with Stochasticity</h1>
       variables, and write the feedback in the form: $$\bu[n] = \tilde{\bf K}_n
       \bx[0],$$ leading to \begin{align*}\bx[1] &= {\bf A}\bx_0 + {\bf
       B}\tilde{\bf K}_0\bx_0, \\ \bx[2] &= {\bf A}({\bf A} + {\bf B}\tilde{\bf
-      K}_0)\bx_0 + {\bf B}\tilde{\bf K}_1 \bx_0 \\ \bx[n] &= {\bf A}^n +
-      \sum_{i=0}^{n-1}{\bf A}^{n-i-1}{\bf B}\tilde{\bf K}_{i} \bx[0]
+      K}_0)\bx_0 + {\bf B}\tilde{\bf K}_1 \bx_0 \\ \bx[n] &= \left( {\bf A}^n +
+      \sum_{i=0}^{n-1}{\bf A}^{n-i-1}{\bf B}\tilde{\bf K}_{i} \right) \bx[0]
       \end{align*}  Now all of the decision variables, $\tilde{\bf K}_i$, appear
       linearly in the solution to $\bx[n]$ and therefore (convex) quadratically
       in the objective.</p>
