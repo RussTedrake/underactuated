@@ -4701,9 +4701,16 @@ with Stochasticity</h1>
       optimal cost-to-go is piecewise-quadratic on the same polytopes.
       Unfortunately, the number of pieces grows exponentially with the number of
       constraints and the horizon of the problem, making it impractical to
-      compute for all but very small problems.  There are, howeer, a number of promising approaches to approximate explicit MPC (c.f. <elib>Marcucci17</elib>).</p>
+      compute for all but very small problems.  There are, howeer, a number of
+      promising approaches to approximate explicit MPC (c.f.
+      <elib>Marcucci17</elib>).</p>
 
-      <p>One important case that does have closed-form solutions is LQR with linear <i>equality</i> constraints (c.f. <elib>Posa15</elib>, section IIIb).  This is particularly relevant in the case of stabilizing robots with kinematic constraints such as a closed kinematic chain, which appears in four-bar linkages or even for the linearization of a biped robot with two feet on the ground.</p>
+      <p>One important case that does have closed-form solutions is LQR with
+      linear <i>equality</i> constraints (c.f. <elib>Posa15</elib>, section
+      IIIb).  This is particularly relevant in the case of stabilizing robots
+      with kinematic constraints such as a closed kinematic chain, which appears
+      in four-bar linkages or even for the linearization of a biped robot with
+      two feet on the ground.</p>
 
       <todo>Add the equality-constrained LQR derivation here.</todo>
 
@@ -4734,23 +4741,40 @@ with Stochasticity</h1>
 
       <p>First, let us appreciate that the default parameterization is not
       convex.  Given \begin{gather*} \min \sum_{n=0}^{N-1} \bx^T[n] {\bf Q}
-      \bx[n] + \bu^T[n] {\bf R} \bu[n] \\ \subjto \quad \bx[n+1] = {\bf A}
-      \bx[n] + {\bf B}\bu[n], \\ \bx[0] = \bx_0 \end{gather*} if we wish to
-      search over controllers of the form $$\bu[n] = {\bf K}_n \bx[n],$$ then we
-      have \begin{align*}\bx[1] &= {\bf A}\bx_0 + {\bf B}{\bf K}_0\bx_0, \\
-      \bx[2] &= {\bf A}({\bf A} + {\bf BK}_0)\bx_0 + {\bf BK}_1({\bf A} + {\bf
-      BK}_0)\bx_0 \\ \bx[n] &= \left( \prod_{i=0}^{n-1} ({\bf A} + {\bf BK}_i)
-      \right) \bx[0] \end{align*} As you can see, the $\bx[n]$ terms in the cost
-      function include our decision variables multiplied together -- resulting
-      in a non-convex objective.  The trick is to re-parameterize the decision
+      \bx[n] + \bu^T[n] {\bf R} \bu[n], \qquad {\bf Q} = {\bf Q}^T \succeq 0,
+      {\bf R} = {\bf R}^T \succ 0 \\ \subjto \quad \bx[n+1] = {\bf A} \bx[n] +
+      {\bf B}\bu[n], \\ \bx[0] = \bx_0 \end{gather*} if we wish to search over
+      controllers of the form $$\bu[n] = {\bf K}_n \bx[n],$$ then we have
+      \begin{align*}\bx[1] &= {\bf A}\bx_0 + {\bf B}{\bf K}_0\bx_0, \\ \bx[2] &=
+      {\bf A}({\bf A} + {\bf BK}_0)\bx_0 + {\bf BK}_1({\bf A} + {\bf BK}_0)\bx_0
+      \\ \bx[n] &= \left( \prod_{i=0}^{n-1} ({\bf A} + {\bf BK}_i) \right) \bx_0
+      \end{align*} As you can see, the $\bx[n]$ terms in the cost function
+      include our decision variables multiplied together -- resulting in a
+      non-convex objective.  The trick is to re-parameterize the decision
       variables, and write the feedback in the form: $$\bu[n] = \tilde{\bf K}_n
-      \bx[0],$$ leading to \begin{align*}\bx[1] &= {\bf A}\bx_0 + {\bf
+      \bx_0,$$ leading to \begin{align*}\bx[1] &= {\bf A}\bx_0 + {\bf
       B}\tilde{\bf K}_0\bx_0, \\ \bx[2] &= {\bf A}({\bf A} + {\bf B}\tilde{\bf
       K}_0)\bx_0 + {\bf B}\tilde{\bf K}_1 \bx_0 \\ \bx[n] &= \left( {\bf A}^n +
-      \sum_{i=0}^{n-1}{\bf A}^{n-i-1}{\bf B}\tilde{\bf K}_{i} \right) \bx[0]
+      \sum_{i=0}^{n-1}{\bf A}^{n-i-1}{\bf B}\tilde{\bf K}_{i} \right) \bx_0
       \end{align*}  Now all of the decision variables, $\tilde{\bf K}_i$, appear
       linearly in the solution to $\bx[n]$ and therefore (convex) quadratically
-      in the objective.</p>
+      in the objective.</p>  
+      
+      <p>We still have an objective function that depends on $\bx_0$, but we
+      would like to find the optimal $\tilde{\bf K}_i$ <i>for all</i>
+      $\bx_0$. To achieve this let us evaluate the optimality conditions of this
+      least squares problem, starting by taking the gradient of the objective
+      with respect to $\tilde{\bf K}_i$, which is: $$\bx_0 \bx_0^T \left(
+      \tilde{\bf K}_i^T \left({\bf R} + \sum_{m=i+1}^{N-1} {\bf B}^T ({\bf
+      A}^{m-i-1})^T {\bf Q A}^{m-i-1} {\bf B}\right) + \sum_{m=i+1}^{N-1} ({\bf
+      A}^m)^T {\bf Q A}^{m-i-1} {\bf B}\right).$$  We can satisfy this
+      optimality condition for all $\bx_0$ by solving the <i>linear</i> matrix
+      equation: $$\tilde{\bf K}_i^T \left({\bf R} + \sum_{m=i+1}^{N-1} {\bf B}^T
+      ({\bf A}^{m-i-1})^T {\bf Q A}^{m-i-1} {\bf B}\right) + \sum_{m=i+1}^{N-1}
+      ({\bf A}^m)^T {\bf Q A}^{m-i-1} {\bf B} = 0.$$  We can always solve for
+      $\tilde{\bf K}_i$ since it's multiplied by a (symmetric) positive definite
+      matrix (it is the sum of a positive definite matrix and many positive
+      semi-definite matrices), which is always invertible.</p>
 
       <p>If you need to recover the original ${\bf K}_i$ parameters, you can
       extract them recursively with \begin{align*} \tilde{\bf K}_0 &= {\bf K}_0,
@@ -4763,6 +4787,14 @@ with Stochasticity</h1>
       written here, which makes no mention of disturbances, assumes the model is
       perfect and the controls $\tilde{\bf K}_n \bx_0$ are just as suitable for
       deployment as ${\bf K}_n\bx[n]$.</p>
+
+      <p>Once again, the least squares solution presented here is not as
+      efficient as the Riccati equation for the simple case, but this derivation
+      becomes interesting if we want to combine the LQR synthesis with other
+      objectives/constraints.  For instance, if we want to add some sparsity
+      constraints (e.g. enforcing that some elements of $\tilde{\bf K}_i$ are
+      zero), then we could solve the quadratic optimization subject to linear
+      equality constraints.</p>
       
     </section>
     
