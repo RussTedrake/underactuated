@@ -1818,16 +1818,16 @@ complete trajectory.</p>
 
       <div data-type="example" class="drake"><h1>LQR for a Quadrotors</h1>
 
-      <p>LQR works essentially out of the box for Quadrotors, if linearized
-      around a nominal fixed point (where the non-zero thrust from the
-      propellers is balancing gravity).</p>
+        <p>LQR works essentially out of the box for Quadrotors, if linearized
+        around a nominal fixed point (where the non-zero thrust from the
+        propellers is balancing gravity).</p>
 
-      <p>For the planar quadrotor, try:</p>
-      <pysrc>quadrotor2d/lqr.py</pysrc>
+        <p>For the planar quadrotor, try:</p>
+        <pysrc>quadrotor2d/lqr.py</pysrc>
 
-      <p>For the 3D quadrotor, try:</p> <pysrc>quadrotor/lqr.py</pysrc>
-      <p>Note: you'll need to open a web-browser to see the 3D visualization;
-      the instructions are printed to the console output </p>
+        <p>For the 3D quadrotor, try:</p> <pysrc>quadrotor/lqr.py</pysrc>
+        <p>Note: you'll need to open a web-browser to see the 3D visualization;
+        the instructions are printed to the console output </p>
 
       </div>
 
@@ -4456,11 +4456,17 @@ with Stochasticity</h1>
     straight-forward, the slope that we are descending (in the value function,
     ${\bf S}$) is a complicated function of the dynamics and cost.</p>
 
-    <!--<div data-type="example"><h1>LQR for the Double Integrator</h1>
+    <div data-type="example"><h1>LQR for the Double Integrator</h1>
 
-    <p>Let's use the LQR result to solve for the optimal regulator of our
-    trivial linear system: $$\ddot{q} = u.$$</p>
-    </div>-->
+      <p>Now can use LQR to reproduce our HJB example from the previous
+      chapter:</p>
+
+      <pysrcinclude>double_integrator/lqr.py</pysrcinclude>
+
+      <p>As in the hand-derived example, our numerical solution returns $${\bf
+      K} = [ 1, \sqrt{3} ], \qquad{\bf S} = \begin{bmatrix} \sqrt{3} & 1 \\ 1 &
+      \sqrt{3} \end{bmatrix}.$$</p>
+    </div>
 
     <section data-type="sect2"><h1>Local stabilization of nonlinear systems</h1>
 
@@ -4490,7 +4496,22 @@ with Stochasticity</h1>
       systems (including block diagrams built up of many subsystems); it will
       perform the linearization for you.</p>
 
-      <todo>Add examples (from pend, acro, quadrotor)</todo>
+      <div data-type="example" class="drake"><h1>LQR for Acrobots, Cart-Poles,
+      and Quadrotors</h1>
+
+        <p>LQR provides a very satisfying solution to the canonical "balancing"
+        problem that we've <a href="underactuated.html?chapter=acrobot">already
+        described for a number of model systems</a>.  Here are some of those
+        examples, again:</p>
+      
+        <pysrc>acrobot/balancing_lqr.py</pysrc>
+        <pysrc>cartpole/balancing_lqr.py</pysrc>
+        <pysrc>quadrotor2d/lqr.py</pysrc>
+        <pysrc>quadrotor/lqr.py</pysrc>
+
+        <p>I find it very compelling that the same derivation (and effectively
+        identical code) can stabilize such a diversity of systems!</p>
+      </div>
 
     </section>
 
@@ -4805,8 +4826,8 @@ with Stochasticity</h1>
       synthesis with other objectives/constraints.  For instance, if we want to
       add some sparsity constraints (e.g. enforcing that some elements of
       $\tilde{\bf K}_i$ are zero), then we could solve the quadratic
-      optimization subject to linear equality
-      constraints <elib>Wang14</elib>.</p>
+      optimization subject to linear equality constraints
+      <elib>Wang14</elib>.</p>
   
     </section>
     
