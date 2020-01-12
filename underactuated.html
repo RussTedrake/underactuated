@@ -4788,18 +4788,29 @@ with Stochasticity</h1>
       perfect and the controls $\tilde{\bf K}_n \bx_0$ are just as suitable for
       deployment as ${\bf K}_n\bx[n]$.</p>
 
-      <p>Once again, the least squares solution presented here is not as
-      efficient as the Riccati equation for the simple case, but this derivation
-      becomes interesting if we want to combine the LQR synthesis with other
-      objectives/constraints.  For instance, if we want to add some sparsity
-      constraints (e.g. enforcing that some elements of $\tilde{\bf K}_i$ are
-      zero), then we could solve the quadratic optimization subject to linear
-      equality constraints.</p>
+      <p>"System-Level Synthesis" (SLS) is the name for an important and
+      slightly different approach, where one optimizes the <i>closed-loop
+      response</i> directly<elib>Anderson19</elib>. Although SLS is a very
+      general tool, for the particular formulation we are considering here it
+      reduces to creating additional decision variables ${\bf \Phi}_i$, such at
+      that $$\bx[n] = {\bf \Phi}_n \bx[0],$$  and writing the optimization above
+      as \begin{gather*} \min_{{\bf K}_*, {\bf \Phi}_*} \sum_{n=0}^{N-1}
+      \bx^T[0] \left( {\bf \Phi}_n^T {\bf Q \Phi}_n + {\bf K}_n^T{\bf R K}_n
+      \right) \bx[0], \\ \subjto \qquad \forall n, \quad {\bf \Phi}_{n+1} = {\bf
+      A \Phi}_n + {\bf B K}_n. \end{gather*} </p>
       
+      <p>Once again, the algorithms presented here are not as efficient as
+      solving the Riccati equation if we only want the solution to the simple
+      case, but they become very powerful if we want to combine the LQR
+      synthesis with other objectives/constraints.  For instance, if we want to
+      add some sparsity constraints (e.g. enforcing that some elements of
+      $\tilde{\bf K}_i$ are zero), then we could solve the quadratic
+      optimization subject to linear equality
+      constraints <elib>Wang14</elib>.</p>
+  
     </section>
     
     <todo>
-      Localized LQR / SLS (though perhaps it's best in the robust/stochastic chapter?)
       Minimum-time LQR
     </todo>
     
