@@ -1,7 +1,9 @@
 
 from pydrake.attic.multibody.rigid_body_tree import RigidBodyTree
-from pydrake.multibody.tree import MultibodyForces
-from pydrake.multibody.plant import MultibodyPlant
+from pydrake.autodiffutils import AutoDiffXd
+from pydrake.multibody.tree import MultibodyForces_
+from pydrake.multibody.plant import MultibodyPlant_
+from pydrake.symbolic import Expression
 import numpy as np
 
 def ManipulatorDynamics(plant, q, v=None):
@@ -18,7 +20,11 @@ def ManipulatorDynamics(plant, q, v=None):
 
     else:
         # MultibodyPlant version
-        assert(isinstance(plant, MultibodyPlant))
+        T = None
+        for scalar in [float, AutoDiffXd, Expression]:
+            if isinstance(plant, MultibodyPlant_[scalar]):
+                T = scalar
+        assert(T)
 
         context = plant.CreateDefaultContext()
         plant.SetPositions(context, q)
@@ -28,7 +34,7 @@ def ManipulatorDynamics(plant, q, v=None):
         Cv = plant.CalcBiasTerm(context)
         tauG = plant.CalcGravityGeneralizedForces(context)
         B = plant.MakeActuationMatrix()
-        forces = MultibodyForces(plant)
+        forces = MultibodyForces_[T](plant)
         plant.CalcForceElementsContribution(context, forces)
         tauExt = forces.generalized_forces()
 
