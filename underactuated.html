@@ -4018,7 +4018,8 @@ with Stochasticity</h1>
       to check a derivative condition on the optimal cost-to-go function $J^*$.
       Let's see this play out on the double integrator example.</p>
 
-      <div data-type="example"><h1>HJB for the Double Integrator</h1>
+      <div data-type="example" id="hjb_double_integrator"><h1>HJB for the Double
+      Integrator</h1>
 
         <p>Consider the problem of regulating the double integrator (this time
         without input limits) to the origin   using a quadratic cost: $$
@@ -4458,7 +4459,7 @@ with Stochasticity</h1>
 
     <div data-type="example"><h1>LQR for the Double Integrator</h1>
 
-      <p>Now can use LQR to reproduce our HJB example from the previous
+      <p>Now can use LQR to reproduce our <a href="underactuated.html?chapter=dp#hjb_double_integrator">HJB example</a> from the previous
       chapter:</p>
 
       <pysrcinclude>double_integrator/lqr.py</pysrcinclude>
