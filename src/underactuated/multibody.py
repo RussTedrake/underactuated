@@ -20,12 +20,6 @@ def ManipulatorDynamics(plant, q, v=None):
 
     else:
         # MultibodyPlant version
-        T = None
-        for scalar in [float, AutoDiffXd, Expression]:
-            if isinstance(plant, MultibodyPlant_[scalar]):
-                T = scalar
-        assert(T)
-
         context = plant.CreateDefaultContext()
         plant.SetPositions(context, q)
         if v is not None:
@@ -34,7 +28,7 @@ def ManipulatorDynamics(plant, q, v=None):
         Cv = plant.CalcBiasTerm(context)
         tauG = plant.CalcGravityGeneralizedForces(context)
         B = plant.MakeActuationMatrix()
-        forces = MultibodyForces_[T](plant)
+        forces = MultibodyForces_(plant)
         plant.CalcForceElementsContribution(context, forces)
         tauExt = forces.generalized_forces()
 
