@@ -4573,6 +4573,8 @@ with Stochasticity</h1>
       on the infinite-horizon solution as the horizon time limits to infinity.
       </p>
 
+      <todo>Example to show how the tvlqr solution converges to the tilqr solution for the double integrator example, and make the connection back to the value iteration visualizations that we did in the previous chapter.</todo>
+
     </section>
 
     <section data-type="sect2"><h1>Time-varying LQR</h1>
@@ -4721,6 +4723,8 @@ with Stochasticity</h1>
       ({\bf B}^T {\bf S}{\bf A}^T).$$  Like in the continuous time case, this
       equation is so important that we have special numerical recipes for
       solving this discrete-time algebraic Riccati equation (DARE).  <drake> </drake> delegates to these numerical methods automatically when you evaluate the <code>LinearQuadraticRegulator</code> method on a system that has only discrete state and a single periodic discrete timestep.</p> 
+
+      <todo>Example where the discrete-time solutions converge to the continuous time solutions as dt-> 0.</todo>
     </section>
 
     <section data-type="sect2"><h1>LQR with input and state constraints</h1>
