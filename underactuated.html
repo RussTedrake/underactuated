@@ -4516,8 +4516,6 @@ with Stochasticity</h1>
 
     </section>
 
-    <todo> add discrete time derivation </todo>
-
   </section> <!-- end basic derivation -->
 
   <section data-type="sect1"><h1>Finite-horizon formulations</h1>
@@ -4657,21 +4655,6 @@ with Stochasticity</h1>
       s^T(t), etc.</todo>
     </section>
 
-    <!--
-    <section data-type="sect2"><h1>Minimum-time LQR</h1>
-
-      \begin{gather*}
-      \dot{\bx} = {\bf A}\bx + \bB\bu \\
-      h(\bx) = \bx^T {\bf Q}_f \bx,
-      \quad {\bf Q}_f = {\bf Q}_f^T \ge 0 \\
-      g(\bx,\bu,t) = 1 + \bx^T {\bf Q} \bx + \bu {\bf R} \bu,\\
-      {\bf Q} = {\bf
-      Q}^T \ge 0, {\bf R}={\bf R}^T>0
-      \end{gather*}
-
-    </section>
-    -->
-
     <section data-type="sect2"><h1>Linear Final Boundary Value Problems</h1>
 
       <p> The finite-horizon LQR formulation can be used to impose a strict
@@ -4697,6 +4680,48 @@ with Stochasticity</h1>
   </section> <!-- end finite horizon -->
 
   <section data-type="sect1"><h1>Variations and extensions</h1>
+
+    <!--
+    <section data-type="sect2"><h1>Minimum-time LQR</h1>
+
+      \begin{gather*}
+      \dot{\bx} = {\bf A}\bx + \bB\bu \\
+      h(\bx) = \bx^T {\bf Q}_f \bx,
+      \quad {\bf Q}_f = {\bf Q}_f^T \ge 0 \\
+      g(\bx,\bu,t) = 1 + \bx^T {\bf Q} \bx + \bu {\bf R} \bu,\\
+      {\bf Q} = {\bf
+      Q}^T \ge 0, {\bf R}={\bf R}^T>0
+      \end{gather*}
+
+    </section>
+    -->
+
+    <section data-type="sect2"><h1>Discrete-time Riccati Equations</h1>
+
+      <p>Essentially all of the results above have a natural correlate for
+      discrete-time systems. What's more, the discrete time versions tend to be
+      simpler to think about in the model-predictive control (MPC) setting that
+      we'll be discussing below and in the next chapters.</p>
+
+      <p>Consider the discrete time dynamics: $$\bx[n+1] = {\bf A}\bx[n] + {\bf
+      B}\bu[n],$$ and we wish to minimize $$\min \sum_{n=0}^{N-1} \bx^T[n] {\bf
+      Q} \bx[n] + \bu^T[n] {\bf R} \bu[n], \qquad {\bf Q} = {\bf Q}^T \succeq 0,
+      {\bf R} = {\bf R}^T \succ 0.$$  The cost-to-go is given by $$J(\bx,n-1) =
+      \min_\bu \bx^T {\bf Q} \bx + \bu^T {\bf R} \bu + J({\bf A}\bx + {\bf
+      B}\bu, n).$$ If we once again take $$J(\bx,n) = \bx^T {\bf S[n]} \bx,
+      \quad {\bf S}[n] = {\bf S}^T[n] \succ 0,$$ then we have $$\bu^*[n] = -{\bf
+      K[n]}\bx[n] = -({\bf R} + {\bf B}^T {\bf S}[n] {\bf B})^{-1} {\bf B}^T
+      {\bf S}[n] {\bf A} \bx[n],$$ yielding $${\bf S}[n-1] = {\bf Q} + {\bf
+      A}^T{\bf S}[n]{\bf A} - ({\bf A}^T{\bf S}[n]{\bf B})({\bf R} + {\bf B}^T
+      {\bf S}[n] {\bf B})^{-1} ({\bf B}^T {\bf S}[n]{\bf A}^T), \quad {\bf
+      S}[N] = 0,$$ which is the famous <i>Riccati difference equation</i>. The
+      infinite-horizon LQR solution is given by the (positive-definite)
+      fixed-point of this equation: $${\bf S} = {\bf Q} + {\bf A}^T{\bf S}{\bf
+      A} - ({\bf A}^T{\bf S}{\bf B})({\bf R} + {\bf B}^T {\bf S} {\bf B})^{-1}
+      ({\bf B}^T {\bf S}{\bf A}^T).$$  Like in the continuous time case, this
+      equation is so important that we have special numerical recipes for
+      solving this discrete-time algebraic Riccati equation (DARE).  <drake> </drake> delegates to these numerical methods automatically when you evaluate the <code>LinearQuadraticRegulator</code> method on a system that has only discrete state and a single periodic discrete timestep.</p> 
+    </section>
 
     <section data-type="sect2"><h1>LQR with input and state constraints</h1>
       <p>A natural extension for linear optimal control is the consideration of
