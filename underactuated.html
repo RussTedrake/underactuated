@@ -4722,7 +4722,7 @@ with Stochasticity</h1>
       A} - ({\bf A}^T{\bf S}{\bf B})({\bf R} + {\bf B}^T {\bf S} {\bf B})^{-1}
       ({\bf B}^T {\bf S}{\bf A}^T).$$  Like in the continuous time case, this
       equation is so important that we have special numerical recipes for
-      solving this discrete-time algebraic Riccati equation (DARE).  <drake> </drake> delegates to these numerical methods automatically when you evaluate the <code>LinearQuadraticRegulator</code> method on a system that has only discrete state and a single periodic discrete timestep.</p> 
+      solving this discrete-time algebraic Riccati equation (DARE).  <drake> </drake> delegates to these numerical methods automatically when you evaluate the <code>LinearQuadraticRegulator</code> method on a system that has only discrete state and a single periodic timestep.</p> 
 
       <todo>Example where the discrete-time solutions converge to the continuous time solutions as dt-> 0.</todo>
     </section>
