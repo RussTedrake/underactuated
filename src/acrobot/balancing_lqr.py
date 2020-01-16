@@ -2,11 +2,12 @@ import argparse
 import math
 import numpy as np
 
-from pydrake.all import (DiagramBuilder, FloatingBaseType,
-                         LinearQuadraticRegulator, RigidBodyTree,
-                         Saturation, Simulator, WrapToSystem)
-from pydrake.examples.acrobot import (AcrobotInput, AcrobotPlant, AcrobotState)
-from underactuated import (FindResource, PlanarRigidBodyVisualizer)
+from pydrake.all import (DiagramBuilder, LinearQuadraticRegulator,
+                         PlanarSceneGraphVisualizer, Saturation, SceneGraph,
+                         Simulator, WrapToSystem)
+from pydrake.examples.acrobot import (AcrobotGeometry, AcrobotInput,
+                                      AcrobotParams, AcrobotPlant,
+                                      AcrobotState)
 
 
 def UprightState():
@@ -56,12 +57,14 @@ if __name__ == "__main__":
     builder.Connect(controller.get_output_port(0),
                     saturation.get_input_port(0))
 
-    tree = RigidBodyTree(FindResource("acrobot/acrobot.urdf"),
-                         FloatingBaseType.kFixed)
-    visualizer = builder.AddSystem(PlanarRigidBodyVisualizer(tree,
-                                                             xlim=[-4., 4.],
-                                                             ylim=[-4., 4.]))
-    builder.Connect(acrobot.get_output_port(0), visualizer.get_input_port(0))
+    scene_graph = builder.AddSystem(SceneGraph())
+    AcrobotGeometry.AddToBuilder(builder, acrobot.get_output_port(0),
+                                 AcrobotParams(), scene_graph)
+    visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(scene_graph,
+                                                              xlim=[-4., 4.],
+                                                              ylim=[-4., 4.]))
+    builder.Connect(scene_graph.get_pose_bundle_output_port(),
+                    visualizer.get_input_port(0))
 
     diagram = builder.Build()
     simulator = Simulator(diagram)

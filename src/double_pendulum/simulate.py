@@ -6,7 +6,7 @@ from underactuated import FindResource, PlanarSceneGraphVisualizer
 
 # Set up a block diagram with the robot (dynamics) and a visualization block.
 builder = DiagramBuilder()
-plant, scene_graph = AddMultibodyPlantSceneGraph(builder)
+plant, scene_graph = AddMultibodyPlantSceneGraph(builder, time_step=0.0)
 
 # Load the double pendulum from Universal Robot Description Format
 parser = Parser(plant, scene_graph)

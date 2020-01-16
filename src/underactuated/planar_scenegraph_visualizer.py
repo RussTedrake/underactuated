@@ -324,7 +324,7 @@ class PlanarSceneGraphVisualizer(PyPlotVisualizer):
 
 def runPendulumExample(args):
     builder = DiagramBuilder()
-    plant, scene_graph = AddMultibodyPlantSceneGraph(builder)
+    plant, scene_graph = AddMultibodyPlantSceneGraph(builder, time_step=0.0)
     parser = Parser(plant)
     parser.AddModelFromFile(FindResource("pendulum/pendulum.urdf"))
     plant.Finalize()

@@ -65,7 +65,7 @@ parser.add_argument("-T", "--duration",
 args = parser.parse_args()
 
 builder = DiagramBuilder()
-plant, scene_graph = AddMultibodyPlantSceneGraph(builder)
+plant, scene_graph = AddMultibodyPlantSceneGraph(builder, time_step=0.0)
 
 # Load the double pendulum from Universal Robot Description Format
 parser = Parser(plant, scene_graph)
