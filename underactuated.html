@@ -791,8 +791,41 @@ are available on YouTube</a>.</p>
   <section data-type="sect1"><h1>Exercises</h1>
   
     <div data-type="exercise"><h1></h1>
-      We are moving the exercises directly into the notes.  Coming soon!
+
+      <figure>
+      <img style="height:160px;" data-src="figures/atlas_backflip.jpg"/>
+      <img style="height:160px;" data-src="figures/atlas_standing.jpg"/>
+      <figcaption>Atlas doing a backflip and Atlas standing.</figcaption>
+      </figure>
+
+      At the beginning of this chapter you have seen the Atlas humanoid doing a backflip.  Now consider the robot in the two states depicted in the figure above. Assuming that the robot actuators can produce unbounded torques $\bu$, establish whether or not each of the following statements is true.  Briefly justify your answer.
+
+      <ol type="a">
+
+        <li> The state of the humanoid can be represented by the angles and the angular velocities of all its joints.</li>
+
+        <li> While doing the backflip (state in the left figure), the humanoid is fully actuated.</li>
+
+        <li> While standing (state in the right figure), the humanoid is fully actuated.</li>
+
+      </ol>
+
     </div>
+
+    <div data-type="exercise"><h1></h1>
+
+      Later in the course we will study the dynamics of a planar quadrotor quite in depth, for the moment just take the time to <a href="underactuated.html?chapter=acrobot#planar_quadrotor">get familiar with its equations of motion</a>.  The quadrotor is constrained to move in the vertical plane, with the gravity pointing downwards.  The configuration vector $\bq = [x, y, \theta]^T$ collects the position of the center of mass and the pitch angle.  The control input is the thrust $\bu = [u_1, u_2]^T$ produced by the two rotors.  The input $\bu$ can assume both signs and has no bounds.
+
+      <ol type="a">
+
+        <li> Identify the set of states $\bx = [\bq^T, \dot \bq^T]^T$ in which the system is underactuated.</li>
+
+        <li> For <i>all</i> the states in which the system is underactuated, identify an acceleration $\ddot \bq (\bq, \dot \bq)$ that cannot be instantaneously achieved.  Provide a rigorous proof of your claim by using the equations of motion: plug the candidate accelerations in the dynamics, and try to come up with contradictions such as $mg=0$.</li>
+
+      </ol>
+
+    </div>
+
   </section>
 
 </section> <!-- end chapter (intro)-->
@@ -1269,6 +1302,26 @@ complete trajectory.</p>
 
   </section>
 
+  <section data-type="sect1"><h1>Exercises</h1>
+
+    <div data-type="exercise"><h1></h1>
+
+      Consider the first-order system with polynomial dynamics $\dot x = f(x) = - x^3 + 4x^2 +11x - 30$.
+
+      <ol type="a">
+
+        <li> Sketch the graph of the function $f(x)$, and identify all the equilibrium points.</li>
+
+        <li> For each equilibrium point, determine whether it is stable or unstable.  For each one of the stable equilibria, identify the region of attraction.</li>
+
+        <li> Consider an additive term $w$ in the system dynamics: $\dot x = f(x) + w$.  As $w$ ranges from $0$ to $\infty$, determine how many stable and unstable equilibrium points the system has. Support your answer with a sketch of the bifurcation diagram for nonnegative values of $w$.</li>
+
+      </ol>
+
+    </div>
+
+  </section>
+
 </section> <!-- ***************  end of pendulum chapter **************   -->
 
 <section data-type="chapter" class="chapter" id="acrobot">
@@ -1493,7 +1546,7 @@ complete trajectory.</p>
     completely dominated fixed-wings for commercial UAVs.  Perhaps it's only
     because they are easier to control?  Maybe there is still hope...</p>
 
-    <section data-type="sect2"><h1>The Planar Quadrotor</h1>
+    <section data-type="sect2" id="planar_quadrotor"><h1>The Planar Quadrotor</h1>
 
       <p>We can get started with an extremely simple model of a quadrotor that
       is restricted to live in the plane.  In that case, it actually only needs
