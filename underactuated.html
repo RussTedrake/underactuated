@@ -466,7 +466,7 @@ are available on YouTube</a>.</p>
     systems as being underactuated whenever reasoning about the underactuation
     is useful/necessary for developing a control strategy.</p>
 
-    <div data-type="example" class="drake"><h1>Robot Manipulators</h1>
+    <div data-type="example" class="drake"  id="robot_manipulators"><h1>Robot Manipulators</h1>
 
       <figure>
       <img style="width:250px;" data-src="figures/simple_double_pend.svg"/>
@@ -809,6 +809,12 @@ are available on YouTube</a>.</p>
         <li> While standing (state in the right figure), the humanoid is fully actuated.</li>
 
       </ol>
+
+    </div>
+
+    <div data-type="exercise"><h1></h1>
+
+      In <a href="#robot_manipulators">this example</a>, we have seen that the double pendulum with two motors is a fully-actuated system.  Here we consider a variation of it.  Instead of controlling the robot with the actuators at the shoulder and the elbow, we directly apply a force on the mass $m_2$ (tip of the second link).  Let $\bu = [u_1, u_2]^T$ be this force, with $u_1$ horizontal component (positive to the right) and $u_2$ vertical component (positive upwards).  This modification leaves the equations of motion derived in the <a href="underactuated.html?chapter=multibody">appendix</a> almost unchanged: the only difference is that the matrix $\bB$ is now a function of $\bq$.  Namely, using the notation from the appendix, $$\bB (\bq) = \begin{bmatrix} l_1 c_1 + l_2 c_{1+2} & l_1 s_1 + l_2 s_{1+2} \\ l_2  c_{1+2} & l_2 s_{1+2} \end{bmatrix}.$$  Is the double pendulum with he new control input still fully-actuated in all states? If not, identify the states in which it is underactuated.
 
     </div>
 
