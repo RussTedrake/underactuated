@@ -6704,10 +6704,10 @@ axis([-10,25,-10,25]);
   equations (e.g. the coefficient of friction in the joints), our robot may be
   <a href="https://youtu.be/cNZPRsrwumQ?t=32">walking on unknown terrain,
   subject to unknown disturbances</a>, or even be picking up unknown objects.
-  There are a number of mathematical frameworks for considering this; for our
-  purposes this chapter will generalizing our thinking to equations of the form:
-  $$\dot\bx = {\bf f}(\bx, \bu, \bw, t) \qquad \text{or} \qquad \bx[n+1] = {\bf
-  f}(\bx[n], \bu[n], \bw[n], n),$$ where $\bw$ is a new
+  There are a number of mathematical frameworks for considering this
+  uncertainty; for our purposes this chapter will generalizing our thinking to
+  equations of the form: $$\dot\bx = {\bf f}(\bx, \bu, \bw, t) \qquad \text{or}
+  \qquad \bx[n+1] = {\bf f}(\bx[n], \bu[n], \bw[n], n),$$ where $\bw$ is a new
   <i>random</i> input signal to the equations capturing all of this potential
   variability. Although it is certainly possible to work in continuous time, and
   treat $\bw(t)$ as a continuous-time random signal (c.f. <a
@@ -6717,25 +6717,47 @@ axis([-10,25,-10,25]);
   discrete-time systems.</p>
 
   <p>In order to simulate equations of this form, or to design controllers
-  against them, we need to define the random process that generates $\bw[n]$.
-  It is typical to assume the values $\bw[n]$ are independent and identically distributed (i.i.d.) -- meaning that $\bw[i]$ and $\bw[j]$ are uncorrelated when $i \neq j$ -- which is often referred to as "white noise".  This is not as limiting as it may sound... if we wish to treat correlated noise (aka "colored noise") the format of our equations is rich enough to support this,  we'll give an example below of a "whitening filter".  As a result, we typically define our distribution via a probability density $p_{\bf w}(\bw[n])$.  The other source of randomness that we will now consider in the equations is randomness in the initial conditions; we will similarly define a probabilty density $p_\bx(\bx[0]).$</p>
+  against them, we need to define the random process that generates $\bw[n]$. It
+  is typical to assume the values $\bw[n]$ are independent and identically
+  distributed (i.i.d.), meaning that $\bw[i]$ and $\bw[j]$ are uncorrelated when
+  $i \neq j$.  As a result, we typically define our distribution via a
+  probability density $p_{\bf w}(\bw[n])$.  This is not as limiting as it may
+  sound... if we wish to treat temporally-correlated noise (e.g. "colored
+  noise") the format of our equations is rich enough to support this by adding
+  additional state variables; we'll give an example below of a "whitening
+  filter" for modeling wind gusts.  The other source of randomness that we will
+  now consider in the equations is randomness in the initial conditions; we will
+  similarly define a probabilty density $p_\bx(\bx[0]).$</p>
 
   <p>This modeling framework is rich enough for us to convey the key ideas; but
   it is not quite sufficient for all of the systems I am interested in.  In
   <drake></drake> we go to additional lengths to support more general cases of
   <a
   href="https://drake.mit.edu/doxygen_cxx/group__stochastic__systems.html">stochastic
-  systems</a>.  This includes modeling system parameters -- these are drawn from
+  systems</a>.  This includes modeling system parameters that are drawn from
   random each time the model is initialized, but are fixed over the duration of
-  a simulation.  But in some situations <i>even the dimension of the state vector</i> may change in different realizations of the problem; consider, for instance, the case of a robot manipulating random numbers of dishes in a sink.  I do not know many control formulations that handle this type of randomness well, and I consider this a top priority to think more about!</p>
+  a simulation; it is possible but inefficient to model these as additional
+  state variables that have no dynamics.  In other problems, even the
+  <i>dimension of the state vector</i> may change in different realizations of
+  the problem!  Consider, for instance, the case of a robot manipulating random
+  numbers of dishes in a sink. I do not know many control formulations that
+  handle this type of randomness well, and I consider this a top priority to
+  think more about!  (We'll begin to address it in the <a href="underactuated.html?chapter=output_feedback">output feedback chapter</a>.)</p>
   
   <p>Roughly speaking, I will refer to "stochastic control" as the discipline of
-  formulating controllers that try to synthesize controllers that govern the
-  probabilistic evolution of the equations.  "Stochastic optimal control"
-  defines a cost function (now a random variable), and tries to find controllers
-  that optimize some metric such as the expected cost.  When we use the terms "robust control", we are typically referring to a class of techniques that try to guarantee a worst-case performance; here we typically do not need to know the precise probability distribution of $\bx[0]$ and $\bw[n]$, but instead only define the <i>sets</i> of possible values.</p>
+  synthesizing controllers that govern the probabilistic evolution of the
+  equations.  "Stochastic optimal control" defines a cost function (now a random
+  variable), and tries to find controllers that optimize some metric such as the
+  expected cost.  When we use the terms "robust control", we are typically
+  referring to a class of techniques that try to guarantee a worst-case
+  performance or a worst-case bound on the effect of randomness on the input on
+  the randomness on the output.  Interestingly, for many robust control
+  formulations we do not attempt to know the precise probability distribution of
+  $\bx[0]$ and $\bw[n]$, but instead only define the <i>sets</i>
+  of possible values that they can take.  This modeling is powerful, but can
+  lead to conservative controllers and pessimistic estimates of performance.</p>
 
-  <section data-type="sect1"><h1>Stochastic Optimal Control</h1>
+  <section data-type="sect1"><h1>Discrete states and actions</h1>
 
     <p> One of the most amazing features of the dynamic programming, additive
     cost approach to optimal control is the relative ease with which it extends
