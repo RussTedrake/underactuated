@@ -4297,57 +4297,9 @@ with Stochasticity</h1>
 
   </section> --><!-- end scaling -->
 
-  <section data-type="sect1"><h1>Stochastic Optimal Control</h1>
-
-    <p> One of the most amazing features of the dynamic programming, additive
-    cost approach to optimal control is the relative ease with which it extends
-    to optimizing stochastic systems. </p>
-
-    <section data-type="sect2"><h1>Graph search -- stochastic shortest path
-    problems</h1>
-
-      <p>For discrete systems, we can generalize our dynamics on a graph by
-      adding action-dependent transition probabilities to the edges.  This new
-      dynamical system is known as a Markov Decision Process (MDP), and we write
-      the dynamics completely in terms of the transition probabilities \[
-      \Pr(s[n+1] = s' | s[n] = s, a[n] = a). \] For discrete systems, this is
-      simply a big lookup table.  The cost that we incur for any execution of
-      system is now a random variable, and so we formulate the goal of control
-      as optimizing the expected cost, e.g. \begin{equation} J^*(s[0]) =
-      \min_{a[\cdot]} E \left[ \sum_{n=0}^\infty g(s[n],a[n]) \right].
-      \label{eq:stochastic_dp_optimality_cond} \end{equation}  Note that there
-      are many other potential objectives, such as minimizing the worst-case
-      error, but the expected cost is special because it preserves the dynamic
-      programming recursion: \[ J^*(s) = \min_a E \left[ g(s,a) + J^*(s')\right]
-      = \min_a \left[ g(s,a) + \sum_{s'} \Pr(s'|s,a) J^*(s') \right].\]
-      Remarkably, if we use these optimality conditions to construct our value
-      iteration algorithm \[ \hat{J}(s) \Leftarrow \min_a \left[ g(s,a) +
-      \sum_{s'} \Pr(s'|s,a) \hat{J}(s') \right],\] then this algorithm has the
-      same strong convergence guarantees of its counterpart for deterministic
-      systems.  And it is essentially no more expensive to compute!</p>
-
-    </section>
-
-    <section data-type="sect2"><h1>Stochastic interpretation of deterministic,
-    continuous-state value iteration</h1>
-
-      <p> There is a particularly cute observation to be made here. Let's assume
-      that we have discrete control inputs and discrete-time dynamics, but a
-      continuous state space.  Recall the fitted value iteration on a mesh
-      algorithm described above. In fact, the resulting update is exactly the
-      same as if we treated the system as a discrete state MDP with $\beta_i$
-      representing the probability of transitioning to state $x_i$! This sheds
-      some light on the impact of discretization on the solutions --
-      discretization error here will cause a sort of diffusion corresponding to
-      the probability of spreading across neighboring nodes.</p>
-
-    </section>
-
-  </section> <!-- end of stochastic optimal control -->
-
   <section data-type="sect1"><h1>Extensions</h1>
 
-    <todo> add section on extensions.  discounting.  finite-horizon / time-varying dynamics or cost.</todo>
+    <todo> add section on extensions.  discounting.  finite-horizon / time-varying dynamics or cost.  call-out to the stochastic case in the future chapter.</todo>
 
     <section data-type="sect2"><h1>Linear Programming Approach</h1>
 
@@ -6743,12 +6695,161 @@ axis([-10,25,-10,25]);
 
 <!-- ***************  end of policy search **************   -->
 
+<section data-type="chapter" class="chapter" id="robust"><h1>Robust and
+  Stochastic Control</h1>
+  
+  <p>So far in the notes, we have concerned ourselves with only known,
+  deterministic systems.  In this chapter we will begin to consider uncertainty.
+  This uncertainy can come in many forms... we may not know the governing
+  equations (e.g. the coefficient of friction in the joints), our robot may be
+  <a href="https://youtu.be/cNZPRsrwumQ?t=32">walking on unknown terrain,
+  subject to unknown disturbances</a>, or even be picking up unknown objects.
+  There are a number of mathematical frameworks for considering this; for our
+  purposes this chapter will generalizing our thinking to equations of the form:
+  $$\dot\bx = {\bf f}(\bx, \bu, \bw, t) \qquad \text{or} \qquad \bx[n+1] = {\bf
+  f}(\bx[n], \bu[n], \bw[n], n),$$ where $\bw$ is a new
+  <i>random</i> input signal to the equations capturing all of this potential
+  variability. Although it is certainly possible to work in continuous time, and
+  treat $\bw(t)$ as a continuous-time random signal (c.f. <a
+  href="https://en.wikipedia.org/wiki/Wiener_process">Wiener process</a>), it is
+  notationally simpler to work with $\bw[n]$ as a discrete-time random signal.
+  For this reason, we'll devote our attention in this chapter to the
+  discrete-time systems.</p>
+
+  <p>In order to simulate equations of this form, or to design controllers
+  against them, we need to define the random process that generates $\bw[n]$.
+  It is typical to assume the values $\bw[n]$ are independent and identically distributed (i.i.d.) -- meaning that $\bw[i]$ and $\bw[j]$ are uncorrelated when $i \neq j$ -- which is often referred to as "white noise".  This is not as limiting as it may sound... if we wish to treat correlated noise (aka "colored noise") the format of our equations is rich enough to support this,  we'll give an example below of a "whitening filter".  As a result, we typically define our distribution via a probability density $p_{\bf w}(\bw[n])$.  The other source of randomness that we will now consider in the equations is randomness in the initial conditions; we will similarly define a probabilty density $p_\bx(\bx[0]).$</p>
+
+  <p>This modeling framework is rich enough for us to convey the key ideas; but
+  it is not quite sufficient for all of the systems I am interested in.  In
+  <drake></drake> we go to additional lengths to support more general cases of
+  <a
+  href="https://drake.mit.edu/doxygen_cxx/group__stochastic__systems.html">stochastic
+  systems</a>.  This includes modeling system parameters -- these are drawn from
+  random each time the model is initialized, but are fixed over the duration of
+  a simulation.  But in some situations <i>even the dimension of the state vector</i> may change in different realizations of the problem; consider, for instance, the case of a robot manipulating random numbers of dishes in a sink.  I do not know many control formulations that handle this type of randomness well, and I consider this a top priority to think more about!</p>
+  
+  <p>Roughly speaking, I will refer to "stochastic control" as the discipline of
+  formulating controllers that try to synthesize controllers that govern the
+  probabilistic evolution of the equations.  "Stochastic optimal control"
+  defines a cost function (now a random variable), and tries to find controllers
+  that optimize some metric such as the expected cost.  When we use the terms "robust control", we are typically referring to a class of techniques that try to guarantee a worst-case performance; here we typically do not need to know the precise probability distribution of $\bx[0]$ and $\bw[n]$, but instead only define the <i>sets</i> of possible values.</p>
+
+  <section data-type="sect1"><h1>Stochastic Optimal Control</h1>
+
+    <p> One of the most amazing features of the dynamic programming, additive
+    cost approach to optimal control is the relative ease with which it extends
+    to optimizing stochastic systems. </p>
+
+    <section data-type="sect2"><h1>Graph search -- stochastic shortest path
+    problems</h1>
+
+      <p>For discrete systems, we can generalize our dynamics on a graph by
+      adding action-dependent transition probabilities to the edges.  This new
+      dynamical system is known as a Markov Decision Process (MDP), and we write
+      the dynamics completely in terms of the transition probabilities \[
+      \Pr(s[n+1] = s' | s[n] = s, a[n] = a). \] For discrete systems, this is
+      simply a big lookup table.  The cost that we incur for any execution of
+      system is now a random variable, and so we formulate the goal of control
+      as optimizing the expected cost, e.g. \begin{equation} J^*(s[0]) =
+      \min_{a[\cdot]} E \left[ \sum_{n=0}^\infty g(s[n],a[n]) \right].
+      \label{eq:stochastic_dp_optimality_cond} \end{equation}  Note that there
+      are many other potential objectives, such as minimizing the worst-case
+      error, but the expected cost is special because it preserves the dynamic
+      programming recursion: \[ J^*(s) = \min_a E \left[ g(s,a) + J^*(s')\right]
+      = \min_a \left[ g(s,a) + \sum_{s'} \Pr(s'|s,a) J^*(s') \right].\]
+      Remarkably, if we use these optimality conditions to construct our value
+      iteration algorithm \[ \hat{J}(s) \Leftarrow \min_a \left[ g(s,a) +
+      \sum_{s'} \Pr(s'|s,a) \hat{J}(s') \right],\] then this algorithm has the
+      same strong convergence guarantees of its counterpart for deterministic
+      systems.  And it is essentially no more expensive to compute!</p>
+
+    </section>
+
+    <section data-type="sect2"><h1>Stochastic interpretation of deterministic,
+    continuous-state value iteration</h1>
+
+      <p> There is a particularly cute observation to be made here. Let's assume
+      that we have discrete control inputs and discrete-time dynamics, but a
+      continuous state space.  Recall the fitted value iteration on a mesh
+      algorithm described above. In fact, the resulting update is exactly the
+      same as if we treated the system as a discrete state MDP with $\beta_i$
+      representing the probability of transitioning to state $x_i$! This sheds
+      some light on the impact of discretization on the solutions --
+      discretization error here will cause a sort of diffusion corresponding to
+      the probability of spreading across neighboring nodes.</p>
+
+    </section>
+
+  </section> <!-- end of stochastic optimal control -->
+
+  <section data-type="sect1"><h1>Linear Quadratic Gaussian (LQG)</h1></section>
+
+  <section data-type="sect1"><h1>Linear Exponential-Quadratic Gaussian (LEQG)</h1>
+
+    <p><elib>Jacobson73</elib> observed that it is also straight-forward to
+    minimize the objective: $$J = E\left[ \prod_{n=0}^\infty e^{\bx^T[n] {\bf Q}
+    \bx[n]} e^{\bu^T[n] {\bf R} \bu[n]} \right] = E\left[ e^{\sum_{n=0}^\infty
+    \bx^T[n] {\bf Q} \bx[n] + \bu^T[n] {\bf R} \bu[n]} \right],$$ with ${\bf Q}
+    = {\bf Q}^T \ge {\bf 0}, {\bf R} = {\bf R}^T > 0,$ by observing that the
+    cost is monotonically related to $\log{J}$, and therefore has the same
+    minima (this same trick forms the basis for "geometric programming"
+    <elib>Boyd07</elib>). This is known as the "Linear Exponential-Quadratic
+    Gaussian" (LEG or LEQG), and for the deterministic version of the problem
+    (no process nor measurement noise) the solution is identical to the LQR
+    problem; it adds no new modeling power.  But with noise, the LEQG optimal
+    controllers are different from the LQG controllers; they depend explicitly
+    on the covariance of the noise.  
+      
+    <todo>introduce the coefficient \sigma here, instead of just throwing it in
+    from the start. The coefficient $\sigma$ in the objective is referred to as
+    the "risk-sensitivity parameter" <elib>Whittle90</elib>.
+    </todo>
+    </p>
+
+    <todo>Insert simplest form of the derivation here, plus an example.</todo>
+
+    <p><elib>Whittle90</elib> provides an extensive treatment of this framework;
+    nearly all of the analysis from LQR/LQG (including Riccati equations,
+    Hamiltonian formulations, etc) have analogs for their versions with
+    exponential cost, and he argues that LQG and H-infinity control can
+    (should?) be understood as special cases of this approach.</p>
+  </section>
+
+  <todo>
+  Stochastic optimal control.  Stochastic HJB.  Graph search.  LQR + Gaussian
+  noise.  Whitening filters. Stochastic trajectory optimization.  iLQG,
+  iLEQG/iLEG.
+
+  Stochastic verification. (Having bounds on expected value does yield bounds on
+  system state).
+
+  Robust control.  Common Lyapunov functions.  Dissipation inequalities.
+  Guaranteed-cost control for linear systems (minimax). Loftberg 2003 for
+  constrained version (w/ disturbance feedback). H-infinity. Elad's regret
+  formulation? (or save this for adaptive control section?)
+  </todo>
+
+</section>
+
+<!-- ***************  end of robust control **************   -->
+  
+
 <section data-type="chapter" class="chapter" id="output_feedback"><h1>
 Output Feedback (aka Pixels-to-Torques)</h1>
 
+  <p>In this chapter we will start considering systems of the form: \begin{gather*} \bx[n+1] = {\bf f}(\bx[n], \bu[n], \bw[n], n) \\ \by[n] = {\bf g}(\bx[n], \bu[n], \bv[n], n).\end{gather*}
+  </p>
+
+  <section data-type="sect1"><h1>Partially-observable Markov Decision Processes</h1></section>
+
+  <section data-type="sect1"><h1>Linear Quadratic Gaussian</h1></section>
+
   <section data-type="sect1"><h1>Static Output Feedback for Linear
   Systems</h1></section>
-
+  
+  <todo>Disturbance-based feedback.  SLS.  ..</todo>
+  <todo>Perhaps a call-out to classical control.  (e.g. Loop-shaping)?</todo>
 
 </section>
 
@@ -7127,61 +7228,6 @@ Control through Contact</h1>
 
 <!-- ***************  end of contact **************   -->
 
-
-
-<section data-type="chapter" class="chapter" id="robust"><h1>Robust and
-Stochastic Control</h1>
-
-  <section data-type="sect1"><h1>Linear Quadratic Gaussian (LQG)</h1></section>
-
-  <section data-type="sect1"><h1>Linear Exponential-Quadratic Gaussian (LEQG)</h1>
-
-    <p><elib>Jacobson73</elib> observed that it is also straight-forward to
-    minimize the objective: $$J = E\left[ \prod_{n=0}^\infty e^{\bx^T[n] {\bf Q}
-    \bx[n]} e^{\bu^T[n] {\bf R} \bu[n]} \right] = E\left[ e^{\sum_{n=0}^\infty
-    \bx^T[n] {\bf Q} \bx[n] + \bu^T[n] {\bf R} \bu[n]} \right],$$ with ${\bf Q}
-    = {\bf Q}^T \ge {\bf 0}, {\bf R} = {\bf R}^T > 0,$ by observing that the
-    cost is monotonically related to $\log{J}$, and therefore has the same
-    minima (this same trick forms the basis for "geometric programming"
-    <elib>Boyd07</elib>). This is known as the "Linear Exponential-Quadratic
-    Gaussian" (LEG or LEQG), and for the deterministic version of the problem
-    (no process nor measurement noise) the solution is identical to the LQR
-    problem; it adds no new modeling power.  But with noise, the LEQG optimal
-    controllers are different from the LQG controllers; they depend explicitly
-    on the covariance of the noise.  
-      
-    <todo>introduce the coefficient \sigma here, instead of just throwing it in
-    from the start. The coefficient $\sigma$ in the objective is referred to as
-    the "risk-sensitivity parameter" <elib>Whittle90</elib>.
-    </todo>
-    </p>
-
-    <todo>Insert simplest form of the derivation here, plus an example.</todo>
-
-    <p><elib>Whittle90</elib> provides an extensive treatment of this framework;
-    nearly all of the analysis from LQR/LQG (including Riccati equations,
-    Hamiltonian formulations, etc) have analogs for their versions with
-    exponential cost, and he argues that LQG and H-infinity control can
-    (should?) be understood as special cases of this approach.</p>
-  </section>
-
-  <todo>
-  Stochastic optimal control.  Stochastic HJB.  Graph search.  LQR + Gaussian
-  noise.  Whitening filters. Stochastic trajectory optimization.  iLQG,
-  iLEQG/iLEG.
-
-  Stochastic verification. (Having bounds on expected value does yield bounds on
-  system state).
-
-  Robust control.  Common Lyapunov functions.  Dissipation inequalities.
-  Guaranteed-cost control for linear systems (minimax). Loftberg 2003 for
-  constrained version (w/ disturbance feedback). H-infinity. Elad's regret
-  formulation? (or save this for adaptive control section?)
-  </todo>
-
-</section>
-
-<!-- ***************  end of robust control **************   -->
 
 <section data-type="chapter" class="chapter" id="belief"><h1>Planning Under
 Uncertainty</h1>
