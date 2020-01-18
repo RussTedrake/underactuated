@@ -2,11 +2,15 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-from pydrake.all import (DirectCollocation, FloatingBaseType,
-                         PiecewisePolynomial, RigidBodyTree, RigidBodyPlant,
-                         Solve)
-from pydrake.examples.acrobot import AcrobotPlant
-from underactuated import (FindResource, PlanarRigidBodyVisualizer)
+from pydrake.all import (
+    DirectCollocation, DiagramBuilder, PiecewisePolynomial,
+    PlanarSceneGraphVisualizer, SceneGraph, Simulator, Solve,
+    TrajectorySource
+)
+from pydrake.examples.acrobot import (
+    AcrobotGeometry, AcrobotParams, AcrobotPlant
+)
+from underactuated import FindResource
 
 plant = AcrobotPlant()
 context = plant.CreateDefaultContext()
@@ -52,10 +56,18 @@ assert(result.is_success())
 
 x_trajectory = dircol.ReconstructStateTrajectory(result)
 
-tree = RigidBodyTree(FindResource("acrobot/acrobot.urdf"),
-                     FloatingBaseType.kFixed)
-vis = PlanarRigidBodyVisualizer(tree, xlim=[-4., 4.], ylim=[-4., 4.])
-ani = vis.animate(x_trajectory, repeat=True)
+builder = DiagramBuilder()
+source = builder.AddSystem(TrajectorySource(x_trajectory))
+scene_graph = builder.AddSystem(SceneGraph())
+AcrobotGeometry.AddToBuilder(builder, source.get_output_port(0),
+                             AcrobotParams(), scene_graph)
+visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(scene_graph,
+                                                          xlim=[-4., 4.],
+                                                          ylim=[-4., 4.]))
+builder.Connect(scene_graph.get_pose_bundle_output_port(),
+                visualizer.get_input_port(0))
+simulator = Simulator(builder.Build())
+simulator.AdvanceTo(x_trajectory.end_time())
 
 u_trajectory = dircol.ReconstructInputTrajectory(result)
 times = np.linspace(u_trajectory.start_time(), u_trajectory.end_time(), 100)
