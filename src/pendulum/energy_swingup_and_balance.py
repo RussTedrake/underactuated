@@ -5,9 +5,8 @@ import matplotlib.pyplot as plt
 from copy import copy
 
 from pydrake.all import (DiagramBuilder, FloatingBaseType, Linearize,
-                         LinearQuadraticRegulator, RigidBodyTree,
-                         Saturation, SignalLogger, Simulator, wrap_to,
-                         VectorSystem)
+                         LinearQuadraticRegulator, Saturation, SignalLogger,
+                         Simulator, wrap_to, VectorSystem)
 from pydrake.examples.pendulum import (PendulumInput, PendulumParams,
                                        PendulumPlant, PendulumState)
 
