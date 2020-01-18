@@ -57,8 +57,3 @@ python3-wheel
 tidy
 EOF
 )
-
-pip3 install -qq --upgrade --disable-pip-version-check $(tr '\n' ' ' <<EOF
-trimesh
-EOF
-)

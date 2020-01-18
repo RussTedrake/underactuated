@@ -63,7 +63,6 @@ autopep8
 jupyter
 pycodestyle
 shapely
-trimesh
 EOF
 )
 
