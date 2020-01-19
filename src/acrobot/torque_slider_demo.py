@@ -4,8 +4,7 @@ import numpy as np
 from pydrake.all import (DiagramBuilder, PlanarSceneGraphVisualizer, Simulator,
                          SceneGraph, VectorSystem)
 from pydrake.examples.acrobot import (AcrobotGeometry, AcrobotInput,
-                                      AcrobotParams, AcrobotPlant,
-                                      AcrobotState)
+                                      AcrobotPlant, AcrobotState)
 from underactuated import SliderSystem
 
 
@@ -21,7 +20,7 @@ acrobot = builder.AddSystem(AcrobotPlant())
 
 scene_graph = builder.AddSystem(SceneGraph())
 AcrobotGeometry.AddToBuilder(builder, acrobot.get_output_port(0),
-                             AcrobotParams(), scene_graph)
+                             scene_graph)
 visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(scene_graph,
                                                           xlim=[-4., 4.],
                                                           ylim=[-4., 4.]))

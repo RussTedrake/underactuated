@@ -6,8 +6,7 @@ from pydrake.all import (DiagramBuilder, LinearQuadraticRegulator,
                          PlanarSceneGraphVisualizer, Saturation, SceneGraph,
                          Simulator, WrapToSystem)
 from pydrake.examples.acrobot import (AcrobotGeometry, AcrobotInput,
-                                      AcrobotParams, AcrobotPlant,
-                                      AcrobotState)
+                                      AcrobotPlant, AcrobotState)
 
 
 def UprightState():
@@ -59,7 +58,7 @@ if __name__ == "__main__":
 
     scene_graph = builder.AddSystem(SceneGraph())
     AcrobotGeometry.AddToBuilder(builder, acrobot.get_output_port(0),
-                                 AcrobotParams(), scene_graph)
+                                 scene_graph)
     visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(scene_graph,
                                                               xlim=[-4., 4.],
                                                               ylim=[-4., 4.]))

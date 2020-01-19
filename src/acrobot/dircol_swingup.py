@@ -8,7 +8,7 @@ from pydrake.all import (
     TrajectorySource
 )
 from pydrake.examples.acrobot import (
-    AcrobotGeometry, AcrobotParams, AcrobotPlant
+    AcrobotGeometry, AcrobotPlant
 )
 from underactuated import FindResource
 
@@ -60,7 +60,7 @@ builder = DiagramBuilder()
 source = builder.AddSystem(TrajectorySource(x_trajectory))
 scene_graph = builder.AddSystem(SceneGraph())
 AcrobotGeometry.AddToBuilder(builder, source.get_output_port(0),
-                             AcrobotParams(), scene_graph)
+                             scene_graph)
 visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(scene_graph,
                                                           xlim=[-4., 4.],
                                                           ylim=[-4., 4.]))
