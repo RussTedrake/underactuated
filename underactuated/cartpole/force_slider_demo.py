@@ -1,19 +1,15 @@
 import argparse
 import numpy as np
 
-from pydrake.all import (DiagramBuilder, FloatingBaseType, RigidBodyPlant,
-                         RigidBodyTree, Simulator, VectorSystem)
+from pydrake.all import (AddMultibodyPlantSceneGraph, DiagramBuilder, Parser,
+                         PlanarSceneGraphVisualizer, Simulator)
 from underactuated import FindResource, SliderSystem
-from underactuated.deprecated.planar_rigid_body_visualizer import (
-    PlanarRigidBodyVisualizer
-)
-
-
-tree = RigidBodyTree(FindResource("cartpole/cartpole.urdf"),
-                     FloatingBaseType.kFixed)
 
 builder = DiagramBuilder()
-cartpole = builder.AddSystem(RigidBodyPlant(tree))
+plant, scene_graph = AddMultibodyPlantSceneGraph(builder, time_step=0.0)
+file_name = FindResource("cartpole/cartpole.urdf")
+Parser(plant).AddModelFromFile(file_name)
+plant.Finalize()
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-T", "--duration",
@@ -22,15 +18,16 @@ parser.add_argument("-T", "--duration",
                     default=10000.0)
 args = parser.parse_args()
 
-visualizer = builder.AddSystem(PlanarRigidBodyVisualizer(tree,
-                                                         xlim=[-2.5, 2.5],
-                                                         ylim=[-1, 2.5]))
-builder.Connect(cartpole.get_output_port(0), visualizer.get_input_port(0))
+visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(scene_graph,
+                                                          xlim=[-2.5, 2.5],
+                                                          ylim=[-1, 2.5]))
+builder.Connect(scene_graph.get_pose_bundle_output_port(),
+                visualizer.get_input_port(0))
 
 ax = visualizer.fig.add_axes([.2, .95, .6, .025])
 torque_system = builder.AddSystem(SliderSystem(ax, 'Force', -30., 30.))
 builder.Connect(torque_system.get_output_port(0),
-                cartpole.get_input_port(0))
+                plant.get_actuation_input_port())
 
 diagram = builder.Build()
 simulator = Simulator(diagram)
