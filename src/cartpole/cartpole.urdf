@@ -4,7 +4,7 @@
  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
  name="CartPole">
 
-  <link name="ground">
+  <link name="world">
     <visual>
       <origin xyz="0 0 -5" rpy="0 0 0" />
       <geometry>
@@ -78,7 +78,7 @@
   </link>
   
   <joint name="x" type="prismatic">
-    <parent link="ground" />
+    <parent link="world" />
     <child link="cart" />
     <origin xyz="0 0 0" />
     <axis xyz="1 0 0" />
