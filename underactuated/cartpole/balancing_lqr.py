@@ -2,13 +2,10 @@ import argparse
 import math
 import numpy as np
 
-from pydrake.all import (BasicVector, DiagramBuilder, FloatingBaseType,
-                         LinearQuadraticRegulator, RigidBodyPlant,
-                         RigidBodyTree, Simulator)
+from pydrake.all import (AddMultibodyPlantSceneGraph, DiagramBuilder,
+                         LinearQuadraticRegulator, Parser,
+                         PlanarSceneGraphVisualizer, Simulator)
 from underactuated import FindResource
-from underactuated.deprecated.planar_rigid_body_visualizer import (
-    PlanarRigidBodyVisualizer
-)
 
 
 def UprightState():
@@ -16,37 +13,45 @@ def UprightState():
     return state
 
 
-def BalancingLQR(robot):
+def BalancingLQR(plant):
     # Design an LQR controller for stabilizing the CartPole around the upright.
     # Returns a (static) AffineSystem that implements the controller (in
     # the original CartPole coordinates).
 
-    context = robot.CreateDefaultContext()
-    context.FixInputPort(0, BasicVector([0]))
+    context = plant.CreateDefaultContext()
+    plant.get_actuation_input_port().FixValue(context, [0])
 
     context.get_mutable_continuous_state_vector().SetFromVector(UprightState())
 
     Q = np.diag((10., 10., 1., 1.))
     R = [1]
 
-    return LinearQuadraticRegulator(robot, context, Q, R)
+    # MultibodyPlant has many (optional) input ports, so we must pass the
+    # input_port_index to LQR.
+    return LinearQuadraticRegulator(
+        plant, context, Q, R,
+        input_port_index=plant.get_actuation_input_port().get_index())
 
 
 if __name__ == "__main__":
     builder = DiagramBuilder()
 
-    tree = RigidBodyTree(FindResource("cartpole/cartpole.urdf"),
-                         FloatingBaseType.kFixed)
+    plant, scene_graph = AddMultibodyPlantSceneGraph(builder, time_step=0.0)
+    file_name = FindResource("cartpole/cartpole.urdf")
+    Parser(plant).AddModelFromFile(file_name)
+    plant.Finalize()
 
-    robot = builder.AddSystem(RigidBodyPlant(tree))
-    controller = builder.AddSystem(BalancingLQR(robot))
-    builder.Connect(robot.get_output_port(0), controller.get_input_port(0))
-    builder.Connect(controller.get_output_port(0), robot.get_input_port(0))
+    controller = builder.AddSystem(BalancingLQR(plant))
+    builder.Connect(plant.get_state_output_port(),
+                    controller.get_input_port(0))
+    builder.Connect(controller.get_output_port(0),
+                    plant.get_actuation_input_port())
 
-    visualizer = builder.AddSystem(PlanarRigidBodyVisualizer(tree,
-                                                             xlim=[-2.5, 2.5],
-                                                             ylim=[-1, 2.5]))
-    builder.Connect(robot.get_output_port(0), visualizer.get_input_port(0))
+    visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(scene_graph,
+                                                              xlim=[-2.5, 2.5],
+                                                              ylim=[-1, 2.5]))
+    builder.Connect(scene_graph.get_pose_bundle_output_port(),
+                    visualizer.get_input_port(0))
 
     diagram = builder.Build()
     simulator = Simulator(diagram)

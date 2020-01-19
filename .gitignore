@@ -3,7 +3,6 @@
 *.pyc
 .idea/
 build/
-examples/
 */.ipynb_checkpoints
 venv
 
