@@ -3870,7 +3870,7 @@ with Stochasticity</h1>
       can come from formulating objective functions using <em>additive
       cost</em>, because they often yield recursive solutions.  In the additive
       cost formulation, the long-term "score" for a trajectory can be written
-      as $$\int_0^T g(x(t),u(t)) dt,$$ where $g()$ is the instantaneous cost
+      as $$\int_0^T \ell(x(t),u(t)) dt,$$ where $\ell()$ is the instantaneous cost
       (also referred to as the "running cost"), and $T$ can be either a finite
       real number or $\infty$.  We will call a problem specification with a
       finite $T$ a "finite-horizon" problem, and $T=\infty$ an
@@ -3883,7 +3883,7 @@ with Stochasticity</h1>
       above is clearly written as an additive cost.  At first glance, our
       minimum-time problem formulation doesn't appear to be of this form, but we
       actually can write it as an additive cost problem using an infinite
-      horizon and the instantaneous cost  $$g(x,u) = \begin{cases} 0 & \text{if
+      horizon and the instantaneous cost  $$\ell(x,u) = \begin{cases} 0 & \text{if
       } x=0, \\ 1 & \text{otherwise.} \end{cases}$$</p>
 
       <p> We will examine a number of approaches to solving optimal control
@@ -3913,7 +3913,7 @@ with Stochasticity</h1>
     simple directed graph.</figcaption></figure>
 
     <p>Let us also assume that each edge has an associate weight or cost, using
-    $g(s,a)$ to denote the cost of being in state $s$ and taking action $a$.
+    $\ell(s,a)$ to denote the cost of being in state $s$ and taking action $a$.
     Furthermore we will denote the transition "dynamics" using \[ s[n+1] =
     f(s[n],a[n]). \] For instance, in the graph above, $f(s_1,a_1) = s_2$.</p>
 
@@ -3924,7 +3924,7 @@ with Stochasticity</h1>
     be accumulated when running the optimal controller) from every node to the
     goal. One such algorithm starts by initializing an estimate $\hat{J}^*=0$
     for all $s_i$, then proceeds with an iterative algorithm which sets
-    \begin{equation} \hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[ g(s_i,a) +
+    \begin{equation} \hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[ \ell(s_i,a) +
     \hat{J}^*\left({f(s_i,a)}\right) \right]. \label{eq:value_update}
     \end{equation} In software, $\hat{J}^*$ can be represented as a vector with
     dimension equal to the number of discrete states.  This algorithm,
@@ -3943,7 +3943,7 @@ with Stochasticity</h1>
     optimal policy from <i>every</i> state by iteratively evaluating the
     one-step cost.  If we know the optimal cost-to-go, then it's easy to extract
     the optimal policy, $a = \pi^*(s)$: \begin{equation} \pi^*(s_i) = \argmin_a
-    \left[ g(s_i,a) + J^*\left( f(s_i,a) \right) \right].
+    \left[ \ell(s_i,a) + J^*\left( f(s_i,a) \right) \right].
     \label{eq:policy_update} \end{equation} It's a simple algorithm, but playing
     with an example can help our intuition.</p>
 
@@ -4036,9 +4036,9 @@ with Stochasticity</h1>
       equations, then $\pi^*$ must be an optimal controller.  There are an
       analogous set of conditions for the continuous systems.  For a system
       $\dot{\bx} = f(\bx,\bu)$ and an infinite-horizon additive cost
-      $\int_0^\infty g(\bx,\bu)dt$, we have: \begin{gather} 0 = \min_\bu \left[
-      g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right], \label{eq:HJB} \\
-      \pi^*(\bx) = \argmin_\bu \left[ g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu)
+      $\int_0^\infty \ell(\bx,\bu)dt$, we have: \begin{gather} 0 = \min_\bu \left[
+      \ell(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right], \label{eq:HJB} \\
+      \pi^*(\bx) = \argmin_\bu \left[ \ell(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu)
       \right]. \end{gather} Equation \ref{eq:HJB} is known as the
       <em>Hamilton-Jacobi-Bellman</em> (HJB) equation. <elib>Bertsekas05</elib>
       <sidenote>Technically, a Hamilton-Jacobi equation is a PDE whose <em>time
@@ -4053,10 +4053,10 @@ with Stochasticity</h1>
 
         <p>The following statement is adapted from Proposition 3.2.1 of
         <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}=f(\bx,\bu)$ and
-        an infinite-horizon additive cost $\int_0^\infty g(\bx,\bu)dt$.  Suppose
+        an infinite-horizon additive cost $\int_0^\infty \ell(\bx,\bu)dt$.  Suppose
         $J(\bx)$ is a solution to the HJB equation; that is $J$ is continuously
         differentiable in $\bx$ and is such that \[ 0 = \min_{u\in U} \left[
-        g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx. \]
+        \ell(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx. \]
         Suppose also that $\pi^*(\bx)$ attains the minimum in the equation for
         all $\bx$.  Further assume that the differential equation described by
         $f$ has a unique solution starting from any state $\bx$, that the
@@ -4080,7 +4080,7 @@ with Stochasticity</h1>
 
         <p>Consider the problem of regulating the double integrator (this time
         without input limits) to the origin   using a quadratic cost: $$
-        g(\bx,\bu) = q^2 + \dot{q}^2 + u^2. $$  I claim   (without derivation)
+        \ell(\bx,\bu) = q^2 + \dot{q}^2 + u^2. $$  I claim   (without derivation)
         that the optimal controller for this objective is $$\pi(\bx) = -q -
         \sqrt{3}\dot{q}.$$   To convince you that this is indeed optimal, I
         have produced the following cost-to-go function: $$J(\bx) = \sqrt{3}
@@ -4088,11 +4088,11 @@ with Stochasticity</h1>
 
         <p>Taking \begin{gather*} \pd{J}{q} = 2\sqrt{3} q + 2\dot{q}, \qquad
         \pd{J}{\dot{q}} = 2q + 2\sqrt{3}\dot{q}, \end{gather*}   we can write
-        \begin{align*} g(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) &= q^2 + \dot{q}^2 +
+        \begin{align*} \ell(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) &= q^2 + \dot{q}^2 +
         u^2 + (2\sqrt{3} q + 2\dot{q}) \dot{q} + (2q + 2\sqrt{3}\dot{q}) u
         \end{align*}   This is a convex quadratic function in $u$, so we can
         find the minimum with respect to $u$ by finding where the gradient with
-        respect to $u$ evaluates to zero.   \[ \pd{}{u} \left[ g(\bx,\bu) +
+        respect to $u$ evaluates to zero.   \[ \pd{}{u} \left[ \ell(\bx,\bu) +
         \pd{J}{\bx} f(\bx,\bu) \right] = 2u + 2q + 2\sqrt{3}\dot{q}. \]  Setting
         this equal to $0$ and   solving for $u$ yields: $$u^* = -q - \sqrt{3}
         \dot{q},$$ thereby confirming that our policy $\pi$ is in fact the
@@ -4131,11 +4131,11 @@ with Stochasticity</h1>
       systems of interest   are <em>control affine</em>, e.g. I can write \[
       f(\bx,\bu) = f_1(\bx) + f_2(\bx)\bu. \]   We can make another dramatic
       simplification by restricting ourselves to instantaneous cost functions of
-      the form \[ g(\bx,\bu) = g_1(\bx) + \bu^T {\bf R} \bu, \qquad {\bf R}={\bf
+      the form \[ \ell(\bx,\bu) = \ell_1(\bx) + \bu^T {\bf R} \bu, \qquad {\bf R}={\bf
       R}^T \succ 0. \] In my view, this is not very restrictive - many of the
       cost functions that I find myself choosing to write down can be expressed
       in this form.  Given these assumptions, we can write the HJB as \[ 0 =
-      \min_{\bu} \left[ g_1(\bx) + \bu^T {\bf R} \bu + \pd{J}{\bx} \left[
+      \min_{\bu} \left[ \ell_1(\bx) + \bu^T {\bf R} \bu + \pd{J}{\bx} \left[
       f_1(\bx) + f_2(\bx)\bu \right]\right]. \]  Since this is a positive
       quadratic function in $\bu$, if the system does not have any constraints
       on $\bu$, then we can solve in closed-form for the minimizing $\bu$ by
@@ -4231,9 +4231,9 @@ with Stochasticity</h1>
         <i>fitted value iteration</i>, where $\bx_k$ are some number of samples
         taken from the continuous space and for discrete-time systems the
         iterative approximate solution to \begin{gather*} J^*(\bx_0) =
-        \min_{u[\cdot]} \sum_{n=0}^\infty g(\bx[n],\bu[n]), \\ \text{ s.t. }
+        \min_{u[\cdot]} \sum_{n=0}^\infty \ell(\bx[n],\bu[n]), \\ \text{ s.t. }
         \bx[n+1] = f(\bx[n], \bu[n]), \bx[0] = \bx_0\end{gather*} becomes
-        \begin{gather*} J^d_k = \min_\bu \left[ g(\bx_k,\bu) +
+        \begin{gather*} J^d_k = \min_\bu \left[ \ell(\bx_k,\bu) +
         \hat{J}^*_\alpha\left({f(\bx_k,\bu)}\right) \right], \\ \balpha
         \Leftarrow \argmin_\balpha \sum_k \left(\hat{J}^*_\balpha(\bx_k) - J^d_k
         \right)^2. \end{gather*} For linear function approximators, this is
@@ -4255,7 +4255,7 @@ with Stochasticity</h1>
         <p>Imagine that we use a mesh to approximate the cost-to-go function
         over that state space with $K$ mesh points $\bx_k$. We would like to
         perform the value iteration update: \begin{equation} \forall k,
-        \hat{J}^*(\bx_k) \Leftarrow \min_\bu \left[ g(\bx_k,\bu) +
+        \hat{J}^*(\bx_k) \Leftarrow \min_\bu \left[ \ell(\bx_k,\bu) +
         \hat{J}^*\left({f(\bx_k,\bu)}\right) \right],
         \label{eq:mesh_value_iteration} \end{equation} but must deal with the
         fact that $f(\bx_k,\bu)$ might not result in a next state that is
@@ -4280,11 +4280,11 @@ with Stochasticity</h1>
         <p>For solutions to systems with continuous-time dynamics, I have to
         uncover one of the details that I've so far been hiding to keep the
         notation simpler. Let us consider a problem with a finite-horizon:
-        \begin{gather*} \min_{\bu[\cdot]} \sum_{n=0}^N g(\bx[n],\bu[n]), \\
+        \begin{gather*} \min_{\bu[\cdot]} \sum_{n=0}^N \ell(\bx[n],\bu[n]), \\
         \text{ s.t. } \bx[n+1] = f(\bx[n], \bu[n]), \bx[0] = \bx_0\end{gather*}
         In fact, the way that we compute this is by solving the <em>time-varying
         cost-to-go function</em> backwards in time: \begin{gather*}J^*(\bx,N) =
-        \min_\bu g(\bx, \bu) \\ J^*(\bx,n-1) = \min_\bu \left[ g(\bx, \bu) +
+        \min_\bu \ell(\bx, \bu) \\ J^*(\bx,n-1) = \min_\bu \left[ \ell(\bx, \bu) +
         J^*(f(\bx,\bu), n) \right]. \end{gather*} The convergence of the value
         iteration update is equivalent to solving this time-varying cost-to-go
         backwards in time until it reaches a steady-state solution (the
@@ -4294,16 +4294,16 @@ with Stochasticity</h1>
         <p>Now let's consider the continuous-time version.  Again, we have a
         time-varying cost-to-go, $J^*(\bx,t)$.  Now $$\frac{dJ^*}{dt} =
         \pd{J^*}{\bx}f(\bx,\bu) + \pd{J^*}{t},$$ and our sufficiency condition
-        is $$0 = \min_\bu \left[g(\bx, \bu) + \pd{J^*}{\bx}f(\bx,\bu) +
+        is $$0 = \min_\bu \left[\ell(\bx, \bu) + \pd{J^*}{\bx}f(\bx,\bu) +
         \pd{J^*}{t} \right].$$  But since $\pd{J^*}{t}$ doesn't depend on $\bu$,
         we can pull it out of the $\min$ and write the (true) HJB:
-        $$-\pd{J^*}{t} = \min_\bu \left[g(\bx, \bu) + \pd{J^*}{\bx}f(\bx,\bu)
+        $$-\pd{J^*}{t} = \min_\bu \left[\ell(\bx, \bu) + \pd{J^*}{\bx}f(\bx,\bu)
         \right].$$ The standard numerical recipe <elib>Osher03 </elib> for
         solving this is to approximate $\hat{J}^*(\bx,t)$ on a mesh and then
         integrate the equations backwards in time (until convergence, if the
         goal is to find the infinite-horizon solution).  If, for mesh point
         $\bx_i$ we have $\alpha_i(t) = \hat{J}^*(\bx_i, t)$, then:
-        $$-\dot\alpha_i(t) = \min_\bu \left[g(\bx_i, \bu) + \pd{J^*(\bx_i,
+        $$-\dot\alpha_i(t) = \min_\bu \left[\ell(\bx_i, \bu) + \pd{J^*(\bx_i,
         t)}{\bx}f(\bx_i,\bu) \right],$$ where the partial derivative is
         estimated with a suitable finite-difference approximation on the mesh
         and often some "viscosity" terms are added to the right-hand side to
@@ -4360,21 +4360,22 @@ with Stochasticity</h1>
       alternative view, but may also be more generalizable and even more
       efficient for some instances of the problem.</p>
 
+      <todo>I've moved the stochastic dp equations, but this text depended on them.</todo>
       <p>Recall the optimality conditions from Eq.
       (\ref{eq:stochastic_dp_optimality_cond}).  If we describe the cost-to-go
       function as a vector, $J_i = J(s_i)$, then these optimality conditions can
-      be rewritten in vector form as \begin{equation} \bJ = \min_a \left[ \bg(a)
+      be rewritten in vector form as \begin{equation} \bJ = \min_a \left[ {\bf \ell}(a)
       + \bT(a) \bJ \right], \label{eq:vector_stochastic_dp} \end{equation} where
-      $g_i(a) = g(s_i,a)$ is the cost vector, and $T_{i,j}(a) = \Pr(s_j|s_i,a)$
+      $\ell_i(a) = \ell(s_i,a)$ is the cost vector, and $T_{i,j}(a) = \Pr(s_j|s_i,a)$
       is the transition probability matrix.  Let us take $\bJ$ as the vector of
       decision variables, and replace Eq. (\ref{eq:vector_stochastic_dp}) with
-      the constraints: \begin{equation} \forall a, \bJ \le \bg(a) + \bT(a)
+      the constraints: \begin{equation} \forall a, \bJ \le {\bf \ell}(a) + \bT(a)
       \bJ.\end{equation}  Clearly, for finite $a$, this is finite list of linear
       constraints, and for any vector $\bJ$ satisfying these constraints we have
       $\bJ \le \bJ^*$ (elementwise).  Now write the linear program:
       \begin{gather*} \maximize_\bJ \quad \bc^T \bJ, \\ \subjto \quad \forall a,
       \bJ \le
-      \bg(a) + \bT(a) \bJ, \end{gather*} where $c$ is any positive vector.  The
+      {\bf \ell}(a) + \bT(a) \bJ, \end{gather*} where $c$ is any positive vector.  The
       solution to this problem is $\bJ = \bJ^*$.</p>
 
       <p>Perhaps even more interesting is that this approach can be generalized
@@ -4382,7 +4383,7 @@ with Stochasticity</h1>
       above, now we have a matrix of features with $\bPsi_{i,j} =
       \psi^T_j(\bx_i)$ and we can write the LP \begin{gather} \maximize_\balpha
       \quad \bc^T \bPsi \balpha, \\ \subjto \quad \forall a, \bPsi \balpha \le
-      \bg(a) + \bT(a) \bPsi \balpha. \end{gather}  This time the solution is not
+      {\bf \ell}(a) + \bT(a) \bPsi \balpha. \end{gather}  This time the solution is not
       necessarily optimal, because $\bPsi \balpha^*$ only approximates $\bJ^*$,
       and the relative values of the elements of $\bc$ (called the
       "state-relevance weights") can determine the relative tightness of the
@@ -4532,7 +4533,7 @@ with Stochasticity</h1>
     <p>Recall that the cost-to-go for finite-horizon problems is time-dependent,
     and therefore the HJB sufficiency condition requires an additional term for
     $\pd{J^*}{t}$. $$ \forall \bx, \forall t\in[t_0,t_f],\quad 0 = \min_\bu
-    \left[ g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) + \pd{J^*}{t} \right]. $$</p>
+    \left[ \ell(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) + \pd{J^*}{t} \right]. $$</p>
 
     <subsection><h1>Finite-horizon LQR</h1>
 
@@ -4542,7 +4543,7 @@ with Stochasticity</h1>
 
       \begin{gather*}
       h(\bx) = \bx^T {\bf Q}_f \bx,\quad {\bf Q}_f = {\bf Q}_f^T \ge {\bf 0}
-      \\ g(\bx,\bu,t) = \bx^T {\bf Q} \bx + \bu^T {\bf R} \bu, \quad {\bf Q} =
+      \\ \ell(\bx,\bu,t) = \bx^T {\bf Q} \bx + \bu^T {\bf R} \bu, \quad {\bf Q} =
          {\bf Q}^T \ge 0, {\bf R}={\bf R}^T>0
       \end{gather*}
 
@@ -4611,7 +4612,7 @@ with Stochasticity</h1>
 
       \begin{gather*} \dot{\bx} = {\bf A}\bx + \bB\bu \\ h(\bx) = (\bx -
       \bx^d(T))^T {\bf Q}_f (\bx - \bx^d(T)), \quad {\bf Q}_f = {\bf Q}_f^T \ge
-      0 \\ g(\bx,\bu,t) = (\bx - \bx^d(t))^T {\bf Q} (\bx - \bx^d(t)) + (\bu -
+      0 \\ \ell(\bx,\bu,t) = (\bx - \bx^d(t))^T {\bf Q} (\bx - \bx^d(t)) + (\bu -
       \bu^d(t))^T {\bf R} (\bu - \bu^d(t)),\\ {\bf Q} = {\bf Q}^T \ge 0, {\bf
       R}={\bf R}^T>0 \end{gather*}
 
@@ -4699,7 +4700,7 @@ with Stochasticity</h1>
       \dot{\bx} = {\bf A}\bx + \bB\bu \\
       h(\bx) = \bx^T {\bf Q}_f \bx,
       \quad {\bf Q}_f = {\bf Q}_f^T \ge 0 \\
-      g(\bx,\bu,t) = 1 + \bx^T {\bf Q} \bx + \bu {\bf R} \bu,\\
+      \ell(\bx,\bu,t) = 1 + \bx^T {\bf Q} \bx + \bu {\bf R} \bu,\\
       {\bf Q} = {\bf
       Q}^T \ge 0, {\bf R}={\bf R}^T>0
       \end{gather*}
@@ -5099,10 +5100,10 @@ with Stochasticity</h1>
       in the context of dynamic programming.  After all, the cost-to-go
       functions also captured a great deal about the long-term dynamics of the
       system in a scalar function.  We can see the connection if we re-examine
-      the HJB equation \[ 0 = \min_\bu \left[ g(\bx,\bu) +
+      the HJB equation \[ 0 = \min_\bu \left[ \ell(\bx,\bu) +
       \pd{J^*}{\bx}f(\bx,\bu). \right] \]Let's imagine that we can solve for the
-      optimizing $\bu^*(\bx)$, then  we are left with $ 0 = g(\bx,\bu^*) +
-      \pd{J^*}{\bx}f(\bx,\bu^*) $ or simply \[ \dot{J}^*(\bx)  = -g(\bx,\bu^*)
+      optimizing $\bu^*(\bx)$, then  we are left with $ 0 = \ell(\bx,\bu^*) +
+      \pd{J^*}{\bx}f(\bx,\bu^*) $ or simply \[ \dot{J}^*(\bx)  = -\ell(\bx,\bu^*)
       \qquad \text{vs} \qquad \dot{V}(\bx) \preceq 0. \]  In other words, in
       optimal control we must find a cost-to-go function which matches this
       gradient for every $\bx$; that's very difficult and involves solving a
@@ -5111,7 +5112,7 @@ with Stochasticity</h1>
       downhill (at any rate) for all states.  This can be much easier, for
       theoretical work, but also for our numerical algorithms.  Also note that
       if we do manage to find the optimal cost-to-go, $J^*(\bx)$, then it can
-      also serve as a Lyapunov function so long as $g(\bx,\bu^*(\bx)) \succeq
+      also serve as a Lyapunov function so long as $\ell(\bx,\bu^*(\bx)) \succeq
       0$.</p>
 
     </subsection> <!-- relationship to HJB -->
@@ -5825,9 +5826,9 @@ with Stochasticity</h1>
     defined over a finite interval, $t\in[t_0,t_f]$,   we can compute the
     long-term (finite-horizon) cost of executing that trajectory   using the
     standard additive-cost optimal control objective, \[ J_{\bu(\cdot)}(\bx_0) =
-    \int_{t_0}^{t_f} g(\bx(t),\bu(t)) dt. \]  We will write the trajectory
+    \int_{t_0}^{t_f} \ell(\bx(t),\bu(t)) dt. \]  We will write the trajectory
     optimization problem as \begin{align*} \min_{\bu(\cdot)} \quad &
-    \int_{t_0}^{t_f} g(\bx(t),\bu(t)) dt \\ \subjto \quad & \forall t,
+    \int_{t_0}^{t_f} \ell(\bx(t),\bu(t)) dt \\ \subjto \quad & \forall t,
     \dot{\bx}(t) = f(\bx(t),\bu(t)), \\ & \bx(t_0) = \bx_0. \\ \end{align*} Some
     trajectory optimization problems may also include additional constraints,
     such as collision avoidance (e.g., where the constraint is that the signed
@@ -5947,7 +5948,7 @@ with Stochasticity</h1>
       problem onto a nonlinear program is to fix the break points at even
       intervals, $dt$, and use Euler integration to write \begin{align*}
       \minimize_{\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1}} & \sum_{n=0}^{N-1}
-      g(\bx_n,\bu_n)dt \\ & \bx_{n+1} = \bx_n + f(\bx_n,\bu_n)dt, \quad \forall
+      \ell(\bx_n,\bu_n)dt \\ & \bx_{n+1} = \bx_n + f(\bx_n,\bu_n)dt, \quad \forall
       n\in [0,N-1]. \end{align*} Note that the decision variables here are
       $(\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1})$, because $\bx_0$ is given, and
       $\bu_{N}$ does not appear in the cost nor any of the constraints.  It is
@@ -5955,7 +5956,7 @@ with Stochasticity</h1>
       $\bx$ and/or $\bu$. (Note that this formulation does not actually benefit
       from the additive cost structure, so more general cost formulations are
       also possible.)  Computing the gradients of the objective and constraints
-      is essentially as simple as computing the gradients of $g()$ and $f()$.
+      is essentially as simple as computing the gradients of $\ell()$ and $f()$.
       </p>
 
       <!-- <todo>re-implement this.  note that it is nonlinear if dt is a decision variable (which could make sense for the minimum-time problem).</todo>
@@ -6120,8 +6121,8 @@ with Stochasticity</h1>
         continuous dynamics; for example, the forward Euler integration scheme
         used above would give   $f_d(\bx[n],\bu[n]) =
         \bx[n]+f(\bx[n],\bu[n])dt.$  Then we have   \[ \pd{J}{\bu_k} =
-        \sum_{n=0}^{N-1} \left( \pd{g(\bx[n],\bu[n])}{\bx[n]} \pd{\bx[n]}{\bu_k}
-        + \pd{g(\bx[n],\bu[n])}{\bu_k} \right), \]   where the gradient of the
+        \sum_{n=0}^{N-1} \left( \pd{\ell(\bx[n],\bu[n])}{\bx[n]} \pd{\bx[n]}{\bu_k}
+        + \pd{\ell(\bx[n],\bu[n])}{\bu_k} \right), \]   where the gradient of the
         state with respect to the inputs can be computed   during the "forward
         simulation",   \[ \pd{\bx[n+1]}{\bu_k} = \pd{f_d(\bx[n],\bu[n])}{\bx[n]}
         \pd{\bx[n]}{\bu_k} + \pd{f_d(\bx[n],\bu[n])}{\bu_k}.  \]   These
@@ -6148,9 +6149,9 @@ with Stochasticity</h1>
         it in the Pontryagin section below: <ol> <li>Simulate forward:
         $$\bx[n+1] = f_d(\bx[n],\bu_n),$$ from  $\bx[0] = \bx_0$</li>
         <li>Calculate backwards: $$\lambda[n-1] =
-        \pd{g(\bx[n],\bu[n])}{\bx[n]}^T + \pd{f(\bx[n],\bu[n])}{\bx[n]}^T
+        \pd{\ell(\bx[n],\bu[n])}{\bx[n]}^T + \pd{f(\bx[n],\bu[n])}{\bx[n]}^T
         \lambda[n],$$ from $\lambda[N-1]=0$</li> <li>Extract the gradients:
-        $$\pd{J}{\bu[n]} = \pd{g(\bx[n],\bu[n])}{\bu[n]} + \lambda[n]^T
+        $$\pd{J}{\bu[n]} = \pd{\ell(\bx[n],\bu[n])}{\bu[n]} + \lambda[n]^T
         \pd{f(\bx[n],\bu[n])}{\bu[n]},$$ with $\pd{J}{\bu_k} = \sum_n
         \pd{J}{\bu[n]}\pd{\bu[n]}{\bu_k}$.</li> </ol> <p>Here $\lambda[n]$ is a
         vector the same size as $\bx[n]$ which has an interpretation as
@@ -6217,7 +6218,7 @@ with Stochasticity</h1>
         <p>There are number of useful variations to the problem formulations
         I've presented above. By far the most common is the addition of a
         terminal cost, e.g.: $$\min \quad h(\bx[N]) + \sum_{n=0}^{N-1}
-        g(\bx[n],\bu[n]).$$ These terms are easily added to the cost function in
+        \ell(\bx[n],\bu[n]).$$ These terms are easily added to the cost function in
         the any of methods, and the adjoint equations of the shooting method
         simply require the a modified terminal condition $$\lambda[N-1] =
         \pd{h(\bx[N])}{\bx[N]}$$ when computing the gradients.</p>
@@ -6281,10 +6282,10 @@ with Stochasticity</h1>
     multipliers</h1>
 
       <p>Given the equality-constrained optimization problem $$\minimize_\bz
-      g(\bz) \quad \subjto \quad \bphi(\bz) = 0,$$ where $\bphi$ is a vector.
+      \ell(\bz) \quad \subjto \quad \bphi(\bz) = 0,$$ where $\bphi$ is a vector.
       Define a vector $\lambda$ of Lagrange multipliers, the same size as
       $\phi$, and the scalar Lagrangian function, $$L(\bz,{\bf \lambda}) =
-      g(\bz) + \lambda^T\phi(\bz).$$ A necessary condition for $\bz^*$ to be an
+      \ell(\bz) + \lambda^T\phi(\bz).$$ A necessary condition for $\bz^*$ to be an
       optimal value of the constrained optimization is that the gradients of $L$
       vanish with respect to both $\bz$ and $\lambda$: $$\pd{L}{\bz} = 0, \quad
       \pd{L}{\lambda} = 0.$$  Note that $\pd{L}{\lambda} = \phi(\bz)$, so
@@ -6323,20 +6324,20 @@ with Stochasticity</h1>
       <p>Let us use Lagrange multipliers to derive the necessary conditions for
       our constrained trajectory optimization problem in discrete time
       \begin{align*} \minimize_{\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1}} &
-      \sum_{n=0}^{N-1} g(\bx[n],\bu[n]),\\ \subjto \quad & \bx[n+1] =
+      \sum_{n=0}^{N-1} \ell(\bx[n],\bu[n]),\\ \subjto \quad & \bx[n+1] =
       f_d(\bx[n],\bu[n]). \end{align*} Formulate the Lagrangian, \[
       L(\bx[\cdot],\bu[\cdot],\lambda[\cdot]) = \sum_{n=0}^{N-1}
-      g(\bx[n],\bu[n]) + \sum_{n=0}^{N-1} \lambda^T[n] \left(f_d(\bx[n],\bu[n])
+      \ell(\bx[n],\bu[n]) + \sum_{n=0}^{N-1} \lambda^T[n] \left(f_d(\bx[n],\bu[n])
       - \bx[n+1]\right), \] and set the derivatives to zero to obtain the
       adjoint equation method described for the shooting algorithm above:
       \begin{gather*} \forall n\in[0,N-1], \pd{L}{\lambda[n]} =
       f_d(\bx[n],\bu[n]) - \bx[n+1] = 0 \Rightarrow \bx[n+1] = f(\bx[n],\bu[n])
-      \\ \forall n\in[0,N-1], \pd{L}{\bx[n]} = \pd{g(\bx[n],\bu[n])}{\bx} +
+      \\ \forall n\in[0,N-1], \pd{L}{\bx[n]} = \pd{\ell(\bx[n],\bu[n])}{\bx} +
       \lambda^T[n] \pd{f_d(\bx[n],\bu[n])}{\bx} - \lambda^T[n-1] = 0 \\ \quad
-      \Rightarrow \lambda[n-1] = \pd{g(\bx[n],\bu[n])}{\bx}^T +
+      \Rightarrow \lambda[n-1] = \pd{\ell(\bx[n],\bu[n])}{\bx}^T +
       \pd{f_d(\bx[n],\bu[n])}{\bx}^T \lambda[n]. \\ \pd{L}{\bx[N]} =
       -\lambda[N-1] = 0 \Rightarrow \lambda[N-1] = 0 \\ \forall n\in[0,N-1],
-      \pd{L}{\bu[n]} = \pd{g(\bx[n],\bu[n])}{\bu} + \lambda^T[n]
+      \pd{L}{\bu[n]} = \pd{\ell(\bx[n],\bu[n])}{\bu} + \lambda^T[n]
       \pd{f_d(\bx[n],\bu[n])}{\bu} = 0. \end{gather*} Therefore, if we are given
       an initial condition $\bx_0$ and an input trajectory $\bu[\cdot]$, we can
       verify that it satisfies the necessary conditions for optimality by
@@ -6354,7 +6355,7 @@ with Stochasticity</h1>
       <p>You won't be surprised to hear that these necessary conditions have an
       analogue in continuous time. I'll state it here without derivation.  Given
       the initial conditions, $\bx_0$, a continuous dynamics, $\dot\bx =
-      f(\bx,\bu)$, and the instantaneous cost $g(\bx,\bu)$, for a trajectory
+      f(\bx,\bu)$, and the instantaneous cost $\ell(\bx,\bu)$, for a trajectory
       $\bx(\cdot),\bu(\cdot)$ defined over $t\in[t_0,t_f]$  to  be optimal it
       must satisfy the conditions that \begin{align*} \forall
       t\in[t_0,t_f],\quad & \dot{\bx} = f(\bx,\bu), \quad &\bx(0)=\bx_0\\
@@ -6371,20 +6372,20 @@ with Stochasticity</h1>
 
         <p>Adapted from <elib>Bertsekas00a</elib>. Given the initial conditions,
         $\bx_0$, a continuous dynamics, $\dot\bx = f(\bx,\bu)$, and the
-        instantaneous cost $g(\bx,\bu)$, for a trajectory
+        instantaneous cost $\ell(\bx,\bu)$, for a trajectory
         $\bx^*(\cdot),\bu^*(\cdot)$ defined over $t\in[t_0,t_f]$  to  be optimal
         is must satisfy the conditions that \begin{align*} \forall
         t\in[t_0,t_f],\quad & \dot{\bx}^* = f(\bx^*,\bu^*), \quad
         &\bx^*(0)=\bx_0\\ \forall t\in[t_0,t_f],\quad & -\dot\lambda =
         \pd{g}{\bx}^T + \pd{f}{\bx}^T \lambda, \quad &\lambda(T) = 0\\ \forall
-        t\in[t_0,t_f],\quad & u^* = \argmin_{\bu\in{\cal U}} \left[ g(\bx^*,\bu)
+        t\in[t_0,t_f],\quad & u^* = \argmin_{\bu\in{\cal U}} \left[ \ell(\bx^*,\bu)
         + \lambda^T f(\bx^*,\bu) \right].& \end{align*}</p>
 
       </theorem>
 
       <p>Note that the terms which are minimized in the final line of the
       theorem are commonly referred to as the Hamiltonian of the optimal control
-      problem, $$H(\bx,\bu,\lambda,t) = g(\bx,\bu) + \lambda^T f(\bx,\bu).$$ It
+      problem, $$H(\bx,\bu,\lambda,t) = \ell(\bx,\bu) + \lambda^T f(\bx,\bu).$$ It
       is distinct from, but inspired by, the Hamiltonian of classical mechanics.
       Remembering that $\lambda$ has an interpretation as $\pd{J}{\bx}^T$, you
       should also recognize it from the HJB. </p>
@@ -6824,14 +6825,14 @@ axis([-10,25,-10,25]);
       simply a big lookup table.  The cost that we incur for any execution of
       system is now a random variable, and so we formulate the goal of control
       as optimizing the expected cost, e.g. \begin{equation} J^*(s[0]) =
-      \min_{a[\cdot]} E \left[ \sum_{n=0}^\infty g(s[n],a[n]) \right].
+      \min_{a[\cdot]} E \left[ \sum_{n=0}^\infty \ell(s[n],a[n]) \right].
       \label{eq:stochastic_dp_optimality_cond} \end{equation}  Note that there
       are many other potential objectives, such as minimizing the worst-case
       error, but the expected cost is special because it preserves the dynamic
-      programming recursion: \[ J^*(s) = \min_a E \left[ g(s,a) + J^*(s')\right]
-      = \min_a \left[ g(s,a) + \sum_{s'} \Pr(s'|s,a) J^*(s') \right].\]
+      programming recursion: \[ J^*(s) = \min_a E \left[ \ell(s,a) + J^*(s')\right]
+      = \min_a \left[ \ell(s,a) + \sum_{s'} \Pr(s'|s,a) J^*(s') \right].\]
       Remarkably, if we use these optimality conditions to construct our value
-      iteration algorithm \[ \hat{J}(s) \Leftarrow \min_a \left[ g(s,a) +
+      iteration algorithm \[ \hat{J}(s) \Leftarrow \min_a \left[ \ell(s,a) +
       \sum_{s'} \Pr(s'|s,a) \hat{J}(s') \right],\] then this algorithm has the
       same strong convergence guarantees of its counterpart for deterministic
       systems.  And it is essentially no more expensive to compute!</p>
@@ -7370,7 +7371,7 @@ and Validation</h1>
   stochastic optimal control problem with our favorite additive form of the
   objective, this might look like: \begin{equation} \min_\alpha E \left[
     \sum_{n=0}^N
-  g(\bx[n],\bu[n]) \right]\end{equation} where the random variables are drawn
+  \ell(\bx[n],\bu[n]) \right]\end{equation} where the random variables are drawn
     from
   probability densities \begin{gather*}\bx[0] \sim p_0(\bx),\\ \bx[n] \sim
   p(\bx[n] | \bx[n-1], \bu[n-1]), \\ \bu[n] \sim p_\alpha(\bu[n] |
@@ -7399,7 +7400,7 @@ and Validation</h1>
       REINFORCE)</h1>
 
       <p>Let's start with a simpler optimization over a stochastic function:
-      $$\min_\alpha E\left[ g(\bx) \right] \text{ with } \bx \sim p_\alpha(\bx)
+      $$\min_\alpha E\left[ \ell(\bx) \right] \text{ with } \bx \sim p_\alpha(\bx)
       $$  I hope the notation is clear?  $\bx$ is a random vector, drawn from
       the distribution $p_\alpha(\bx)$, with the subscript indicating that the
       distribution depends on the parameter vector $\alpha$.  What is the
@@ -7422,9 +7423,9 @@ and Validation</h1>
 
       <p>This trick is even more potent in the optimal control case.  For a
       finite-horizon problem we have \begin{align*} \frac{\partial}{\partial
-      \alpha} E \left[ \sum_{n=0}^N g(\bx[n], \bu[n]) \right] =& \sum_{n=0}^N
-      \int d\bx[n] d\bu[n] ~ g(\bx[n],\bu[n]) \frac{\partial}{\partial \alpha}
-      p_\alpha(\bx[n],\bu[n]) \\ =& E\left[ \sum_{n=0}^N g(\bx[n],\bu[n])
+      \alpha} E \left[ \sum_{n=0}^N \ell(\bx[n], \bu[n]) \right] =& \sum_{n=0}^N
+      \int d\bx[n] d\bu[n] ~ \ell(\bx[n],\bu[n]) \frac{\partial}{\partial \alpha}
+      p_\alpha(\bx[n],\bu[n]) \\ =& E\left[ \sum_{n=0}^N \ell(\bx[n],\bu[n])
       \frac{\partial}{\partial \alpha} \log p_\alpha(\bx[n],\bu[n]) \right],
       \end{align*} where $$ p_\alpha(\bx[n],\bu[n]) = p_0(\bx[0]) \left(
       \prod_{k=1}^n p(\bx[k] | \bx[k-1],\bu[k-1]) \right) \left(\prod_{k=0}^n
@@ -7432,8 +7433,8 @@ and Validation</h1>
       p_\alpha(\bx[n],\bu[n]) = \log p_0(\bx[0]) + \sum_{k=1}^n \log p(\bx[k] |
       \bx[k-1],\bu[k-1]) + \sum_{k=0}^n \log p_\alpha(\bu[k] | \bx[k]).$$  Only
       the last terms depend on $\alpha$, which yields $$\frac{\partial}{\partial
-      \alpha} E \left[ \sum_{n=0}^N g(\bx[n], \bu[n]) \right] = E\left[
-      \sum_{n=0}^N g(\bx[n],\bu[n]) \sum_{k=0}^n \frac{\partial}{\partial
+      \alpha} E \left[ \sum_{n=0}^N \ell(\bx[n], \bu[n]) \right] = E\left[
+      \sum_{n=0}^N \ell(\bx[n],\bu[n]) \sum_{k=0}^n \frac{\partial}{\partial
       \alpha} \log p_\alpha(\bu[k]|\bx[k]) \right]. $$</p>
 
       <p>This update should surprise you.  It says that I can find the gradient
@@ -7449,7 +7450,7 @@ and Validation</h1>
       think of this as just one way to obtain the policy gradient. It's a
       particularly clever one in that it uses exactly the information that we
       have available in reinforcement learning -- we have access to the
-      instantaneous costs, $g(\bx[n], \bu[n])$, and to the policy -- so are
+      instantaneous costs, $\ell(\bx[n], \bu[n])$, and to the policy -- so are
       allowed to take gradients of the policy -- but does not require any
       understanding whatsoever of the plant model.   Although it's clever, it is
       not particularly efficient -- the Monte Carlo approximations of the
