@@ -3,8 +3,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from pydrake.systems.analysis import Simulator
-
-from plant import SLIPState, SpringLoadedInvertedPendulum
+from underactuated.spring_loaded_inverted_pendulum import (
+  SLIPState, SpringLoadedInvertedPendulum
+)
 
 plant = SpringLoadedInvertedPendulum()
 
