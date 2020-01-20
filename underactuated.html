@@ -786,7 +786,7 @@ are available on YouTube</a>.</p>
 
   <section><h1>Exercises</h1>
   
-    <exercise><h1></h1>
+    <exercise><h1>(Atlas Backflip)</h1>
 
       <figure>
       <img style="height:160px;" data-src="figures/atlas_backflip.jpg"/>
@@ -808,13 +808,13 @@ are available on YouTube</a>.</p>
 
     </exercise>
 
-    <exercise><h1></h1>
+    <exercise><h1>(Task-Space Control of the Double Pendulum)</h1>
 
-      In <a href="#robot_manipulators">this example</a>, we have seen that the double pendulum with two motors is a fully-actuated system.  Here we consider a variation of it.  Instead of controlling the robot with the actuators at the shoulder and the elbow, we directly apply a force on the mass $m_2$ (tip of the second link).  Let $\bu = [u_1, u_2]^T$ be this force, with $u_1$ horizontal component (positive to the right) and $u_2$ vertical component (positive upwards).  This modification leaves the equations of motion derived in the <a href="underactuated.html?chapter=multibody">appendix</a> almost unchanged: the only difference is that the matrix $\bB$ is now a function of $\bq$.  Namely, using the notation from the appendix, $$\bB (\bq) = \begin{bmatrix} l_1 c_1 + l_2 c_{1+2} & l_1 s_1 + l_2 s_{1+2} \\ l_2  c_{1+2} & l_2 s_{1+2} \end{bmatrix}.$$  Is the double pendulum with he new control input still fully-actuated in all states? If not, identify the states in which it is underactuated.
+      In <a href="#robot_manipulators">this example</a>, we have seen that the double pendulum with two motors is a fully-actuated system.  Here we consider a variation of it.  Instead of controlling the robot with the actuators at the shoulder and the elbow, we directly apply a force on the mass $m_2$ (tip of the second link).  Let $\bu = [u_1, u_2]^T$ be this force, with $u_1$ horizontal component (positive to the right) and $u_2$ vertical component (positive upwards).  This modification leaves the equations of motion derived in the <a href="underactuated.html?chapter=multibody">appendix</a> almost unchanged: the only difference is that the matrix $\bB$ is now a function of $\bq$.  Namely, using the notation from the appendix, $$\bB (\bq) = \begin{bmatrix} l_1 c_1 + l_2 c_{1+2} & l_1 s_1 + l_2 s_{1+2} \\ l_2  c_{1+2} & l_2 s_{1+2} \end{bmatrix}.$$  Is the double pendulum with the new control input still fully-actuated in all states? If not, identify the states in which it is underactuated.
 
     </exercise>
 
-    <exercise><h1></h1>
+    <exercise><h1>(Underactuation of the Planar Quadrotor)</h1>
 
       Later in the course we will study the dynamics of a quadrotor quite in depth, for the moment just take the time to get familiar with its equations of motion from the <a href="underactuated.html?chapter=acrobot#planar_quadrotor">planar quadrotor section</a>.  The quadrotor is constrained to move in the vertical plane, with the gravity pointing downwards.  The configuration vector $\bq = [x, y, \theta]^T$ collects the position of the center of mass and the pitch angle.  The control input is the thrust $\bu = [u_1, u_2]^T$ produced by the two rotors.  The input $\bu$ can assume both signs and has no bounds.
 
@@ -1312,7 +1312,7 @@ complete trajectory.</p>
 
   <section><h1>Exercises</h1>
 
-    <exercise><h1></h1>
+    <exercise><h1>(Stability Analysis of a First-Order System)</h1>
 
       Consider the first-order system with polynomial dynamics $$\dot x = f(x) = - x^3 + 4x^2 +11x - 30.$$
 
