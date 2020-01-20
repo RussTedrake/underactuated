@@ -1034,21 +1034,27 @@ are available on YouTube</a>.</p>
       for many first-order nonlinear systems (not just pendula); as illustrated
       by the following example: </p>
 
-      <example><h1>Nonlinear autapse</h1> Consider the following
-      system: \begin{equation} \dot{x} + x = \tanh(w x), \end{equation} which is
-      plotted below for two values of $w$.  It's convenient to note that
-      $\tanh(z) \approx z$ for small $z$.  For $w \le 1$ the system has only a
-      single fixed point.  For $w > 1$ the system has three fixed points : two
-      stable and one unstable.
+      <example><h1>Nonlinear autapse</h1> 
+        <p></p>Consider the following system: \begin{equation} \dot{x} + x =
+        \tanh(w x), \end{equation} which is plotted below for two values of $w$.
+        It's convenient to note that $\tanh(z) \approx z$ for small $z$.  For $w
+        \le 1$ the system has only a single fixed point.  For $w > 1$ the system
+        has three fixed points : two stable and one unstable.</p>
 
-      <figure> <img width="80%" data-src="figures/pend_autapse.svg"/> </figure>
+        <figure> <img width="80%" data-src="figures/pend_autapse.svg"/>
+        </figure>
 
-      These equations are not arbitrary - they are actually a model for one of
-      the simplest neural networks, and one of the simplest model of persistent
-      memory<elib>Seung00</elib>.  In the equation $x$ models the firing rate of
-      a single neuron, which has a feedback connection to itself.  $\tanh$ is
-      the activation (sigmoidal) function of the neuron, and $w$ is the weight
-      of the synaptic feedback. </example>
+        <p>These equations are not arbitrary - they are actually a model for one
+        of the simplest neural networks, and one of the simplest model of
+        persistent memory<elib>Seung00</elib>.  In the equation $x$ models the
+        firing rate of a single neuron, which has a feedback connection to
+        itself.  $\tanh$ is the activation (sigmoidal) function of the neuron,
+        and $w$ is the weight of the synaptic feedback.</p>
+
+        <p>Experiment with it for yourself:
+          <pysrc>autapse/autapse.py</pysrc>
+        </p>
+      </example>
 
       <p> One last piece of terminology.  In the neuron example, and in many
       dynamical systems, the dynamics were parameterized; in this case by a

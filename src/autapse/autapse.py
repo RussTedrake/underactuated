@@ -13,15 +13,23 @@ def autapse(x, w=1, u=0, f=1):
 
 Autapse = np.vectorize(autapse)
 xmax = 2.
-ymax = 2.
+ymax = 1.
 t = np.arange(-xmax, xmax, 0.01)
 
-plt.plot(t, Autapse(t, w=2., u=0), linewidth=2.)
+plt.plot(t, Autapse(t, w=.75, u=0), linewidth=2., label="w=3/4")
+plt.plot(t, Autapse(t, w=3., u=0), linewidth=2., label="w=3")
+
 plt.xlabel('x')
 plt.ylim((-ymax, ymax))
 plt.ylabel('xdot')
+plt.legend()
 
+# draw the x and y axes.
 plt.plot([-xmax, xmax], [0, 0], color='k', linestyle='-', linewidth=1.)
 plt.plot([0, 0], [-ymax, ymax], color='k', linestyle='-', linewidth=1.)
+# draw the line through the origin with slope -1.
+plt.plot([-ymax, ymax], [ymax, -ymax], color='k', linestyle='-', linewidth=1.)
+
 plt.title('Autapse')
+plt.axis('equal')
 plt.show()
