@@ -40,4 +40,4 @@ def setup_underactuated():
             get_ipython().system(u'if [ ! -d "/opt/underactuated" ]; then git clone https://github.com/RussTedrake/underactuated.git /opt/underactuated && /opt/underactuated/scripts/setup/ubuntu/18.04/install_prereqs; fi')
         else:
             assert False, "Unsupported platform"
-        sys.path.append("/opt/underactuated/src")
+        sys.path.append("/opt/underactuated")

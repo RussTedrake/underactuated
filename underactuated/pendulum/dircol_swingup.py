@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from pydrake.examples.pendulum import (PendulumPlant, PendulumState)
 from pydrake.all import (DirectCollocation, PiecewisePolynomial,
                          Solve)
-from visualizer import PendulumVisualizer
+from underactuated.pendulum import PendulumVisualizer
 
 plant = PendulumPlant()
 context = plant.CreateDefaultContext()

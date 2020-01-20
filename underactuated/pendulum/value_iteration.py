@@ -9,7 +9,7 @@ from pydrake.all import (DiagramBuilder, SignalLogger, Simulator, VectorSystem)
 from pydrake.examples.pendulum import PendulumPlant
 from pydrake.systems.controllers import (
     DynamicProgrammingOptions, FittedValueIteration, PeriodicBoundaryCondition)
-from visualizer import PendulumVisualizer
+from underactuated.pendulum import PendulumVisualizer
 
 
 plant = PendulumPlant()

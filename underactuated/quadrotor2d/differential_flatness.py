@@ -6,7 +6,9 @@ import numpy as np
 from pydrake.solvers.mathematicalprogram import MathematicalProgram, Solve
 from pydrake.trajectories import PiecewisePolynomial
 
-from quadrotor2d import Quadrotor2D, Quadrotor2DVisualizer
+from underactuated.quadrotor2d import (
+  Quadrotor2D, Quadrotor2DVisualizer
+)
 
 
 # TODO(russt): Use drake.trajectories.PiecewisePolynomialTrajectory

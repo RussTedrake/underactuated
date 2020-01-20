@@ -11,7 +11,10 @@ from pydrake.all import (DiagramBuilder,
                          VisualElement)
 from pydrake.attic.multibody.shapes import Box
 from pydrake.examples.rimless_wheel import (RimlessWheel, RimlessWheelParams)
-from underactuated import (PlanarRigidBodyVisualizer)
+from underactuated.deprecated.planar_rigid_body_visualizer import (
+    PlanarRigidBodyVisualizer
+)
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-T", "--duration",

@@ -40,7 +40,7 @@ function(add_nbtest ipynbfile)
   get_filename_component(pydir ${CMAKE_CURRENT_SOURCE_DIR} NAME)
 
   add_test(NAME ${pydir}_${ipynbfile}
-           COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/src/test_ipynb.py ${ipynbfile}
+           COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/test_ipynb.py ${ipynbfile}
            WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
 
   set_property(TEST ${pydir}_${ipynbfile}
@@ -54,7 +54,7 @@ function(add_nbtest ipynbfile)
 
 endfunction(add_nbtest)
 
-add_subdirectory(underactuated)
+add_subdirectory(deprecated)
 
 add_subdirectory(acrobot)
 add_subdirectory(autapse)

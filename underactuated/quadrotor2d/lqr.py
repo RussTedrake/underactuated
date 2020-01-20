@@ -6,7 +6,9 @@ from pydrake.systems.analysis import Simulator
 from pydrake.systems.controllers import LinearQuadraticRegulator
 from pydrake.systems.framework import DiagramBuilder
 
-from quadrotor2d import Quadrotor2D, Quadrotor2DVisualizer
+from underactuated.quadrotor2d import (
+  Quadrotor2D, Quadrotor2DVisualizer
+)
 
 
 parser = argparse.ArgumentParser()

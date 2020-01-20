@@ -6,8 +6,9 @@ from pydrake.systems.analysis import Simulator
 from pydrake.systems.framework import DiagramBuilder
 from pydrake.systems.primitives import ConstantVectorSource, LogOutput
 
-from plant import SLIPState, SpringLoadedInvertedPendulum
-from visualizer import SLIPVisualizer
+from underactuated.spring_loaded_inverted_pendulum import (
+  SLIPState, SLIPVisualizer, SpringLoadedInvertedPendulum
+)
 
 builder = DiagramBuilder()
 plant = builder.AddSystem(SpringLoadedInvertedPendulum())

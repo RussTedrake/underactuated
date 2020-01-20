@@ -3,8 +3,10 @@ import numpy as np
 
 from pydrake.all import (DiagramBuilder, FloatingBaseType, RigidBodyPlant,
                          RigidBodyTree, Simulator, VectorSystem)
-from underactuated import (FindResource, PlanarRigidBodyVisualizer,
-                           SliderSystem)
+from underactuated import FindResource, SliderSystem
+from underactuated.deprecated.planar_rigid_body_visualizer import (
+    PlanarRigidBodyVisualizer
+)
 
 
 tree = RigidBodyTree(FindResource("cartpole/cartpole.urdf"),

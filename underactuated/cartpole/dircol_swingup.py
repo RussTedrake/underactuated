@@ -5,7 +5,10 @@ import matplotlib.pyplot as plt
 from pydrake.all import (DirectCollocation, FloatingBaseType,
                          PiecewisePolynomial, RigidBodyTree, RigidBodyPlant,
                          Solve)
-from underactuated import (FindResource, PlanarRigidBodyVisualizer)
+from underactuated import FindResource
+from underactuated.deprecated.planar_rigid_body_visualizer import (
+    PlanarRigidBodyVisualizer
+)
 
 tree = RigidBodyTree(FindResource("cartpole/cartpole.urdf"),
                      FloatingBaseType.kFixed)

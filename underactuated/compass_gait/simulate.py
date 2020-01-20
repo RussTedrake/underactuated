@@ -13,7 +13,9 @@ from pydrake.all import (ConstantVectorSource,
                          VisualElement)
 from pydrake.attic.multibody.shapes import Box
 from pydrake.examples.compass_gait import (CompassGait, CompassGaitParams)
-from underactuated import (PlanarRigidBodyVisualizer)
+from underactuated.deprecated.planar_rigid_body_visualizer import (
+    PlanarRigidBodyVisualizer
+)
 
 
 tree = RigidBodyTree(FindResourceOrThrow(

@@ -31,8 +31,8 @@ find_package(drake CONFIG REQUIRED)
 get_filename_component(DRAKE_ROOT "${drake_DIR}/../../../" REALPATH)
 
 set(PATH "${DRAKE_ROOT}/bin:$ENV{PATH}")
-set(PYTHONPATH "${CMAKE_CURRENT_SOURCE_DIR}/src:${DRAKE_ROOT}/lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages:$ENV{PYTHONPATH}")
+set(PYTHONPATH "${CMAKE_CURRENT_SOURCE_DIR}:${DRAKE_ROOT}/lib/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages:$ENV{PYTHONPATH}")
 
 add_test(NAME htmllint WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" COMMAND tidy -e -config .tidy.config --show-warnings no underactuated.html)
 set_tests_properties(htmllint PROPERTIES PASS_REGULAR_EXPRESSION " 0 errors")
-add_subdirectory(src)
+add_subdirectory(underactuated)

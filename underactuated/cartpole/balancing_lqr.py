@@ -5,7 +5,10 @@ import numpy as np
 from pydrake.all import (BasicVector, DiagramBuilder, FloatingBaseType,
                          LinearQuadraticRegulator, RigidBodyPlant,
                          RigidBodyTree, Simulator)
-from underactuated import (FindResource, PlanarRigidBodyVisualizer)
+from underactuated import FindResource
+from underactuated.deprecated.planar_rigid_body_visualizer import (
+    PlanarRigidBodyVisualizer
+)
 
 
 def UprightState():

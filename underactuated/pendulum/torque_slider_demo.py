@@ -4,7 +4,7 @@ import numpy as np
 from pydrake.all import (DiagramBuilder, Simulator)
 from pydrake.examples.pendulum import PendulumPlant
 from underactuated import SliderSystem
-from visualizer import PendulumVisualizer
+from underactuated.pendulum import PendulumVisualizer
 
 builder = DiagramBuilder()
 pendulum = builder.AddSystem(PendulumPlant())
