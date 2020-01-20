@@ -179,7 +179,7 @@ are available on YouTube</a>.</p>
 
 </section> <!-- end preface -->
 
-<section data-type="chapter" class="chapter" id="intro">
+<chapter class="chapter" id="intro">
 <h1>Fully-actuated vs Underactuated Systems</h1>
 
   <p>Robots today move far too conservatively, and accomplish only a fraction of
@@ -191,12 +191,12 @@ are available on YouTube</a>.</p>
   achieve extraordinary performance in terms of speed, efficiency, or
   robustness.</p>
 
-  <section data-type="sect1">
+  <section>
   <h1>Motivation</h1>
 
     <p>Let's start with some examples, and some videos.</p>
 
-    <section data-type="sect2">
+    <subsection>
     <h1>Honda's ASIMO vs. passive dynamic walkers</h1>
 
       <p> The world of robotics changed when, in late 1996, Honda Motor Co.
@@ -285,9 +285,9 @@ are available on YouTube</a>.</p>
       required to make robots perform this way.  We'll also try to reason about
       how robust these types of maneuvers are and can be.  Don't worry, if you
       do not have a super lightweight, super capable, and super durable
-      humanoid, then a simulation will be provided for you.  </p> </section>
+      humanoid, then a simulation will be provided for you.  </p> </subsection>
 
-    <section data-type="sect2"><h1>Birds vs. modern aircraft</h1>
+    <subsection><h1>Birds vs. modern aircraft</h1>
 
       <p> The story is surprisingly similar in a very different type of machine.
       Modern airplanes are extremely effective for steady-level flight in still
@@ -355,9 +355,9 @@ are available on YouTube</a>.</p>
       the technique used by rainbow trout to swim upstream at mating
       season<elib>Beal06</elib>. </p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Manipulation</h1>
+    <subsection><h1>Manipulation</h1>
 
       <p>Despite a long history of success in industrial applications, and the
       huge potential for consumer applications, we still don't have robot arms
@@ -398,9 +398,9 @@ are available on YouTube</a>.</p>
       results are hilarious and depressing at the same time.  (Let's fix
       that!)</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>The common theme</h1>
+    <subsection><h1>The common theme</h1>
 
       <p> Classical control techniques for robotics are based on the idea that
       feedback can be used to override the dynamics of our machines.  These
@@ -420,11 +420,11 @@ are available on YouTube</a>.</p>
       begun to more carefully consider the dynamics of their machines in the
       context of control. </p>
 
-    </section>
+    </subsection>
 
   </section>
 
-  <section data-type="sect1"><h1>Definitions</h1>
+  <section><h1>Definitions</h1>
 
     <p> According to Newton, the dynamics of mechanical systems are second order
     ($F = ma$).  Their state is given by a vector of positions, $\bq$ (also
@@ -437,18 +437,18 @@ are available on YouTube</a>.</p>
     {\bf f}_1(\bq,\dot{\bq},t) + {\bf f}_2(\bq,\dot{\bq},t)\bu
     \label{eq:f1_plus_f2}.\end{equation} </p>
 
-    <div data-type="definition"><h1>Fully-Actuated</h1> A control system
+    <definition><h1>Fully-Actuated</h1> A control system
     described by equation \ref{eq:f1_plus_f2} is fully-actuated in state
     $(\bq,\dot{\bq})$ at time $t$ if it is able to command any instantaneous
     acceleration in $\bq$: \begin{equation} \textrm{rank}\left[{\bf f}_2
-    (\bq,\dot{\bq},t)\right] = \dim\left[\bq\right].\end{equation} </div>
+    (\bq,\dot{\bq},t)\right] = \dim\left[\bq\right].\end{equation} </definition>
 
-    <div data-type="definition"><h1>Underactuated</h1> A control system
+    <definition><h1>Underactuated</h1> A control system
     described by equation \ref{eq:f1_plus_f2} is underactuated in state
     $(\bq,\dot{\bq})$ at time $t$ if it is not able to command an arbitrary
     instantaneous acceleration in $\bq$: \begin{equation}
     \textrm{rank}\left[{\bf f}_2(\bq,\dot{\bq},t)\right] < \dim\left[\bq\right].
-    \label{eq:underactuated_def}\end{equation} </div>
+    \label{eq:underactuated_def}\end{equation} </definition>
 
     <p>Notice that whether or not a control system is underactuated may depend
     on the state of the system or even on time, although for most systems
@@ -466,7 +466,7 @@ are available on YouTube</a>.</p>
     systems as being underactuated whenever reasoning about the underactuation
     is useful/necessary for developing a control strategy.</p>
 
-    <div data-type="example" class="drake"  id="robot_manipulators"><h1>Robot Manipulators</h1>
+    <example class="drake" id="robot_manipulators"><h1>Robot Manipulators</h1>
 
       <figure>
       <img style="width:250px;" data-src="figures/simple_double_pend.svg"/>
@@ -493,7 +493,7 @@ are available on YouTube</a>.</p>
       <todo>make drake elements expandable/collapsible.  nice example here:
       http://quhno.internetstrahlen.de/myopera/csstests/collapsible-paragraph.html</todo>
 
-      <div data-type="drake"><h1>Python Example</h1>
+      <div><b>Python Example</b>
 
       <p> I personally learn best when I can experiment and get some physical
       intuition.  The <a href="http://drake.mit.edu">companion software for the
@@ -518,10 +518,8 @@ are available on YouTube</a>.</p>
 
       <pysrcinclude>double_pendulum/manipulator.py</pysrcinclude>
 
-      <todo>Implement the symbolic version</todo>
-
       </div>
-    </div>
+    </example>
 
     <p> While the basic double pendulum is fully actuated, imagine the somewhat
     bizarre case that we have a motor to provide torque at the elbow, but no
@@ -529,8 +527,6 @@ are available on YouTube</a>.</p>
     = [0,1]^T$.  This system is clearly underactuated.  While it may sound like
     a contrived example, it turns out that it is almost exactly the dynamics we
     will use to study as our simplest model of walking later in the class. </p>
-
-    </div>
 
     <p>The matrix ${\bf f}_2$ in equation \ref{eq:f1_plus_f2} always has
     dim$[\bq]$ rows, and dim$[\bu]$ columns. Therefore, as in the example, one
@@ -547,14 +543,14 @@ are available on YouTube</a>.</p>
     <p>For completeness, let's generalize the definition of underactuation to
     systems beyond the second-order control affine systems.</p>
 
-    <div data-type="definition"> <h1>Underactuated Control Differential
+    <definition> <h1>Underactuated Control Differential
     Equations</h1> An $n$th-order control differential equation (with $n\ge2$)
     described by the equations \begin{equation} \frac{d^n\bq}{dt^n} = f(\bq, ..,
     \frac{d^{n-1} \bq}{dt^{n-1}}, t, {\bf u}) \end{equation} is fully actuated
     in state ${\bf x} = (\bq, ..., \frac{d^{n-1} \bq}{dt^{n-1}})$ and time $t$
     if the resulting map ${\bf f}$ is surjective: for every $\frac{d^n\bq}{dt^n}
     $ there exists a ${\bf u}$ which produces the desired response.  Otherwise
-    it is underactuated. </div>
+    it is underactuated. </definition>
 
     <p>It is easy to see that equation \ref{eq:underactuated_def} is a
     sufficient condition for underactuation.  This definition can also be
@@ -571,7 +567,7 @@ are available on YouTube</a>.</p>
 
   </section>
 
-  <section data-type="sect1"> <h1>Feedback Linearization</h1>
+  <section> <h1>Feedback Linearization</h1>
 
     <p> Fully-actuated systems are dramatically easier to control than
     underactuated systems.  The key observation is that, for fully-actuated
@@ -595,7 +591,7 @@ are available on YouTube</a>.</p>
     results which generalize this idea to the case where ${\bf f}_1$ and ${\bf
     f}_2$ are estimated, rather than known (e.g, <elib>Slotine90</elib>).</p>
 
-    <div data-type="example" class="drake"><h1>Feedback-Cancellation Double
+    <example class="drake"><h1>Feedback-Cancellation Double
     Pendulum</h1>
 
     <p> Let's say that we would like our simple double pendulum to act like a
@@ -616,7 +612,7 @@ are available on YouTube</a>.</p>
     here would not have been any more difficult if the robot had 100 joints.
     </p>
 
-    <div data-type="drake"><h1>Python Example</h1> You can run these examples
+    <div><b>Python Example</b> You can run these examples
     using:
 
     <pysrc args="--gravity=9.8">double_pendulum/as_single_pendulum.py</pysrc>
@@ -628,7 +624,7 @@ are available on YouTube</a>.</p>
 
     </div>
 
-    </div> <!--end example-->
+    </example>
 
     <p> The underactuated systems are not feedback linearizable.  Therefore,
     unlike fully-actuated systems, the control designer has no choice but to
@@ -639,7 +635,7 @@ are available on YouTube</a>.</p>
 
   </section>
 
-  <section data-type="sect1"><h1>Input and State Constraints</h1>
+  <section><h1>Input and State Constraints</h1>
 
     <p> Although the dynamic constraints due to missing actuators certainly
     embody the spirit of this course, many of the systems we care about could be
@@ -648,9 +644,9 @@ are available on YouTube</a>.</p>
     amount of torque, or there may be a physical obstacle in the free space with
     which we cannot permit our robot to come into contact with. </p>
 
-    <div data-type="definition"><h1>Input and State Constraints</h1> A dynamical
+    <definition><h1>Input and State Constraints</h1> A dynamical
     system described by $\dot{\bx} = {\bf f}(\bx,\bu,t)$ may be subject to one
-    or more constraints described by $\bphi(\bx,\bu,t)\ge0$. </div>
+    or more constraints described by $\bphi(\bx,\bu,t)\ge0$. </definition>
 
     <p>In practice it can be useful to separate out constraints which depend
     only on the input, e.g. $\phi(\bu)\ge0$, such as actuator limits, as they
@@ -666,17 +662,17 @@ are available on YouTube</a>.</p>
     able to perform the control design in the "minimal coordinates" (which is
     often difficult). </p>
 
-    <div data-type="example"><h1>Input limits</h1> Consider the constrained
+    <example><h1>Input limits</h1> Consider the constrained
     second-order linear system \[ \ddot{x} = u, \quad |u| \le 1. \] By our
     definition, this system is underactuated.  For example, there is no $u$
-    which can produce the acceleration $\ddot{x} = 2$. </div>
+    which can produce the acceleration $\ddot{x} = 2$. </example>
 
     <p>Input and state constraints can complicate control design in similar ways
     to having an insufficient number of actuators, (i.e., further limiting the
     set of the feasible trajectories), and often require similar tools to find a
     control solution.</p>
 
-    <section data-type="sect2"><h1>Nonholonomic constraints</h1>
+    <subsection><h1>Nonholonomic constraints</h1>
 
       <p> You might have heard of the term "nonholonomic system" (see e.g.
       <elib>Bloch03</elib>), and be thinking about how nonholonomy relates to
@@ -689,7 +685,7 @@ are available on YouTube</a>.</p>
       freedom of a system by one, a nonholonomic constraint does not.  An
       automobile or traditional wheeled robot provides a canonical example:</p>
 
-      <div data-type="example"><h1>Wheeled robot</h1> Consider a simple model of
+      <example><h1>Wheeled robot</h1> Consider a simple model of
       a wheeled robot whose configuration is described by its Cartesian position
       $x,y$ and its orientation, $\theta$, so $\bq = \begin{bmatrix} x, y,
       \theta \end{bmatrix}^T$.  The system is subject to a differential
@@ -699,7 +695,7 @@ are available on YouTube</a>.</p>
       = 0.\] This constraint cannot be integrated into a constraint on
       configuration&mdash;the car can get to any configuration $(x,y,\theta)$,
       it just can't move directly sideways&mdash;so this is a nonholonomic
-      constraint. </div>
+      constraint. </example>
 
       <p>Contrast the wheeled robot example with a robot on train tracks.  The
       train tracks correspond to a holonomic constraint: the track constraint
@@ -718,11 +714,11 @@ are available on YouTube</a>.</p>
       constraint of the form \[\bphi(\bq,{\bf \dot{q}},{\bf \ddot{q}},t) =  0,\]
       so do not qualify as a nonholonomic constraint.</p>
 
-    </section>
+    </subsection>
 
   </section>
 
-  <section data-type="sect1"><h1>Underactuated robotics</h1>
+  <section><h1>Underactuated robotics</h1>
 
     <p> The control of underactuated systems is an open and interesting problem
     in controls.  Although there are a number of special cases where
@@ -763,7 +759,7 @@ are available on YouTube</a>.</p>
 
   </section>
 
-  <section data-type="sect1"><h1>Goals for the course</h1>
+  <section><h1>Goals for the course</h1>
 
     <p> This course is based on the observation that there are new computational
     tools from optimization theory, control theory, motion planning, and even
@@ -788,9 +784,9 @@ are available on YouTube</a>.</p>
 
   </section>
 
-  <section data-type="sect1"><h1>Exercises</h1>
+  <section><h1>Exercises</h1>
   
-    <div data-type="exercise"><h1></h1>
+    <exercise><h1></h1>
 
       <figure>
       <img style="height:160px;" data-src="figures/atlas_backflip.jpg"/>
@@ -810,15 +806,15 @@ are available on YouTube</a>.</p>
 
       </ol>
 
-    </div>
+    </exercise>
 
-    <div data-type="exercise"><h1></h1>
+    <exercise><h1></h1>
 
       In <a href="#robot_manipulators">this example</a>, we have seen that the double pendulum with two motors is a fully-actuated system.  Here we consider a variation of it.  Instead of controlling the robot with the actuators at the shoulder and the elbow, we directly apply a force on the mass $m_2$ (tip of the second link).  Let $\bu = [u_1, u_2]^T$ be this force, with $u_1$ horizontal component (positive to the right) and $u_2$ vertical component (positive upwards).  This modification leaves the equations of motion derived in the <a href="underactuated.html?chapter=multibody">appendix</a> almost unchanged: the only difference is that the matrix $\bB$ is now a function of $\bq$.  Namely, using the notation from the appendix, $$\bB (\bq) = \begin{bmatrix} l_1 c_1 + l_2 c_{1+2} & l_1 s_1 + l_2 s_{1+2} \\ l_2  c_{1+2} & l_2 s_{1+2} \end{bmatrix}.$$  Is the double pendulum with he new control input still fully-actuated in all states? If not, identify the states in which it is underactuated.
 
-    </div>
+    </exercise>
 
-    <div data-type="exercise"><h1></h1>
+    <exercise><h1></h1>
 
       Later in the course we will study the dynamics of a quadrotor quite in depth, for the moment just take the time to get familiar with its equations of motion from the <a href="underactuated.html?chapter=acrobot#planar_quadrotor">planar quadrotor section</a>.  The quadrotor is constrained to move in the vertical plane, with the gravity pointing downwards.  The configuration vector $\bq = [x, y, \theta]^T$ collects the position of the center of mass and the pitch angle.  The control input is the thrust $\bu = [u_1, u_2]^T$ produced by the two rotors.  The input $\bu$ can assume both signs and has no bounds.
 
@@ -830,20 +826,20 @@ are available on YouTube</a>.</p>
 
       </ol>
 
-    </div>
+    </exercise>
 
   </section>
 
-</section> <!-- end chapter (intro)-->
+</chapter> <!-- end chapter (intro)-->
 
 
 <div class="part" title="Model Systems">
 
 
-<section data-type="chapter" class="chapter" id="pend">
+<chapter class="chapter" id="pend">
 <h1>The Simple Pendulum</h1>
 
-  <section data-type="sect1"><h1>Introduction</h1>
+  <section><h1>Introduction</h1>
 
     <p> Our goals for this chapter are modest: we'd like to understand the
     dynamics of a pendulum.</p>
@@ -867,7 +863,7 @@ are available on YouTube</a>.</p>
 
   </section>
 
-  <section data-type="sect1" class="drake"><h1>Nonlinear dynamics with a
+  <section class="drake"><h1>Nonlinear dynamics with a
     constant
     torque</h1>
 
@@ -877,7 +873,7 @@ are available on YouTube</a>.</p>
       \end{equation} </p>.
 
 
-    <div data-type="example" class="drake"><h1>Simple Pendulum in Python</h1>
+    <example class="drake"><h1>Simple Pendulum in Python</h1>
 
       <p>You can experiment with this system in <drake></drake> using</p>
 
@@ -885,7 +881,7 @@ are available on YouTube</a>.</p>
 
       <p>(use the slider at the top to adjust the torque input).</p>
 
-    </div>
+    </example>
 
     <p> These are relatively simple differential equations, so if I give you
     $\theta(0)$ and $\dot\theta(0)$, then you should be able to integrate them
@@ -909,7 +905,7 @@ are available on YouTube</a>.</p>
     methods are described beautifully in a book by Steve
     Strogatz<elib>Strogatz94</elib>.</p>
 
-    <section data-type="sect2"><h1>The overdamped pendulum</h1>
+    <subsection><h1>The overdamped pendulum</h1>
 
       <p> Let's start by studying a special case -- intuitively when
       $b\dot\theta \gg ml^2\ddot\theta$ -- which via <a
@@ -1038,7 +1034,7 @@ are available on YouTube</a>.</p>
       for many first-order nonlinear systems (not just pendula); as illustrated
       by the following example: </p>
 
-      <div data-type="example"><h1>Nonlinear autapse</h1> Consider the following
+      <example><h1>Nonlinear autapse</h1> Consider the following
       system: \begin{equation} \dot{x} + x = \tanh(w x), \end{equation} which is
       plotted below for two values of $w$.  It's convenient to note that
       $\tanh(z) \approx z$ for small $z$.  For $w \le 1$ the system has only a
@@ -1052,7 +1048,7 @@ are available on YouTube</a>.</p>
       memory<elib>Seung00</elib>.  In the equation $x$ models the firing rate of
       a single neuron, which has a feedback connection to itself.  $\tanh$ is
       the activation (sigmoidal) function of the neuron, and $w$ is the weight
-      of the synaptic feedback. </div>
+      of the synaptic feedback. </example>
 
       <p> One last piece of terminology.  In the neuron example, and in many
       dynamical systems, the dynamics were parameterized; in this case by a
@@ -1081,9 +1077,9 @@ are available on YouTube</a>.</p>
       that this is not an oscillation, but an instability with $\theta
       \rightarrow \pm \infty$. </p>
 
-    </section> <!-- end of overdamped pend -->
+    </subsection> <!-- end of overdamped pend -->
 
-    <section data-type="sect2"><h1>The undamped pendulum with zero torque</h1>
+    <subsection><h1>The undamped pendulum with zero torque</h1>
 
       <p> Consider again the system $$ml^2 \ddot\theta = u_0 - mgl \sin\theta -
       b\dot\theta,$$ this time with $b = 0$.  This time the system dynamics are
@@ -1109,7 +1105,7 @@ are available on YouTube</a>.</p>
       <figure> <img width="80%" data-src="figures/pend_undamped_phase.svg"/>
       </figure>
 
-      <section data-type="sect3"><h1>Orbit calculations</h1>
+      <subsubsection><h1>Orbit calculations</h1>
 
         <p> You might wonder how we drew the black contour lines in the figure
         above.  We could have obtained them by simulating the system
@@ -1140,11 +1136,11 @@ are available on YouTube</a>.</p>
         differentiating this equation with respect to time indeed results in the
         equations of motion.</p>
 
-      </section>
+      </subsubsection>
 
 <!--  these are correct, but take away from the flow.  move to an appendix?
 
-<section data-type="sect3"><h1>Trajectory calculations</h1>
+<subsubsection><h1>Trajectory calculations</h1>
 
 <p> For completeness, I'll include what it would take to solve for $\theta(t)$,
 even thought it cannot be accomplished using elementary functions.  Feel free to
@@ -1214,9 +1210,9 @@ complete trajectory.</p>
 
 <!--</section> -->
 
-    </section> <!-- end of undamped pend -->
+    </subsection> <!-- end of undamped pend -->
 
-    <section data-type="sect2"><h1>The undamped pendulum with a constant
+    <subsection><h1>The undamped pendulum with a constant
     torque</h1>
 
       <p> Now what happens if we add a constant torque?  If you visualize the
@@ -1233,14 +1229,14 @@ complete trajectory.</p>
     that is asymptotically stable, but not stable i.s.L.. We can accomplish this
     with a very pendulum-like example (written here in polar coordinates):</p>
 
-    <div data-type="example"><h1>Asymptotically stable, but not Lyapunov
+    <example><h1>Asymptotically stable, but not Lyapunov
     stable</h1>
 
       <p>The system \[ \dot{r} = r(1-r) \\ \dot\theta = \sin^2
       (\frac{\theta}{2}) \] is asymptotically stable to $x^* = [1,0]^T$, but is
       not stable i.s.L.</p>
 
-    </div>
+    </example>
 
     <p>Take a minute to draw the vector field of this (you can draw each
     coordinate independently, if it helps) to make sure you understand.  Note
@@ -1250,7 +1246,7 @@ complete trajectory.</p>
     when we introduce the energy-shaping swing-up controller for the pendulum in
     the next chapter.</p>
 
-    <section data-type="sect2"><h1>The damped pendulum</h1>
+    <subsection><h1>The damped pendulum</h1>
 
       <p>Now let's add damping back.  You can still add torque to move the
       fixed points (in the same way).</p>
@@ -1278,11 +1274,11 @@ complete trajectory.</p>
       think about control system design.  And we'll give you your first solution
       techniques -- using dynamic programming -- in the next lecture.</p>
 
-    </section> <!-- damped pend -->
+    </subsection> <!-- damped pend -->
 
   </section> <!-- constant torque -->
 
-  <section data-type="sect1"><h1>The torque-limited simple pendulum</h1>
+  <section><h1>The torque-limited simple pendulum</h1>
 
     <p>The simple pendulum is fully actuated.  Given enough torque, we can
     produce any number of control solutions to stabilize the originally
@@ -1308,9 +1304,9 @@ complete trajectory.</p>
 
   </section>
 
-  <section data-type="sect1"><h1>Exercises</h1>
+  <section><h1>Exercises</h1>
 
-    <div data-type="exercise"><h1></h1>
+    <exercise><h1></h1>
 
       Consider the first-order system with polynomial dynamics $$\dot x = f(x) = - x^3 + 4x^2 +11x - 30.$$
 
@@ -1324,13 +1320,13 @@ complete trajectory.</p>
 
       </ol>
 
-    </div>
+    </exercise>
 
   </section>
 
-</section> <!-- ***************  end of pendulum chapter **************   -->
+</chapter> <!-- ***************  end of pendulum chapter **************   -->
 
-<section data-type="chapter" class="chapter" id="acrobot">
+<chapter class="chapter" id="acrobot">
   <h1>Acrobots, Cart-Poles, and Quadrotors</h1>
 
   <p> A great deal of work in the control of underactuated systems has been
@@ -1343,7 +1339,7 @@ complete trajectory.</p>
   number of examples using Quadrotors.  All of these systems are trivially
   underactuated, having less actuators than degrees of freedom.</p>
 
-  <section data-type="sect1"><h1>The Acrobot</h1>
+  <section><h1>The Acrobot</h1>
 
     <p> The Acrobot is a planar two-link robotic arm in the vertical plane
     (working against gravity), with an actuator at the elbow, but no actuator at
@@ -1368,7 +1364,7 @@ complete trajectory.</p>
     an important system because, as we will see, it closely resembles one of the
     simplest models of a walking robot.</p>
 
-    <section data-type="sect2"><h1>Equations of motion</h1>
+    <subsection><h1>Equations of motion</h1>
 
       <p> Figure 3.1 illustrates the model parameters used in our analysis.
       $\theta_1$ is the shoulder joint angle, $\theta_2$ is the elbow (relative)
@@ -1439,20 +1435,20 @@ complete trajectory.</p>
         \right]
       \end{gather} -->
 
-      <div data-type="example" class="drake"><h1>The Acrobot in Python</h1>
+      <example class="drake"><h1>The Acrobot in Python</h1>
 
       <p>You can experiment with the Acrobot dynamics in <drake></drake> using,
         e.g.</p>
 
       <pysrc>acrobot/torque_slider_demo.py</pysrc>
 
-      </div>
+      </example>
 
-    </section> <!-- acrobot eqs of motion -->
+    </subsection> <!-- acrobot eqs of motion -->
 
   </section> <!-- acrobot -->
 
-  <section data-type="sect1"><h1>The Cart-Pole system</h1>
+  <section><h1>The Cart-Pole system</h1>
 
     <p> The other model system that we will investigate here is the cart-pole
     system, in which the task is to balance a simple pendulum around its
@@ -1475,7 +1471,7 @@ complete trajectory.</p>
     [x,\theta]^T$, and $\bx = [\bq,\dot\bq]^T$.   The task is to stabilize the
     unstable fixed point at $\bx = [0,\pi,0,0]^T.$ </p>
 
-    <section data-type="sect2"><h1>Equations of motion</h1>
+    <subsection><h1>Equations of motion</h1>
 
       <p>
       The kinematics of the system are given by
@@ -1517,7 +1513,7 @@ complete trajectory.</p>
       \end{gather}
       </p>
 
-      <div data-type="example" class="drake"><h1>The Cart-Pole System in
+      <example class="drake"><h1>The Cart-Pole System in
       Python</h1>
 
       <p>You can experiment with the Cart-Pole dynamics in <drake></drake> using,
@@ -1525,13 +1521,13 @@ complete trajectory.</p>
 
       <pysrc>cartpole/force_slider_demo.py</pysrc>
 
-      </div>
+      </example>
 
-    </section> <!-- end eq of motion -->
+    </subsection> <!-- end eq of motion -->
 
   </section> <!-- end cart-pole -->
 
-  <section data-type="sect1"><h1>Quadrotors</h1>
+  <section><h1>Quadrotors</h1>
 
     <p>Quadrotors have become immensely popular over the last few years --
     advances in outrunner motors from the hobby community made them powerful,
@@ -1552,7 +1548,7 @@ complete trajectory.</p>
     completely dominated fixed-wings for commercial UAVs.  Perhaps it's only
     because they are easier to control?  Maybe there is still hope...</p>
 
-    <section data-type="sect2" id="planar_quadrotor"><h1>The Planar Quadrotor</h1>
+    <subsection id="planar_quadrotor"><h1>The Planar Quadrotor</h1>
 
       <p>We can get started with an extremely simple model of a quadrotor that
       is restricted to live in the plane.  In that case, it actually only needs
@@ -1575,9 +1571,9 @@ complete trajectory.</p>
       </figcaption> </figure>
 
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>The Full 3D Quadrotor</h1>
+    <subsection><h1>The Full 3D Quadrotor</h1>
 
       <p>See <code>drake/examples/Quadrotor</code>.  Will fill in the text
       description/derivation here soon!  The most interesting part is that the
@@ -1585,11 +1581,11 @@ complete trajectory.</p>
       otherwise the system linearized about the hovering configuration is
       actually not controllable.</p>
 
-    </section>
+    </subsection>
 
   </section> <!-- end quadrotor2d -->
 
-  <section data-type="sect1"><h1>Balancing</h1>
+  <section><h1>Balancing</h1>
 
     <p> For both the Acrobot and the Cart-Pole systems, we will begin by
     designing a linear controller which can balance the system when it begins in
@@ -1599,7 +1595,7 @@ complete trajectory.</p>
     href="?chapter=lqr">linear quadratic regulator (LQR)</a> theory to design
     our feedback controller.</p>
 
-    <section data-type="sect2"><h1>Linearizing the manipulator equations</h1>
+    <subsection><h1>Linearizing the manipulator equations</h1>
 
       <p>Although the equations of motion of both of these model systems are
       relatively tractable, the forward dynamics still involve quite a few
@@ -1649,7 +1645,7 @@ complete trajectory.</p>
       (but not the Quadrotors), the matrix $\bB(\bq)$ is a constant, so the
       $\pd\bB{\bq}$ terms also drop out. </p>
 
-      <div data-type="example"><h1>Linearization of the Acrobot</h1>
+      <example><h1>Linearization of the Acrobot</h1>
 
         <p>Linearizing around the (unstable) upright point, we have:
 
@@ -1662,9 +1658,9 @@ complete trajectory.</p>
         The linear dynamics follow directly from these equations and the manipulator
         form of the Acrobot equations.</p>
 
-      </div>
+      </example>
 
-      <div data-type="example"><h1>Linearization of the Cart-Pole System</h1>
+      <example><h1>Linearization of the Cart-Pole System</h1>
 
       <p>Linearizing around the unstable fixed point in this system, we have:
 
@@ -1675,7 +1671,7 @@ complete trajectory.</p>
 
         Again, the linear dynamics follow simply.</p>
 
-      </div>
+      </example>
 
       <p>Studying the properties of the linearized system can tell us some
       things about the (local) properties of the nonlinear system.  For
@@ -1687,16 +1683,16 @@ complete trajectory.</p>
       stable, stable i.s.L., or unstable (only that it is not exponentially
       stable)<elib>Slotine90</elib>.</p>
 
-    </section> <!-- end linearizing -->
+    </subsection> <!-- end linearizing -->
 
-    <section data-type="sect2"><h1>Controllability of linear systems</h1>
+    <subsection><h1>Controllability of linear systems</h1>
 
-      <div data-type="definition"><h1>Controllability</h1>     A control system
+      <definition><h1>Controllability</h1>     A control system
       of the form $$\dot{\bx} = {\bf f}(\bx,\bu)$$ is called
       <em>controllable</em> if it is possible to construct an unconstrained
       input signal, $\bu(t)$, $t \in [0,t_f],$ which will move the system from
       any initial state to any final state in a finite interval of time, $0 < t
-      < t_f$ <elib>Ogata96</elib>. </div>
+      < t_f$ <elib>Ogata96</elib>. </definition>
 
       <p> For the linear system $$\dot{\bx} = {\bf A}\bx + \bB\bu,$$ we can
       integrate this linear system in closed form, so it is possible to derive
@@ -1704,7 +1700,7 @@ complete trajectory.</p>
       systems it is sufficient to demonstrate that there exists a control input
       which drives any initial condition to the origin. </p>
 
-      <section data-type="sect3"><h1>The special case of non-repeated
+      <subsubsection><h1>The special case of non-repeated
       eigenvalues</h1>
 
         <p> Let us first examine a special case, which falls short as a general
@@ -1739,9 +1735,9 @@ complete trajectory.</p>
         Therefore, we say that the system is controllable if and only if
         $$\forall i, \exists j \text{ such that }\beta_{ij} \neq 0.$$</p>
 
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>A general solution</h1>
+      <subsubsection><h1>A general solution</h1>
 
         <details><summary>Included only for completeness.  Click to expand the details.</summary>
 
@@ -1798,9 +1794,9 @@ complete trajectory.</p>
 
         <p></p>
 
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>Controllability vs. underactuated</h1>
+      <subsubsection><h1>Controllability vs. underactuated</h1>
 
         <p> Analysis of the controllability of both the Acrobot and Cart-Pole
         systems reveals that the linearized dynamics about the upright are, in
@@ -1824,11 +1820,11 @@ complete trajectory.</p>
         systems; although it will often be referred to by the synonym of
         "reachability" analysis.</p>
 
-      </section>
+      </subsubsection>
 
-    </section> <!-- end controllability -->
+    </subsection> <!-- end controllability -->
 
-    <section data-type="sect2"><h1>LQR feedback</h1>
+    <subsection><h1>LQR feedback</h1>
 
       <p> Controllability tells us that a trajectory to the fixed point exists,
       but does not tell us which one we should take or what control inputs cause
@@ -1858,7 +1854,7 @@ complete trajectory.</p>
       the relative errors in state variable $x_i$ compared to the other state
       variables, and the entries $R_{ii}$ penalize actions in $u_i$.</p>
 
-      <div data-type="example" class="drake"><h1>LQR for the Acrobot and Cart-Pole</h1>
+      <example class="drake"><h1>LQR for the Acrobot and Cart-Pole</h1>
 
       <p>Take a minute to play around with the LQR controller for the Acrobot</p>
 
@@ -1872,7 +1868,7 @@ complete trajectory.</p>
       these examples.  Can you set the ${\bf Q}$ and ${\bf R}$ matrices
       differently, to improve the performance?</p>
 
-      </div>
+      </example>
 
       <p> Simulation of the closed-loop response with LQR feedback shows that
       the task is indeed completed - and in an impressive manner.  Oftentimes
@@ -1882,7 +1878,7 @@ complete trajectory.</p>
       has 3 right-half zeros, cart-pole has 1).</p>
 
 
-      <div data-type="example" class="drake"><h1>LQR for a Quadrotors</h1>
+      <example class="drake"><h1>LQR for a Quadrotors</h1>
 
         <p>LQR works essentially out of the box for Quadrotors, if linearized
         around a nominal fixed point (where the non-zero thrust from the
@@ -1895,7 +1891,7 @@ complete trajectory.</p>
         <p>Note: you'll need to open a web-browser to see the 3D visualization;
         the instructions are printed to the console output </p>
 
-      </div>
+      </example>
 
       <p> Note that LQR, although it is optimal for the linearized system, is
       not necessarily the best linear control solution for maximizing basin of
@@ -1905,11 +1901,11 @@ complete trajectory.</p>
       model, will produce controllers which outperform our LQR solution in this
       regard.</p>
 
-    </section>
+    </subsection>
 
   </section> <!-- end balancing -->
 
-  <section data-type="sect1"><h1>Partial feedback linearization</h1>
+  <section><h1>Partial feedback linearization</h1>
 
     <p> In the introductory chapters, we made the point that the underactuated
     systems are not feedback linearizable.  At least not completely. Although we
@@ -1933,9 +1929,9 @@ complete trajectory.</p>
     linearizes the dynamics of the unactuated joints. The treatment presented
     here follows from <elib>Spong94a</elib>.</p>
 
-    <section data-type="sect2"><h1>PFL for the Cart-Pole System</h1>
+    <subsection><h1>PFL for the Cart-Pole System</h1>
 
-      <section data-type="sect3"><h1>Collocated</h1>
+      <subsubsection><h1>Collocated</h1>
 
         <p> Starting from the equations \ref{eq:simple} and \ref{eq:simple2}, we
         have
@@ -1957,9 +1953,9 @@ complete trajectory.</p>
 
         which are valid globally.</p>
 
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>Non-collocated</h1>
+      <subsubsection><h1>Non-collocated</h1>
 
         <p> Starting again from equations \ref{eq:simple} and \ref{eq:simple2},
         we have
@@ -1983,11 +1979,11 @@ complete trajectory.</p>
         is not surprising, as we know that the force cannot create a torque when
         the beam is perfectly horizontal.</p>
 
-      </section>
+      </subsubsection>
 
-    </section> <!-- end PFL for the cart-pole -->
+    </subsection> <!-- end PFL for the cart-pole -->
 
-    <section data-type="sect2"><h1>General form</h1>
+    <subsection><h1>General form</h1>
 
       <p> For systems that are trivially underactuated (torques on some joints,
       no torques on other joints), we can, without loss of generality,
@@ -2008,7 +2004,7 @@ complete trajectory.</p>
       $\bq$) positive definite, $\bM_{11}$ and $\bM_{22}$ are also positive
       definite.</p>
 
-      <section data-type="sect3"><h1>Collocated linearization</h1>
+      <subsubsection><h1>Collocated linearization</h1>
 
         <p> Performing the same substitutions into the full manipulator
         equations, we get:
@@ -2025,9 +2021,9 @@ complete trajectory.</p>
         from inspection that it is symmetric.  PFL follows naturally, and is
         valid globally.</p>
 
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>Non-collocated linearization</h1>
+      <subsubsection><h1>Non-collocated linearization</h1>
 
         <p>
         \begin{gather}
@@ -2045,9 +2041,9 @@ complete trajectory.</p>
         dependent. A system has Global Strong Inertial Coupling if it exhibits
         Strong Inertial Coupling in every state.</p>
 
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>Task-space partial feedback linearization</h1>
+      <subsubsection><h1>Task-space partial feedback linearization</h1>
 
         <p> In general, we can define some combination of active and passive
         joints that we would like to control.  This combination is sometimes
@@ -2057,7 +2053,7 @@ complete trajectory.</p>
         \frac{\partial \bh}{\partial \bq_1}$, $\bH_2 = \frac{\partial
         \bh}{\partial \bq_2}$, $\bH = [\bH_1,\bH_2]$.</p>
 
-        <div data-type="theorem"><h1>Task Space PFL</h1>
+        <theorem><h1>Task Space PFL</h1>
 
         <p> If the actuated joints are commanded so that \begin{equation}
         \ddot\bq_2 = \bar\bH^+ \left [\ddot\by^d - \dot\bH\dot\bq - \bH_1
@@ -2091,7 +2087,7 @@ complete trajectory.</p>
         of $\bar{\bH}$ are linearly independent, allowing $\bar\bH
         \bar\bH^+ = \bI$.</p>
 
-        </div>
+      </theorem>
 
         <p> In order to execute a task space trajectory one could command
         $$\ddot\by^d = \ddot{\bar{\by}}^d + \bK_d (\dot{\bar{\by}}^d - \dot\by) +
@@ -2102,7 +2098,7 @@ complete trajectory.</p>
         a torque command follows by substituting ($\ref{eq:q2cmd}$) and
         ($\ref{eq:q1cmd}$) into ($\ref{eq:active_dyn}$).</p>
 
-        <div data-type="example"><h1>End-point trajectory following with the Cart-Pole system</h1>
+        <example><h1>End-point trajectory following with the Cart-Pole system</h1>
 
         <p> Consider the task of trying to track a desired kinematic trajectory
         with the endpoint of pendulum in the cart-pole system.  With one
@@ -2122,7 +2118,7 @@ complete trajectory.</p>
         derivation above.</p>
 
         <todo>add results here</todo>
-        </div> <!-- end example-->
+        </example> 
 
         <p> The task space derivation above provides a convenient generalization
         of the partial feedback linearization (PFL) <elib>Spong94a</elib>, which
@@ -2147,13 +2143,13 @@ complete trajectory.</p>
         ($\ref{eq:active_dyn}$), yielding the same results as in
         <elib>Spong94a</elib>.</p>
 
-      </section> <!-- task space PFL -->
-    </section>
+      </subsubsection> <!-- task space PFL -->
+    </subsection>
   </section>
 
-  <section data-type="sect1"><h1>Swing-up control</h1>
+  <section><h1>Swing-up control</h1>
 
-    <section data-type="sect2"><h1>Energy shaping</h1>
+    <subsection><h1>Energy shaping</h1>
 
       <p> Recall the phase portraits that we used to understand the dynamics of
       the undamped, unactuated, simple pendulum ($u=b=0$).  The orbits of this
@@ -2181,9 +2177,9 @@ complete trajectory.</p>
       <elib>Murray91</elib>, <elib>Lai06</elib>), the energy shaping controllers
       tend to be the most natural to derive and perhaps the most well-known.</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2" id="s:pend_energy_shaping"><h1>Simple pendulum</h1>
+    <subsection id="s:pend_energy_shaping"><h1>Simple pendulum</h1>
 
       <p> Recall the equations of motion for the undamped simple pendulum were
       given by $$ml^2 \ddot\theta + mgl\sin\theta = u.$$  The total energy of
@@ -2217,7 +2213,7 @@ complete trajectory.</p>
       our swing-up controller, we prefer to switch to our LQR balancing
       controller to performance to complete the task.</p>
 
-      <div data-type="example" class="drake"><h1>Energy Shaping for the
+      <example class="drake"><h1>Energy Shaping for the
       Pendulum</h1>
 
       <p>Take a minute to play around with the energy shaping + LQR controller
@@ -2230,11 +2226,11 @@ complete trajectory.</p>
       the LQR controller.  We'll give a much more satisfying answer for that in
       the <a href="?chapter=lyapunov">chapter on Lyapunov methods</a>.</p>
 
-      </div>
+      </example>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Cart-Pole</h1>
+    <subsection><h1>Cart-Pole</h1>
 
       <p> Having thought about the swing-up problem for the simple pendulum,
       let's try to apply the same ideas to the cart-pole system.  The basic
@@ -2296,9 +2292,9 @@ complete trajectory.</p>
       the top.</figcaption>
       </figure>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Acrobot</h1>
+    <subsection><h1>Acrobot</h1>
 
       <p> Swing-up control for the acrobot can be accomplished in much the same
       way.  <elib>Spong94</elib> - pump energy.  Clean and simple.  No proof.
@@ -2314,9 +2310,9 @@ complete trajectory.</p>
       orbit.  Proof of another energy-based controller in
       <elib>Xin04</elib>.</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Discussion</h1>
+    <subsection><h1>Discussion</h1>
 
       <p> The energy shaping controller for swing-up presented here is a pretty
       faithful representative from the field of nonlinear underactuated control.
@@ -2331,11 +2327,11 @@ complete trajectory.</p>
       more general computational approaches to formulating and solving these and
       other control problems. </p>
 
-    </section>
+    </subsection>
 
   </section>
 
-  <section data-type="sect1"><h1>Differential Flatness</h1>
+  <section><h1>Differential Flatness</h1>
 
     <p>Although the "swing up and balance" task is quite interesting for the
     acrobot and cart-pole systems, quadrotors tend to inspire a slightly
@@ -2369,7 +2365,7 @@ complete trajectory.</p>
 
     <p>Let's start with an example...</p>
 
-    <div data-type="example" class="drake"><h1>Differential flatness for
+    <example class="drake"><h1>Differential flatness for
       the Planar Quadrotor</h1>
 
       <p>The planar quadrotor model described above has 3 degrees of freedom
@@ -2413,7 +2409,7 @@ complete trajectory.</p>
       a simple optimization to find a smooth trajectory for $x(t)$ and $y(t)$,
       I can back out $\theta(t)$ and even $\bu(t)$. </figcaption> </figure>
 
-    </div>
+    </example>
 
     <p>The example above demonstrates that the planar quadrotor system is
     differentially flat in the outputs $x(t)$, $y(t)$.  More generally, if we
@@ -2438,7 +2434,7 @@ complete trajectory.</p>
     find for your system -- typically via a little mechanical intuition and a
     lot of algebra.  Once found, it can be very useful.</p>
 
-    <div data-type="example"><h1>Differential flatness for
+    <example><h1>Differential flatness for
       the 3D Quadrotor</h1>
 
       <p>Probably the most famous example of differential flatness is on
@@ -2471,11 +2467,11 @@ complete trajectory.</p>
       formulations -- which means one has to hard-code apriori the decisions
       about whether to go left or right / up or down around each obstacle.</p>
 
-    </div>
+    </example>
 
   </section>
 
-  <section data-type="sect1"><h1>Other model systems</h1>
+  <section><h1>Other model systems</h1>
 
     <p> The acrobot and cart-pole systems are just two of the model systems used
     heavily in underactuated control research.  Other examples include:</p> <ul>
@@ -2485,10 +2481,10 @@ complete trajectory.</p>
 
   </section>
 
-</section> <!-- ***************  end of acrobot/cartpole/quadrotor chapter **************   -->
+</chapter> <!-- ***************  end of acrobot/cartpole/quadrotor chapter **************   -->
 
 
-<section data-type="chapter" class="chapter" id="simple_legs"><h1>Simple Models
+<chapter class="chapter" id="simple_legs"><h1>Simple Models
 of Walking and Running</h1>
 
   <p>Practical legged locomotion is one of the fundamental problems in robotics;
@@ -2510,7 +2506,7 @@ of Walking and Running</h1>
   require additional tools for thinking about limit cycle dynamics and dealing
   with impacts.</p>
 
-  <section data-type="sect1"><h1>Limit Cycles</h1>
+  <section><h1>Limit Cycles</h1>
 
     <p>In many of the systems that we have studied so far, we have analyzed the
     stability of a fixed-point, or even an (infinite-horizon) trajectory.  For
@@ -2525,7 +2521,7 @@ of Walking and Running</h1>
     limit cycles.</sidenote>.  One of the simplest models of limit cycle
     behavior is the Van der Pol oscillator.  Let's examine that first...</p>
 
-    <div data-type="example"><h1>Van der Pol Oscillator</h1>
+    <example><h1>Van der Pol Oscillator</h1>
 
       <p>$$\ddot{q} + \mu (q^2 - 1)\dot{q} + q = 0, \quad \mu>0$$ One can think
       of this system as almost a simple spring-mass-damper system, except that
@@ -2552,7 +2548,7 @@ of Walking and Running</h1>
       the time domain plot reveals that these trajectories do not necessarily
       synchronize in time.</p>
 
-    </div> <!-- end of VdP example -->
+    </example> <!-- end of VdP example -->
 
     <p>The Van der Pol oscillator clearly demonstrates what we would think of as
     a stable limit cycle, but also exposes the subtlety in defining this limit
@@ -2570,7 +2566,7 @@ of Walking and Running</h1>
     analysis cannot be applied to limit cycle stability without some
     modification.</p>
 
-    <section data-type="sect2"><h1>Poincar&eacute; Maps</h1>
+    <subsection><h1>Poincar&eacute; Maps</h1>
 
       <p> One definition for the stability of a limit cycle uses the method of
       Poincar&eacute.  Let's consider an $n$ dimensional dynamical system,
@@ -2585,7 +2581,7 @@ of Walking and Running</h1>
       $\bx_p[n] = \bx(t_c[n])$, where $t_c[n]$ is the time of the $n$th crossing
       of $S$.</p>
 
-      <div data-type="example"><h1>Return map for the Van der Pol Oscillator</h1>
+      <example><h1>Return map for the Van der Pol Oscillator</h1>
 
         <p>Since the full system is two dimensional, the return map dynamics are
         one dimensional.  One dimensional maps, like one dimensional flows, are
@@ -2601,7 +2597,7 @@ of Walking and Running</h1>
         first-return map (blue), and the line of slope one (red).</figcaption>
         </figure>
 
-      </div>
+      </example>
 
       <p>If ${\bf P}(\bx_p)$ exists for all $\bx_p \in S$, then this method
       turns the stability analysis for a limit cycle into the stability analysis
@@ -2629,13 +2625,13 @@ of Walking and Running</h1>
       <todo>[insert staircase diagram of van der Pol oscillator return map
       here]</todo>
 
-    </section> <!-- end of Poincare -->
+    </subsection> <!-- end of Poincare -->
 
   </section> <!-- end of Limit Cycles -->
 
-  <section data-type="sect1"><h1>Simple Models of Walking</h1>
+  <section><h1>Simple Models of Walking</h1>
 
-    <section data-type="sect2"><h1>The Ballistic Walker</h1>
+    <subsection><h1>The Ballistic Walker</h1>
 
       <p>One of the earliest models of walking was proposed by
       McMahon<elib>McMahon80</elib>, who argued that humans use a mostly
@@ -2653,9 +2649,9 @@ of Walking and Running</h1>
       Collins and Ruina<elib>Collins01</elib> is the most impressive passive
       walker to date.</p>
 
-    </section> <!-- end of ballistic walker -->
+    </subsection> <!-- end of ballistic walker -->
 
-    <section data-type="sect2"><h1>The Rimless Wheel</h1>
+    <subsection><h1>The Rimless Wheel</h1>
 
       <figure>
       <img width="40%" data-src="figures/rimlessWheel.svg"/>
@@ -2681,7 +2677,7 @@ of Walking and Running</h1>
       <p> The most comprehensive analysis of the rimless wheel was done by
       <elib>Coleman98a</elib>.</p>
 
-      <section data-type="sect3"><h1>Stance Dynamics</h1>
+      <subsubsection><h1>Stance Dynamics</h1>
 
         <p>The dynamics of the system when one leg is on the ground are given by
         $$\ddot\theta = \frac{g}{l}\sin(\theta).$$ If we assume that the system
@@ -2698,9 +2694,9 @@ of Walking and Running</h1>
         \dot\theta^2(0^+) + 4\frac{g}{l} \sin\alpha \sin\gamma }.$$ $t^-$
         denotes the time immediately before the collision.</p>
 
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>Foot Collision</h1>
+      <subsubsection><h1>Foot Collision</h1>
 
         <figure> <img width="50%" data-src="figures/rimlessWheel_collision.svg"/>
         <figcaption>Angular momentum is conserved around the point of
@@ -2714,9 +2710,9 @@ of Walking and Running</h1>
         collision causes an instantaneous loss of velocity: $$\dot\theta(t^+) =
         \dot\theta(t^-) \cos(2\alpha).$$</p>
 
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>Forward simulation</h1>
+      <subsubsection><h1>Forward simulation</h1>
 
         <p>Given the stance dynamics, the collision detection logic ($\theta =
         \gamma \pm \alpha$), and the collision update, we can numerically
@@ -2726,7 +2722,7 @@ of Walking and Running</h1>
         periodic solution.  Convergence to this stable periodic solution appears
         to happen from a huge range of initial conditions.  Try it yourself.</p>
 
-        <div data-type="example" class="drake"><h1>Numerical simulation of the
+        <example class="drake"><h1>Numerical simulation of the
         rimless wheel</h1>
 
           <pysrc>rimless_wheel/simulate.py</pysrc>
@@ -2740,7 +2736,7 @@ of Walking and Running</h1>
           <pysrc args="--initial_angular_velocity=-5.0">rimless_wheel/simulate.py</pysrc>
           <pysrc args="--initial_angular_velocity=-4.8">rimless_wheel/simulate.py</pysrc>
 
-        </div>
+        </example>
 
         <p>One of the fantastic things about the rimless wheel is that the
         dynamics are exactly the undamped simple pendulum that we've thought so
@@ -2762,9 +2758,9 @@ of Walking and Running</h1>
         state space for each of the initial conditions.  It's non-trivial, but
         worth the effort.</p>
 
-      </section> <!-- end of forward simulation -->
+      </subsubsection> <!-- end of forward simulation -->
 
-      <section data-type="sect3"><h1>Poincar&eacute Map</h1>
+      <subsubsection><h1>Poincar&eacute Map</h1>
 
         <p>We can now derive the angular velocity at the beginning of each
         stance phase as a function of the angular velocity of the previous
@@ -2808,9 +2804,9 @@ of Walking and Running</h1>
         kinematically impossible to have the wheel statically balancing on a
         single leg.</p>
 
-      </section> <!-- poincare map -->
+      </subsubsection> <!-- poincare map -->
 
-      <section data-type="sect3"><h1>Fixed Points and Stability</h1>
+      <subsubsection><h1>Fixed Points and Stability</h1>
 
         <p>For a fixed point, we require that $\dot\theta_{n+1}^{+} =
         \dot\theta_n^{+} = \omega^*$.  Our system has two possible fixed points,
@@ -2836,11 +2832,11 @@ of Walking and Running</h1>
         regions converge to zero velocity ($\omega_{stand}^*$).</figcaption>
         </figure>
 
-      </section>
+      </subsubsection>
 
-    </section> <!-- end rimless wheel -->
+    </subsection> <!-- end rimless wheel -->
 
-    <section data-type="sect2"><h1>The Compass Gait</h1>
+    <subsection><h1>The Compass Gait</h1>
 
       <p>The rimless wheel models only the dynamics of the stance leg, and
       simply assumes that there will always be a swing leg in position at the
@@ -2903,14 +2899,14 @@ of Walking and Running</h1>
 
       <!-- My derivation is here: https://www.wolframcloud.com/objects/60e3d6c1-156f-4604-bf70-1e374f471407 -->
 
-      <div data-type="example" class="drake"><h1>Numerical simulation of the
+      <example class="drake"><h1>Numerical simulation of the
         compass gait</h1>
 
         You can simulate the passive compass gait using:
 
         <pysrc>compass_gait/simulate.py</pysrc>
 
-      </div>
+      </example>
 
       <p>Numerical integration of these equations reveals a stable limit cycle,
       plotted below.  Notice that when the left leg is in stance (top part of
@@ -2933,9 +2929,9 @@ of Walking and Running</h1>
       of this model makes it analytically attractive, this lack of stability
       makes it difficult to implement on a physical device.</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>The Kneed Walker</h1>
+    <subsection><h1>The Kneed Walker</h1>
 
       <p>To achieve a more anthropomorphic gait, as well as to acquire better
       foot clearance and ability to walk on rough terrain, we want to model a
@@ -2986,14 +2982,13 @@ of Walking and Running</h1>
       <figcaption>Limit cycle (phase portrait) of the kneed walker</figcaption>
       </figure>
 
-    </section>
+    </subsection>
 
   </section> <!-- end of walking -->
 
-  <section data-type="sect1"><h1>Simple Models of Running</h1>
+  <section><h1>Simple Models of Running</h1>
 
-    <section
-        data-type="sect2"><h1>The Spring-Loaded Inverted Pendulum</h1></section>
+    <subsection><h1>The Spring-Loaded Inverted Pendulum</h1>
 
       <p>The model is a point mass, $m$, on top of a massless, springy leg with
       rest length of $l_0$, and spring constant $k$.  The state of the system
@@ -3015,32 +3010,32 @@ of Walking and Running</h1>
       r) = 0 \\ m r^2 \ddot{\theta} + 2mr\dot{r}\dot\theta - mgr \sin\theta = 0
       \end{gather}</p>
 
-    <div data-type="example" class="drake"><h1>Simulation of the
-      SLIP model</h1>
+      <example class="drake"><h1>Simulation of the
+        SLIP model</h1>
 
-      You can simulate the spring-loaded inverted pendulum using:
+        You can simulate the spring-loaded inverted pendulum using:
 
-      <pysrc>spring_loaded_inverted_pendulum/simulate.py</pysrc>
+        <pysrc>spring_loaded_inverted_pendulum/simulate.py</pysrc>
 
-      Or plot the apex-to-apex return map with:
+        Or plot the apex-to-apex return map with:
 
-      <pysrc>spring_loaded_inverted_pendulum/apex_map.py</pysrc>
+        <pysrc>spring_loaded_inverted_pendulum/apex_map.py</pysrc>
 
-    </div>
+      </example>
 
+    </subsection>
 
-    <section
-        data-type="sect2"><h1>The Planar Monopod Hopper</h1></section>
+    <subsection><h1>The Planar Monopod Hopper</h1></subsection>
 
   </section> <!-- end of running -->
 
-  <section data-type="sect1"><h1>A Simple Model That Can Walk and Run</h1>
+  <section><h1>A Simple Model That Can Walk and Run</h1>
 
   </section> <!-- end of walk+run -->
 
-</section> <!-- ***************  end of walking and running **************   -->
+</chapter> <!-- ***************  end of walking and running **************   -->
 
-<section data-type="chapter" class="chapter"
+<chapter class="chapter"
 id="humanoids"><h1>Highly-articulated Legged Robots</h1>
 
   <p>The passive dynamic walkers and hopping robots described in the last
@@ -3056,9 +3051,9 @@ id="humanoids"><h1>Highly-articulated Legged Robots</h1>
   from the world of legged robots, but I think it's a very useful way to think
   about the problem.</p>
 
-  <section data-type="sect1"><h1>Center of Mass Dynamics</h1>
+  <section><h1>Center of Mass Dynamics</h1>
 
-    <section data-type="sect2"><h1>A hovercraft model</h1>
+    <subsection><h1>A hovercraft model</h1>
 
       <figure><img width="70%" data-src="figures/hovercraft.svg"/></figure>
       <todo>flip the directions of the force vector in the image</todo>
@@ -3115,9 +3110,9 @@ id="humanoids"><h1>Highly-articulated Legged Robots</h1>
       \begin{bmatrix} x \\ 0 \\ z \end{bmatrix}.$$  This problem still feels
       like it should be tractable, but it's definitely getting hard.</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Robots with (massless) legs</h1>
+    <subsection><h1>Robots with (massless) legs</h1>
 
       <p>In my view, the hovercraft problem above is a central component of the
       walking problem.  If we consider a walking robot with massless legs, then
@@ -3138,9 +3133,9 @@ id="humanoids"><h1>Highly-articulated Legged Robots</h1>
       constraints to deal with.  But the actual dynamics of the rigid body are
       actually still affine, and still simple!</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Capturing the full robot dynamics</h1>
+    <subsection><h1>Capturing the full robot dynamics</h1>
 
       <p>We don't actually need to have massless legs for this discussion to
       make sense. If we use the coordinates $x,z$ to describe the location of
@@ -3154,9 +3149,9 @@ id="humanoids"><h1>Highly-articulated Legged Robots</h1>
       mass dynamics are still affine -- even for a big complicated humanoid --
       but the centroidal momentum dynamics are nonlinear.</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Impact dynamics</h1>
+    <subsection><h1>Impact dynamics</h1>
 
       <p>In the previous chapter we devoted relatively a lot of attention to
       dynamics of impact, characterized for instance by a guard that resets
@@ -3183,11 +3178,11 @@ id="humanoids"><h1>Highly-articulated Legged Robots</h1>
       momentum is conserved.  This often (but does not always) justify ignoring
       the impacts in the center of mass dynamics of the system.</p>
 
-    </section>
+    </subsection>
 
   </section> <!-- end COM dynamics -->
 
-  <section data-type="sect1"><h1>The special case of flat terrain</h1>
+  <section><h1>The special case of flat terrain</h1>
 
     <p>While not the only important case, it is extremely common for our robots
     to be walking over flat, or nearly flat terrain.  In this situation, even if
@@ -3240,7 +3235,7 @@ id="humanoids"><h1>Highly-articulated Legged Robots</h1>
     accelerations of the center of mass given the locations of the ground
     contacts.</p>
 
-    <section data-type="sect2"><h1>An aside: the zero-moment point
+    <subsection><h1>An aside: the zero-moment point
     derivation</h1>
 
       <p>The zero-moment point (ZMP) is discussed very frequently in the current
@@ -3286,27 +3281,27 @@ id="humanoids"><h1>Highly-articulated Legged Robots</h1>
       extract the analogous equations in the $y$-axis:  \[ r_y = \frac{r_z m
       \ddot{y} - I \ddot\theta}{m\ddot{z} + mg}. \] </p>
 
-    </section>
+    </subsection>
   </section>
 
-  <section data-type="sect1"><h1>ZMP planning</h1>
+  <section><h1>ZMP planning</h1>
 
     <figure><img width="80%" data-src="figures/zmp_planning.svg"/></figure>
 
-    <section data-type="sect2"><h1>From a CoM plan to a whole-body
-    plan</h1></section>
+    <subsection><h1>From a CoM plan to a whole-body
+    plan</h1></subsection>
 
   </section>
 
 
-  <section data-type="sect1"><h1>Whole-Body Control</h1>
+  <section><h1>Whole-Body Control</h1>
 
     <p>Coming soon.  For a description of our approach with Atlas, see
     <elib>Kuindersma13+Kuindersma14</elib>.</p>
 
   </section>
 
-  <section data-type="sect1"><h1>Footstep planning and push recovery</h1>
+  <section><h1>Footstep planning and push recovery</h1>
 
     <p>Coming soon.  For a description of our approach with Atlas, see
     <elib>Deits14a+Kuindersma14</elib>.  For nice geometric insights on push
@@ -3314,51 +3309,51 @@ id="humanoids"><h1>Highly-articulated Legged Robots</h1>
 
   </section>
 
-  <section data-type="sect1"><h1>Beyond ZMP planning</h1>
+  <section><h1>Beyond ZMP planning</h1>
 
     <p>Coming soon.  For a description of our approach with Atlas, see
     <elib>Dai14+Kuindersma14</elib>.</p>
 
   </section>
 
-</section> <!-- ** end highly-articulated legged robots ** -->
+</chapter> <!-- ** end highly-articulated legged robots ** -->
 
-<section data-type="chapter" class="chapter" id="manip"><h1>Manipulation</h1>
+<chapter class="chapter" id="manip"><h1>Manipulation</h1>
 
 <todo>Sense, plan, act.  Grasp planning (grasp metrics).  Underactuated hands.
   Feedback.  Not: perception (only mention its importance).</todo>
 
-</section>
+</chapter>
 
 <!-- ***************  end of Manipulation **************   -->
 
 <!--
-<section data-type="chapter" class="chapter" id="uavs"><h1>Unmanned Aerial
+<chapter class="chapter" id="uavs"><h1>Unmanned Aerial
 Vehicles</h1>
 
-</section> <!-- ***************  end of uavs **************   -->
+</chapter> <!-- ***************  end of uavs **************   -->
 
 <!--
-<section data-type="chapter" class="chapter" id="automotive"><h1>Autonomous
+<chapter class="chapter" id="automotive"><h1>Autonomous
 Driving</h1>
 
-</section> <!-- ***************  end of vehicles **************   -->
+</chapter> <!-- ***************  end of vehicles **************   -->
 
 <!--
-<section data-type="chapter" class="chapter" id="fluids"><h1>Model Systems with
+<chapter class="chapter" id="fluids"><h1>Model Systems with
   Fluid
   Dynamics</h1>
 
 
-</section> <!-- ***************  end of fluid dynamics **************   -->
+</chapter> <!-- ***************  end of fluid dynamics **************   -->
 
 <!--
-<section data-type="chapter" class="chapter" id="soft"><h1>Soft Robots</h1>
+<chapter class="chapter" id="soft"><h1>Soft Robots</h1>
 
 
-</section> <!-- ***************  end of soft robots **************   -->
+</chapter> <!-- ***************  end of soft robots **************   -->
 
-<section data-type="chapter" class="chapter" id="stochastic"><h1>Model Systems
+<chapter class="chapter" id="stochastic"><h1>Model Systems
 with Stochasticity</h1>
 
   <!-- TODO: Adopt more of the 6.437 notation; it's excellent and compatible:
@@ -3395,11 +3390,11 @@ with Stochasticity</h1>
   through the nonlinear function $f$ on step $k+1$ giving rich results -- but is
   often much easier to work with. </p>
 
-  <section data-type="sect1"><h1>The Master Equation</h1>
+  <section><h1>The Master Equation</h1>
 
     <p>Let's start by looking at some simple examples.</p>
 
-    <div data-type="example"><h1>A Bistable System + Noise</h1>
+    <example><h1>A Bistable System + Noise</h1>
 
       <p>Let's consider (a time-reversed version of) one of my favorite
       one-dimensional systems: \[ \dot{x} = x - x^3. \] <todo>add plot</todo>
@@ -3440,7 +3435,7 @@ with Stochasticity</h1>
       <p>You can run this demo for yourself:</p>
       <pysrc>simple/stochastic_system_particle_demo.py</pysrc>
 
-    </div>
+    </example>
 
     <p>Let's take a moment to appreciate the implications of what we've just
     observed. Every time that we've analyzed a system to date, we've asked
@@ -3481,7 +3476,7 @@ with Stochasticity</h1>
 
   </section>
 
-  <section data-type="sect1"><h1>Stationary Distributions</h1>
+  <section><h1>Stationary Distributions</h1>
 
     <p>In the example above, the histogram is our numerical approximation of the
     probability density. If you simulate it a few times, you will probably
@@ -3492,7 +3487,7 @@ with Stochasticity</h1>
     trajectories, we need to start thinking about the dynamics of the
     distribution.</p>
 
-    <div data-type="example"><h1>The Linear Gaussian System</h1>
+    <example><h1>The Linear Gaussian System</h1>
 
       <p>Let's consider the one-dimensional linear system with additive noise:
       \[ x[n+1] = a x[n] + w[n]. \] When $w[n]=0$, the system is stable (to the
@@ -3527,7 +3522,7 @@ with Stochasticity</h1>
       \frac{\sigma^2}{1-a^2}. \] Note that this distribution is well defined
       when $-1 < a < 1$ (only when the system is stable).</p>
 
-    </div>
+    </example>
 
     <p>The stationary distribution of the linear Gaussian system reveals the
     fundamental and general balance between two terms in the governing equations
@@ -3543,7 +3538,7 @@ with Stochasticity</h1>
     probability are also extremely rich.  If we simply flip the signs in the
     dynamics we examined above, we'll get our next example:</p>
 
-    <div data-type="example"><h1>The Cubic Example + Noise</h1>
+    <example><h1>The Cubic Example + Noise</h1>
 
       <p>Now let's consider the discrete-time approximation of \[ \dot{x} = -x +
       x^3, \] again with additive noise: \[ x[n+1] = x[n] + h (-x[n] + x[n]^3 +
@@ -3579,9 +3574,9 @@ with Stochasticity</h1>
       getting driven by the unstable dynamics off towards infinity.  If we run
       the simulation long enough, there won't be any probability density left at
       $x=0$.</p>
-    </div>
+    </example>
 
-    <div data-type="example"><h1>The Stochastic Van der Pol Oscillator</h1>
+    <example><h1>The Stochastic Van der Pol Oscillator</h1>
 
       <p>One more example; this is a fun one.  Let's think about one of the
       simplest examples that we had for a system that demonstrates limit cycle
@@ -3619,11 +3614,11 @@ with Stochasticity</h1>
        when $w=0$ eventually reaches a stationary distribution (fixed point) in
        the master equation.</p>
 
-    </div>
+    </example>
 
   </section>
 
-  <section data-type="sect1"><h1>Extended Example: The Rimless Wheel on Rough
+  <section><h1>Extended Example: The Rimless Wheel on Rough
   Terrain</h1>
 
     <p>Coming soon.  Read the paper <elib>Byl08f</elib> and/or watch the <a
@@ -3631,7 +3626,7 @@ with Stochasticity</h1>
 
   </section>
 
-  <section data-type="sect1"><h1>Noise models for real robots/systems.</h1>
+  <section><h1>Noise models for real robots/systems.</h1>
 
     <p>Sensor models.  Beam model from probabilistic robotics.  RGB-D
     dropouts.</p>
@@ -3644,7 +3639,7 @@ with Stochasticity</h1>
 
   </section>
 
-  <section data-type="sect1"><h1>Analysis (a preview)</h1>
+  <section><h1>Analysis (a preview)</h1>
 
     <p>Coming soon.  Uncertainty quantification (e.g., linear guassian
     approximation; discretize then closed form solutions using the transition
@@ -3656,11 +3651,11 @@ with Stochasticity</h1>
   </section>
 
 
-  <section data-type="sect1"><h1>Control Design (a preview)</h1>
+  <section><h1>Control Design (a preview)</h1>
 
   </section>
 
-</section> <!-- ***************  end of stochasticity **************   -->
+</chapter> <!-- ***************  end of stochasticity **************   -->
 
 
 </div> <!-- end of Part: model systems -->
@@ -3668,7 +3663,7 @@ with Stochasticity</h1>
 
 <div class="part" title="Nonlinear Planning and Control">
 
-<section data-type="chapter" class="chapter" id="dp"><h1>Dynamic Programming</h1>
+<chapter class="chapter" id="dp"><h1>Dynamic Programming</h1>
 
   <p>In chapter 2, we spent some time thinking about the phase portrait of the
   simple pendulum, and concluded with a challenge: can we design a nonlinear
@@ -3682,7 +3677,7 @@ with Stochasticity</h1>
   investigate another approach to the problem, using computational optimal
   control to synthesize a feedback controller directly.</p>
 
-  <section data-type="sect1"><h1>Formulating control design as an optimization</h1>
+  <section><h1>Formulating control design as an optimization</h1>
 
     <p>In this chapter, we will introduce optimal control - a control design
     process using optimization.  This approach is powerful for a number of
@@ -3703,7 +3698,7 @@ with Stochasticity</h1>
     Let's introduce the basic concepts by considering a system that is even
     simpler than the simple pendulum.</p>
 
-    <div data-type="example"><h1>Optimal Control Formulations for the Double Integrator</h1>
+    <example><h1>Optimal Control Formulations for the Double Integrator</h1>
 
       <p>Consider the double integrator system $$\ddot{q} = u, \quad |u| \le
       1.$$ If you would like a mechanical analog of the system (I always do),
@@ -3753,7 +3748,7 @@ with Stochasticity</h1>
       examine many of these formulations in some details in the examples worked
       out at the end of this chapter. </p>
 
-    </div> <!-- end example -->
+    </example>
 
     <p>Optimal control has a long history in robotics.  For instance, there has
     been a great deal of work on the minimum-time problem for pick-and-place
@@ -3763,7 +3758,7 @@ with Stochasticity</h1>
     and algorithms, the popularity of numerical optimal control has grown at an
     incredible pace over the last few years.</p>
 
-    <div data-type="example"><h1>The minimum time problem for the double
+    <example><h1>The minimum time problem for the double
     integrator</h1>
 
       <p>For more intuition, let's do an informal derivation of the solution to
@@ -3869,9 +3864,9 @@ with Stochasticity</h1>
       <p> Notice that the function is continuous (though not smooth), even
       though the policy is discontinuous.</p>
 
-    </div> <!-- end of example -->
+    </example> <!-- end of example -->
 
-    <section data-type="sect2"><h1>Additive cost</h1>
+    <subsection><h1>Additive cost</h1>
 
       <p> As we begin to develop theoretical and algorithmic tools for optimal
       control, we will see that some formulations are much easier to deal with
@@ -3900,11 +3895,11 @@ with Stochasticity</h1>
       chapter, we will focus on additive-cost problems and their solution via
       <em>dynamic programming</em>.</p>
 
-    </section> <!-- end of additive cost -->
+    </subsection> <!-- end of additive cost -->
 
   </section> <!-- control design as an optimization -->
 
-  <section data-type="sect1"><h1>Optimal control as graph search</h1>
+  <section><h1>Optimal control as graph search</h1>
 
     <p> For systems with continuous states and continuous actions, dynamic
     programming is a set of theoretical ideas surrounding additive cost optimal
@@ -3956,7 +3951,7 @@ with Stochasticity</h1>
     \label{eq:policy_update} \end{equation} It's a simple algorithm, but playing
     with an example can help our intuition.</p>
 
-    <div data-type="example" class="drake"><h1>Grid World</h1>
+    <example class="drake"><h1>Grid World</h1>
 
       <p>Imagine a robot living in a grid (finite state) world.  Wants to get
       to the goal location.  Possibly has to negotiate cells with obstacles.
@@ -3975,12 +3970,12 @@ with Stochasticity</h1>
 
       <todo>Port matlab example to pydrake</todo>
 
-    </div> <!-- end grid world -->
+    </example> <!-- end grid world -->
 
     <todo>figure/text for graph approximation of a continuous state
     space.</todo>
 
-    <div data-type="example" class="drake"><h1>Dynamic Programming for the Double Integrator</h1>
+    <example class="drake"><h1>Dynamic Programming for the Double Integrator</h1>
 
       <p>You can run value iteration for the double integrator (using
       barycentric interpolation to interpolate between nodes) in <drake></drake>
@@ -3991,7 +3986,7 @@ with Stochasticity</h1>
       <p>Please do take some time to try different cost functions by
       editing the code yourself.</p>
 
-    </div>
+    </example>
 
     <p> Let's take a minute to appreciate how amazing this is.  Our solution to
     finding the optimal controller for the double integrator wasn't all that
@@ -4013,7 +4008,7 @@ with Stochasticity</h1>
     Let's apply it now to the simple pendulum, which was intractable
     analytically.</p>
 
-    <div data-type="example" class="drake"><h1>Dynamic Programming for the
+    <example class="drake"><h1>Dynamic Programming for the
     Simple Pendulum</h1>
 
       <p>You can run value iteration for the simple pendulum (using barycentric
@@ -4024,11 +4019,11 @@ with Stochasticity</h1>
     <p>Again, you can easily try different cost functions by
       editing the code yourself.</p>
 
-    </div>
+    </example>
 
   </section> <!-- end of graph search -->
 
-  <section data-type="sect1"><h1>Continuous dynamic programming</h1>
+  <section><h1>Continuous dynamic programming</h1>
 
     <p> I find the graph search algorithm extremely satisfying as a first step,
     but also become quickly frustrated by the limitations of the discretization
@@ -4036,7 +4031,7 @@ with Stochasticity</h1>
     algorithms which work more natively on continuous dynamical systems.  We'll
     explore those extensions in this section.</p>
 
-    <section data-type="sect2"><h1>The Hamilton-Jacobi-Bellman Equation</h1>
+    <subsection><h1>The Hamilton-Jacobi-Bellman Equation</h1>
 
       <p> It's important to understand that the value iteration equations,
       equations (\ref{eq:value_update}) and (\ref{eq:policy_update}), are more
@@ -4058,7 +4053,7 @@ with Stochasticity</h1>
       limit of a discrete-time approximation of the dynamics, and also gives
       the following sufficiency theorem:</p>
 
-      <div data-type="theorem"><h1>HJB Sufficiency Theorem</h1>
+      <theorem><h1>HJB Sufficiency Theorem</h1>
 
         <p>The following statement is adapted from Proposition 3.2.1 of
         <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}=f(\bx,\bu)$ and
@@ -4076,7 +4071,7 @@ with Stochasticity</h1>
         equal to the optimal cost-to-go function, $J(\bx)=J^*(\bx)$ for all
         $\bx$, and the control trajectories $\bu^*(t)$ are optimal.</p>
 
-      </div>
+      </theorem>
 
       <p>As a tool for verifying optimality, the HJB equations are actually
       surprisingly easy to work with: we can verify optimality for an
@@ -4084,7 +4079,7 @@ with Stochasticity</h1>
       to check a derivative condition on the optimal cost-to-go function $J^*$.
       Let's see this play out on the double integrator example.</p>
 
-      <div data-type="example" id="hjb_double_integrator"><h1>HJB for the Double
+      <example id="hjb_double_integrator"><h1>HJB for the Double
       Integrator</h1>
 
         <p>Consider the problem of regulating the double integrator (this time
@@ -4108,7 +4103,7 @@ with Stochasticity</h1>
         minimizer.  Substituting $u^*$ back into the HJB reveals that the right
         side does in fact simplify to zero.  I hope you are convinced!</p>
 
-      </div>
+      </example>
 
       <p>Note that evaluating the HJB for the time-to-go of the minimum-time
       problem for the double integrator will also reveal that the HJB is
@@ -4117,9 +4112,9 @@ with Stochasticity</h1>
       since $\pd{J}{\bx}$ is not defined everywhere, it does not actually
       satisfy the requirements of the sufficiency theorem as stated above.</p>
 
-    </section> <!-- end HJB -->
+    </subsection> <!-- end HJB -->
 
-    <section data-type="sect2" id="hjb_minimizing_control"><h1>Solving for the minimizing control</h1>
+    <subsection id="hjb_minimizing_control"><h1>Solving for the minimizing control</h1>
 
       <p>We still face a few barriers to actually using the HJB in an algorithm.
       The first barrier is the minimization over $u$.  When the action set was
@@ -4164,9 +4159,9 @@ with Stochasticity</h1>
       broad approach is often referred to as <em>differential dynamic
       programming</em> (c.f. <elib>Jacobson70</elib>).   </p>
 
-    </section> <!-- end solve for u -->
+    </subsection> <!-- end solve for u -->
 
-    <section data-type="sect2"><h1>Numerical solutions for $J^*$</h1>
+    <subsection><h1>Numerical solutions for $J^*$</h1>
 
       <p> The other major barrier to using the HJB in a value iteration
       algorithm is that  the estimated optimal cost-to-go function, $\hat{J}^*$,
@@ -4205,7 +4200,7 @@ with Stochasticity</h1>
       <todo>  (see Appendix C for a brief background on function approximation)
       </todo>
 
-      <section data-type="sect3"><h1>Representing the cost-to-go with function
+      <subsubsection><h1>Representing the cost-to-go with function
       approximation</h1>
 
         <p>If we approximate $J^*$ with a finitely-parameterized function
@@ -4257,9 +4252,9 @@ with Stochasticity</h1>
         http://cs229.stanford.edu/notes/cs229-notes12.pdf -->
 
         <todo> add citations for convergence results </todo>
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>Representing the cost-to-go on a mesh</h1>
+      <subsubsection><h1>Representing the cost-to-go on a mesh</h1>
 
         <p>Imagine that we use a mesh to approximate the cost-to-go function
         over that state space with $K$ mesh points $\bx_k$. We would like to
@@ -4282,9 +4277,9 @@ with Stochasticity</h1>
         (\ref{eq:mesh_value_iteration}) is precisely the least-squares update
         (and it achieves zero error). </p>
 
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>Continuous-time systems</h1>
+      <subsubsection><h1>Continuous-time systems</h1>
 
         <p>For solutions to systems with continuous-time dynamics, I have to
         uncover one of the details that I've so far been hiding to keep the
@@ -4329,16 +4324,16 @@ with Stochasticity</h1>
         minimum-time problem for the double integrator as a tutorial
         example<elib>Mitchell05</elib>.</p>
 
-      </section>
+      </subsubsection>
 
-    </section> <!-- end function approx -->
+    </subsection> <!-- end function approx -->
 
   </section> <!-- end continuous time DP -->
 
   <todo> try just running snopt on quartic objective </todo>
 
   <!--
-  <section data-type="sect2"><h1>A continuous policy iteration algorithm</h1>
+  <subsection><h1>A continuous policy iteration algorithm</h1>
 
   <todo> simple (e.g. one-d example) </todo>
 
@@ -4346,7 +4341,7 @@ with Stochasticity</h1>
   <!-- end policy iteration -->
 
   <!--
-  <section data-type="sect2"><h1>How far can we take this?  (Performance and Scaling)</h1>
+  <subsection><h1>How far can we take this?  (Performance and Scaling)</h1>
 
   <todo>
   Errors in bang-bang for double integrator due to discretization.
@@ -4356,11 +4351,11 @@ with Stochasticity</h1>
 
   </section> --><!-- end scaling -->
 
-  <section data-type="sect1"><h1>Extensions</h1>
+  <section><h1>Extensions</h1>
 
     <todo> add section on extensions.  discounting.  finite-horizon / time-varying dynamics or cost.  call-out to the stochastic case in the future chapter.</todo>
 
-    <section data-type="sect2"><h1>Linear Programming Approach</h1>
+    <subsection><h1>Linear Programming Approach</h1>
 
       <p>For discrete MDPs, value iteration is a magical algorithm because it is
       simple, but known to converge to the global optimal, $J^*$.  However,
@@ -4397,14 +4392,14 @@ with Stochasticity</h1>
       "state-relevance weights") can determine the relative tightness of the
       approximation for different features <elib>Farias02</elib>.</p>
 
-    </section>
+    </subsection>
 
   </section> <!-- end of extensions -->
 
-</section> <!-- ***************  end of dynamic programming **************   -->
+</chapter> <!-- ***************  end of dynamic programming **************   -->
 
 
-<section data-type="chapter" class="chapter" id="lqr"><h1>Linear Quadratic Regulators</h1>
+<chapter class="chapter" id="lqr"><h1>Linear Quadratic Regulators</h1>
 
   <p>While solving the dynamic programming problem for continuous systems is
   very hard in general, there are a few very important special cases where the
@@ -4417,7 +4412,7 @@ with Stochasticity</h1>
   result in optimal control theory to date.  In this chapter we will derive the
   basic algorithm and a variety of useful extensions.</p>
 
-  <section data-type="sect1"><h1>Basic Derivation</h1>
+  <section><h1>Basic Derivation</h1>
 
     <p>Consider a linear time-invariant system in state-space form, $$\dot{\bx}
     = {\bf A}\bx + \bB\bu,$$ with the infinite-horizon cost function given by
@@ -4475,7 +4470,7 @@ with Stochasticity</h1>
     straight-forward, the slope that we are descending (in the value function,
     ${\bf S}$) is a complicated function of the dynamics and cost.</p>
 
-    <div data-type="example"><h1>LQR for the Double Integrator</h1>
+    <example><h1>LQR for the Double Integrator</h1>
 
       <p>Now can use LQR to reproduce our <a href="underactuated.html?chapter=dp#hjb_double_integrator">HJB example</a> from the previous
       chapter:</p>
@@ -4485,9 +4480,9 @@ with Stochasticity</h1>
       <p>As in the hand-derived example, our numerical solution returns $${\bf
       K} = [ 1, \sqrt{3} ], \qquad{\bf S} = \begin{bmatrix} \sqrt{3} & 1 \\ 1 &
       \sqrt{3} \end{bmatrix}.$$</p>
-    </div>
+    </example>
 
-    <section data-type="sect2"><h1>Local stabilization of nonlinear systems</h1>
+    <subsection><h1>Local stabilization of nonlinear systems</h1>
 
       <p>LQR is extremely relevant to us even though our primary interest is in
       nonlinear dynamics, because it can provide a local approximation of the
@@ -4515,7 +4510,7 @@ with Stochasticity</h1>
       systems (including block diagrams built up of many subsystems); it will
       perform the linearization for you.</p>
 
-      <div data-type="example" class="drake"><h1>LQR for Acrobots, Cart-Poles,
+      <example class="drake"><h1>LQR for Acrobots, Cart-Poles,
       and Quadrotors</h1>
 
         <p>LQR provides a very satisfying solution to the canonical "balancing"
@@ -4530,20 +4525,20 @@ with Stochasticity</h1>
 
         <p>I find it very compelling that the same derivation (and effectively
         identical code) can stabilize such a diversity of systems!</p>
-      </div>
+      </example>
 
-    </section>
+    </subsection>
 
   </section> <!-- end basic derivation -->
 
-  <section data-type="sect1"><h1>Finite-horizon formulations</h1>
+  <section><h1>Finite-horizon formulations</h1>
 
     <p>Recall that the cost-to-go for finite-horizon problems is time-dependent,
     and therefore the HJB sufficiency condition requires an additional term for
     $\pd{J^*}{t}$. $$ \forall \bx, \forall t\in[t_0,t_f],\quad 0 = \min_\bu
     \left[ g(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) + \pd{J^*}{t} \right]. $$</p>
 
-    <section data-type="sect2"><h1>Finite-horizon LQR</h1>
+    <subsection><h1>Finite-horizon LQR</h1>
 
       <p> Consider systems governed by an LTI state-space equation of the form
       $$\dot{\bx} = {\bf A}\bx + \bB\bu,$$ and a finite-horizon cost function
@@ -4593,9 +4588,9 @@ with Stochasticity</h1>
 
       <todo>Example to show how the tvlqr solution converges to the tilqr solution for the double integrator example, and make the connection back to the value iteration visualizations that we did in the previous chapter.</todo>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Time-varying LQR</h1>
+    <subsection><h1>Time-varying LQR</h1>
 
       <p>The derivation above holds even if the dynamics are given by
       $$\dot{\bx} = {\bf A}(t)\bx + {\bf B(t)}\bu.$$  Similarly, the cost
@@ -4610,9 +4605,9 @@ with Stochasticity</h1>
       linearizing around a nominal trajectory of a nonlinear system and using
       LQR to provide a trajectory controller.</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Linear Quadratic Optimal Tracking</h1>
+    <subsection><h1>Linear Quadratic Optimal Tracking</h1>
 
       <p>For completeness, we consider a slightly more general form of the
       linear quadratic regulator.  The standard LQR derivation attempts to drive
@@ -4673,9 +4668,9 @@ with Stochasticity</h1>
 
       <todo>test this on an example, get my notation consistent (s(t)^T vs
       s^T(t), etc.</todo>
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Linear Final Boundary Value Problems</h1>
+    <subsection><h1>Linear Final Boundary Value Problems</h1>
 
       <p> The finite-horizon LQR formulation can be used to impose a strict
       final boundary value condition by setting an infinite ${\bf Q}_f$.
@@ -4695,14 +4690,14 @@ with Stochasticity</h1>
       These relationships are used in the derivation of the controllability
       Grammian, but here we use them to design a feedback controller.</p>
 
-    </section>
+    </subsection>
 
   </section> <!-- end finite horizon -->
 
-  <section data-type="sect1"><h1>Variations and extensions</h1>
+  <section><h1>Variations and extensions</h1>
 
     <!--
-    <section data-type="sect2"><h1>Minimum-time LQR</h1>
+    <subsection><h1>Minimum-time LQR</h1>
 
       \begin{gather*}
       \dot{\bx} = {\bf A}\bx + \bB\bu \\
@@ -4713,10 +4708,10 @@ with Stochasticity</h1>
       Q}^T \ge 0, {\bf R}={\bf R}^T>0
       \end{gather*}
 
-    </section>
+    </subsection>
     -->
 
-    <section data-type="sect2"><h1>Discrete-time Riccati Equations</h1>
+    <subsection><h1>Discrete-time Riccati Equations</h1>
 
       <p>Essentially all of the results above have a natural correlate for
       discrete-time systems. What's more, the discrete time versions tend to be
@@ -4743,9 +4738,9 @@ with Stochasticity</h1>
       solving this discrete-time algebraic Riccati equation (DARE).  <drake> </drake> delegates to these numerical methods automatically when you evaluate the <code>LinearQuadraticRegulator</code> method on a system that has only discrete state and a single periodic timestep.</p> 
 
       <todo>Example where the discrete-time solutions converge to the continuous time solutions as dt-> 0.</todo>
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>LQR with input and state constraints</h1>
+    <subsection><h1>LQR with input and state constraints</h1>
       <p>A natural extension for linear optimal control is the consideration of
       strict constraints on the inputs or state trajectory.  Most common are
       linear inequality constraints, such as $\forall n, |\bu[n]| \le 1$ or
@@ -4783,9 +4778,9 @@ with Stochasticity</h1>
 
       <todo>Add the equality-constrained LQR derivation here.</todo>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>LQR as a convex optimization</h1>
+    <subsection><h1>LQR as a convex optimization</h1>
       <p>Solving the algebraic Riccati equation is the preferred way of
       computing thse LQR solution.  But it is helpful to know that one <i>could
       </i> also compute it with convex optimization, specifically by formulating
@@ -4796,9 +4791,9 @@ with Stochasticity</h1>
       
       <p>Derivation coming soon...</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Finite-horizon LQR via least
+    <subsection><h1>Finite-horizon LQR via least
     squares</h1>
   
       <p>We can also obtain the solution to the discrete-time finite-horizon
@@ -4877,7 +4872,7 @@ with Stochasticity</h1>
       optimization subject to linear equality constraints
       <elib>Wang14</elib>.</p>
   
-    </section>
+    </subsection>
     
     <todo>
       Minimum-time LQR
@@ -4885,9 +4880,9 @@ with Stochasticity</h1>
     
   </section>
 
-</section> <!-- ***************  end of LQR **************   -->
+</chapter> <!-- ***************  end of LQR **************   -->
 
-<section data-type="chapter" class="chapter" id="lyapunov"><h1>Lyapunov
+<chapter class="chapter" id="lyapunov"><h1>Lyapunov
   Analysis</h1>
 
   <p>Optimal control provides a powerful framework for formulating control
@@ -4908,11 +4903,11 @@ with Stochasticity</h1>
   many of which are new enough that they have not yet appeared in any mainstream
   textbooks.</p>
 
-  <section data-type="sect1"><h1>Lyapunov Functions</h1>
+  <section><h1>Lyapunov Functions</h1>
 
     <p>Let's start with our favorite simple example. </p>
 
-    <div data-type="example"><h1>Stability of the Damped Pendulum</h1>
+    <example><h1>Stability of the Damped Pendulum</h1>
 
       <center><img width="25%" data-src="figures/simple_pend.svg"/></center>
 
@@ -4963,7 +4958,7 @@ with Stochasticity</h1>
       could be any fixed point with an energy less than or equal to the initial
       energy in the system, $E(0)$).</p>
 
-    </div>
+    </example>
 
     <p>This is an important example.  It demonstrated that we could use a
     relatively simple function, the system energy, to describe something about
@@ -4984,7 +4979,7 @@ with Stochasticity</h1>
     and exponential stability.  We can use Lyapunov functions to demonstrate
     each of these, in turn.</p>
 
-    <div data-type="theorem"><h1>Lyapunov's Direct Method</h1>
+    <theorem><h1>Lyapunov's Direct Method</h1>
 
       <p>Given a system $\dot{\bx} = f(\bx)$, with $f$ continuous, and for some
       region ${\cal B}$ around the origin (specifically an open subset of
@@ -5001,7 +4996,7 @@ with Stochasticity</h1>
       \le -\alpha V(x), \forall \bx \in {\cal B} \ne 0,$$ for some $\alpha>0$,
       then the origin is (locally) exponentially stable. </p>
 
-    </div>
+    </theorem>
 
     <p>Note that for the sequel we will use the notation $V \succ 0$ to denote a
     <em>positive-definite function</em>, meaning that $V(0)=0$ and $V(\bx)>0$
@@ -5028,7 +5023,7 @@ with Stochasticity</h1>
     + control in feedback).  We will see generalizations of the Lyapunov
     functions to input-output systems later in the text. </p>
 
-    <section data-type="sect2"><h1>Global Stability</h1>
+    <subsection><h1>Global Stability</h1>
 
       <p>The notion of a fixed point being stable i.s.L. is inherently a local
       notion of stability (defined with $\epsilon$- and $\delta$- balls around
@@ -5036,7 +5031,7 @@ with Stochasticity</h1>
       be applied globally.  The Lyapunov theorems work for this case, too, with
       only minor modification.</p>
 
-      <div data-type="theorem"><h1>Lyapunov analysis for global stability</h1>
+      <theorem><h1>Lyapunov analysis for global stability</h1>
 
         <p>Given a system $\dot{\bx} = f(\bx)$, with $f$ continuous, if I can
         produce a scalar, continuously-differentiable function $V(\bx)$, such
@@ -5049,16 +5044,16 @@ with Stochasticity</h1>
         for some $\alpha>0$, then the origin is globally exponentially
         stable.</p>
 
-      </div>
+      </theorem>
 
       <p>The new condition, on the behavior as $||\bx|| \rightarrow \infty$ is
       known as "radially unbounded", and is required to make sure that
       trajectories cannot diverge to infinity even as $V$ decreases; it is only
       required for global stability analysis.</p>
 
-    </section> <!-- global stability -->
+    </subsection> <!-- global stability -->
 
-    <section data-type="sect2"><h1>LaSalle's Invariance Principle</h1>
+    <subsection><h1>LaSalle's Invariance Principle</h1>
 
       <p>Perhaps you noticed the disconnect between the statement above and the
       argument that we made for the stability of the pendulum.  In the pendulum
@@ -5071,7 +5066,7 @@ with Stochasticity</h1>
       general Lyapunov function statements--it is known as LaSalle's
       Theorem.</p>
 
-      <div data-type="theorem"><h1>LaSalle's Theorem</h1>
+      <theorem><h1>LaSalle's Theorem</h1>
 
         <p>Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous. If we can
         produce a scalar function $V(\bx)$ with continuous derivatives for
@@ -5080,7 +5075,7 @@ with Stochasticity</h1>
         will converge to the largest <i>invariant set</i> where $\dot{V}(\bx) =
         0$.</p>
 
-      </div>
+      </theorem>
 
       <p>To be clear, an <em>invariant set</em>, ${\cal G}$, of the dynamical
       system is a set for which $\bx(0)\in{\cal G} \Rightarrow \forall t>0,
@@ -5098,9 +5093,9 @@ with Stochasticity</h1>
       $\dot{E}=0$, but only the fixed points are in the largest invariant
       set.</p>
 
-    </section> <!-- lasalle -->
+    </subsection> <!-- lasalle -->
 
-    <section data-type="sect2"><h1>Relationship to the Hamilton-Jacobi-Bellman
+    <subsection><h1>Relationship to the Hamilton-Jacobi-Bellman
     equations</h1>
 
       <p> At this point, you might be wondering if there is any relationship
@@ -5123,11 +5118,11 @@ with Stochasticity</h1>
       also serve as a Lyapunov function so long as $g(\bx,\bu^*(\bx)) \succeq
       0$.</p>
 
-    </section> <!-- relationship to HJB -->
+    </subsection> <!-- relationship to HJB -->
 
   </section> <!-- Lyapunov definitions -->
 
-  <section data-type="sect1"><h1>Lyapunov analysis with convex optimization</h1>
+  <section><h1>Lyapunov analysis with convex optimization</h1>
 
     <p>One of the primary limitations in Lyapunov analysis as I have presented
     it so far is that it is potentially very difficult to come up with suitable
@@ -5157,11 +5152,11 @@ with Stochasticity</h1>
     dense sampling; these will also give us additional leverage in formulating
     the search for Lyapunov functions.  </p>
 
-    <section data-type="sect2"><h1>Lyapunov analysis for linear systems</h1>
+    <subsection><h1>Lyapunov analysis for linear systems</h1>
 
       <p>Let's take a moment to see how things play out for linear systems.</p>
 
-      <div data-type="theorem"><h1>Lyapunov analysis for stable linear systems</h1>
+      <theorem><h1>Lyapunov analysis for stable linear systems</h1>
 
         <p>Imagine you have a linear system, $\dot\bx = {\bf A}\bx$, and can
         find a Lyapunov function $$V(\bx) = \bx^T {\bf P} \bx, \quad {\bf P} =
@@ -5169,7 +5164,7 @@ with Stochasticity</h1>
         PA} \bx + \bx^T {\bf A}^T {\bf P}\bx \prec 0.$$ Then the origin is
         globally asymptotically stable.</p>
 
-      </div>
+      </theorem>
 
       <p>Note that the radially-unbounded condition is satisfied by ${\bf P}
       \succ 0$, and that the derivative condition is equivalent to the matrix
@@ -5193,9 +5188,9 @@ with Stochasticity</h1>
       solving a local linear Lyapunov function which should be valid in the
       vicinity of a fixed point.</p>
 
-    </section> <!-- lyapunov for linear -->
+    </subsection> <!-- lyapunov for linear -->
 
-    <section data-type="sect2"><h1>Lyapunov analysis as a semi-definite program
+    <subsection><h1>Lyapunov analysis as a semi-definite program
     (SDP)</h1>
 
       <p>Lyapunov analysis for linear systems has an extremely important
@@ -5230,7 +5225,7 @@ with Stochasticity</h1>
       formulate the search for a <i>"common Lyapunov function"</i> for uncertain
       linear systems.</p>
 
-      <div data-type="example" class="drake"><h1>Common Lyapunov analysis for
+      <example class="drake"><h1>Common Lyapunov analysis for
       linear systems</h1>
 
         <p>Suppose you have a system governed by the equations $\dot\bx = {\bf
@@ -5271,7 +5266,7 @@ with Stochasticity</h1>
 
         <p>There are many small variants of this result that are potentially of interest.  For instance, a very similar set of conditions can certify "mean-square stability" for linear systems with multiplicative noise (see e.g. <elib>Boyd94</elib>, &sect; 9.1.1).</p>
 
-      </div>
+      </example>
 
       <p>This example is very important because it establishes a connection
       between Lyapunov functions and (convex) optimization.  But so far we've
@@ -5281,9 +5276,9 @@ with Stochasticity</h1>
       type of analysis to more general nonlinear systems?  Surprisingly, it
       turns out that there is.</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Sums-of-squares optimization</h1>
+    <subsection><h1>Sums-of-squares optimization</h1>
 
       <p>It turns out that in the same way that we can use SDP to search over
       the positive quadratic equations, we can generalize this to search over
@@ -5331,7 +5326,7 @@ with Stochasticity</h1>
       optimization to solve what appear to be very non-convex optimization
       problems.</p>
 
-      <div data-type="example" class="drake"><h1>Global minimization via
+      <example class="drake"><h1>Global minimization via
         SOS</h1>
 
         <p>Consider the following famous non-linear function of two variables
@@ -5357,11 +5352,11 @@ with Stochasticity</h1>
         <elib>Henrion09a</elib>, but it requires examining the dual of the
         sums-of-squares solutions (which we don't need for the goals of this
         chapter).</p>
-      </div>
+      </example>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Lyapunov analysis for polynomial systems</h1>
+    <subsection><h1>Lyapunov analysis for polynomial systems</h1>
 
       <p>Now we can see that it may be possible to generalize the optimization
       approach using SDP to search for Lyapunov functions for linear systems to
@@ -5376,7 +5371,7 @@ with Stochasticity</h1>
       \sos. \end{align*}  Because this is a convex optimization, the solver will
       return a solution if one exists.</p>
 
-      <div data-type="example" class="drake"><h1>Verifying a Lyapunov candidate
+      <example class="drake"><h1>Verifying a Lyapunov candidate
         via SOS</h1>
 
         <p>This example is example 7.2 from <elib>Parrilo00</elib>. Consider
@@ -5390,9 +5385,9 @@ with Stochasticity</h1>
 
         <pysrc>lyapunov/verify_global_polynomial.py</pysrc>
 
-      </div>
+      </example>
 
-      <div data-type="example" class="drake"><h1>Searching for a Lyapunov
+      <example class="drake"><h1>Searching for a Lyapunov
         function via SOS</h1>
 
         <p>Verifying a candidate Lyapunov function is all well and good, but
@@ -5411,7 +5406,7 @@ with Stochasticity</h1>
         coefficients that we chose above (zeroing out the unnecessary
         terms).</p>
 
-      </div>
+      </example>
 
       <p>It is important to remember that there are a handful of gaps which make
       the existence of this solution a sufficient condition (for proving that
@@ -5431,11 +5426,11 @@ with Stochasticity</h1>
       are also many "nearby" functions which will satisfy the same
       constraints.</p>
 
-    </section>
+    </subsection>
 
   </section> <!-- computing Lyapunov -->
 
-  <section data-type="sect1"><h1>Lyapunov functions for estimating regions of
+  <section><h1>Lyapunov functions for estimating regions of
   attraction</h1>
 
     <p>There is another very important connection between Lyapunov functions and
@@ -5444,7 +5439,7 @@ with Stochasticity</h1>
     sub-level sets of a Lyapunov function as approximations of the region of
     attraction for nonlinear systems.</p>
 
-    <div data-type="theorem"><h1>Lyapunov invariant set and region of attraction
+    <theorem><h1>Lyapunov invariant set and region of attraction
     theorem</h1>
 
       <p>Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous, if we can find
@@ -5462,9 +5457,9 @@ with Stochasticity</h1>
       the set ${\cal G}$ is inside the region of attraction of this fixed point.
       </p>
 
-    </div>
+    </theorem>
 
-    <div data-type="example"><h1>Region of attraction for a one-dimensional
+    <example><h1>Region of attraction for a one-dimensional
     system</h1>
 
       <p> Consider the first-order, one-dimensional system $\dot{x} = -x + x^3.$
@@ -5490,9 +5485,9 @@ with Stochasticity</h1>
       of attraction of the nonlinear system.  In fact, this estimate is
       tight.</p>
 
-    </div>
+    </example>
 
-    <section data-type="sect2"><h1>Robustness analysis using "common Lyapunov functions"</h1>
+    <subsection><h1>Robustness analysis using "common Lyapunov functions"</h1>
 
       <p>While we will defer most discussions on robustness analysis until later
       in the notes, there is a simple and powerful idea that can be presented
@@ -5517,7 +5512,7 @@ with Stochasticity</h1>
       (local, regional, or global; in the sense of Lyapunov, asymptotic, or
       exponential).</p>
 
-      <div data-type="example"><h1>A one-dimensional system with gain uncertainty</h1>
+      <example><h1>A one-dimensional system with gain uncertainty</h1>
 
         <p>Let's consider the same one-dimensional example used above, but add
         an uncertain parameter into the dynamics.  In particular, consider the
@@ -5539,7 +5534,7 @@ with Stochasticity</h1>
         we can conclude that $|x| < \sqrt{\frac{2}{3}}$ is inside the robust
         region of attraction of the uncertain system.</p>
 
-      </div>
+      </example>
 
       <p>Not all forms of uncertainty are as simple to deal with as the gain
       uncertainty in that example.  For many forms of uncertainty, we might not
@@ -5551,7 +5546,7 @@ with Stochasticity</h1>
       of $0.01$ radians, but you would like to guarantee that it definitely does
       not flip over and crash into the ground.</p>
 
-      <div data-type="example"><h1>A one-dimensional system with additive
+      <example><h1>A one-dimensional system with additive
       uncertainty</h1>
 
         <p>Now consider the system: $$\dot{x} = -x + x^3 + \alpha, \quad
@@ -5582,13 +5577,13 @@ with Stochasticity</h1>
         \frac{1}{32}$ does not satisfy this condition, and by visual inspection
         we can see that it is in fact not robustly invariant.</p>
 
-      </div>
+      </example>
 
     <todo>robust quadrotor example</todo>
 
-    </section> <!-- end common lyap -->
+    </subsection> <!-- end common lyap -->
 
-    <section data-type="sect2"><h1>Region of attraction estimation for
+    <subsection><h1>Region of attraction estimation for
     polynomial systems</h1>
 
       <p>Now we have arrived at the tool that I believe can be a work-horse for
@@ -5607,7 +5602,7 @@ with Stochasticity</h1>
       Lagrange multipliers from constrained optimization, and has deep
       connections to "Positivstellensatz" from algebraic geometry.</p>
 
-      <section data-type="sect3"><h1>The S-procedure</h1>
+      <subsubsection><h1>The S-procedure</h1>
 
         <p>Consider a scalar polynomial, $p(\bx)$, and a semi-algebraic set
         $g(\bx) \preceq 0$, where $g$ is a vector of polynomials.  If I can find
@@ -5628,11 +5623,11 @@ with Stochasticity</h1>
         positive terms to help me be SOS, but those terms contribute nothing
         precisely when $g(x)=0$.</p>
 
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>Basic region of attraction formulation</h1>
+      <subsubsection><h1>Basic region of attraction formulation</h1>
 
-        <div data-type="example" class="drake"><h1>Region of attraction for the one-dimensional cubic system</h1>
+        <example class="drake"><h1>Region of attraction for the one-dimensional cubic system</h1>
 
           <p>Let's return to our example from above: \[ \dot{x} = -x + x^3 \]
           and try to use SOS optimization to demonstrate that the region of
@@ -5648,7 +5643,7 @@ with Stochasticity</h1>
 
           <pysrc>lyapunov/cubic_polynomial.py</pysrc>
 
-        </div>
+        </example>
 
         <p>While the example above only verifies that the one-sub-level set of
         the pre-specified Lyapunov candidate is negative (certifying the ROA
@@ -5668,7 +5663,7 @@ with Stochasticity</h1>
         type <code>PolynomialSystem</code>. This makes it as simple as, for
         instance:
 
-        <div data-type="example" class="drake"><h1>Searching for the region of
+        <example class="drake"><h1>Searching for the region of
           attraction</h1> <p> <pre><code class="matlab"
           testfile="testCubicPolynomialRoa">
           cd(fullfile(getDrakePath,'examples'));
@@ -5690,26 +5685,26 @@ with Stochasticity</h1>
           </code>
           </pre>
           The algorithm successfully found that $x \in (-1,1)$ is the region of attraction.
-        </div>
+        </example>
 
         <p>Remember that although we have tried to make it convenient to call
         these functions, they are not a black box.  I highly recommend opening
         up the <code>regionOfAttraction</code> method and understanding how it
         works.</p>
 
-        <div data-type="example" class="drake"><h1>Region of attraction for the time-reversed Van der Pol oscillator</h1>
+        <example class="drake"><h1>Region of attraction for the time-reversed Van der Pol oscillator</h1>
 
           <pre><code class="matlab" testfile="testVanDerPol">
            cd(fullfile(getDrakePath,'examples'));
            VanDerPol.run();
           </code></pre>
 
-        </div>
+        </example>
         -->
 
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>Seeding the optimization with linear analysis</h1>
+      <subsubsection><h1>Seeding the optimization with linear analysis</h1>
 
         <p>LQR gives the cost-to-go which can be used as the Lyapunov candidate.
         Otherwise, use a Lyapunov equation.  You may not even need to search for
@@ -5717,18 +5712,18 @@ with Stochasticity</h1>
         the largest region of attraction that can be demonstrated for the
         nonlinear system using the Lyapunov function from linear analysis?</p>
 
-      </section>
+      </subsubsection>
 
-    </section> <!-- ROA for polynomial -->
+    </subsection> <!-- ROA for polynomial -->
 
-    <section data-type="sect2"><h1>Rigid-body dynamics are polynomial</h1>
+    <subsection><h1>Rigid-body dynamics are polynomial</h1>
 
       <p>Coming soon... For a nice explanation of how rigid-body kinematics are
       polynomial, see <elib>Wampler11</elib>.  Looking at the Lagrangian, you
       can see that if the kinematics are polynomial, then the dynamics will be,
       too.</p>
 
-      <div data-type="example" class="drake"><h1>Global stability of the simple
+      <example class="drake"><h1>Global stability of the simple
         pendulum via SOS</h1>
 
         <p> We opened this chapter using our intuition about energy to discuss
@@ -5782,7 +5777,7 @@ with Stochasticity</h1>
           better than energy... there are some small extra terms added which prove
           exponential stability without having to invoke LaSalle's Theorem.</p>
 
-      </div>
+      </example>
 
       <p>In practice, you can also Taylor approximate any smooth nonlinear
       function using polynomials.  This can be an effective strategy in
@@ -5790,16 +5785,16 @@ with Stochasticity</h1>
       in many cases it is possible to provide conservative bounds on the errors
       due to the approximation.</p>
 
-    </section>
+    </subsection>
 
     <todo> implicit dynamics formulations.  convex ROA w/ outer approx.  control
     design.  </todo>
 
   </section> <!-- end ROA -->
 
-</section> <!-- ***************  end of Lyapunov chapter **************   -->
+</chapter> <!-- ***************  end of Lyapunov chapter **************   -->
 
-<section data-type="chapter" class="chapter" id="trajopt"><h1>Trajectory
+<chapter class="chapter" id="trajopt"><h1>Trajectory
   Optimization</h1>
 
   <p>I've argued that optimal control is a powerful framework for specifying
@@ -5828,7 +5823,7 @@ with Stochasticity</h1>
   can represent this solution as a <em>trajectory</em>, $\bx(t), \bu(t)$,
   typically defined over a finite interval.</p>
 
-  <section data-type="sect1"><h1>Problem Formulation</h1>
+  <section><h1>Problem Formulation</h1>
 
     <p>Given an initial condition, $\bx_0$, and an input trajectory $\bu(t)$
     defined over a finite interval, $t\in[t_0,t_f]$,   we can compute the
@@ -5860,7 +5855,7 @@ with Stochasticity</h1>
 
   </section>
 
-  <section data-type="sect1"><h1>Computational Tools for Nonlinear
+  <section><h1>Computational Tools for Nonlinear
   Optimization</h1>
 
     <p>Before we dive in, we need to take a moment to understand the
@@ -5941,10 +5936,10 @@ with Stochasticity</h1>
 
   </section> <!-- nonlinear optimization -->
 
-  <section data-type="sect1"><h1>Trajectory optimization as a nonlinear
+  <section><h1>Trajectory optimization as a nonlinear
   program</h1>
 
-    <section data-type="sect2"><h1>Direct Transcription</h1>
+    <subsection><h1>Direct Transcription</h1>
 
       <p> Let us start by representing the finite-time trajectories, $\bx(t)$
       and $\bu(t)$ $\forall t\in[t_0,t_f]$, by their values at a series of
@@ -5971,7 +5966,7 @@ with Stochasticity</h1>
       https://github.com/RobotLocomotion/drake/blob/last_sha_with_original_matlab/drake/examples/DoubleIntegrator.m#L125
       might actually be better to replace it with the pendulum (and fixed dt).
 
-      <div data-type="example" class="drake"><h1>Direct Transcription for the
+      <example class="drake"><h1>Direct Transcription for the
       Double Integrator</h1>
 
         <p>We have implemented an optimization class hierarchy in
@@ -6004,7 +5999,7 @@ with Stochasticity</h1>
         sharper response, like <a target="_blank"
         href="figures/dirtran_mintime_double_integrator_fine.swf">this.</a></p>
 
-      </div>
+      </example>
       -->
 
       <p>If you take a moment to think about what the direct transcription
@@ -6019,9 +6014,9 @@ with Stochasticity</h1>
       $\bx$ trajectory   solutions then another approach quickly emerges: the
       approach taken by the so-called <em>collocation methods</em>.</p>
 
-    </section> <!-- end dirtran -->
+    </subsection> <!-- end dirtran -->
 
-    <section data-type="sect2" id="direct_collocation"><h1>Direct
+    <subsection id="direct_collocation"><h1>Direct
     Collocation</h1>
 
       <p> In direct collocation (c.f., <elib>Hargraves87</elib>), both the
@@ -6086,7 +6081,7 @@ with Stochasticity</h1>
       I personally find it very nice to explicitly account for the parametric
       encoding of the trajectory in the solution technique.</p>
 
-      <div data-type="example" class="drake"><h1>Direct Collocation for the
+      <example class="drake"><h1>Direct Collocation for the
       Pendulum, Acrobot, and Cart-Pole</h1>
 
         <p>Direct collocation also easily solves the minimum-time problem for
@@ -6101,11 +6096,11 @@ with Stochasticity</h1>
         <pysrc>cartpole/dircol_swingup.py</pysrc>
 
         As always, make sure you take a look at the code!
-      </div>
+      </example>
 
-    </section> <!-- end dircol -->
+    </subsection> <!-- end dircol -->
 
-    <section data-type="sect2"><h1>Shooting Methods</h1>
+    <subsection><h1>Shooting Methods</h1>
 
       <p>In the methods described above, by asking the optimization package to
       perform the numerical integration of the equations of motion, we are
@@ -6115,7 +6110,7 @@ with Stochasticity</h1>
       by knowing $\bx_0$, and $\bu(\cdot)$.  This is exactly the approach taken
       in the shooting methods.</p>
 
-      <section data-type="sect3"><h1>Computing gradients</h1>
+      <subsubsection><h1>Computing gradients</h1>
 
         <p>Again, providing gradients of the objectives and constraints to the
         solver is not   strictly required -- most solvers will obtain them from
@@ -6144,9 +6139,9 @@ with Stochasticity</h1>
         decision variable and $\bu[n]$ to represent the input used in the $n$th
         step of the simulation.)</p>
 
-      </section>  <!-- gradients -->
+      </subsubsection>  <!-- gradients -->
 
-      <section data-type="sect3"><h1>The special case of optimization without
+      <subsubsection><h1>The special case of optimization without
       state constraints</h1>
 
         <p>By solving for $\bx(\cdot)$ ourselves, we've removed a large number
@@ -6184,11 +6179,11 @@ with Stochasticity</h1>
         costs, but making it too high can   lead to numerical conditioning
         issues), but they can work.</p>
 
-      </section>
+      </subsubsection>
 
-    </section> <!-- end shooting -->
+    </subsection> <!-- end shooting -->
 
-    <section data-type="sect2"><h1>Discussion</h1>
+    <subsection><h1>Discussion</h1>
 
       <p>Although the decision about which algorithm is best may depend on the
       situation,   in our work we have come to favor the direct collocation
@@ -6196,7 +6191,7 @@ with Stochasticity</h1>
       There are a number of arguments for and   against each approach; I will
       try to discuss a few of them here.</p>
 
-      <section data-type="sect3"><h1>Solver performance</h1>
+      <subsubsection><h1>Solver performance</h1>
 
         <p>Numerical conditioning.  Tail wagging the dog.</p>
 
@@ -6204,24 +6199,24 @@ with Stochasticity</h1>
         constraints (computing the dynamics and their derivatives are often the
         most expensive part). </p>
 
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>Providing an initial guess</h1>
+      <subsubsection><h1>Providing an initial guess</h1>
 
         <p>to avoid local minima.  direct transcription and collocation can take
         an initial guess in $\bx$, too.</p>
 
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>Implicit dynamics</h1>
+      <subsubsection><h1>Implicit dynamics</h1>
 
         <p>Another potential advantage of the direct transcription and
         collocation methods is that the dynamics constraints can be written in
         implicit form.</p>
 
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>Variations in the problem formulation</h1>
+      <subsubsection><h1>Variations in the problem formulation</h1>
 
         <p>There are number of useful variations to the problem formulations
         I've presented above. By far the most common is the addition of a
@@ -6237,9 +6232,9 @@ with Stochasticity</h1>
         worked into the shooting methods.  Typically we add a lower-bound on the
         time-step so that they don't all vanish to zero.</p>
 
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>Accuracy of numerical integration</h1>
+      <subsubsection><h1>Accuracy of numerical integration</h1>
 
         <p>One potential complaint about the direct transcription and
         collocation algorithms is that we tend to use simplistic numerical
@@ -6263,13 +6258,13 @@ with Stochasticity</h1>
 
         <todo>reference DMOC</todo>
 
-      </section> <!-- end accuracy -->
+      </subsubsection> <!-- end accuracy -->
 
-    </section> <!-- end pros/cons -->
+    </subsection> <!-- end pros/cons -->
 
   </section> <!-- end three algorithms -->
 
-  <section data-type="sect1"><h1>Pontryagin's Minimum Principle</h1>
+  <section><h1>Pontryagin's Minimum Principle</h1>
 
     <p>The tools that we've been developing for numerical trajectory
     optimization are closely tied to theorems from (analytical) optimal control.
@@ -6286,7 +6281,7 @@ with Stochasticity</h1>
     argument to constrained optimization using <em>Lagrange multipliers</em>.
     </p>
 
-    <section data-type="sect2"><h1>Constrained optimization with Lagrange
+    <subsection><h1>Constrained optimization with Lagrange
     multipliers</h1>
 
       <p>Given the equality-constrained optimization problem $$\minimize_\bz
@@ -6300,7 +6295,7 @@ with Stochasticity</h1>
       requiring this to be zero is equivalent to requiring the constraints to be
       satisfied.</p>
 
-      <div data-type="example"><h1>Optimization on the unit circle</h1>
+      <example><h1>Optimization on the unit circle</h1>
 
         <p>Consider the following optimization: $$\min_{x,y} x+y, \quad \subjto
         \quad x^2 + y^2 = 1.$$ The level sets of $x+y$ are straight lines with
@@ -6323,11 +6318,11 @@ with Stochasticity</h1>
         Given the two solutions which satisfy the necessary conditions, the
         negative solution is clearly the minimizer of the objective.</p>
 
-      </div>
+      </example>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Lagrange multiplier derivation of the adjoint equations</h1>
+    <subsection><h1>Lagrange multiplier derivation of the adjoint equations</h1>
 
       <p>Let us use Lagrange multipliers to derive the necessary conditions for
       our constrained trajectory optimization problem in discrete time
@@ -6355,9 +6350,9 @@ with Stochasticity</h1>
       $\pd{J}{\bu} = \pd{L}{\bu}$ when $\pd{L}{\bx} = 0$ and $\pd{L}{\lambda} =
       0$ follows from some basic results in the calculus of variations.</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Necessary conditions for optimality in
+    <subsection><h1>Necessary conditions for optimality in
     continuous time</h1>
 
       <p>You won't be surprised to hear that these necessary conditions have an
@@ -6376,7 +6371,7 @@ with Stochasticity</h1>
       principle -- giving <em>necessary conditions</em> for a trajectory to be
       optimal.</p>P
 
-      <div data-type="theorem"><h1>Pontryagin's Minimum Principle</h1>
+      <theorem><h1>Pontryagin's Minimum Principle</h1>
 
         <p>Adapted from <elib>Bertsekas00a</elib>. Given the initial conditions,
         $\bx_0$, a continuous dynamics, $\dot\bx = f(\bx,\bu)$, and the
@@ -6389,7 +6384,7 @@ with Stochasticity</h1>
         t\in[t_0,t_f],\quad & u^* = \argmin_{\bu\in{\cal U}} \left[ g(\bx^*,\bu)
         + \lambda^T f(\bx^*,\bu) \right].& \end{align*}</p>
 
-      </div>
+      </theorem>
 
       <p>Note that the terms which are minimized in the final line of the
       theorem are commonly referred to as the Hamiltonian of the optimal control
@@ -6398,62 +6393,62 @@ with Stochasticity</h1>
       Remembering that $\lambda$ has an interpretation as $\pd{J}{\bx}^T$, you
       should also recognize it from the HJB. </p>
 
-    </section>
+    </subsection>
   </section> <!-- end pontryagin -->
 
-  <section data-type="sect1"><h1>Trajectory optimization as a convex
+  <section><h1>Trajectory optimization as a convex
   optimization</h1>
 
-    <section data-type="sect2"><h1>Linear systems with convex linear
+    <subsection><h1>Linear systems with convex linear
     constraints</h1>
 
       <p>An important special case.  Linear/Quadratic objectives results in an
       LP/QP $\Rightarrow$ Convex optimization.</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Differential Flatness</h1>
+    <subsection><h1>Differential Flatness</h1>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Mixed-integer convex optimization for
+    <subsection><h1>Mixed-integer convex optimization for
     non-convex constraints</h1>
 
-    </section>
+    </subsection>
 
   </section>
 
-  <section data-type="sect1"><h1>Local Trajectory Feedback Design</h1>
+  <section><h1>Local Trajectory Feedback Design</h1>
 
     <p>Once we have obtained a locally optimal trajectory from trajectory
     optimization, there is still work to do...</p>
 
-    <section data-type="sect2"><h1>Model-predictive control</h1>
+    <subsection><h1>Model-predictive control</h1>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Time-varying LQR</h1>
+    <subsection><h1>Time-varying LQR</h1>
 
       <p>Take $\bar\bx(t) = \bx(t) - \bx_0(t)$, and $\bar\bu(t) =
       \bu(t)-\bu_0(t)$, then apply finite-horizon LQR (see the LQR chapter).</p>
 
-    </section>
+    </subsection>
 
   </section> <!-- end feedback design -->
 
-  <section data-type="sect1"><h1>Iterative LQR and Differential Dynamic
+  <section><h1>Iterative LQR and Differential Dynamic
   Programming</h1>
 
   </section>
 
-  <section data-type="sect1"><h1>Case Study: A glider that can land on a perch
+  <section><h1>Case Study: A glider that can land on a perch
   like a bird</h1>
 
   </section>
 
-</section> <!-- ***************  end of trajectory optimization **************   -->
+</chapter> <!-- ***************  end of trajectory optimization **************   -->
 
-<section data-type="chapter" class="chapter" id="search"><h1>Motion Planning as
+<chapter class="chapter" id="search"><h1>Motion Planning as
 Search</h1>
 
   <p>The term "motion planning" is a hopelessly general term which almost
@@ -6484,7 +6479,7 @@ Search</h1>
   region ${\cal G}$, find any finite-time trajectory from $\bx_0$ to to $\bx
   \in {\cal G}$ if such a trajectory exists.</p>
 
-  <section data-type="sect1"><h1>Artificial Intelligence as Search</h1>
+  <section><h1>Artificial Intelligence as Search</h1>
 
     <p>A long history...  some people feel that the route to creating
     intelligent machines is to collect large ontologies of knowledge, and then
@@ -6502,7 +6497,7 @@ Search</h1>
 
   </section>
 
-  <section data-type="sect1"><h1>Randomized motion planning</h1>
+  <section><h1>Randomized motion planning</h1>
 
     <p>If you remember how we introduced dynamic programming initially as a
     graph search, you'll remember that there were some challenges in
@@ -6551,7 +6546,7 @@ Search</h1>
     starting state to some goal region with in a continuous state and action
     space:</p>
 
-    <div data-type="example" class="drake"><h1>Planning with a Random Tree</h1>
+    <example class="drake"><h1>Planning with a Random Tree</h1>
 
       <p>Let us denote the data structure which contains the tree as ${\cal T}$.  The algorithm is very simple:
       <ul>
@@ -6597,7 +6592,7 @@ axis([-10,25,-10,25]);
       <p>We're nowhere close to the goal yet, and it's not exactly a hard problem.
       </p>
 
-    </div>
+    </example>
 
     <p>
       While the idea of generating a tree of feasible points has clear advantages, we have lost
@@ -6606,7 +6601,7 @@ axis([-10,25,-10,25]);
       form of heuristic for encouraging the nodes to spread out and explore the space.
     </p>
 
-    <section data-type="sect2"><h1>Rapidly-Exploring Random Trees (RRTs)</h1>
+    <subsection><h1>Rapidly-Exploring Random Trees (RRTs)</h1>
 
       <figure>
         <img width="70%" data-src="figures/rrt.svg"/>
@@ -6623,13 +6618,13 @@ axis([-10,25,-10,25]);
       </figure>
 
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>RRTs for robots with dynamics</h1>
+    <subsection><h1>RRTs for robots with dynamics</h1>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Variations and extensions</h1>
+    <subsection><h1>Variations and extensions</h1>
 
       <p>Multi-query planning with PRMs, ...
       </p>
@@ -6640,17 +6635,17 @@ axis([-10,25,-10,25]);
 
       <p>Complexity bounds and dispersion limits</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Discussion</h1>
+    <subsection><h1>Discussion</h1>
 
       <p>Not sure yet whether randomness is fundamental here, or whether is a temporary "crutch"
         until we understand geometric and dynamic planning better.</p>
 
-    </section>
+    </subsection>
   </section>
 
-  <section data-type="sect1"><h1>Decomposition methods</h1>
+  <section><h1>Decomposition methods</h1>
 
     <p>Cell decomposition...</p>
 
@@ -6659,19 +6654,19 @@ axis([-10,25,-10,25]);
     <p>Approximate decompositions for complex environments (e.g. IRIS)</p>
 
   </section>
-</section>
+</chapter>
 
 <!-- ***************  end of feasible motion planning **************   -->
 
-<section data-type="chapter" class="chapter"
+<chapter class="chapter"
          id="feedback_motion_planning"><h1>Feedback Motion
   Planning</h1>
 
-</section>
+</chapter>
 
 <!-- ***************  end of feedback motion planning **************   -->
 
-<section data-type="chapter" class="chapter" id="policy_search"><h1>Policy
+<chapter class="chapter" id="policy_search"><h1>Policy
   Search</h1>
 
   <p>So far, most of our recommendations for control design have been
@@ -6693,7 +6688,7 @@ axis([-10,25,-10,25]);
   "policy search" or, when optimization methods are used, "policy
   optimization". </p>
 
-  <section data-type="sect1"><h1>Problem formulation</h1>
+  <section><h1>Problem formulation</h1>
 
     <p>Consider a static full-state feedback policy, $$\bu =
     \bpi_\balpha(\bx),$$ where $\bpi$ is potentially a nonlinear function, and
@@ -6722,7 +6717,7 @@ axis([-10,25,-10,25]);
 
   </section>
 
-  <section data-type="sect1"><h1>Controller parameterizations</h1>
+  <section><h1>Controller parameterizations</h1>
 
     <p>Searching directly for $K$ with an LQR objective is known to be bad. The
     objective is non-convex, and the set of stabilizing controllers is not a
@@ -6730,18 +6725,18 @@ axis([-10,25,-10,25]);
 
   </section>
 
-  <section data-type="sect1"><h1>Trajectory-based policy search</h1>
+  <section><h1>Trajectory-based policy search</h1>
 
 
   </section>
 
-  <section data-type="sect1"><h1>Lyapunov-based approaches to policy
+  <section><h1>Lyapunov-based approaches to policy
     search.</h1>
 
 
   </section>
 
-  <section data-type="sect1"><h1>Approximate Dynamic Programming</h1>
+  <section><h1>Approximate Dynamic Programming</h1>
 
   </section>
 
@@ -6750,11 +6745,11 @@ axis([-10,25,-10,25]);
   PILCO and PIPPS (arxiv from Doya).
   -->
 
-</section>
+</chapter>
 
 <!-- ***************  end of policy search **************   -->
 
-<section data-type="chapter" class="chapter" id="robust"><h1>Robust and
+<chapter class="chapter" id="robust"><h1>Robust and
   Stochastic Control</h1>
   
   <p>So far in the notes, we have concerned ourselves with only known,
@@ -6816,13 +6811,13 @@ axis([-10,25,-10,25]);
   of possible values that they can take.  This modeling is powerful, but can
   lead to conservative controllers and pessimistic estimates of performance.</p>
 
-  <section data-type="sect1"><h1>Discrete states and actions</h1>
+  <section><h1>Discrete states and actions</h1>
 
     <p> One of the most amazing features of the dynamic programming, additive
     cost approach to optimal control is the relative ease with which it extends
     to optimizing stochastic systems. </p>
 
-    <section data-type="sect2"><h1>Graph search -- stochastic shortest path
+    <subsection><h1>Graph search -- stochastic shortest path
     problems</h1>
 
       <p>For discrete systems, we can generalize our dynamics on a graph by
@@ -6845,9 +6840,9 @@ axis([-10,25,-10,25]);
       same strong convergence guarantees of its counterpart for deterministic
       systems.  And it is essentially no more expensive to compute!</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Stochastic interpretation of deterministic,
+    <subsection><h1>Stochastic interpretation of deterministic,
     continuous-state value iteration</h1>
 
       <p> There is a particularly cute observation to be made here. Let's assume
@@ -6860,13 +6855,13 @@ axis([-10,25,-10,25]);
       discretization error here will cause a sort of diffusion corresponding to
       the probability of spreading across neighboring nodes.</p>
 
-    </section>
+    </subsection>
 
   </section> <!-- end of stochastic optimal control -->
 
-  <section data-type="sect1"><h1>Linear Quadratic Gaussian (LQG)</h1></section>
+  <section><h1>Linear Quadratic Gaussian (LQG)</h1></section>
 
-  <section data-type="sect1"><h1>Linear Exponential-Quadratic Gaussian (LEQG)</h1>
+  <section><h1>Linear Exponential-Quadratic Gaussian (LEQG)</h1>
 
     <p><elib>Jacobson73</elib> observed that it is also straight-forward to
     minimize the objective: $$J = E\left[ \prod_{n=0}^\infty e^{\bx^T[n] {\bf Q}
@@ -6911,32 +6906,32 @@ axis([-10,25,-10,25]);
   formulation? (or save this for adaptive control section?)
   </todo>
 
-</section>
+</chapter>
 
 <!-- ***************  end of robust control **************   -->
   
 
-<section data-type="chapter" class="chapter" id="output_feedback"><h1>
+<chapter class="chapter" id="output_feedback"><h1>
 Output Feedback (aka Pixels-to-Torques)</h1>
 
   <p>In this chapter we will start considering systems of the form: \begin{gather*} \bx[n+1] = {\bf f}(\bx[n], \bu[n], \bw[n], n) \\ \by[n] = {\bf g}(\bx[n], \bu[n], \bv[n], n).\end{gather*}
   </p>
 
-  <section data-type="sect1"><h1>Partially-observable Markov Decision Processes</h1></section>
+  <section><h1>Partially-observable Markov Decision Processes</h1></section>
 
-  <section data-type="sect1"><h1>Linear Quadratic Gaussian</h1></section>
+  <section><h1>Linear Quadratic Gaussian</h1></section>
 
-  <section data-type="sect1"><h1>Static Output Feedback for Linear
+  <section><h1>Static Output Feedback for Linear
   Systems</h1></section>
   
   <todo>Disturbance-based feedback.  SLS.  ..</todo>
   <todo>Perhaps a call-out to classical control.  (e.g. Loop-shaping)?</todo>
 
-</section>
+  </chapter>
 
 <!-- ***************  end of output feedback **************   -->
 
-<section data-type="chapter" class="chapter" id="limit_cycles"><h1>Algorithms
+<chapter class="chapter" id="limit_cycles"><h1>Algorithms
 for Limit Cycles</h1>
 
   <p>The discussion of walking and running robots in Chapter 4 motivated the
@@ -6953,7 +6948,7 @@ for Limit Cycles</h1>
   optimization tools that we developed in the last chapter are very well suited
   to this task.</p>
 
-  <section data-type="sect1"><h1>Trajectory optimization</h1>
+  <section><h1>Trajectory optimization</h1>
 
     <p>I introduced the trajectory optimization tools as means for optimizing a
     single trajectory of the system from a particular known initial condition.
@@ -6975,7 +6970,7 @@ for Limit Cycles</h1>
     solves an important problem even for passive systems -- with no control
     input at all.</p>
 
-    <div data-type="example" class="drake"><h1>Finding the limit cycle of the
+    <example class="drake"><h1>Finding the limit cycle of the
     Van der Pol oscillator</h1>
 
       <p>Recall the dynamics of the Van der Pol oscillator given by $$\ddot{q} +
@@ -7005,13 +7000,13 @@ for Limit Cycles</h1>
       guess that the solution moves around a circle in state space was enough.
       </p>
 
-    </div>
+    </example>
 
     <todo> example: simplest flapping robot </todo>
 
   </section> <!-- end trajectory optimization -->
 
-  <section data-type="sect1"><h1>Lyapunov analysis</h1>
+  <section><h1>Lyapunov analysis</h1>
 
     <p>Recall the important distinction between stability of a trajectory in
     time and   stability of a limit cycle was that the limit cycle does not
@@ -7038,7 +7033,7 @@ for Limit Cycles</h1>
     everywhere else. (a small segment has been removed solely for the purposes
     of visualization).</figcaption></figure>
 
-    <section data-type="sect2"><h1>Transverse coordinates</h1>
+    <subsection><h1>Transverse coordinates</h1>
 
       <p>How can we parameterize this class of functions?  For arbitrary cycles
       this could be very difficult in the original coordinates.  For simple
@@ -7067,7 +7062,7 @@ for Limit Cycles</h1>
       particular numerical strategy for defining the transversal coordinates is
       given in <elib>Manchester10a</elib>.</p>
 
-      <div data-type="theorem"><h1>A Lyapunov theorem for orbital stability</h1>
+      <theorem><h1>A Lyapunov theorem for orbital stability</h1>
 
         <p>For a dynamical system $\dot\bx = f(\bx)$ with $\bx \in \Re^n$, $f$
         continuous, a continuous periodic solution $\bx^*(\tau)$, and a smooth
@@ -7081,9 +7076,9 @@ for Limit Cycles</h1>
         < 0, \end{gather*} then the solution $\bx^*(t)$ is <em>locally orbitally
         asymptotically stable</em>.</p>
 
-      </div>
+      </theorem>
 
-      <div data-type="example"><h1>Simple ring oscillator</h1>
+      <example><h1>Simple ring oscillator</h1>
 
         <p> Perhaps the simplest oscillator is the first-order system which
         converges to the unit circle.   In cartesian coordinates, the dynamics
@@ -7110,7 +7105,7 @@ for Limit Cycles</h1>
         are in the region of attraction that limit cycle, but this is not proven
         by the Lyapunov argument above. </p>
 
-      </div>
+      </example>
 
       <p>Let's compare this approach with the approach that we used in the
       chapter on walking robots, where we used a Poincar&eacute map analysis to
@@ -7128,9 +7123,9 @@ for Limit Cycles</h1>
       with designing continuous feedback controller that stabilize the limit
       cycle.</p>
 
-    </section> <!-- end transverse -->
+    </subsection> <!-- end transverse -->
 
-    <section data-type="sect2"><h1>Transverse linearization</h1>
+    <subsection><h1>Transverse linearization</h1>
 
       <p>In the case of Lyapunov analysis around a fixed point, there was an
       important special case: for stable linear systems, we actually have a
@@ -7140,31 +7135,31 @@ for Limit Cycles</h1>
       system as an initial guess.  That same approach can be extended to limit
       cycle analysis.</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Region of attraction estimation using sums-of-squares</h1>
+    <subsection><h1>Region of attraction estimation using sums-of-squares</h1>
 
       <p>Coming soon.  If you are interested, see <elib>Manchester10a+Manchester10b</elib>.</p>
 
-    </section>
+    </subsection>
 
   </section> <!-- end lyapunov -->
 
-  <section data-type="sect1"><h1>Feedback design</h1>
+  <section><h1>Feedback design</h1>
 
-    <section data-type="sect2"><h1>Transverse LQR</h1>
+    <subsection><h1>Transverse LQR</h1>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Orbital stabilization for non-periodic trajectories</h1>
+    <subsection><h1>Orbital stabilization for non-periodic trajectories</h1>
 
-    </section>
+    </subsection>
 
   </section> <!-- end feedback -->
 
-</section> <!-- end limit cycles -->
+</chapter> <!-- end limit cycles -->
 
-<section data-type="chapter" class="chapter" id="contact"><h1>Planning and
+<chapter class="chapter" id="contact"><h1>Planning and
 Control through Contact</h1>
 
   <p>So far we have developed a fairly strong toolbox for planning and control
@@ -7182,7 +7177,7 @@ Control through Contact</h1>
   optimization, Lyapunov analysis (e.g. with sums-of-squares), and LQR all have
   natural equivalents. </p>
 
-  <section data-type="sect1"><h1>Modeling and Simulating through Contact</h1>
+  <section><h1>Modeling and Simulating through Contact</h1>
 
     <p>Recall how we modeled the dynamics of the simple legged robots. First,
     we derived the equations of motion (independently) for each possible
@@ -7288,46 +7283,46 @@ Control through Contact</h1>
 
   </section>
 
-  <section data-type="sect1"><h1>Trajectory Optimization</h1>
+  <section><h1>Trajectory Optimization</h1>
 
 
 
   </section>
 
-  <section data-type="sect1"><h1>Randomized Motion Planning</h1></section>
+  <section><h1>Randomized Motion Planning</h1></section>
 
-  <section data-type="sect1"><h1>Stabilizing a Fixed-Point</h1>
+  <section><h1>Stabilizing a Fixed-Point</h1>
 
   </section>
 
-  <section data-type="sect1"><h1>Stabilizing a Trajectory or Limit Cycle</h1>
+  <section><h1>Stabilizing a Trajectory or Limit Cycle</h1>
 
     <p>Transverse stabilization (build off limit cycle chapter)</p>
   </section>
 
-</section>
+</chapter>
 
 <!-- ***************  end of contact **************   -->
 
 
-<section data-type="chapter" class="chapter" id="belief"><h1>Planning Under
+<chapter class="chapter" id="belief"><h1>Planning Under
 Uncertainty</h1>
 
   <todo>POMDP, SLAG, Belief-space sample-based planning, ...</todo>
 
   <todo>iLQG (following LQG from Output Feedback chapter), iLEG (papers by
   Buchli, then Righetti)</todo>
-</section>
+  </chapter>
 
 <!-- ***************  end of planning under uncertainty **************   -->
 
 
-<section data-type="chapter" class="chapter" id="verification"><h1>Verification
+<chapter class="chapter" id="verification"><h1>Verification
 and Validation</h1>
 
   <todo>Lyap w/ richer specs.  Monte carlo... .</todo>
 
-</section>
+</chapter>
 
 <!-- ***************  end of verification **************   -->
 
@@ -7337,19 +7332,19 @@ and Validation</h1>
 <!-- START OF PART III - Estimation and Learning -->
 <div class="part" title="Estimation and Learning">
 
-<section data-type="chapter" class="chapter"
+<chapter class="chapter"
          id="sysid"><h1>System Identification</h1>
 
   <todo>equation error vs simulation error.  model-reduction for linear systems.  optimal experiment design</todo>
 
-</section>
+</chapter>
 
-<section data-type="chapter" class="chapter"
+<chapter class="chapter"
          id="estimation"><h1>State Estimation</h1>
 
-</section>
+</chapter>
 
-<section data-type="chapter" class="chapter"
+<chapter class="chapter"
          id="rl_policy_search"><h1>Model-Free Policy Search</h1>
 
   <p>Reinforcement learning (RL) is a collection of algorithms for solving the
@@ -7392,7 +7387,7 @@ and Validation</h1>
   <i>iterative learning control</i>.  I'll try to make connections whenever
   possible.</p>
 
-  <section data-type="sect1"><h1>Policy Gradient Methods</h1>
+  <section><h1>Policy Gradient Methods</h1>
 
     <p>One of the standard approaches to policy search in RL is to estimate the
     gradient of the expected long-term cost with respect to the policy
@@ -7404,7 +7399,7 @@ and Validation</h1>
     trick is often presented with an air of mystery about it.  Let's try to make
     sure we understand it.</p>
 
-    <section data-type="sect2"><h1>The Policy Gradient "Trick" (aka
+    <subsection><h1>The Policy Gradient "Trick" (aka
       REINFORCE)</h1>
 
       <p>Let's start with a simpler optimization over a stochastic function:
@@ -7472,9 +7467,9 @@ and Validation</h1>
       understand the nature of the stochastic update a little better, to help
       you understand what I mean. </p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Sample efficiency</h1>
+    <subsection><h1>Sample efficiency</h1>
 
       <p>Let's take a step back and think more generally about how one can use
       gradient descent in black-box (unconstrained) optimization. Imagine you
@@ -7502,9 +7497,9 @@ and Validation</h1>
       <i>sample complexity</i>.  Can we perform gradient descent using less
       evaluations?</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Stochastic Gradient Descent</h1>
+    <subsection><h1>Stochastic Gradient Descent</h1>
 
       <p>This leads us to the question of doing approximate gradient descent, or
       "stochastic" gradient descent.  Thinking of the cost landscape as a
@@ -7525,9 +7520,9 @@ and Validation</h1>
         <figcaption>Stochastic gradient descent of a quadratic cost function .</figcaption>
       </figure>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>The Weight Pertubation Algorithm</h1>
+    <subsection><h1>The Weight Pertubation Algorithm</h1>
 
       <p>Instead of sampling each dimension independently, consider making a
       single small random change, $\bbeta$, to the parameter vector, $\balpha$.
@@ -7555,9 +7550,9 @@ and Validation</h1>
       variance of the distribution which determines the scaling on the
       gradient.</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Weight Perturbation with an Estimated
+    <subsection><h1>Weight Perturbation with an Estimated
       Baseline</h1>
 
       <p>The weight perturbation update above requires us to evaluate the
@@ -7604,9 +7599,9 @@ and Validation</h1>
       true gradient, but only because we will eventually move more downhill than
       we move uphill.  It feels very naive.</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>REINFORCE w/ additive Gaussian noise</h1>
+    <subsection><h1>REINFORCE w/ additive Gaussian noise</h1>
 
       <p>Now let's consider the simple form of the REINFORCE update:
       \begin{align*} \frac{\partial}{\partial \alpha} E \left[ g(\bx) \right] =
@@ -7626,9 +7621,9 @@ and Validation</h1>
       above).  Although it will move in the direction of the gradient on
       average, it can be highly inefficient.</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Summary</h1>
+    <subsection><h1>Summary</h1>
 
       <p>The policy gradient "trick" from REINFORCE using log probabilities
       provides one means of estimating the true policy gradient.  It is not the
@@ -7641,17 +7636,17 @@ and Validation</h1>
       Variance reduction for policy gradient, often through baseline estimation,
       continues to be an active area of research.</p>
 
-    </section>
+    </subsection>
 
   </section>
 
   <todo>REINFORCE for LTI systems</todo>
 
 
-  <section data-type="sect1"><h1>Sample performance via the signal-to-noise
+  <section><h1>Sample performance via the signal-to-noise
   ratio.</h1>
 
-    <section data-type="sect2"><h1>Performance of Weight Perturbation</h1>
+    <subsection><h1>Performance of Weight Perturbation</h1>
 
       <p>The simplicity of the REINFORCE / weight perturbation updates makes it
       tempting to apply them to problems of arbitrary complexity.  But a major
@@ -7704,16 +7699,16 @@ and Validation</h1>
       Putting it all together, we have: $$\text{SNR} = \frac{1}{N - 2 +
       \frac{\mu_4(\beta_i)}{\sigma_\beta^4}}.$$</p>
 
-      <div data-type="example"><h1>Signal-to-noise ratio for additive Gaussian
+      <example><h1>Signal-to-noise ratio for additive Gaussian
         noise</h1>
 
         <p>For $\beta_i$ drawn from a Gaussian distribution, we have $\mu_1 = 0,
         \mu_2 = \sigma^2_\beta, \mu_3 = 0, \mu_4 = 3 \sigma^4_\beta,$
         simplifying the above expression to: $$\text{SNR} = \frac{1}{N+1}.$$</p>
 
-      </div>
+      </example>
 
-      <div data-type="example"><h1>Signal-to-noise ratio for additive uniform
+      <example><h1>Signal-to-noise ratio for additive uniform
         noise</h1>
 
         <p>For $\beta_i$ drawn from a uniform distribution over [-a,a], we have
@@ -7721,7 +7716,7 @@ and Validation</h1>
         \frac{a^4}{5} = \frac{9}{5}\sigma_\beta^4,$ simplifying the above to:
         $$\text{SNR} = \frac{1}{N-\frac{1}{5}}.$$</p>
 
-      </div>
+      </example>
 
       <p>Performance calculations using the SNR can be used to design the
       parameters of the algorithm in practice.  For example, based on these
@@ -7739,7 +7734,7 @@ and Validation</h1>
       SNR.  The derivation with a second-order Taylor expansion is left for an
       exercise.</p>
 
-    </section>
+    </subsection>
 
   </section>
 
@@ -7882,32 +7877,32 @@ and Validation</h1>
   <todo>Covariance Matrix Adaptation</todo>
   <todo>Policy Improvement with Path Integrals</todo>
 
-</section>
+</chapter>
 
-<section data-type="chapter" class="chapter" id="value_learning"><h1>Model
+<chapter class="chapter" id="value_learning"><h1>Model
   -Free Value Function Methods</h1>
 
 
-</section>
+</chapter>
 
-<section data-type="chapter" class="chapter"
+<chapter class="chapter"
          id="actor_critic"><h1>Actor-Critic Methods</h1></section>
 
-</section>
+</chapter>
 
 
 </div> <!-- end of part III -->
 
-<section data-type="chapter" class="chapter"
+<chapter class="chapter"
          id="bib"><h1>Bibliography</h1>
 
   <div id="bibliography"><center>Coming soon!</center></div>
 
-</section>
+</chapter>
 
 <appendix class="part" title="Appendix">
 
-<section data-type="chapter" class="chapter" id="drake"><h1>Drake</h1>
+<chapter class="chapter" id="drake"><h1>Drake</h1>
 
   <p>The <drake></drake> website is the main source for information and
   documentation.  This goal of this chapter provide a few specific pointers
@@ -7936,22 +7931,22 @@ and Validation</h1>
       (Bionic)</span>  |
     <b>Mac Homebrew</b> </span></p>
 
-  <section data-type="sect1"><h1>Install Drake</h1>
+  <section><h1>Install Drake</h1>
 
     <p>Although I hope that power users will build <drake></drake> from source
     (and contribute back), I recommend using the precompiled binaries to get
     started.  The links below indicate the specific distributions that the
     examples in this text have been tested against.</p>
 
-    <section data-type="sect2"><h1>Download the binaries</h1>
+    <subsection><h1>Download the binaries</h1>
 
       <div class="bionic"><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-bionic-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-bionic.tar.gz</div></code></pre></div>
 
       <div class="mac"><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-mac-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-mac.tar.gz</div></code></pre></div>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Unpack and set your PYTHONPATH and Test</h1>
+    <subsection><h1>Unpack and set your PYTHONPATH and Test</h1>
 
       <div class="bionic"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
 sudo /opt/drake/share/drake/setup/install_prereqs
@@ -7967,17 +7962,17 @@ export PATH=/usr/local/opt/python/libexec/bin:${PATH}
 
 python3 -c 'import pydrake; print(pydrake.__file__)
 </code></pre></div>
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>See Also</h1>
+    <subsection><h1>See Also</h1>
 
       <p>There are a number of <a href="https://nbviewer.jupyter.org/github/RobotLocomotion/drake/tree/master/tutorials/">tutorials</a> in <drake></drake> that can help you get started.</p>
 
-    </section>
+    </subsection>
 
   </section>
 
-  <section data-type="sect1"><h1>Download the textbook supplement</h1>
+  <section><h1>Download the textbook supplement</h1>
 
     <div><pre class="highlight"><code>git clone https://github.com/RussTedrake/underactuated.git</code></pre></div>
 
@@ -7991,7 +7986,7 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
 
   </section>
 
-  <section data-type="sect1"><h1>Run a textbook example</h1>
+  <section><h1>Run a textbook example</h1>
 
     <p>Note: All of the examples in the textbook supplement currently assume
     that working directory of your python interpreter is the
@@ -8001,7 +7996,7 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
 
   </section>
 
-  <section data-type="sect1"><h1>Consider Jupyter Notebook</h1>
+  <section><h1>Consider Jupyter Notebook</h1>
 
     <p>The examples you'll find throughout the text are provided so that
     they can be run in any python interpreter.  However, many people
@@ -8024,7 +8019,7 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
     Troubleshooting.
   </todo>
 
-  <section data-type="sect1"><h1>Listing of <drake></drake> examples throughout this text</h1>
+  <section><h1>Listing of <drake></drake> examples throughout this text</h1>
 
     <p>The best overview we have for the remaining capabilities in <drake></drake> are the main chapters of these notes.  For convenience, here is a list of software examples that are sprinkled throughout the text:</p>
 
@@ -8032,12 +8027,12 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
 
   </section>
 
-</section> <!-- end chapter on drake -->
+</chapter> <!-- end chapter on drake -->
 
-<section data-type="chapter" class="chapter" id="multibody"><h1>Rigid-Body
+<chapter class="chapter" id="multibody"><h1>Rigid-Body
   Dynamics</h1>
 
-  <section data-type="sect1"><h1>Deriving the equations of motion (an example)</h1>
+  <section><h1>Deriving the equations of motion (an example)</h1>
 
     <p>The equations of motion for a standard robot can be derived using the
     method of Lagrange.  Using $T$ as the total kinetic energy of the system,
@@ -8052,7 +8047,7 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
     nice read -- for now you can take them as a handle that you can crank to
     generate equations of motion. </p>
 
-    <div data-type="example"><h1>Simple Double Pendulum</h1>
+    <example><h1>Simple Double Pendulum</h1>
 
       <figure>
         <img style="width:250px;" data-src="figures/simple_double_pend.svg"/>
@@ -8098,11 +8093,11 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
       As we saw in chapter 1, numerically integrating (and animating) these
       equations in <drake></drake> produces the expected result. </p>
 
-    </div>
+    </example>
 
   </section>
 
-  <section data-type="sect1"><h1>The Manipulator Equations</h1>
+  <section><h1>The Manipulator Equations</h1>
 
     <p> If you crank through the Lagrangian dynamics for a few simple robotic
     manipulators, you will begin to see a pattern emerge - the resulting
@@ -8130,7 +8125,7 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
     generalized force; only their sum is a force"<elib>Choset05</elib>(s.10.2).
     Indeed, whenever I write Eq. (\ref{eq:manip}), I see $ma = F$. </p>
 
-    <div data-type="example"><h1>Manipulator Equation form of the Simple Double
+    <example><h1>Manipulator Equation form of the Simple Double
     Pendulum</h1> The equations of motion from Example 1 can be written
     compactly as: \begin{align*} \bM(\bq) =& \begin{bmatrix} (m_1 + m_2)l_1^2 +
     m_2 l_2^2 + 2 m_2 l_1l_2 c_2 & m_2 l_2^2 + m_2 l_1 l_2 c_2 \\ m_2 l_2^2 +
@@ -8139,7 +8134,7 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
     \dot{q}_1 s_2 & 0 \end{bmatrix} \\ \btau_g(\bq) =& -g \begin{bmatrix} (m_1 +
     m_2) l_1 s_1 + m_2 l_2 s_{1+2} \\ m_2 l_2 s_{1+2} \end{bmatrix} , \quad \bB
     = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} \end{align*} Note that this
-    choice of the $\bC$ matrix was not unique. </div>
+    choice of the $\bC$ matrix was not unique. </example>
 
     <p> The manipulator equations are very general, but they do define some
     important characteristics.  For example, $\ddot{\bq}$ is (state-dependent)
@@ -8164,7 +8159,7 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
     not necessarily a second-order system.  See <elib>Duindam06</elib> for a
     nice discussion of this topic.</p>
 
-    <section data-type="sect2"><h1>Bilateral Position Constraints</h1>
+    <subsection><h1>Bilateral Position Constraints</h1>
 
       <p>If our robot has closed-kinematic chains, for instance those that arise
       from a <a href="https://en.wikipedia.org/wiki/Four-bar_linkage">four-bar
@@ -8215,9 +8210,9 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
       (\bH \bM^{-1} \btau + (\dot{\bH} + 2\alpha \bH)\dot{\bq} + \alpha^2 \bh).
       \end{equation}</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Bilateral Velocity Constraints</h1>
+    <subsection><h1>Bilateral Velocity Constraints</h1>
 
       <p>Consider the constraint equation \begin{equation}\bh_v(\bq,\dot{\bq}) =
       0,\end{equation} where $\pd{\bh_v}{\dot{\bq}} \ne 0.$  These are less
@@ -8237,10 +8232,10 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
       \pd{\bh_v}{\dot{\bq}} \bM^{-1} \btau + \pd{\bh_v}{\bq} \dot{\bq} + \alpha
       \bh_v \right].\end{equation}</p>
 
-    </section>
+    </subsection>
 
   </section>
-  <section data-type="sect1"><h1>Contact Models</h1>
+  <section><h1>Contact Models</h1>
 
     <p>Now let $\phi(\bq)$ indicate the relative (signed) distance between
       two rigid bodies.  For rigid contact, we would like to enforce the
@@ -8255,7 +8250,7 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
     modeling approach has advantages/disadvantages for different
     applications...</p>
 
-    <section data-type="sect2"><h1>Compliant Contact Models</h1>
+    <subsection><h1>Compliant Contact Models</h1>
 
       <p>Most compliant contact models are conceptually straight-forward: we
       will implement contact forces using a stiff spring (and damper) that
@@ -8318,11 +8313,11 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
       integrators, and (3) the tightness of the approximation of "rigid"
       contact can be controlled through relatively intuitive parameters.</p>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Rigid Contact with Event Detection</h1>
+    <subsection><h1>Rigid Contact with Event Detection</h1>
 
-      <section data-type="sect3"><h1>Impulsive Collisions</h1>
+      <subsubsection><h1>Impulsive Collisions</h1>
 
         <p>The collision event is described by the zero-crossings (from
         positive to negative) of $\phi$. Let us start by assuming frictionless
@@ -8361,9 +8356,9 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
         have to solve an optimization to solve for $\dot\bq^+$ subject to the
         inequality constraints. </p>
 
-      </section>
+      </subsubsection>
 
-      <section data-type="sect3"><h1>Putting it all together</h1>
+      <subsubsection><h1>Putting it all together</h1>
 
         <p> We can put the bilateral constraint equations and the impulsive
         collision equations together to implement a hybrid model for unilateral
@@ -8385,18 +8380,18 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
         guards, or can be solved efficiently as a complementarity problem
         <elib>Stewart96</elib>.</p>
 
-      </section>
+      </subsubsection>
 
-    </section>
+    </subsection>
 
-    <section data-type="sect2"><h1>Time-stepping Approximations for Rigid
+    <subsection><h1>Time-stepping Approximations for Rigid
       Contact</h1>
 
-    </section>
+    </subsection>
 
   </section>
 
-  <section data-type="sect1"><h1>Recursive Dynamics Algorithms</h1>
+  <section><h1>Recursive Dynamics Algorithms</h1>
 
     <p>The equations of motions for our machines get complicated quickly.
     Fortunately, for robots with a tree-link kinematic structure, there are very
@@ -8413,19 +8408,19 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
   http://web.mit.edu/10.001/Web/Course_Notes/Differential_Equations_Notes/node3.html)
   </todo>
 
-  <section data-type="sect1"><h1>Parameter Estimation</h1></section>
+  <section><h1>Parameter Estimation</h1></section>
 
   <todo> lumped parameters.  identifiable lumped parameters.  least-squares
   estimation.  power formulations.  trajectory design.</todo>
 
-</section> <!-- end rigid-body dynamics chapter -->
+  </chapter> <!-- end rigid-body dynamics chapter -->
 
 
-<section data-type="chapter" class="chapter"
+<chapter class="chapter"
          id="optimization"><h1>Optimization and
   Mathematical Programming</h1>
 
-  <section data-type="sect1"><h1>Optimization software</h1>
+  <section><h1>Optimization software</h1>
 
     <p>We have a short introduction to mathematical programming in
       <drake></drake> <a href="https://nbviewer.jupyter.org/github/RobotLocomotion/drake/blob/master/tutorials/mathematical_program.ipynb">here</a>.</p>
@@ -8433,40 +8428,40 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
   </section>
 
 
-  <section data-type="sect1"><h1>Nonlinear optimization</h1>
-    <section data-type="sect2"><h1>General formulation</h1>
-    </section>
-    <section data-type="sect2"><h1>Solution techniques</h1>
+  <section><h1>Nonlinear optimization</h1>
+    <subsection><h1>General formulation</h1>
+    </subsection>
+    <subsection><h1>Solution techniques</h1>
       Lagrange multipliers / KKT, Gradient descent, SQP (SNOPT, NLOPT, IPOPT), Global optimization
-    </section>
-    <section data-type="sect2"><h1>Example: Inverse Kinematics</h1>
-    </section>
+    </subsection>
+    <subsection><h1>Example: Inverse Kinematics</h1>
+    </subsection>
   </section>
-  <section data-type="sect1"><h1>Convex optimization</h1>
-    <section data-type="sect2"><h1>Linear Programs/Quadratic Programs/Second-Order Cones</h1>
+  <section><h1>Convex optimization</h1>
+    <subsection><h1>Linear Programs/Quadratic Programs/Second-Order Cones</h1>
       Example: Balancing force control on Atlas
-    </section>
-    <section data-type="sect2"><h1>Semidefinite Programming and Linear Matrix Inequalities</h1>
-    </section>
-    <section data-type="sect2"><h1>Sums of squares / polynomial optimization</h1>
-    </section>
-    <section data-type="sect2"><h1>Solution techniques</h1>
+    </subsection>
+    <subsection><h1>Semidefinite Programming and Linear Matrix Inequalities</h1>
+    </subsection>
+    <subsection><h1>Sums of squares / polynomial optimization</h1>
+    </subsection>
+    <subsection><h1>Solution techniques</h1>
       Interior point (Gurobi, Mosek, Sedumi, ...), First order methods
-    </section>
+    </subsection>
   </section>
-  <section data-type="sect1"><h1>Mixed-integer convex optimization</h1></section>
-  <section data-type="sect1"><h1>Combinatorial optimization</h1>
+  <section><h1>Mixed-integer convex optimization</h1></section>
+  <section><h1>Combinatorial optimization</h1>
     Search, SAT, First order logic, SMT solvers, LP interpretation
   </section>
-  <section data-type="sect1"><h1>"Black-box" optimization</h1>
+  <section><h1>"Black-box" optimization</h1>
     Derivative-free methods.  Some allow noisy evaluations. 
   </section>
 
   <todo>Polynomial root finding/homotopy, L1 optimization, QCQP, LCP/Variational inequalities, BMI, ..., warm-starting, ...</todo>
 
-</section> <!-- end optimization chapter -->
+</chapter> <!-- end optimization chapter -->
 
-<section data-type="chapter" class="chapter" id="playbook"><h1>An Optimization
+<chapter class="chapter" id="playbook"><h1>An Optimization
   Playbook</h1>
 
   <p>Coming soon... a collection of tips and formulations that can make
@@ -8483,7 +8478,7 @@ export PYTHONPATH=`pwd`/underactuated/src:${PYTHONPATH}</code></pre></div>
     x = np.linspace(-2.,2.,101)
     plt.plot(x, np.sqrt(np.power(x,2) + 0.01))
   </todo>
-</section> <!-- end playbook -->
+</chapter> <!-- end playbook -->
 
 
 </appendix>
