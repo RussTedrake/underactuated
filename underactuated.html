@@ -3318,6 +3318,7 @@ id="humanoids"><h1>Highly-articulated Legged Robots</h1>
 
 </chapter> <!-- ** end highly-articulated legged robots ** -->
 
+<!--
 <chapter class="chapter" id="manip"><h1>Manipulation</h1>
 
 <todo>Sense, plan, act.  Grasp planning (grasp metrics).  Underactuated hands.
@@ -3328,14 +3329,9 @@ id="humanoids"><h1>Highly-articulated Legged Robots</h1>
 <!-- ***************  end of Manipulation **************   -->
 
 <!--
-<chapter class="chapter" id="uavs"><h1>Unmanned Aerial
+<chapter class="chapter" id="vehicles"><h1>Autonomous
+Driving and Unmanned Aerial
 Vehicles</h1>
-
-</chapter> <!-- ***************  end of uavs **************   -->
-
-<!--
-<chapter class="chapter" id="automotive"><h1>Autonomous
-Driving</h1>
 
 </chapter> <!-- ***************  end of vehicles **************   -->
 
@@ -7938,37 +7934,32 @@ and Validation</h1>
     started.  The links below indicate the specific distributions that the
     examples in this text have been tested against.</p>
 
-    <subsection><h1>Download the binaries</h1>
+    <h4 >Download the binaries</h4>
 
-      <div class="bionic"><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-bionic-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-bionic.tar.gz</div></code></pre></div>
+    <div class="bionic"><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-bionic-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-bionic.tar.gz</div></code></pre></div>
 
-      <div class="mac"><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-mac-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-mac.tar.gz</div></code></pre></div>
+    <div class="mac"><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-mac-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-mac.tar.gz</div></code></pre></div>
 
-    </subsection>
+    <h4>Unpack and set your PYTHONPATH and Test</h4>
 
-    <subsection><h1>Unpack and set your PYTHONPATH and Test</h1>
-
-      <div class="bionic"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
+    <div class="bionic"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
 sudo /opt/drake/share/drake/setup/install_prereqs
 export PYTHONPATH=/opt/drake/lib/python3.6/site-packages:${PYTHONPATH}
 
 python3 -c 'import pydrake; print(pydrake.__file__)
 </code></pre></div>
 
-      <div class="mac"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
+    <div class="mac"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
 /opt/drake/share/drake/setup/install_prereqs
 export PYTHONPATH=/opt/drake/lib/python3.7/site-packages:${PYTHONPATH}
 export PATH=/usr/local/opt/python/libexec/bin:${PATH}
 
 python3 -c 'import pydrake; print(pydrake.__file__)
 </code></pre></div>
-    </subsection>
 
-    <subsection><h1>See Also</h1>
+    <h4>Getting started</h4>
 
-      <p>There are a number of <a href="https://nbviewer.jupyter.org/github/RobotLocomotion/drake/tree/master/tutorials/">tutorials</a> in <drake></drake> that can help you get started.</p>
-
-    </subsection>
+    <p>There are a number of <a href="https://nbviewer.jupyter.org/github/RobotLocomotion/drake/tree/master/tutorials/">tutorials</a> in <drake></drake> that can help you get started.</p>
 
   </section>
 
