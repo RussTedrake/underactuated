@@ -49,8 +49,6 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
-        with:
-          submodules: true
 
   catalina:
     name: macos catalina 10.15
@@ -58,5 +56,3 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v2
-        with:
-          submodules: true
