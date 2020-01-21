@@ -34,8 +34,8 @@ load("@pip//:requirements.bzl", "all_requirements")
 load("@rules_python//python:defs.bzl", "py_binary")
 
 py_binary(
-    name = "jupyter",
-    srcs = ["jupyter.py"],
+    name = "jupyter_nbconvert",
+    srcs = ["jupyter_nbconvert.py"],
     legacy_create_init = False,
     python_version = "PY3",
     srcs_version = "PY3",

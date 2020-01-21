@@ -39,8 +39,8 @@ def _jupyter_nbconvert(attrs, testonly = False):
         testonly = testonly,
         srcs = attrs["srcs"],
         outs = outs,
-        cmd = "$(location //tools/jupyter) nbconvert --log-level 40 --stdout --to script $< > $@",
-        tools = ["//tools/jupyter"],
+        cmd = "$(location //tools/jupyter:jupyter_nbconvert) $< > $@",
+        tools = ["//tools/jupyter:jupyter_nbconvert"],
         visibility = ["//visibility:private"],
     )
     attrs["srcs"] = outs

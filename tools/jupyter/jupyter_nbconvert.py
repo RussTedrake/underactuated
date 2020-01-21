@@ -27,7 +27,26 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-from runpy import run_module
+import os
+import sys
+
+from nbconvert.exporters import PythonExporter
+from nbconvert.writers import StdoutWriter
+
+
+def main(notebook_filename):
+    resources = {}
+    basename = os.path.basename(notebook_filename)
+    resources['unique_key'] = basename[:basename.rfind('.')]
+    exporter = PythonExporter()
+    output, resources = exporter.from_filename(notebook_filename,
+                                               resources=resources)
+    writer = StdoutWriter()
+    write_results = writer.write(output, resources)
+
 
 if __name__ == '__main__':
-    run_module('jupyter_core')
+    if len(sys.argv) != 2:
+        print('Notebook filename is missing', file=sys.stderr)
+        sys.exit(1)
+    main(sys.argv[1])
