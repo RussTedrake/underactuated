@@ -810,7 +810,7 @@ are available on YouTube</a>.</p>
 
     <exercise><h1>(Task-Space Control of the Double Pendulum)</h1>
 
-      In <a href="#robot_manipulators">this example</a>, we have seen that the double pendulum with two motors is a fully-actuated system.  Here we consider a variation of it.  Instead of controlling the robot with the actuators at the shoulder and the elbow, we directly apply a force on the mass $m_2$ (tip of the second link).  Let $\bu = [u_1, u_2]^T$ be this force, with $u_1$ horizontal component (positive to the right) and $u_2$ vertical component (positive upwards).  This modification leaves the equations of motion derived in the <a href="underactuated.html?chapter=multibody">appendix</a> almost unchanged: the only difference is that the matrix $\bB$ is now a function of $\bq$.  Namely, using the notation from the appendix, $$\bB (\bq) = \begin{bmatrix} l_1 c_1 + l_2 c_{1+2} & l_1 s_1 + l_2 s_{1+2} \\ l_2  c_{1+2} & l_2 s_{1+2} \end{bmatrix}.$$  Is the double pendulum with the new control input still fully-actuated in all states? If not, identify the states in which it is underactuated.
+      In <a href="#robot_manipulators">the example above</a>, we have seen that the double pendulum with two motors is a fully-actuated system.  Here we consider a variation of it.  Instead of controlling the robot with the actuators at the shoulder and the elbow, we directly apply a force on the mass $m_2$ (tip of the second link).  Let $\bu = [u_1, u_2]^T$ be this force, with $u_1$ horizontal component (positive to the right) and $u_2$ vertical component (positive upwards).  This modification leaves the equations of motion derived in the <a href="underactuated.html?chapter=multibody#manipulator_equation_double_pendulum">appendix example</a> almost unchanged: the only difference is that the matrix $\bB$ is now a function of $\bq$.  Namely, using the notation from the appendix, $$\bB (\bq) = \begin{bmatrix} l_1 c_1 + l_2 c_{1+2} & l_1 s_1 + l_2 s_{1+2} \\ l_2  c_{1+2} & l_2 s_{1+2} \end{bmatrix}.$$  Is the double pendulum with the new control input still fully-actuated in all states? If not, identify the states in which it is underactuated.
 
     </exercise>
 
@@ -8138,7 +8138,7 @@ export PYTHONPATH=`pwd`/underactuated:${PYTHONPATH}</code></pre></div>
     generalized force; only their sum is a force"<elib>Choset05</elib>(s.10.2).
     Indeed, whenever I write Eq. (\ref{eq:manip}), I see $ma = F$. </p>
 
-    <example><h1>Manipulator Equation form of the Simple Double
+    <example  id="manipulator_equation_double_pendulum"><h1>Manipulator Equation form of the Simple Double
     Pendulum</h1> The equations of motion from Example 1 can be written
     compactly as: \begin{align*} \bM(\bq) =& \begin{bmatrix} (m_1 + m_2)l_1^2 +
     m_2 l_2^2 + 2 m_2 l_1l_2 c_2 & m_2 l_2^2 + m_2 l_1 l_2 c_2 \\ m_2 l_2^2 +
