@@ -1,0 +1,24 @@
+# -*- mode: editorconfig -*-
+# vi: set ft=editorconfig :
+
+root = true
+
+[*]
+charset = utf
+end_of_line = lf
+indent_size = 2
+indent_style = space
+insert_final_newline = true
+max_line_length = 80
+trim_trailing_whitespace = true
+
+[*.bzl,BUILD.bazel,WORKSPACE]
+indent_size = 4
+max_line_length = 79
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.py]
+indent_size = 4
+max_line_length = 79

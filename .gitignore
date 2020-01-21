@@ -11,3 +11,7 @@ cmake-build-debug/
 \.DS_Store
 
 \.vscode/
+
+/.ijwb/
+/bazel-*
+/user.bazelrc

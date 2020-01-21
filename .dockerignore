@@ -1,0 +1,5 @@
+.bazelproject
+.ijwb/
+**/__pycache__/
+bazel-*
+user.bazelrc
