@@ -30,40 +30,17 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-load("@rules_python//python:defs.bzl", "py_runtime", "py_runtime_pair")
+load("@rules_python//python:pip.bzl", "pip3_import", "pip_repositories")
+load("@rules_python//python:repositories.bzl", "py_repositories")
 
-py_runtime(
-    name = "linux_py_runtime",
-    interpreter_path = "/usr/bin/python3",
-    python_version = "PY3",
-)
+def _pip3_import_attrs(attrs):
+    if "requirements" not in attrs or attrs["requirements"] == None:
+        attrs["requirements"] = "//:requirements.txt"
+    return attrs
 
-py_runtime_pair(
-    name = "linux_py_runtime_pair",
-    py3_runtime = ":linux_py_runtime",
-)
+def rt_python_repositories():
+    py_repositories()
+    pip_repositories()
 
-toolchain(
-    name = "linux_toolchain",
-    target_compatible_with = ["@platforms//os:linux"],
-    toolchain = ":linux_py_runtime_pair",
-    toolchain_type = "@rules_python//python:toolchain_type",
-)
-
-py_runtime(
-    name = "osx_py_runtime",
-    interpreter_path = "/usr/local/bin/python3",
-    python_version = "PY3",
-)
-
-py_runtime_pair(
-    name = "osx_py_runtime_pair",
-    py3_runtime = ":osx_py_runtime",
-)
-
-toolchain(
-    name = "osx_toolchain",
-    target_compatible_with = ["@platforms//os:osx"],
-    toolchain = ":osx_py_runtime_pair",
-    toolchain_type = "@rules_python//python:toolchain_type",
-)
+def rt_pip3_import(**attrs):
+    return pip3_import(**_pip3_import_attrs(attrs))

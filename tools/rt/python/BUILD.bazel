@@ -30,15 +30,73 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-load("@pip//:requirements.bzl", "all_requirements")
-load("@rules_python//python:defs.bzl", "py_binary")
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@rules_python//python:defs.bzl", "py_runtime", "py_runtime_pair")
 
-py_binary(
-    name = "jupyter_nbconvert",
-    srcs = ["jupyter_nbconvert.py"],
-    legacy_create_init = False,
+bzl_library(
+    name = "defs",
+    srcs = ["defs.bzl"],
+    visibility = ["//tools/rt/jupyter:__pkg__"],
+    deps = [":rules_python_defs"],
+)
+
+py_runtime(
+    name = "linux_py_runtime",
+    interpreter_path = "/usr/bin/python3",
     python_version = "PY3",
-    srcs_version = "PY3",
-    visibility = ["//visibility:public"],
-    deps = all_requirements,
+)
+
+py_runtime_pair(
+    name = "linux_py_runtime_pair",
+    py3_runtime = ":linux_py_runtime",
+)
+
+toolchain(
+    name = "linux_toolchain",
+    target_compatible_with = ["@platforms//os:linux"],
+    toolchain = ":linux_py_runtime_pair",
+    toolchain_type = "@rules_python//python:toolchain_type",
+)
+
+py_runtime(
+    name = "macos_py_runtime",
+    interpreter_path = "/usr/local/bin/python3",
+    python_version = "PY3",
+)
+
+py_runtime_pair(
+    name = "macos_py_runtime_pair",
+    py3_runtime = ":macos_py_runtime",
+)
+
+toolchain(
+    name = "macos_toolchain",
+    target_compatible_with = ["@platforms//os:osx"],
+    toolchain = ":macos_py_runtime_pair",
+    toolchain_type = "@rules_python//python:toolchain_type",
+)
+
+bzl_library(
+    name = "repositories",
+    srcs = ["repositories.bzl"],
+    visibility = ["//tools/rt/jupyter:__pkg__"],
+    deps = [
+        ":rules_python_pip",
+        ":rules_python_repositories",
+    ],
+)
+
+bzl_library(
+    name = "rules_python_defs",
+    srcs = ["@rules_python//python:defs.bzl"],
+)
+
+bzl_library(
+    name = "rules_python_pip",
+    srcs = ["@rules_python//python:pip.bzl"],
+)
+
+bzl_library(
+    name = "rules_python_repositories",
+    srcs = ["@rules_python//python:repositories.bzl"],
 )

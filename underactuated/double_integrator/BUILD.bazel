@@ -30,7 +30,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-load("//tools/python:defs.bzl", "rt_py_library", "rt_py_test")
+load("//tools/rt/python:defs.bzl", "rt_py_library", "rt_py_test")
 
 rt_py_library(
     name = "double_integrator",
@@ -52,4 +52,3 @@ rt_py_test(
     srcs = ["value_iteration.py"],
     deps = [":double_integrator"],
 )
-

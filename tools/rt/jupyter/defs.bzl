@@ -30,7 +30,7 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-load("//tools/python:defs.bzl", "rt_py_binary", "rt_py_test")
+load("//tools/rt/python:defs.bzl", "rt_py_binary", "rt_py_test")
 
 def _jupyter_nbconvert(attrs, testonly = False):
     outs = ["{}.py".format(attrs["name"])]
@@ -39,8 +39,8 @@ def _jupyter_nbconvert(attrs, testonly = False):
         testonly = testonly,
         srcs = attrs["srcs"],
         outs = outs,
-        cmd = "$(location //tools/jupyter:jupyter_nbconvert) $< > $@",
-        tools = ["//tools/jupyter:jupyter_nbconvert"],
+        cmd = "$(location //tools/rt/jupyter:jupyter_nbconvert) $< > $@",
+        tools = ["//tools/rt/jupyter:jupyter_nbconvert"],
         visibility = ["//visibility:private"],
     )
     attrs["srcs"] = outs

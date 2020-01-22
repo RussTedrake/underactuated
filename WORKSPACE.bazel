@@ -32,32 +32,25 @@
 
 workspace(name = "underactuated")
 
-register_toolchains(
-    "//tools/python:linux_toolchain",
-    "//tools/python:osx_toolchain",
+load(
+    "//tools/rt:repositories.bzl",
+    "rt_dependencies",
+    "rt_toolchains",
 )
 
-load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+rt_dependencies()
 
-http_archive(
-    name = "rules_python",
-    sha256 = "c911dc70f62f507f3a361cbc21d6e0d502b91254382255309bc60b7a0f48de28",
-    strip_prefix = "rules_python-38f86fb55b698c51e8510c807489c9f4e047480e",
-    url = "https://github.com/bazelbuild/rules_python/archive/38f86fb55b698c51e8510c807489c9f4e047480e.tar.gz",
+rt_toolchains()
+
+load(
+    "//tools/rt/python:repositories.bzl",
+    "rt_pip3_import",
+    "rt_python_repositories",
 )
 
-load("@rules_python//python:repositories.bzl", "py_repositories")
+rt_python_repositories()
 
-py_repositories()
-
-load("@rules_python//python:pip.bzl", "pip3_import", "pip_repositories")
-
-pip_repositories()
-
-pip3_import(
-    name = "pip",
-    requirements = "//:requirements.txt",
-)
+rt_pip3_import(name = "pip")
 
 load("@pip//:requirements.bzl", "pip_install")
 

@@ -30,28 +30,22 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
-load("//tools/rt/python:defs.bzl", "rt_py_test")
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@pip//:requirements.bzl", "all_requirements")
+load("@rules_python//python:defs.bzl", "py_binary")
 
-# TODO(RussTedrake): Pass in specific initial conditions and test for successful
-# balancing.
-rt_py_test(
-    name = "balancing_lqr",
-    srcs = ["balancing_lqr.py"],
-    args = [
-        "--duration 0.1",
-        "--trials 1",
-    ],
+bzl_library(
+    name = "defs",
+    srcs = ["defs.bzl"],
+    deps = ["//tools/rt/python:defs"],
 )
 
-rt_py_test(
-    name = "dircol_swingup",
-    srcs = ["dircol_swingup.py"],
-    deps = ["//underactuated"],
-)
-
-rt_py_test(
-    name = "torque_slider_demo",
-    srcs = ["torque_slider_demo.py"],
-    args = ["--duration 0.1"],
-    deps = ["//underactuated"],
+py_binary(
+    name = "jupyter_nbconvert",
+    srcs = ["jupyter_nbconvert.py"],
+    legacy_create_init = False,
+    python_version = "PY3",
+    srcs_version = "PY3",
+    visibility = ["//visibility:public"],
+    deps = all_requirements,
 )
