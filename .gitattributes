@@ -60,5 +60,4 @@
 .gitignore      text
 .gitmodules     text
 .tidy.config    text
-.UNITTEST       text
 WORKSPACE       text diff=python
