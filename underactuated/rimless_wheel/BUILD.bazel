@@ -32,6 +32,8 @@
 
 load("//tools/python:defs.bzl", "rt_py_test")
 
+# RimlessWheel.xacro in this package is unused.
+
 rt_py_test(
     name = "dircol_limitcycle",
     srcs = ["dircol_limitcycle.py"],
@@ -41,6 +43,7 @@ rt_py_test(
     name = "simulate",
     srcs = ["simulate.py"],
     args = ["--duration 0.1"],
+    data = ["RimlessWheel.urdf"],
     deps = [
         "//underactuated",
         "//underactuated/deprecated",

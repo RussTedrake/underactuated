@@ -11,6 +11,7 @@ from pydrake.all import (DiagramBuilder,
                          VisualElement)
 from pydrake.attic.multibody.shapes import Box
 from pydrake.examples.rimless_wheel import (RimlessWheel, RimlessWheelParams)
+from underactuated import FindResource
 from underactuated.deprecated.planar_rigid_body_visualizer import (
     PlanarRigidBodyVisualizer
 )
@@ -35,8 +36,7 @@ parser.add_argument("-S", "--slope", type=float,
                     default=0.08)
 args = parser.parse_args()
 
-tree = RigidBodyTree(FindResourceOrThrow(
-                        "drake/examples/rimless_wheel/RimlessWheel.urdf"),
+tree = RigidBodyTree(FindResource("rimless_wheel/RimlessWheel.urdf"),
                      FloatingBaseType.kRollPitchYaw)
 params = RimlessWheelParams()
 params.set_slope(args.slope)

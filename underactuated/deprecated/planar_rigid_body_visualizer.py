@@ -303,7 +303,7 @@ def setupValkyrieExample():
     pmap.PopulateFromFolder(os.path.join(pydrake.getDrakePath(), "examples"))
     # TODO(russt): remove plane.urdf and call AddFlatTerrainTOWorld instead
     AddModelInstanceFromUrdfStringSearchingInRosPackages(
-        open(FindResource(os.path.join("underactuated", "plane.urdf")), 'r').read(),  # noqa
+        open(FindResource("deprecated/plane.urdf"), 'r').read(),
         pmap,
         pydrake.getDrakePath() + "/examples/",
         FloatingBaseType.kFixed,
