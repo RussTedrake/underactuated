@@ -2,19 +2,10 @@ import argparse
 import math
 import numpy as np
 
-from pydrake.all import (DiagramBuilder,
-                         FindResourceOrThrow,
-                         FloatingBaseType,
-                         Isometry3,
-                         RigidBodyTree,
-                         Simulator,
-                         VisualElement)
-from pydrake.attic.multibody.shapes import Box
-from pydrake.examples.rimless_wheel import (RimlessWheel, RimlessWheelParams)
-from underactuated import FindResource
-from underactuated.deprecated.planar_rigid_body_visualizer import (
-    PlanarRigidBodyVisualizer
-)
+from pydrake.all import (DiagramBuilder, PlanarSceneGraphVisualizer,
+                         SceneGraph, Simulator)
+from pydrake.examples.rimless_wheel import (RimlessWheel, RimlessWheelGeometry,
+                                            RimlessWheelParams)
 
 
 parser = argparse.ArgumentParser()
@@ -36,28 +27,20 @@ parser.add_argument("-S", "--slope", type=float,
                     default=0.08)
 args = parser.parse_args()
 
-tree = RigidBodyTree(FindResource("rimless_wheel/RimlessWheel.urdf"),
-                     FloatingBaseType.kRollPitchYaw)
 params = RimlessWheelParams()
 params.set_slope(args.slope)
-R = np.identity(3)
-R[0, 0] = math.cos(params.slope())
-R[0, 2] = math.sin(params.slope())
-R[2, 0] = -math.sin(params.slope())
-R[2, 2] = math.cos(params.slope())
-X = Isometry3(rotation=R, translation=[0, 0, -5.])
-color = np.array([0.9297, 0.7930, 0.6758, 1])
-tree.world().AddVisualElement(VisualElement(Box([100., 1., 10.]), X, color))
-tree.compile()
 
 builder = DiagramBuilder()
 rimless_wheel = builder.AddSystem(RimlessWheel())
-
-visualizer = builder.AddSystem(PlanarRigidBodyVisualizer(tree,
-                                                         xlim=[-8., 8.],
-                                                         ylim=[-2., 3.],
-                                                         figsize_multiplier=3))
-builder.Connect(rimless_wheel.get_output_port(1), visualizer.get_input_port(0))
+scene_graph = builder.AddSystem(SceneGraph())
+RimlessWheelGeometry.AddToBuilder(
+    builder, rimless_wheel.get_floating_base_state_output_port(), params,
+    scene_graph)
+visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(scene_graph,
+                                                          xlim=[-8., 8.],
+                                                          ylim=[-2., 3.]))
+builder.Connect(scene_graph.get_pose_bundle_output_port(),
+                visualizer.get_input_port(0))
 
 diagram = builder.Build()
 simulator = Simulator(diagram)

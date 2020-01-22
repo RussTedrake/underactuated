@@ -4,33 +4,13 @@ import numpy as np
 
 from pydrake.all import (ConstantVectorSource,
                          DiagramBuilder,
-                         FindResourceOrThrow,
-                         FloatingBaseType,
-                         Isometry3,
-                         RigidBodyTree,
+                         PlanarSceneGraphVisualizer,
+                         SceneGraph,
                          SignalLogger,
-                         Simulator,
-                         VisualElement)
-from pydrake.attic.multibody.shapes import Box
-from pydrake.examples.compass_gait import (CompassGait, CompassGaitParams)
-from underactuated.deprecated.planar_rigid_body_visualizer import (
-    PlanarRigidBodyVisualizer
-)
+                         Simulator)
+from pydrake.examples.compass_gait import (CompassGait, CompassGaitGeometry,
+                                           CompassGaitParams)
 
-
-tree = RigidBodyTree(FindResourceOrThrow(
-                        "drake/examples/compass_gait/CompassGait.urdf"),
-                     FloatingBaseType.kRollPitchYaw)
-params = CompassGaitParams()
-R = np.identity(3)
-R[0, 0] = math.cos(params.slope())
-R[0, 2] = math.sin(params.slope())
-R[2, 0] = -math.sin(params.slope())
-R[2, 2] = math.cos(params.slope())
-X = Isometry3(rotation=R, translation=[0, 0, -5.])
-color = np.array([0.9297, 0.7930, 0.6758, 1])
-tree.world().AddVisualElement(VisualElement(Box([100., 1., 10.]), X, color))
-tree.compile()
 
 builder = DiagramBuilder()
 compass_gait = builder.AddSystem(CompassGait())
@@ -45,11 +25,14 @@ parser.add_argument("-T", "--duration",
                     default=10.0)
 args = parser.parse_args()
 
-visualizer = builder.AddSystem(PlanarRigidBodyVisualizer(tree,
-                                                         xlim=[-1., 5.],
-                                                         ylim=[-1., 2.],
-                                                         figsize_multiplier=2))
-builder.Connect(compass_gait.get_output_port(1), visualizer.get_input_port(0))
+scene_graph = builder.AddSystem(SceneGraph())
+CompassGaitGeometry.AddToBuilder(
+    builder, compass_gait.get_floating_base_state_output_port(), scene_graph)
+visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(scene_graph,
+                                                          xlim=[-1., 5.],
+                                                          ylim=[-1., 2.]))
+builder.Connect(scene_graph.get_pose_bundle_output_port(),
+                visualizer.get_input_port(0))
 
 diagram = builder.Build()
 simulator = Simulator(diagram)

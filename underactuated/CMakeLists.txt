@@ -54,8 +54,6 @@ function(add_nbtest ipynbfile)
 
 endfunction(add_nbtest)
 
-add_subdirectory(deprecated)
-
 add_subdirectory(acrobot)
 add_subdirectory(autapse)
 add_subdirectory(cartpole)
