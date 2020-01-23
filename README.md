@@ -39,6 +39,26 @@ $ make
 $ ctest .
 ```
 
+To run linters
+--------------
+
+```
+$ pycodestyle
+$ pydocstyle
+```
+
+To run the auto-linter
+----------------------
+
+macOS:
+```
+$ yapf -i -r -p .
+```
+
+Ubuntu Bionic:
+```
+$ yapf3 -i -r -p .
+```
 
 
 To get experimental drake binaries

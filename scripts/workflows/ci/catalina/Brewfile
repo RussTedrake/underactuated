@@ -1,7 +1,0 @@
-# -*- mode: ruby -*-
-# vi: set ft=ruby :
-
-tap 'bazelbuild/tap'
-
-brew 'bazelbuild/tap/bazel'
-brew 'ffmpeg'

@@ -38,7 +38,7 @@ readonly drake_url=`python3 -c "import sys, json; drake = json.load(open('drake_
 
 pushd /usr/local
 
-curl -o drake.tar.gz "${drake_url}"
+curl -LsSO -m 60 -o drake.tar.gz --retry 4 --retry-delay 0 "${drake_url}"
 tar -xzf drake.tar.gz
 rm -f drake.tar.gz
 

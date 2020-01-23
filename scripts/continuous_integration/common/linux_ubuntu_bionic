@@ -43,7 +43,7 @@ set -u
 
 pushd /opt
 
-curl -o drake.tar.gz "${DRAKE_BINARY_URL}"
+wget -nv -O drake.tar.gz "${DRAKE_BINARY_URL}"
 tar -xzf drake.tar.gz
 rm -f drake.tar.gz
 

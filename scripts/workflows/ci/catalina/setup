@@ -33,8 +33,7 @@ set -euxo pipefail
 
 export HOMEBREW_NO_ANALYTICS=1 HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_BOTTLE_SOURCE_FALLBACK=1
 
-# TODO(jamiesnape): Move to ./scripts/setup/mac/install_prereqs.
-"$(dirname ${(%):-%x})/install_prereqs"
+./scripts/setup/mac/install_prereqs.
 trap 'brew cleanup && rm -rf "$(brew --cache)"' EXIT
 
 pushd /tmp
