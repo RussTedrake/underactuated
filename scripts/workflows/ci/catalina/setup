@@ -38,7 +38,7 @@ export HOMEBREW_NO_ANALYTICS=1 HOMEBREW_NO_AUTO_UPDATE=1 HOMEBREW_NO_BOTTLE_SOUR
 trap 'brew cleanup && rm -rf "$(brew --cache)"' EXIT
 
 pushd /opt
-curl -LsSO https://drake-packages.csail.mit.edu/drake/continuous/drake-latest-mac.tar.gz
+curl -LsSO -m 60 --retry 4 --retry-delay 0 https://drake-packages.csail.mit.edu/drake/continuous/drake-latest-mac.tar.gz
 trap 'brew cleanup && rm -rf /opt/drake-latest-mac.tar.gz "$(brew --cache)"' EXIT
 tar -xf drake-latest-mac.tar.gz
 popd
