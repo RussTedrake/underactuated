@@ -5,6 +5,8 @@ Underactuated Robotics
 
 <http://underactuated.mit.edu/>
 
+![CI](https://github.com/RussTedrake/underactuated/workflows/CI/badge.svg)
+
 Follow the installation instructions in 
 http://underactuated.mit.edu/underactuated.html?ch=drake
 

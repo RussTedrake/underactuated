@@ -28,8 +28,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 
 ---
-name: ci
-
+name: CI
 on:
   pull_request:
     types:
@@ -41,18 +40,47 @@ on:
       - master
   schedule:
     - cron: '0 8 * * *'
-
 jobs:
   bionic:
     name: ubuntu 18.04 bionic beaver
     runs-on: ubuntu-18.04
+    container: ubuntu:18.04
     steps:
+      - name: pre-checkout setup
+        run: |
+          export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 DEBIAN_FRONTEND=noninteractive
+          apt-get update -o APT::Acquire::Retries=4 -qq
+          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends ca-certificates gnupg
+          apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E1DD270288B4E6030699E45FA1715D88E1DF1F24
+          echo 'deb http://ppa.launchpad.net/git-core/ppa/ubuntu bionic main' > /etc/apt/sources.list.d/git.list
+          apt-get update -o APT::Acquire::Retries=4 -qq
+          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends git
+          rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*
+        shell: bash
       - name: checkout
         uses: actions/checkout@v2
-
+      - name: submodule checkout
+        run:  ./scripts/workflows/ci/bionic/submodule_checkout
+        shell: bash
+      - name: post-checkout setup
+        run: ./scripts/workflows/ci/bionic/setup
+        shell: bash
+      - name: test
+        run: ./scripts/workflows/ci/bionic/test
+        shell: bash
   catalina:
     name: macos catalina 10.15
     runs-on: macos-latest
     steps:
       - name: checkout
         uses: actions/checkout@v2
+      - name: submodule checkout
+        run:  ./scripts/workflows/ci/catalina/submodule_checkout
+        shell: zsh -efuo pipefail {0}
+      - name: setup
+        run: ./scripts/workflows/ci/catalina/setup
+        shell: zsh -efuo pipefail {0}
+      - name: test
+        run: ./scripts/workflows/ci/catalina/test
+        shell: zsh -efuo pipefail {0}
+...
