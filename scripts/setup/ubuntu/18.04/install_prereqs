@@ -65,7 +65,6 @@ ffmpeg
 pycodestyle
 pydocstyle
 python3
-tidy-html5
 yapf3
 wget
 EOF

@@ -4,6 +4,7 @@
 tap "bazelbuild/tap"
 
 brew "bazelbuild/tap/bazel"
+brew "buildifier"
 brew "cmake"
 brew "ffmpeg"
 brew "python"
