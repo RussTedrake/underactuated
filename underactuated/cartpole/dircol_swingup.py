@@ -3,9 +3,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from pydrake.all import (DiagramBuilder, DirectCollocation, MultibodyPlant,
-                         MultibodyPositionToGeometryPose,
-                         Parser, PiecewisePolynomial,
-                         PlanarSceneGraphVisualizer,
+                         MultibodyPositionToGeometryPose, Parser,
+                         PiecewisePolynomial, PlanarSceneGraphVisualizer,
                          SceneGraph, Simulator, Solve, TrajectorySource)
 from underactuated import FindResource
 
@@ -18,7 +17,10 @@ plant.Finalize()
 
 context = plant.CreateDefaultContext()
 dircol = DirectCollocation(
-    plant, context, num_time_samples=21, minimum_timestep=0.1,
+    plant,
+    context,
+    num_time_samples=21,
+    minimum_timestep=0.1,
     maximum_timestep=0.4,
     input_port_index=plant.get_actuation_input_port().get_index())
 
@@ -31,21 +33,18 @@ dircol.AddBoundingBoxConstraint(initial_state, initial_state,
 # dircol.AddLinearConstraint(dircol.initial_state() == initial_state)
 
 final_state = (0., math.pi, 0., 0.)
-dircol.AddBoundingBoxConstraint(final_state, final_state,
-                                dircol.final_state())
+dircol.AddBoundingBoxConstraint(final_state, final_state, dircol.final_state())
 # dircol.AddLinearConstraint(dircol.final_state() == final_state)
 
 R = 10  # Cost on input "effort".
 u = dircol.input()
-dircol.AddRunningCost(R*u[0]**2)
+dircol.AddRunningCost(R * u[0]**2)
 
 # Add a final cost equal to the total duration.
 dircol.AddFinalCost(dircol.time())
 
-initial_x_trajectory = \
-    PiecewisePolynomial.FirstOrderHold([0., 4.],
-                                       np.column_stack((initial_state,
-                                                        final_state)))
+initial_x_trajectory = PiecewisePolynomial.FirstOrderHold(
+    [0., 4.], np.column_stack((initial_state, final_state)))  # yapf: disable
 dircol.SetInitialTrajectory(PiecewisePolynomial(), initial_x_trajectory)
 
 result = Solve(dircol)
@@ -66,8 +65,11 @@ def animate(plant, x_trajectory):
     builder.Connect(pos_to_pose.get_output_port(),
                     scene_graph.get_source_pose_port(plant.get_source_id()))
 
-    visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(
-        scene_graph, xlim=[-2, 2], ylim=[-1.25, 2], ax=ax[0]))
+    visualizer = builder.AddSystem(
+        PlanarSceneGraphVisualizer(scene_graph,
+                                   xlim=[-2, 2],
+                                   ylim=[-1.25, 2],
+                                   ax=ax[0]))
     builder.Connect(scene_graph.get_pose_bundle_output_port(),
                     visualizer.get_input_port(0))
 
@@ -81,8 +83,8 @@ u_lookup = np.vectorize(u_trajectory.value)
 u_values = u_lookup(times)
 
 ax[1].plot(times, u_values)
-ax[1].set_xlabel('time (seconds)')
-ax[1].set_ylabel('force (Newtons)')
+ax[1].set_xlabel("time (seconds)")
+ax[1].set_ylabel("force (Newtons)")
 
 x_trajectory = dircol.ReconstructStateTrajectory(result)
 animate(plant, x_trajectory)

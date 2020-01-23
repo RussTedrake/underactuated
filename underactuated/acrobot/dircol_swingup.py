@@ -2,21 +2,20 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 
-from pydrake.all import (
-    DirectCollocation, DiagramBuilder, PiecewisePolynomial,
-    PlanarSceneGraphVisualizer, SceneGraph, Simulator, Solve,
-    TrajectorySource
-)
-from pydrake.examples.acrobot import (
-    AcrobotGeometry, AcrobotPlant
-)
+from pydrake.all import (DirectCollocation, DiagramBuilder, PiecewisePolynomial,
+                         PlanarSceneGraphVisualizer, SceneGraph, Simulator,
+                         Solve, TrajectorySource)
+from pydrake.examples.acrobot import AcrobotGeometry, AcrobotPlant
 from underactuated import FindResource
 
 plant = AcrobotPlant()
 context = plant.CreateDefaultContext()
 
-dircol = DirectCollocation(plant, context, num_time_samples=21,
-                           minimum_timestep=0.05, maximum_timestep=0.2)
+dircol = DirectCollocation(plant,
+                           context,
+                           num_time_samples=21,
+                           minimum_timestep=0.05,
+                           maximum_timestep=0.2)
 
 dircol.AddEqualTimeIntervalsConstraints()
 
@@ -33,37 +32,32 @@ dircol.AddBoundingBoxConstraint(initial_state, initial_state,
 # dircol.AddLinearConstraint(dircol.initial_state() == initial_state)
 
 final_state = (math.pi, 0., 0., 0.)
-dircol.AddBoundingBoxConstraint(final_state, final_state,
-                                dircol.final_state())
+dircol.AddBoundingBoxConstraint(final_state, final_state, dircol.final_state())
 # dircol.AddLinearConstraint(dircol.final_state() == final_state)
 
 R = 10  # Cost on input "effort".
-dircol.AddRunningCost(R*u[0]**2)
+dircol.AddRunningCost(R * u[0]**2)
 
 # Add a final cost equal to the total duration.
 dircol.AddFinalCost(dircol.time())
 
-initial_x_trajectory = \
-    PiecewisePolynomial.FirstOrderHold([0., 4.],
-                                       np.column_stack((initial_state,
-                                                        final_state)))
+initial_x_trajectory = PiecewisePolynomial.FirstOrderHold(
+    [0., 4.], np.column_stack((initial_state, final_state)))  # yapf: disable
 dircol.SetInitialTrajectory(PiecewisePolynomial(), initial_x_trajectory)
 
 result = Solve(dircol)
 print(result.get_solver_id().name())
 print(result.get_solution_result())
-assert(result.is_success())
+assert (result.is_success())
 
 x_trajectory = dircol.ReconstructStateTrajectory(result)
 
 builder = DiagramBuilder()
 source = builder.AddSystem(TrajectorySource(x_trajectory))
 scene_graph = builder.AddSystem(SceneGraph())
-AcrobotGeometry.AddToBuilder(builder, source.get_output_port(0),
-                             scene_graph)
-visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(scene_graph,
-                                                          xlim=[-4., 4.],
-                                                          ylim=[-4., 4.]))
+AcrobotGeometry.AddToBuilder(builder, source.get_output_port(0), scene_graph)
+visualizer = builder.AddSystem(
+    PlanarSceneGraphVisualizer(scene_graph, xlim=[-4., 4.], ylim=[-4., 4.]))
 builder.Connect(scene_graph.get_pose_bundle_output_port(),
                 visualizer.get_input_port(0))
 simulator = Simulator(builder.Build())
@@ -76,7 +70,7 @@ u_values = u_lookup(times)
 
 plt.figure()
 plt.plot(times, u_values)
-plt.xlabel('time (seconds)')
-plt.ylabel('force (Newtons)')
+plt.xlabel("time (seconds)")
+plt.ylabel("force (Newtons)")
 
 plt.show()

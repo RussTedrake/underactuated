@@ -19,7 +19,6 @@ else:
     # a = randn;  ab = 2*rand - 1;  b=ab/a;
     # A{i} = [-1 a; b -1];
 
-
 # Create the optimization problem.
 prog = MathematicalProgram()
 
@@ -27,13 +26,14 @@ prog = MathematicalProgram()
 # variables.
 num_states = A[0].shape[0]
 P = prog.NewSymmetricContinuousVariables(num_states, "P")
-prog.AddPositiveSemidefiniteConstraint(P - .01*np.identity(num_states))
+prog.AddPositiveSemidefiniteConstraint(P - .01 * np.identity(num_states))
 
 # Add the common Lyapunov conditions.
 for i in range(len(A)):
-    prog.AddPositiveSemidefiniteConstraint(-A[i].transpose().dot(P)
-                                           - P.dot(A[i])
-                                           - .01*np.identity(num_states))
+    # yapf: disable
+    prog.AddPositiveSemidefiniteConstraint(
+        -A[i].transpose().dot(P) - P.dot(A[i]) - .01 * np.identity(num_states))
+    # yapf: enable
 
 # Add an objective.
 prog.AddLinearCost(np.trace(P))
@@ -48,7 +48,7 @@ if result.is_success():
         print("eig(Pdot" + str(i) + ") = " +
               str(np.linalg.eig(A[i].transpose().dot(P) + P.dot(A[i]))[0]))
 else:
-    print('Could not find a common Lyapunov function.')
-    print('This is expected to occur with some probability:  not all')
-    print('random sets of stable matrices will have a common Lyapunov')
-    print('function.')
+    print("Could not find a common Lyapunov function.")
+    print("This is expected to occur with some probability:  not all")
+    print("random sets of stable matrices will have a common Lyapunov")
+    print("function.")

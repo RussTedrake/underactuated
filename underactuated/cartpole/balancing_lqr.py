@@ -29,7 +29,10 @@ def BalancingLQR(plant):
     # MultibodyPlant has many (optional) input ports, so we must pass the
     # input_port_index to LQR.
     return LinearQuadraticRegulator(
-        plant, context, Q, R,
+        plant,
+        context,
+        Q,
+        R,
         input_port_index=plant.get_actuation_input_port().get_index())
 
 
@@ -42,14 +45,14 @@ if __name__ == "__main__":
     plant.Finalize()
 
     controller = builder.AddSystem(BalancingLQR(plant))
-    builder.Connect(plant.get_state_output_port(),
-                    controller.get_input_port(0))
+    builder.Connect(plant.get_state_output_port(), controller.get_input_port(0))
     builder.Connect(controller.get_output_port(0),
                     plant.get_actuation_input_port())
 
-    visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(scene_graph,
-                                                              xlim=[-2.5, 2.5],
-                                                              ylim=[-1, 2.5]))
+    visualizer = builder.AddSystem(
+        PlanarSceneGraphVisualizer(scene_graph,
+                                   xlim=[-2.5, 2.5],
+                                   ylim=[-1, 2.5]))
     builder.Connect(scene_graph.get_pose_bundle_output_port(),
                     visualizer.get_input_port(0))
 
@@ -60,11 +63,13 @@ if __name__ == "__main__":
     context = simulator.get_mutable_context()
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-N", "--trials",
+    parser.add_argument("-N",
+                        "--trials",
                         type=int,
                         help="Number of trials to run.",
                         default=5)
-    parser.add_argument("-T", "--duration",
+    parser.add_argument("-T",
+                        "--duration",
                         type=float,
                         help="Duration to run each sim.",
                         default=10.0)
@@ -72,6 +77,6 @@ if __name__ == "__main__":
 
     for i in range(args.trials):
         context.SetTime(0.)
-        context.SetContinuousState(UprightState() + 0.1*np.random.randn(4,))
+        context.SetContinuousState(UprightState() + 0.1 * np.random.randn(4,))
         simulator.Initialize()
         simulator.AdvanceTo(args.duration)

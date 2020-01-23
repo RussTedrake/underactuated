@@ -1,4 +1,3 @@
-
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -7,8 +6,7 @@ from pydrake.systems.framework import DiagramBuilder
 from pydrake.systems.primitives import ConstantVectorSource, LogOutput
 
 from underactuated.spring_loaded_inverted_pendulum import (
-  SLIPState, SLIPVisualizer, SpringLoadedInvertedPendulum
-)
+    SLIPState, SLIPVisualizer, SpringLoadedInvertedPendulum)
 
 builder = DiagramBuilder()
 plant = builder.AddSystem(SpringLoadedInvertedPendulum())
@@ -48,12 +46,12 @@ t = log.sample_times()
 x = log.data()
 fig, ax = plt.subplots(9)
 ax[0].plot(x[0, :], x[1, :])
-ax[0].set_xlabel('x')
-ax[0].set_ylabel('z')
-ax[0].axis('equal')
+ax[0].set_xlabel("x")
+ax[0].set_ylabel("z")
+ax[0].axis("equal")
 for i in range(8):
-    ax[i+1].plot(t, x[i, :])
-    ax[i+1].set_xlabel('t')
-    ax[i+1].set_ylabel(s.get_fields()[i])
+    ax[i + 1].plot(t, x[i, :])
+    ax[i + 1].set_xlabel("t")
+    ax[i + 1].set_ylabel(s.get_fields()[i])
 
 plt.show()

@@ -22,9 +22,9 @@ def main():
     os.chdir(dirname)
     with open(path) as fout:
         nb = nbformat.read(fout, as_version=4)
-    ep = ExecutePreprocessor(
-        timeout=60,
-        kernel_name="python{}".format(sys.version_info.major))
+    ep = ExecutePreprocessor(timeout=60,
+                             kernel_name="python{}".format(
+                                 sys.version_info.major))
     # Any errors encountered will raise a `CellExecutionError`.
     ep.preprocess(nb, {"metadata": {"path": os.getcwd()}})
 

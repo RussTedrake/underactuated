@@ -1,11 +1,9 @@
 import argparse
 import matplotlib.pyplot as plt
 
-from pydrake.all import (ConstantVectorSource,
-                         DiagramBuilder,
-                         SignalLogger,
+from pydrake.all import (ConstantVectorSource, DiagramBuilder, SignalLogger,
                          Simulator)
-from pydrake.examples.compass_gait import (CompassGait)
+from pydrake.examples.compass_gait import CompassGait
 
 # TODO(russt): combine this with simulate.py if the set_publish_every_timestep
 # semantics get cleaned up (drake #7845).
@@ -14,7 +12,8 @@ builder = DiagramBuilder()
 compass_gait = builder.AddSystem(CompassGait())
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-T", "--duration",
+parser.add_argument("-T",
+                    "--duration",
                     type=float,
                     help="Duration to run sim.",
                     default=10.0)
@@ -37,7 +36,7 @@ simulator.AdvanceTo(args.duration)
 
 plt.figure()
 plt.plot(logger.data()[4, :], logger.data()[11, :])
-plt.xlabel('left leg angle')
-plt.ylabel('left leg angular velocity')
+plt.xlabel("left leg angle")
+plt.ylabel("left leg angular velocity")
 
 plt.show()

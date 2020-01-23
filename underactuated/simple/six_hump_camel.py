@@ -10,26 +10,25 @@ y = v[1]
 
 # This is the famous "six-hump camel back function".  It has six local
 # minima, two of them being global minima.
-p = 4*x**2+x*y - 4*y**2 - 2.1*x**4 + 4*y**4+x**6/3
+p = 4 * x**2 + x * y - 4 * y**2 - 2.1 * x**4 + 4 * y**4 + x**6 / 3
 
 # Find the minimum value by adding a sums of squares constraint, via
 #   for all x, p(x) >= pmin
 # which we write as
 #   p(x) - pmin is sos.
 pmin = prog.NewContinuousVariables(1, "pmin")[0]
-prog.AddSosConstraint(p-pmin)
+prog.AddSosConstraint(p - pmin)
 
 # Maximize pmin.
 prog.AddCost(-pmin)
 
 result = Solve(prog)
-assert(result.is_success())
+assert result.is_success()
 print("Minimum value (lower bound): " + str(result.GetSolution(pmin)))
-
 
 # Now, let's plot it.
 fig = plt.figure(figsize=(10, 5))
-ax0 = fig.add_subplot(121, projection='3d')
+ax0 = fig.add_subplot(121, projection="3d")
 ax1 = fig.add_subplot(122)
 xs = np.linspace(-2.2, 2.2, 51)
 ys = np.linspace(-1.2, 1.2, 51)

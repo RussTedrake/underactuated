@@ -19,14 +19,14 @@ Vdot = Jacobian([V], x).dot(dynamics(x))[0]
 lambda_ = prog.NewContinuousVariables(1, "lambda")[0]
 prog.AddConstraint(lambda_ >= 0)
 
-prog.AddSosConstraint((V-rho) * x.dot(x) - lambda_ * Vdot)
+prog.AddSosConstraint((V - rho) * x.dot(x) - lambda_ * Vdot)
 prog.AddLinearCost(-rho)
 
 result = Solve(prog)
 
-assert(result.is_success())
+assert result.is_success()
 
 print("Verified that " + str(V) + " < " + str(result.GetSolution(rho)) +
       " is in the region of attraction.")
 
-assert(math.fabs(result.GetSolution(rho) - 1) < 1e-5)
+assert math.fabs(result.GetSolution(rho) - 1) < 1e-5

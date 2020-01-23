@@ -43,25 +43,22 @@ if __name__ == "__main__":
     builder = DiagramBuilder()
 
     acrobot = builder.AddSystem(AcrobotPlant())
-    saturation = builder.AddSystem(Saturation(min_value=[-10],
-                                              max_value=[10]))
+    saturation = builder.AddSystem(Saturation(min_value=[-10], max_value=[10]))
     builder.Connect(saturation.get_output_port(0), acrobot.get_input_port(0))
     wrapangles = WrapToSystem(4)
-    wrapangles.set_interval(0, 0, 2.*math.pi)
+    wrapangles.set_interval(0, 0, 2. * math.pi)
     wrapangles.set_interval(1, -math.pi, math.pi)
     wrapto = builder.AddSystem(wrapangles)
     builder.Connect(acrobot.get_output_port(0), wrapto.get_input_port(0))
     controller = builder.AddSystem(BalancingLQR())
     builder.Connect(wrapto.get_output_port(0), controller.get_input_port(0))
-    builder.Connect(controller.get_output_port(0),
-                    saturation.get_input_port(0))
+    builder.Connect(controller.get_output_port(0), saturation.get_input_port(0))
 
     scene_graph = builder.AddSystem(SceneGraph())
     AcrobotGeometry.AddToBuilder(builder, acrobot.get_output_port(0),
                                  scene_graph)
-    visualizer = builder.AddSystem(PlanarSceneGraphVisualizer(scene_graph,
-                                                              xlim=[-4., 4.],
-                                                              ylim=[-4., 4.]))
+    visualizer = builder.AddSystem(
+        PlanarSceneGraphVisualizer(scene_graph, xlim=[-4., 4.], ylim=[-4., 4.]))
     builder.Connect(scene_graph.get_pose_bundle_output_port(),
                     visualizer.get_input_port(0))
 
@@ -72,11 +69,13 @@ if __name__ == "__main__":
     context = simulator.get_mutable_context()
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-N", "--trials",
+    parser.add_argument("-N",
+                        "--trials",
                         type=int,
                         help="Number of trials to run.",
                         default=5)
-    parser.add_argument("-T", "--duration",
+    parser.add_argument("-T",
+                        "--duration",
                         type=float,
                         help="Duration to run each sim.",
                         default=4.0)
@@ -85,6 +84,6 @@ if __name__ == "__main__":
     for i in range(args.trials):
         context.SetTime(0.)
         context.SetContinuousState(UprightState().CopyToVector() +
-                                   0.05*np.random.randn(4,))
+                                   0.05 * np.random.randn(4,))
         simulator.Initialize()
         simulator.AdvanceTo(args.duration)

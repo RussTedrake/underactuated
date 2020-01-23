@@ -14,11 +14,9 @@ trim_trailing_whitespace = true
 
 [*.bzl,BUILD.bazel,WORKSPACE]
 indent_size = 4
-max_line_length = 79
 
 [*.md]
 trim_trailing_whitespace = false
 
 [*.py]
 indent_size = 4
-max_line_length = 79

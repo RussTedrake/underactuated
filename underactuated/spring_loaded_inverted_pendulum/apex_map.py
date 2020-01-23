@@ -1,11 +1,9 @@
-
 import numpy as np
 import matplotlib.pyplot as plt
 
 from pydrake.systems.analysis import Simulator
 from underactuated.spring_loaded_inverted_pendulum import (
-  SLIPState, SpringLoadedInvertedPendulum
-)
+    SLIPState, SpringLoadedInvertedPendulum)
 
 plant = SpringLoadedInvertedPendulum()
 
@@ -23,8 +21,8 @@ context = simulator.get_mutable_context()
 context.FixInputPort(0, [touchdown_angle])
 context.SetAccuracy(1e-5)
 
-zs = np.linspace(np.cos(touchdown_angle)+0.001, 0.95, 25)
-zns = 0*zs
+zs = np.linspace(np.cos(touchdown_angle) + 0.001, 0.95, 25)
+zns = 0 * zs
 for i in range(len(zs)):
     s.z = zs[i]
     s.xdot = plant.apex_velocity_from_dimensionless_system_energy(Etilde, s.z)
@@ -42,10 +40,10 @@ for i in range(len(zs)):
 fix, ax = plt.subplots()
 ax.plot(zs, zns)
 ax.plot(zs, zs)
-ax.axis('equal')
+ax.axis("equal")
 ax.set_xlim([zs[0], zs[-1]])
 ax.set_ylim([zs[0], zs[-1]])
-ax.set_xlabel('apex height z[n]')
-ax.set_ylabel('apex height z[n+1]')
+ax.set_xlabel("apex height z[n]")
+ax.set_ylabel("apex height z[n+1]")
 
 plt.show()

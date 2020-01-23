@@ -1,11 +1,10 @@
-# -*- coding: utf8 -*-
-
 from matplotlib.widgets import Slider
 
 from pydrake.systems.framework import VectorSystem
 
 
 class SliderSystem(VectorSystem):
+
     def __init__(self, ax, title, min, max):
         # 0 inputs, 1 output.
         VectorSystem.__init__(self, 0, 1)

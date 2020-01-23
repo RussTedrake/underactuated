@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-from pydrake.all import (DiagramBuilder, SignalLogger, Simulator)
+from pydrake.all import DiagramBuilder, SignalLogger, Simulator
 from discrete_time_system import *
 
 # Create a simple block diagram containing our system.
@@ -21,6 +21,6 @@ simulator.AdvanceTo(10)
 
 # Plot the results.
 plt.stem(logger.sample_times(), logger.data().transpose())
-plt.xlabel('t')
-plt.ylabel('x(t)')
+plt.xlabel("t")
+plt.ylabel("x(t)")
 plt.show()

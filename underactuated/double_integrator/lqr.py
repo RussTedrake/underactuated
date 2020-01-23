@@ -8,5 +8,5 @@ Q = np.eye(2)
 R = np.eye(1)
 
 (K, S) = LinearQuadraticRegulator(A, B, Q, R)
-print('K = ' + str(K))
-print('S = ' + str(S))
+print("K = " + str(K))
+print("S = " + str(S))

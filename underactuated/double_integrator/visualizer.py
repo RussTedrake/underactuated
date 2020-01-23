@@ -2,10 +2,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from pydrake.systems.pyplot_visualizer import PyPlotVisualizer
-from pydrake.systems.framework import (Context, PortDataType)
+from pydrake.systems.framework import Context, PortDataType
 
-
-_MIT_RED = '#A31F34'
+_MIT_RED = "#A31F34"
 
 
 class Brick(object):
@@ -15,8 +14,10 @@ class Brick(object):
 
     def __init__(self):
         self.patch = plt.Rectangle((0.0, 0.0),
-                                   self.WIDTH, self.HEIGHT,
-                                   fc=_MIT_RED, ec='k')
+                                   self.WIDTH,
+                                   self.HEIGHT,
+                                   fc=_MIT_RED,
+                                   ec="k")
         self.set_state(0.)
 
     def set_state(self, x):
@@ -42,17 +43,17 @@ class DoubleIntegratorVisualizer(PyPlotVisualizer):
 
         self.ax.set_xlim(*self.XLIM)
         self.ax.set_ylim(*self.YLIM)
-        self.ax.set_aspect('auto')
+        self.ax.set_aspect("auto")
 
         self._make_background()
         self.brick = Brick.add_to_axes(self.ax)
 
     def _make_background(self):
         # x-axis
-        plt.plot(self.XLIM, np.zeros_like(self.XLIM), 'k')
+        plt.plot(self.XLIM, np.zeros_like(self.XLIM), "k")
         # tick mark centered at the origin
         tick_pos = -0.5 * np.asarray(self.TICK_DIMS)
-        self.ax.add_patch(plt.Rectangle(tick_pos, *self.TICK_DIMS, fc='k'))
+        self.ax.add_patch(plt.Rectangle(tick_pos, *self.TICK_DIMS, fc="k"))
 
     def draw(self, context):
         try:

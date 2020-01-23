@@ -1,27 +1,19 @@
 import array
 import numpy as np
 import matplotlib.pyplot as plt
-from pydrake.all import (
-    AddRandomInputs,
-    BasicVector,
-    DiagramBuilder,
-    LeafSystem,
-    PortDataType,
-    PyPlotVisualizer,
-    RandomDistribution,
-    Simulator
-)
+from pydrake.all import (AddRandomInputs, BasicVector, DiagramBuilder,
+                         LeafSystem, PortDataType, PyPlotVisualizer,
+                         RandomDistribution, Simulator)
 
 
 class VanDerPolParticles(LeafSystem):
+
     def __init__(self, num_particles, mu=1.0):
         LeafSystem.__init__(self)
-        self.DeclareInputPort("noise",
-                              PortDataType.kVectorValued,
-                              num_particles,
-                              RandomDistribution.kGaussian)
+        self.DeclareInputPort("noise", PortDataType.kVectorValued,
+                              num_particles, RandomDistribution.kGaussian)
         self.DeclareContinuousState(num_particles, num_particles, 0)
-        self.DeclareVectorOutputPort(BasicVector(2*num_particles),
+        self.DeclareVectorOutputPort(BasicVector(2 * num_particles),
                                      self.CopyStateOut)
         self.num_particles = num_particles
         self.mu = mu
@@ -36,8 +28,8 @@ class VanDerPolParticles(LeafSystem):
         qdot = x[self.num_particles:]
         w = self.EvalVectorInput(context, 0).CopyToVector()
         qddot = -self.mu * (q * q - 1) * qdot - q + .5 * w
-        derivatives.get_mutable_vector().SetFromVector(np.concatenate((qdot,
-                                                                       qddot)))
+        derivatives.get_mutable_vector().SetFromVector(
+            np.concatenate((qdot, qddot)))
 
     # y(t) = x(t)
     def CopyStateOut(self, context, output):
@@ -48,20 +40,21 @@ class VanDerPolParticles(LeafSystem):
 
 # Note: This is a candidate for moving to a more central location.
 class Particle2DVisualizer(PyPlotVisualizer):
+
     def __init__(self, num_particles, xlim, ylim, draw_timestep):
         PyPlotVisualizer.__init__(self, draw_timestep)
-        self.DeclareInputPort(PortDataType.kVectorValued, 2*num_particles)
+        self.DeclareInputPort(PortDataType.kVectorValued, 2 * num_particles)
         self.num_particles = num_particles
         self.ax.set_xlim(xlim)
         self.ax.set_ylim(ylim)
-        zero = array.array('d', (0,)*num_particles)
-        self.lines, = self.ax.plot(zero, zero, 'b.')
+        zero = array.array("d", (0,) * num_particles)
+        self.lines, = self.ax.plot(zero, zero, "b.")
 
     def draw(self, context):
         xy = self.EvalVectorInput(context, 0).CopyToVector()
         self.lines.set_xdata(xy[:self.num_particles])
         self.lines.set_ydata(xy[self.num_particles:])
-        self.ax.set_title('t = ' + str(context.get_time()))
+        self.ax.set_title("t = " + str(context.get_time()))
 
 
 builder = DiagramBuilder()
@@ -71,8 +64,8 @@ xlim = [-2.75, 2.75]
 ylim = [-3.25, 3.25]
 draw_timestep = .25
 sys = builder.AddSystem(VanDerPolParticles(num_particles))
-visualizer = builder.AddSystem(Particle2DVisualizer(num_particles, xlim,
-                                                    ylim, draw_timestep))
+visualizer = builder.AddSystem(
+    Particle2DVisualizer(num_particles, xlim, ylim, draw_timestep))
 builder.Connect(sys.get_output_port(0), visualizer.get_input_port(0))
 AddRandomInputs(.1, builder)
 

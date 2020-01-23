@@ -1,16 +1,15 @@
-
 import math
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 
-from pydrake.all import (DiagramBuilder, SignalLogger, Simulator, VectorSystem)
+from pydrake.all import DiagramBuilder, SignalLogger, Simulator, VectorSystem
 from pydrake.examples.pendulum import PendulumPlant
-from pydrake.systems.controllers import (
-    DynamicProgrammingOptions, FittedValueIteration, PeriodicBoundaryCondition)
+from pydrake.systems.controllers import (DynamicProgrammingOptions,
+                                         FittedValueIteration,
+                                         PeriodicBoundaryCondition)
 from underactuated.pendulum import PendulumVisualizer
-
 
 plant = PendulumPlant()
 simulator = Simulator(plant)
@@ -29,7 +28,7 @@ def quadratic_regulator_cost(context):
     x = context.get_continuous_state_vector().CopyToVector()
     x[0] = x[0] - math.pi
     u = plant.EvalVectorInput(context, 0).CopyToVector()
-    return 2*x.dot(x) + u.dot(u)
+    return 2 * x.dot(x) + u.dot(u)
 
 
 if (True):
@@ -45,20 +44,20 @@ qbins = np.linspace(0., 2. * math.pi, 51)
 qdotbins = np.linspace(-10., 10., 51)
 state_grid = [set(qbins), set(qdotbins)]
 options.periodic_boundary_conditions = [
-    PeriodicBoundaryCondition(0, 0., 2.*math.pi),
+    PeriodicBoundaryCondition(0, 0., 2. * math.pi),
 ]
 input_grid = [set(np.linspace(-input_limit, input_limit, 9))]
 timestep = 0.01
 
 [Q, Qdot] = np.meshgrid(qbins, qdotbins)
 fig = plt.figure()
-ax = fig.gca(projection='3d')
+ax = fig.gca(projection="3d")
 ax.set_xlabel("theta")
 ax.set_ylabel("thetadot")
 ax.set_title("Cost-to-Go")
 
 fig2 = plt.figure()
-ax2 = fig2.gca(projection='3d')
+ax2 = fig2.gca(projection="3d")
 ax2.set_xlabel("q")
 ax2.set_ylabel("qdot")
 ax2.set_title("Policy")
@@ -70,13 +69,12 @@ def draw(iteration, mesh, cost_to_go, policy):
         return
     plt.title("iteration " + str(iteration))
     J = np.reshape(cost_to_go, Q.shape)
-    surf = ax.plot_surface(Q, Qdot, J, rstride=1, cstride=1,
-                           cmap=cm.jet)
+    surf = ax.plot_surface(Q, Qdot, J, rstride=1, cstride=1, cmap=cm.jet)
 
     Pi = np.reshape(policy, Q.shape)
     surf2 = ax2.plot_surface(Q, Qdot, Pi, rstride=1, cstride=1, cmap=cm.jet)
 
-    if plt.get_backend() != u'template':
+    if plt.get_backend() != u"template":
         plt.draw_all()
         plt.pause(0.00001)
 
@@ -86,17 +84,13 @@ def draw(iteration, mesh, cost_to_go, policy):
 
 options.visualization_callback = draw
 
-policy, cost_to_go = FittedValueIteration(simulator, cost_function,
-                                          state_grid, input_grid,
-                                          timestep, options)
+policy, cost_to_go = FittedValueIteration(simulator, cost_function, state_grid,
+                                          input_grid, timestep, options)
 
 J = np.reshape(cost_to_go, Q.shape)
-surf = ax.plot_surface(Q, Qdot, J, rstride=1, cstride=1,
-                       cmap=cm.jet)
+surf = ax.plot_surface(Q, Qdot, J, rstride=1, cstride=1, cmap=cm.jet)
 Pi = np.reshape(policy.get_output_values(), Q.shape)
-surf = ax2.plot_surface(Q, Qdot, Pi, rstride=1, cstride=1,
-                        cmap=cm.jet)
-
+surf = ax2.plot_surface(Q, Qdot, Pi, rstride=1, cstride=1, cmap=cm.jet)
 
 # Animate the resulting policy.
 builder = DiagramBuilder()
@@ -106,12 +100,13 @@ pendulum = builder.AddSystem(PendulumPlant())
 # TODO(russt): add wrap-around logic to barycentric mesh
 # (so the policy has it, too)
 class WrapTheta(VectorSystem):
+
     def __init__(self):
         VectorSystem.__init__(self, 2, 2)
 
     def DoCalcVectorOutput(self, context, input, state, output):
         output[:] = input
-        twoPI = 2.*math.pi
+        twoPI = 2. * math.pi
         output[0] = output[0] - twoPI * math.floor(output[0] / twoPI)
 
 
