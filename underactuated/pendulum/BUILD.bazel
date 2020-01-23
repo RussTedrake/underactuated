@@ -34,11 +34,6 @@ load("//tools/rt/python:defs.bzl", "rt_py_library", "rt_py_test")
 
 # pendulum.sdf in this package is unused.
 
-exports_files(
-    ["pendulum.urdf"],
-    ["//underactuated/deprecated:__pkg__"],
-)
-
 rt_py_test(
     name = "dircol_swingup",
     srcs = ["dircol_swingup.py"],

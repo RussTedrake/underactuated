@@ -35,11 +35,6 @@ load("//tools/rt/python:defs.bzl", "rt_py_test")
 
 # double_pendulum.sdf in this package is unused.
 
-exports_files(
-    ["double_pendulum.urdf"],
-    ["//underactuated/deprecated:__pkg__"],
-)
-
 rt_py_test(
     name = "as_single_pendulum",
     srcs = ["as_single_pendulum.py"],

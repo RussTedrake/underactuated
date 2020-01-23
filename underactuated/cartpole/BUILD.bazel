@@ -42,20 +42,14 @@ rt_py_test(
         "--trials 1",
     ],
     data = ["cartpole.urdf"],
-    deps = [
-        "//underactuated",
-        "//underactuated/deprecated",
-    ],
+    deps = ["//underactuated"],
 )
 
 rt_py_test(
     name = "dircol_swingup",
     srcs = ["dircol_swingup.py"],
     data = ["cartpole.urdf"],
-    deps = [
-        "//underactuated",
-        "//underactuated/deprecated",
-    ],
+    deps = ["//underactuated"],
 )
 
 rt_py_test(
@@ -63,8 +57,5 @@ rt_py_test(
     srcs = ["force_slider_demo.py"],
     args = ["--duration 0.1"],
     data = ["cartpole.urdf"],
-    deps = [
-        "//underactuated",
-        "//underactuated/deprecated",
-    ],
+    deps = ["//underactuated"],
 )

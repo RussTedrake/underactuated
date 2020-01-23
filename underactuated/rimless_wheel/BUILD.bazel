@@ -43,9 +43,5 @@ rt_py_test(
     name = "simulate",
     srcs = ["simulate.py"],
     args = ["--duration 0.1"],
-    data = ["RimlessWheel.urdf"],
-    deps = [
-        "//underactuated",
-        "//underactuated/deprecated",
-    ],
+    deps = ["//underactuated"],
 )
