@@ -808,6 +808,27 @@ are available on YouTube</a>.</p>
 
     </exercise>
 
+    <exercise><h1>Trajectory Tracking in State Space</h1>
+
+      Take a robot whose dynamics is governed by equation \ref{eq:f1_plus_f2}, and assume it to be fully actuated in all states $\bx = [\bq^T, \dot\bq^T]^T$ at all times $t$.
+
+      <ol type="a">
+
+        <li> For any twice-differentiable desired trajectory $\bq_{\text{des}}(t)$, is it always possible to find a control signal $\bu(t)$ such that $\bq(t) = \bq_{\text{des}}(t)$ for all $t \geq 0$, provided that $\bq(0) = \bq_{\text{des}}(0)$ and $\dot \bq(0) = \dot \bq_{\text{des}}(0)$?</li>
+
+        <li>Now consider the simplest fully-actuated robot: the double integrator. The dynamics of this system reads $m \ddot q = u$, and you can think of it as a cart of mass $m$ moving on a straight rail, controlled by a force $u$.  The figure below depicts its phase portrait for $u=0$.  Is it possible to find a control signal $u(t)$ that drives the double integrator from the initial state $\bx(0) = [2, 0.5]^T$ to the origin along a straight line (blue trajectory)? Does the answer change if we set $\bx(0)$ to be $[2, -0.5]^T$ (red trajectory)?
+
+          <figure>
+            <img width="60%" data-src="figures/exercises/trajectory_tracking_state_space.svg"/>
+            <figcaption>Phase portrait of the double integrator.</figcaption>
+          </figure>
+
+        <li> The dynamics \ref{eq:f1_plus_f2} are $n=\dim[\bq]$ <i>second-order</i> differential equations.  However, it is always possible (and we'll frequently do it) to describe these equations in terms of $2n$ <i>first-order</i> differential equations $\dot \bx = f(\bx,t)$.  To this end, we simply define $$f(\bx,t) = \begin{bmatrix} \dot\bq \\ {\bf f}_1(\bq,\dot\bq,t) + {\bf f}_2(\bq,\dot\bq,t)\bu \end{bmatrix}.$$  For any twice-differentiable trajectory $\bx_{\text{des}}(t)$, is it always possible to find a control $\bu(t)$ such that $\bx(t) = \bx_{\text{des}}(t)$ for all $t \geq 0$, provided that $\bx(0) = \bx_{\text{des}}(0)$?</li>
+
+      </ol>
+
+    </exercise>
+
     <exercise><h1>Task-Space Control of the Double Pendulum</h1>
 
       In <a href="#robot_manipulators">the example above</a>, we have seen that the double pendulum with one motor per joint is a fully-actuated system.  Here we consider a variation of it: instead of controlling the robot with the actuators at the shoulder and the elbow, we directly apply a force on the mass $m_2$ (tip of the second link).  Let $\bu = [u_1, u_2]^T$ be this force, with $u_1$ horizontal component (positive to the right) and $u_2$ vertical component (positive upwards).  This modification leaves the equations of motion derived in the <a href="underactuated.html?chapter=multibody#manipulator_equation_double_pendulum">appendix example</a> almost unchanged; the only difference is that the matrix $\bB$ is now a function of $\bq$.  Namely, using the notation from the appendix, $$\bB (\bq) = \begin{bmatrix} l_1 c_1 + l_2 c_{1+2} & l_1 s_1 + l_2 s_{1+2} \\ l_2  c_{1+2} & l_2 s_{1+2} \end{bmatrix}.$$  Is the double pendulum with the new control input still fully-actuated in all states? If not, identify the states in which it is underactuated.
@@ -816,30 +837,13 @@ are available on YouTube</a>.</p>
 
     <exercise><h1>Underactuation of the Planar Quadrotor</h1>
 
-      Later in the course we will study the dynamics of a quadrotor quite in depth, for the moment just take the time to get familiar with its equations of motion from the <a href="underactuated.html?chapter=acrobot#planar_quadrotor">planar quadrotor section</a>.  The quadrotor is constrained to move in the vertical plane, with the gravity pointing downwards.  The configuration vector $\bq = [x, y, \theta]^T$ collects the position of the center of mass and the pitch angle.  The control input is the thrust $\bu = [u_1, u_2]^T$ produced by the two rotors.  The input $\bu$ can assume both signs and has no bounds.
+      Later in the course we will study the dynamics of a quadrotor quite in depth, for the moment just look at the structure of the resulting equations of motion from the <a href="underactuated.html?chapter=acrobot#planar_quadrotor">planar quadrotor section</a>.  The quadrotor is constrained to move in the vertical plane, with the gravity pointing downwards.  The configuration vector $\bq = [x, y, \theta]^T$ collects the position of the center of mass and the pitch angle.  The control input is the thrust $\bu = [u_1, u_2]^T$ produced by the two rotors.  The input $\bu$ can assume both signs and has no bounds.
 
       <ol type="a">
 
         <li> Identify the set of states $\bx = [\bq^T, \dot \bq^T]^T$ in which the system is underactuated.</li>
 
         <li> For <i>all</i> the states in which the system is underactuated, identify an acceleration $\ddot \bq (\bq, \dot \bq)$ that cannot be instantaneously achieved.  Provide a rigorous proof of your claim by using the equations of motion: plug the candidate accelerations in the dynamics, and try to come up with contradictions such as $mg=0$.</li>
-
-      </ol>
-
-    </exercise>
-
-    <exercise><h1>Trajectory Tracking for Fully-Actuated Systems</h1>
-
-      Take a robot whose dynamics are given by the manipulator equations $${\bf M}(\bq)\ddot\bq +
-      \bC(\bq,\dot\bq)\dot\bq = \btau_g(\bq) + {\bf B}(\bq)\bu.$$  The robot starts in a given initial configuration $\bq(0) = \bq_0$, with a given initial velocity $\dot \bq(0) = \dot \bq_0$.  Suppose the system is fully actuated in all states, i.e., $\textrm{rank} [{\bf B}(\bq)] = \dim[\bq]$ for all $\bq$.  Write, with a brief explanation, whether each of the following statements is true for any twice-differentiable desired trajectory $\bq_{\text{des}} (t)$.
-
-      <ol type="a">
-
-        <li>It is possible to choose $\bu(t)$ so that $\bq(t) = \bq_{\text{des}}(t)$ for all $t \geq 0$.</li>
-
-        <li>It is possible to choose $\bu(t)$ so that $\dot \bq(t) = \dot \bq_{\text{des}}(t)$ for all $t \geq 0$.</li>
-
-        <li>It is possible to choose $\bu(t)$ so that $\ddot \bq(t) = \ddot \bq_{\text{des}}(t)$ for all $t \geq 0$.</li>
 
       </ol>
 
@@ -1346,7 +1350,8 @@ complete trajectory.</p>
 
       <ol type="a">
 
-        <li> Sketch the graph of the function $f(x)$, and identify all the equilibrium points.</li>
+        <li> Sketch the graph of the function $f(x)$, and identify all the equilibrium points.  (Feel free
+to plot this with a tool of your choice to check your work.)</li>
 
         <li> For each equilibrium point, determine whether it is stable or unstable.  For each one of the stable equilibria, identify the basin of attraction.</li>
 
@@ -1354,7 +1359,7 @@ complete trajectory.</p>
 
       </ol>
 
-      (A note on the terminology: when there is no need to distinguish between different notions of stability, we simply classify equilibrium points as "stable" or "unstable.")
+      A note on the terminology: here, by "stable" ("unstable") we mean an equilibrium that is stable (unstable) independently of the definition of stability we employ (i.s.L., asymptotic, or exponential).
 
     </exercise>
 
@@ -1376,13 +1381,13 @@ complete trajectory.</p>
 
     <exercise><h1>Pendulum with Vibrating Base</h1>
 
-      Consider an actuated pendulum whose base (pivot of the rod) is forced to oscillate horizontally according to the harmonic law $h \sin(\omega t)$, where $h$ denotes the amplitude of the oscillation and $\omega$ the frequency.  The equation of motion for this system is $$m l^2 \ddot \theta + m g l \sin \theta = m h l \omega^2 \sin (\omega t) + u.$$  (If this equation seems obscure to you, try to derive it using the <a href="underactuated.html?chapter=multibody">Lagrangian approach</a>; but be careful, the kinetic energy $T(t, \theta, \dot \theta)$ of this system depends explicitly on time.)  We would like to design a control law $u (\theta, \dot \theta)$ that makes the pendulum spin at constant velocity $\dot \theta = 1$.  You can do this in two steps:
+      Consider an actuated pendulum whose base (pivot of the rod) is forced to oscillate horizontally according to the harmonic law $h \sin(\omega t)$, where $h$ denotes the amplitude of the oscillation and $\omega$ the frequency.  The equation of motion for this system is $$m l^2 \ddot \theta + m g l \sin \theta = m h l \omega^2 \sin (\omega t) + u.$$  (If this equation seems obscure to you, try to derive it using the <a href="underactuated.html?chapter=multibody">Lagrangian approach</a>; but be careful, the kinetic energy $T(t, \theta, \dot \theta)$ of this system depends explicitly on time.)  We would like to design a control law $u = \pi (\theta, \dot \theta)$ that makes the pendulum spin at constant velocity $\dot \theta = 1$.  You can do this in two steps:
 
       <ol type="a">
 
         <li>come up with a desired closed-loop dynamics $\ddot \theta = f(\dot \theta)$ whose unique equilibrium point is stable and is located in $\dot \theta = 1$;</li>
 
-        <li>use feedback linearization to design a control law $u (\theta, \dot \theta)$ which makes the closed-loop dynamics coincide with the one chosen at the previous point.</li>
+        <li>use feedback linearization to design a control law $u = \pi(\theta, \dot \theta)$ which makes the closed-loop dynamics coincide with the one chosen at the previous point.</li>
 
         <todo>Add notebook to implement the controller. If possible, with pendulum from urdf and matplotlib animation.</todo>
 
