@@ -24,7 +24,7 @@ initial_states = [
 	(np.array([2, -.5]), 'r')
 ]
 for x, c in initial_states:
-	plt.scatter(*x, c=c, label=r'$\mathbf{x}(0)='+str(x)+'^T$')
+	plt.scatter(*x, c=c, label=r'$\mathbf{x}(0)=[%s,%s]^T$'%(str(x[0]), str(x[1])))
 	plt.arrow(*x, *-x, color=c, width=.01, head_width=.05, head_length=.2, length_includes_head=True)
 
 # misc plot settings
