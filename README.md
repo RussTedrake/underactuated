@@ -29,14 +29,22 @@ https://websitebeaver.com/set-up-localhost-on-macos-high-sierra-apache-mysql-and
 and just pointed by root doc directory directly at my underactuated checkout.
 
 
-To run the unit tests
----------------------
+To run the unit tests (cmake)
+-----------------------------
+CircleCI currently runs the tests using cmake; this will soon be removed in favor of the bazel workflow below.
 
 ```
 $ mkdir build && cd build
 $ cmake -Ddrake_DIR=PATH_TO_DRAKE/lib/cmake/drake ..
 $ make
 $ ctest .
+```
+
+To run the unit tests (bazel)
+-----------------------------
+Github actions runs the tests using bazel.  This is preferred, and will replace the cmake workflow once it has complete coverage.  See #245.
+```
+bazel test //...
 ```
 
 To run linters
