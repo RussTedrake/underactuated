@@ -27,10 +27,20 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+build --incompatible_disable_target_provider_fields=true
+build --incompatible_disallow_dict_lookup_unhashable_keys=true
 # TODO(jamiesnape): Uncomment this when RobotLocomotion/drake#12605 merges.
 # build --incompatible_load_python_rules_from_bzl=true
+build --incompatible_no_output_attr_default=true
+build --incompatible_no_rule_outputs_param=true
+build --incompatible_remove_enabled_toolchain_types=true
+build --incompatible_restrict_string_escapes=true
+build --incompatible_run_shell_command_string=true
+build --incompatible_strict_action_env=true
+build --incompatible_visibility_private_attributes_at_definition=true
 
-build --test_env=LC_CTYPE=en_US.UTF-8
+build --test_env=LANG=en_US.UTF-8
+build --test_env=LC_ALL=en_US.UTF-8
 build --test_env=MPLBACKEND=Template
 
 # TODO(jamiesnape): Fix "Invalid -W option ignored: invalid module name:
