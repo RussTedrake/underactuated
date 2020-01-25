@@ -7642,7 +7642,7 @@ and Validation</h1>
       -\frac{\eta}{\sigma^2} g(\balpha + \bbeta) \bbeta,$$ which is precisely
       the weight perturbation update (the crazy version with $b=0$ discussed
       above).  Although it will move in the direction of the gradient on
-      average, it can be highly inefficient.</p>
+      average, it can be highly inefficient.  In practice, people use many more than one sample to estimate the poilicy gradient.</p>
 
     </subsection>
 
@@ -7654,10 +7654,12 @@ and Validation</h1>
       weight-perturbation update obtains the same gradient for the case of a
       policy with a mean linear in $\alpha$ and a fixed diagonal covariance.
       It's cleverness lies in the fact that it makes use of the information we
-      do have (instantaneous cost values and the gradients of the policy), but
-      it's inefficiency comes from having a potentially very high variance.
-      Variance reduction for policy gradient, often through baseline estimation,
-      continues to be an active area of research.</p>
+      do have (instantaneous cost values and the gradients of the policy), and
+      that it provides an unbiased estimate of the gradient (note that taking
+      the gradients of a model that is only slightly wrong might not have this
+      virtue).  But its inefficiency comes from having a potentially very high
+      variance. Variance reduction for policy gradient, often through baseline
+      estimation, continues to be an active area of research.</p>
 
     </subsection>
 
