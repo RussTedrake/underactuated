@@ -7407,13 +7407,14 @@ and Validation</h1>
     gradient of the expected long-term cost with respect to the policy
     parameters by evaluating some number of sample trajectories, then performing
     (stochastic) gradient descent.  Many of these so-called "policy gradient"
-    algorithms leverage a derivation that was first described in the context of
-    the REINFORCE algorithm <elib>Williams92</elib>.  It is based on what looks
-    like a trick with logarithms to estimate the gradient; I feel like this
-    trick is often presented with an air of mystery about it.  Let's try to make
-    sure we understand it.</p>
+    algorithms leverage a derivation called the <em>likelihood ratio method</em>
+    that was perhaps first described in <elib>Glynn90</elib> then popularized in
+    the the REINFORCE algorithm <elib>Williams92</elib>.  It is based on what
+    looks like a trick with logarithms to estimate the gradient; I feel like
+    this trick is often presented with an air of mystery about it.  Let's try to
+    make sure we understand it.</p>
 
-    <subsection><h1>The Policy Gradient "Trick" (aka
+    <subsection><h1>The Likelihood Ratio Method (aka
       REINFORCE)</h1>
 
       <p>Let's start with a simpler optimization over a stochastic function:
@@ -7440,27 +7441,35 @@ and Validation</h1>
 
       <p>This trick is even more potent in the optimal control case.  For a
       finite-horizon problem we have \begin{align*} \frac{\partial}{\partial
-      \alpha} E \left[ \sum_{n=0}^N \ell(\bx[n], \bu[n]) \right] =& \sum_{n=0}^N
-      \int d\bx[n] d\bu[n] ~ \ell(\bx[n],\bu[n]) \frac{\partial}{\partial \alpha}
-      p_\alpha(\bx[n],\bu[n]) \\ =& E\left[ \sum_{n=0}^N \ell(\bx[n],\bu[n])
-      \frac{\partial}{\partial \alpha} \log p_\alpha(\bx[n],\bu[n]) \right],
-      \end{align*} where $$ p_\alpha(\bx[n],\bu[n]) = p_0(\bx[0]) \left(
-      \prod_{k=1}^n p(\bx[k] | \bx[k-1],\bu[k-1]) \right) \left(\prod_{k=0}^n
-      p_\alpha(\bu[k] | \bx[k]) \right).$$ Taking the $\log$ we have $$\log
-      p_\alpha(\bx[n],\bu[n]) = \log p_0(\bx[0]) + \sum_{k=1}^n \log p(\bx[k] |
-      \bx[k-1],\bu[k-1]) + \sum_{k=0}^n \log p_\alpha(\bu[k] | \bx[k]).$$  Only
-      the last terms depend on $\alpha$, which yields $$\frac{\partial}{\partial
-      \alpha} E \left[ \sum_{n=0}^N \ell(\bx[n], \bu[n]) \right] = E\left[
-      \sum_{n=0}^N \ell(\bx[n],\bu[n]) \sum_{k=0}^n \frac{\partial}{\partial
-      \alpha} \log p_\alpha(\bu[k]|\bx[k]) \right]. $$</p>
+      \alpha} E \left[ \sum_{n=0}^N \ell(\bx[n], \bu[n]) \right] =& \int
+      d\bx[\cdot] d\bu[\cdot] \left[ \sum_{n=0}^N \ell(\bx[n],\bu[n]) \right]
+      \frac{\partial}{\partial \alpha} p_\alpha(\bx[\cdot], \bu[\cdot]) \\ =&
+      E\left[ \left(\sum_{n=0}^N \ell(\bx[n],\bu[n])\right)
+      \frac{\partial}{\partial \alpha} \log p_\alpha(\bx[\cdot],\bu[\cdot])
+      \right], \end{align*} where $\bx[\cdot]$ is shorthand for the entire
+      trajectory $\bx[0], ..., \bx[n]$, and $$ p_\alpha(\bx[\cdot],\bu[\cdot]) =
+      p_0(\bx[0]) \left(\prod_{n=1}^N p(\bx[n] | \bx[n-1],\bu[n-1]) \right)
+      \left(\prod_{n=0}^N p_\alpha(\bu[n] | \bx[n]) \right).$$ Taking the $\log$
+      we have $$\log p_\alpha(\bx[\cdot],\bu[\cdot]) = \log p_0(\bx[0]) +
+      \sum_{n=1}^N \log p(\bx[n] | \bx[n-1],\bu[n-1]) + \sum_{n=0}^n \log
+      p_\alpha(\bu[n] | \bx[n]).$$  Only the last terms depend on $\alpha$,
+      which yields \begin{align*} \frac{\partial}{\partial \alpha} E \left[
+      \sum_{n=0}^N \ell(\bx[n], \bu[n]) \right] &= E\left[ \left( \sum_{n=0}^N
+      \ell(\bx[n],\bu[n]) \right) \left(\sum_{n=0}^N \frac{\partial}{\partial
+      \alpha} \log p_\alpha(\bu[n]|\bx[n]) \right) \right] \\ &= E\left[
+      \sum_{n=0}^N \left( \ell(\bx[n],\bu[n]) \sum_{k=0}^n
+      \frac{\partial}{\partial \alpha} \log p_\alpha(\bu[n]|\bx[n]) \right)
+      \right], \end{align*} where the last step uses the fact that
+      $E\left[\ell(\bx[n],\bu[n])\frac{\partial}{\partial \alpha} \log
+      p_\alpha(\bu[k]|\bx[k]) \right] = 0$ for all $k > n$.</p>
 
       <p>This update should surprise you.  It says that I can find the gradient
       of the long-term cost by taking only the gradient of the policy... but not
-      the gradient of the plant, etc!  The intuition is that one can obtain the
-      gradient by evaluating the policy along a number of (random) trajectory
-      roll-outs of the closed-loop system, evaluating the cost on each, then
-      increasing the probability in the policy of taking the actions correlated
-      with lower long-term costs.</p>
+      the gradient of the plant, nor the cost!  The intuition is that one can
+      obtain the gradient by evaluating the policy along a number of (random)
+      trajectory roll-outs of the closed-loop system, evaluating the cost on
+      each, then increasing the probability in the policy of taking the actions
+      correlated with lower long-term costs.</p>
 
       <p>This derivation is often presented as <b>the</b> policy gradient
       derivation.  The identity is certainly correct, but I'd prefer that you
