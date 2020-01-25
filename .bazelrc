@@ -46,11 +46,13 @@ build --test_env=MPLBACKEND=Template
 # Location of the Gurobi license key file, typically named "gurobi.lic".
 # Setting this --test_env for all configurations is deliberate to improve
 # remote caching performance.
+build --action_env=GRB_LICENSE_FILE
 test --test_env=GRB_LICENSE_FILE
 
 # Location of the MOSEK license file, typically named "mosek.lic". Setting
 # this --test_env for all configurations is deliberate to improve remote
 # caching performance.
+build --action_env=MOSEKLM_LICENSE_FILE
 test --test_env=MOSEKLM_LICENSE_FILE
 
 # TODO(jamiesnape): Fix "Invalid -W option ignored: invalid module name:
