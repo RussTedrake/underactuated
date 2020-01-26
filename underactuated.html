@@ -1377,7 +1377,7 @@ complete trajectory.</p>
 
     <exercise><h1>Pendulum with Vibrating Base</h1>
 
-      Consider an actuated pendulum whose base (pivot of the rod) is forced to oscillate horizontally according to the harmonic law $h \sin(\omega t)$, where $h$ denotes the amplitude of the oscillation and $\omega$ the frequency.  The equation of motion for this system is $$m l^2 \ddot \theta + m g l \sin \theta = m h l \omega^2 \sin (\omega t) + u.$$  (If this equation seems obscure to you, try to derive it using the <a href="underactuated.html?chapter=multibody">Lagrangian approach</a>; but be careful, the kinetic energy $T(\theta, \dot \theta, t)$ of this system depends explicitly on time.)  We would like to design a time-dependent control law $u = \pi (\theta, \dot \theta, t)$ that makes the pendulum spin at constant velocity $\dot \theta = 1$.  You can do this in two steps:
+      Consider an actuated pendulum whose base (pivot of the rod) is forced to oscillate horizontally according to the harmonic law $h \sin(\omega t)$, where $h$ denotes the amplitude of the oscillation and $\omega$ the frequency.  The equation of motion for this system is $$m l^2 \ddot \theta + m g l \sin \theta = m l \omega^2 h \sin (\omega t) + u.$$  (If this equation seems obscure to you, try to derive it using the <a href="underactuated.html?chapter=multibody">Lagrangian approach</a>; but be careful, the kinetic energy $T(\theta, \dot \theta, t)$ of this system depends explicitly on time.)  We would like to design a time-dependent control law $u = \pi (\theta, \dot \theta, t)$ that makes the pendulum spin at constant velocity $\dot \theta = 1$.  You can do this in two steps:
 
       <ol type="a">
 
@@ -1386,6 +1386,31 @@ complete trajectory.</p>
         <li>use feedback linearization to design a control law $u = \pi(\theta, \dot \theta, t)$ which makes the closed-loop dynamics coincide with the one chosen at the previous point.</li>
 
         <todo>Add notebook to implement the controller. If possible, with pendulum from urdf and matplotlib animation.</todo>
+
+      </ol>
+
+    </exercise>
+
+    <exercise><h1>Attractivity vs Stability</h1>
+
+      <figure>
+      <img width="60%" data-src="figures/exercises/attractivity_vs_stability.svg"/>
+      <figcaption>Phase diagram of a two-dimensional system.</figcaption>
+      </figure>
+
+      This figure shows the phase portrait of the dynamical system \begin{align*} \dot x_1 &= x_1 (1-|\bx|) + x_2 \frac{x_1-|\bx|}{2|\bx|}, \\ \dot x_2 &= x_2 (1-|\bx|) - x_1 \frac{x_1-|\bx|}{2|\bx|}, \end{align*} where $|\bx| = \sqrt{x_1^2+x_2^2}$.  To help you with the analysis of this system, we set up ...
+      <!--
+      <a href="https://colab.research.google.com/github/TobiaMarcucci/underactuated/blob/test_colab/underactuated/exercises/simple_pendulum/isl_vs_asymptotic_stability.ipynb">this python notebook</a>.
+      --> 
+      Take your time to understand what the code in it is doing, and then answer the following questions.
+
+      <ol type="a">
+
+        <li>Find all the equilibrium points of this system (no need to look outside the portion of state space depicted above).  Use the notebook to double check your answer: simulate the evolution of the system setting the equilibrium points you identified as initial conditions.</li>
+
+        <li>Determine whether the equilibria you identified at the previous point are Lyapunov attractive and/or stable i.s.L.  Explain briefly your reasoning, and feel free to include some plots generated with the notebook in your written answer.</li>
+
+        <li>This dynamical system is a (very) close relative of one of the systems we analyzed in this chapter.  Can you guess which one is it?  What is the connection between the two?  Extra points: support your claim with a mathematical derivation.</li>
 
       </ol>
 
