@@ -50,4 +50,8 @@ def rt_ipynb_binary(**attrs):
     return rt_py_binary(**_jupyter_nbconvert(attrs))
 
 def rt_ipynb_test(**attrs):
+    if "size" not in attrs or attrs["size"] == None:
+        attrs["size"] = "medium"
+    if "timeout" not in attrs or attrs["timeout"] == None:
+        attrs["timeout"] = "short"
     return rt_py_test(**_jupyter_nbconvert(attrs, testonly = True))
