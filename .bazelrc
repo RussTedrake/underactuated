@@ -27,6 +27,14 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 
+# Location of the Gurobi license key file, typically named "gurobi.lic".
+build --action_env=GRB_LICENSE_FILE
+
+# Location of the MOSEK license file, typically named "mosek.lic"
+build --action_env=MOSEKLM_LICENSE_FILE
+
+build --enable_platform_specific_config=yes
+
 build --incompatible_disable_target_provider_fields=true
 build --incompatible_disallow_dict_lookup_unhashable_keys=true
 # TODO(jamiesnape): Uncomment this when RobotLocomotion/drake#12605 merges.
@@ -39,21 +47,11 @@ build --incompatible_run_shell_command_string=true
 build --incompatible_strict_action_env=true
 build --incompatible_visibility_private_attributes_at_definition=true
 
+build --test_env=GRB_LICENSE_FILE
 build --test_env=LANG=en_US.UTF-8
 build --test_env=LC_ALL=en_US.UTF-8
+build --test_env=MOSEKLM_LICENSE_FILE
 build --test_env=MPLBACKEND=Template
-
-# Location of the Gurobi license key file, typically named "gurobi.lic".
-# Setting this --test_env for all configurations is deliberate to improve
-# remote caching performance.
-build --action_env=GRB_LICENSE_FILE
-test --test_env=GRB_LICENSE_FILE
-
-# Location of the MOSEK license file, typically named "mosek.lic". Setting
-# this --test_env for all configurations is deliberate to improve remote
-# caching performance.
-build --action_env=MOSEKLM_LICENSE_FILE
-test --test_env=MOSEKLM_LICENSE_FILE
 
 # TODO(jamiesnape): Fix "Invalid -W option ignored: invalid module name:
 # 'pydrake.common.deprecation' warning and ensure that Drake deprecation
@@ -61,5 +59,7 @@ test --test_env=MOSEKLM_LICENSE_FILE
 # build --test_env=PYTHONWARNINGS=error::pydrake.common.deprecation.DrakeDeprecationWarning
 
 build --test_output=errors
+
+build:macos --test_timeout=120,600,1800,7200
 
 try-import %workspace%/user.bazelrc

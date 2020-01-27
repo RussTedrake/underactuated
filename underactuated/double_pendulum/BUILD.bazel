@@ -61,7 +61,6 @@ rt_py_test(
 
 rt_ipynb_test(
     name = "simulate_ipynb",
-    size = "medium",
     srcs = ["simulate.ipynb"],
     data = ["double_pendulum.urdf"],
     deps = ["//underactuated"],
