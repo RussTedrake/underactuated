@@ -1377,7 +1377,7 @@ complete trajectory.</p>
 
     <exercise><h1>Pendulum with Vibrating Base</h1>
 
-      Consider an actuated pendulum whose base (pivot of the rod) is forced to oscillate horizontally according to the harmonic law $h \sin(\omega t)$, where $h$ denotes the amplitude of the oscillation and $\omega$ the frequency.  The equation of motion for this system is $$m l^2 \ddot \theta + m g l \sin \theta = m l \omega^2 h \sin (\omega t) + u.$$  (If this equation seems obscure to you, try to derive it using the <a href="underactuated.html?chapter=multibody">Lagrangian approach</a>; but be careful, the kinetic energy $T(\theta, \dot \theta, t)$ of this system depends explicitly on time.)  We would like to design a time-dependent control law $u = \pi (\theta, \dot \theta, t)$ that makes the pendulum spin at constant velocity $\dot \theta = 1$.  You can do this in two steps:
+      Consider an actuated pendulum whose base (pivot of the rod) is forced to oscillate horizontally according to the harmonic law $h \sin(\omega t)$, where $h$ denotes the amplitude of the oscillation and $\omega$ the frequency.  The equation of motion for this system is $$m l^2 \ddot \theta + m g l \sin \theta = m l \omega^2 h \sin (\omega t) \cos \theta + u.$$  (If this equation seems obscure to you, try to derive it using the <a href="underactuated.html?chapter=multibody">Lagrangian approach</a>; but be careful, the kinetic energy $T(\theta, \dot \theta, t)$ of this system depends explicitly on time.)  We would like to design a time-dependent control law $u = \pi (\theta, \dot \theta, t)$ that makes the pendulum spin at constant velocity $\dot \theta = 1$.  You can do this in two steps:
 
       <ol type="a">
 
