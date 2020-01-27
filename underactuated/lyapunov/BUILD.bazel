@@ -49,5 +49,6 @@ rt_py_test(
 
 rt_py_test(
     name = "verify_global_polynomial",
+    size = "medium",
     srcs = ["verify_global_polynomial.py"],
 )

@@ -55,7 +55,7 @@ rt_py_test(
 
 rt_py_test(
     name = "stochastic_system_particles",
+    size = "medium",
     srcs = ["stochastic_system_particles.py"],
-    size = "medium", 
     deps = ["//underactuated"],
 )

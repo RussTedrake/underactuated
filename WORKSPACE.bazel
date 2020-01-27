@@ -56,16 +56,21 @@ load("@pip//:requirements.bzl", "pip_install")
 
 pip_install()
 
-# Set the DRAKE_INSTALL_DIR environment variable to the correct path; if 
+# Set the DRAKE_INSTALL_DIR environment variable to the correct path; if
 # DRAKE_INSTALL_DIR is not set it will look in "/opt/drake".
 load("//tools:environ.bzl", "environ_repository")
-environ_repository(name = "environ", vars = ["DRAKE_INSTALL_DIR"])
-load("@environ//:environ.bzl", DRAKE_INSTALL_DIR = "DRAKE_INSTALL_DIR")
+
+environ_repository(
+    name = "environ",
+    vars = ["DRAKE_INSTALL_DIR"],
+)
+
+load("@environ//:environ.bzl", "DRAKE_INSTALL_DIR")
 
 new_local_repository(
     name = "rules_drake",
-    path = DRAKE_INSTALL_DIR if DRAKE_INSTALL_DIR else "/opt/drake",
     build_file_content = "",
+    path = DRAKE_INSTALL_DIR if DRAKE_INSTALL_DIR else "/opt/drake",
 )
 
 load("@rules_drake//:share/drake/repo.bzl", "drake_repository")
