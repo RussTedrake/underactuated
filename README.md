@@ -5,6 +5,7 @@ Underactuated Robotics
 
 <http://underactuated.mit.edu/>
 
+[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/RussTedrake/underactuated/master)
 ![CI](https://github.com/RussTedrake/underactuated/workflows/CI/badge.svg)
 
 Follow the installation instructions in 
