@@ -1,13 +1,17 @@
 *               text=auto
 
+*.bash          text eol=lf
+*.bash.in       text eol=lf
 *.bazel         text diff=python
 *.bazelrc       text
 *.bzl           text diff=python
 *.cgi           text diff=perl
+*.css           text diff=css
 *.gv            text
 *.html          text diff=html
 *.ipynb         text
 *.jpg           binary
+*.js            text
 *.json          text
 *.m             text diff=matlab
 *.md            text
@@ -18,16 +22,21 @@
 *.svg           text
 *.swf           binary
 *.tex           text diff=tex
-*.TXT           text
 *.txt           text
+*.TXT           text
 *.urdf          text
 *.xml           text
 *.xpr           text
 *.yml           text
 
 .bazelproject   text
+.dockerignore   text
 .editorconfig   text
 .gitattributes  text
 .gitignore      text
 .gitmodules     text
 .tidy.config    text
+.yapfignore     text
+
+Brewfile        text diff=ruby
+Dockerfile      text
