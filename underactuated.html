@@ -6945,7 +6945,7 @@ axis([-10,25,-10,25]);
     \bx[n]} e^{\bu^T[n] {\bf R} \bu[n]} \right] = E\left[ e^{\sum_{n=0}^\infty
     \bx^T[n] {\bf Q} \bx[n] + \bu^T[n] {\bf R} \bu[n]} \right],$$ with ${\bf Q}
     = {\bf Q}^T \ge {\bf 0}, {\bf R} = {\bf R}^T > 0,$ by observing that the
-    cost is monotonically related to $\log{J}$, and therefore has the same
+    cost is monotonically related to $\ln{J}$, and therefore has the same
     minima (this same trick forms the basis for "geometric programming"
     <elib>Boyd07</elib>). This is known as the "Linear Exponential-Quadratic
     Gaussian" (LEG or LEQG), and for the deterministic version of the problem
@@ -7489,17 +7489,17 @@ and Validation</h1>
       \frac{\partial}{\partial \alpha} E \left[ g(\bx) \right] =&
       \frac{\partial}{\partial \alpha} \int d\bx ~ g(\bx) p_\alpha(\bx) \\ =&
       \int  d\bx ~ g(\bx) \frac{\partial}{\partial \alpha} p_\alpha(\bx)  \\ =&
-      \int d\bx ~ g(\bx) p_\alpha(\bx) \frac{\partial}{\partial \alpha}  \log
-      p_\alpha(\bx)   \\ =& E\left[ g(\bx) \frac{\partial}{\partial \alpha} \log
+      \int d\bx ~ g(\bx) p_\alpha(\bx) \frac{\partial}{\partial \alpha}  \ln
+      p_\alpha(\bx)   \\ =& E\left[ g(\bx) \frac{\partial}{\partial \alpha} \ln
       p_\alpha(\bx) \right]. \end{align*} To achieve this, we used the
-      derivative of the logarithm: \begin{gather*} y = \log u \\ \frac{\partial
+      derivative of the logarithm: \begin{gather*} y = \ln u \\ \frac{\partial
       y}{\partial u} = \frac{1}{u} \frac{\partial u}{\partial x} \end{gather*}
       to write $$\frac{\partial}{\partial \alpha} p_\alpha(\bx) = p_\alpha(\bx)
-      \frac{\partial}{\partial \alpha} \log p_\alpha(\bx).$$ This suggests a
+      \frac{\partial}{\partial \alpha} \ln p_\alpha(\bx).$$ This suggests a
       simple Monte Carlo algorithm for estimating the policy gradient: draw $N$
       random samples $\bx_i$ then estimate the gradient as $$
       \frac{\partial}{\partial \alpha} E \left[ g(\bx) \right] \approx
-      \frac{1}{N} \sum_i g(\bx_i) \frac{\partial}{\partial \alpha} \log
+      \frac{1}{N} \sum_i g(\bx_i) \frac{\partial}{\partial \alpha} \ln
       p_\alpha(\bx_i).$$</p>
 
       <p>This trick is even more potent in the optimal control case.  For a
@@ -7508,22 +7508,22 @@ and Validation</h1>
       d\bx[\cdot] d\bu[\cdot] \left[ \sum_{n=0}^N \ell(\bx[n],\bu[n]) \right]
       \frac{\partial}{\partial \alpha} p_\alpha(\bx[\cdot], \bu[\cdot]) \\ =&
       E\left[ \left(\sum_{n=0}^N \ell(\bx[n],\bu[n])\right)
-      \frac{\partial}{\partial \alpha} \log p_\alpha(\bx[\cdot],\bu[\cdot])
+      \frac{\partial}{\partial \alpha} \ln p_\alpha(\bx[\cdot],\bu[\cdot])
       \right], \end{align*} where $\bx[\cdot]$ is shorthand for the entire
       trajectory $\bx[0], ..., \bx[n]$, and $$ p_\alpha(\bx[\cdot],\bu[\cdot]) =
       p_0(\bx[0]) \left(\prod_{n=1}^N p(\bx[n] | \bx[n-1],\bu[n-1]) \right)
-      \left(\prod_{n=0}^N p_\alpha(\bu[n] | \bx[n]) \right).$$ Taking the $\log$
-      we have $$\log p_\alpha(\bx[\cdot],\bu[\cdot]) = \log p_0(\bx[0]) +
-      \sum_{n=1}^N \log p(\bx[n] | \bx[n-1],\bu[n-1]) + \sum_{n=0}^n \log
+      \left(\prod_{n=0}^N p_\alpha(\bu[n] | \bx[n]) \right).$$ Taking the $\ln$
+      we have $$\ln p_\alpha(\bx[\cdot],\bu[\cdot]) = \ln p_0(\bx[0]) +
+      \sum_{n=1}^N \ln p(\bx[n] | \bx[n-1],\bu[n-1]) + \sum_{n=0}^n \ln
       p_\alpha(\bu[n] | \bx[n]).$$  Only the last terms depend on $\alpha$,
       which yields \begin{align*} \frac{\partial}{\partial \alpha} E \left[
       \sum_{n=0}^N \ell(\bx[n], \bu[n]) \right] &= E\left[ \left( \sum_{n=0}^N
       \ell(\bx[n],\bu[n]) \right) \left(\sum_{n=0}^N \frac{\partial}{\partial
-      \alpha} \log p_\alpha(\bu[n]|\bx[n]) \right) \right] \\ &= E\left[
+      \alpha} \ln p_\alpha(\bu[n]|\bx[n]) \right) \right] \\ &= E\left[
       \sum_{n=0}^N \left( \ell(\bx[n],\bu[n]) \sum_{k=0}^n
-      \frac{\partial}{\partial \alpha} \log p_\alpha(\bu[n]|\bx[n]) \right)
+      \frac{\partial}{\partial \alpha} \ln p_\alpha(\bu[n]|\bx[n]) \right)
       \right], \end{align*} where the last step uses the fact that
-      $E\left[\ell(\bx[n],\bu[n])\frac{\partial}{\partial \alpha} \log
+      $E\left[\ell(\bx[n],\bu[n])\frac{\partial}{\partial \alpha} \ln
       p_\alpha(\bu[k]|\bx[k]) \right] = 0$ for all $k > n$.</p>
 
       <p>This update should surprise you.  It says that I can find the gradient
@@ -7691,12 +7691,12 @@ and Validation</h1>
 
       <p>Now let's consider the simple form of the REINFORCE update:
       \begin{align*} \frac{\partial}{\partial \alpha} E \left[ g(\bx) \right] =
-      E\left[ g(\bx) \frac{\partial}{\partial \alpha} \log p_\alpha(\bx)
+      E\left[ g(\bx) \frac{\partial}{\partial \alpha} \ln p_\alpha(\bx)
       \right]. \end{align*}  It turns out that weight perturbation is a
       REINFORCE algorithm.  To see this, take $\bx = \balpha + \bbeta$, $\bbeta
       \in N(0,\sigma^2)$, to have \begin{gather*} p_{\balpha}(\bx) =
       \frac{1}{(2\pi\sigma^2)^N} e^{\frac{-(\bx-\balpha)^T(\bx -
-      \balpha)}{2\sigma^2}} \\ \log p_{\balpha}(\bx) =
+      \balpha)}{2\sigma^2}} \\ \ln p_{\balpha}(\bx) =
       \frac{-(\bx-\balpha)^T(\bx - \balpha)}{2\sigma^2} + \text{terms that don't
       depend on }\balpha \\ \pd{}{\balpha} \ln p_{\balpha}(\bx) =
       \frac{1}{\sigma^2} (\balpha - \bx)^T = \frac{1}{\sigma^2} \bbeta^T. \\
