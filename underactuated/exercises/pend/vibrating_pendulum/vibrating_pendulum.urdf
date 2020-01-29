@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+
+<robot name="VibratingPendulum">
+
+  <link name="base">
+
+    <inertial>
+      <origin xyz="0 0 0" />
+      <mass value="1" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0" />
+      <geometry>
+        <box size=".5 .2 .2" />
+      </geometry>
+      <material>
+        <color rgba="0 1 0 1" />
+      </material>
+    </visual>
+
+  </link>
+
+  <link name="pendulum">
+
+    <inertial>
+      <origin xyz="0 0 -1" />
+      <mass value="1" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 -1" />
+      <geometry>
+         <sphere radius=".05" />
+      </geometry>
+      <material>
+        <color rgba="0 0 1 1" />
+      </material>
+    </visual>
+
+    <visual>
+      <origin xyz="0 0 -.5" />
+      <geometry>
+         <cylinder length="1" radius=".01" />
+      </geometry>
+      <material>
+        <color rgba="1 0 0 1" />
+      </material>
+    </visual>
+
+  </link>
+  
+  <joint name="x" type="prismatic">
+    <parent link="world" />
+    <child link="base" />
+    <axis xyz="1 0 0" />
+  </joint>
+
+  <joint name="theta" type="continuous">
+    <parent link="base" />
+    <child link="pendulum" />
+    <axis xyz="0 -1 0" />
+  </joint>
+
+  <transmission type="SimpleTransmission" name="base_force">
+    <actuator name="force" />
+    <joint name="x" />
+  </transmission>
+
+  <transmission type="SimpleTransmission" name="pendulum_torque">
+    <actuator name="torque" />
+    <joint name="theta" />
+  </transmission>
+
+</robot>
