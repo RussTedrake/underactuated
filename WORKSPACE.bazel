@@ -1,34 +1,8 @@
 # -*- mode: python -*-
 # vi: set ft=python :
 
-# Copyright (c) 2020, Massachusetts Institute of Technology.
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# * Redistributions of source code must retain the above copyright notice, this
-#   list of conditions and the following disclaimer.
-#
-# * Redistributions in binary form must reproduce the above copyright notice,
-#   this list of conditions and the following disclaimer in the documentation
-#   and/or other materials provided with the distribution.
-#
-# * Neither the name of the copyright holder nor the names of its contributors
-#   may be used to endorse or promote products derived from this software
-#   without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
-# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
-# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
-# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
-# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
-# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
-# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
-# POSSIBILITY OF SUCH DAMAGE.
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
 workspace(name = "underactuated")
 
@@ -56,16 +30,21 @@ load("@pip//:requirements.bzl", "pip_install")
 
 pip_install()
 
-# Set the DRAKE_INSTALL_DIR environment variable to the correct path; if 
+# Set the DRAKE_INSTALL_DIR environment variable to the correct path; if
 # DRAKE_INSTALL_DIR is not set it will look in "/opt/drake".
 load("//tools:environ.bzl", "environ_repository")
-environ_repository(name = "environ", vars = ["DRAKE_INSTALL_DIR"])
-load("@environ//:environ.bzl", DRAKE_INSTALL_DIR = "DRAKE_INSTALL_DIR")
+
+environ_repository(
+    name = "environ",
+    vars = ["DRAKE_INSTALL_DIR"],
+)
+
+load("@environ//:environ.bzl", "DRAKE_INSTALL_DIR")
 
 new_local_repository(
     name = "rules_drake",
-    path = DRAKE_INSTALL_DIR if DRAKE_INSTALL_DIR else "/opt/drake",
     build_file_content = "",
+    path = DRAKE_INSTALL_DIR if DRAKE_INSTALL_DIR else "/opt/drake",
 )
 
 load("@rules_drake//:share/drake/repo.bzl", "drake_repository")

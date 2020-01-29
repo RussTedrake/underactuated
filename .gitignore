@@ -5,6 +5,7 @@
 build/
 */.ipynb_checkpoints
 venv
+underactuated_solutions
 
 cmake-build-debug/
 
