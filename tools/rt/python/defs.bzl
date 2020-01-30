@@ -14,7 +14,8 @@ def _common_attrs(attrs):
         attrs["deps"] = ["@drake//bindings/pydrake"] + all_requirements
     attrs["srcs_version"] = "PY3"
     if "tags" in attrs and attrs["tags"] != None:
-        if "requires-network" not in attrs["tags"]:
+        if ("block-network" not in attrs["tags"] and
+            "requires-network" not in attrs["tags"]):
             attrs["tags"] = attrs["tags"] + ["block-network"]
     else:
         attrs["tags"] = ["block-network"]
@@ -31,10 +32,10 @@ def _test_attrs(attrs):
     return _binary_attrs(attrs)
 
 def rt_py_binary(**attrs):
-    return py_binary(**_binary_attrs(attrs))
+    py_binary(**_binary_attrs(attrs))
 
 def rt_py_library(**attrs):
-    return py_library(**_common_attrs(attrs))
+    py_library(**_common_attrs(attrs))
 
 def rt_py_test(**attrs):
-    return py_test(**_test_attrs(attrs))
+    py_test(**_test_attrs(attrs))

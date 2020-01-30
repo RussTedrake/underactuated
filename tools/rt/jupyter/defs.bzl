@@ -28,4 +28,4 @@ def rt_ipynb_test(**attrs):
         attrs["size"] = "medium"
     if "timeout" not in attrs or attrs["timeout"] == None:
         attrs["timeout"] = "short"
-    return rt_py_test(**_jupyter_nbconvert(attrs, testonly = True))
+    rt_py_test(**_jupyter_nbconvert(attrs, testonly = True))
