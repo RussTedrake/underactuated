@@ -1382,7 +1382,7 @@ complete trajectory.</p>
       <figcaption>Phase diagram of a two-dimensional system.</figcaption>
       </figure>
 
-      This figure shows the phase portrait of the dynamical system \begin{align*} \dot x_1 &= x_1 (1-|\bx|) + x_2 \frac{x_1-|\bx|}{2|\bx|}, \\ \dot x_2 &= x_2 (1-|\bx|) - x_1 \frac{x_1-|\bx|}{2|\bx|}, \end{align*} where $|\bx| = \sqrt{x_1^2+x_2^2}$.  To help you with the analysis of this system, we set up <a href="https://colab.research.google.com/github/TobiaMarcucci/underactuated/blob/master/notebooks/pend/attractivity_vs_stability/attractivity_vs_stability.ipynb" target="_blank">this python notebook</a>.  Take your time to understand the code in it, and then answer the following questions.
+      This figure shows the phase portrait of the dynamical system \begin{align*} \dot x_1 &= x_1 (1-|\bx|) + x_2 \frac{x_1-|\bx|}{2|\bx|}, \\ \dot x_2 &= x_2 (1-|\bx|) - x_1 \frac{x_1-|\bx|}{2|\bx|}, \end{align*} where $|\bx| = \sqrt{x_1^2+x_2^2}$.  To help you with the analysis of this system, we set up <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/notebooks/pend/attractivity_vs_stability/attractivity_vs_stability.ipynb" target="_blank">this python notebook</a>.  Take your time to understand the code in it, and then answer the following questions.
 
       <ol type="a">
 
@@ -1406,7 +1406,7 @@ complete trajectory.</p>
 
         <li>Use feedback linearization to design a control law $u = \pi(\theta, \dot \theta, t)$ that makes the closed-loop dynamics coincide with the one chosen at the previous point.</li>
 
-        <li><a href="https://colab.research.google.com/github/TobiaMarcucci/underactuated/blob/master/notebooks/pend/vibrating_pendulum/vibrating_pendulum.ipynb" target="_blank">In this python notebook</a>, we set up a simulation environment to test your control law.  Try to understand the structure of the code: this workflow is quite general, and it could be a good starting point for your future Drake projects.  Implement your control law in the dedicated cell, and check your work using the animation and the plots at the end of the notebook.</li>
+        <li><a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/notebooks/pend/vibrating_pendulum/vibrating_pendulum.ipynb" target="_blank">In this python notebook</a>, we set up a simulation environment to test your control law.  Try to understand the structure of the code: this workflow is quite general, and it could be a good starting point for your future Drake projects.  Implement your control law in the dedicated cell, and check your work using the animation and the plots at the end of the notebook.</li>
 
       </ol>
 
