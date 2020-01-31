@@ -1,0 +1,23 @@
+# -*- mode: python -*-
+# vi: set ft=python :
+
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("@bazel_skylib//rules:native_binary.bzl", "native_binary")
+
+native_binary(
+    name = "buildifier",
+    src = select({
+        "//tools/rt/configs/platform:linux": "@buildifier_linux//file",
+        "//tools/rt/configs/platform:macos": "@buildifier_macos//file",
+    }),
+    out = "buildifier",
+    visibility = ["//:__subpackages__"],
+)
+
+bzl_library(
+    name = "repositories",
+    srcs = ["repositories.bzl"],
+)

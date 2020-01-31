@@ -30,6 +30,10 @@ load("@pip//:requirements.bzl", "pip_install")
 
 pip_install()
 
+load("//tools/rt/buildifier:repositories.bzl", "buildifier_dependencies")
+
+buildifier_dependencies()
+
 # Set the DRAKE_INSTALL_DIR environment variable to the correct path; if
 # DRAKE_INSTALL_DIR is not set it will look in "/opt/drake".
 load("//tools:environ.bzl", "environ_repository")

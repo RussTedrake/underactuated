@@ -2,6 +2,7 @@
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
 import os
+import re
 import sys
 
 from nbconvert.exporters import PythonExporter
@@ -20,6 +21,7 @@ def main(notebook_filename):
 
 
 if __name__ == "__main__":
+    sys.argv[0] = re.sub(r"_script\.py$", "", sys.argv[0])
     if len(sys.argv) != 2:
         print("Notebook filename is missing", file=sys.stderr)
         sys.exit(1)
