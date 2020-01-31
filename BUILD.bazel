@@ -8,3 +8,8 @@ exports_files(
     ["LICENSE.TXT"],
     visibility = ["//visibility:public"],
 )
+
+exports_files(
+    ["setup.cfg"],
+    visibility = ["//:__subpackages__"],
+)
