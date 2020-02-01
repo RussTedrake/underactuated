@@ -9,20 +9,19 @@ load("//tools/rt/python:defs.bzl", "rt_py_test")
 
 # double_pendulum.sdf in this package is unused.
 
-rt_py_test(
-    name = "as_single_pendulum",
-    srcs = ["as_single_pendulum.py"],
-    args = ["--duration 1.0"],
-    data = ["double_pendulum.urdf"],
-    deps = ["//underactuated"],
-)
-
 # No duration arguments to keep this first textbook example simple. Just pay the
 # 10 second cost.
 rt_ipynb_test(
     name = "dynamics",
     srcs = ["dynamics.ipynb"],
     size = "medium",
+    data = ["double_pendulum.urdf"],
+    deps = ["//underactuated"],
+)
+
+rt_ipynb_test(
+    name = "feedback_cancellation",
+    srcs = ["feedback_cancellation.ipynb"],
     data = ["double_pendulum.urdf"],
     deps = ["//underactuated"],
 )
