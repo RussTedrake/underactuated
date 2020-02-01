@@ -3,7 +3,7 @@
 *.pyc
 .idea/
 build/
-*/.ipynb_checkpoints
+.ipynb_checkpoints/
 venv
 underactuated_solutions
 
