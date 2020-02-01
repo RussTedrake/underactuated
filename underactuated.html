@@ -490,34 +490,21 @@ are available on YouTube</a>.</p>
       at the joints), and $\bB = {\bf I}_{2 \times 2}$.  The system is fully
       actuated.</p>
 
-      <todo>make drake elements expandable/collapsible.  nice example here:
-      http://quhno.internetstrahlen.de/myopera/csstests/collapsible-paragraph.html</todo>
-
       <div><b>Python Example</b>
 
-      <p> I personally learn best when I can experiment and get some physical
-      intuition.  The <a href="http://drake.mit.edu">companion software for the
-      course</a> should make it easy for you to see this system in action.  To try
-      it, make sure you've followed the installation instructions in the <a
-      href="?chapter=drake">Appendix</a>, then open Python and try the following
-      lines in your Python console:</p>
+        <p> I personally learn best when I can experiment and get some physical
+        intuition.  The <a href="http://drake.mit.edu">companion software for the
+        course</a> should make it easy for you to see this system in action.  I
+        will link to online jupyter notebooks from the main text like this:</p>
 
-      <pysrcinclude>double_pendulum/simulate.py</pysrcinclude>
+        <jupyter>double_pendulum/dynamics.ipynb</jupyter>
 
-      <p>It's worth taking a peek at the <a
-      href="src/double_pendulum/double_pendulum.urdf">file that describes the
-      robot</a>. URDF and SDF are two of the standard formats, and they can be
-      used to describe even very complicated robots (like the Boston Dynamics
-      humanoid).</p>
-
-      <p>We can also use <drake></drake> to evaluate the manipulator equations
-      .  <drake></drake> actually has a symbolic dynamics engine, but for now
-      we will just evaluate the manipulator equations for a particular robot
-      (with numerical values assigned for mass, link lengths, etc) and for a
-      particular state of the robot:</p>
-
-      <pysrcinclude>double_pendulum/manipulator.py</pysrcinclude>
-
+        <p>Try it out!  You'll see how to simulate the double pendulum, and even
+        how to inspect the dynamics symbolically.</p>
+        
+        <p>Note: You can also run the code on your own machines (see the <a
+        href="?chapter=drake">Appendix</a> for details).</p>
+        
       </div>
     </example>
 
@@ -8095,7 +8082,7 @@ export PYTHONPATH=`pwd`/underactuated:${PYTHONPATH}</code></pre></div>
     <p>Note: All of the examples in the textbook are located in the 
     <code>underactuated</code> subdirectory.</p>
 
-      <pysrc>double_pendulum/simulate.py</pysrc>
+      <pysrc>rimless_wheel/simulate.py</pysrc>
 
   </section>
 
@@ -8106,11 +8093,11 @@ export PYTHONPATH=`pwd`/underactuated:${PYTHONPATH}</code></pre></div>
     <i>love</i> the <a href="http://jupyter.org/">Jupyter Notebook</a>
     workflow, and the code should work for you there, as well.</p>
 
-    <p><a href="src/double_pendulum/simulate.ipynb">Here is an example</a> that
+    <p><a href="underactuated/double_pendulum/dynamics.ipynb">Here is an example</a> that
     shows you how to tell <code>matplotlib</code> to perform well in the
     notebook (including with animations).</p>
 
-    <jupyter>double_pendulum/simulate.ipynb</jupyter>
+    <jupyter>double_pendulum/dynamics.ipynb</jupyter>
 
   </section>
 

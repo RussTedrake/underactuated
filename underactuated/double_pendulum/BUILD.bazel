@@ -17,25 +17,12 @@ rt_py_test(
     deps = ["//underactuated"],
 )
 
-rt_py_test(
-    name = "manipulator",
-    srcs = ["manipulator.py"],
-    data = ["double_pendulum.urdf"],
-    deps = ["//underactuated"],
-)
-
 # No duration arguments to keep this first textbook example simple. Just pay the
 # 10 second cost.
-rt_py_test(
-    name = "simulate",
-    srcs = ["simulate.py"],
-    data = ["double_pendulum.urdf"],
-    deps = ["//underactuated"],
-)
-
 rt_ipynb_test(
-    name = "simulate_ipynb",
-    srcs = ["simulate.ipynb"],
+    name = "dynamics",
+    srcs = ["dynamics.ipynb"],
+    size = "medium",
     data = ["double_pendulum.urdf"],
     deps = ["//underactuated"],
 )
