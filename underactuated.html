@@ -528,7 +528,17 @@ are available on YouTube</a>.</p>
     underactuated.</p>
 
     <p>For completeness, let's generalize the definition of underactuation to
-    systems beyond the second-order control affine systems.</p>
+    systems beyond the control-affine systems.</p>
+
+    <definition> <h1>Underactuated Control Differential Equations</h1> A
+    second-order control differential equation described by the equations
+    \begin{equation} \ddot\bq = {\bf f}(\bq, \dot\bq, t, \bu) \end{equation} is
+    <i>fully actuated</i> in state $\bx = (\bq, \dot\bq)$ and time $t$ if the
+    resulting map ${\bf f}$ is surjective: for every $\ddot\bq$ there exists a
+    $\bu$ which produces the desired response.  Otherwise it is
+    <i>underactuated</i>. </definition>
+  
+    <!-- note: I've removed this nth-order version because I still strongly dislike the fact that a fully-actuated 4th order system could be written as a 2nd order underactuated system. 
 
     <definition> <h1>Underactuated Control Differential
     Equations</h1> An $n$th-order control differential equation (with $n\ge2$)
@@ -538,7 +548,8 @@ are available on YouTube</a>.</p>
     if the resulting map ${\bf f}$ is surjective: for every $\frac{d^n\bq}{dt^n}
     $ there exists a ${\bf u}$ which produces the desired response.  Otherwise
     it is underactuated. </definition>
-
+    -->  
+  
     <p>It is easy to see that equation \ref{eq:underactuated_def} is a
     sufficient condition for underactuation.  This definition can also be
     extended to discrete-time systems and/or differential inclusions.</p>
