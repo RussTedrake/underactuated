@@ -5873,6 +5873,37 @@ with Stochasticity</h1>
 
   </section> <!-- end ROA -->
 
+  <section><h1>Exercises</h1>
+
+    <exercise><h1>Control-Lyapunov Function</h1>
+
+      <p>Consider the problem of synthesizing a stabilizing feedback law $\bu = \pi (\bx)$ for the dynamical system $\dot \bx = f(\bx, \bu)$.  Lyapunov analysis suggests us a very simple approach to this problem: choose a candidate Lyapunov function $V(\bx)$, and design a control law $\pi (\bx)$ such that $V(\bx)$ always decreases along the trajectories of the closed-loop system $\dot \bx = f(\bx, \pi (\bx))$.  A function $V(\bx)$ for which such a control law exists is called a <i>control-Lyapunov function</i>.  In this exercise, we use this idea to drive a wheeled robot, implementing the controller proposed in <elib>Aicardi95</elib>.</p>
+      
+      <p>Similar to <a href="underactuated.html?chapter=intro#wheeled_robot">this previous example</a>, we use a kinematic model of the robot.  We represent with $z_1$ and $z_2$ its Cartesian position and with $z_3$ its orientation.  The controls are the linear $u_1$ and angular $u_2$ velocities.  The equations of motion read \begin{align*} \dot z_1 &= u_1 \cos z_3, \\ \dot z_2 &= u_1 \sin z_3, \\ \dot z_3 &= u_2.\end{align*}  The goal is to design a feedback law $\pi(\bz)$ that drives the robot to the origin $\bz=0$ from any initial condition.  As pointed out in <elib>Aicardi95</elib>, this problem becomes dramatically easier if we analyze it in polar coordinates.  As depicted below, we let $x_1$ be the radial and $x_2$ the angular coordinate of the robot, and we define $x_3 = x_2 - z_3$.  Analyzing the figure, basic kinematic considerations lead to  \begin{align*} \dot x_1 &= u_1 \cos x_3, \\ \dot x_2 &= - \frac{u_1 \sin x_3}{x_1}, \\ \dot x_3 &= - \frac{u_1 \sin x_3}{x_1} - u_2.\end{align*}</p>
+
+      <figure>
+        <img width="40%" data-src="figures/exercises/wheeled_robot.pdf"/>
+        <figcaption>Wheeled robot with Cartesian $\bz$ and polar $\bx$ coordinate system.</figcaption>
+      </figure>
+
+      <ol type="a">
+
+        <li>For the candidate Lyapunov function $V(\bx) = V_1(x_1) + V_2(x_2, x_3)$, with $V_1(x_1) = \frac{1}{2} x_1^2$ and $V_1(x_1) = \frac{1}{2}(x_1^2 + x_2^2)$, compute the time derivatives $\dot V_1 (\bx, u_1)$ and $\dot V_2(\bx, \bu)$.</li>
+
+        <li>Show that the choice \begin{align*} u_1 &= \pi_1(\bx) = - x_1 \cos x_3, \\ u_2 &= \pi_2(\bx) = x_3 + \frac{(x_2 + x_3) \cos x_3 \sin x_3}{x_3}, \end{align*} makes $\dot V_1 (\bx, \pi_1(\bx)) \leq 0$ and $\dot V_2 (\bx, \pi(\bx)) \leq 0$ for all $\bx$.  (Technically speaking, $\pi_2(\bx)$ is not defined for $x_3=0$.  In this case, we let $\pi_2(\bx)$ assume its limiting value $x_2 + 2 x_3$, ensuring continuity of the feedback law.)</li>
+
+        <li>Explain why Lyapunov's direct method does not allow us to establish asymptotic stability of the closed-loop system.</li>
+
+        <li>Substitute the control law $\bu = \pi (\bx)$ in the equations of motion, and derive the closed-loop dynamics $\dot \bx = f(\bx, \pi(\bx))$.  Use LaSalle's theorem to show (global) asymptotic stability of the closed-loop system.</li>
+
+        <li>In <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/notebooks/lyapunov/control/control.ipynb" target="_blank">this python notebook</a> we set up a simulation environment for you to try the controller we just derived.  Type the control law from point (b) in the dedicated cell, and use the notebook plot to check your work.</li>
+
+      </ol>
+
+    </exercise>
+
+  </section>
+
 </chapter> <!-- ***************  end of Lyapunov chapter **************   -->
 
 <chapter class="chapter" id="trajopt"><h1>Trajectory
