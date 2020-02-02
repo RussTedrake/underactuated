@@ -565,29 +565,28 @@ are available on YouTube</a>.</p>
 
   </section>
 
-  <section> <h1>Feedback Linearization</h1>
+  <section> <h1>Feedback Equivalence</h1>
 
     <p> Fully-actuated systems are dramatically easier to control than
     underactuated systems.  The key observation is that, for fully-actuated
     systems with known dynamics (e.g., ${\bf f}_1$ and ${\bf f}_2$ are known for
     a second-order control-affine system), it is possible to use feedback to
-    effectively change a nonlinear control problem into a linear control
-    problem.  The field of linear control is incredibly advanced, and there are
-    many well-known solutions for controlling linear systems. </p>
+    effectively change an arbitrary control problem into the problem of
+    controlling a trivial linear system. </p>
 
-    <p>The trick is called feedback linearization.  When ${\bf f}_2$ is full row
-    rank, it is invertible<sidenote>If ${\bf f}_2$ is not square, for instance
-    you have multiple actuators per joint, then this inverse may not be
-    unique.</sidenote>. Consider the nonlinear feedback control: $$\bu = {\bf
-    \pi}(\bq,\dot\bq,t) = {\bf f}_2^{-1}(\bq,\dot\bq,t) \left[ \bu' - {\bf
-    f}_1(\bq,\dot\bq,t) \right],$$ where $\bu'$ is the new control input (an
-    input to your controller). Applying this feedback controller to equation
-    \ref{eq:f1_plus_f2} results in the linear, decoupled, second-order system:
-    $$\ddot{\bq} = \bu'.$$ In other words, if ${\bf f}_1$ and ${\bf f}_2$ are
-    known and ${\bf f}_2$ is invertible, then we say that the system is
-    "feedback equivalent" to $\ddot{\bq} = \bu'$.  There are a number of strong
-    results which generalize this idea to the case where ${\bf f}_1$ and ${\bf
-    f}_2$ are estimated, rather than known (e.g, <elib>Slotine90</elib>).</p>
+    <p>When ${\bf f}_2$ is full row rank, it is invertible<sidenote>If ${\bf
+    f}_2$ is not square, for instance you have multiple actuators per joint,
+    then this inverse may not be unique.</sidenote>. Consider the potentially
+    nonlinear feedback control: $$\bu = {\bf \pi}(\bq,\dot\bq,t) = {\bf
+    f}_2^{-1}(\bq,\dot\bq,t) \left[ \bu' - {\bf f}_1(\bq,\dot\bq,t) \right],$$
+    where $\bu'$ is the new control input (an input to your controller).
+    Applying this feedback controller to equation \ref{eq:f1_plus_f2} results in
+    the linear, decoupled, second-order system: $$\ddot{\bq} = \bu'.$$ In other
+    words, if ${\bf f}_1$ and ${\bf f}_2$ are known and ${\bf f}_2$ is
+    invertible, then we say that the system is "feedback equivalent" to
+    $\ddot{\bq} = \bu'$.  There are a number of strong results which generalize
+    this idea to the case where ${\bf f}_1$ and ${\bf f}_2$ are estimated,
+    rather than known (e.g, <elib>Slotine90</elib>).</p>
 
     <example class="drake"><h1>Feedback Cancellation on the Double
     Pendulum</h1>
@@ -603,11 +602,12 @@ are available on YouTube</a>.</p>
     \right].$$ </p>
 
     <p> Since we are embedding a nonlinear dynamics (not a linear one), we refer
-    to this as "feedback cancellation", or "dynamic inversion".  This idea can,
-    and does, make control look easy - for the special case of a fully-actuated
-    deterministic system with known dynamics.  For example, it would have been
-    just as easy for me to invert gravity. Observe that the control derivations
-    here would not have been any more difficult if the robot had 100 joints.
+    to this as "feedback cancellation", or "dynamic inversion".  This idea
+    reveals why I say control is easy -- for the special case of a
+    fully-actuated deterministic system with known dynamics.  For example, it
+    would have been just as easy for me to invert gravity. Observe that the
+    control derivations here would not have been any more difficult if the robot
+    had 100 joints.
     </p>
 
     <div><b>Python Example</b> You can run these examples
@@ -622,10 +622,27 @@ are available on YouTube</a>.</p>
 
     </example>
 
-    <p> The underactuated systems are not feedback linearizable.  Therefore,
-    unlike fully-actuated systems, the control designer has no choice but to
-    reason about the nonlinear dynamics of the plant in the control design.
-    This dramatically complicates feedback controller design. </p>
+    <p> Fully-actuated systems are feedback equivalent to $\ddot\bq = \bu$,
+    whereas <i>underactuated systems are not feedback equivalent to $\ddot\bq =
+    \bu$</i>.  Therefore, unlike fully-actuated systems, the control designer
+    has no choice but to reason about the more complex dynamics of the plant in
+    the control design. When these dynamics are nonlinear, this can dramatically
+    complicate feedback controller design.
+    </p>
+
+    <p>A related concept is <a
+    href="https://en.wikipedia.org/wiki/Feedback_linearization">feedback
+    linearization</a>.  The feedback-cancellation controller in the example
+    above is an example of feedback linearization -- using feedback to convert a
+    nonlinear system into a controllable linear system.  Asking whether or not a
+    system is "feedback linearizable" is not the same as asking whether it is
+    underactuated; even a controllable linear system can be underactuated, as we
+    will discuss <a href="?chapter=acrobot#controllability">soon</a>.</p>
+
+    <!-- Another connection: For some feedback linearizable systems it can be
+    hard to find the linearizing controller; it IS true that the fully-actuated
+    systems are ones where we have an easy recipe for the linearizing controller
+    (based on inverting $f_2$). -->
 
   </section>
 
@@ -1285,7 +1302,7 @@ complete trajectory.</p>
 
       <p>Here's a thought exercise.  If $u$ is no longer a constant, but a
       function $\pi(\theta,\dot{\theta})$, then how would you choose $\pi$ to
-      stabilize the vertical position.  Feedback linearization is the trivial
+      stabilize the vertical position.  Feedback cancellation is the trivial
       solution, for example: $$u = \pi(\theta,\dot{\theta}) = 2mgl\sin\theta.$$
       But these plots we've been making tell a different story.  How would you
       shape the natural dynamics - at each point pick a $u$ from the stack of
@@ -1398,7 +1415,7 @@ complete trajectory.</p>
 
         <li>Identify a desired closed-loop dynamics $\ddot \theta = f(\dot \theta)$, whose unique equilibrium point is stable and is located in $\dot \theta = 1$.</li>
 
-        <li>Use feedback linearization to design a control law $u = \pi(\theta, \dot \theta, t)$ that makes the closed-loop dynamics coincide with the one chosen at the previous point.</li>
+        <li>Use feedback cancellation to design a control law $u = \pi(\theta, \dot \theta, t)$ that makes the closed-loop dynamics coincide with the one chosen at the previous point.</li>
 
         <li><a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/notebooks/pend/vibrating_pendulum/vibrating_pendulum.ipynb" target="_blank">In this python notebook</a>, we set up a simulation environment to test your control law.  Try to understand the structure of the code: this workflow is quite general, and it could be a good starting point for your future Drake projects.  Implement your control law in the dedicated cell, and check your work using the animation and the plots at the end of the notebook.</li>
 
@@ -1769,7 +1786,7 @@ complete trajectory.</p>
 
     </subsection> <!-- end linearizing -->
 
-    <subsection><h1>Controllability of linear systems</h1>
+    <subsection id="controllability"><h1>Controllability of linear systems</h1>
 
       <definition><h1>Controllability</h1>     A control system
       of the form $$\dot{\bx} = {\bf f}(\bx,\bu)$$ is called
@@ -1992,9 +2009,9 @@ complete trajectory.</p>
   <section><h1>Partial feedback linearization</h1>
 
     <p> In the introductory chapters, we made the point that the underactuated
-    systems are not feedback linearizable.  At least not completely. Although we
-    cannot linearize the full dynamics of the system, it is still possible to
-    linearize a portion of the system dynamics.  The technique is called
+    systems are not feedback equivalent to $\ddot{q} = \bu$.   Although we
+    cannot always simplify the full dynamics of the system, it is still possible
+    to linearize a portion of the system dynamics.  The technique is called
     <em>partial feedback linearization</em>.</p>
 
     <p> Consider the cart-pole example.  The dynamics of the cart are affected
@@ -3760,7 +3777,7 @@ with Stochasticity</h1>
   simple pendulum, and concluded with a challenge: can we design a nonlinear
   controller to <em>reshape</em> the phase portrait, with a very modest amount
   of actuation, so that the upright fixed point becomes globally stable?  With
-  unbounded torque, feedback linearization solutions (e.g., invert gravity) can
+  unbounded torque, feedback-cancellation solutions (e.g., invert gravity) can
   work well, but can also require an unnecessarily large amount of control
   effort. The energy-based swing-up control solutions presented for the acrobot
   and cart-pole systems  are considerably more appealing, but required some
