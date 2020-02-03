@@ -4514,7 +4514,7 @@ with Stochasticity</h1>
             <figcaption>Autonomous car moving at velocity $v$ on a straight road.</figcaption>
           </figure>
 
-  		The figure above shows an autonomous car moving at constant velocity $v>0$ on a straight road.  Let $x_1$ be the (longitudinal) position of the car along the road and $x_2$ its (transversal) distance from the middle of the road.  The only control action is the steering velocity $u$.  We describe the car dynamics with the simple kinematic model \begin{align*}\dot x_1 &= v \cos x_3, \\ \dot x_2 &= v \sin x_3, \\ \dot x_3 &= u,\end{align*} where $x_3$ is the angle between the road centerline and the direction of motion.  To optimize the car trajectory we consider a quadratic objective function $$J = \int_{0}^{\infty} [\bx^T(t) \bQ \bx(t)  + R u^2(t)] dt,$$ where $\bQ$ is a positive-semidefinite (hence symmetric) matrix and $R$ is a nonnegative scalar.
+  		The figure above shows an autonomous car moving at constant velocity $v>0$ on a straight road.  Let $x_1$ be the (longitudinal) position of the car along the road and $x_2$ its (transversal) distance from the middle of the road.  The only control action is the steering velocity $u$.  We describe the car dynamics with the simple kinematic model \begin{align*}\dot x_1 &= v \cos x_3, \\ \dot x_2 &= v \sin x_3, \\ \dot x_3 &= u,\end{align*} where $x_3$ is the angle between the road centerline and the direction of motion.  To optimize the car trajectory we consider a quadratic objective function $$J = \int_{0}^{\infty} [\bx^T(t) \bQ \bx(t)  + R u^2(t)] dt,$$ where $\bQ$ is a constant positive-semidefinite (hence symmetric) matrix and $R$ is a constant nonnegative scalar.
 
   		<ol type="a">
 
