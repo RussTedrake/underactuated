@@ -1002,6 +1002,8 @@ are available on YouTube</a>.</p>
         x^* \| < Ce^{-\alpha t}$, for some positive constants $C$ and
         $\alpha$.</li>
 
+        <todo>Briat15 Definition 2.2.1 accomplishes the same, but I like his formatting slightly better.</todo>
+
       </ul>
 
       <p>An initial condition near a fixed point that is stable in the sense of
@@ -5229,6 +5231,8 @@ with Stochasticity</h1>
 
     </subsection> <!-- relationship to HJB -->
 
+    <todo>Include instability results, as in Briat15 Theorem 2.2.5</todo>
+
   </section> <!-- Lyapunov definitions -->
 
   <section><h1>Lyapunov analysis with convex optimization</h1>
@@ -5376,6 +5380,8 @@ with Stochasticity</h1>
         <p>There are many small variants of this result that are potentially of interest.  For instance, a very similar set of conditions can certify "mean-square stability" for linear systems with multiplicative noise (see e.g. <elib>Boyd94</elib>, &sect; 9.1.1).</p>
 
       </example>
+
+      <todo>Add example or exercise based on e.g. Briat15 (LPV) example 1.3.1, showing off how powerful this can be.  Also perhaps the parameter-dependent robust stability of his Def 2.3.5.</todo>
 
       <p>This example is very important because it establishes a connection
       between Lyapunov functions and (convex) optimization.  But so far we've
@@ -7044,6 +7050,8 @@ axis([-10,25,-10,25]);
   Guaranteed-cost control for linear systems (minimax). Loftberg 2003 for
   constrained version (w/ disturbance feedback). H-infinity. Elad's regret
   formulation? (or save this for adaptive control section?)
+
+  LPV.  Pendulum example from Briat15 1.4.1 (and the references therein).
   </todo>
 
 </chapter>
@@ -8639,6 +8647,8 @@ jupyter notebook
     x = np.linspace(-2.,2.,101)
     plt.plot(x, np.sqrt(np.power(x,2) + 0.01))
   </todo>
+
+  <todo>Briat15 chapter 1 has some good modeling tricks for LPV systems</todo>
 </chapter> <!-- end playbook -->
 
 
