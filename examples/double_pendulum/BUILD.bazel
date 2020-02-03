@@ -15,13 +15,13 @@ rt_ipynb_test(
     name = "dynamics",
     srcs = ["dynamics.ipynb"],
     size = "medium",
-    data = ["double_pendulum.urdf"],
+    data = ["//underactuated/models:double_pendulum.urdf"],
     deps = ["//underactuated"],
 )
 
 rt_ipynb_test(
     name = "feedback_cancellation",
     srcs = ["feedback_cancellation.ipynb"],
-    data = ["double_pendulum.urdf"],
+    data = ["//underactuated/models:double_pendulum.urdf"],
     deps = ["//underactuated"],
 )

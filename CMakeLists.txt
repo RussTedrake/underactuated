@@ -40,4 +40,61 @@ endif()
 
 add_test(NAME htmllint WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" COMMAND "${TIDY_EXECUTABLE}" -e -config .tidy.config --show-warnings no underactuated.html)
 set_tests_properties(htmllint PROPERTIES PASS_REGULAR_EXPRESSION " 0 errors")
+
+find_package(PythonInterp REQUIRED)
+find_program(PYCODESTYLE_EXECUTABLE pycodestyle REQUIRED)  # pip install pycodestyle
+
+function(add_pystyle_test pyfile)
+
+  get_filename_component(pydir ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+
+  add_test(NAME ${pydir}_${pyfile}_pycodestyle
+           COMMAND "${PYCODESTYLE_EXECUTABLE}" --count --show-source ${pyfile}
+           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+endfunction(add_pystyle_test)
+
+function(add_pytest pyfile)
+
+  get_filename_component(pydir ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+
+  add_test(NAME ${pydir}_${pyfile}
+           COMMAND ${PYTHON_EXECUTABLE} ${pyfile} ${ARGN}
+           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+  set_property(TEST ${pydir}_${pyfile}
+               PROPERTY ENVIRONMENT
+                 "MPLBACKEND=Template"  # So that pyplot.show() does not block
+                 "PATH=${PATH}"
+                 "PYTHONPATH=${PYTHONPATH}"
+              )
+
+  set_tests_properties(${pydir}_${pyfile} PROPERTIES
+            FAIL_REGULAR_EXPRESSION "DrakeDeprecationWarning"
+          )
+
+  add_pystyle_test(${pyfile})
+
+endfunction(add_pytest)
+
+function(add_nbtest ipynbfile)
+
+  get_filename_component(pydir ${CMAKE_CURRENT_SOURCE_DIR} NAME)
+
+  add_test(NAME ${pydir}_${ipynbfile}
+           COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/scripts/test_ipynb.py ${ipynbfile}
+           WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+
+  set_property(TEST ${pydir}_${ipynbfile}
+               PROPERTY ENVIRONMENT
+                 "PYTHONPATH=${PYTHONPATH}"
+              )
+
+  set_tests_properties(${pydir}_${ipynbfile} PROPERTIES
+          FAIL_REGULAR_EXPRESSION "DrakeDeprecationWarning"
+          )
+
+endfunction(add_nbtest)
+
 add_subdirectory(underactuated)
+add_subdirectory(examples/double_pendulum)
