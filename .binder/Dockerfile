@@ -51,8 +51,25 @@ WORKDIR $HOME
 COPY .binder/entrypoint /opt/underactuated/bin/
 COPY . $HOME
 RUN chown -R $NB_UID:$NB_GID $HOME \
-  && find $HOME \( -name BUILD.bazel -or -name CMakeLists.txt \) -delete \
-  && rm -rf .bazelrc tools WORKSPACE.bazel
+  && find $HOME \( \
+      -name .editorconfig -or \
+      -name .yapfignore -or \
+      -name BUILD.bazel -or \
+      -name CMakeLists.txt -or \
+      -name README.md \
+    \) -delete \
+  && rm -rf \
+    .bazelrc \
+    .binder \
+    .circleci \
+    .github \
+    drake_version.json \
+    LICENSE.TXT \
+    requirements.txt \
+    scripts \
+    setup.cfg \
+    tools \
+    WORKSPACE.bazel
 USER $NB_USER
 ENTRYPOINT ["/opt/underactuated/bin/entrypoint"]
 CMD ["jupyter", "notebook", "--ip", "0.0.0.0"]
