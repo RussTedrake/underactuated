@@ -4477,6 +4477,36 @@ with Stochasticity</h1>
 
   </section> <!-- end of extensions -->
 
+  <section><h1>Exercises</h1>
+
+  	<exercise><h1>Choosing a Cost Function</h1>
+
+  		Consider an autonomous car moving at constant velocity $v>0$ on a straight road.  Let $x_1$ be the (longitudinal) position of the car along the road and $x_2$ its (transversal) distance from the middle of the road.  The only control action is the steering velocity $u$.  We describe the car dynamics with the simple kinematic model \begin{align*}\dot x_1 &= v \cos x_3, \\ \dot x_2 &= v \sin x_3, \\ \dot x_3 &= u,\end{align*} where $x_3$ is the angle between the road centerline and the direction of motion.  To optimize the car trajectory we consider a quadratic objective function $$J = \int_{0}^{\infty} [\bx^T(t) \bQ \bx(t)  + R u^2(t)] dt,$$ where $\bQ$ is a positive-semidefinite (hence symmetric) matrix and $R$ is a nonnegative scalar.
+
+  		<ol type="a">
+
+  			<li>Suppose our only goal is to keep the car as close as possible to the centerline.  What would be your choice for $\bQ$ and $R$?</li>
+
+  			<li>How would the behavior of the car change if you were to multiply the weights $\bQ$ and $R$ from the previous point by two arbitrary positive coefficients, say $k_{\bQ}$ and $k_R$?</li>
+
+  			<li>Can $R$ or any element of $\bQ$ be tuned in order to prevent sharp turns?</li>
+
+  			<li>Country roads are more slippery on the sides than in the center.  Is this class of objective functions rich enough to include a penalty on sharp turns that increases with the distance of the car from the centerline?</li>
+
+  			<li>Imagine somebody suggests you to choose a strictly positive-definite $\bQ$.  Would you follow his/her advice?  Why?</li>
+
+  		</ol>
+
+    </exercise>
+
+    <exercise><h1>Ill-Posed Optimal Control Problem</h1>
+
+      Consider the (unconstrained) double integrator system $\ddot q = u$.  Imagine you are asked to find the control policy $u = \pi (q, \dot q)$ that minimizes the seemingly innocuous cost function $$J = \int_{0}^{\infty} q^2(t) + (u^2(t) - 1)^2 dt.$$  Do you see any issue with this problem setup? How does the optimal control signal $u(t)$ look like if, for example, the initial state is $q(0) = \dot q(0) = 0$?
+
+    </exercise>
+
+  </section>
+
 </chapter> <!-- ***************  end of dynamic programming **************   -->
 
 
