@@ -4167,7 +4167,7 @@ with Stochasticity</h1>
         <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}=f(\bx,\bu)$ and
         an infinite-horizon additive cost $\int_0^\infty \ell(\bx,\bu)dt$.  Suppose
         $J(\bx)$ is a solution to the HJB equation; that is $J$ is continuously
-        differentiable in $\bx$ and is such that \[ 0 = \min_{u\in U} \left[
+        differentiable in $\bx$ and is such that \[ 0 = \min_{\bu\in U} \left[
         \ell(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx. \]
         Suppose also that $\pi^*(\bx)$ attains the minimum in the equation for
         all $\bx$.  Further assume that the differential equation described by
@@ -4535,6 +4535,36 @@ with Stochasticity</h1>
     <exercise><h1>Ill-Posed Optimal Control Problem</h1>
 
       Consider the (unconstrained) double integrator system $\ddot q = u$.  Imagine you are asked to find the control policy $u = \pi (q, \dot q)$ that minimizes the seemingly innocuous cost function $$J = \int_{0}^{\infty} q^2(t) + (u^2(t) - 1)^2 dt.$$  Do you see any issue with this problem setup? How does the optimal control signal $u(t)$ look like if, for example, the initial state is $q(0) = \dot q(0) = 0$?
+
+    </exercise>
+
+    <exercise><h1>title</h1>
+
+    	Consider the scalar equation $$\dot{x} = -4x + 2u,$$ and the infinite horizon cost function $$J = \int_0^{\infty} [32x^2(t) + u^2(t)] dt.$$  
+
+    </exercise>
+
+    <exercise><h1>title</h1>
+
+    	Numerical solution of the HJB for harder problem (nonlinear) + notebook.
+
+    </exercise>
+
+    <exercise><h1>Towards Reinforcement Learning</h1>
+
+    	You have a nonlinear system $\bx = f (\bx, \bu)$ with objective $\int_0^\infty \ell(x(t),u(t)) dt$.
+
+    	<ol type="a">
+
+    		<li>Given $\pi^*$ can I recover $J^*$?</li>
+
+    		<li>The dynamics $f$ of your systems is unknown, but you would still do optimal control.  Does knowing $J^*(\bx)$ help you in any way?</li>
+
+    		<li>Assume you know $f$ and somebody gave you a $J^*(\bx)$.  Is this enough to recover $\ell$?</li>
+
+    		<li>$J^*(\bx)$ is a function of $n$ variables.  If you could learn a fucntion of $n+m$ variables, what would you learn?</li>
+
+    	</ol>
 
     </exercise>
 
