@@ -50,8 +50,11 @@ ENV HOME=/home/$NB_USER \
 WORKDIR $HOME
 COPY .binder/entrypoint /opt/underactuated/bin/
 COPY underactuated/ $HOME/underactuated
+COPY examples/ $HOME/examples
 RUN chown -R $NB_UID:$NB_GID $HOME/underactuated \
   && find $HOME/underactuated \( -name BUILD.bazel -or -name CMakeLists.txt \) -delete
+RUN chown -R $NB_UID:$NB_GID $HOME/examples \
+  && find $HOME/examples \( -name BUILD.bazel -or -name CMakeLists.txt \) -delete
 USER $NB_USER
 ENTRYPOINT ["/opt/underactuated/bin/entrypoint"]
 CMD ["jupyter", "notebook", "--ip", "0.0.0.0"]
