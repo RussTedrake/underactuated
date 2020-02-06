@@ -16,6 +16,7 @@ rt_py_library(
     name = "underactuated",
     srcs = [
         "__init__.py",
+        "jupyter.py",
         "multibody.py",
         "pyplot_visualizer.py",
         "utils.py",
