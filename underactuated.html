@@ -11,20 +11,19 @@
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
         skipStartupTypeset:true,
-        extensions: ["tex2jax.js"],
-        jax: ["input/TeX", "output/HTML-CSS"],
         TeX: { equationNumbers: {autoNumber: "AMS"}, noErrors: { disabled: true } },
         tex2jax: {
           inlineMath: [ ['$','$'], ["\\(","\\)"] ],
           displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
           processEscapes: true
         },
-        "HTML-CSS": { availableFonts: ["TeX"] }
       });
     </script>
     <script type="text/javascript"
-      src="htmlbook/MathJax/MathJax.js?config=TeX-AMS_HTML">
+      src="http://underactuated.csail.mit.edu/htmlbook/MathJax/MathJax.js?config=TeX-AMS_SVG">
     </script>
+    <!-- Fallback to local MathJax (to support offline viewing) -->
+    <script>window.MathJax || document.write('<script src="htmlbook/MathJax/MathJax.js?config=TeX-AMS_SVG""><\/script>')</script>
 
     <link rel="stylesheet" href="htmlbook/highlight/styles/default.css">
     <script src="htmlbook/highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
