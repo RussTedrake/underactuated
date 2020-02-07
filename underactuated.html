@@ -4538,11 +4538,37 @@ with Stochasticity</h1>
 
     </exercise>
 
-    <exercise><h1>title</h1>
+    <exercise><h1>A Linear System with Quadratic Cost</h1>
 
-    	Consider the scalar equation $$\dot{x} = -4x + 2u,$$ and the infinite horizon cost function $$J = \int_0^{\infty} [32x^2(t) + u^2(t)] dt.$$  
+    	Consider the scalar differential equation $$\dot{x} = x + u,$$ and the infinite horizon cost function $$J = \int_0^{\infty} [3x^2(t) + u^2(t)] dt.$$  As we will see in the <a href="?chapter=lqr">chapter on linear-quadratic regulation</a>, the optimal cost-to-go for a problem of this kind assumes the form $J^* = S x^2$.  It is not hard to see that this, in turn, implies that the optimal controller has the form $u^* = - K x$.
+
+      <ol type="a">
+
+        <li>Imagine that you plugged the expression $J^* = S x^2$ in the HJB equations for this problem, you solved them for $S$, and you got $S \leq 0$.  Would this result ring any alarm bells?  Explain your answer.</li>
+
+        <li>Use the HJB sufficiency theorem to derive the optimal values of $S$ and $K$.</li>
+
+        <li>
+
+          Frequently, it is not possible to solve the HJB equations analytically.  In these cases we discretize the problem and we use a computer.  Let us introduce a time step $h > 0$ and discretize the dynamics as $$\frac{x[n+1] - x[n]}{h} = x[n] + u[n],$$ and the objective as $$h \sum_{n=0}^{\infty} (3 x^2[n] + u^2[n]).$$  One of the following expressions is the correct cost-to-go $J_{\text d}^*(x)$ for this discretized problem.  Can you identify it without solving the discrete-time HJB equation? Explain your answer.
+
+          <ol ol type="i">
+
+            <li>$J_{\text d}^* (x)= S_{\text d} x^4$ with $S_{\text d} = 3 + h + \sqrt{6}h^2$.</li>
+
+            <li>$J_{\text d}^* (x)= S_{\text d} x^2$ with $S_{\text d} = 1 + 2h + 2 \sqrt{h^2 + h +1}$.</li>
+
+            <li>$J_{\text d}^* (x)= S_{\text d} x^2$ with $S_{\text d} = 3 + 2h^2 + \sqrt{h^2 + h + 2}$.</li>
+
+          </ol>
+
+        </li>
+
+      </ol>
 
     </exercise>
+
+    <!--
 
     <exercise><h1>title</h1>
 
@@ -4567,6 +4593,8 @@ with Stochasticity</h1>
     	</ol>
 
     </exercise>
+
+    -->
 
   </section>
 
