@@ -826,11 +826,11 @@ are available on YouTube</a>.</p>
 
         <li> For any twice-differentiable desired trajectory $\bq_{\text{des}}(t)$, is it always possible to find a control signal $\bu(t)$ such that $\bq(t) = \bq_{\text{des}}(t)$ for all $t \geq 0$, provided that $\bq(0) = \bq_{\text{des}}(0)$ and $\dot \bq(0) = \dot \bq_{\text{des}}(0)$?</li>
 
-        <li>Now consider the simplest fully-actuated robot: the double integrator. The dynamics of this system reads $m \ddot q = u$, and you can think of it as a cart of mass $m$ moving on a straight rail, controlled by a force $u$.  The figure below depicts its phase portrait for $u=0$.  Is it possible to find a control signal $u(t)$ that drives the double integrator from the initial state $\bx(0) = [2, 0.5]^T$ to the origin along a straight line (blue trajectory)? Does the answer change if we set $\bx(0)$ to be $[2, -0.5]^T$ (red trajectory)?
+        <li>Now consider the simplest fully-actuated robot: the double integrator. The dynamics of this system reads $m \ddot q = u$, and you can think of it as a cart of mass $m$ moving on a straight rail, controlled by a force $u$.  The figure below depicts its vector field (i.e., the vector $\dot \bx = [\dot q, u/m]^T$ for different values of $\bx=[q, \dot q]^T$) when $u=0$.  Is it possible to find a control signal $u(t)$ that drives the double integrator from the initial state $\bx(0) = [2, 0.5]^T$ to the origin along a straight line (blue trajectory)? Does the answer change if we set $\bx(0)$ to be $[2, -0.5]^T$ (red trajectory)?
 
           <figure>
             <img width="60%" data-src="figures/exercises/trajectory_tracking.svg"/>
-            <figcaption>Phase portrait of the double integrator.</figcaption>
+            <figcaption>Vector field of the double integrator.</figcaption>
           </figure>
 
         <li> The dynamics \ref{eq:f1_plus_f2} are $n=\dim[\bq]$ <i>second-order</i> differential equations.  However, it is always possible (and we'll frequently do it) to describe these equations in terms of $2n$ <i>first-order</i> differential equations $\dot \bx = f(\bx,t)$.  To this end, we simply define $$f(\bx,t) = \begin{bmatrix} \dot\bq \\ {\bf f}_1(\bq,\dot\bq,t) + {\bf f}_2(\bq,\dot\bq,t)\bu \end{bmatrix}.$$  For any twice-differentiable trajectory $\bx_{\text{des}}(t)$, is it always possible to find a control $\bu(t)$ such that $\bx(t) = \bx_{\text{des}}(t)$ for all $t \geq 0$, provided that $\bx(0) = \bx_{\text{des}}(0)$?</li>
