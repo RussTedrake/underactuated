@@ -6,6 +6,7 @@
 
 load("@pip//:requirements.bzl", "all_requirements")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
+load("//tools/rt/pycodestyle:def.bzl", "py_pycodestyle_test")
 
 def _common_attrs(attrs):
     if "deps" in attrs and attrs["deps"] != None:
@@ -31,11 +32,40 @@ def _test_attrs(attrs):
         attrs["size"] = "small"
     return _binary_attrs(attrs)
 
+def _pycodestyle_test_attrs(attrs):
+    if "config" not in attrs or attrs["config"] == None:
+        attrs["config"] = "//:setup.cfg"
+    if "size" not in attrs or attrs["size"] == None:
+        attrs["size"] = "small"
+    if "tags" in attrs and attrs["tags"] != None:
+        attrs["tags"] = attrs["tags"] + ["pycodestyle"]
+    else:
+        attrs["tags"] = ["pycodestyle"]
+    return attrs
+
 def rt_py_binary(**attrs):
+    if attrs.pop("pycodestyle", True):
+        rt_py_pycodestyle_test(
+            name = attrs["name"] + "_pycodestyle",
+            srcs = attrs["srcs"],
+        )
     py_binary(**_binary_attrs(attrs))
 
 def rt_py_library(**attrs):
+    if attrs.pop("pycodestyle", True):
+        rt_py_pycodestyle_test(
+            name = attrs["name"] + "_pycodestyle",
+            srcs = attrs["srcs"],
+        )
     py_library(**_common_attrs(attrs))
 
+def rt_py_pycodestyle_test(**attrs):
+    py_pycodestyle_test(**_pycodestyle_test_attrs(attrs))
+
 def rt_py_test(**attrs):
+    if attrs.pop("pycodestyle", True):
+        rt_py_pycodestyle_test(
+            name = attrs["name"] + "_pycodestyle",
+            srcs = attrs["srcs"],
+        )
     py_test(**_test_attrs(attrs))

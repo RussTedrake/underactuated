@@ -16,6 +16,10 @@ rt_dependencies()
 
 rt_toolchains()
 
+load("@bazel_skylib//lib:versions.bzl", "versions")
+
+versions.check("2.0.0")
+
 load(
     "//tools/rt/python:repositories.bzl",
     "rt_pip3_import",

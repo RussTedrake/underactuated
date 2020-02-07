@@ -11,7 +11,10 @@ bzl_library(
     name = "defs",
     srcs = ["defs.bzl"],
     visibility = ["//tools/rt/jupyter:__pkg__"],
-    deps = [":rules_python_defs"],
+    deps = [
+        ":rules_python_defs",
+        "//tools/rt/pycodestyle:def",
+    ],
 )
 
 py_runtime(

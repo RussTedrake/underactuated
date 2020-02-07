@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# @@GENERATED_FILE_MARKER@@
+
+set -euo pipefail
+
+exec @@PYCODESTYLE@@ @@ARGS@@ @@SRCS@@ 2>&1
