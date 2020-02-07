@@ -7,6 +7,7 @@
     <meta name="Underactuated Robotics" content="text/html; charset=utf-8;" />
 
     <script type="text/javascript" src="chapters.js"></script>
+    <script type="text/javascript" src="htmlbook/book.js"></script>
 
     <script type="text/x-mathjax-config">
       MathJax.Hub.Config({
@@ -32,73 +33,26 @@
   </head>
 
 
-<body onload="loadChapter('humanoids');">
-<section data-type="titlepage" class="titlepage">
+<body onload="loadChapter('underactuated');">
+
+<div data-type="titlepage">
   <header>
     <h1><a href="underactuated.html" style="text-decoration:none;">Underactuated Robotics</a></h1>
-    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p>
-  	<p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
-    <p style="font-size: 14px; text-align: right;">
+    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p> 
+    <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
+    <p style="font-size: 14px; text-align: right;"> 
       &copy; Russ Tedrake, 2020<br/>
       <a href="tocite.html">How to cite these notes</a><br/>
     </p>
   </header>
-</section>
-<div style="display:none" id="mathjax_setup"> <!-- definitions for mathjax -->
-  \[
-  \newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
-  \newcommand{\bc}{{\bf c}}
-  \newcommand{\bg}{{\bf g}}
-  \newcommand{\bh}{{\bf h}}
-  \newcommand{\bq}{{\bf q}}
-  \newcommand{\bv}{{\bf v}}
-  \newcommand{\bx}{{\bf x}}
-  \newcommand{\by}{{\bf y}}
-  \newcommand{\bu}{{\bf u}}
-  \newcommand{\bw}{{\bf w}}
-  \newcommand{\bz}{{\bf z}}
-  \newcommand{\bA}{{\bf A}}
-  \newcommand{\bB}{{\bf B}}
-  \newcommand{\bC}{{\bf C}}
-  \newcommand{\bH}{{\bf H}}
-  \newcommand{\bI}{{\bf I}}
-  \newcommand{\bJ}{{\bf J}}
-  \newcommand{\bK}{{\bf K}}
-  \newcommand{\bM}{{\bf M}}
-  \newcommand{\bQ}{{\bf Q}}
-  \newcommand{\bR}{{\bf R}}
-  \newcommand{\bT}{{\bf T}}
-  \newcommand{\balpha}{{\bf \alpha}}
-  \newcommand{\bbeta}{{\bf \beta}}
-  \newcommand{\blambda}{{\bf \lambda}}
-  \newcommand{\btau}{{\bf \tau}}
-  \newcommand{\bphi}{{\bf \phi}}
-  \newcommand{\bPhi}{{\bf \Phi}}
-  \newcommand{\bpi}{{\bf \pi}}
-  \newcommand{\bpsi}{{\bf \psi}}
-  \newcommand{\bPsi}{{\bf \Psi}}
-  \newcommand{\avg}[1]{E\left[ #1 \right]}
-  \newcommand{\subjto}{\textrm{subject to}}
-  \newcommand{\minimize}{\operatorname{\textrm{minimize}}}
-  \newcommand{\maximize}{\operatorname{\textrm{maximize}}}
-  \DeclareMathOperator*{\find}{find}
-  \newcommand{\argmax}{\operatorname{\textrm{argmax}}}
-  \newcommand{\argmin}{\operatorname{\textrm{argmin}}}
-  \newcommand{\sgn}{\operatorname{\textrm{sgn}}}
-  \newcommand{\trace}{\operatorname{\textrm{tr}}}
-  \newcommand{\sos}{\text{ is SOS}}
-  \]
 </div>
 
-<div id="debug_output"></div>
-
 <p><b>Note:</b> These are working notes used for <a
-href="http://underactuated.csail.mit.edu/Spring2020/">a course being taught at
-MIT</a>. They will be updated throughout the Spring 2020 semester.  <a
-href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos
-are available on YouTube</a>.</p>
+href="http://underactuated.csail.mit.edu/Spring2020/">a course being taught
+at MIT</a>. They will be updated throughout the Spring 2020 semester.  <a 
+href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos are available on YouTube</a>.</p> 
 
-<chapter class="chapter" id="humanoids"><h1>Highly-articulated Legged
+<chapter><h1>Highly-articulated Legged
 Robots</h1>
 
   <p>The passive dynamic walkers and hopping robots described in the last

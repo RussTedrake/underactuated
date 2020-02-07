@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <title>Underactuated Robotics</title>
+    <meta name="Underactuated Robotics" content="text/html; charset=utf-8;" />
+
+    <script type="text/javascript" src="chapters.js"></script>
+    <script type="text/javascript" src="htmlbook/book.js"></script>
+
+    <script src="htmlbook/mathjax-config.js" defer></script> 
+    <script type="text/javascript" id="MathJax-script" defer
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+    
+    <link rel="stylesheet" href="htmlbook/highlight/styles/default.css">
+    <script src="htmlbook/highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <link rel="stylesheet" type="text/css" href="htmlbook/book.css">
+  </head>
+
+
+<body onload="loadChapter('underactuated');">
+
+<div data-type="titlepage">
+  <header>
+    <h1><a href="underactuated.html" style="text-decoration:none;">Underactuated Robotics</a></h1>
+    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p> 
+    <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
+    <p style="font-size: 14px; text-align: right;"> 
+      &copy; Russ Tedrake, 2020<br/>
+      <a href="tocite.html">How to cite these notes</a><br/>
+    </p>
+  </header>
+</div>
+
+<p><b>Note:</b> These are working notes used for <a
+href="http://underactuated.csail.mit.edu/Spring2020/">a course being taught
+at MIT</a>. They will be updated throughout the Spring 2020 semester.  <a 
+href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos are available on YouTube</a>.</p> 
+
+<chapter>
+<h1>Fully-actuated vs Underactuated Systems</h1>
+
+  <p>Robots today move far too conservatively, and accomplish only a fraction of
+  the tasks and achieve a fraction of the performance that they are mechanically
+  capable of.  In many cases, we are still fundamentally limited by control
+  technology which matured on rigid robotic arms in structured factory
+  environments.  The study of underactuated robotics focuses on building control
+  systems which use the natural dynamics of the machines in an attempt to
+  achieve extraordinary performance in terms of speed, efficiency, or
+  robustness.</p>
+
+  <section>
+  <h1>Motivation</h1>
+
+    <p>Let's start with some examples, and some videos.</p>
+
+    <subsection>
+    <h1>Honda's ASIMO vs. passive dynamic walkers</h1>
+
+      <p> The world of robotics changed when, in late 1996, Honda Motor Co.
+      announced that they had been working for nearly 15 years (behind closed
+      doors) on walking robot technology.  Their designs have continued to
+      evolve, resulting in a humanoid robot they call ASIMO (Advanced Step in
+      Innovative MObility).  For nearly 20 years, Honda's robots were widely
+      considered to represent the state of the art in walking robots, although
+      there are now many robots with designs and performance very similar to
+      ASIMO's. We will dedicate effort to understanding a few of the details of
+      ASIMO when we discuss algorithms for walking... for now I just want you to
+      become familiar with the look and feel of ASIMO's movements [watch the
+      asimo video below now]. </p>
+
+      <figure>
+        <video width="80%" controls>
+          <source src="figures/walking_while_avoiding_people.ogg" type="video/ogg"/>
+          <source src="http://world.honda.com/ASIMO/technology/2011/intelligence/video02/movie640w.mp4" type="video/mp4"/>
+        </video><br/>
+        <figcaption>Honda's ASIMO (from <a href="http://world.honda.com/ASIMO/video/">http://world.honda.com/ASIMO/video/</a>)</figcaption>
+      </figure>
+
+      <p> I hope that your first reaction is to be incredibly impressed with the
+      quality and versatility of ASIMO's movements.  Now take a second look.
+      Although the motions are very smooth, there is something a little
+      unnatural about ASIMO's gait.  It feels a little like an astronaut
+      encumbered by a heavy space suit.  In fact this is a reasonable analogy...
+      ASIMO is walking a bit like somebody that is unfamiliar with his/her
+      dynamics.  Its control system is using high-gain feedback, and therefore
+      considerable joint torque, to cancel out the natural dynamics of the
+      machine and strictly follow a desired trajectory. This control approach
+      comes with a stiff penalty.  ASIMO uses roughly 20 times the energy
+      (scaled) that a human uses to walk on the flat (measured by cost of
+      transport)<elib>Collins05</elib>.  Also, control stabilization in this
+      approach only works in a relatively small portion of the state space (when
+      the stance foot is flat on the ground), so ASIMO can't move nearly as
+      quickly as a human, and cannot walk on unmodelled or uneven terrain. </p>
+
+      <figure>
+        <p>
+          <video width="80%" controls title="If your browser cannot play this video, then download it using the link below.">
+            <source src="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_angle.mpg" type="video/mp4"/>
+            <source src="figures/passive_angle.ogg" type="video/ogg"/>
+          </video><br/>
+          <a href="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_angle.mpg">Download the video</a>
+        </p>
+        <p>
+          <video width="80%" controls title="If your browser cannot play this video, then download it using the link below.">
+            <source src="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_behind.mpg" type="video/mp4">
+            <source src="figures/passive_behind.ogg" type="video/ogg"/>
+          </video><br/>
+          <a href="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_behind.mpg">Download the video</a>
+        </p>
+        <figcaption>A 3D passive dynamic walker by Steve Collins and Andy Ruina<elib>Collins01</elib></figcaption>
+      </figure>
+
+      <p> For contrast, let's now consider a very different type of walking
+      robot, called a passive dynamic walker (PDW).  This "robot" has no motors,
+      no controllers, no computer, but is still capable of walking stably down a
+      small ramp, powered only by gravity [watch videos above now].  Most people
+      will agree that the passive gait of this machine is more natural than
+      ASIMO's; it is certainly more efficient.  Passive walking machines have a
+      long history - there are patents for passively walking toys dating back to
+      the mid 1800's.  We will discuss, in detail, what people know about the
+      dynamics of these machines and what has been accomplished experimentally.
+      This most impressive passive dynamic walker to date was built by Steve
+      Collins in Andy Ruina's lab at Cornell<elib>Collins01</elib>. </p>
+
+      <p> Passive walkers demonstrate that the high-gain, dynamics-cancelling
+      feedback approach taken on ASIMO is not a necessary one.  In fact, the
+      dynamics of walking is beautiful, and should be exploited - not cancelled
+      out. </p>
+
+      <p> The world is just starting to see what this vision could look like.
+      This video from Boston Dynamics is one of my favorites of all time:</p>
+
+      <figure>
+      <iframe width="560" height="315"
+              src="https://www.youtube.com/embed/fRj34o4hN4I?rel=0"
+              frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+      <figcaption>Boston Dynamics' Atlas robot does a backflip.</figcaption>
+      </figure>
+
+      <p> This result is a marvel of engineering (the mechanical design alone is
+      amazing...).  In this class, we'll teach you the computational tools to
+      required to make robots perform this way.  We'll also try to reason about
+      how robust these types of maneuvers are and can be.  Don't worry, if you
+      do not have a super lightweight, super capable, and super durable
+      humanoid, then a simulation will be provided for you.  </p> </subsection>
+
+    <subsection><h1>Birds vs. modern aircraft</h1>
+
+      <p> The story is surprisingly similar in a very different type of machine.
+      Modern airplanes are extremely effective for steady-level flight in still
+      air. Propellers produce thrust very efficiently, and today's cambered
+      airfoils are highly optimized for speed and/or efficiency. It would be
+      easy to convince yourself that we have nothing left to learn from birds.
+      But, like ASIMO, these machines are mostly confined to a very
+      conservative, low angle-of-attack flight regime where the aerodynamics on
+      the wing are well understood.  Birds routinely execute maneuvers outside
+      of this flight envelope (for instance, when they are landing on a perch),
+      and are considerably more effective than our best aircraft at exploiting
+      energy (eg, wind) in the air.  </p>
+
+      <p> As a consequence, birds are extremely efficient flying machines; some
+      are capable of migrating thousands of kilometers with incredibly small
+      fuel supplies.  The wandering albatross can fly for hours, or even days,
+      without flapping its wings - these birds exploit the shear layer formed by
+      the wind over the ocean surface in a technique called dynamic soaring.
+      Remarkably, the metabolic cost of flying for these birds is
+      indistinguishable from the baseline metabolic cost<elib>Arnould96</elib>,
+      suggesting that they can travel incredible distances (upwind or downwind)
+      powered almost completely by gradients in the wind.  Other birds achieve
+      efficiency through similarly rich interactions with the air - including
+      formation flying, thermal soaring, and ridge soaring.  Small birds and
+      large insects, such as butterflies and locusts, use "gust soaring" to
+      migrate hundreds or even thousands of kilometers carried primarily by the
+      wind. </p>
+
+      <p> Birds are also incredibly maneuverable.  The roll rate of a highly
+      acrobatic aircraft (e.g, the A-4 Skyhawk) is approximately 720
+      deg/sec<elib>Shyy08</elib>; a barn swallow has a roll rate in excess of
+      5000   deg/sec<elib>Shyy08</elib>. Bats can be flying at full-speed in one
+      direction, and completely reverse direction while maintaining forward
+      speed, all in just over 2 wing-beats and in a distance less than half the
+      wingspan<elib>Tian06</elib>.  Although quantitative flow visualization
+      data from maneuvering flight is scarce, a dominant theory is that the
+      ability of these animals to produce sudden, large forces for
+      maneuverability can be attributed to unsteady aerodynamics, e.g., the
+      animal creates a large suction vortex to rapidly change
+      direction<elib>Triantafyllou95</elib>.  These astonishing capabilities are
+      called upon routinely in maneuvers like flared perching, prey-catching,
+      and high speed flying through forests and caves.  Even at high speeds and
+      high turn rates, these animals are capable of incredible agility - bats
+      sometimes capture prey on their wings, Peregrine falcons can pull 25 G's
+      out of a 240 mph dive to catch a sparrow in
+      mid-flight<elib>Tucker98</elib>, and even the small birds outside our
+      building can be seen diving through a chain-link fence to grab a bite of
+      food. </p>
+
+      <p> Although many impressive statistics about avian flight have been
+      recorded, our understanding is partially limited by experimental
+      accessibility - it is quite difficult to carefully measure birds (and the
+      surrounding airflow) during their most impressive maneuvers without
+      disturbing them.  The dynamics of a swimming fish are closely related, and
+      can be more convenient to study. Dolphins have been known to swim
+      gracefully through the waves alongside ships moving at 20
+      knots<elib>Triantafyllou95</elib>.  Smaller fish, such as the bluegill
+      sunfish, are known to possess an escape response in which they propel
+      themselves to full speed from rest in less than a body length; flow
+      visualizations indeed confirm that this is accomplished by creating a
+      large suction vortex along the side of the body<elib>Tytell08</elib> -
+      similar to how bats change direction in less than a body length. There are
+      even observations of a dead fish swimming upstream by pulling energy out
+      of the wake of a cylinder; this passive propulsion is presumably part of
+      the technique used by rainbow trout to swim upstream at mating
+      season<elib>Beal06</elib>. </p>
+
+    </subsection>
+
+    <subsection><h1>Manipulation</h1>
+
+      <p>Despite a long history of success in industrial applications, and the
+      huge potential for consumer applications, we still don't have robot arms
+      that can perform any meaningful tasks in the home.  Admittedly, the
+      perception problem (using sensors to detect/localize objects and
+      understand the scene) for home robotics is incredibly difficult. But even
+      if we were given a perfect perception system, our robots are still a long
+      way from performing basic object manipulation tasks with the dexterity and
+      versatility of a human. </p>
+
+      <p>Most robots that perform object manipulation today use a stereotypical
+      pipeline.  First, we enumerate a handful of contact locations on the hand
+      (these points, and only these points, are allowed to contact the world).
+      Then, given a localized object in the environment, we plan a
+      collision-free trajectory for the arm that will move the hand into a
+      "pre-grasp" location. At this point the robot closes it's eyes
+      (figuratively) and closes the hand, hoping that the pre-grasp location was
+      good enough that the object will be successfully grasped using e.g. only
+      current feedback in the fingers to know when to stop closing.
+      "Underactuated hands" make this approach more successful, but the entire
+      approach really only works well for enveloping grasps. </p>
+
+      <p>The enveloping grasps approach may actually be sufficient for a number
+      of simple pick-and-place tasks, but it is a very poor representation of
+      how humans do manipulation.  When humans manipulate objects, the contact
+      interactions with the object and the world are very rich -- we often use
+      pieces of the environment as fixtures to reduce uncertainty, we commonly
+      <i>exploit</i> slipping behaviors (e.g. for picking things up, or
+      reorienting it in the hand), and our brains don't throw NaNs if we use the
+      entire surface of our arms to e.g. manipulate a large object. </p>
+
+      <todo>Add videos.  Salami pick and place?  Rick's box turning?  Alex's
+      disney bubbles?</todo>
+
+      <p>By the way, in most cases, if the robots fail to make contact at the
+      anticipated contact times/locations, <a
+      href="https://youtu.be/g0TaYhjpOfo?t=48s">bad things can happen</a>. The
+      results are hilarious and depressing at the same time.  (Let's fix
+      that!)</p>
+
+    </subsection>
+
+    <subsection><h1>The common theme</h1>
+
+      <p> Classical control techniques for robotics are based on the idea that
+      feedback can be used to override the dynamics of our machines.  These
+      examples suggest that to achieve outstanding dynamic performance
+      (efficiency, agility, and robustness) from our robots, we need to
+      understand how to design control systems which take advantage of the
+      dynamics, not cancel them out.  That is the topic of this course. </p>
+
+      <p> Surprisingly, many formal control ideas do not support the idea of
+      "exploiting" the dynamics.  Optimal control formulations (which we will
+      study in depth) allow it in principle, but optimal control of nonlinear
+      systems is still a relatively ad hoc discipline.  Sometimes I joke that
+      in order to convince a control theorist to consider the dynamics, you
+      have to do something drastic, like taking away her control authority -
+      remove a motor, or enforce a torque-limit.  These issues have created a
+      formal class of systems, the underactuated systems, for which people have
+      begun to more carefully consider the dynamics of their machines in the
+      context of control. </p>
+
+    </subsection>
+
+  </section>
+
+  <section><h1>Definitions</h1>
+
+    <p> According to Newton, the dynamics of mechanical systems are second order
+    ($F = ma$).  Their state is given by a vector of positions, $\bq$ (also
+    known as the configuration vector), and a vector of velocities, $\dot{\bq}$,
+    and (possibly) time. The general form for a second-order controllable
+    dynamical system is: $$\ddot{\bq} = {\bf f}(\bq,\dot{\bq},\bu,t),$$ where
+    $\bu$ is the control vector.  As we will see, the dynamics for many of the
+    robots that we care about turn out to be affine in commanded torque, so
+    let's consider a slightly constrained form: \begin{equation}\ddot{\bq} =
+    {\bf f}_1(\bq,\dot{\bq},t) + {\bf f}_2(\bq,\dot{\bq},t)\bu
+    \label{eq:f1_plus_f2}.\end{equation} </p>
+
+    <definition><h1>Fully-Actuated</h1> A control system
+    described by equation \ref{eq:f1_plus_f2} is fully-actuated in state
+    $(\bq,\dot{\bq})$ at time $t$ if it is able to command any instantaneous
+    acceleration in $\bq$: \begin{equation} \textrm{rank}\left[{\bf f}_2
+    (\bq,\dot{\bq},t)\right] = \dim\left[\bq\right].\end{equation} </definition>
+
+    <definition><h1>Underactuated</h1> A control system
+    described by equation \ref{eq:f1_plus_f2} is underactuated in state
+    $(\bq,\dot{\bq})$ at time $t$ if it is not able to command an arbitrary
+    instantaneous acceleration in $\bq$: \begin{equation}
+    \textrm{rank}\left[{\bf f}_2(\bq,\dot{\bq},t)\right] < \dim\left[\bq\right].
+    \label{eq:underactuated_def}\end{equation} </definition>
+
+    <p>Notice that whether or not a control system is underactuated may depend
+    on the state of the system or even on time, although for most systems
+    (including all of the systems in this book) underactuation is a global
+    property of the system.  We will refer to a system as underactuated if it
+    is underactuated in <i>all</i> states and times.  In practice, we often
+    refer informally to systems as fully actuated as long as they are fully
+    actuated in <i>most</i> states (e.g., a "fully-actuated" system might still
+    have joint limits or lose rank at a kinematic singularity).  Admittedly,
+    this permits the existence of a gray area, where it might feel awkward to
+    describe the <i>system</i> as either fully- or underactuated (we should
+    instead only describe its states); we'll see examples, for instance, of
+    hybrid systems like walking robots that are fully-actuated in some modes
+    but underactuated in others.  I will still informally refer to these
+    systems as being underactuated whenever reasoning about the underactuation
+    is useful/necessary for developing a control strategy.</p>
+
+    <example class="drake" id="robot_manipulators"><h1>Robot Manipulators</h1>
+
+      <figure>
+      <img style="width:250px;" src="figures/simple_double_pend.svg"/>
+      <todo>make this image spring to life with a python movie<</todo>
+      <figcaption>Simple double pendulum</figcaption>
+      </figure>
+
+      <p> Consider the simple robot manipulator illustrated above.  As described
+      in the <a href="multibody.html">Appendix</a>, the
+      equations of motion for this system are quite simple to derive, and take the
+      form of the standard "manipulator equations": $${\bf M}(\bq)\ddot\bq +
+      \bC(\bq,\dot\bq)\dot\bq = \btau_g(\bq) + {\bf B}\bu.$$ It is well known that
+      the inertia matrix, ${\bf M}(\bq)$ is (always) uniformly symmetric and
+      positive definite, and is therefore invertible. Putting the system into the
+      form of equation \ref{eq:f1_plus_f2} yields: \begin{align*}\ddot{\bq} =&
+      {\bf M}^{-1}(\bq)\left[ \btau_g(\bq) + \bB\bu - \bC(\bq,\dot\bq)\dot\bq
+      \right].\end{align*} Because ${\bf M}^{-1}(\bq)$ is always full rank, we
+      find that a system described by the manipulator equations is fully-actuated
+      if and only if $\bB$ is full row rank. For this particular example,
+      $\bq = [\theta_1,\theta_2]^T$ and $\bu = [\tau_1,\tau_2]^T$ (motor torques
+      at the joints), and $\bB = {\bf I}_{2 \times 2}$.  The system is fully
+      actuated.</p>
+
+      <div><b>Python Example</b>
+
+        <p> I personally learn best when I can experiment and get some physical
+        intuition.  The <a href="http://drake.mit.edu">companion software for the
+        course</a> should make it easy for you to see this system in action.  I
+        will link to online jupyter notebooks from the main text like this:</p>
+
+        <jupyter>examples/double_pendulum/dynamics.ipynb</jupyter>
+
+        <p>Try it out!  You'll see how to simulate the double pendulum, and even
+        how to inspect the dynamics symbolically.</p>
+        
+        <p>Note: You can also run the code on your own machines (see the <a
+        href="drake.html">Appendix</a> for details).</p>
+        
+      </div>
+    </example>
+
+    <p> While the basic double pendulum is fully actuated, imagine the somewhat
+    bizarre case that we have a motor to provide torque at the elbow, but no
+    motor at the shoulder.  In this case, we have $\bu = \tau_2$, and $\bB(\bq)
+    = [0,1]^T$.  This system is clearly underactuated.  While it may sound like
+    a contrived example, it turns out that it is almost exactly the dynamics we
+    will use to study as our simplest model of walking later in the class. </p>
+
+    <p>The matrix ${\bf f}_2$ in equation \ref{eq:f1_plus_f2} always has
+    dim$[\bq]$ rows, and dim$[\bu]$ columns. Therefore, as in the example, one
+    of the most common cases for underactuation, which trivially implies that
+    ${\bf f}_2$ is not full row rank, is dim$[\bu] < $ dim$[\bq]$.  This is the
+    case when a robot has joints with no motors. But this is not the only case.
+    The human body, for instance, has an incredible number of actuators
+    (muscles), and in many cases has multiple muscles per joint; despite having
+    more actuators than position variables, when I jump through the air, there
+    is no combination of muscle inputs that can change the ballistic trajectory
+    of my center of mass (barring aerodynamic effects).  My control system is
+    underactuated.</p>
+
+    <p>For completeness, let's generalize the definition of underactuation to
+    systems beyond the control-affine systems.</p>
+
+    <definition> <h1>Underactuated Control Differential Equations</h1> A
+    second-order control differential equation described by the equations
+    \begin{equation} \ddot\bq = {\bf f}(\bq, \dot\bq, t, \bu) \end{equation} is
+    <i>fully actuated</i> in state $\bx = (\bq, \dot\bq)$ and time $t$ if the
+    resulting map ${\bf f}$ is surjective: for every $\ddot\bq$ there exists a
+    $\bu$ which produces the desired response.  Otherwise it is
+    <i>underactuated</i>. </definition>
+  
+    <!-- note: I've removed this nth-order version because I still strongly dislike the fact that a fully-actuated 4th order system could be written as a 2nd order underactuated system. 
+
+    <definition> <h1>Underactuated Control Differential
+    Equations</h1> An $n$th-order control differential equation (with $n\ge2$)
+    described by the equations \begin{equation} \frac{d^n\bq}{dt^n} = f(\bq, ..,
+    \frac{d^{n-1} \bq}{dt^{n-1}}, t, {\bf u}) \end{equation} is fully actuated
+    in state ${\bf x} = (\bq, ..., \frac{d^{n-1} \bq}{dt^{n-1}})$ and time $t$
+    if the resulting map ${\bf f}$ is surjective: for every $\frac{d^n\bq}{dt^n}
+    $ there exists a ${\bf u}$ which produces the desired response.  Otherwise
+    it is underactuated. </definition>
+    -->  
+  
+    <p>It is easy to see that equation \ref{eq:underactuated_def} is a
+    sufficient condition for underactuation.  This definition can also be
+    extended to discrete-time systems and/or differential inclusions.</p>
+
+    <p>A quick note about notation.  When describing the dynamics of rigid-body
+    systems in this class, I will use $\bq$ for configurations (positions),
+    $\dot{\bq}$ for velocities, and use $\bx$ for the full state ($\bx =
+    [\bq^T,\dot{\bq}^T]^T$).  There is an important limitation to this
+    convention (3D angular velocity should not be represented as the derivative
+    of 3D pose) described in the Appendix<!-- ch:robot_dynamics -->, but it will
+    keep the notes cleaner. Unless otherwise noted, vectors are always treated
+    as column vectors. Vectors and matrices are bold (scalars are not). </p>
+
+  </section>
+
+  <section> <h1>Feedback Equivalence</h1>
+
+    <p> Fully-actuated systems are dramatically easier to control than
+    underactuated systems.  The key observation is that, for fully-actuated
+    systems with known dynamics (e.g., ${\bf f}_1$ and ${\bf f}_2$ are known for
+    a second-order control-affine system), it is possible to use feedback to
+    effectively change an arbitrary control problem into the problem of
+    controlling a trivial linear system. </p>
+
+    <p>When ${\bf f}_2$ is full row rank, it is invertible<sidenote>If ${\bf
+    f}_2$ is not square, for instance you have multiple actuators per joint,
+    then this inverse may not be unique.</sidenote>. Consider the potentially
+    nonlinear feedback control: $$\bu = {\bf \pi}(\bq,\dot\bq,t) = {\bf
+    f}_2^{-1}(\bq,\dot\bq,t) \left[ \bu' - {\bf f}_1(\bq,\dot\bq,t) \right],$$
+    where $\bu'$ is the new control input (an input to your controller).
+    Applying this feedback controller to equation \ref{eq:f1_plus_f2} results in
+    the linear, decoupled, second-order system: $$\ddot{\bq} = \bu'.$$ In other
+    words, if ${\bf f}_1$ and ${\bf f}_2$ are known and ${\bf f}_2$ is
+    invertible, then we say that the system is "feedback equivalent" to
+    $\ddot{\bq} = \bu'$.  There are a number of strong results which generalize
+    this idea to the case where ${\bf f}_1$ and ${\bf f}_2$ are estimated,
+    rather than known (e.g, <elib>Slotine90</elib>).</p>
+
+    <example class="drake"><h1>Feedback Cancellation on the Double
+    Pendulum</h1>
+
+    <p> Let's say that we would like our simple double pendulum to act like a
+    simple single pendulum (with damping), whose dynamics are given by:
+    \begin{align*} \ddot \theta_1 &= -\frac{g}{l}\sin\theta_1 -b\dot\theta_1 \\
+    \ddot\theta_2 &= 0. \end{align*} This is easily achieved using
+    <sidenote>Note that our chosen dynamics do not actually stabilize $\theta_2$
+    - this detail was left out for clarity, but would be necessary for any real
+    implementation.</sidenote> $$\bu = \bB^{-1}\left[ \bC\dot{\bq} - \btau_g +
+    {\bf M}\begin{bmatrix} -\frac{g}{l}s_1 - b\dot{q}_1 \\ 0 \end{bmatrix}
+    \right].$$ </p>
+
+    <p> Since we are embedding a nonlinear dynamics (not a linear one), we refer
+    to this as "feedback cancellation", or "dynamic inversion".  This idea
+    reveals why I say control is easy -- for the special case of a
+    fully-actuated deterministic system with known dynamics.  For example, it
+    would have been just as easy for me to invert gravity. Observe that the
+    control derivations here would not have been any more difficult if the robot
+    had 100 joints.
+    </p>
+
+    <div><b>Python Example</b> You can run these examples
+    using:
+
+    <jupyter>examples/double_pendulum/feedback_cancellation.ipynb</jupyter>
+
+    <p>As always, I highly recommend that you take a few minutes to read through
+    the source code.</p>
+
+    </div>
+
+    </example>
+
+    <p> Fully-actuated systems are feedback equivalent to $\ddot\bq = \bu$,
+    whereas <i>underactuated systems are not feedback equivalent to $\ddot\bq =
+    \bu$</i>.  Therefore, unlike fully-actuated systems, the control designer
+    has no choice but to reason about the more complex dynamics of the plant in
+    the control design. When these dynamics are nonlinear, this can dramatically
+    complicate feedback controller design.
+    </p>
+
+    <p>A related concept is <a
+    href="https://en.wikipedia.org/wiki/Feedback_linearization">feedback
+    linearization</a>.  The feedback-cancellation controller in the example
+    above is an example of feedback linearization -- using feedback to convert a
+    nonlinear system into a controllable linear system.  Asking whether or not a
+    system is "feedback linearizable" is not the same as asking whether it is
+    underactuated; even a controllable linear system can be underactuated, as we
+    will discuss <a href="acrobot.html#controllability">soon</a>.</p>
+
+    <!-- Another connection: For some feedback linearizable systems it can be
+    hard to find the linearizing controller; it IS true that the fully-actuated
+    systems are ones where we have an easy recipe for the linearizing controller
+    (based on inverting $f_2$). -->
+
+  </section>
+
+  <section><h1>Input and State Constraints</h1>
+
+    <p> Although the dynamic constraints due to missing actuators certainly
+    embody the spirit of this course, many of the systems we care about could be
+    subject to other dynamic constraints as well.  For example, the actuators on
+    our machines may only be mechanically capable of producing some limited
+    amount of torque, or there may be a physical obstacle in the free space with
+    which we cannot permit our robot to come into contact with. </p>
+
+    <definition><h1>Input and State Constraints</h1> A dynamical
+    system described by $\dot{\bx} = {\bf f}(\bx,\bu,t)$ may be subject to one
+    or more constraints described by $\bphi(\bx,\bu,t)\ge0$. </definition>
+
+    <p>In practice it can be useful to separate out constraints which depend
+    only on the input, e.g. $\phi(\bu)\ge0$, such as actuator limits, as they
+    can often be easier to handle than state constraints.  An obstacle in the
+    environment might manifest itself as one or more constraints that depend
+    only on position, e.g. $\phi(\bq)\ge0$.</p>
+
+    <p>By our generalized definition of underactuation, we can see that input
+    constraints can certainly cause a system to be underactuated.  State (only)
+    constraints are more subtle -- in general these actually reduce the
+    dimensionality of the state space, therefore requiring less dimensions of
+    actuation to achieve "full" control, but we only reap the benefits if we are
+    able to perform the control design in the "minimal coordinates" (which is
+    often difficult). </p>
+
+    <example><h1>Input limits</h1> Consider the constrained
+    second-order linear system \[ \ddot{x} = u, \quad |u| \le 1. \] By our
+    definition, this system is underactuated.  For example, there is no $u$
+    which can produce the acceleration $\ddot{x} = 2$. </example>
+
+    <p>Input and state constraints can complicate control design in similar ways
+    to having an insufficient number of actuators, (i.e., further limiting the
+    set of the feasible trajectories), and often require similar tools to find a
+    control solution.</p>
+
+    <subsection><h1>Nonholonomic constraints</h1>
+
+      <p> You might have heard of the term "nonholonomic system" (see e.g.
+      <elib>Bloch03</elib>), and be thinking about how nonholonomy relates to
+      underactuation.  Briefly, a nonholonomic constraint is a constraint of the
+      form $\phi(\bq, {\bf \dot{q}}, t) = 0$, which cannot be integrated into a
+      constraint of the form $\phi(\bq, t) = 0$ (a holonomic constraint). A
+      nonholonomic constraint does not restrain the possible configurations of
+      the system, but rather the manner in which those configurations can be
+      reached. While a holonomic constraint reduces the number of degrees of
+      freedom of a system by one, a nonholonomic constraint does not.  An
+      automobile or traditional wheeled robot provides a canonical example:</p>
+
+      <example id="wheeled_robot"><h1>Wheeled robot</h1> Consider a simple model of
+      a wheeled robot whose configuration is described by its Cartesian position
+      $x,y$ and its orientation, $\theta$, so $\bq = \begin{bmatrix} x, y,
+      \theta \end{bmatrix}^T$.  The system is subject to a differential
+      constraint that prevents side-slip, \begin{gather*} \dot{x} = v \cos\theta
+      \\ \dot{y} = v \sin\theta \\ v = \sqrt{\dot{x}^2 + \dot{y}^2}
+      \end{gather*} or equivalently, \[\dot{y} \cos \theta - \dot x \sin \theta
+      = 0.\] This constraint cannot be integrated into a constraint on
+      configuration&mdash;the car can get to any configuration $(x,y,\theta)$,
+      it just can't move directly sideways&mdash;so this is a nonholonomic
+      constraint. </example>
+
+      <p>Contrast the wheeled robot example with a robot on train tracks.  The
+      train tracks correspond to a holonomic constraint: the track constraint
+      can be written directly in terms of the configuration $\bq$ of the system,
+      without using the velocity ${\bf \dot{q}}$. Even though the track
+      constraint could also be written as a differential constraint on the
+      velocity, it would be possible to integrate this constraint to obtain a
+      constraint on configuration. The track restrains the possible
+      configurations of the system.</p>
+
+      <p> A nonholonomic constraint like the no-side-slip constraint on the
+      wheeled vehicle certainly results in an underactuated system.  The
+      converse is not necessarily true&mdash;the double pendulum system which is
+      missing an actuator is underactuated but would not typically be called a
+      nonholonomic system.  Note that the Lagrangian equations of motion are a
+      constraint of the form \[\bphi(\bq,{\bf \dot{q}},{\bf \ddot{q}},t) =  0,\]
+      so do not qualify as a nonholonomic constraint.</p>
+
+    </subsection>
+
+  </section>
+
+  <section><h1>Underactuated robotics</h1>
+
+    <p> The control of underactuated systems is an open and interesting problem
+    in controls.  Although there are a number of special cases where
+    underactuated systems have been controlled, there are relatively few general
+    principles.  Now here's the rub... most of the interesting problems in
+    robotics are underactuated: </p>
+
+    <ul>
+
+      <li> Legged robots are underactuated.  Consider a legged machine with $N$
+      internal joints and $N$ actuators.  If the robot is not bolted to the
+      ground, then the degrees of freedom of the system include both the
+      internal joints and the six degrees of freedom which define the position
+      and orientation of the robot in space.  Since $\bu \in \Re^N$ and $\bq \in
+      \Re^{N+6}$, equation \ref{eq:underactuated_def} is satisfied.</li>
+
+      <li> (Most) Swimming and flying robots are underactuated.  The story is
+      the same here as for legged machines.  Each control surface adds one
+      actuator and one DOF.  And this is already a simplification, as the true
+      state of the system should really include the (infinite-dimensional) state
+      of the flow.</li>
+
+      <li> Robot manipulation is (often) underactuated.  Consider a
+      fully-actuated robotic arm.  When this arm is manipulating an object with
+      degrees of freedom (even a brick has six), it can become underactuated. If
+      force closure is achieved, and maintained, then we can think of the system
+      as fully-actuated, because the degrees of freedom of the object are
+      constrained to match the degrees of freedom of the hand.  That is, of
+      course, unless the manipulated object has extra DOFs (for example, any
+      object that is deformable).</li>
+
+    </ul>
+
+    <p> Even control systems for fully-actuated and otherwise unconstrained
+    systems can be improved using the lessons from underactuated systems,
+    particularly if there is a need to increase the efficiency of their motions
+    or reduce the complexity of their designs.</p>
+
+  </section>
+
+  <section><h1>Goals for the course</h1>
+
+    <p> This course is based on the observation that there are new computational
+    tools from optimization theory, control theory, motion planning, and even
+    machine learning which can be used to design feedback control for
+    underactuated systems.  The goal of this class is to develop these tools in
+    order to design robots that are more dynamic and more agile than the current
+    state-of-the-art.</p>
+
+    <p> The target audience for the class includes both computer science and
+    mechanical/aero students pursuing research in robotics.  Although I assume a
+    comfort with linear algebra, ODEs, and Python, the course notes aim to
+    provide most of the material and references required for the course. </p>
+
+    <p>I have a confession: I actually think that the material we'll cover in
+      these notes is valuable far beyond robotics.  I think that systems theory
+      provides a powerful language for organizing computation in exceedingly
+      complex systems -- especially when one is trying to program and/or analyze
+      systems with continuous variables in a feedback loop (which happens
+      throughout computer science and engineering, by the way).  I hope you find
+      these tools to be broadly useful, even if you don't have a humanoid robot
+      capable of performing a backflip at your immediate disposal.</p>
+
+  </section>
+
+  <section><h1>Exercises</h1>
+  
+    <exercise><h1>Atlas Backflip</h1>
+
+      <figure>
+      <img style="height:160px;" src="figures/exercises/atlas_backflip.jpg"/>
+      <img style="height:160px;" src="figures/exercises/atlas_standing.jpg"/>
+      <figcaption>Atlas doing a backflip and Atlas standing.</figcaption>
+      </figure>
+
+      At the beginning of this chapter you have seen the Atlas humanoid doing a backflip.  Now consider the robot in the two states captured in the figure above.  Assuming that Atlas' actuators can produce unbounded torques $\bu$, establish whether or not each of the following statements is true.  Briefly justify your answer.
+
+      <ol type="a">
+
+        <li> The state of the humanoid can be represented by the angles and the angular velocities of all its joints.</li>
+
+        <li> While doing the backflip (state in the left figure), the humanoid is fully actuated.</li>
+
+        <li> While standing (state in the right figure), the humanoid is fully actuated.</li>
+
+      </ol>
+
+    </exercise>
+
+    <exercise><h1>Trajectory Tracking in State Space</h1>
+
+      Take a robot whose dynamics is governed by equation \ref{eq:f1_plus_f2}, and assume it to be fully actuated in all states $\bx = [\bq^T, \dot\bq^T]^T$ at all times $t$.
+
+      <ol type="a">
+
+        <li> For any twice-differentiable desired trajectory $\bq_{\text{des}}(t)$, is it always possible to find a control signal $\bu(t)$ such that $\bq(t) = \bq_{\text{des}}(t)$ for all $t \geq 0$, provided that $\bq(0) = \bq_{\text{des}}(0)$ and $\dot \bq(0) = \dot \bq_{\text{des}}(0)$?</li>
+
+        <li>Now consider the simplest fully-actuated robot: the double integrator. The dynamics of this system reads $m \ddot q = u$, and you can think of it as a cart of mass $m$ moving on a straight rail, controlled by a force $u$.  The figure below depicts its phase portrait for $u=0$.  Is it possible to find a control signal $u(t)$ that drives the double integrator from the initial state $\bx(0) = [2, 0.5]^T$ to the origin along a straight line (blue trajectory)? Does the answer change if we set $\bx(0)$ to be $[2, -0.5]^T$ (red trajectory)?
+
+          <figure>
+            <img width="60%" src="figures/exercises/trajectory_tracking.svg"/>
+            <figcaption>Phase portrait of the double integrator.</figcaption>
+          </figure>
+
+        <li> The dynamics \ref{eq:f1_plus_f2} are $n=\dim[\bq]$ <i>second-order</i> differential equations.  However, it is always possible (and we'll frequently do it) to describe these equations in terms of $2n$ <i>first-order</i> differential equations $\dot \bx = f(\bx,t)$.  To this end, we simply define $$f(\bx,t) = \begin{bmatrix} \dot\bq \\ {\bf f}_1(\bq,\dot\bq,t) + {\bf f}_2(\bq,\dot\bq,t)\bu \end{bmatrix}.$$  For any twice-differentiable trajectory $\bx_{\text{des}}(t)$, is it always possible to find a control $\bu(t)$ such that $\bx(t) = \bx_{\text{des}}(t)$ for all $t \geq 0$, provided that $\bx(0) = \bx_{\text{des}}(0)$?</li>
+
+      </ol>
+
+    </exercise>
+
+    <exercise><h1>Task-Space Control of the Double Pendulum</h1>
+
+      In <a href="#robot_manipulators">the example above</a>, we have seen that the double pendulum with one motor per joint is a fully-actuated system.  Here we consider a variation of it: instead of controlling the robot with the actuators at the shoulder and the elbow, we directly apply a force on the mass $m_2$ (tip of the second link).  Let $\bu = [u_1, u_2]^T$ be this force, with $u_1$ horizontal component (positive to the right) and $u_2$ vertical component (positive upwards).  This modification leaves the equations of motion derived in the <a href="multibody.html#manipulator_equation_double_pendulum">appendix example</a> almost unchanged; the only difference is that the matrix $\bB$ is now a function of $\bq$.  Namely, using the notation from the appendix, $$\bB (\bq) = \begin{bmatrix} l_1 c_1 + l_2 c_{1+2} & l_1 s_1 + l_2 s_{1+2} \\ l_2  c_{1+2} & l_2 s_{1+2} \end{bmatrix}.$$  Is the double pendulum with the new control input still fully-actuated in all states?  If not, identify the states in which it is underactuated.
+
+    </exercise>
+
+    <exercise><h1>Underactuation of the Planar Quadrotor</h1>
+
+      Later in the course we will study the dynamics of a quadrotor quite in depth, for the moment just look at the structure of the resulting equations of motion from the <a href="acrobot.html#planar_quadrotor">planar quadrotor section</a>.  The quadrotor is constrained to move in the vertical plane, with the gravity pointing downwards.  The configuration vector $\bq = [x, y, \theta]^T$ collects the position of the center of mass and the pitch angle.  The control input is the thrust $\bu = [u_1, u_2]^T$ produced by the two rotors.  The input $\bu$ can assume both signs and has no bounds.
+
+      <ol type="a">
+
+        <li> Identify the set of states $\bx = [\bq^T, \dot \bq^T]^T$ in which the system is underactuated.</li>
+
+        <li> For <i>all</i> the states in which the system is underactuated, identify an acceleration $\ddot \bq (\bq, \dot \bq)$ that cannot be instantaneously achieved.  Provide a rigorous proof of your claim by using the equations of motion: plug the candidate accelerations in the dynamics, and try to come up with contradictions such as $mg=0$.</li>
+
+
+      </ol>
+
+    </exercise>
+
+  </section>
+
+</chapter> 
+
+<div id="footer">
+  <hr>
+  <table style="width:100%;">
+    <tr><td><em>Underactuated Robotics</em></td><td align="right">&copy; Russ
+      Tedrake, 2020</td></tr>
+  </table>
+</div>
+
+
+</body>
+</html>
+  

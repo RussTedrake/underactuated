@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <title>Underactuated Robotics</title>
+    <meta name="Underactuated Robotics" content="text/html; charset=utf-8;" />
+
+    <script type="text/javascript" src="chapters.js"></script>
+    <script type="text/javascript" src="htmlbook/book.js"></script>
+
+    <script src="htmlbook/mathjax-config.js" defer></script> 
+    <script type="text/javascript" id="MathJax-script" defer
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+    </script>
+
+    <link rel="stylesheet" href="htmlbook/highlight/styles/default.css">
+    <script src="htmlbook/highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <link rel="stylesheet" type="text/css" href="htmlbook/book.css">
+  </head>
+
+
+<body onload="loadChapter('underactuated');">
+
+<div data-type="titlepage">
+  <header>
+    <h1><a href="underactuated.html" style="text-decoration:none;">Underactuated Robotics</a></h1>
+    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p> 
+    <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
+    <p style="font-size: 14px; text-align: right;"> 
+      &copy; Russ Tedrake, 2020<br/>
+      <a href="tocite.html">How to cite these notes</a><br/>
+    </p>
+  </header>
+</div>
+
+<p><b>Note:</b> These are working notes used for <a
+href="http://underactuated.csail.mit.edu/Spring2020/">a course being taught
+at MIT</a>. They will be updated throughout the Spring 2020 semester.  <a 
+href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos are available on YouTube</a>.</p> 
+
+<chapter>
+<h1>The Simple Pendulum</h1>
+
+  <section><h1>Introduction</h1>
+
+    <p> Our goals for this chapter are modest: we'd like to understand the
+    dynamics of a pendulum.</p>
+
+    <p>Why a pendulum?  In part, because the dynamics of a majority of our
+    multi-link robotics manipulators are simply the dynamics of a large number
+    of coupled pendula.  Also, the dynamics of a single pendulum are rich enough
+    to introduce most of the concepts from nonlinear dynamics that we will use
+    in this text, but tractable enough for us to (mostly) understand in the next
+    few pages. </p>
+
+    <figure> <img width="30%" src="figures/simple_pend.svg"/>
+    <figcaption>The simple pendulum</figcaption> </figure>
+
+    <p> The Lagrangian derivation of the equations of motion (as described in
+    the appendix) of the simple pendulum yields: \begin{equation*} m l^2
+    \ddot\theta(t) + mgl\sin{\theta(t)} = Q. \end{equation*} We'll consider the
+    case where the generalized force, $Q$, models a damping torque (from
+    friction) plus a control torque input, $u(t)$: $$Q = -b\dot\theta(t) +
+    u(t).$$ </p>
+
+  </section>
+
+  <section class="drake"><h1>Nonlinear dynamics with a
+    constant
+    torque</h1>
+
+    <p> Let us first consider the dynamics of the pendulum if it is driven in a
+    particular simple way: a torque which does not vary with time:
+    \begin{equation} ml^2 \ddot\theta + b\dot\theta + mgl \sin\theta = u_0.
+      \end{equation} </p>.
+
+
+    <example class="drake"><h1>Simple Pendulum in Python</h1>
+
+      <p>You can experiment with this system in <drake></drake> using</p>
+
+      <pysrc>pendulum/torque_slider_demo.py</pysrc>
+
+      <p>(use the slider at the top to adjust the torque input).</p>
+
+    </example>
+
+    <p> These are relatively simple differential equations, so if I give you
+    $\theta(0)$ and $\dot\theta(0)$, then you should be able to integrate them
+    to obtain $\theta(t)$... right?  Although it is possible, integrating even
+    the simplest case ($b = u = 0$) involves elliptic integrals of the first
+    kind; there is relatively little intuition to be gained here. </p>
+
+    <p> This is in stark contrast to the case of linear systems, where much of
+    our understanding comes from being able to explicitly integrate the
+    equations. For instance, for a simple linear system we have $$\dot{q} = a q
+    \quad \rightarrow \quad q(t) = q(0) e^{at},$$ and we can immediately
+    understand that the long-term behavior of the system is a (stable) decaying
+    exponential if $a<0$, an (unstable) growing exponential if $a>0$, and that
+    the system does nothing if $a=0$. Here we are with certainly one of the
+    simplest nonlinear systems we can imagine, and we can't even solve this
+    system? </p>
+
+    <p> All is not lost.  If what we care about is the long-term behavior of the
+    system, then there are a number of techniques we can apply.  In this
+    chapter, we will start by investigating graphical solution methods. These
+    methods are described beautifully in a book by Steve
+    Strogatz<elib>Strogatz94</elib>.</p>
+
+    <subsection><h1>The overdamped pendulum</h1>
+
+      <p> Let's start by studying a special case -- intuitively when
+      $b\dot\theta \gg ml^2\ddot\theta$ -- which via <a
+      href="https://en.wikipedia.org/wiki/Dimensionless_quantity">dimensional
+      analysis</a> (using the natural frequency $\sqrt{\frac{g}{l}}$ to match
+      units) occurs when $b \sqrt\frac{l}{g} \gg ml^2$. This is the case of
+      heavy damping, for instance if the pendulum was moving in molasses.  In
+      this case, the damping term dominates the acceleration term, and we have:
+      $$ml^2 \ddot\theta + b\dot\theta \approx b\dot\theta = u_0 -
+      mgl\sin\theta.$$ In other words, in the case of heavy damping, the system
+      looks approximately first order. This is a general property of heavily
+      damped systems, such as fluids at very low Reynolds number. </p>
+
+      <p> I'd like to ignore one detail for a moment: the fact that $\theta$
+      wraps around on itself every $2\pi$.  To be clear, let's write the system
+      without the wrap-around as: \begin{equation}b\dot{x} = u_0 -
+      mgl\sin{x}.\label{eq:overdamped_pend_ct}\end{equation} Our goal is to
+      understand the long-term behavior of this system: to find $x(\infty)$
+      given $x(0)$.  Let's start by plotting $\dot{x}$ vs $x$ for the case when
+      $u_0=0$:</p>
+
+      <figure> <img width="70%" src="figures/pend_sinx.svg"/> </figure>
+
+      <p> The first thing to notice is that the system has a number of <em>fixed
+      points</em> or <em>steady states</em>, which occur whenever $\dot{x} = 0$.
+      In this simple example, the zero-crossings are $x^* = \{..., -\pi, 0, \pi,
+      2\pi, ...\}$. When the system is in one of these states, it will never
+      leave that state.  If the initial conditions are at a fixed point, we know
+      that $x(\infty)$ will be at the same fixed point.</p>
+
+      <p>Next let's investigate the behavior of the system in the local vicinity
+      of the fixed points.  Examining the fixed point at $x^* = \pi$, if the
+      system starts just to the right of the fixed point, then $\dot{x}$ is
+      positive, so the system will move away from the fixed point.  If it starts
+      to the left, then $\dot{x}$ is negative, and the system will move away in
+      the opposite direction.  We'll call fixed-points which have this property
+      <em>unstable</em>.  If we look at the fixed point at $x^* = 0$, then the
+      story is different: trajectories starting to the right or to the left will
+      move back towards the fixed point.  We will call this fixed point
+      <em>locally stable</em>.  More specifically, we'll distinguish between
+      three types of local stability:
+
+      <ul>
+
+        <li>Locally stable <em>in the sense of Lyapunov</em> (i.s.L.).  A fixed
+        point, $x^*$ is locally stable i.s.L. if for every small $\epsilon > 0$,
+        I can produce a $\delta > 0$ such that if $\| x(0) - x^* \| < \delta$
+        then $\forall t$ $\| x(t) - x^*\| < \epsilon$.  In words, this means
+        that for any ball of size $\epsilon$ around the fixed point, I can
+        create a ball of size $\delta$ which guarantees that if the system is
+        started inside the $\delta$ ball then it will remain inside the
+        $\epsilon$ ball for all of time.</li>
+
+        <li>Locally <em>asymptotically stable</em>.  A fixed point is locally
+        asymptotically stable if it is stable i.s.L., and additionally $x(0) =
+        x^* + \epsilon$ implies that $\lim_{t\rightarrow \infty} x(t) =
+        x^*$.</li>
+
+        <li>Locally <em>exponentially stable</em>.  A fixed point is locally
+        exponentially stable if $x(0) = x^* + \epsilon$ implies that $\| x(t) -
+        x^* \| < Ce^{-\alpha t}$, for some positive constants $C$ and
+        $\alpha$.</li>
+
+        <todo>Briat15 Definition 2.2.1 accomplishes the same, but I like his formatting slightly better.</todo>
+
+      </ul>
+
+      <p>An initial condition near a fixed point that is stable in the sense of
+      Lyapunov may never reach the fixed point (but it won't diverge), near an
+      asymptotically stable fixed point will reach the fixed point as $t
+      \rightarrow \infty$, and near an exponentially stable fixed point will
+      reach the fixed point with a bounded rate.  An exponentially stable fixed
+      point is also an asymptotically stable fixed point, but the converse is
+      not true.  Asymptotic convergence in time (sometimes called Lyapunov
+      attractivity) does not actually imply Lyapunov
+      stability&dagger;<sidenote>&dagger; we can't see that in one dimension so
+      will have to hold that example for a moment</sidenote>, however, it is
+      standard to require stability i.s.L. specifically in the definition of
+      asymptotic stability.  Systems which are stable i.s.L. but not
+      asymptotically stable are easy to construct (e.g. $\dot{x} = 0$).
+      Interestingly, it is also possible to have nonlinear systems that converge
+      (or diverge) in finite-time; a so-called <em>finite-time stability</em>;
+      we will see examples of this later in the book, but it is a difficult
+      topic to penetrate with graphical analysis.  Rigorous nonlinear system
+      analysis is rich with subtleties and surprises.  Moreover, these
+      differences actually matter -- the code that we will write to stabilize
+      the systems will be subtley different depending on what type of stability
+      we want, and it can make or break the success of our methods.</p>
+
+      <p> Our graph of $\dot{x}$ vs. $x$ can be used to convince ourselves of
+      i.s.L. and asymptotic stability by visually inspecting $\dot{x}$ in the
+      vicinity of a fixed point.  Even exponential stability can be inferred if
+      the function can be bounded away from the origin by a negatively-sloped
+      line through the fixed point, since it implies that the nonlinear system
+      will converge at least as fast as the linear system represented by the
+      straight line.  I will graphically illustrate unstable fixed points with
+      open circles and stable fixed points (i.s.L.) with filled circles. </p>
+
+      <p>Next, we need to consider what happens to initial conditions which
+      begin farther from the fixed points.  If we think of the dynamics of the
+      system as a flow on the $x$-axis, then we know that anytime $\dot{x} > 0$,
+      the flow is moving to the right, and $\dot{x} < 0$, the flow is moving to
+      the left.  If we further annotate our graph with arrows indicating the
+      direction of the flow, then the entire (long-term) system behavior becomes
+      clear:</p>
+
+      <figure> <img width="70%" src="figures/pend_sinx_annotated.svg"/>
+      </figure>
+
+      <p> For instance, we can see that any initial condition $x(0) \in
+      (-\pi,\pi)$ will result in $\lim_{t\rightarrow \infty} x(t) = 0$.  This
+      region is called the <em>basin of attraction</em> of the fixed point at
+      $x^* = 0$. Basins of attraction of two fixed points cannot overlap, and
+      the manifold separating two basins of attraction is called the
+      <em>separatrix</em>.  Here the unstable fixed points, at $x^* = \{..,
+      -\pi, \pi, 3\pi, ...\}$ form the separatrix between the basins of
+      attraction of the stable fixed points. </p>
+
+      <p> As these plots demonstrate, the behavior of a first-order one
+      dimensional system on a line is relatively constrained.  The system will
+      either monotonically approach a fixed-point or monotonically move toward
+      $\pm \infty$. There are no other possibilities.  Oscillations, for
+      example, are impossible. Graphical analysis is a fantastic analysis tool
+      for many first-order nonlinear systems (not just pendula); as illustrated
+      by the following example: </p>
+
+      <example><h1>Nonlinear autapse</h1> 
+        <p></p>Consider the following system: \begin{equation} \dot{x} + x =
+        \tanh(w x), \end{equation} which is plotted below for two values of $w$.
+        It's convenient to note that $\tanh(z) \approx z$ for small $z$.  For $w
+        \le 1$ the system has only a single fixed point.  For $w > 1$ the system
+        has three fixed points : two stable and one unstable.</p>
+
+        <figure> <img width="80%" src="figures/pend_autapse.svg"/>
+        </figure>
+
+        <p>These equations are not arbitrary - they are actually a model for one
+        of the simplest neural networks, and one of the simplest model of
+        persistent memory<elib>Seung00</elib>.  In the equation $x$ models the
+        firing rate of a single neuron, which has a feedback connection to
+        itself.  $\tanh$ is the activation (sigmoidal) function of the neuron,
+        and $w$ is the weight of the synaptic feedback.</p>
+
+        <p>Experiment with it for yourself:
+          <pysrc>autapse/autapse.py</pysrc>
+        </p>
+      </example>
+
+      <p> One last piece of terminology.  In the neuron example, and in many
+      dynamical systems, the dynamics were parameterized; in this case by a
+      single parameter, $w$.  As we varied $w$, the fixed points of the system
+      moved around.  In fact, if we increase $w$ through $w=1$, something
+      dramatic happens - the system goes from having one fixed point to having
+      three fixed points.  This is called a <em>bifurcation</em>.  This
+      particular bifurcation is called a pitchfork bifurcation.  We often draw
+      bifurcation diagrams which plot the fixed points of the system as a
+      function of the parameters, with solid lines indicating stable fixed
+      points and dashed lines indicating unstable fixed points, as seen in the
+      figure:</p>
+
+      <figure> <todo>bifurcation diagram asymptotes to $x^* = 1$</todo> <img
+      width="80%" src="figures/pend_autapse_bifurcation.svg"/>
+      <figcaption>Bifurcation diagram of the nonlinear autapse.</figcaption>
+      </figure>
+
+      <p> Our pendulum equations also have a (saddle-node) bifurcation when we
+      change the constant torque input, $u_0$.  <!-- This is the subject of
+      exercise~\ref{p:pend_bifurcation}.-->  Finally, let's return to the
+      original equations in $\theta$, instead of in $x$.  Only one point to
+      make: because of the wrap-around, this system will <em>appear</em> have
+      oscillations.  In fact, the graphical analysis reveals that the pendulum
+      will turn forever whenever $|u_0| > mgl$, but now you understand
+      that this is not an oscillation, but an instability with $\theta
+      \rightarrow \pm \infty$. </p>
+
+    </subsection> <!-- end of overdamped pend -->
+
+    <subsection><h1>The undamped pendulum with zero torque</h1>
+
+      <p> Consider again the system $$ml^2 \ddot\theta = u_0 - mgl \sin\theta -
+      b\dot\theta,$$ this time with $b = 0$.  This time the system dynamics are
+      truly second-order.  We can always think of any second-order system as
+      (coupled) first-order system with twice as many variables. Consider a
+      general, autonomous (not dependent on time), second-order system,
+      $$\ddot{q} = f(q,\dot q,u).$$ This system is equivalent to the
+      two-dimensional first-order system \begin{align*} \dot x_1 =& x_2 \\ \dot
+      x_2 =& f(x_1,x_2,u), \end{align*} where $x_1 = q$ and $x_2 = \dot q$.
+      Therefore, the graphical depiction of this system is not a line, but a
+      vector field where the vectors $[\dot x_1, \dot x_2]^T$ are plotted over
+      the domain $(x_1,x_2)$.  This vector field is known as the <em>phase
+      portrait</em> of the system.</p>
+
+      <p> In this section we restrict ourselves to the simplest case when $u_0 =
+      0$. Let's sketch the phase portrait.  First sketch along the
+      $\theta$-axis. The $x$-component of the vector field here is zero, the
+      $y$-component is $-mgl\sin\theta.$ As expected, we have fixed points at
+      $\pm \pi, ...$ Now sketch the rest of the vector field.  Can you tell me
+      which fixed points are stable? Some of them are stable i.s.L., none are
+      asymptotically stable.</p>
+
+      <figure> <img width="80%" src="figures/pend_undamped_phase.svg"/>
+      </figure>
+
+      <subsubsection><h1>Orbit calculations</h1>
+
+        <p> You might wonder how we drew the black contour lines in the figure
+        above.  We could have obtained them by simulating the system
+        numerically, but those lines can be easily obtained in closed-form.
+        Directly integrating the equations of motion is difficult, but at least
+        for the case when $u_0 = 0$, we have some additional physical insight
+        for this problem that we can take advantage of.  The kinetic energy,
+        $T$, and potential energy, $U$, of the pendulum are given by $$T =
+        \frac{1}{2}I\dot\theta^2, \quad U = -mgl\cos(\theta),$$ where $I=ml^2$
+        and the total energy is $E(\theta,\dot\theta) =
+        T(\dot\theta)+U(\theta)$.  The undamped pendulum is a conservative
+        system: total energy is a constant over system trajectories.  Using
+        conservation of energy, we have:
+
+        \begin{gather*}  E(\theta(t),\dot\theta(t)) = E(\theta(0),\dot\theta(0))
+        = E_0 \\ \frac{1}{2} I \dot\theta^2(t) - mgl\cos(\theta(t)) = E_0  \\
+        \dot\theta(t) = \pm \sqrt{\frac{2}{I}\left[E_0 +
+        mgl\cos\left(\theta(t)\right)\right]} \end{gather*}
+
+        Using this, if you tell me $\theta$ I can determine one of two possible
+        values for $\dot\theta$, and the solution has all of the richness of the
+        black countour lines from the plot.  This equation has a real solution
+        when $\cos(\theta) > \cos(\theta_{max})$, where $$\theta_{max} =
+        \begin{cases} \cos^{-1}\left( \frac{E}{mgl} \right), & E < mgl \\ \pi, &
+        \text{otherwise}. \end{cases}$$ Of course this is just the intuitive
+        notion that the pendulum will not swing above the height where the total
+        energy equals the potential energy.  As an exercise, you can verify that
+        differentiating this equation with respect to time indeed results in the
+        equations of motion.</p>
+
+      </subsubsection>
+
+<!--  these are correct, but take away from the flow.  move to an appendix?
+
+<subsubsection><h1>Trajectory calculations</h1>
+
+<p> For completeness, I'll include what it would take to solve for $\theta(t)$,
+even thought it cannot be accomplished using elementary functions.  Feel free to
+skip this subsection.  We begin the integration with
+
+\begin{gather*} \frac{d\theta}{dt} = \sqrt{\frac{2}{I}\left[E +
+mgl\cos\left(\theta(t)\right)\right]} \\ \int_{\theta(0)}^{\theta(t)}
+\frac{d\theta}{\sqrt{\frac{2}{I}\left[E +
+mgl\cos\left(\theta(t)\right)\right]}} = \int_0^t dt' = t \end{gather*}
+
+The
+integral on the left side of this equation is an (incomplete) elliptic integral
+of the first kind.  Using the identity: $$\cos(\theta) = 1 - 2
+\sin^2(\frac{1}{2}\theta),$$ and manipulating, we have $$t =
+\sqrt{\frac{I}{2(E+mgl)}} \int_{\theta(0)}^{\theta(t)} \frac{d\theta}{\sqrt{1 -
+k_1^2\sin^2(\frac{\theta}{2})}}, \quad \text{with
+}k_1=\sqrt{\frac{2mgl}{E+mgl}}.$$ In terms of the incomplete elliptic integral
+function, $$F(\phi,k) = \int_0^\phi \frac{d\theta}{\sqrt{1-k^2\sin^2\theta}},$$
+accomplished by a change of variables.  If $E <= mgl$, which is the case of
+closed-orbits, we use the following change of variables to ensure $ 0 < k < 1 $ :
+\begin{gather*}\phi = \sin^{-1}\left[ k_1 \sin\left( \frac{\theta}{2} \right)
+\right] \\ \cos(\phi) d\phi = \frac{1}{2} k_1 \cos\left(\frac{\theta}{2}\right)
+d\theta = \frac{1}{2} k_1 \sqrt{1 - \frac{\sin^2 (\phi)}{k_1^2}} d\theta
+\end{gather*} so we have
+\begin{gather*}
+t = \frac{1}{k_1}\sqrt{\frac{2I}{(E+mgl)}} \int_{\phi(0)}^{\phi(t)}
+\frac{d\phi}{\sqrt{1 - \sin^2(\phi)}} \frac{\cos(\phi)}{\sqrt{1 -
+\frac{\sin^2\phi}{k_1^2}}} \\ = \sqrt{\frac{I}{mgl}} \left[
+F\left(\phi(t),k_2\right) - F\left(\phi(0),k_2\right) \right],\quad
+k_2 = \frac{1}{k_1}.\end{gather*} The inverse of $F$ is given by the
+Jacobi elliptic functions (sn,cn,...), yielding:
+<!-- http://en.wikipedia.org/wiki/Jacobi%27s_elliptic_functions -->
+<!--
+\begin{gather*}\sin(\phi(t)) = \text{sn}\left(t
+  \sqrt{\frac{mgl}{I}} + F\left(\phi(0),k_2\right),k_2 \right) \\
+\theta(t) = 2\sin^{-1} \left[ k_2 \text{sn}\left(t
+  \sqrt{\frac{mgl}{I}} + F\left(\phi(0),k_2\right),k_2 \right) \right]
+\end{gather*}
+The function $\text{sn}$ used here can be evaluated in MATLAB by
+calling $$\text{sn}(u,k) = \text{ellipj}(u,k^2).$$ The function
+$F$ is not implemented in MATLAB, but implementations can be
+downloaded. (note that $F(0,k) = 0$).</p>
+
+<p>
+For the open-orbit case, $E>mgl$, we use $$\phi =
+\frac{\theta}{2},\quad \frac{d\phi}{d\theta} = \frac{1}{2},$$ yielding
+\begin{gather*}
+t = \frac{2I}{E+mgl} \int_{\phi(0)}^{\phi(t)} \frac{d\phi}{\sqrt{1 -
+    k_1^2 \sin^2(\phi)}} \\
+\theta(t) = 2 \tan^{-1} \left[ \frac{ \text{sn} \left( t
+    \sqrt{\frac{E+mgl}{2I}} + F\left( \frac{\theta(0)}{2}, k_1 \right)
+    \right) } { \text{cn} \left( t
+    \sqrt{\frac{E+mgl}{2I}} + F\left( \frac{\theta(0)}{2}, k_1 \right)
+    \right) }
+ \right]
+\end{gather*}
+Notes: Use MATLAB's <code>atan2</code> and <code>unwrap</code> to recover the
+complete trajectory.</p>
+
+<!-- primary refs:
+  http://en.wikipedia.org/wiki/Pendulum_%28mathematics%29
+  http://kr.cs.ait.ac.th/~radok/math/mat6/calc81.htm
+  http://books.google.com/books?id=xWrJlTIYl_IC&pg=PA280&lpg=PA280&dq=pendulum+elliptic+integrals&source=web&ots=zas9k5qVc0&sig=Tz-OwdqS84VPM2I_pZbtaspVZNk#PPA280,M1 (Computational Physics: Problem Solving with Computers by Rubin H. Landau, Cristian C. Bordeianu, p.280)
+  http://en.wikipedia.org/wiki/Binomial_theorem
+  http://mathworld.wolfram.com/EllipticIntegraloftheFirstKind.html -->
+
+
+<!--</section> -->
+
+    </subsection> <!-- end of undamped pend -->
+
+    <subsection><h1>The undamped pendulum with a constant
+    torque</h1>
+
+      <p> Now what happens if we add a constant torque?  If you visualize the
+      bifurcation diagram, you'll see that the fixed points come together,
+      towards $q = \frac{\pi}{2}, \frac{5\pi}{2}, ...$, until they disappear.
+      One fixed-point is unstable, and one is stable.</p>
+
+      <!-- todo: find a way to add an animation or something in here.  do a
+      python demo in class -->
+
+    </section> <!-- undamped constant torque -->
+
+    <p>Before we continue, let me now give you the promised example of a system
+    that is not stable i.s.L., but which attracts all trajectories as time
+    goes to infinity. We can accomplish this with a very pendulum-like example
+    (written here in polar coordinates):</p>
+
+    <example><h1>Unstable equilibrium point that attracts all trajectories</h1>
+
+      <p>Consider the system \[ \dot{r} = r(1-r) \\ \dot\theta = \sin^2
+      (\frac{\theta}{2}). \]  This system has two equilibrium points, one at
+      $r^*=0,\theta^*=0$, and the other at $r^* = 1,\theta^*=0$.  The fixed
+      point at zero is clearly unstable.  The fixed point with $r^*=1$ attracts
+      all other trajectories, but it is not stable by any of our
+      definitions.</p>
+    </example>
+
+    <p>Take a minute to draw the vector field of this (you can draw each
+    coordinate independently, if it helps) to make sure you understand.  Note
+    that to wrap-around rotation is convenient but not essential -- we could
+    have written the same dynamical system in cartesian coordinates without
+    wrapping.  And if this still feels too arbitrary, we will see it happen in
+    practice when we introduce the energy-shaping swing-up controller for the
+    pendulum in the next chapter.</p>
+
+    <subsection><h1>The damped pendulum</h1>
+
+      <p>Now let's add damping back.  You can still add torque to move the
+      fixed points (in the same way).</p>
+
+      <figure>
+        <img width="90%" src="figures/pend_damped_phase.svg"/>
+        <figcaption>Phase diagram for the damped pendulum</figcaption>
+      </figure>
+
+      <p>With damping, the downright fixed point of the pendulum now becomes
+      asymptotically stable (in addition to stable i.s.L.). Is it also
+      exponentially stable?  How can we tell?  One technique is to linearize the
+      system at the fixed point.  A smooth, time-invariant, nonlinear system
+      that is locally exponentially stable <i>must</i> have a stable
+      linearization; we'll discuss linearization more in the next chapter. </p>
+
+      <p>Here's a thought exercise.  If $u$ is no longer a constant, but a
+      function $\pi(\theta,\dot{\theta})$, then how would you choose $\pi$ to
+      stabilize the vertical position.  Feedback cancellation is the trivial
+      solution, for example: $$u = \pi(\theta,\dot{\theta}) = 2mgl\sin\theta.$$
+      But these plots we've been making tell a different story.  How would you
+      shape the natural dynamics - at each point pick a $u$ from the stack of
+      phase plots - to stabilize the vertical fixed point <em>with minimal
+      torque effort</em>?  This is exactly the way that I would like you to
+      think about control system design.  And we'll give you your first solution
+      techniques -- using dynamic programming -- in the next lecture.</p>
+
+    </subsection> <!-- damped pend -->
+
+  </section> <!-- constant torque -->
+
+  <section><h1>The torque-limited simple pendulum</h1>
+
+    <p>The simple pendulum is fully actuated.  Given enough torque, we can
+    produce any number of control solutions to stabilize the originally
+    unstable fixed point at the top (such as designing a feedback controller to
+    effectively invert gravity).</p>
+
+    <p>The problem begins to get interesting (a.k.a. becomes underactuated)
+    if we impose a torque-limit constraint, $|u|\le u_{max}$.  Looking at the
+    phase portraits again, you can now visualize the control problem.  Via
+    feedback, you are allowed to change the direction of the vector field at
+    each point, but only by a fixed amount.  Clearly, if the maximum torque is
+    small (smaller than $mgl$), then there are some states which cannot be
+    driven directly to the goal, but must pump up energy to reach the goal.
+    Furthermore, if the torque-limit is too severe and the system has damping,
+    then it may be impossible to swing up to the top.  The existence of a
+    solution, and number of pumps required to reach the top, is a non-trivial
+    function of the initial conditions and the torque-limits.</p>
+
+    <p>Although this system is very simple, its solution requires much of the
+    same reasoning necessary for controlling much more complex underactuated
+    systems; this problem will be a work-horse for us as we introduce new
+    algorithms throughout this book.</p>
+
+  </section>
+
+  <section><h1>Exercises</h1>
+
+    <exercise><h1>Graphical Analysis</h1>
+
+      <figure>
+      <img width="60%" src="figures/exercises/graphical_analysis.svg"/>
+      <figcaption>First-order systems with multiple equilibria.</figcaption>
+      </figure>
+
+      Consider the first-order system $$\dot x = \begin{cases} - x^5 + 2 x^3 - x & \text{if} \quad x \leq 1, \\ 0 & \text{if} \quad 1 < x \leq 2, \\ - x + 2 & \text{if} \quad x > 2, \end{cases}$$ whose dynamics is represented in the figure above.  Notice that, together with $x^*=-1$ and $x^*=0$, all the points in the closed interval $[1,2]$ are equilibria for this system.  For each equilibrium point, determine whether it is unstable, stable i.s.L., asymptotically stable, or exponentially stable.
+
+    </exercise>
+
+    <exercise><h1>Basin of Attraction and Bifurcation Diagram</h1>
+
+      Consider the first-order system with polynomial dynamics $$\dot x = f(x) = - x^3 + 4x^2 +11x - 30.$$
+
+      <ol type="a">
+
+        <li> Sketch the graph of the function $f(x)$, and identify all the equilibrium points.  (Feel free to plot this with a tool of your choice to check your work.)</li>
+
+        <li> For each equilibrium point, determine whether it is stable (i.s.L.) or unstable.  For each one of the stable equilibria, identify the basin of attraction.</li>
+
+        <li> Consider an additive term $w$ in the system dynamics: $\dot x = f(x) + w$.  As $w$ ranges from $0$ to $\infty$, determine how many stable and unstable equilibrium points the system has. Support your answer with a sketch of the bifurcation diagram for nonnegative values of $w$.</li>
+
+      </ol>
+
+    </exercise>
+
+    <exercise><h1>Enumerate Unstable Equilibria</h1>
+
+      We are given a dynamical system $\dot x = f(x)$ with a scalar state $x$.  The dynamics $f(x)$ is unknown, but we are given two pieces of information:
+
+      <ul>
+
+        <li>the function $f(x)$ is continuous;</li>
+
+        <li>the system has exactly three stable (i.s.L.) equilibrium points.</li>
+
+      </ul>
+
+      Identify the minimum $n_{\text{min}}$ and the maximum $n_{\text{max}}$ number of unstable equilibria that the system can have.  Support your answer with the sketch of two functions $f_{\text{min}}(x)$ and $f_{\text{max}}(x)$ that verify the requirements above and have, respectively, $n_{\text{min}}$ and $n_{\text{max}}$ unstable equilibria.
+
+    </exercise>
+
+    <exercise><h1>Attractivity vs Stability</h1>
+
+      <figure>
+      <img width="60%" src="figures/exercises/attractivity_vs_stability.svg"/>
+      <figcaption>Phase diagram of a two-dimensional system.</figcaption>
+      </figure>
+
+      This figure shows the phase portrait of the dynamical system \begin{align*} \dot x_1 &= x_1 (1-|\bx|) + x_2 \frac{x_1-|\bx|}{2|\bx|}, \\ \dot x_2 &= x_2 (1-|\bx|) - x_1 \frac{x_1-|\bx|}{2|\bx|}, \end{align*} where $|\bx| = \sqrt{x_1^2+x_2^2}$.  To help you with the analysis of this system, we set up <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/pend/attractivity_vs_stability/attractivity_vs_stability.ipynb" target="_blank">this python notebook</a>.  Take your time to understand the code in it, and then answer the following questions.
+
+      <ol type="a">
+
+        <li>Find all the equilibrium points of this system (no need to look outside the portion of state space depicted above).  Use the notebook to double check your answer: simulate the evolution of the system setting the equilibrium points you identified as initial conditions.</li>
+
+        <li>Determine whether the equilibria you identified at the previous point are Lyapunov attractive and/or stable i.s.L.  Explain briefly your reasoning, and feel free to include some plots generated with the notebook in your written answer.</li>
+
+        <li>This dynamical system is a (very) close relative of one of the systems we analyzed in this chapter.  Can you guess which one is it?  What is the connection between the two?  Extra points: support your claim with a mathematical derivation.</li>
+
+      </ol>
+
+    </exercise>
+
+    <exercise><h1>Pendulum with Vibrating Base</h1>
+
+      Consider an actuated pendulum whose base (pivot of the rod) is forced to oscillate horizontally according to the harmonic law $h \sin(\omega t)$, where $h$ denotes the amplitude of the oscillation and $\omega$ the frequency.  The equation of motion for this system is $$m l^2 \ddot \theta + m g l \sin \theta = m l \omega^2 h \sin (\omega t) \cos \theta + u.$$  (If this equation seems obscure to you, try to derive it using the <a href="multibody.html">Lagrangian approach</a>; but be careful, the kinetic energy $T(\theta, \dot \theta, t)$ of this system depends explicitly on time.)  Our goal is to design a time-dependent control law $u = \pi (\theta, \dot \theta, t)$ that makes the pendulum spin at constant velocity $\dot \theta = 1$.
+
+      <ol type="a">
+
+        <li>Identify a desired closed-loop dynamics $\ddot \theta = f(\dot \theta)$, whose unique equilibrium point is stable and is located in $\dot \theta = 1$.</li>
+
+        <li>Use feedback cancellation to design a control law $u = \pi(\theta, \dot \theta, t)$ that makes the closed-loop dynamics coincide with the one chosen at the previous point.</li>
+
+        <li><a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/pend/vibrating_pendulum/vibrating_pendulum.ipynb" target="_blank">In this python notebook</a>, we set up a simulation environment to test your control law.  Try to understand the structure of the code: this workflow is quite general, and it could be a good starting point for your future Drake projects.  Implement your control law in the dedicated cell, and check your work using the animation and the plots at the end of the notebook.</li>
+
+      </ol>
+
+    </exercise>
+
+  </section>
+
+</chapter>
+
+<div id="footer">
+  <hr>
+  <table style="width:100%;">
+    <tr><td><em>Underactuated Robotics</em></td><td align="right">&copy; Russ
+      Tedrake, 2020</td></tr>
+  </table>
+</div>
+
+
+</body>
+</html>
+  
