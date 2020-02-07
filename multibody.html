@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <title>Underactuated Robotics</title>
+    <meta name="Underactuated Robotics" content="text/html; charset=utf-8;" />
+
+    <script type="text/javascript" src="chapters.js"></script>
+    <script type="text/javascript" src="htmlbook/book.js"></script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: {autoNumber: "AMS"}, noErrors: { disabled: true } },
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+          processEscapes: true
+        },
+      });
+    </script>
+    <script type="text/javascript"
+      src="http://underactuated.csail.mit.edu/htmlbook/MathJax/MathJax.js?config=TeX-AMS_SVG">
+    </script>
+    <!-- Fallback to local MathJax (to support offline viewing) -->
+    <script>window.MathJax || document.write('<script src="htmlbook/MathJax/MathJax.js?config=TeX-AMS_SVG""><\/script>')</script>
+
+    <link rel="stylesheet" href="htmlbook/highlight/styles/default.css">
+    <script src="htmlbook/highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <link rel="stylesheet" type="text/css" href="htmlbook/book.css">
+  </head>
+
+
+<body onload="loadChapter('underactuated');">
+
+<div data-type="titlepage">
+  <header>
+    <h1><a href="underactuated.html" style="text-decoration:none;">Underactuated Robotics</a></h1>
+    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p> 
+    <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
+    <p style="font-size: 14px; text-align: right;"> 
+      &copy; Russ Tedrake, 2020<br/>
+      <a href="tocite.html">How to cite these notes</a><br/>
+    </p>
+  </header>
+</div>
+
+<p><b>Note:</b> These are working notes used for <a
+href="http://underactuated.csail.mit.edu/Spring2020/">a course being taught
+at MIT</a>. They will be updated throughout the Spring 2020 semester.  <a 
+href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos are available on YouTube</a>.</p> 
+
+<chapter><h1>Rigid-Body
+  Dynamics</h1>
+
+  <section><h1>Deriving the equations of motion (an example)</h1>
+
+    <p>The equations of motion for a standard robot can be derived using the
+    method of Lagrange.  Using $T$ as the total kinetic energy of the system,
+    and $U$ as the total potential energy of the system, $L = T-U$, and $Q_i$ as
+    the generalized force corresponding to $q_i$, the Lagrangian dynamic
+    equations are: \begin{equation} \frac{d}{dt}\pd{L}{\dot{q}_i} - \pd{L}{q_i}
+    = Q_i.\end{equation} If you are not comfortable with these equations, then
+    any good book chapter on rigid body mechanics can bring you up to speed --
+    try <elib>Craig89</elib> for a very practical guide to robot
+    kinematics/dynamics, <elib>Goldstein02</elib> for a more hard-core dynamics
+    text or <elib>Thornton03</elib> for a classical dynamics text which is a
+    nice read -- for now you can take them as a handle that you can crank to
+    generate equations of motion. </p>
+
+    <example><h1>Simple Double Pendulum</h1>
+
+      <figure>
+        <img style="width:250px;" src="figures/simple_double_pend.svg"/>
+        <figcaption>Simple double pendulum</figcaption>
+      </figure>
+
+      <p> Consider the simple double pendulum with torque actuation at both
+      joints and all of the mass concentrated in two points (for simplicity).
+      Using $\bq = [\theta_1,\theta_2]^T$, and ${\bf p}_1,{\bf p}_2$ to denote
+      the locations of $m_1,m_2$, respectively, the kinematics of this system
+      are:
+
+      \begin{eqnarray*}
+      {\bf p}_1 =& l_1\begin{bmatrix} s_1 \\ - c_1 \end{bmatrix}, &{\bf p}_2  =
+      {\bf p}_1 + l_2\begin{bmatrix} s_{1+2} \\ - c_{1+2} \end{bmatrix} \\
+      \dot{{\bf p}}_1 =& l_1 \dot{q}_1\begin{bmatrix} c_1 \\ s_1 \end{bmatrix},
+      &\dot{{\bf p}}_2 = \dot{{\bf p}}_1 + l_2 (\dot{q}_1+\dot{q}_2) \begin{bmatrix} c_{1+2} \\ s_{1+2} \end{bmatrix}
+      \end{eqnarray*}
+
+      Note that $s_1$ is shorthand for $\sin(q_1)$, $c_{1+2}$ is shorthand for
+      $\cos(q_1+q_2)$, etc. From this we can write the kinetic and potential
+      energy:
+
+      \begin{align*}
+      T =& \frac{1}{2} m_1 \dot{\bf p}_1^T \dot{\bf p}_1 + \frac{1}{2} m_2
+      \dot{\bf p}_2^T \dot{\bf p}_2 \\
+      =& \frac{1}{2}(m_1 + m_2) l_1^2 \dot{q}_1^2 + \frac{1}{2} m_2 l_2^2 (\dot{q}_1 + \dot{q}_2)^2 + m_2 l_1 l_2 \dot{q}_1 (\dot{q}_1 + \dot{q}_2) c_2 \\
+      U =& m_1 g y_1 + m_2 g y_2 = -(m_1+m_2) g l_1 c_1 - m_2 g l_2 c_{1+2}
+      \end{align*}
+
+      Taking the partial derivatives $\pd{T}{q_i}$, $\pd{T}{\dot{q}_i}$, and
+      $\pd{U}{q_i}$ ($\pd{U}{\dot{q}_i}$ terms are always zero), then
+      $\frac{d}{dt}\pd{T}{\dot{q}_i}$, and plugging them into the Lagrangian,
+      reveals the equations of motion:
+
+      \begin{align*}
+      (m_1 + m_2) l_1^2 \ddot{q}_1& + m_2 l_2^2 (\ddot{q}_1 + \ddot{q}_2) + m_2 l_1 l_2 (2 \ddot{q}_1 + \ddot{q}_2) c_2 \\
+      &- m_2 l_1 l_2 (2 \dot{q}_1 + \dot{q}_2) \dot{q}_2 s_2 + (m_1 + m_2) l_1 g s_1 + m_2 g l_2 s_{1+2} = \tau_1 \\
+      m_2 l_2^2 (\ddot{q}_1 + \ddot{q}_2)& + m_2 l_1 l_2 \ddot{q}_1 c_2 + m_2 l_1 l_2
+      \dot{q}_1^2 s_2 + m_2 g l_2 s_{1+2} = \tau_2
+      \end{align*}
+
+      As we saw in chapter 1, numerically integrating (and animating) these
+      equations in <drake></drake> produces the expected result. </p>
+
+    </example>
+
+  </section>
+
+  <section><h1>The Manipulator Equations</h1>
+
+    <p> If you crank through the Lagrangian dynamics for a few simple robotic
+    manipulators, you will begin to see a pattern emerge - the resulting
+    equations of motion all have a characteristic form.  For example, the
+    kinetic energy of your robot can always be written in the form:
+    \begin{equation} T = \frac{1}{2} \dot{\bq}^T \bM(\bq)
+    \dot{\bq},\end{equation} where $\bM$ is the state-dependent inertia matrix
+    (aka mass matrix). This observation affords some insight into general
+    manipulator dynamics - for example we know that ${\bf M}$ is always positive
+    definite, and symmetric<elib>Asada86</elib>(p.107) and has a beautiful
+    sparsity pattern<elib>Featherstone05</elib> that we'll attempt to take
+    advantage of in our algorithms.</p>
+
+
+    <p>Continuing our abstractions, we find that the equations of motion of a
+    general robotic manipulator (without kinematic loops) take the form
+    \begin{equation}{\bf M}(\bq)\ddot{\bq} + \bC(\bq,\dot{\bq})\dot{\bq} =
+    \btau_g(\bq) + {\bf B}\bu, \label{eq:manip} \end{equation} where $\bq$ is
+    the joint position vector, ${\bf M}$ is the inertia matrix, $\bC$ captures
+    Coriolis forces, and $\btau_g$ is the gravity vector.  The matrix $\bB$ maps
+    control inputs $\bu$ into generalized forces.  Note that we pair
+    $\bM\ddot\bq + \bC\dot\bq$ on the left side because "... the equations of
+    motion depend on the choice of coordinates $\bq$.  For this reason neither
+    $\bM\ddot\bq$ nor $\bC\dot\bq$ individually should be thought of as a
+    generalized force; only their sum is a force"<elib>Choset05</elib>(s.10.2).
+    Indeed, whenever I write Eq. (\ref{eq:manip}), I see $ma = F$. </p>
+
+    <example id="manipulator_equation_double_pendulum"><h1>Manipulator Equation form of the Simple Double
+    Pendulum</h1> The equations of motion from Example 1 can be written
+    compactly as: \begin{align*} \bM(\bq) =& \begin{bmatrix} (m_1 + m_2)l_1^2 +
+    m_2 l_2^2 + 2 m_2 l_1l_2 c_2 & m_2 l_2^2 + m_2 l_1 l_2 c_2 \\ m_2 l_2^2 +
+    m_2 l_1 l_2 c_2 & m_2 l_2^2 \end{bmatrix} \\ \bC(\bq,\dot\bq) =&
+    \begin{bmatrix} 0 & -m_2 l_1 l_2 (2\dot{q}_1 + \dot{q}_2)s_2 \\ m_2 l_1 l_2
+    \dot{q}_1 s_2 & 0 \end{bmatrix} \\ \btau_g(\bq) =& -g \begin{bmatrix} (m_1 +
+    m_2) l_1 s_1 + m_2 l_2 s_{1+2} \\ m_2 l_2 s_{1+2} \end{bmatrix} , \quad \bB
+    = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} \end{align*} Note that this
+    choice of the $\bC$ matrix was not unique. </example>
+
+    <p> The manipulator equations are very general, but they do define some
+    important characteristics.  For example, $\ddot{\bq}$ is (state-dependent)
+    linearly related to the control input, $\bu$.   This observation justifies
+    the control-affine form of the dynamics assumed throughout the notes.</p>
+
+    <p>Note that we have chosen to use the notation of second-order systems
+    (with $\dot{\bq}$ and $\ddot{\bq}$ appearing in the equations) throughout
+    this book.  Although I believe it provides more clarity, there is an
+    important limitation to this notation: it is impossible to describe 3D
+    rotations in "minimal coordinates" using this notation without introducing
+    kinematic singularities (like the famous "gimbal lock"). For instance, a
+    common singularity-free choice for representing a 3D rotation is the unit
+    quaternion, described by 4 real values (plus a norm constraint).  However we
+    can still represent the rotational velocity without singularities using just
+    3 real values.  This means that the length of our velocity vector is no
+    longer the same as the length of our position vector.  For this reason, you
+    will see that most of the software in <drake></drake> uses the more general
+    notation with $\bv$ to represent velocity, $\bq$ to represent positions, and
+    the manipulator equations are written as \begin{equation} \bM(\bq) \dot{\bv}
+    + \bC(\bq,\bv)\bv = \btau_g(\bq) + \bB \bu, \end{equation} which is
+    not necessarily a second-order system.  See <elib>Duindam06</elib> for a
+    nice discussion of this topic.</p>
+
+    <subsection><h1>Bilateral Position Constraints</h1>
+
+      <p>If our robot has closed-kinematic chains, for instance those that arise
+      from a <a href="https://en.wikipedia.org/wiki/Four-bar_linkage">four-bar
+      linkage</a>, then we need a little more.  The Lagrangian machinery above
+      assumes "minimal coordinates"; if our state vector $\bq$ contains all of
+      the links in the kinematic chain, then we do not have a minimal
+      parameterization -- each kinematic loop adds (at least) one constraint so
+      should remove (at least) one degree of freedom.  Although some constraints
+      can be solved away, the more general solution is to use the Lagrangian to
+      derive the dynamics of the unconstrained system (a kinematic tree without
+      the closed-loop constraints), then add additional generalized forces that
+      ensure that the constraint is always satisfied. </p>
+
+      <p>Consider the constraint equation \begin{equation}\bh(\bq) =
+      0.\end{equation}  For the case of the kinematic closed-chain, this can be
+      the kinematic constraint that the location of one end of the chain is
+      equal to the location of the other end of the chain. The equations of
+      motion can be written \begin{equation}\bM({\bq})\ddot{\bq} +
+      \bC(\bq,\dot{\bq})\dot\bq = \btau_g(\bq) + \bB\bu + \bH^T(\bq)
+      \blambda,\end{equation} where $\bH(\bq) = \pd\bh{\bq}$ and ${\blambda}$ is
+      the constraint force.  Let's use the shorthand \begin{equation}
+      \bM({\bq})\ddot{\bq} = \btau(q,\dot{q},u) + \bH^T(\bq) \blambda.
+      \label{eq:manip_short} \end{equation}</p>
+
+      <p>Using \begin{gather}\dot\bh = \bH\dot\bq,\\ \ddot\bh = \bH \ddot\bq +
+      \dot\bH \dot\bq, \label{eq:ddoth} \end{gather} we can solve for
+      $\blambda$, by observing that when the constraint is imposed, $\bh=0$ and
+      therefore $\dot\bh=0$ and $\ddot\bh=0$.  Inserting the dynamics
+      (\ref{eq:manip_short}) into (\ref{eq:ddoth}) yields
+      \begin{equation}\blambda =- (\bH \bM^{-1} \bH^T)^+ (\bH \bM^{-1} \btau +
+      \dot\bH\dot\bq).\end{equation} The $^+$ notation refers to a Moore-Penrose
+      pseudo-inverse.  In many cases, this matrix will be full rank (for
+      instance, in the case of multiple independent four-bar linkages) and the
+      traditional inverse could have been used.  When the matrix drops rank
+      (multiple solutions), then the pseudo-inverse will select the solution
+      with the smallest constraint forces in the least-squares sense.</p>
+
+      <p>To combat numerical "constraint drift", one might like to add a
+      restoring force in the event that the constraint is not satisfied to
+      numerical precision.  To accomplish this, rather than solving for
+      $\ddot\bh = 0$ as above, we can instead solve for \begin{equation}\ddot\bh
+      = \bH\ddot\bq + \dot\bH\dot\bq = -2\alpha \dot\bh - \alpha^2
+      \bh,\end{equation} where $\alpha>0$ is a stiffness parameter. This is
+      known as Baumgarte's stabilization technique, implemented here with a
+      single parameter to provide a critically-damped response.
+      Carrying
+      this through yields \begin{equation} \blambda =- (\bH \bM^{-1} \bH^T)^+
+      (\bH \bM^{-1} \btau + (\dot{\bH} + 2\alpha \bH)\dot{\bq} + \alpha^2 \bh).
+      \end{equation}</p>
+
+    </subsection>
+
+    <subsection><h1>Bilateral Velocity Constraints</h1>
+
+      <p>Consider the constraint equation \begin{equation}\bh_v(\bq,\dot{\bq}) =
+      0,\end{equation} where $\pd{\bh_v}{\dot{\bq}} \ne 0.$  These are less
+      common, but arise when, for instance, a joint is driven through a
+      prescribed motion. Here, the manipulator equations are given by
+      \begin{equation}\bM\ddot{\bq}  = \btau + \pd{\bh_v}{\dot{\bq}}^T
+      \blambda.\end{equation} Using \begin{equation} \dot\bh_v = \pd{\bh_v}{\bq}
+      \dot{\bq} + \pd{\bh_v}{\dot{\bq}}\ddot{\bq},\end{equation} setting
+      $\dot\bh_v = 0$ yields \begin{equation}\blambda = - \left(
+      \pd{\bh_v}{\dot{\bq}} \bM^{-1} \pd{\bh_v}{\dot{\bq}} \right)^+ \left[
+      \pd{\bh_v}{\dot{\bq}} \bM^{-1} \btau + \pd{\bh_v}{\bq} \dot{\bq}
+      \right].\end{equation}</p>
+
+      <p>Again, to combat constraint drift, we can ask instead for $\dot\bh_v =
+      -\alpha \bh_v$, which yields \begin{equation}\blambda = - \left(
+      \pd{\bh_v}{\dot{\bq}} \bM^{-1} \pd{\bh_v}{\dot{\bq}} \right)^+ \left[
+      \pd{\bh_v}{\dot{\bq}} \bM^{-1} \btau + \pd{\bh_v}{\bq} \dot{\bq} + \alpha
+      \bh_v \right].\end{equation}</p>
+
+    </subsection>
+
+  </section>
+  <section><h1>Contact Models</h1>
+
+    <p>Now let $\phi(\bq)$ indicate the relative (signed) distance between
+      two rigid bodies.  For rigid contact, we would like to enforce the
+      unilateral constraint: \begin{equation} \phi(\bq) \geq 0.
+      \end{equation}</p>
+
+    <p>There are three main approaches used to modeling contact with "rigid"
+    body systems:  1) rigid contact approximated with stiff compliant contact,
+    2) hybrid models with collision event detection, impulsive reset maps, and
+    continuous (constrained) dynamics between collision events, and 3) rigid
+    contact approximated with time-averaged forces (time-stepping).  Each
+    modeling approach has advantages/disadvantages for different
+    applications...</p>
+
+    <subsection><h1>Compliant Contact Models</h1>
+
+      <p>Most compliant contact models are conceptually straight-forward: we
+      will implement contact forces using a stiff spring (and damper) that
+      produces forces to resist penetration (and grossly model the dissipation
+      of collision and/or friction).  However, the devil is in the details.</p>
+
+      <p>The first detail comes in defining the signed distance function,
+      $\phi(\bq)$.  It is natural to define the distance between two objects
+      that are not in collision as the smallest Euclidean distance between any
+      two points on the bodies, and the distance for two bodies in collision as
+      the (negative) maximum penetration depth.  Unfortunately, computing the
+      penetration depth for arbitrary bodies is a very complex numerical
+      geometry problem, and is generally considered too expensive to be
+      computed exactly inside, for instance, a simulation loop.</p>
+
+      <p>The second detail is about where we should put the spring/dampers. One
+      candidate would be to add a spring along the line of maximal penetration,
+      but even if one could compute it accurately this line might not be
+      unique, and can move discontinuously with small changes in $\bq$. (This
+      is one of the reasons that simulated robots can "explode" in a number of
+      modern simulators; as we will see the time-stepping methods can have the
+      same pitfall).  Also a single point force cannot capture effects like
+      torsional friction, and performs badly in some very simple cases (imaging
+      a box sitting on a table).  As a result, many of the most effective
+      algorithms for contact restrict themselves to very limited/simplified
+      geometry.  For instance, one can place "point contacts" (zero-radius
+      spheres) in the four corners of a robot's foot; in this case adding
+      forces at exactly those four points as they penetrate some other
+      body/mesh can give more consistent contact force locations/directions. A
+      surprising number of simulators, especially for legged robots, do
+      this.</p>
+
+      <p>In practice, most collision detection algorithms will return a list of
+      "collision point pairs" given the list of bodies (with one point pair per
+      pair of bodies in collision, or more if they are using the aforementioned
+      "multi-contact" heuristics), and our contact force model simply attaches
+      springs between these pairs. Given a point-pair, $p_A$ and $p_B$, both in
+      world coordinates, ...</p>
+
+      <todo>Some diagrams could help a LOT here.</todo>
+
+      <p>For this simple case, we can define the normal force direction as...
+      the frictional force as... and write a spring-law...</p>
+
+      <p>In order to tightly approximate the (nearly) rigid contact that most
+      robots make with the world, the stiffness of these springs must be quite
+      high.  For instance, I might want my 180kg humanoid robot model to
+      penetrate into the ground no more than 1mm during steady-state standing.
+      The challenge with adding stiff springs to our model is that this results
+      in <a href="https://en.wikipedia.org/wiki/Stiff_equation">stiff
+      differential equations</a> (it is not a coincidence that the word
+      <em>stiff</em> is the common term for this in both springs and ODEs). As
+      a result, the best implementations of compliant contact for simulation
+      must use stiff ODE solvers, and these models are often difficult or
+      impossible to use in e.g. trajectory/feedback optimization.</p>
+
+      <p>Some of the advantages of this approach include (1) the fact that it
+      is easy to implement, at least for simple geometries, (2) by virtue of
+      being a continuous-time model it can be simulated with error-controlled
+      integrators, and (3) the tightness of the approximation of "rigid"
+      contact can be controlled through relatively intuitive parameters.</p>
+
+    </subsection>
+
+    <subsection><h1>Rigid Contact with Event Detection</h1>
+
+      <subsubsection><h1>Impulsive Collisions</h1>
+
+        <p>The collision event is described by the zero-crossings (from
+        positive to negative) of $\phi$. Let us start by assuming frictionless
+        collisions, allowing us to write \begin{equation}\bM\ddot{\bq} = \btau
+        + \Phi^T \lambda,\end{equation} where $\Phi = \pd{\phi}{\bq}$ and
+        $\lambda \ge 0$ is now a (scalar) impulsive force that is well-defined
+        when integrated over the time of the collision (denoted $t_c^-$ to
+        $t_c^+$).  Integrate both sides of the equation over that
+        (instantaneous) interval: \begin{align*}\int_{t_c^-}^{t_c^+} dt\left[
+        \bM \ddot{\bq} \right] = \int_{t_c^-}^{t_c^+} dt \left[ \btau + \Phi^T
+        \lambda \right] \end{align*} Since $\bM$, $\btau$, and $\bPhi$ are
+        constants over this interval, we are left with $$\bM\dot{\bq}^+ -
+        \bM\dot{\bq}^- = \Phi^T \int_{t_c^-}^{t_c^+} \lambda dt,$$ where
+        $\dot{\bq}^+$ is short-hand for $\dot{\bq}(t_c^+)$. Multiplying both
+        sides by $\Phi \bM^{-1}$, we have $$ \Phi \dot{\bq}^+ - \Phi\dot{\bq}^-
+        = \Phi \bM^{-1} \Phi^T \int_{t_c^-}^{t_c^+} \lambda dt.$$ After the
+        collision, we have $\dot\phi^+ = -e \dot\phi^-$, with $0 \le e \le 1$
+        denoting the <a
+        href="https://en.wikipedia.org/wiki/Coefficient_of_restitution">coefficient
+        of restitution</a>, yielding: $$ \Phi \dot{\bq}^+ - \Phi\dot{\bq}^- =
+        -(1+e)\Phi\dot{\bq}^-,$$ and therefore $$\int_{t_c^-}^{t_c^+} \lambda
+        dt = - (1+e)\left[ \Phi \bM^{-1} \Phi^T \right]^+ \Phi \dot{\bq}^-.$$
+        Substituting this back in above results in \begin{equation}\dot{\bq}^+
+        = \left[ \bI - (1+e)\bM^{-1} \Phi^T \left[ \Phi \bM^{-1} \Phi^T
+        \right]^+ \Phi \right] \dot{\bq}^-.\end{equation}</p>
+
+        <p>We can add friction at the contact.  Rigid bodies will almost always
+        experience contact at only a point, so we typically ignore torsional
+        friction <elib>Featherstone06</elib>, and model only tangential
+        friction by replacing $\Phi$ with a matrix $\bJ$ that has $\Phi$ as one
+        row, but two additional rows to capture the gradient of the contact
+        location tangent to the contact surface, written in joint coordinates
+        (c.f. <elib>Stewart96</elib>). Then $\blambda$ becomes a Cartesian
+        force vector, but the equations above remain unchanged. If $\blambda$
+        is restricted to a friction cone, as in Coulomb friction, in general we
+        have to solve an optimization to solve for $\dot\bq^+$ subject to the
+        inequality constraints. </p>
+
+      </subsubsection>
+
+      <subsubsection><h1>Putting it all together</h1>
+
+        <p> We can put the bilateral constraint equations and the impulsive
+        collision equations together to implement a hybrid model for unilateral
+        constraints of the form. Let us generalize \begin{equation}\bphi(\bq)
+        \ge 0,\end{equation} to be the vector of all pairwise (signed) distance
+        functions between rigid bodies; this vector describes all possible
+        contacts. At every moment, some subset of the contacts are active, and
+        can be treated as a bilateral constraint ($\bphi_i=0$). The guards of
+        the hybrid model are when an inactive constraint becomes active
+        ($\bphi_i>0 \rightarrow \bphi_i=0$), or when an active constraint
+        becomes inactive ($\blambda_i>0 \rightarrow \blambda_i=0$ and
+        $\dot\phi_i > 0$). Note that collision events will (almost always) only
+        result in new active constraints when $e=0$, e.g. we have pure
+        inelastic collisions, because elastic collisions will rarely permit
+        sustained contact.</p>
+
+        <p>If the contact involves Coulomb friction, then the transitions
+        between sticking and sliding can be modeled as additional hybrid
+        guards, or can be solved efficiently as a complementarity problem
+        <elib>Stewart96</elib>.</p>
+
+      </subsubsection>
+
+    </subsection>
+
+    <subsection><h1>Time-stepping Approximations for Rigid
+      Contact</h1>
+
+    </subsection>
+
+  </section>
+
+  <section><h1>Recursive Dynamics Algorithms</h1>
+
+    <p>The equations of motions for our machines get complicated quickly.
+    Fortunately, for robots with a tree-link kinematic structure, there are very
+    efficient and natural recursive algorithms for generating these equations of
+    motion.  For a detailed reference on these methods, see
+    <elib>Featherstone07</elib>; some people prefer reading about the
+    Articulated Body Method in <elib>Mirtich96</elib>.  The implementation in
+    <drake></drake> uses a related formulation from <elib>Jain11</elib>.</p>
+
+  </section> <!-- end recursive algorithms -->
+
+  <todo> numerical integration.  discrete-time approximations of continuous
+  systems (lots of edx people had trouble with this.  some found:
+  http://web.mit.edu/10.001/Web/Course_Notes/Differential_Equations_Notes/node3.html)
+  </todo>
+
+  <section><h1>Parameter Estimation</h1></section>
+
+  <todo> lumped parameters.  identifiable lumped parameters.  least-squares
+  estimation.  power formulations.  trajectory design.</todo>
+
+</chapter> 
+
+<div id="footer">
+  <hr>
+  <table style="width:100%;">
+    <tr><td><em>Underactuated Robotics</em></td><td align="right">&copy; Russ
+      Tedrake, 2020</td></tr>
+  </table>
+</div>
+
+
+</body>
+</html>
+  

@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <title>Underactuated Robotics</title>
+    <meta name="Underactuated Robotics" content="text/html; charset=utf-8;" />
+
+    <script type="text/javascript" src="chapters.js"></script>
+    <script type="text/javascript" src="htmlbook/book.js"></script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: {autoNumber: "AMS"}, noErrors: { disabled: true } },
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+          processEscapes: true
+        },
+      });
+    </script>
+    <script type="text/javascript"
+      src="http://underactuated.csail.mit.edu/htmlbook/MathJax/MathJax.js?config=TeX-AMS_SVG">
+    </script>
+    <!-- Fallback to local MathJax (to support offline viewing) -->
+    <script>window.MathJax || document.write('<script src="htmlbook/MathJax/MathJax.js?config=TeX-AMS_SVG""><\/script>')</script>
+
+    <link rel="stylesheet" href="htmlbook/highlight/styles/default.css">
+    <script src="htmlbook/highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <link rel="stylesheet" type="text/css" href="htmlbook/book.css">
+  </head>
+
+
+<body onload="loadChapter('underactuated');">
+
+<div data-type="titlepage">
+  <header>
+    <h1><a href="underactuated.html" style="text-decoration:none;">Underactuated Robotics</a></h1>
+    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p> 
+    <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
+    <p style="font-size: 14px; text-align: right;"> 
+      &copy; Russ Tedrake, 2020<br/>
+      <a href="tocite.html">How to cite these notes</a><br/>
+    </p>
+  </header>
+</div>
+
+<p><b>Note:</b> These are working notes used for <a
+href="http://underactuated.csail.mit.edu/Spring2020/">a course being taught
+at MIT</a>. They will be updated throughout the Spring 2020 semester.  <a 
+href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos are available on YouTube</a>.</p> 
+
+<chapter><h1>Algorithms
+for Limit Cycles</h1>
+
+  <p>The discussion of walking and running robots in Chapter 4 motivated the
+  notion of limit cycle stability.  Linear systems are not capable of producing
+  stable limit cycle behavior, so this rich topic is unique to nonlinear systems
+  design and analysis.  Furthermore, the tools that are required to design,
+  stabilize, and verify limit cycles will have applicability beyond simple
+  periodic motions.</p>
+
+  <p>The first natural question we must ask is, given a system $\dot{\bx} =
+  f(\bx)$, or a control system $\dot{x} = f(\bx,\bu)$, how do we go about
+  finding periodic solutions which may be passively stable, open-loop stable, or
+  stabilized with closed-loop feedback? It turns out that the trajectory
+  optimization tools that we developed in the last chapter are very well suited
+  to this task.</p>
+
+  <section><h1>Trajectory optimization</h1>
+
+    <p>I introduced the trajectory optimization tools as means for optimizing a
+    single trajectory of the system from a particular known initial condition.
+    But they can be used in a slightly different way, too -- in some
+    formulations we might choose to have the initial conditions as one of the
+    decision variables.  In fact, the simplest formulation for finding a
+    periodic solution is to leave the entire trajectory as a decision variable,
+    but to add <em>periodicity constraints</em> enforcing that the initial
+    conditions and the final conditions match.  Some care is needed here; if
+    you're not careful then these constraints will all be met if the entire
+    trajectory remains at a fixed point in the system.  In the example below, we
+    constrain that the initial and final conditions lie on the surface of
+    section that we used before, and additionally constrain that the velocity at
+    the initial/final points is non-zero (to avoid the fixed point
+    solution).</p>
+
+    <p>Note that although we introduced trajectory optimization as searching
+    over control inputs $\bu$, this formulation is now rich enough that it
+    solves an important problem even for passive systems -- with no control
+    input at all.</p>
+
+    <example class="drake"><h1>Finding the limit cycle of the
+    Van der Pol oscillator</h1>
+
+      <p>Recall the dynamics of the Van der Pol oscillator given by $$\ddot{q} +
+      \mu (q^2 - 1) \dot{q} + q = 0, \quad \mu>0,$$ which exhibited a stable
+      limit cycle.</p>
+
+      <p>Formulate the direct collocation optimization:
+        \begin{align*}
+          \find_{\bx_0,...,\bx_N,dt} \quad \\
+          \subjto \quad    & q_0 = 0, \quad \dot{q}_0 > 0, \\
+          & \bx_N = \bx_0, \text{(periodicity constraint)}\\
+          & \text{collocation dynamic constraints}
+        \end{align*}
+      </p>
+
+      <p>Try it yourself:</p>
+        <pysrc>van_der_pol/dircol.py</pysrc>
+
+      <p>As always, make sure that you take a look at the code.  Poke around.
+      Try changing some things.</p>
+
+      <p>One of the things that you should notice in the code is that I provide
+      an initial guess for the solver.  In most of the examples so far I've been
+      able to avoid doing that--the solver takes small random numbers as a
+      default initial guess and solves from there.  But for this problem, I
+      found that it was getting stuck in a local minima.  Adding the initial
+      guess that the solution moves around a circle in state space was enough.
+      </p>
+
+    </example>
+
+    <todo> example: simplest flapping robot </todo>
+
+  </section> <!-- end trajectory optimization -->
+
+  <section><h1>Lyapunov analysis</h1>
+
+    <p>Recall the important distinction between stability of a trajectory in
+    time and   stability of a limit cycle was that the limit cycle does not
+    converge in phase --   trajectories near the cycle converge to the cycle,
+    but trajectories on the cycle   may not converge with each other.  This is
+    type of stability, also known as <em>orbital   stability</em> can be written
+    as stability to the manifold described by cycle   $\bx^*(t)$, \[ \min_\tau
+    || x(t) - x^*(\tau) || \rightarrow 0.\] In the case of limit cycles, this
+    manifold is a periodic solution with $\bx^*(t+t_{period}) = \bx^*(t)$.
+    Depending on exactly how that convergence happens, we can define orbital
+    stability in the sense of Lyapunov, asymptotic orbital stability,
+    exponential orbital stability, or even finite-time orbital stability.</p>
+
+    <p>In order to prove that a system is orbitally stable (locally, over a
+    region, or globally), or to analyze the region of attraction of a limit
+    cycle, we can use a Lyapunov function. In particular, we would like to
+    consider Lyapunov functions which have the form cartooned below;  they
+    vanish to zero everywhere along the cycle, and are strictly positive
+    everywhere away from the cycle.</p>
+
+    <figure><img
+    src="figures/limitCycleLyapunovCartoon.svg"/><figcaption>Cartoon of a
+    Lyapunov function which vanishes on a limit cycle, and is strictly positive
+    everywhere else. (a small segment has been removed solely for the purposes
+    of visualization).</figcaption></figure>
+
+    <subsection><h1>Transverse coordinates</h1>
+
+      <p>How can we parameterize this class of functions?  For arbitrary cycles
+      this could be very difficult in the original coordinates.  For simple
+      cycles like in the cartoon, one could imagine using polar coordinates.
+      More generally, we will define a new coordinate system relative to the
+      orbit, with coordinates</p> <ul> <li>$\tau$ - the phase along the
+      orbit</li> <li>$\bx_\perp(\tau)$ - the remaining coordinates, linearly
+      independent from $\tau$.</li> </ul> <p>Given a state $\bx$ in the original
+      coordinates, we must define a smooth mapping $\bx \rightarrow (\tau,
+      \bx_\perp)$ to this new coordinate system.  For example, for a simple ring
+      oscillator we might have:</p> <figure><img width="80%"
+      src="figures/transverseCoordinates.svg"/><figcaption>A moving
+      coordinate system along the limit cycle.</figcaption></figure> In general,
+      for an $n$-dimensional state space, $\tau$ will always be a scalar, and
+      $\bx_\perp$ will be an $(n-1)$-dimensional vector defining the remaining
+      coordinates relative to $\bx^*(\tau)$. In fact, although we use the
+      notation $\bx_\perp$ the coordinate system need not be strictly orthogonal
+      to the orbit, but must simply be <em>transversal</em> (not parallel).
+      Having defined the smooth mapping $\bx \rightarrow (\tau,\bx_\perp)$, we
+      can always rewrite the dynamics in this new coordinate system:
+      \begin{gather*} \dot{\tau} = f_1(\bx_\perp,\tau) \\ \dot\bx_\perp =
+      f_2(\bx_\perp,\tau). \end{gather*} <p>The value of this construction for
+      Lyapunov analysis was proposed in <elib>Hauser94a</elib> and has been
+      extended nicely to control design in <elib>Shiriaev08</elib> and for
+      region of attraction estimation in <elib>Manchester10b</elib>.  A
+      particular numerical strategy for defining the transversal coordinates is
+      given in <elib>Manchester10a</elib>.</p>
+
+      <theorem><h1>A Lyapunov theorem for orbital stability</h1>
+
+        <p>For a dynamical system $\dot\bx = f(\bx)$ with $\bx \in \Re^n$, $f$
+        continuous, a continuous periodic solution $\bx^*(\tau)$, and a smooth
+        mapping $\bx \rightarrow (\tau,\bx_\perp)$ where $\bx_\perp$ vanishes on
+        $\bx^*$, then for some $n-1$ dimensional ball ${\cal B}$ around the
+        origin, if I can produce a $V(\bx_\perp,\tau)$ such that \begin{gather*}
+        \forall \tau, V(0,\tau) = 0, \\ \forall \tau, \forall \bx_\perp \in
+        {\cal B}, \bx_\perp \ne 0, V(\bx_\perp,\tau) > 0, \end{gather*} with
+        \begin{gather*} \forall \tau, \dot{V}(0,\tau) = 0, \\ \forall \tau,
+        \forall \bx_\perp \in {\cal B}, \bx_\perp \ne 0, \dot{V}(\bx_\perp,\tau)
+        < 0, \end{gather*} then the solution $\bx^*(t)$ is <em>locally orbitally
+        asymptotically stable</em>.</p>
+
+      </theorem>
+
+      <example><h1>Simple ring oscillator</h1>
+
+        <p> Perhaps the simplest oscillator is the first-order system which
+        converges to the unit circle.   In cartesian coordinates, the dynamics
+        are   \begin{align*} \dot{x}_1 =& x_2 -\alpha x_1 \left( 1 -
+        \frac{1}{\sqrt{x_1^2+x_2^2}}\right) \\ \dot{x}_2 =& -x_1 -\alpha x_2
+        \left( 1 - \frac{1}{\sqrt{x_1^2+x_2^2}}\right), \end{align*}   where
+        $\alpha$ is a positive scalar gain.</p>
+
+        <figure><img width=80%
+        src="figures/ringOscillator.svg"/><figcaption>Vector field of the
+        ring oscillator</figcaption></figure>
+
+        <p>If we take the transverse coordinates to be the polar coordinates,
+        shifted so that $x_\perp$ is zero on the unit circle, \begin{align*}\tau
+        =& \text{atan2}(-x_2,x_1) \\ x_\perp =& \sqrt{x_1^2+x_2^2}-1,
+        \end{align*} which is valid when $x_\perp>-1$, then the simple
+        transverse dynamics are revealed:   \begin{align*}     \dot\tau =& 1 \\
+        \dot{x}_\perp =& -\alpha x_\perp.   \end{align*}   Taking a Lyapunov
+        candidate $V(x_\perp,\tau) = x_\perp^2$, we can verify that $$\dot{V} =
+        -2 \alpha x_\perp^2 \prec 0, \quad \forall x_\perp > -1.$$ This
+        demonstrates that the limit cycle is locally asymptotically stable, and
+        furthermore that the invariant open-set $V < 1$ is inside the region of
+        attraction of that limit cycle. In fact, we know that all $x_\perp > -1$
+        are in the region of attraction that limit cycle, but this is not proven
+        by the Lyapunov argument above. </p>
+
+      </example>
+
+      <p>Let's compare this approach with the approach that we used in the
+      chapter on walking robots, where we used a Poincar&eacute map analysis to
+      investigate limit cycle stability. In transverse coordinates approach,
+      there is an additional burden to construct the coordinate system along the
+      entire trajectory, instead of only at a single surface of section.  In
+      fact, the transverse coordinates approach is sometimes referred to as a
+      "moving Poincar&eacute section". But the reward for this extra work is
+      that we can check a condition that only involves the instantaneous
+      dynamics, $f(\bx)$, as opposed to having to integrate the dynamics over an
+      entire cycle to generate the discrete Poincar&eacute map, $\bx_p[n+1] =
+      P(\bx_p[n])$. While computing $P$ in closed-form happened to be possible
+      for the simple rimless wheel model, it is rarely possible for more complex
+      models.  As we will see below, this approach will also be more compatible
+      with designing continuous feedback controller that stabilize the limit
+      cycle.</p>
+
+    </subsection> <!-- end transverse -->
+
+    <subsection><h1>Transverse linearization</h1>
+
+      <p>In the case of Lyapunov analysis around a fixed point, there was an
+      important special case: for stable linear systems, we actually have a
+      recipe for constructing a Lyapunov function.  As a result, for nonlinear
+      systems, we often found it convenient to begin our search by linearizing
+      around the fixed point and using the Lyapunov candidate for the linear
+      system as an initial guess.  That same approach can be extended to limit
+      cycle analysis.</p>
+
+    </subsection>
+
+    <subsection><h1>Region of attraction estimation using sums-of-squares</h1>
+
+      <p>Coming soon.  If you are interested, see <elib>Manchester10a+Manchester10b</elib>.</p>
+
+    </subsection>
+
+  </section> <!-- end lyapunov -->
+
+  <section><h1>Feedback design</h1>
+
+    <subsection><h1>Transverse LQR</h1>
+
+    </subsection>
+
+    <subsection><h1>Orbital stabilization for non-periodic trajectories</h1>
+
+    </subsection>
+
+  </section> <!-- end feedback -->
+
+</chapter>
+
+<div id="footer">
+  <hr>
+  <table style="width:100%;">
+    <tr><td><em>Underactuated Robotics</em></td><td align="right">&copy; Russ
+      Tedrake, 2020</td></tr>
+  </table>
+</div>
+
+
+</body>
+</html>
+  

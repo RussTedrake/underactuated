@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <title>Underactuated Robotics</title>
+    <meta name="Underactuated Robotics" content="text/html; charset=utf-8;" />
+
+    <script type="text/javascript" src="chapters.js"></script>
+    <script type="text/javascript" src="htmlbook/book.js"></script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: {autoNumber: "AMS"}, noErrors: { disabled: true } },
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+          processEscapes: true
+        },
+      });
+    </script>
+    <script type="text/javascript"
+      src="http://underactuated.csail.mit.edu/htmlbook/MathJax/MathJax.js?config=TeX-AMS_SVG">
+    </script>
+    <!-- Fallback to local MathJax (to support offline viewing) -->
+    <script>window.MathJax || document.write('<script src="htmlbook/MathJax/MathJax.js?config=TeX-AMS_SVG""><\/script>')</script>
+
+    <link rel="stylesheet" href="htmlbook/highlight/styles/default.css">
+    <script src="htmlbook/highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <link rel="stylesheet" type="text/css" href="htmlbook/book.css">
+  </head>
+
+
+<body onload="loadChapter('underactuated');">
+
+<div data-type="titlepage">
+  <header>
+    <h1><a href="underactuated.html" style="text-decoration:none;">Underactuated Robotics</a></h1>
+    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p> 
+    <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
+    <p style="font-size: 14px; text-align: right;"> 
+      &copy; Russ Tedrake, 2020<br/>
+      <a href="tocite.html">How to cite these notes</a><br/>
+    </p>
+  </header>
+</div>
+
+<p><b>Note:</b> These are working notes used for <a
+href="http://underactuated.csail.mit.edu/Spring2020/">a course being taught
+at MIT</a>. They will be updated throughout the Spring 2020 semester.  <a 
+href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos are available on YouTube</a>.</p> 
+
+<chapter><h1>Lyapunov
+  Analysis</h1>
+
+  <p>Optimal control provides a powerful framework for formulating control
+  problems using the language of optimization.  But solving optimal control
+  problems for nonlinear systems is hard!  In many cases, we don't really care
+  about finding the <em>optimal</em> controller, but would be satisfied with any
+  controller that is guaranteed to accomplish the specified task.  In many
+  cases, we still formulate these problems using computational tools from
+  optimization, and in this chapter we'll learn about tools that can provide
+  guaranteed control solutions for systems that are beyond the complexity for
+  which we can find the optimal feedback.</p>
+
+  <p>There are many excellent books on Lyapunov analysis; for instance
+  <elib>Slotine90</elib> is an excellent and very readable reference and
+  <elib>Khalil01</elib> can provide a rigorous treatment.  In this chapter I
+  will summarize (without proof) some of the key theorems from Lyapunov
+  analysis, but then will also introduce a number of numerical algorithms...
+  many of which are new enough that they have not yet appeared in any mainstream
+  textbooks.</p>
+
+  <section><h1>Lyapunov Functions</h1>
+
+    <p>Let's start with our favorite simple example. </p>
+
+    <example><h1>Stability of the Damped Pendulum</h1>
+
+      <center><img width="25%" src="figures/simple_pend.svg"/></center>
+
+      <p>Recall that the equations of motion of the damped simple pendulum are
+      given by \[ ml^2 \ddot{\theta} + mgl\sin\theta = -b\dot{\theta}, \] which
+      I've written with the damping on the right-hand side to remind us that it
+      is an external torque that we've modeled.</p>
+
+      <p>These equations represent a simple second-order differential equation;
+      in chapter 2 we discussed at some length what was known about the
+      solutions to this differential equation--even without damping the equation
+      for $\theta(t)$ as a function of $\theta(0)$, $\dot{\theta}(0)$, involves
+      elliptic integrals of the first kind, and with damping we don't even have
+      that.  Since we couldn't provide a solution analytically, in chapter 2 we
+      resorted to a graphical analysis, and confirmed the intuition that there
+      are fixed points in the system (at $\theta = k\pi$ for every integer $k$)
+      and that the fixed points at $\theta = 2\pi k$ are asymptotically stable
+      with a large basin of attraction.  The graphical analysis gave us this
+      intuition, but can we actually prove this stability property?  In a way
+      that might also work for much more complicated systems?</p>
+
+      <p>One route forward was from looking at the total system energy (kinetic
+      + potential), which we can write down: \[ E(\theta,\dot{\theta}) =
+      \frac{1}{2} ml^2\dot{\theta}^2 - mgl \cos\theta. \] Recall that the
+      contours of this energy function are the orbits of the undamped
+      pendulum.</p>
+
+      <center><img width="50%" src="figures/pend_undamped_phase.svg"/></center>
+
+      <p>A natural route to proving the stability of the downward fixed points
+      is by arguing that energy decreases for the damped pendulum (with $b>0$)
+      and so the system will eventually come to rest at the minimum energy, $E =
+      -mgl$, which happens at $\theta=2\pi k$.  Let's make that argument
+      slightly more precise. </p>
+
+      <p>Evaluating the time derivative of the energy reveals \[ \frac{d}{dt} E
+      = - b\dot\theta^2 \le 0. \] This is sufficient to demonstrate that the
+      energy will never increase, but it doesn't actually prove that the energy
+      will converge to the minimum.  To take that extra step, we must observe
+      that for most of the states with $\dot{E} = 0$, which for $b>0$ is the
+      manifold where $\dot\theta=0$, the system can't actually remain in that
+      state, but will rather pass through and enter another region where it
+      continues to lose energy.  In fact, the fixed points are the only subset
+      of this $\dot{E}=0$ manifold where the system can stay on the manifold.
+      Therefore, unless the system is at a fixed point, it will continue to
+      dissipate energy.  And therefore we can conclude that as $t\rightarrow
+      \infty$, the system will indeed come to rest at a fixed point (though it
+      could be any fixed point with an energy less than or equal to the initial
+      energy in the system, $E(0)$).</p>
+
+    </example>
+
+    <p>This is an important example.  It demonstrated that we could use a
+    relatively simple function, the system energy, to describe something about
+    the long-term dynamics of the pendulum even though the actual trajectories
+    of the system are (analytically) very complex.  It also demonstrated one of
+    the subtleties of using an energy-like function that is non-increasing
+    (instead of strictly decreasing) to prove asymptotic stability.</p>
+
+    <p>Lyapunov functions generalize this notion of an energy function to more
+    general systems, which might not be stable in the sense of some mechanical
+    energy.  If I can find any positive function, call it $V(\bx)$, that gets
+    smaller over time as the system evolves, then I can potentially use $V$ to
+    make a statement about the long-term behavior of the system.  $V$ is called
+    a <em>Lyapunov function</em>. </p>
+
+    <p>Recall that we defined three separate notions for stability of a
+    fixed-point of a nonlinear system: stability i.s.L., asymptotic stability,
+    and exponential stability.  We can use Lyapunov functions to demonstrate
+    each of these, in turn.</p>
+
+    <theorem><h1>Lyapunov's Direct Method</h1>
+
+      <p>Given a system $\dot{\bx} = f(\bx)$, with $f$ continuous, and for some
+      region ${\cal B}$ around the origin (specifically an open subset of
+      $\mathbf{R}^n$ containing the origin), if I can produce a scalar,
+      continuously-differentiable function $V(\bx)$, such that \begin{gather*}
+      V(\bx) > 0, \forall \bx \in {\cal B} \ne 0 \quad V(0) = 0, \text{ and} \\
+      \dot{V}(\bx) = \pd{V}{\bx} f(\bx) \le 0, \forall \bx \in {\cal B} \ne 0
+      \quad \dot{V}(0) = 0, \end{gather*} then the origin $(\bx = 0)$ is stable
+      in the sense of Lyapunov (i.s.L.). </p>
+
+      <p>If, additionally, we have $$\dot{V}(\bx) = \pd{V}{\bx} f(\bx) < 0,
+      \forall \bx \in {\cal B} \ne 0,$$ then the origin is (locally)
+      asymptotically stable.  And if we have $$\dot{V}(\bx) = \pd{V}{\bx} f(\bx)
+      \le -\alpha V(x), \forall \bx \in {\cal B} \ne 0,$$ for some $\alpha>0$,
+      then the origin is (locally) exponentially stable. </p>
+
+    </theorem>
+
+    <p>Note that for the sequel we will use the notation $V \succ 0$ to denote a
+    <em>positive-definite function</em>, meaning that $V(0)=0$ and $V(\bx)>0$
+    for all $\bx\ne0$ (and also $V \succeq 0$ for positive semi-definite, $V
+    \prec 0$ for negative-definite functions).</p>
+
+    <p>The intuition here is exactly the same as for the energy argument we made
+    in the pendulum example:  since $\dot{V}(x)$ is always zero or negative, the
+    value of $V(x)$ will only get smaller (or stay the same) as time progresses.
+    Inside the subset ${\cal B}$, for every $\epsilon$-ball, I can choose a
+    $\delta$ such that $|x(0)|^2 < \delta \Rightarrow |x(t)|^2 < \epsilon,
+    \forall t$ by choosing $\delta$ sufficiently small so that the sublevel-set
+    of $V(x)$ for the largest value that $V(x)$ takes in the $\delta$ ball is
+    completely contained in the $\epsilon$ ball. Since the value of $V$ can only
+    get smaller (or stay constant) in time, this gives stability i.s.L.. If
+    $\dot{V}$ is strictly negative away from the origin, then it must eventually
+    get to the origin (asymptotic stability). The exponential condition is
+    implied by the fact that $\forall t>0, V(\bx(t)) \le V(\bx(0)) e^{-\alpha
+    t}$.</p>
+
+    <p> Notice that the system analyzed above, $\dot{\bx}=f(\bx)$, did not have
+    any control inputs. Therefore, Lyapunov analysis is used to study either the
+    passive dynamics of a system or the dynamics of a closed-loop system (system
+    + control in feedback).  We will see generalizations of the Lyapunov
+    functions to input-output systems later in the text. </p>
+
+    <subsection><h1>Global Stability</h1>
+
+      <p>The notion of a fixed point being stable i.s.L. is inherently a local
+      notion of stability (defined with $\epsilon$- and $\delta$- balls around
+      the origin), but the notions of asymptotic and exponential stability can
+      be applied globally.  The Lyapunov theorems work for this case, too, with
+      only minor modification.</p>
+
+      <theorem><h1>Lyapunov analysis for global stability</h1>
+
+        <p>Given a system $\dot{\bx} = f(\bx)$, with $f$ continuous, if I can
+        produce a scalar, continuously-differentiable function $V(\bx)$, such
+        that \begin{gather*} V(\bx) \succ 0, \\ \dot{V}(\bx) = \pd{V}{\bx}
+        f(\bx) \prec 0, \text{ and} \\ V(\bx) \rightarrow \infty \text{ whenever
+        } ||x||\rightarrow \infty,\end{gather*} then the origin $(\bx = 0)$ is
+        globally asymptotically stable (G.A.S.).</p>
+
+        <p>If additionally we have that $$\dot{V}(\bx) \preceq -\alpha V(\bx),$$
+        for some $\alpha>0$, then the origin is globally exponentially
+        stable.</p>
+
+      </theorem>
+
+      <p>The new condition, on the behavior as $||\bx|| \rightarrow \infty$ is
+      known as "radially unbounded", and is required to make sure that
+      trajectories cannot diverge to infinity even as $V$ decreases; it is only
+      required for global stability analysis.</p>
+
+    </subsection> <!-- global stability -->
+
+    <subsection><h1>LaSalle's Invariance Principle</h1>
+
+      <p>Perhaps you noticed the disconnect between the statement above and the
+      argument that we made for the stability of the pendulum.  In the pendulum
+      example, using the mechanical energy resulted in a Lyapunov function that
+      was only negative semi-definite, but we eventually argued that the fixed
+      points were asymptotically stable.  That took a little extra work,
+      involving an argument about the fact that the fixed points were the only
+      place that the system could stay with $\dot{E}=0$; every other state with
+      $\dot{E}=0$ was only transient. We can formalize this idea for the more
+      general Lyapunov function statements--it is known as LaSalle's
+      Theorem.</p>
+
+      <theorem><h1>LaSalle's Theorem</h1>
+
+        <p>Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous. If we can
+        produce a scalar function $V(\bx)$ with continuous derivatives for
+        which we have $$V(\bx) \succ 0,\quad \dot{V}(\bx) \preceq 0,$$ and
+        $V(\bx)\rightarrow \infty$ as $||\bx||\rightarrow \infty$, then $\bx$
+        will converge to the largest <i>invariant set</i> where $\dot{V}(\bx) =
+        0$.</p>
+
+      </theorem>
+
+      <p>To be clear, an <em>invariant set</em>, ${\cal G}$, of the dynamical
+      system is a set for which $\bx(0)\in{\cal G} \Rightarrow \forall t>0,
+      \bx(t) \in {\cal G}$.  In other words, once you enter the set you never
+      leave.  The "largest invariant set" need not be connected; in fact for the
+      pendulum example each fixed point is an invariant set, so the largest
+      invariant set is the <em>union</em> of all the fixed points of the
+      system.  There are also variants of LaSalle's Theorem which work over
+      a region.</p>
+
+      <p>Finding a Lyapunov function which $\dot{V} \prec 0$ is more difficult
+      than finding one that has $\dot{V} \preceq 0$.  LaSalle's theorem gives us
+      the ability to make a statement about <i>asymptotic</i> stability even in
+      this case.  In the pendulum example, every state with $\dot\theta=0$ had
+      $\dot{E}=0$, but only the fixed points are in the largest invariant
+      set.</p>
+
+    </subsection> <!-- lasalle -->
+
+    <subsection><h1>Relationship to the Hamilton-Jacobi-Bellman
+    equations</h1>
+
+      <p> At this point, you might be wondering if there is any relationship
+      between Lyapunov functions and the cost-to-go functions that we discussed
+      in the context of dynamic programming.  After all, the cost-to-go
+      functions also captured a great deal about the long-term dynamics of the
+      system in a scalar function.  We can see the connection if we re-examine
+      the HJB equation \[ 0 = \min_\bu \left[ \ell(\bx,\bu) +
+      \pd{J^*}{\bx}f(\bx,\bu). \right] \]Let's imagine that we can solve for the
+      optimizing $\bu^*(\bx)$, then  we are left with $ 0 = \ell(\bx,\bu^*) +
+      \pd{J^*}{\bx}f(\bx,\bu^*) $ or simply \[ \dot{J}^*(\bx)  = -\ell(\bx,\bu^*)
+      \qquad \text{vs} \qquad \dot{V}(\bx) \preceq 0. \]  In other words, in
+      optimal control we must find a cost-to-go function which matches this
+      gradient for every $\bx$; that's very difficult and involves solving a
+      potentially high-dimensional partial differential equation.  By contrast,
+      Lyapunov analysis is asking for much less - any function which is going
+      downhill (at any rate) for all states.  This can be much easier, for
+      theoretical work, but also for our numerical algorithms.  Also note that
+      if we do manage to find the optimal cost-to-go, $J^*(\bx)$, then it can
+      also serve as a Lyapunov function so long as $\ell(\bx,\bu^*(\bx)) \succeq
+      0$.</p>
+
+    </subsection> <!-- relationship to HJB -->
+
+    <todo>Include instability results, as in Briat15 Theorem 2.2.5</todo>
+
+  </section> <!-- Lyapunov definitions -->
+
+  <section><h1>Lyapunov analysis with convex optimization</h1>
+
+    <p>One of the primary limitations in Lyapunov analysis as I have presented
+    it so far is that it is potentially very difficult to come up with suitable
+    Lyapunov function candidates for interesting systems, especially for
+    underactuated systems. ("Underactuated" is almost synonymous with
+    "interesting" in my vocabulary.)  Even if somebody were to give me a
+    Lyapunov candidate for a general nonlinear system, the Lyapunov conditions
+    can be difficult to check -- for instance, how would I check that $\dot{V}$
+    is strictly negative for all $\bx$ except the origin if $\dot{V}$ is some
+    arbitrarily complicated nonlinear function over a vector $\bx$?</p>
+
+    <p>In this section, we'll look at some computational approaches to verifying
+    the Lyapunov conditions, and even to searching for (the coefficients of) the
+    Lyapunov functions themselves.</p>
+
+    <p>If you're imagining numerical algorithms to check the Lyapunov conditions
+    for complicated Lyapunov functions and complicated dynamics, the first
+    thought is probably that we can evaluate $V$ and $\dot{V}$ at a large number
+    of sample points and check whether $V$ is positive and $\dot{V}$ is
+    negative.  <a
+    href="https://github.com/RobotLocomotion/drake/blob/master/systems/analysis/test/lyapunov_test.cc">This
+    does work</a>, and could potentially be combined with some smoothness or
+    regularity assumptions to generalize beyond the sample points. <todo>Add
+    python bindings for the pendulum energy lp lyapunov example.</todo> But in
+    many cases we will be able to do better -- providing optimization algorithms
+    that will rigorously check these conditions <em>for all $\bx$</em> without
+    dense sampling; these will also give us additional leverage in formulating
+    the search for Lyapunov functions.  </p>
+
+    <subsection><h1>Lyapunov analysis for linear systems</h1>
+
+      <p>Let's take a moment to see how things play out for linear systems.</p>
+
+      <theorem><h1>Lyapunov analysis for stable linear systems</h1>
+
+        <p>Imagine you have a linear system, $\dot\bx = {\bf A}\bx$, and can
+        find a Lyapunov function $$V(\bx) = \bx^T {\bf P} \bx, \quad {\bf P} =
+        {\bf P^T} \succ 0,$$ which also satisfies $$\dot{V}(\bx) = \bx^T {\bf
+        PA} \bx + \bx^T {\bf A}^T {\bf P}\bx \prec 0.$$ Then the origin is
+        globally asymptotically stable.</p>
+
+      </theorem>
+
+      <p>Note that the radially-unbounded condition is satisfied by ${\bf P}
+      \succ 0$, and that the derivative condition is equivalent to the matrix
+      condition $${\bf PA} +  {\bf A}^T {\bf P} \prec 0.$$</p>
+
+      <p>For stable linear systems the existence of a quadratic Lyapunov
+      function is actually a necessary (as well as sufficient) condition.
+      Furthermore, a Lyapunov function can always be found by finding the
+      positive-definite solution to the matrix Lyapunov equation
+      \begin{equation}{\bf PA} + {\bf A}^T{\bf P} = - {\bf
+      Q},\label{eq:algebraic_lyapunov} \end{equation} for any ${\bf Q}={\bf
+      Q}^T\succ 0$.</p>
+
+      <todo> add an example here. double integrator? re-analyze the LQR output?
+      </todo>
+
+      <p>This is a very powerful result - for nonlinear systems it will be
+      potentially difficult to find a Lyapunov function, but for linear systems
+      it is straight-forward. In fact, this result is often used to propose
+      candidates for non-linear systems, e.g., by linearizing the equations and
+      solving a local linear Lyapunov function which should be valid in the
+      vicinity of a fixed point.</p>
+
+    </subsection> <!-- lyapunov for linear -->
+
+    <subsection><h1>Lyapunov analysis as a semi-definite program
+    (SDP)</h1>
+
+      <p>Lyapunov analysis for linear systems has an extremely important
+      connection to convex optimization. In particular, we could have also
+      formulated the Lyapunov conditions for linear systems above using
+      <em>semi-definite programming</em> (SDP). Semidefinite programming is a
+      subset of convex optimization -- an extremely important class of problems
+      for which we can produce efficient algorithms that are guaranteed find the
+      global optima solution (up to a numerical tolerance and barring any
+      numerical difficulties).</p>
+
+      <p>If you don't know much about convex optimization or want a quick
+      refresher, please take a few minutes to read the optimization
+      preliminaries in the appendix.  The main requirement for this section is
+      to appreciate that it is possible to formulate efficient optimization
+      problems where the constraints include specifying that one or more
+      matrices are positive semi-definite (PSD).  These matrices must be formed
+      from a linear combination of the decision variables.  For a trivial
+      example, the optimization $$\min_a a,\quad \subjto \begin{bmatrix} a & 0
+      \\ 0 & 1 \end{bmatrix} \succeq 0,$$ returns $a = 0$ (up to numerical
+      tolerances).</p>
+
+      <p>The value in this is immediate for linear systems.  For example, we can
+      formulate the search for a Lyapunov function for the linear system
+      $\dot\bx = {\bf A} \bx$ by using the parameters ${\bf p}$ to populate a
+      symmetric matrix ${\bf P}$ and then write the SDP: \[ \find_{\bf p} \quad
+      \subjto \quad {\bf P} \succeq 0, \quad {\bf PA} + {\bf A}^T {\bf P}
+      \preceq 0.\]  Note that you would probably never use that particular
+      formulation, since there specialized algorithms for solving the simple
+      Lyapunov equation which are more efficient and more numerically stable.
+      But the SDP formulation does provide something new -- we can now easily
+      formulate the search for a <i>"common Lyapunov function"</i> for uncertain
+      linear systems.</p>
+
+      <example class="drake"><h1>Common Lyapunov analysis for
+      linear systems</h1>
+
+        <p>Suppose you have a system governed by the equations $\dot\bx = {\bf
+        A}\bx$, where the matrix ${\bf A}$ is unknown, but its uncertain
+        elements can be bounded.  There are a number of ways to write down this
+        uncertainty set; let us choose to write this by describing ${\bf A}$ as
+        the convex combination of a number of known matrices, $${\bf A} =
+        \sum_{i} \beta_i {\bf A}_i, \quad \sum_i \beta_i = 1, \quad \forall i,
+        \beta_i > 0.$$  This is just one way to specify the uncertainty;
+        geometrically it is describing a polygon of uncertain parameters (in the
+        space of elements of ${\bf A}$ with each ${\bf A}_i$ as one of the
+        vertices in the polygon.</p>
+
+        <figure> <img width="50%"
+        src="figures/affine_combination_of_matrices.svg"/> </figure>
+
+        <p>Now we can formulate the search for a common Lyapunov function using
+        \[ \find_{\bf p} \quad  \subjto \quad {\bf P} \succeq 0,  \quad
+        \forall_i, {\bf PA}_i + {\bf A}_i^T {\bf P} \preceq 0.\]  The solver
+        will then return a matrix ${\bf P}$ which satisfies all of the
+        constraints, or return saying "problem is infeasible".  It can easily be
+        verified that if ${\bf P}$ satisfies the Lyapunov condition at all of
+        the vertices, then it satisfies the condition for every ${\bf A}$ in the
+        set:  \[ {\bf P}(\sum_i \beta_i {\bf A}_i) + (\sum_i \beta_i {\bf
+        A}_i)^T {\bf P} = \sum_i \beta_i ({\bf P A}_i + {\bf A}_i^T {\bf P})
+        \preceq 0, \] since $\forall i$, $\beta_i > 0$.  Note that, unlike the
+        simple Lyapunov equation for a known linear system, this condition being
+        satisfied is a sufficient but not a necessary condition -- it is
+        possible that the set of uncertain matrices ${\bf A}$ is robustly
+        stable, but that this stability cannot be demonstrated with a common
+        quadratic Lyapunov function.</p>
+
+        <p> You can try this example for yourself in <drake></drake>.</p>
+
+        <pysrc>lyapunov/linear_systems_common_lyapunov.py</pysrc>
+
+        <p>As always, make sure that you open up the code and take a look.</p>
+
+        <p>There are many small variants of this result that are potentially of interest.  For instance, a very similar set of conditions can certify "mean-square stability" for linear systems with multiplicative noise (see e.g. <elib>Boyd94</elib>, &sect; 9.1.1).</p>
+
+      </example>
+
+      <todo>Add example or exercise based on e.g. Briat15 (LPV) example 1.3.1, showing off how powerful this can be.  Also perhaps the parameter-dependent robust stability of his Def 2.3.5.</todo>
+
+      <p>This example is very important because it establishes a connection
+      between Lyapunov functions and (convex) optimization.  But so far we've
+      only demonstrated this connection for linear systems where the PSD
+      matrices provide a magical recipe for establishing the positivity of the
+      (quadratic) functions for all $\bx$.  Is there any hope of extending this
+      type of analysis to more general nonlinear systems?  Surprisingly, it
+      turns out that there is.</p>
+
+    </subsection>
+
+    <subsection><h1>Sums-of-squares optimization</h1>
+
+      <p>It turns out that in the same way that we can use SDP to search over
+      the positive quadratic equations, we can generalize this to search over
+      the positive polynomial equations.  To be clear, for quadratic equations
+      we have \[ {\bf P}\succeq 0 \quad \Rightarrow \quad \bx^T {\bf P} \bx \ge
+      0, \quad \forall \bx. \]  It turns out that we can generalize this to \[
+      {\bf P}\succeq 0 \quad \Rightarrow \quad {\bf m}^T(\bx) {\bf P} {\bf
+      m}(\bx) \ge 0, \quad \forall \bx, \] where ${\bf m}(\bx)$ is a vector of
+      polynomial equations, typically chosen as a vector of <em>monomials</em>
+      (polynomials with only one term).  The set of positive polynomials
+      parameterized in this way is exactly the set of polynomials that can be
+      written as a <em>sum of squares</em><elib>Parrilo00</elib>.  While it is
+      known that not all positive polynomials can be written in this form, much
+      is known about the gap (and papers have been written about trying to find
+      polynomials which are uniformly positive but not sums of squares).  For
+      our purposes this gap is very small; we should remember that it exists but
+      not worry about it too much for now.</p>
+
+      <p>Even better, there is quite a bit that is known about how to choose
+      the terms in ${\bf m}(\bx)$.  For example, if you give me the polynomial
+      \[ p(x) = 2 - 4x + 5x^2 \] and ask if it is positive for all real $x$, I
+      can convince you that it is by producing the sums-of-squares
+      factorization \[ p(x) = 1 + (1-2x)^2 + x^2, \] and I know that I can
+      formulate the problem without needing any monomials of degree greater
+      than 1 (the square-root of the degree of $p$) in my monomial vector.  In
+      practice, what this means for us is that people have authored
+      optimization front-ends which take a high-level specification with
+      constraints on the positivity of polynomials and they automatically
+      generate the SDP problem for you, without having to think about what
+      terms should appear in ${\bf m}(\bx)$ (c.f. <elib>Prajna04</elib>).
+      This class of optimization problems is called Sums-of-Squares (SOS)
+      optimization.</p>
+
+      <p>As it happens, the particular choice of ${\bf m}(\bx)$ can have a huge
+      impact on the numerics of the resulting semidefinite program (and on your
+      ability to solve it with commercial solvers). <drake></drake> implements
+      some particularly novel/advanced algorithms to make this work well
+      <elib>Permenter17</elib>.</p>
+
+      <p>We will write optimizations using sums-of-squares constraints as \[
+      p(\bx) \sos \] as shorthand for the constraint that $p(\bx) \ge 0$ for all
+      $\bx$, as demonstrated by finding a sums-of-squares decomposition.</p>
+
+      <p>This is surprisingly powerful.  It allows us to use convex
+      optimization to solve what appear to be very non-convex optimization
+      problems.</p>
+
+      <example class="drake"><h1>Global minimization via
+        SOS</h1>
+
+        <p>Consider the following famous non-linear function of two variables
+        (called the "six-hump-camel": $$p(x) = 4x^2 + xy - 4y^2 - 2.1x^4 + 4y^4
+        + \frac{1}{3}x^6.$$  This function has six local minima, two of them
+        being global minima <elib>Henrion09a</elib>.</p>
+
+        <div  style="text-align:center"><img
+                src="figures/six_hump_camel.svg" width="90%"/></div>
+
+        <p>By formulating a simple sums-of-squares optimization, we can
+        actually find the minimum value of this function (technically, it is
+        only a lower bound, but in this case and many cases, it is surprisingly
+        tight) by writing: \begin{align*} \max_\lambda \ \ & \lambda \\
+        \text{s.t. } & p(x) - \lambda \text{ is sos.} \end{align*}  Go ahead
+        and play with the code (most of the lines are only for plotting; the
+        actual optimization problem is nice and simple to formulate). </p>
+
+        <pysrc>simple/six_hump_camel.py</pysrc>
+
+        <p>Note that this finds the minimum value, but does not actually
+        produce the $\bx$ value which mimimizes it.  This is possible
+        <elib>Henrion09a</elib>, but it requires examining the dual of the
+        sums-of-squares solutions (which we don't need for the goals of this
+        chapter).</p>
+      </example>
+
+    </subsection>
+
+    <subsection><h1>Lyapunov analysis for polynomial systems</h1>
+
+      <p>Now we can see that it may be possible to generalize the optimization
+      approach using SDP to search for Lyapunov functions for linear systems to
+      searching for Lyapunov functions for at least the polynomial systems:
+      $\dot\bx = f(\bx),$ where $f$ is a vector-valued polynomial function.  If
+      we parameterize a <em>fixed-degree</em> Lyapunov candidate as a polynomial
+      with unknown coefficients, e.g., \[ V_\alpha(\bx) = \alpha_0 + \alpha_1
+      x_1 + \alpha_2 x_2 + \alpha_3 x_1x_2 + \alpha_4 x_1^2 + ..., \] then the
+      time-derivative of $V$ is also a polynomial, and I can formulate the
+      optimization: \begin{align*} \find_\alpha, \quad \subjto \quad&
+      V_\alpha(\bx) \sos \\ & -\dot{V}_\alpha(\bx) = -\pd{V_\alpha}{\bx} f(\bx)
+      \sos. \end{align*}  Because this is a convex optimization, the solver will
+      return a solution if one exists.</p>
+
+      <example class="drake"><h1>Verifying a Lyapunov candidate
+        via SOS</h1>
+
+        <p>This example is example 7.2 from <elib>Parrilo00</elib>. Consider
+        the nonlinear system: \begin{align*} \dot{x}_0 =& -x_0 - 2x_1^2 \\
+        \dot{x}_1 =& -x_1 - x_0 x_1 - 2x_1^3,\end{align*} and the <i>fixed
+        </i> Lyapunov function $V(x) = x_0^2 + 2x_1^2$, test if $\dot{V}(x)$ is
+        negative definite.</p>
+
+        <p>The numerical solution can be written in a few lines of code, and
+        is a convex optimization.</p>
+
+        <pysrc>lyapunov/verify_global_polynomial.py</pysrc>
+
+      </example>
+
+      <example class="drake"><h1>Searching for a Lyapunov
+        function via SOS</h1>
+
+        <p>Verifying a candidate Lyapunov function is all well and good, but
+        the real excitement starts when we use optimization to <i>find</i> the
+        Lyapunov function.  In the following code, we parameterize $V(x)$ as
+        the polynomial containing all monomials up to degree 2, with the
+        coefficients as decision variables: $$V(x) = c_0 + c_1x_0 + c_2x_1 +
+        c_3x_0^2 + c_4 x_0x_1 + c_5 x_1^2.$$  We will set the scaling
+        (arbitrarily) to avoid numerical issues by setting $V(0)=0$, $V([1,0])
+        = 1$.  Then we write: \begin{align*} \find_{\bc} \ \ \subjto \ \ &
+        V\text{ is sos, } \\ & -\dot{V} \text{ is sos.}\end{align*}</p>
+
+        <pysrc>lyapunov/search_global_polynomial.py</pysrc>
+
+        <p>Up to numerical convergence tolerance, it discovers the same
+        coefficients that we chose above (zeroing out the unnecessary
+        terms).</p>
+
+      </example>
+
+      <p>It is important to remember that there are a handful of gaps which make
+      the existence of this solution a sufficient condition (for proving that
+      every sub-level set of $V$ is an invariant set of $f$) instead of a
+      necessary one.  First, there is no guarantee that a stable polynomial
+      system can be verified using a polynomial Lyapunov function (of any
+      degree, and in fact there are known counter-examples
+      <elib>Ahmadi11a</elib>) and here we are only searching over a fixed-degree
+      polynomial.  Second, even if a polynomial Lyapunov function does exist,
+      there is a gap between the SOS polynomials and the positive
+      polynomials.</p>
+
+      <p>Despite these caveats, I have found this formulation to be surprisingly
+      effective in practice.  Intuitively, I think that this is because there is
+      relatively a lot of flexibility in the Lyapunov conditions -- if you can
+      find one function which is a Lyapunov function for the system, then there
+      are also many "nearby" functions which will satisfy the same
+      constraints.</p>
+
+    </subsection>
+
+  </section> <!-- computing Lyapunov -->
+
+  <section><h1>Lyapunov functions for estimating regions of
+  attraction</h1>
+
+    <p>There is another very important connection between Lyapunov functions and
+    the concept of an invariant set: <em>any sub-level set of a Lyapunov
+    function is also an invariant set</em>.  This gives us the ability to use
+    sub-level sets of a Lyapunov function as approximations of the region of
+    attraction for nonlinear systems.</p>
+
+    <theorem><h1>Lyapunov invariant set and region of attraction
+    theorem</h1>
+
+      <p>Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous, if we can find
+      a scalar function $V(\bx) \succ 0$ and a sub-level set $${\cal G}: \{ \bx
+      | V(\bx) < \rho \}$$ on which $$\forall \bx \in {\cal G}, \dot{V}(\bx)
+      \preceq 0,$$ then ${\cal G}$ is an invariant set.  By LaSalle, $\bx$ will
+      converge to the largest invariant subset of ${\cal G}$ on which
+      $\dot{V}=0$.<p>
+
+      <p>Furthermore, if $\dot{V}(\bx) \prec 0$ in ${\cal G}$, then the origin
+      is locally asymptotically stable and the set ${\cal G}$ is inside the
+      region of attraction of this fixed point.  Alternatively, if $\dot{V}(\bx)
+      \preceq 0$ in ${\cal G}$ and $\bx = 0$ is the only invariant subset of
+      ${\cal G}$ where $\dot{V}=0$, then the origin is asymptotically stable and
+      the set ${\cal G}$ is inside the region of attraction of this fixed point.
+      </p>
+
+    </theorem>
+
+    <example><h1>Region of attraction for a one-dimensional
+    system</h1>
+
+      <p> Consider the first-order, one-dimensional system $\dot{x} = -x + x^3.$
+      We can quickly understand this system using our tools for graphical
+      analysis.</p> <figure> <img width="80%"
+      src="figures/cubicPolynomialExample.svg"/> </figure> <p>In the
+      vicinity of the origin, $\dot{x}$ looks like $-x$, and as we move away it
+      looks increasingly like $x^3$.  There is a stable fixed point at the
+      origin and unstable fixed points at $\pm 1$.  In fact, we can deduce
+      visually that the region of attraction to the stable fixed point at the
+      origin is $\bx \in (-1,1)$.  Let's see if we can demonstrate this with a
+      Lyapunov argument.</p>
+
+      <p>First, let us linearize the dynamics about the origin and use the
+      Lyapunov equation for linear systems to find a candidate $V(\bx)$.  Since
+      the linearization is $\dot{x} = -x$, if we take ${\bf Q}=1$, then we find
+      ${\bf P}=\frac{1}{2}$ is the positive definite solution to the algebraic
+      Lyapunov equation (\ref{eq:algebraic_lyapunov}).  Proceeding with $$V(\bx)
+      = \frac{1}{2} x^2,$$ we have $$\dot{V} = x (-x + x^3) = -x^2 + x^4.$$
+      This function is zero at the origin, negative for $|x| < 1$, and positive
+      for $|x| > 1$.  Therefore we can conclude that the sub-level set $V <
+      \frac{1}{2}$ is invariant and the set $x \in (-1,1)$ is inside the region
+      of attraction of the nonlinear system.  In fact, this estimate is
+      tight.</p>
+
+    </example>
+
+    <subsection><h1>Robustness analysis using "common Lyapunov functions"</h1>
+
+      <p>While we will defer most discussions on robustness analysis until later
+      in the notes, there is a simple and powerful idea that can be presented
+      now: the idea of a <em>common Lyapunov function</em>.  Imagine that you
+      have a model of a dynamical system but that you are uncertain about some
+      of the parameters.  For example, you have a model of a quadrotor, and are
+      fairly confident about the mass and lengths (both of which are easy to
+      measure), but are not confident about the moment of inertia.  One approach
+      to robustness analysis is to define a bounded uncertainty, which could
+      take the form of $$\dot{\bx} = f_\alpha(\bx), \quad \alpha_{min} \le
+      \alpha \le \alpha_{max},$$ with $\alpha$ a vector of uncertain parameters
+      in your model.  Richer specifications of the uncertainty bounds are also
+      possible, but this will serve for our examples.</p>
+
+      <p>In standard Lyapunov analysis, we are searching for a function that
+      goes downhill for all $\bx$ to make statements about the long-term
+      dynamics of the system.  In common Lyapunov analysis, we can make many
+      similar statements about the long-term dynamics of an uncertain system if
+      we can find a single Lyapunov function that goes downhill <em>for all
+      possible values of $\alpha$</em>.  If we can find such a function, then we
+      can use it to make statements with all of the variations we've discussed
+      (local, regional, or global; in the sense of Lyapunov, asymptotic, or
+      exponential).</p>
+
+      <example><h1>A one-dimensional system with gain uncertainty</h1>
+
+        <p>Let's consider the same one-dimensional example used above, but add
+        an uncertain parameter into the dynamics.  In particular, consider the
+        system: $$\dot{x} = -x + \alpha x^3, \quad \frac{3}{4} < \alpha <
+        \frac{3}{2}.$$ Plotting the graph of the one-dimensional dynamics for a
+        few values of $\alpha$, we can see that the fixed point at the origin is
+        still stable, but the <em>robust region of attraction</em> to this fixed
+        point (shaded in blue below) is smaller than the region of attraction
+        for the system with $\alpha=1$.</p>
+
+        <figure> <img width="80%"
+        src="figures/cubicPolynomialExample_gain_uncertainty.svg"/>
+        </figure>
+
+        <p>Taking the same Lyapunov candidate as above, $V = \frac{1}{2} x^2$,
+        we have $$\dot{V} = -x^2 + \alpha x^4.$$  This function is zero at the
+        origin, and negative for all $\alpha$ whenever $x^2 > \alpha x^4$, or
+        $$|x| < \frac{1}{\sqrt{\alpha_{max}}} = \sqrt{\frac{2}{3}}.$$ Therefore,
+        we can conclude that $|x| < \sqrt{\frac{2}{3}}$ is inside the robust
+        region of attraction of the uncertain system.</p>
+
+      </example>
+
+      <p>Not all forms of uncertainty are as simple to deal with as the gain
+      uncertainty in that example.  For many forms of uncertainty, we might not
+      even know the location of the fixed points of the uncertain system.  In
+      this case, we can often still use common Lyapunov functions to give some
+      guarantees about the system, such as guarantees of <em>robust set
+      invariance</em>.  For instance, if you have uncertain parameters on a
+      quadrotor model, you might be ok with the quadrotor stabilizing to a pitch
+      of $0.01$ radians, but you would like to guarantee that it definitely does
+      not flip over and crash into the ground.</p>
+
+      <example><h1>A one-dimensional system with additive
+      uncertainty</h1>
+
+        <p>Now consider the system: $$\dot{x} = -x + x^3 + \alpha, \quad
+        -\frac{1}{4} < \alpha < \frac{1}{4}.$$  Plotting the graph of the
+        one-dimensional dynamics for a few values of $\alpha$, this time we can
+        see that the fixed point is not necessarily at the origin;  the location
+        of the fixed point moves depending on the value of $\alpha$.  But we
+        should be able to guarantee that the uncertain system will stay near the
+        origin if it starts near the origin, using an invariant set
+        argument.</p>
+
+        <figure>
+          <img width="80%" src="figures/cubicPolynomialExample_additive_uncertainty.svg"/>
+        </figure>
+
+        <p>Taking the same Lyapunov candidate as above, $V = \frac{1}{2} x^2$,
+        we have $$\dot{V} = -x^2 + x^4 + \alpha x.$$ This Lyapunov function
+        allows us to easily verify, for instance, that $V \le \frac{1}{3}$ is a
+        <em>robust invariant set</em>, because whenever $V = \frac{1}{3}$, we
+        have $$\forall \alpha \in [\alpha_{min},\alpha_{max}],\quad
+        \dot{V}(x,\alpha) < 0.$$  Therefore $V$ can never start at less than
+        one-third and cross over to greater than one-third.  To see this, see
+        that $$ V=\frac{1}{3} \quad \Rightarrow \quad x = \pm \sqrt{\frac{2}{3}}
+        \quad \Rightarrow \quad \dot{V} = -\frac{2}{9} \pm \alpha
+        \sqrt{\frac{2}{3}} < 0, \forall \alpha \in
+        \left[-\frac{1}{4},\frac{1}{4} \right]. $$  Note that not all sub-level
+        sets of this invariant set are invariant.  For instance $V <
+        \frac{1}{32}$ does not satisfy this condition, and by visual inspection
+        we can see that it is in fact not robustly invariant.</p>
+
+      </example>
+
+    <todo>robust quadrotor example</todo>
+
+    </subsection> <!-- end common lyap -->
+
+    <subsection><h1>Region of attraction estimation for
+    polynomial systems</h1>
+
+      <p>Now we have arrived at the tool that I believe can be a work-horse for
+      many serious robotics applications.  Most of our robots are not actually
+      globally stable (that's not because they are robots -- if you push me hard
+      enough, I will fall down, too), which means that understanding the regions
+      where a particular controller can be guaranteed to work can be of critical
+      importance.</p>
+
+      <p>Sums-of-squares optimization effectively gives us an oracle which we
+      can ask: is this polynomial positive for all $\bx$?  To use this for
+      regional analysis, we have to figure out how to modify our questions to
+      the oracle so that the oracle will say "yes" or "no" when we ask if a
+      function is positive over a certain region which is a subset of $\Re^n$.
+      That trick is called the S-procedure.  It is closely related to the
+      Lagrange multipliers from constrained optimization, and has deep
+      connections to "Positivstellensatz" from algebraic geometry.</p>
+
+      <subsubsection><h1>The S-procedure</h1>
+
+        <p>Consider a scalar polynomial, $p(\bx)$, and a semi-algebraic set
+        $g(\bx) \preceq 0$, where $g$ is a vector of polynomials.  If I can find
+        a polynomial "multiplier", $\lambda(\bx)$, such that \[ p(\bx) +
+        \lambda^T(\bx) g(\bx) \sos, \quad \text{and} \quad \lambda(\bx) \sos, \]
+        then this is sufficient to demonstrate that $$p(\bx)\ge 0 \quad \forall
+        \bx \in \{ g(\bx) \le 0 \}.$$  To convince yourself, observe that when
+        $g(\bx) \le 0$, it is only harder to be positive, but when $g(\bx) > 0$,
+        it is possible for the combined function to be SOS even if $p(\bx)$ is
+        negative.</p>
+
+        <p>We can also handle equality constraints with only a minor
+        modification -- we no longer require the multiplier to be positive. If
+        I can find a polynomial "multiplier", $\lambda(\bx)$, such that \[
+        p(\bx) + \lambda^T(\bx) g(\bx) \sos \] then this is sufficient to
+        demonstrate that $$p(\bx)\ge 0 \quad \forall \bx \in \{ g(\bx) = 0
+        \}.$$  Here the intuition is that $\lambda(x)$ can add arbitrary
+        positive terms to help me be SOS, but those terms contribute nothing
+        precisely when $g(x)=0$.</p>
+
+      </subsubsection>
+
+      <subsubsection><h1>Basic region of attraction formulation</h1>
+
+        <example class="drake"><h1>Region of attraction for the one-dimensional cubic system</h1>
+
+          <p>Let's return to our example from above: \[ \dot{x} = -x + x^3 \]
+          and try to use SOS optimization to demonstrate that the region of
+          attraction of the fixed point at the origin is $x \in (-1,1)$, using
+          the Lyapunov candidate $V = x^2.$ </p>
+
+          <p>First, define the multiplier polynomial, \[ \lambda(x) = c_0 + c_1
+          x + c_2 x^2 + c_3 x^3 + c_4 x^4. \]  Then define the optimization
+          \begin{align*} \find_{\bf c} \quad & \\  \subjto \quad& - \dot{V}(x) -
+          \lambda(x) (1-V(x)) \sos \\ & \lambda(x) \sos \end{align*} </p>
+
+          <p>You can try this example for yourself in <drake></drake>.</p>
+
+          <pysrc>lyapunov/cubic_polynomial.py</pysrc>
+
+        </example>
+
+        <p>While the example above only verifies that the one-sub-level set of
+        the pre-specified Lyapunov candidate is negative (certifying the ROA
+        that we already understood), we can generalize the optimization to allow
+        us to search for the largest sub-level set (with the objective using a
+        convex approximation for volume).  We can even search for the
+        coefficients of the Lyapunov function using an iteration of convex
+        optimizations.  There are a number of variations and nuances in the
+        various formulations, and some basic rescaling tricks that can help make
+        the numerics of the problem better for the solvers.</p>
+
+
+        <!-- make this true for pydrake:
+
+        In <drake></drake>, we have packaged all of these up into a
+        <code>regionOfAttraction</code> method that is defined for objects of
+        type <code>PolynomialSystem</code>. This makes it as simple as, for
+        instance:
+
+        <example class="drake"><h1>Searching for the region of
+          attraction</h1> <p> <pre><code class="matlab"
+          testfile="testCubicPolynomialRoa">
+          cd(fullfile(getDrakePath,'examples'));
+
+          % create a new CubicPolynomialExample object
+          p = CubicPolynomialExample();
+
+          % compute region of attraction
+          % the levelset V<1 is the region of attraction
+          V=regionOfAttraction(p,Point(p.getStateFrame,0));
+
+          % display the polynomial representation of V that results
+          display(V.getPoly);
+          </code></pre>
+
+          which yields the console output:
+          <pre><code>
+          [  (1)*x1^2  ]
+          </code>
+          </pre>
+          The algorithm successfully found that $x \in (-1,1)$ is the region of attraction.
+        </example>
+
+        <p>Remember that although we have tried to make it convenient to call
+        these functions, they are not a black box.  I highly recommend opening
+        up the <code>regionOfAttraction</code> method and understanding how it
+        works.</p>
+
+        <example class="drake"><h1>Region of attraction for the time-reversed Van der Pol oscillator</h1>
+
+          <pre><code class="matlab" testfile="testVanDerPol">
+           cd(fullfile(getDrakePath,'examples'));
+           VanDerPol.run();
+          </code></pre>
+
+        </example>
+        -->
+
+      </subsubsection>
+
+      <subsubsection><h1>Seeding the optimization with linear analysis</h1>
+
+        <p>LQR gives the cost-to-go which can be used as the Lyapunov candidate.
+        Otherwise, use a Lyapunov equation.  You may not even need to search for
+        a better Lyapunov function, but rather just ask the question: what is
+        the largest region of attraction that can be demonstrated for the
+        nonlinear system using the Lyapunov function from linear analysis?</p>
+
+      </subsubsection>
+
+    </subsection> <!-- ROA for polynomial -->
+
+    <subsection><h1>Rigid-body dynamics are polynomial</h1>
+
+      <p>Coming soon... For a nice explanation of how rigid-body kinematics are
+      polynomial, see <elib>Wampler11</elib>.  Looking at the Lagrangian, you
+      can see that if the kinematics are polynomial, then the dynamics will be,
+      too.</p>
+
+      <example class="drake"><h1>Global stability of the simple
+        pendulum via SOS</h1>
+
+        <p> We opened this chapter using our intuition about energy to discuss
+          stability on the simple pendulum. Now we'll replace that intuition with
+          convex optimization (because it will also work for more difficult
+          systems where our intuition fails).</p>
+
+        <p>But wait!  The equations of motion of the simple pendulum are not
+          polynomial, are they (they have a $\sin(\theta)$ in them)?  Actually
+          nearly all rigid-body systems can be written as polynomials given a
+          change of coordinates.  Indeed, the rigid-body-assumption is simply an
+          assumption that points on the same body stay a constant distance apart,
+          and Euclidean distance is certainly a polynomial.  For a more thorough
+          discussion see, for instance, <elib>Wampler11</elib> and
+          <elib>Sommese05</elib>.</p>
+
+        <p>For the purposes of this example, let's change coordinates from
+          $[\theta,\dot\theta]^T$ to $\bx = [s,c,\dot\theta]^t$, where $s \equiv
+          \sin\theta$ and $c \equiv \cos\theta$.  Then we can write the pendulum
+          dynamics as $$\dot\bx = \begin{bmatrix} c \dot\theta \\ -s \dot\theta \\
+          -\frac{1}{m l^2} \left( b \dot\theta + mgls \right) \end{bmatrix}.$$
+        </p>
+
+        <p>Now let's parameterize a Lyapunov candidate $V(s,c,\dot\theta)$ as
+        the polynomial with unknown coefficients which contains all monomials
+        up to degree 2:  $$V = \alpha_0 + \alpha_1 s + \alpha_2 c + ...
+        \alpha_{9} s^2 + \alpha_{10} sc + \alpha_{11} s\dot\theta.$$ Now we'll
+        formulate the feasibility problem: \[ \find_{\bf \alpha} \quad  \subjto
+        \quad V \sos, \quad -\dot{V} \sos.\] In fact, this is asking too much
+        -- really $\dot{V}$ only needs to be negative when $s^2+c^2=1$.  We can
+        accomplish this with the S-procedure, and instead write \[ \find_{{\bf
+        \alpha},\lambda} \quad  \subjto \quad V \sos, \quad -\dot{V}
+        -\lambda(\bx)(s^2+c^2-1) \sos.\] (Recall that $\lambda(\bx)$ is another
+        polynomial with free coefficients which the optimization can use to
+        make terms arbitrarily more positive when $s^2+c^2 \neq 1$.) Finally,
+        for style points, in the code example in <drake></drake> we ask for
+        exponential stability:</p>
+
+        <pysrc>pendulum/global_sums_of_squares.py</pysrc>
+
+        <p>As always, make sure that you open up the code and take a look.  The
+          result is a Lyapunov function that looks familiar (visualized as a
+          contour plot here):</p>
+
+        <div  style="text-align:center"><img
+            src="figures/pend_global_sos.svg" width="400px"/></div>
+
+        <p>Aha!  Not only does the optimization finds us coefficients for the
+          Lyapunov function which satisfy our Lyapunov conditions, but the result
+          looks a lot like mechanical energy.  In fact, the result is a little
+          better than energy... there are some small extra terms added which prove
+          exponential stability without having to invoke LaSalle's Theorem.</p>
+
+      </example>
+
+      <p>In practice, you can also Taylor approximate any smooth nonlinear
+      function using polynomials.  This can be an effective strategy in
+      practice, because you can limit the degrees of the polynomial, and because
+      in many cases it is possible to provide conservative bounds on the errors
+      due to the approximation.</p>
+
+    </subsection>
+
+    <todo> implicit dynamics formulations.  convex ROA w/ outer approx.  control
+    design.  </todo>
+
+  </section> <!-- end ROA -->
+
+  <section><h1>Exercises</h1>
+
+    <exercise><h1>Control-Lyapunov Function</h1>
+
+      <p>Consider the problem of synthesizing a stabilizing feedback law $\bu = \pi (\bx)$ for the dynamical system $\dot \bx = f(\bx, \bu)$.  Lyapunov analysis suggests us a very simple approach to this problem: choose a candidate Lyapunov function $V(\bx)$, and design a control law $\pi (\bx)$ such that $V(\bx)$ always decreases along the trajectories of the closed-loop system $\dot \bx = f(\bx, \pi (\bx))$.  A function $V(\bx)$ for which such a control law exists is called a <i>control-Lyapunov function</i>.  In this exercise, we use this idea to drive a wheeled robot, implementing the controller proposed in <elib>Aicardi95</elib>.</p>
+      
+      <p>Similar to <a href="intro.html#wheeled_robot">this previous example</a>, we use a kinematic model of the robot.  We represent with $z_1$ and $z_2$ its Cartesian position and with $z_3$ its orientation.  The controls are the linear $u_1$ and angular $u_2$ velocities.  The equations of motion read \begin{align*} \dot z_1 &= u_1 \cos z_3, \\ \dot z_2 &= u_1 \sin z_3, \\ \dot z_3 &= u_2.\end{align*}  The goal is to design a feedback law $\pi(\bz)$ that drives the robot to the origin $\bz=0$ from any initial condition.  As pointed out in <elib>Aicardi95</elib>, this problem becomes dramatically easier if we analyze it in polar coordinates.  As depicted below, we let $x_1$ be the radial and $x_2$ the angular coordinate of the robot, and we define $x_3 = x_2 - z_3$.  Analyzing the figure, basic kinematic considerations lead to  \begin{align*} \dot x_1 &= u_1 \cos x_3, \\ \dot x_2 &= - \frac{u_1 \sin x_3}{x_1}, \\ \dot x_3 &= - \frac{u_1 \sin x_3}{x_1} - u_2.\end{align*}</p>
+
+      <figure>
+        <img width="40%" src="figures/exercises/wheeled_robot.pdf"/>
+        <figcaption>Wheeled robot with Cartesian $\bz$ and polar $\bx$ coordinate system.</figcaption>
+      </figure>
+
+      <ol type="a">
+
+        <li>For the candidate Lyapunov function $V(\bx) = V_1(x_1) + V_2(x_2, x_3)$, with $V_1(x_1) = \frac{1}{2} x_1^2$ and $V_1(x_1) = \frac{1}{2}(x_1^2 + x_2^2)$, compute the time derivatives $\dot V_1 (\bx, u_1)$ and $\dot V_2(\bx, \bu)$.</li>
+
+        <li>Show that the choice \begin{align*} u_1 &= \pi_1(\bx) = - x_1 \cos x_3, \\ u_2 &= \pi_2(\bx) = x_3 + \frac{(x_2 + x_3) \cos x_3 \sin x_3}{x_3}, \end{align*} makes $\dot V_1 (\bx, \pi_1(\bx)) \leq 0$ and $\dot V_2 (\bx, \pi(\bx)) \leq 0$ for all $\bx$.  (Technically speaking, $\pi_2(\bx)$ is not defined for $x_3=0$.  In this case, we let $\pi_2(\bx)$ assume its limiting value $x_2 + 2 x_3$, ensuring continuity of the feedback law.)</li>
+
+        <li>Explain why Lyapunov's direct method does not allow us to establish asymptotic stability of the closed-loop system.</li>
+
+        <li>Substitute the control law $\bu = \pi (\bx)$ in the equations of motion, and derive the closed-loop dynamics $\dot \bx = f(\bx, \pi(\bx))$.  Use LaSalle's theorem to show (global) asymptotic stability of the closed-loop system.</li>
+
+        <li>In <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/lyapunov/control/control.ipynb" target="_blank">this python notebook</a> we set up a simulation environment for you to try the controller we just derived.  Type the control law from point (b) in the dedicated cell, and use the notebook plot to check your work.</li>
+
+      </ol>
+
+    </exercise>
+
+  </section>
+
+</chapter>
+
+<div id="footer">
+  <hr>
+  <table style="width:100%;">
+    <tr><td><em>Underactuated Robotics</em></td><td align="right">&copy; Russ
+      Tedrake, 2020</td></tr>
+  </table>
+</div>
+
+
+</body>
+</html>
+  
