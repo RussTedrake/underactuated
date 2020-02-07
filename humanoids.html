@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <title>Underactuated Robotics</title>
+    <meta name="Underactuated Robotics" content="text/html; charset=utf-8;" />
+
+    <script type="text/javascript" src="chapters.js"></script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { equationNumbers: {autoNumber: "AMS"}, noErrors: { disabled: true } },
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"] ],
+          displayMath: [ ['$$','$$'], ["\\[","\\]"] ],
+          processEscapes: true
+        },
+      });
+    </script>
+    <script type="text/javascript"
+      src="http://underactuated.csail.mit.edu/htmlbook/MathJax/MathJax.js?config=TeX-AMS_SVG">
+    </script>
+    <!-- Fallback to local MathJax (to support offline viewing) -->
+    <script>window.MathJax || document.write('<script src="htmlbook/MathJax/MathJax.js?config=TeX-AMS_SVG""><\/script>')</script>
+
+    <link rel="stylesheet" href="htmlbook/highlight/styles/default.css">
+    <script src="htmlbook/highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <link rel="stylesheet" type="text/css" href="htmlbook/book.css">
+  </head>
+
+
+<body onload="loadChapter('humanoids');">
+<section data-type="titlepage" class="titlepage">
+  <header>
+    <h1><a href="underactuated.html" style="text-decoration:none;">Underactuated Robotics</a></h1>
+    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p>
+  	<p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
+    <p style="font-size: 14px; text-align: right;">
+      &copy; Russ Tedrake, 2020<br/>
+      <a href="tocite.html">How to cite these notes</a><br/>
+    </p>
+  </header>
+</section>
+<div style="display:none" id="mathjax_setup"> <!-- definitions for mathjax -->
+  \[
+  \newcommand{\pd}[2]{\frac{\partial #1}{\partial #2}}
+  \newcommand{\bc}{{\bf c}}
+  \newcommand{\bg}{{\bf g}}
+  \newcommand{\bh}{{\bf h}}
+  \newcommand{\bq}{{\bf q}}
+  \newcommand{\bv}{{\bf v}}
+  \newcommand{\bx}{{\bf x}}
+  \newcommand{\by}{{\bf y}}
+  \newcommand{\bu}{{\bf u}}
+  \newcommand{\bw}{{\bf w}}
+  \newcommand{\bz}{{\bf z}}
+  \newcommand{\bA}{{\bf A}}
+  \newcommand{\bB}{{\bf B}}
+  \newcommand{\bC}{{\bf C}}
+  \newcommand{\bH}{{\bf H}}
+  \newcommand{\bI}{{\bf I}}
+  \newcommand{\bJ}{{\bf J}}
+  \newcommand{\bK}{{\bf K}}
+  \newcommand{\bM}{{\bf M}}
+  \newcommand{\bQ}{{\bf Q}}
+  \newcommand{\bR}{{\bf R}}
+  \newcommand{\bT}{{\bf T}}
+  \newcommand{\balpha}{{\bf \alpha}}
+  \newcommand{\bbeta}{{\bf \beta}}
+  \newcommand{\blambda}{{\bf \lambda}}
+  \newcommand{\btau}{{\bf \tau}}
+  \newcommand{\bphi}{{\bf \phi}}
+  \newcommand{\bPhi}{{\bf \Phi}}
+  \newcommand{\bpi}{{\bf \pi}}
+  \newcommand{\bpsi}{{\bf \psi}}
+  \newcommand{\bPsi}{{\bf \Psi}}
+  \newcommand{\avg}[1]{E\left[ #1 \right]}
+  \newcommand{\subjto}{\textrm{subject to}}
+  \newcommand{\minimize}{\operatorname{\textrm{minimize}}}
+  \newcommand{\maximize}{\operatorname{\textrm{maximize}}}
+  \DeclareMathOperator*{\find}{find}
+  \newcommand{\argmax}{\operatorname{\textrm{argmax}}}
+  \newcommand{\argmin}{\operatorname{\textrm{argmin}}}
+  \newcommand{\sgn}{\operatorname{\textrm{sgn}}}
+  \newcommand{\trace}{\operatorname{\textrm{tr}}}
+  \newcommand{\sos}{\text{ is SOS}}
+  \]
+</div>
+
+<div id="debug_output"></div>
+
+<p><b>Note:</b> These are working notes used for <a
+href="http://underactuated.csail.mit.edu/Spring2020/">a course being taught at
+MIT</a>. They will be updated throughout the Spring 2020 semester.  <a
+href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos
+are available on YouTube</a>.</p>
+
+<chapter class="chapter" id="humanoids"><h1>Highly-articulated Legged
+Robots</h1>
+
+  <p>The passive dynamic walkers and hopping robots described in the last
+  chapter capture the fundamental dynamics of legged locomotion -- dynamics
+  which are fundamentally nonlinear and punctuated by impulsive events due to
+  making and breaking contact with the environment.  But if you start reading
+  the literature on humanoid robots, or many-legged robots like quadrupeds, then
+  you will find a quite different set of ideas taking center stage: ideas like
+  the "zero-moment point" and footstep planning.  The goal of this chapter is to
+  penetrate that world.</p>
+
+  <p>I'd like to start the discussion with a model that might seem quite far
+  from the world of legged robots, but I think it's a very useful way to think
+  about the problem.</p>
+
+  <section><h1>Center of Mass Dynamics</h1>
+
+    <subsection><h1>A hovercraft model</h1>
+
+      <figure><img width="70%" src="figures/hovercraft.svg"/></figure>
+      <todo>flip the directions of the force vector in the image</todo>
+
+      <p>Imagine you have a flying vehicle modeled as a single rigid body in a
+      gravity field with some number of force "thrusters" attached.  We'll
+      describe the configuration of the vehicle by its orientation, $\theta$ and
+      the location of its center of mass $(x,z)$.  The vector from the center of
+      mass to thruster $i$ is given by $r_i$, yielding the equations of motion:
+      \begin{align*} m\ddot{x} =& \sum_i F_{i,x},\\ m\ddot{z} =& \sum_i F_{i,z}
+      - mg,\\ I\ddot\theta =& \sum_i \left[ r_i \times F_i \right]_y,
+      \end{align*} where I've used $F_{i,x}$ to represent the component of the
+      force in the $x$ direction and have taken just the $y$-axis component of
+      the cross product on the last line. </p>
+
+      <p>Our goal is to move the hovercraft to a desired position/orientation
+      and to keep it there.  If we take the inputs to be $F_i$, then the
+      dynamics are affine (linear plus a constant term).  As such, we can
+      stabilize a stabilizable fixed point using a change of coordinates plus
+      LQR or even plan/track a desired trajectory using time-varying LQR.  If I
+      were to add additional linear constraints, for instance constraining
+      $F_{min} \le F_i \le F_{max}$, then I can still use linear
+      model-predictive control (MPC) to plan and stabilize a desired motion. By
+      most accounts, this is a relatively easy control problem. (Note that it
+      would be considerably harder if my control input or input constraints
+      depend on the orientation, $\theta$, but we don't need that here yet).</p>
+
+      <p>Now imagine that you just a small number of thrusters (let's say two)
+      each with severe input constraints.  To make things more interesting, let
+      us say that you're allowed to move the thrusters, so $\dot{r}_i$ becomes
+      an additional control input, but with some important limitations:  you
+      have to turn the thrusters off when they are moving (e.g.
+      $|F_i||\dot{r}_i| = 0$) and there is a limit to how quickly you can move
+      the thrusters $|\dot{r}|_i \le v_{max}$.  This problem is now a lot more
+      difficult, due especially to the fact that constraints of the form $u_1
+      u_2 = 0$ are non-convex.</p> <center><img width="25%"
+      src="figures/complementarityConstraint.svg"/></center> <p>I find this
+      a very useful thought exercise; somehow our controller needs to make an
+      effectively discrete decision to turn off a thruster and move it.  The
+      framework of optimal control should support this - you are sacrificing a
+      short-term loss of control authority for the long-term benefit of having
+      the thruster positioned where you would like, but we haven't developed
+      tools yet that deal well with this discrete plus continuous decision
+      making.  We'll need to address that here.</p>
+
+      <p>Unfortunately, although the problem is already difficult, we need to
+      continue to add constraints.  Now let's say additionally, that the
+      thrusters can only be turned on in certain locations, as cartooned
+      here:</p> <center><img width="60%"
+      src="figures/hovercraftCartesianConstraints.svg"/></center> <p>The
+      union of these regions need not form a convex set.  Furthermore, these
+      locations could be specified in the robot frame, but may also be specified
+      in the world frame, which I'll call ${\bf p}_i$: $${\bf p}_i = {\bf r}_i -
+      \begin{bmatrix} x \\ 0 \\ z \end{bmatrix}.$$  This problem still feels
+      like it should be tractable, but it's definitely getting hard.</p>
+
+    </subsection>
+
+    <subsection><h1>Robots with (massless) legs</h1>
+
+      <p>In my view, the hovercraft problem above is a central component of the
+      walking problem.  If we consider a walking robot with massless legs, then
+      the feet are exactly like movable thrusters.  As above, they are highly
+      constrained - they can only produce force when they are touching the
+      ground, and (typically) they can only produce forces in certain
+      directions, for instance as described by a "friction cone" (you can push
+      on the ground but not pull on the ground, and with Coulomb friction the
+      forces tangential to the ground must be smaller than the forces normal to
+      the ground, as described by a coefficient of friction, e.g.
+      $|F_{\parallel}| < \mu |F_{\perp}|$).</p>
+
+      <figure><img width="50%" src="figures/hovercraftLegs.svg"/></figure>
+
+      <p>The constraints on where you can put your feet / thrusters will depend
+      on the kinematics of your leg, and the speed at which you can move them
+      will depend on the full dynamics of the leg -- these are difficult
+      constraints to deal with.  But the actual dynamics of the rigid body are
+      actually still affine, and still simple!</p>
+
+    </subsection>
+
+    <subsection><h1>Capturing the full robot dynamics</h1>
+
+      <p>We don't actually need to have massless legs for this discussion to
+      make sense. If we use the coordinates $x,z$ to describe the location of
+      the center of mass (CoM) of the entire robot, and $m$ to represent the
+      entire mass of the robot, then the first two equations remain unchanged.
+      The center of mass is a configuration dependent point, and does not have
+      an orientation, but one important generalization of the orientation
+      dynamics is given by the centroidal momentum matrix, $A(\bq)$, where
+      $A(\bq)\dot{\bq}$ captures the linear and angular momentum of the robot
+      around the center of mass <elib>Orin13</elib>. Note that the center of
+      mass dynamics are still affine -- even for a big complicated humanoid --
+      but the centroidal momentum dynamics are nonlinear.</p>
+
+    </subsection>
+
+    <subsection><h1>Impact dynamics</h1>
+
+      <p>In the previous chapter we devoted relatively a lot of attention to
+      dynamics of impact, characterized for instance by a guard that resets
+      dynamics in a hybrid dynamical system.  In those models we used impulsive
+      ground-reaction forces (these forces are instantaneously infinite, but
+      doing finite work) in order to explain the discontinuous change in
+      velocity required to avoid penetration with the ground.  This story can be
+      extended naturally to the dynamics of the center of mass.<p>
+
+      <p>For an articulated robot, though, there are a number of possible
+      strategies for the legs which can effect the dynamics of the center of
+      mass.  For example, if the robot hits the ground with a stiff leg like the
+      rimless wheel, then the angular momentum about the point of collision will
+      be conserved, but any momentum going into the ground will be lost.
+      However, if the robot has a spring leg and a massless toe like the SLIP
+      model, then no energy need be lost.</p>
+
+      <p>One strategy that many highly-articulated legged robots use is to keep
+      their center of mass at a constant height, $$z = c \quad \Rightarrow \quad
+      \dot{z} = \ddot{z} = 0,$$  and minimize their angular momentum about the
+      center of mass (here $\ddot\theta=0$).  Using this strategy, if the
+      swinging foot lands roughly below the center of mass, then even with a
+      stiff leg there is no energy dissipated in the collision - all of the
+      momentum is conserved.  This often (but does not always) justify ignoring
+      the impacts in the center of mass dynamics of the system.</p>
+
+    </subsection>
+
+  </section> <!-- end COM dynamics -->
+
+  <section><h1>The special case of flat terrain</h1>
+
+    <p>While not the only important case, it is extremely common for our robots
+    to be walking over flat, or nearly flat terrain.  In this situation, even if
+    the robot is touching the ground in a number of places (e.g., two heels and
+    two toes), the constraints on the center of mass dynamics can be summarized
+    very efficiently.</p>
+
+    <figure>
+      <img width="80%" src="figures/flat_terrain.svg"/>
+      <figcaption>External forces acting on a robot pushing on a flat ground</figcaption>
+    </figure>
+
+    <p>First, on flat terrain $F_{i,z}$ represents the force that is normal to
+    the surface at contact point $i$.  If we assume that the robot can only push
+    on the ground (and not pull), then this implies $$\forall i, F_{i,z} \ge 0
+    \Rightarrow \sum_i F_{i,z} \ge 0 \Rightarrow \ddot{z} \ge -g.$$  In other
+    words, if I cannot pull on the ground, then my center of mass cannot
+    accelerate towards the ground faster than gravity.</p>
+
+    <p>Furthermore, if we use a Coulomb model of friction on the ground, with
+    friction coefficient $\mu$, then $$\forall i, |F_{i,x}| \le \mu F_{i,z}
+    \Rightarrow \sum_i |F_{i,x}| \le \mu \sum_i F_z \Rightarrow |\ddot{x}| \le
+    \mu (\ddot{z} + g).$$  For instance, if I keep my center of mass at a
+    constant height, then $\ddot{z}=0$ and $|\ddot{x}| \le \mu g$; this is a
+    nice reminder of just how important friction is if you want to be able to
+    move around in the world.</p>
+
+    <p>Even better, let us define the "center of pressure" (CoP) as the point on
+    the ground where $$x_{cop} = \frac{\sum_i p_{i,x} F_{i,z}}{\sum_i
+    F_{i,z}},$$ and since all $p_{i,z}$ are equal on flat terrain, $z_{cop}$ is
+    just the height of the terrain.  It turns out that the center of pressure is
+    a "zero-moment point" (ZMP) -- a property that we will demonstrate below --
+    and moment-balance equation gives us a very important relationship between
+    the location of the CoP and the dynamics of the CoM: \[ (m\ddot{z} + mg)
+    (x_{cop} - x) = (z_{cop} - z) m\ddot{x} - I\ddot\theta. \]  If we use the
+    strategy proposed above for ignoring collision dynamics, $\ddot{z} =
+    \ddot{\theta} = 0$, then we have $z - z_{cop}$ is a constant height $h$, and
+    the result is the famous "ZMP equations": \[ \ddot{x} = -\frac{g}{h}
+    (x_{cop}-x). \]  So the location of the center of pressure completely
+    determines the acceleration of the center of mass, and vice versa!  What's
+    more, this relationship is affine -- a property that we can exploit in a
+    number of ways.  </p>
+
+    <p> As an example, we can easily relate constraints on the CoP to
+    constraints on $\ddot{x}$. It is easy to verify from the definition that the
+    CoP must live inside the <a
+    href="http://en.wikipedia.org/wiki/Convex_hull">convex hull</a> of the
+    ground contact points.  Therefore, if we use the $\ddot{z}=\ddot\theta=0$
+    strategy, then this directly implies strict bounds on the possible
+    accelerations of the center of mass given the locations of the ground
+    contacts.</p>
+
+    <subsection><h1>An aside: the zero-moment point
+    derivation</h1>
+
+      <p>The zero-moment point (ZMP) is discussed very frequently in the current
+      literature on legged robots.  It also has an unfortunate tendency to be
+      surrounded by some confusion; a number of people have defined the ZMP is
+      slightly different ways (see e.g. <elib>Goswami99</elib> for a summary).
+      Therefore, it makes sense to provide a simple derivation here.</p>
+
+      <p>First let us recall that for rigid body systems I can always summarize
+      the contributions from many external forces as a single <i>wrench</i>
+      (force and torque) on the object -- this is simply because the $F_i$ terms
+      enter our equations of motion linearly.  Specifically, given any point in
+      space, $r$, in coordinates relative to $(x,z)$:</p> <figure><img
+      width="70%" src="figures/zmp_derivation.svg"/></figure> <todo>update
+      diagram to have r instead of p</todo>
+
+      <p>I can re-write the equations of motion as \begin{align*} m\ddot{x} =&
+      \sum_i F_{i,x} = F_{net,x},\\ m\ddot{z} =& \sum_i F_{i,z} - mg = F_{net,z}
+      - mg,\\ I\ddot\theta =& \sum_i \left[ r_i \times F_i \right]_y = ({\bf r}
+      \times {\bf F}_{net})_y + \tau_{net}, \end{align*} where ${\bf F}_{net} =
+      \sum_i {\bf F}_i$ and the value of $\tau_{net}$ depends on the location
+      ${\bf r}$.  For some choices of ${\bf r}$, we can make $\tau_{net}=0$.
+      Examining \[ ({\bf r} \times {\bf F}_{net})_y = r_z F_{net,x} - r_x
+      F_{net,z} = \left[ r_i \times F_i \right]_y, \] we can see that when
+      $F_{net,z} > 0$ there is an entire line of solutions, $r_x = a r_z + b$,
+      including one that will intercept the terrain.  For walking robots, it is
+      this point on the ground from which the external wrench can be described
+      by a single force vector (and no moment) that is the famous "zero-moment
+      point" (ZMP).     Substituting the back in to replace $F_{net}$, we can
+      see that \[ r_x = \frac{r_z m \ddot{x} - I \ddot\theta}{m\ddot{z} + mg}.
+      \] If we assume that $\ddot{z}=\ddot{\theta}=0$ and replace the relative
+      coordinates with the global coordinates ${\bf r} = {\bf p} - [x,0,z]^T$,
+      then we arrive at precisely the equation presented above.</p>
+
+      <p>Furthermore, since \[\left[ r_i \times F_i \right]_y = \sum_i \left(
+      r_{i,z} F_{i,x} - r_{i,x} F_{i,z} \right), \] and for <i>flat terrain</i>
+      we have \[ r_z F_{net,x} = \sum_i r_{i,z} F_{i,x}, \] then we can see that
+      this ZMP is exactly the CoP: \[ r_x = \frac{\sum_i r_{i,x} F_{i,z}}{
+      F_{net,z} }. \] </p>
+
+      <p>In three dimensions, we solve for the point on the ground where
+      $\tau_{net,y} = \tau_{net,x} = 0$, but allow $\tau_{net,z} \ne 0$ to
+      extract the analogous equations in the $y$-axis:  \[ r_y = \frac{r_z m
+      \ddot{y} - I \ddot\theta}{m\ddot{z} + mg}. \] </p>
+
+    </subsection>
+  </section>
+
+  <section><h1>ZMP planning</h1>
+
+    <figure><img width="80%" src="figures/zmp_planning.svg"/></figure>
+
+    <subsection><h1>From a CoM plan to a whole-body
+    plan</h1></subsection>
+
+  </section>
+
+
+  <section><h1>Whole-Body Control</h1>
+
+    <p>Coming soon.  For a description of our approach with Atlas, see
+    <elib>Kuindersma13+Kuindersma14</elib>.</p>
+
+  </section>
+
+  <section><h1>Footstep planning and push recovery</h1>
+
+    <p>Coming soon.  For a description of our approach with Atlas, see
+    <elib>Deits14a+Kuindersma14</elib>.  For nice geometric insights on push
+    recovery, see <elib>Koolen12</elib>.</p>
+
+  </section>
+
+  <section><h1>Beyond ZMP planning</h1>
+
+    <p>Coming soon.  For a description of our approach with Atlas, see
+    <elib>Dai14+Kuindersma14</elib>.</p>
+
+  </section>
+
+</chapter> <!-- ** end highly-articulated legged robots ** -->
+
+
+<div id="footer">
+  <hr>
+  <table style="width:100%;">
+    <tr><td><em>Underactuated Robotics</em></td><td align="right">&copy; Russ
+      Tedrake, 2020</td></tr>
+  </table>
+</div>
+
+
+</body>
+</html>
+  
