@@ -5,7 +5,6 @@
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
 load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
-load("//tools/rt/python:defs.bzl", "rt_py_test")
 
 # double_pendulum.sdf in this package is unused.
 
@@ -13,8 +12,8 @@ load("//tools/rt/python:defs.bzl", "rt_py_test")
 # 10 second cost.
 rt_ipynb_test(
     name = "dynamics",
-    srcs = ["dynamics.ipynb"],
     size = "medium",
+    srcs = ["dynamics.ipynb"],
     data = ["//underactuated/models:double_pendulum.urdf"],
     deps = ["//underactuated"],
 )

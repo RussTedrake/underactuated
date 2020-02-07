@@ -4,4 +4,11 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-exports_files(glob(["**"]))
+# TODO(jamiesnape): Do not glob every file in
+exports_files(
+    glob([
+        "**/*.sdf",
+        "**/*.urdf",
+    ]),
+    visibility = ["//:__subpackages__"],
+)
