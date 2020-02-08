@@ -6,7 +6,6 @@
     <title>Underactuated Robotics</title>
     <meta name="Underactuated Robotics" content="text/html; charset=utf-8;" />
 
-    <script type="text/javascript" src="chapters.js"></script>
     <script type="text/javascript" src="htmlbook/book.js"></script>
 
     <script src="htmlbook/mathjax-config.js" defer></script> 
@@ -20,7 +19,6 @@
 
     <link rel="stylesheet" type="text/css" href="htmlbook/book.css">
   </head>
-
 
 <body onload="loadChapter('underactuated');">
 
@@ -41,7 +39,15 @@ href="http://underactuated.csail.mit.edu/Spring2020/">a course being taught
 at MIT</a>. They will be updated throughout the Spring 2020 semester.  <a 
 href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos are available on YouTube</a>.</p> 
 
-<chapter><h1>
+<table style="width:100%;"><tr style="width:100%">
+  <td style="width:33%;text-align:left;"><a class="previous_chapter" href=robust.html>Previous Chapter</a></td>
+  <td style="width:33%;text-align:center;"><a href=underactuated.html>Table of contents</a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter" href=limit_cycles.html>Next Chapter</a></td>
+</tr></table>
+
+
+<!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+<chapter style="counter-reset: chapter 14"><h1>
 Output Feedback (aka Pixels-to-Torques)</h1>
 
   <p>In this chapter we will start considering systems of the form: \begin{gather*} \bx[n+1] = {\bf f}(\bx[n], \bu[n], \bw[n], n) \\ \by[n] = {\bf g}(\bx[n], \bu[n], \bv[n], n).\end{gather*}
@@ -58,6 +64,13 @@ Output Feedback (aka Pixels-to-Torques)</h1>
   <todo>Perhaps a call-out to classical control.  (e.g. Loop-shaping)?</todo>
 
 </chapter>
+<!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+
+<table style="width:100%;"><tr style="width:100%">
+  <td style="width:33%;text-align:left;"><a class="previous_chapter" href=robust.html>Previous Chapter</a></td>
+  <td style="width:33%;text-align:center;"><a href=underactuated.html>Table of contents</a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter" href=limit_cycles.html>Next Chapter</a></td>
+</tr></table>
 
 <div id="footer">
   <hr>
@@ -70,4 +83,3 @@ Output Feedback (aka Pixels-to-Torques)</h1>
 
 </body>
 </html>
-  
