@@ -31,6 +31,10 @@ build --test_env=MPLBACKEND=Template
 
 build --test_output=errors
 
+# Default test options.
+test --test_output=errors
+test --test_summary=terse
+
 build:macos --test_timeout=120,600,1800,7200
 
 try-import %workspace%/user.bazelrc
