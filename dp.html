@@ -443,7 +443,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}=f(\bx,\bu)$ and
         an infinite-horizon additive cost $\int_0^\infty \ell(\bx,\bu)dt$.  Suppose
         $J(\bx)$ is a solution to the HJB equation; that is $J$ is continuously
-        differentiable in $\bx$ and is such that \[ 0 = \min_{u\in U} \left[
+        differentiable in $\bx$ and is such that \[ 0 = \min_{\bu \in U} \left[
         \ell(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx. \]
         Suppose also that $\pi^*(\bx)$ attains the minimum in the equation for
         all $\bx$.  Further assume that the differential equation described by
@@ -780,6 +780,71 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     </subsection>
 
   </section> <!-- end of extensions -->
+
+  <section><h1>Exercises</h1>
+
+    <exercise><h1>Choosing a Cost Function</h1>
+
+      <figure>
+        <img width="50%" src="figures/exercises/choosing_cost.pdf"/>
+        <figcaption>Autonomous car moving at velocity $v$ on a straight road.</figcaption>
+      </figure>
+
+      The figure above shows an autonomous car moving at constant velocity $v>0$ on a straight road.  Let $x_1$ be the (longitudinal) position of the car along the road and $x_2$ its (transversal) distance from the middle of the road.  The only control action is the steering velocity $u$.  We describe the car dynamics with the simple kinematic model \begin{align*}\dot x_1 &= v \cos x_3, \\ \dot x_2 &= v \sin x_3, \\ \dot x_3 &= u,\end{align*} where $x_3$ is the angle between the road centerline and the direction of motion.  To optimize the car trajectory we consider a quadratic objective function $$J = \int_{0}^{\infty} [\bx^T(t) \bQ \bx(t)  + R u^2(t)] dt,$$ where $\bQ$ is a constant positive-semidefinite (hence symmetric) matrix and $R$ is a constant nonnegative scalar.
+
+      <ol type="a">
+
+        <li>Suppose our only goal is to keep the car as close as possible to the centerline.  What would be your choice for $\bQ$ and $R$?</li>
+
+        <li>How would the behavior of the car change if you were to multiply the weights $\bQ$ and $R$ from the previous point by two arbitrary positive coefficients, say $k_{\bQ}$ and $k_R$?</li>
+
+        <li>Can $R$ or any element of $\bQ$ be tuned in order to prevent sharp turns?</li>
+
+        <li>Country roads are more slippery on the sides than in the center.  Is this class of objective functions rich enough to include a penalty on sharp turns that increases with the distance of the car from the centerline?</li>
+
+        <li>Imagine somebody suggests you to choose a strictly positive-definite $\bQ$.  Would you follow his/her advice?  Why?</li>
+
+      </ol>
+
+    </exercise>
+
+    <exercise><h1>Ill-Posed Optimal Control Problem</h1>
+
+      Consider the (unconstrained) double integrator system $\ddot q = u$.  Imagine you are asked to find the control policy $u = \pi (q, \dot q)$ that minimizes the seemingly innocuous cost function $$J = \int_{0}^{\infty} q^2(t) + (u^2(t) - 1)^2 dt.$$  Do you see any issue with this problem setup? How does the optimal control signal $u(t)$ look like if, for example, the initial state is $q(0) = \dot q(0) = 0$?
+
+    </exercise>
+
+    <exercise><h1>A Linear System with Quadratic Cost</h1>
+
+      Consider the scalar differential equation $$\dot{x} = x + u,$$ and the infinite horizon cost function $$J = \int_0^{\infty} [3x^2(t) + u^2(t)] dt.$$  As we will see in the <a href="lqr.html">chapter on linear-quadratic regulation</a>, the optimal cost-to-go for a problem of this kind assumes the form $J^* = S x^2$.  It is not hard to see that this, in turn, implies that the optimal controller has the form $u^* = - K x$.
+
+      <ol type="a">
+
+        <li>Imagine that you plugged the expression $J^* = S x^2$ in the HJB equations for this problem, you solved them for $S$, and you got $S \leq 0$.  Would this result ring any alarm bells?  Explain your answer.</li>
+
+        <li>Use the HJB sufficiency theorem to derive the optimal values of $S$ and $K$.</li>
+
+        <li>
+
+          Frequently, it is not possible to solve the HJB equations analytically.  In these cases we discretize the problem and we use a computer.  Let us introduce a time step $h > 0$ and discretize the dynamics as $$\frac{x[n+1] - x[n]}{h} = x[n] + u[n],$$ and the objective as $$h \sum_{n=0}^{\infty} (3 x^2[n] + u^2[n]).$$  One of the following expressions is the correct cost-to-go $J_{\text d}^*(x)$ for this discretized problem.  Can you identify it without solving the discrete-time HJB equation? Explain your answer.
+
+          <ol ol type="i">
+
+            <li>$J_{\text d}^* (x)= S_{\text d} x^4$ with $S_{\text d} = 3 + h + \sqrt{6}h^2$.</li>
+
+            <li>$J_{\text d}^* (x)= S_{\text d} x^2$ with $S_{\text d} = 1 + 2h + 2 \sqrt{h^2 + h +1}$.</li>
+
+            <li>$J_{\text d}^* (x)= S_{\text d} x^2$ with $S_{\text d} = 3 + 2h^2 + \sqrt{h^2 + h + 2}$.</li>
+
+          </ol>
+
+        </li>
+
+      </ol>
+
+    </exercise>
+
+  </section>
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
