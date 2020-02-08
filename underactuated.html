@@ -41,7 +41,393 @@ at MIT</a>. They will be updated throughout the Spring 2020 semester.  <a
 href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos are available on YouTube</a>.</p> 
 
 
-<section id="table_of_contents"></section>
+<section id="table_of_contents">
+<h1>Table of Contents</h1>
+<ul>
+  <li><a href="#preface">Preface</a></li>
+  <li><a href="intro.html">Chapter 1: Fully-actuated vs Underactuated Systems</a></li>
+  <ul>
+    <li><a href=intro.html#section1>Motivation</a></li>
+    <ul>
+      <li>Honda's ASIMO vs. passive dynamic walkers</li>
+      <li>Birds vs. modern aircraft</li>
+      <li>Manipulation</li>
+      <li>The common theme</li>
+    </ul>
+    <li><a href=intro.html#section2>Definitions</a></li>
+    <li><a href=intro.html#section3>Feedback Equivalence</a></li>
+    <li><a href=intro.html#section4>Input and State Constraints</a></li>
+    <ul>
+      <li>Nonholonomic constraints</li>
+    </ul>
+    <li><a href=intro.html#section5>Underactuated robotics</a></li>
+    <li><a href=intro.html#section6>Goals for the course</a></li>
+    <li><a href=intro.html#section7>Exercises</a></li>
+  </ul>
+  <li><a href="pend.html">Chapter 2: The Simple Pendulum</a></li>
+  <ul>
+    <li><a href=pend.html#section1>Introduction</a></li>
+    <li><a href=pend.html#section2>Nonlinear dynamics with a
+    constant
+    torque</a></li>
+    <ul>
+      <li>The overdamped pendulum</li>
+      <li>The undamped pendulum with zero torque</li>
+      <li>The undamped pendulum with a constant
+    torque</li>
+    </ul>
+    <li><a href=pend.html#section3>The torque-limited simple pendulum</a></li>
+    <li><a href=pend.html#section4>Exercises</a></li>
+  </ul>
+  <li><a href="acrobot.html">Chapter 3: Acrobots, Cart-Poles, and Quadrotors</a></li>
+  <ul>
+    <li><a href=acrobot.html#section1>The Acrobot</a></li>
+    <ul>
+      <li>Equations of motion</li>
+    </ul>
+    <li><a href=acrobot.html#section2>The Cart-Pole system</a></li>
+    <ul>
+      <li>Equations of motion</li>
+    </ul>
+    <li><a href=acrobot.html#section3>Quadrotors</a></li>
+    <ul>
+      <li>The Planar Quadrotor</li>
+      <li>The Full 3D Quadrotor</li>
+    </ul>
+    <li><a href=acrobot.html#section4>Balancing</a></li>
+    <ul>
+      <li>Linearizing the manipulator equations</li>
+      <li>Controllability of linear systems</li>
+      <li>LQR feedback</li>
+    </ul>
+    <li><a href=acrobot.html#section5>Partial feedback linearization</a></li>
+    <ul>
+      <li>PFL for the Cart-Pole System</li>
+      <li>General form</li>
+    </ul>
+    <li><a href=acrobot.html#section6>Swing-up control</a></li>
+    <ul>
+      <li>Energy shaping</li>
+      <li>Simple pendulum</li>
+      <li>Cart-Pole</li>
+      <li>Acrobot</li>
+      <li>Discussion</li>
+    </ul>
+    <li><a href=acrobot.html#section7>Differential Flatness</a></li>
+    <li><a href=acrobot.html#section8>Other model systems</a></li>
+  </ul>
+  <li><a href="simple_legs.html">Chapter 4: Simple Models
+of Walking and Running</a></li>
+  <ul>
+    <li><a href=simple_legs.html#section1>Limit Cycles</a></li>
+    <ul>
+      <li>Poincaré Maps</li>
+    </ul>
+    <li><a href=simple_legs.html#section2>Simple Models of Walking</a></li>
+    <ul>
+      <li>The Ballistic Walker</li>
+      <li>The Rimless Wheel</li>
+      <li>The Compass Gait</li>
+      <li>The Kneed Walker</li>
+    </ul>
+    <li><a href=simple_legs.html#section3>Simple Models of Running</a></li>
+    <ul>
+      <li>The Spring-Loaded Inverted Pendulum</li>
+      <li>The Planar Monopod Hopper</li>
+    </ul>
+    <li><a href=simple_legs.html#section4>A Simple Model That Can Walk and Run</a></li>
+  </ul>
+  <li><a href="humanoids.html">Chapter 5: Highly-articulated Legged
+Robots</a></li>
+  <ul>
+    <li><a href=humanoids.html#section1>Center of Mass Dynamics</a></li>
+    <ul>
+      <li>A hovercraft model</li>
+      <li>Robots with (massless) legs</li>
+      <li>Capturing the full robot dynamics</li>
+      <li>Impact dynamics</li>
+    </ul>
+    <li><a href=humanoids.html#section2>The special case of flat terrain</a></li>
+    <ul>
+      <li>An aside: the zero-moment point
+    derivation</li>
+    </ul>
+    <li><a href=humanoids.html#section3>ZMP planning</a></li>
+    <ul>
+      <li>From a CoM plan to a whole-body
+    plan</li>
+    </ul>
+    <li><a href=humanoids.html#section4>Whole-Body Control</a></li>
+    <li><a href=humanoids.html#section5>Footstep planning and push recovery</a></li>
+    <li><a href=humanoids.html#section6>Beyond ZMP planning</a></li>
+  </ul>
+  <li><a href="stochastic.html">Chapter 6: Model Systems
+with Stochasticity</a></li>
+  <ul>
+    <li><a href=stochastic.html#section1>The Master Equation</a></li>
+    <li><a href=stochastic.html#section2>Stationary Distributions</a></li>
+    <li><a href=stochastic.html#section3>Extended Example: The Rimless Wheel on Rough
+  Terrain</a></li>
+    <li><a href=stochastic.html#section4>Noise models for real robots/systems.</a></li>
+    <li><a href=stochastic.html#section5>Analysis (a preview)</a></li>
+    <li><a href=stochastic.html#section6>Control Design (a preview)</a></li>
+  </ul>
+  <li><a href="dp.html">Chapter 7: Dynamic Programming</a></li>
+  <ul>
+    <li><a href=dp.html#section1>Formulating control design as an optimization</a></li>
+    <ul>
+      <li>Additive cost</li>
+    </ul>
+    <li><a href=dp.html#section2>Optimal control as graph search</a></li>
+    <li><a href=dp.html#section3>Continuous dynamic programming</a></li>
+    <ul>
+      <li>The Hamilton-Jacobi-Bellman Equation</li>
+      <li>Solving for the minimizing control</li>
+      <li>Numerical solutions for $J^*$</li>
+    </ul>
+    <li><a href=dp.html#section4>Extensions</a></li>
+    <ul>
+      <li>Linear Programming Approach</li>
+    </ul>
+  </ul>
+  <li><a href="lqr.html">Chapter 8: Linear Quadratic Regulators</a></li>
+  <ul>
+    <li><a href=lqr.html#section1>Basic Derivation</a></li>
+    <ul>
+      <li>Local stabilization of nonlinear systems</li>
+    </ul>
+    <li><a href=lqr.html#section2>Finite-horizon formulations</a></li>
+    <ul>
+      <li>Finite-horizon LQR</li>
+      <li>Time-varying LQR</li>
+      <li>Linear Quadratic Optimal Tracking</li>
+      <li>Linear Final Boundary Value Problems</li>
+    </ul>
+    <li><a href=lqr.html#section3>Variations and extensions</a></li>
+    <ul>
+      <li>Discrete-time Riccati Equations</li>
+      <li>LQR with input and state constraints</li>
+      <li>LQR as a convex optimization</li>
+      <li>Finite-horizon LQR via least
+    squares</li>
+    </ul>
+  </ul>
+  <li><a href="lyapunov.html">Chapter 9: Lyapunov
+  Analysis</a></li>
+  <ul>
+    <li><a href=lyapunov.html#section1>Lyapunov Functions</a></li>
+    <ul>
+      <li>Global Stability</li>
+      <li>LaSalle's Invariance Principle</li>
+      <li>Relationship to the Hamilton-Jacobi-Bellman
+    equations</li>
+    </ul>
+    <li><a href=lyapunov.html#section2>Lyapunov analysis with convex optimization</a></li>
+    <ul>
+      <li>Lyapunov analysis for linear systems</li>
+      <li>Lyapunov analysis as a semi-definite program
+    (SDP)</li>
+      <li>Sums-of-squares optimization</li>
+      <li>Lyapunov analysis for polynomial systems</li>
+    </ul>
+    <li><a href=lyapunov.html#section3>Lyapunov functions for estimating regions of
+  attraction</a></li>
+    <ul>
+      <li>Robustness analysis using "common Lyapunov functions"</li>
+      <li>Region of attraction estimation for
+    polynomial systems</li>
+      <li>Rigid-body dynamics are polynomial</li>
+    </ul>
+    <li><a href=lyapunov.html#section4>Exercises</a></li>
+  </ul>
+  <li><a href="trajopt.html">Chapter 10: Trajectory
+  Optimization</a></li>
+  <ul>
+    <li><a href=trajopt.html#section1>Problem Formulation</a></li>
+    <li><a href=trajopt.html#section2>Computational Tools for Nonlinear
+  Optimization</a></li>
+    <li><a href=trajopt.html#section3>Trajectory optimization as a nonlinear
+  program</a></li>
+    <ul>
+      <li>Direct Transcription</li>
+      <li>Direct
+    Collocation</li>
+      <li>Shooting Methods</li>
+      <li>Discussion</li>
+    </ul>
+    <li><a href=trajopt.html#section4>Pontryagin's Minimum Principle</a></li>
+    <ul>
+      <li>Constrained optimization with Lagrange
+    multipliers</li>
+      <li>Lagrange multiplier derivation of the adjoint equations</li>
+      <li>Necessary conditions for optimality in
+    continuous time</li>
+    </ul>
+    <li><a href=trajopt.html#section5>Trajectory optimization as a convex
+  optimization</a></li>
+    <ul>
+      <li>Linear systems with convex linear
+    constraints</li>
+      <li>Differential Flatness</li>
+      <li>Mixed-integer convex optimization for
+    non-convex constraints</li>
+    </ul>
+    <li><a href=trajopt.html#section6>Local Trajectory Feedback Design</a></li>
+    <ul>
+      <li>Model-predictive control</li>
+      <li>Time-varying LQR</li>
+    </ul>
+    <li><a href=trajopt.html#section7>Iterative LQR and Differential Dynamic
+  Programming</a></li>
+    <li><a href=trajopt.html#section8>Case Study: A glider that can land on a perch
+  like a bird</a></li>
+  </ul>
+  <li><a href="planning.html">Chapter 11: Motion Planning as
+Search</a></li>
+  <ul>
+    <li><a href=planning.html#section1>Artificial Intelligence as Search</a></li>
+    <li><a href=planning.html#section2>Randomized motion planning</a></li>
+    <ul>
+      <li>Rapidly-Exploring Random Trees (RRTs)</li>
+      <li>RRTs for robots with dynamics</li>
+      <li>Variations and extensions</li>
+      <li>Discussion</li>
+    </ul>
+    <li><a href=planning.html#section3>Decomposition methods</a></li>
+  </ul>
+  <li><a href="feedback_motion_planning.html">Chapter 12: Feedback Motion
+  Planning</a></li>
+  <li><a href="policy_search.html">Chapter 13: Policy
+  Search</a></li>
+  <ul>
+    <li><a href=policy_search.html#section1>Problem formulation</a></li>
+    <li><a href=policy_search.html#section2>Controller parameterizations</a></li>
+    <li><a href=policy_search.html#section3>Trajectory-based policy search</a></li>
+    <li><a href=policy_search.html#section4>Lyapunov-based approaches to policy
+    search.</a></li>
+    <li><a href=policy_search.html#section5>Approximate Dynamic Programming</a></li>
+  </ul>
+  <li><a href="robust.html">Chapter 14: Robust and
+  Stochastic Control</a></li>
+  <ul>
+    <li><a href=robust.html#section1>Discrete states and actions</a></li>
+    <ul>
+      <li>Graph search -- stochastic shortest path
+    problems</li>
+      <li>Stochastic interpretation of deterministic,
+    continuous-state value iteration</li>
+    </ul>
+    <li><a href=robust.html#section2>Linear Quadratic Gaussian (LQG)</a></li>
+    <li><a href=robust.html#section3>Linear Exponential-Quadratic Gaussian (LEQG)</a></li>
+  </ul>
+  <li><a href="output_feedback.html">Chapter 15: 
+Output Feedback (aka Pixels-to-Torques)</a></li>
+  <ul>
+    <li><a href=output_feedback.html#section1>Partially-observable Markov Decision Processes</a></li>
+    <li><a href=output_feedback.html#section2>Linear Quadratic Gaussian</a></li>
+    <li><a href=output_feedback.html#section3>Static Output Feedback for Linear
+  Systems</a></li>
+  </ul>
+  <li><a href="limit_cycles.html">Chapter 16: Algorithms
+for Limit Cycles</a></li>
+  <ul>
+    <li><a href=limit_cycles.html#section1>Trajectory optimization</a></li>
+    <li><a href=limit_cycles.html#section2>Lyapunov analysis</a></li>
+    <ul>
+      <li>Transverse coordinates</li>
+      <li>Transverse linearization</li>
+      <li>Region of attraction estimation using sums-of-squares</li>
+    </ul>
+    <li><a href=limit_cycles.html#section3>Feedback design</a></li>
+    <ul>
+      <li>Transverse LQR</li>
+      <li>Orbital stabilization for non-periodic trajectories</li>
+    </ul>
+  </ul>
+  <li><a href="contact.html">Chapter 17: Planning and
+Control through Contact</a></li>
+  <ul>
+    <li><a href=contact.html#section1>Modeling and Simulating through Contact</a></li>
+    <li><a href=contact.html#section2>Trajectory Optimization</a></li>
+    <li><a href=contact.html#section3>Randomized Motion Planning</a></li>
+    <li><a href=contact.html#section4>Stabilizing a Fixed-Point</a></li>
+    <li><a href=contact.html#section5>Stabilizing a Trajectory or Limit Cycle</a></li>
+  </ul>
+  <li><a href="rl_policy_search.html">Chapter 18: Model-Free Policy Search</a></li>
+  <ul>
+    <li><a href=rl_policy_search.html#section1>Policy Gradient Methods</a></li>
+    <ul>
+      <li>The Likelihood Ratio Method (aka
+      REINFORCE)</li>
+      <li>Sample efficiency</li>
+      <li>Stochastic Gradient Descent</li>
+      <li>The Weight Pertubation Algorithm</li>
+      <li>Weight Perturbation with an Estimated
+      Baseline</li>
+      <li>REINFORCE w/ additive Gaussian noise</li>
+      <li>Summary</li>
+    </ul>
+    <li><a href=rl_policy_search.html#section2>Sample performance via the signal-to-noise
+  ratio.</a></li>
+    <ul>
+      <li>Performance of Weight Perturbation</li>
+    </ul>
+  </ul>
+  <li><a href="drake.html">Chapter 19: Drake</a></li>
+  <ul>
+    <li><a href=drake.html#section1>Pydrake</a></li>
+    <li><a href=drake.html#section2>Online Jupyter Notebooks</a></li>
+    <li><a href=drake.html#section3>Running on your own machine</a></li>
+    <ul>
+      <li>Install Drake</li>
+    </ul>
+    <li><a href=drake.html#section4>Getting help</a></li>
+    <li><a href=drake.html#section5>Listing of Drake examples throughout this text</a></li>
+  </ul>
+  <li><a href="multibody.html">Chapter 20: Rigid-Body
+  Dynamics</a></li>
+  <ul>
+    <li><a href=multibody.html#section1>Deriving the equations of motion (an example)</a></li>
+    <li><a href=multibody.html#section2>The Manipulator Equations</a></li>
+    <ul>
+      <li>Bilateral Position Constraints</li>
+      <li>Bilateral Velocity Constraints</li>
+    </ul>
+    <li><a href=multibody.html#section3>Contact Models</a></li>
+    <ul>
+      <li>Compliant Contact Models</li>
+      <li>Rigid Contact with Event Detection</li>
+      <li>Time-stepping Approximations for Rigid
+      Contact</li>
+    </ul>
+    <li><a href=multibody.html#section4>Recursive Dynamics Algorithms</a></li>
+    <li><a href=multibody.html#section5>Parameter Estimation</a></li>
+  </ul>
+  <li><a href="optimization.html">Chapter 21: Optimization and
+  Mathematical Programming</a></li>
+  <ul>
+    <li><a href=optimization.html#section1>Optimization software</a></li>
+    <li><a href=optimization.html#section2>Nonlinear optimization</a></li>
+    <ul>
+      <li>General formulation</li>
+      <li>Solution techniques</li>
+      <li>Example: Inverse Kinematics</li>
+    </ul>
+    <li><a href=optimization.html#section3>Convex optimization</a></li>
+    <ul>
+      <li>Linear Programs/Quadratic Programs/Second-Order Cones</li>
+      <li>Semidefinite Programming and Linear Matrix Inequalities</li>
+      <li>Sums of squares / polynomial optimization</li>
+      <li>Solution techniques</li>
+    </ul>
+    <li><a href=optimization.html#section4>Mixed-integer convex optimization</a></li>
+    <li><a href=optimization.html#section5>Combinatorial optimization</a></li>
+    <li><a href=optimization.html#section6>"Black-box" optimization</a></li>
+  </ul>
+  <li><a href="playbook.html">Chapter 22: An Optimization
+  Playbook</a></li>
+</ul>
+</section>
 
 
 <section id="preface"><h1>Preface</h1>
