@@ -13,3 +13,9 @@ exports_files(
     ["setup.cfg"],
     visibility = ["//:__subpackages__"],
 )
+
+filegroup(
+    name = "html",
+    srcs = glob(["*.html"]),
+    visibility = ["//:__subpackages__"],
+)

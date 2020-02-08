@@ -5,8 +5,20 @@
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
 load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
+load("//tools/rt/python:defs.bzl", "rt_py_test")
 
 bzl_library(
     name = "environ",
     srcs = ["environ.bzl"],
+)
+
+rt_py_test(
+    name = "install_html_meta_data",
+    srcs = ["install_html_meta_data.py"],
+    data = [ 
+        "//:html",
+        "header.html.in",
+        "footer.html.in"
+        ],
+    args = ["--read_only"],
 )

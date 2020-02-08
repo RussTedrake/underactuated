@@ -38,6 +38,7 @@ if(NOT TIDY_EXECUTABLE)
   message(FATAL_ERROR "tidy could NOT be found")
 endif()
 
+# TODO: run this on *.html in this directory.
 add_test(NAME htmllint WORKING_DIRECTORY "${PROJECT_SOURCE_DIR}" COMMAND "${TIDY_EXECUTABLE}" -e -config .tidy.config --show-warnings no underactuated.html)
 set_tests_properties(htmllint PROPERTIES PASS_REGULAR_EXPRESSION " 0 errors")
 
