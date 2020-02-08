@@ -566,6 +566,20 @@ complete trajectory.</p>
 
     </exercise>
 
+    <exercise><h1>Convergence in Finite Time</h1>
+
+      We have seen that a linear system $\dot x = a x$, with $a<0$, converges to the origin with exponential rate but takes infinite time to actually reach the equilibrium.  Nonlinear systems, on the other hand, can exhibit much richer behaviors.
+
+      <ol type="a">
+
+        <li>Consider the nonlinear system $\dot x = f(x)$, where $f(x) = - 2 \sqrt x$ for all $x \geq 0$.  Given the initial condition $x(0) \geq 0$, use the (neat) trick $$\frac{d}{dt} \sqrt x = \frac{\dot x}{2 \sqrt x}$$ to derive $x(t)$ as a function of $x(0)$.  What is the time $t^*$ at which the state reaches the origin?</li>
+
+        <li>Now let us limit the attention to systems $\dot x = f(x)$ that satisfy $|f(x)| < a |x|$, for some positive constant $a$.  Can a system in this class converge to the origin in finite time if $x(0) \neq 0$?  Hint: try to "reverse" the argument we use to infer exponential stability in graphical analysis.</li>
+
+      </ol>
+
+    </exercise>
+
     <exercise><h1>Attractivity vs Stability</h1>
 
       <figure>
