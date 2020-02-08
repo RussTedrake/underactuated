@@ -6,7 +6,6 @@
     <title>Underactuated Robotics</title>
     <meta name="Underactuated Robotics" content="text/html; charset=utf-8;" />
 
-    <script type="text/javascript" src="chapters.js"></script>
     <script type="text/javascript" src="htmlbook/book.js"></script>
 
     <script src="htmlbook/mathjax-config.js" defer></script> 
@@ -20,8 +19,6 @@
 
     <link rel="stylesheet" type="text/css" href="htmlbook/book.css">
   </head>
-
-
 
 <body onload="loadChapter('underactuated');">
 
@@ -42,7 +39,15 @@ href="http://underactuated.csail.mit.edu/Spring2020/">a course being taught
 at MIT</a>. They will be updated throughout the Spring 2020 semester.  <a 
 href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos are available on YouTube</a>.</p> 
 
-<chapter><h1>Drake</h1>
+<table style="width:100%;"><tr style="width:100%">
+  <td style="width:33%;text-align:left;"><a class="previous_chapter" href=actor_critic.html>Previous Chapter</a></td>
+  <td style="width:33%;text-align:center;"><a href=underactuated.html>Table of contents</a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter" href=multibody.html>Next Chapter</a></td>
+</tr></table>
+
+
+<!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+<chapter style="counter-reset: chapter 22"><h1>Drake</h1>
 
   <p><drake></drake> is the main software toolbox that we use for this text,
   which in fact originated in a large part due to the MIT underactuated course.
@@ -151,10 +156,9 @@ export PYTHONPATH=`pwd`/underactuated:${PYTHONPATH}</code></pre></div>
     <subsection><h1>Run Jupyter Notebook</h1>
 
       <div><pre class="highlight"><code>cd underactuated
-jupyter notebook
-      </code></pre></div>
+jupyter notebook</code></pre></div>
 
-      <p>Most of the examples are in the <code>underactuated</code> subdirectory.  You might try running <code>underactuated/double_pendulum/dynamics.ipynb</code> to get started.  Have fun!</p>
+      <p>You will find the examples in the <code>examples</code> subdirectory, and the notebook exercises in the <code>exercises</code> subdirectory.  You might try opening <code>examples/double_pendulum/dynamics.ipynb</code> to get started.  Have fun!</p>
 
     </subsection>
 
@@ -168,16 +172,14 @@ jupyter notebook
 
     <div style="height:30px"></div>
 
-
-  <section><h1>Listing of Drake examples throughout this text</h1>
-
-    <p>The best overview we have for the remaining capabilities in <drake></drake> are the main chapters of these notes.  For convenience, here is a list of software examples that are sprinkled throughout the text:</p>
-
-    <div id="list_of_drake_examples"><center>Coming soon!</center></div>
-
-  </section>
-
 </chapter>
+<!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+
+<table style="width:100%;"><tr style="width:100%">
+  <td style="width:33%;text-align:left;"><a class="previous_chapter" href=actor_critic.html>Previous Chapter</a></td>
+  <td style="width:33%;text-align:center;"><a href=underactuated.html>Table of contents</a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter" href=multibody.html>Next Chapter</a></td>
+</tr></table>
 
 <div id="footer">
   <hr>
@@ -190,4 +192,3 @@ jupyter notebook
 
 </body>
 </html>
-  
