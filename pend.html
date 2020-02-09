@@ -158,12 +158,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       story is different: trajectories starting to the right or to the left will
       move back towards the fixed point.  We will call this fixed point
       <em>locally stable</em>.  More specifically, we'll distinguish between
-      three types of local stability:
+      multiple types of stability (where $\epsilon$ is used to denote an arbitrary <em>small</em> scalar quantity):
 
       <ul>
 
-        <li>Locally stable <em>in the sense of Lyapunov</em> (i.s.L.).  A fixed
-        point, $x^*$ is locally stable i.s.L. if for every small $\epsilon > 0$,
+        <li>Locally <b>stable</b> in the sense of Lyapunov (i.s.L.).  A fixed
+        point, $x^*$ is locally stable i.s.L. if for every $\epsilon > 0$,
         I can produce a $\delta > 0$ such that if $\| x(0) - x^* \| < \delta$
         then $\forall t$ $\| x(t) - x^*\| < \epsilon$.  In words, this means
         that for any ball of size $\epsilon$ around the fixed point, I can
@@ -171,17 +171,19 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         started inside the $\delta$ ball then it will remain inside the
         $\epsilon$ ball for all of time.</li>
 
-        <li>Locally <em>asymptotically stable</em>.  A fixed point is locally
-        asymptotically stable if it is stable i.s.L., and additionally $x(0) =
-        x^* + \epsilon$ implies that $\lim_{t\rightarrow \infty} x(t) =
+        <li>Locally <b>attractive</b>.  A fixed point is locally attractive if  
+        $x(0) = x^* + \epsilon$ implies that $\lim_{t\rightarrow \infty} x(t) =
         x^*$.</li>
 
-        <li>Locally <em>exponentially stable</em>.  A fixed point is locally
+        <li>Locally <b>asymptotically stable</b>.  A fixed point is locally
+        asymptotically stable if it is locally stable i.s.L. and locally attractive.</li>
+
+        <li>Locally <b>exponentially stable</b>.  A fixed point is locally
         exponentially stable if $x(0) = x^* + \epsilon$ implies that $\| x(t) -
         x^* \| < Ce^{-\alpha t}$, for some positive constants $C$ and
         $\alpha$.</li>
 
-        <todo>Briat15 Definition 2.2.1 accomplishes the same, but I like his formatting slightly better.</todo>
+        <li><b>Unstable</b>.  A fixed point is unstable if it is not locally stable i.s.L.</li>
 
       </ul>
 
@@ -191,21 +193,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \rightarrow \infty$, and near an exponentially stable fixed point will
       reach the fixed point with a bounded rate.  An exponentially stable fixed
       point is also an asymptotically stable fixed point, but the converse is
-      not true.  Asymptotic convergence in time (sometimes called Lyapunov
-      attractivity) does not actually imply Lyapunov
+      not true.  Attractivity does not actually imply Lyapunov
       stability&dagger;<sidenote>&dagger; we can't see that in one dimension so
-      will have to hold that example for a moment</sidenote>, however, it is
-      standard to require stability i.s.L. specifically in the definition of
-      asymptotic stability.  Systems which are stable i.s.L. but not
-      asymptotically stable are easy to construct (e.g. $\dot{x} = 0$).
-      Interestingly, it is also possible to have nonlinear systems that converge
-      (or diverge) in finite-time; a so-called <em>finite-time stability</em>;
-      we will see examples of this later in the book, but it is a difficult
-      topic to penetrate with graphical analysis.  Rigorous nonlinear system
-      analysis is rich with subtleties and surprises.  Moreover, these
-      differences actually matter -- the code that we will write to stabilize
-      the systems will be subtley different depending on what type of stability
-      we want, and it can make or break the success of our methods.</p>
+      will have to hold that example for a moment</sidenote>, which is why we
+      requires i.s.L. specifically for the definition of asymptotic stability.
+      Systems which are stable i.s.L. but not asymptotically stable are easy to
+      construct (e.g. $\dot{x} = 0$). Interestingly, it is also possible to have
+      nonlinear systems that converge (or diverge) in finite-time; a so-called
+      <em>finite-time stability</em>; we will see examples of this later in the
+      book, but it is a difficult topic to penetrate with graphical analysis.
+      Rigorous nonlinear system analysis is rich with subtleties and surprises.
+      Moreover, these differences actually matter -- the code that we will write
+      to stabilize the systems will be subtley different depending on what type
+      of stability we want, and it can make or break the success of our
+      methods.</p>
 
       <p> Our graph of $\dot{x}$ vs. $x$ can be used to convince ourselves of
       i.s.L. and asymptotic stability by visually inspecting $\dot{x}$ in the
