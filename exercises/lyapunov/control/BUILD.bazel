@@ -9,6 +9,5 @@ load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
 rt_ipynb_test(
     name = "control",
     srcs = ["control.ipynb"],
-    size = "medium",
     deps = ["//underactuated"],
 )

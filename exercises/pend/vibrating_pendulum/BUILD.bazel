@@ -9,7 +9,6 @@ load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
 rt_ipynb_test(
     name = "vibrating_pendulum",
     srcs = ["vibrating_pendulum.ipynb"],
-    size = "medium",
     data = ["//underactuated/models:vibrating_pendulum.urdf"],
     deps = ["//underactuated"],
 )

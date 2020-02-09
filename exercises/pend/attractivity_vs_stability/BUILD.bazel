@@ -9,6 +9,5 @@ load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
 rt_ipynb_test(
     name = "attractivity_vs_stability",
     srcs = ["attractivity_vs_stability.ipynb"],
-    size = "medium",
     deps = ["//underactuated"],
 )
