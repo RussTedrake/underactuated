@@ -51,7 +51,6 @@ def _py_pydocstyle_test_impl(ctx):
     if ctx.attr.verbose:
         args.append("--verbose")
 
-    comment = "GENERATED FILE DO NOT EDIT"
     pydocstyle = shell.quote(
         ctx.attr._pydocstyle[DefaultInfo].files_to_run.executable.short_path,
     )

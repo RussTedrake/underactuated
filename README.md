@@ -54,19 +54,6 @@ and will replace the CMake workflow once it has complete coverage. See
 bazel test //...
 ```
 
-To run the auto-linter
-----------------------
-
-macOS:
-```
-$ yapf -i -r -p .
-```
-
-Ubuntu Bionic:
-```
-$ yapf3 -i -r -p .
-```
-
 To get experimental drake binaries
 -----------------------------------
 

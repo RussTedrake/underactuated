@@ -25,6 +25,7 @@ def _common_attrs(attrs):
     # TODO(jamiesnape): Enable pycodestyle for ipynb.
     attrs["pycodestyle"] = False
     attrs["pydocstyle"] = False
+    attrs["yapf"] = False
     if "tags" in attrs and attrs["tags"] != None:
         attrs["tags"] = attrs["tags"] + ["ipynb"]
     else:
