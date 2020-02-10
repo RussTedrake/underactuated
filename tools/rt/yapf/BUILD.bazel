@@ -9,8 +9,8 @@ load("@pip//:requirements.bzl", "all_requirements")
 load("@rules_python//python:defs.bzl", "py_binary")
 
 bzl_library(
-    name = "defs",
-    srcs = ["defs.bzl"],
+    name = "def",
+    srcs = ["def.bzl"],
     visibility = ["//tools/rt/python:__pkg__"],
     deps = [
         "@bazel_skylib//lib:paths",

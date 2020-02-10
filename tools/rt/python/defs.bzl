@@ -8,7 +8,7 @@ load("@pip//:requirements.bzl", "all_requirements")
 load("@rules_python//python:defs.bzl", "py_binary", "py_library", "py_test")
 load("//tools/rt/pycodestyle:def.bzl", "py_pycodestyle_test")
 load("//tools/rt/pydocstyle:def.bzl", "py_pydocstyle_test")
-load("//tools/rt/yapf:defs.bzl", "py_yapf_test")
+load("//tools/rt/yapf:def.bzl", "py_yapf_test")
 
 def _common_attrs(attrs):
     if "deps" in attrs and attrs["deps"] != None:
