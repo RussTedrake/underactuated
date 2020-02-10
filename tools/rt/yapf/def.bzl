@@ -31,8 +31,10 @@ def _yapf_test_impl(ctx):
         ctx.attr._yapf[DefaultInfo].files_to_run.executable.short_path,
     )
 
-    run_srcs = [paths.join("${BUILD_WORKSPACE_DIRECTORY}",
-                           f.short_path) for f in ctx.files.srcs]
+    run_srcs = [paths.join(
+        "${BUILD_WORKSPACE_DIRECTORY}",
+        f.short_path,
+    ) for f in ctx.files.srcs]
 
     test_srcs = [shell.quote(f.short_path) for f in ctx.files.srcs]
 
@@ -72,11 +74,11 @@ _PY_YAPF_TEST_ATTRS = {
               "`style`).",
     ),
     "parallel": attr.bool(
-         doc = "Run yapf in parallel when formatting multiple files",
+        doc = "Run yapf in parallel when formatting multiple files",
     ),
     "style": attr.string(
         doc = "The style name (mutually exclusive with `config`)",
-        values = ["", "chromium", "facebook", "google",  "pep8"],
+        values = ["", "chromium", "facebook", "google", "pep8"],
     ),
     "verbose": attr.bool(doc = "Print out file names while processing"),
     "_template": attr.label(
