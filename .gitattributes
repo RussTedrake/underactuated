@@ -9,6 +9,7 @@
 *.css           text diff=css
 *.gv            text
 *.html          text diff=html
+*.html.in       text diff=html
 *.ipynb         text
 *.jpg           binary
 *.js            text
