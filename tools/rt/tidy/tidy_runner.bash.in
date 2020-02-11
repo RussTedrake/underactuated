@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+# @@GENERATED_FILE_MARKER@@
+
+set -uo pipefail
+
+SCRIPT_RETURN_CODE=0
+for SRC in @@SRCS@@
+do
+  echo "${SRC}:"
+  @@TIDY@@ @@ARGS@@ ${SRC} 2>&1 | grep -Eo -e 'Tidy found [0-9]+ warnings? and [0-9]+ errors?' -e 'No warnings or errors were found' | sed 's/^/  /'
+  RETURN_CODES=(${PIPESTATUS[*]})
+  TIDY_RETURN_CODE="${RETURN_CODES[0]}"
+  GREP_RETURN_CODE="${RETURN_CODES[1]}"
+  if [[ "${GREP_RETURN_CODE}" -ne 0 ]]; then
+    echo '  Tidy did not produce the expected output'
+    (( SCRIPT_RETURN_CODE++ ))
+  elif [[ "${TIDY_RETURN_CODE}" -ne 0 && "${TIDY_RETURN_CODE}" -ne 1 ]]; then
+    (( SCRIPT_RETURN_CODE++ ))
+  fi
+  echo ''
+done
+exit "${SCRIPT_RETURN_CODE}"

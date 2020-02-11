@@ -4,6 +4,8 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
+load("//tools/rt/tidy:def.bzl", "html_tidy_test")
+
 exports_files(
     ["LICENSE.TXT"],
     visibility = ["//visibility:public"],
@@ -18,4 +20,10 @@ filegroup(
     name = "html",
     srcs = glob(["*.html"]),
     visibility = ["//:__subpackages__"],
+)
+
+html_tidy_test(
+  name = "html_tidy",
+  srcs = [":html"],
+  config = ".tidy.config",
 )

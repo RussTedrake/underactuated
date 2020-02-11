@@ -30,10 +30,7 @@ build --test_env=MPLBACKEND=Template
 # build --test_env=PYTHONWARNINGS=error::pydrake.common.deprecation.DrakeDeprecationWarning
 
 build --test_output=errors
-
-# Default test options.
-test --test_output=errors
-test --test_summary=terse
+build --test_summary=terse
 
 build:macos --test_timeout=120,600,1800,7200
 
