@@ -11,3 +11,9 @@ rt_ipynb_test(
     srcs = ["autapse_and_lstm.ipynb"],
     deps = ["//underactuated"],
 )
+
+rt_ipynb_test(
+    name = "grid_world",
+    srcs = ["grid_world.ipynb"],
+    deps = ["//underactuated"],
+)

@@ -7,16 +7,10 @@
 load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
-    name = "torque_slider_demo",
-    srcs = ["torque_slider_demo.ipynb"],
-    deps = ["//underactuated"],
-)
-
-rt_ipynb_test(
     name = "value_iteration",
     srcs = ["value_iteration.ipynb"],
     deps = [
         "//underactuated",
-        "//underactuated/pendulum",
+        "//underactuated/double_integrator",
     ],
 )
