@@ -1,12 +1,8 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-tap "bazelbuild/tap"
-
-brew "bazelbuild/tap/bazel"
+brew "bazel"
 brew "buildifier"
-brew "cmake"
 brew "ffmpeg"
 brew "python"
 brew "tidy-html5"
-brew "yapf"

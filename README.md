@@ -29,40 +29,14 @@ used the instructions at
 https://websitebeaver.com/set-up-localhost-on-macos-high-sierra-apache-mysql-and-php-7-with-sslhttps
 and just pointed by root doc directory directly at my underactuated checkout.
 
-
-To run the unit tests using CMake
+To run the linters and unit tests
 ---------------------------------
-
-CircleCI currently runs the tests using CMake; this will soon be removed in
-favor of the Bazel workflow below.
-
-```
-$ mkdir build && cd build
-$ cmake -Ddrake_DIR=PATH_TO_DRAKE/lib/cmake/drake ..
-$ make
-$ ctest .
-```
-
-To run the linters and unit tests using Bazel
----------------------------------------------
-
-GitHub actions runs the linters and unit tests using Bazel. This is preferred,
-and will replace the CMake workflow once it has complete coverage. See
-[#245](https://github.com/RussTedrake/underactuated/issues/245).
 
 ```
 bazel test //...
 ```
 
-To get experimental drake binaries
------------------------------------
+To get experimental Drake binaries
+----------------------------------
 
-As described at http://github.com/RobotLocomotion/drake/issues/7926, use
-
-On your drake PR, use
-```
-@drake-jenkins-bot linux-bionic-unprovisioned-gcc-bazel-experimental-snopt-packaging please
-@drake-jenkins-bot mac-mojave-unprovisioned-clang-bazel-experimental-snopt-packaging please
-```
-Then examine the last lines of the console output from those builds for the 
-binary urls.  
+Please see the [relevant Drake documentation](https://drake.mit.edu/jenkins#building-binary-packages-on-demand).

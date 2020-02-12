@@ -60,14 +60,10 @@ echo 'deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8' >
 apt-get update -o APT::Acquire::Retries=4 -qq
 apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends $(tr '\n' ' ' <<EOF
 bazel
-cmake
 ffmpeg
 locales
-pycodestyle
-pydocstyle
 python3
 tidy
-yapf3
 wget
 EOF
 )
