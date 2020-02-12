@@ -1,0 +1,18 @@
+# -*- mode: python -*-
+# vi: set ft=python :
+
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+# Avoid downloading @remote_coverage_tools because they require a Java
+# toolchain and do not support Python as of Bazel 2.0.
+
+filegroup(
+    name = "coverage_report_generator",
+    srcs = ["dummy_coverage_report_generator"],
+)
+
+filegroup(
+    name = "coverage_support",
+    srcs = ["dummy_collect_coverage"],
+)
