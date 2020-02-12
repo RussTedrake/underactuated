@@ -62,6 +62,7 @@ apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-r
 bazel
 ffmpeg
 locales
+jupyter
 python3
 python3-ipywidgets
 tidy

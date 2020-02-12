@@ -3,12 +3,13 @@ import sys
 from IPython import get_ipython
 from IPython.display import display
 from ipywidgets.widgets import FloatSlider
+from warnings import warn
 
 from pydrake.systems.framework import VectorSystem
 
+
 def setup_matplotlib_backend():
-    '''
-    Helper to support multiple workflows:
+    """Helper to support multiple workflows:
         1) nominal -- running locally w/ jupyter notebook
         2) unit tests (no ipython, backend is template)
         3) binder -- does have notebook backend
@@ -16,24 +17,29 @@ def setup_matplotlib_backend():
     Puts the matplotlib backend into notebook mode, if possible,
     otherwise falls back to inline mode.
     Returns True iff the final backend is interactive.
-    '''
+    """
     ipython = get_ipython()
-    if ipython is not None: 
+    if ipython is not None:
         try:
             ipython.run_line_magic("matplotlib", "notebook")
         except KeyError:
             ipython.run_line_magic("matplotlib", "inline")
-        
+
     # import needs to happen after the backend is set.
     import matplotlib.pyplot as plt
     from matplotlib.rcsetup import interactive_bk
-    return plt.get_backend() in interactive_bk    
+    return plt.get_backend() in interactive_bk
 
 
 # Inspired by https://github.com/Kirill888/jupyter-ui-poll but there *must* be a
-# better way.  And I could probably make it a lot more efficent (e.g. by not
-# doing the entire logic every time, but grabbing events before sim, and
-# restoring them after).
+# better way. Ideas:
+#  - provide init() and cleanup() methods that could be called to pull out and
+#    replace the irrelevant events just once (instead of on every timestep).
+#    E.g. init(), simulator.AdvanceTo(10), cleanup().
+#  - whitelist widget events and only process them (instead of black-listing the
+#    execute_request).
+#  - do I actually need asyncio?  can I just write the events back?
+# But I'll wait to see how much we use this before spending too much time on it.
 def update_widgets(num_ui_events_to_process=1):
     shell = get_ipython()
     # Ok to do nothing if running from console
@@ -67,9 +73,8 @@ def update_widgets(num_ui_events_to_process=1):
     if loop.is_running():
         loop.call_soon(lambda: _replay_events(shell, events))
     else:
-        warn(
-            'Automatic execution of scheduled cells only works with asyncio based ipython'
-        )
+        warn('Automatic execution of scheduled cells only works with asyncio \
+              based ipython')
 
 
 # TODO(russt): generalize this to e.g. WidgetSystem (should work for any widget,
@@ -79,9 +84,14 @@ class SliderSystem(VectorSystem):
     def __init__(self, min, max, value=0, description=""):
         # 0 inputs, 1 output.
         VectorSystem.__init__(self, 0, 1)
-        self.slider = FloatSlider(value=value, description=description, min=min, max=max, continuous_update=True)
+        self.slider = FloatSlider(value=value,
+                                  description=description,
+                                  min=min,
+                                  max=max,
+                                  continuous_update=True)
 
-        display(self.slider)
+        if get_ipython() is not None:
+            display(self.slider)
 
     def DoCalcVectorOutput(self, context, unused, unused2, output):
         update_widgets()
