@@ -6,17 +6,21 @@ build --action_env=MOSEKLM_LICENSE_FILE
 
 build --enable_platform_specific_config=yes
 
-build --incompatible_disable_target_provider_fields=true
-build --incompatible_disallow_dict_lookup_unhashable_keys=true
+build --incompatible_disable_target_provider_fields=yes
+build --incompatible_disallow_dict_lookup_unhashable_keys=yes
 # TODO(jamiesnape): Uncomment this when RobotLocomotion/drake#12605 merges.
-# build --incompatible_load_python_rules_from_bzl=true
-build --incompatible_no_output_attr_default=true
-build --incompatible_no_rule_outputs_param=true
-build --incompatible_remove_enabled_toolchain_types=true
-build --incompatible_restrict_string_escapes=true
-build --incompatible_run_shell_command_string=true
-build --incompatible_strict_action_env=true
-build --incompatible_visibility_private_attributes_at_definition=true
+# build --incompatible_load_python_rules_from_bzl=yes
+build --incompatible_no_output_attr_default=yes
+build --incompatible_no_rule_outputs_param=yes
+build --incompatible_remove_enabled_toolchain_types=yes
+build --incompatible_restrict_string_escapes=yes
+build --incompatible_run_shell_command_string=yes
+build --incompatible_strict_action_env=yes
+build --incompatible_use_platforms_repo_for_constraints=yes
+build --incompatible_visibility_private_attributes_at_definition=yes
+
+build --legacy_external_runfiles=no
+build --strict_filesets=yes
 
 build --test_env=GRB_LICENSE_FILE
 build --test_env=LANG=en_US.UTF-8
@@ -35,3 +39,5 @@ build --test_summary=terse
 build:macos --test_timeout=120,600,1800,7200
 
 try-import %workspace%/user.bazelrc
+
+build --java_toolchain=@bazel_tools//tools/jdk:dummy_java_toolchain

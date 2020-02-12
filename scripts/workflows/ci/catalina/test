@@ -5,4 +5,7 @@
 
 set -euxo pipefail
 
-bazel test --jobs=1 --keep_going //...
+bazel test --discard_analysis_cache=yes --jobs=1 --keep_going=yes \
+  --keep_state_after_build=no --test_summary=detailed \
+  --test_verbose_timeout_warnings=yes --track_incremental_state=no \
+  --verbose_test_summary=yes //...
