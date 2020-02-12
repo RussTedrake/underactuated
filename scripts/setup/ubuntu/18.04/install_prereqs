@@ -63,10 +63,13 @@ bazel
 ffmpeg
 locales
 python3
+python3-ipywidgets
 tidy
 wget
 EOF
 )
+
+jupyter nbextension enable --py widgetsnbextension
 
 locale-gen en_US.UTF-8
 

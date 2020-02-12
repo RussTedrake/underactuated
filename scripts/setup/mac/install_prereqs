@@ -52,5 +52,8 @@ brew bundle --file="$(dirname ${(%):-%x})/Brewfile" --no-lock
 pip3 install --upgrade $(tr '\n' ' ' <<EOF
 pycodestyle
 pydocstyle
+ipywidgets
 EOF
 )
+
+jupyter nbextension enable --py widgetsnbextension
