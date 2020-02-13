@@ -622,19 +622,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         iterative approximate solution to \begin{gather*} J^*(\bx_0) =
         \min_{u[\cdot]} \sum_{n=0}^\infty \ell(\bx[n],\bu[n]), \\ \text{ s.t. }
         \bx[n+1] = f(\bx[n], \bu[n]), \bx[0] = \bx_0\end{gather*} becomes
-        \begin{gather*} J^d_k = \min_\bu \left[ \ell(\bx_k,\bu) +
+        \begin{gather} J^d_k = \min_\bu \left[ \ell(\bx_k,\bu) +
         \hat{J}^*_\alpha\left({f(\bx_k,\bu)}\right) \right], \\ \balpha
         \Leftarrow \argmin_\balpha \sum_k \left(\hat{J}^*_\balpha(\bx_k) - J^d_k
-        \right)^2. \end{gather*} For linear function approximators, this is
-        simply: \begin{gather*} \balpha \Leftarrow \begin{bmatrix}
-        \bpsi^T(\bx_1) \\ \vdots \\ \bpsi^T(\bx_K)\end{bmatrix}^+
-        \begin{bmatrix} J^d_1 \\ \vdots \\ J^d_K \end{bmatrix}, \end{gather*}
-        where the $^+$ notation refers to a Moore-Penrose pseudoinverse.
-        Remarkably, for linear function approximators, this update is still
-        known to converge to the globally optimal $\balpha^*$.</p>
-
-        <!-- Andrew also has fitted value iteration notes:
-        http://cs229.stanford.edu/notes/cs229-notes12.pdf -->
+        \right)^2. \label{eq:fitted_value_iteration} \end{gather} For linear
+        function approximators, this is simply: \begin{gather*} \balpha
+        \Leftarrow \begin{bmatrix} \bpsi^T(\bx_1) \\ \vdots \\
+        \bpsi^T(\bx_K)\end{bmatrix}^+ \begin{bmatrix} J^d_1 \\ \vdots \\ J^d_K
+        \end{bmatrix}, \end{gather*} where the $^+$ notation refers to a
+        Moore-Penrose pseudoinverse. Remarkably, for linear function
+        approximators, this update is still known to converge to the globally
+        optimal $\balpha^*$.</p>
+        
+        <p>Note that the update in \eqref{eq:fitted_value_iteration} is not <i>quite</i> the same as doing least-squares optimization of $$\sum_k \left(\hat{J}^*_\balpha(\bx_k) - \min_\bu \left[ \ell(\bx_k,\bu) +
+          \hat{J}^*_\alpha\left({f(\bx_k,\bu)}\right) \right]
+        \right)^2,$$ because in this equation $\alpha$ has an effect on both occurences of $\hat{J}^*$.  In \eqref{eq:fitted_value_iteration}, we cut that dependence by taking $J_k^d$ as fixed desired values; this version performs better in practice.  Like many things, this is an old idea that has been given a new name in the deep reinforcement learning literature -- people think of the right hand side as being the output from a fixed "target network".</p>
 
         <todo> add citations for convergence results </todo>
       </subsubsection>
@@ -660,10 +662,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         1,$ (e.g., the only point contributing to the interpolation <i>at a mesh
         point</i> is the value at the mesh point itself), the update in Eq.
         (\ref{eq:mesh_value_iteration}) is precisely the least-squares update
-        (and it achieves zero error). </p>
+        (and it achieves zero error). This is the representation used in the value iteration examples that you've already experimented with above.</p>
 
       </subsubsection>
 
+<todo>
+      <subsubsection><h1>Representing the cost-to-go in a deep network</h1>
+
+      </subsubsection>
+</todo>
       <subsubsection><h1>Continuous-time systems</h1>
 
         <p>For solutions to systems with continuous-time dynamics, I have to
