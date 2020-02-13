@@ -39,7 +39,11 @@ def setup_matplotlib_backend():
 #  - whitelist widget events and only process them (instead of black-listing the
 #    execute_request).
 #  - do I actually need asyncio?  can I just write the events back?
+#
 # But I'll wait to see how much we use this before spending too much time on it.
+# BTW,
+# https://ipywidgets.readthedocs.io/en/latest/examples/Widget%20Asynchronous.html  # noqa
+# describes the problem but does not offer a solution.
 def update_widgets(num_ui_events_to_process=1):
     shell = get_ipython()
     # Ok to do nothing if running from console
