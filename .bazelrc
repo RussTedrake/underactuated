@@ -4,7 +4,7 @@ build --action_env=GRB_LICENSE_FILE
 # Location of the MOSEK license file, typically named "mosek.lic"
 build --action_env=MOSEKLM_LICENSE_FILE
 
-build --coverage_report_generator=//tools/rt/coverage:coverage_report_generator"
+build --coverage_report_generator=//tools/rt/coverage:coverage_report_generator
 build --coverage_support=//tools/rt/coverage:coverage_support
 build --enable_platform_specific_config=yes
 
@@ -41,5 +41,3 @@ build --test_summary=terse
 build:macos --test_timeout=120,600,1800,7200
 
 try-import %workspace%/user.bazelrc
-
-build --java_toolchain=@bazel_tools//tools/jdk:dummy_java_toolchain
