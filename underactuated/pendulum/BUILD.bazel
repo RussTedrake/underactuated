@@ -32,13 +32,13 @@ rt_py_test(
 
 rt_py_library(
     name = "pendulum",
-    testonly = True,
     srcs = [
         "__init__.py",
         "visualizer.py",
     ],
     imports = ["../.."],
     deps = ["//underactuated"],
+    visibility = ["//visibility:public"],
 )
 
 rt_py_test(
@@ -49,10 +49,4 @@ rt_py_test(
         ":pendulum",
         "//underactuated",
     ],
-)
-
-rt_py_test(
-    name = "value_iteration",
-    srcs = ["value_iteration.py"],
-    deps = [":pendulum"],
 )

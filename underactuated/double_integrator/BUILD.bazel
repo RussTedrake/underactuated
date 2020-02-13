@@ -14,15 +14,10 @@ rt_py_library(
     ],
     imports = ["../.."],
     deps = ["//underactuated"],
+    visibility = ["//visibility:public"],
 )
 
 rt_py_test(
     name = "lqr",
     srcs = ["lqr.py"],
-)
-
-rt_py_test(
-    name = "value_iteration",
-    srcs = ["value_iteration.py"],
-    deps = [":double_integrator"],
 )
