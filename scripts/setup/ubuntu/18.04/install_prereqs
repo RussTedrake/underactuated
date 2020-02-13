@@ -37,6 +37,8 @@ bazel
 ffmpeg
 locales
 python3
+python3-notebook
+python3-ipywidgets
 tidy
 wget
 EOF
