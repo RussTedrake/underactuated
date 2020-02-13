@@ -9,7 +9,7 @@ Underactuated Robotics
 ![CI](https://github.com/RussTedrake/underactuated/workflows/CI/badge.svg)
 
 Follow the installation instructions in 
-http://underactuated.mit.edu/underactuated.html?ch=drake
+http://underactuated.mit.edu/drake.html
 
 
 To view the text locally
