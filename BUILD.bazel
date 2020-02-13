@@ -23,7 +23,7 @@ filegroup(
 )
 
 html_tidy_test(
-  name = "html_tidy",
-  srcs = [":html"],
-  config = ".tidy.config",
+    name = "html_tidy",
+    srcs = [":html"],
+    config = ".tidy.config",
 )

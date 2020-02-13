@@ -91,7 +91,7 @@ _PY_YAPF_TEST_ATTRS = {
         doc = "The name of the yapf console script",
         cfg = "host",
     ),
-}
+}  # buildifier: disable=unsorted-dict-items
 
 _py_yapf_test = rule(
     implementation = _yapf_test_impl,

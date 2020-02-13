@@ -123,7 +123,7 @@ _PY_PYCODESTYLE_TEST_ATTRS = {
         doc = "The name of the pycodestyle test runner template",
         allow_single_file = True,
     ),
-}
+}  # buildifier: disable=unsorted-dict-items
 
 _py_pycodestyle_test = rule(
     implementation = _py_pycodestyle_test_impl,

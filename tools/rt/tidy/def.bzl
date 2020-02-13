@@ -62,12 +62,12 @@ _HTML_TIDY_TEST_ATTRS = {
         executable = True,
         cfg = "host",
     ),
-}
+}  # buildifier: disable=unsorted-dict-items
 
 _html_tidy_test = rule(
     implementation = _html_tidy_test_impl,
     attrs = _HTML_TIDY_TEST_ATTRS,
-    doc = "Validate, correct, and pretty-print HTML/XHTML/XML.",
+    doc = "Validate, correct, and pretty-print HTML/XHTML/XML",
     provides = [DefaultInfo],
     test = True,
 )
@@ -87,6 +87,7 @@ def html_tidy_test(**kwargs):
     tags = kwargs.get("tags", [])
     if "block-network" not in tags:
         tags.append("block-network")
+
     # TODO(jamiesnape): Work out why tidy fails when sandboxed.
     if "no-sandbox" not in tags:
         tags.append("no-sandbox")
