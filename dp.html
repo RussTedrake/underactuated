@@ -790,11 +790,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         <figcaption>Autonomous car moving at velocity $v$ on a straight road.</figcaption>
       </figure>
 
-      The figure above shows an autonomous car moving at constant velocity $v>0$ on a straight road.  Let $x$ be the (longitudinal) position of the car along the road, $y$ its (transversal) distance from the centerline, and $\theta$ the angle between the centerline and the direction of motion.  The only control action is the steering velocity $u$.  We describe the car dynamics with the simple kinematic model \begin{align*}\dot x &= v \cos \theta, \\ \dot y &= v \sin \theta, \\ \dot \theta &= u.\end{align*}  Let $\bx = [x, y, \theta]^T$ be the state vector.  To optimize the car trajectory we consider a quadratic objective function $$J = \int_{0}^{\infty} [\bx^T(t) \bQ \bx(t)  + R u^2(t)] dt,$$ where $\bQ$ is a constant positive-semidefinite (hence symmetric) matrix and $R$ is a constant nonnegative scalar.
+      The figure above shows an autonomous car moving at constant velocity $v>0$ on a straight road.  Let $x$ be the (longitudinal) position of the car along the road, $y$ its (transversal) distance from the centerline, and $\theta$ the angle between the centerline and the direction of motion.  The only control action is the steering velocity $u$.  We describe the car dynamics with the simple kinematic model \begin{align*}\dot x &= v \cos \theta, \\ \dot y &= v \sin \theta, \\ \dot \theta &= u.\end{align*}  Let $\bx = [x, y, \theta]^T$ be the state vector.  To optimize the car trajectory we consider a quadratic objective function $$J = \int_{0}^{\infty} [\bx^T(t) \bQ \bx(t)  + R u^2(t)] dt,$$ where $\bQ$ is a constant positive-semidefinite (hence symmetric) matrix and $R$ is a constant nonnegative scalar (note that $R=0$ is allowed here).
 
       <ol type="a">
 
-        <li>Suppose our only goal is to keep the distance $y$ between the car and the centerline as small as possible.  What would be your choice for $\bQ$ and $R$?  (You can assume the steering velocity $u$ to be constrained in the interval $[u_{\text{min}}, u_{\text{max}}] \ni 0$.)</li>
+        <li>Suppose our only goal is to keep the distance $y$ between the car and the centerline as small as possible, without worrying about anything else.  What would be your choice for $\bQ$ and $R$?  (You can assume the steering velocity $u$ to be constrained in the interval $[u_{\text{min}}, u_{\text{max}}]$.)</li>
 
         <li>How would the behavior of the car change if you were to multiply the weights $\bQ$ and $R$ from the previous point by two arbitrary positive coefficients, say $k_{\bQ}$ and $k_R$?</li>
 
@@ -810,13 +810,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <exercise><h1>Ill-Posed Optimal Control Problem</h1>
 
-      Consider the (unconstrained) double integrator system $\ddot q = u$.  Imagine you are asked to find the control policy $u = \pi (q, \dot q)$ that minimizes the seemingly innocuous cost function $$J = \int_{0}^{\infty} q^2(t) + (u^2(t) - 1)^2 dt.$$  Do you see any issue with this problem setup? How does the optimal control signal $u(t)$ look if, for example, the initial state is $q(0) = \dot q(0) = 0$?
+      Consider the (unconstrained) double integrator $\ddot q = u$.  Imagine you are asked to find the control policy $u = \pi (q, \dot q)$ that minimizes the seemingly innocuous cost function $$J = \int_{0}^{\infty} q^2(t) + (u^2(t) - 1)^2 dt.$$
+
+      <ol type="a">
+
+        <li>What are the configurations $q$ and the inputs $u$ for which the running cost $$\ell(q, u) = q^2 + (u^2 - 1)^2$$ is equal to zero?</li>
+
+        <li>Assume the initial state is $q(0) = \dot q(0) = 0$.  Can you describe a control signal $u(t)$ for $t \in [0, \infty)$ whose associated cost $J$ is zero? Could you implement this signal with a finite-bandwidth controller?</li>
+
+      </ol>
 
     </exercise>
 
     <exercise><h1>A Linear System with Quadratic Cost</h1>
 
-      Consider the scalar differential equation $$\dot{x} = x + u,$$ and the infinite horizon cost function $$J = \int_0^{\infty} [3x^2(t) + u^2(t)] dt.$$  As we will see in the <a href="lqr.html">chapter on linear-quadratic regulation</a>, the optimal cost-to-go for a problem of this kind assumes the form $J^* = S x^2$.  It is not hard to see that this, in turn, implies that the optimal controller has the form $u^* = - K x$.
+      Consider the scalar control differential equation $$\dot{x} = x + u,$$ and the infinite horizon cost function $$J = \int_0^{\infty} [3x^2(t) + u^2(t)] dt.$$  As we will see in the <a href="lqr.html">chapter on linear-quadratic regulation</a>, the optimal cost-to-go for a problem of this kind assumes the form $J^* = S x^2$.  It is not hard to see that this, in turn, implies that the optimal controller has the form $u^* = - K x$.
 
       <ol type="a">
 
