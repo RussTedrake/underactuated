@@ -8,7 +8,7 @@ class TestVibratingPendulum(unittest.TestCase):
         super().__init__(test_name)  # calling the super class init varies for different python versions.  This works for 2.7
         self.notebook_locals = notebook_locals
 
-    @weight(1)
+    @weight(8)
     @timeout_decorator.timeout(50.)
     def test_pendulum_controller(self):
         '''"Test pendulum controller"'''
