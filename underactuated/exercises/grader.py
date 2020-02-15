@@ -36,11 +36,8 @@ class Grader:
                 raise
 
         # Grade notebook_locals_list on test_cases_list
-        try:
-            Grader.grade_output(test_cases_list, notebook_locals_list, results_json)
-        except Exception as e:
-            Grader.global_fail_with_error_message("Error running_tests: " + notebook_ipynb + ', ' + str(e), results_json)
-            raise
+        Grader.grade_output(test_cases_list, notebook_locals_list, results_json)
+
 
     @staticmethod
     def grade_output(test_case_list, notebook_locals_list, results_json=None):
@@ -58,7 +55,7 @@ class Grader:
         if not results_json:
             results_json = 'results.json'
         with open(results_json, 'w') as fh:
-                JSONTestRunner(stream=fh).run(suite)
+            JSONTestRunner(stream=fh).run(suite)
 
 
     @staticmethod
