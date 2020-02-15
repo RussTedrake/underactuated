@@ -35,10 +35,12 @@ class Grader:
                 Grader.global_fail_with_error_message("Missing file: " + notebook_ipynb + ', ' + str(e), results_json)
                 raise
 
-
-
         # Grade notebook_locals_list on test_cases_list
-        Grader.grade_output(test_cases_list, notebook_locals_list, results_json)
+        try:
+            Grader.grade_output(test_cases_list, notebook_locals_list, results_json)
+        except Exception as e:
+            Grader.global_fail_with_error_message("Error running_tests: " + notebook_ipynb + ', ' + str(e), results_json)
+            raise
 
     @staticmethod
     def grade_output(test_case_list, notebook_locals_list, results_json=None):
@@ -55,8 +57,7 @@ class Grader:
         # run all the tests in the suite
         if not results_json:
             results_json = 'results.json'
-            display('hello')
-        with open('results.json', 'w') as fh:
+        with open(results_json, 'w') as fh:
                 JSONTestRunner(stream=fh).run(suite)
 
 
