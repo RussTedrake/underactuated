@@ -170,7 +170,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
   </section> <!-- acrobot -->
 
-  <section><h1>The Cart-Pole system</h1>
+  <section id="cart_pole"><h1>The Cart-Pole system</h1>
 
     <p> The other model system that we will investigate here is the cart-pole
     system, in which the task is to balance a simple pendulum around its
@@ -1200,6 +1200,28 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <li>Pendubot</li> <li>Inertia wheel pendulum</li> <li>Furuta pendulum
     (horizontal rotation and vertical pendulum)</li> <li>Hovercraft</li> </ul>
 
+
+  </section>
+
+  <section><h1>Exercises</h1>
+
+    <exercise><h1>Cart-Pole: Linearization and Balancing</h1>
+
+      For this exercise you will work exclusively in <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/acrobot/cartpole_lin_bal/cartpole_lin_bal.ipynb" target="_blank">this notebook</a>.  You will be asked to complete the following steps.
+
+      <ol type="a">
+
+        <li>Derive the state-space dynamics $\dot{\bx} = f(\bx, \bu)$ of <a href="#cart_pole" target="_blank">the cart-pole system</a>.</li>
+
+        <li>Linearize the dynamics from point (a) around the unstable equilibrium point.</li>
+
+        <li>Analyze the linearization error for different values of the state $\bx$ and the control $\bu$.</li>
+
+        <li>Among the states from point (c), identify which ones are stabilized to the origin by the LQR controller.</li>
+
+      </ol>
+
+    </exercise>
 
   </section>
 
