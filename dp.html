@@ -142,7 +142,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     and algorithms, the popularity of numerical optimal control has grown at an
     incredible pace over the last few years.</p>
 
-    <example><h1>The minimum time problem for the double
+    <example id="minimum_time_double_integrator"><h1>The minimum time problem for the double
     integrator</h1>
 
       <p>For more intuition, let's do an informal derivation of the solution to
@@ -847,6 +847,36 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           </ol>
 
         </li>
+
+      </ol>
+
+    </exercise>
+
+    <exercise><h1>Value Iteration for Minimum Time Problems</h1>
+
+      In this exercise we analyze the performance of the value-iteration algorithm, considering its application to the <a href="#minimum_time_double_integrator">minimum time problem for the double integrator</a>.  <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/dp/minimum_time/minimum_time.ipynb" target="_blank">In this python notebook</a>, you will find everything you need for this analysis.  Take the time to go through the notebook and understand the code in it, then answer the following questions.
+
+      <ol type="a">
+
+        <li>
+
+          At the end of the <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/dp/minimum_time/minimum_time.ipynb" target="_blank">notebook</a> section "Performance of the Value-Iteration Policy", we plot the state trajectory of the double integrator in closed loop with the value-iteration policy, as well as the resulting control signal.
+
+          <ol ol type="i">
+
+            <li>Does the state-space trajectory follow the theoretically-optimal quadratic arcs we have seen in <a href="#minimum_time_double_integrator">the example</a>?</li>
+
+            <li>Is the control policy we get from value iteration a bang-bang policy? In other words, does the control signal take values in the set $\{-1, 0, 1\}$ exclusively?</li>
+
+            <li>Explain in a couple of sentences, what is the reason for this behavior.</li>
+
+          </ol>
+
+        </li>
+
+        <li>In the "Value Iteration Algorithm" section of the <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/dp/minimum_time/minimum_time.ipynb" target="_blank">notebook</a>, increase the number of knot points on the $q$ and the $\dot q$ axes to refine the state-space mesh used in the value iteration.  Does this fix the issues you have seen in point (a)?</li>
+
+        <li>In the final section of the <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/dp/minimum_time/minimum_time.ipynb" target="_blank">notebook</a>, implement the theoretically-optimal control policy from <a href="#minimum_time_double_integrator">the example</a>, and use the plots to verify that the closed-loop system behaves as expected.</li>
 
       </ol>
 
