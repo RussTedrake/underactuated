@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+# @@GENERATED_FILE_MARKER@@
+
+set -uo pipefail
+
+if [[ -d "${BUILD_WORKSPACE_DIRECTORY:-}" ]]; then
+  @@YAPF@@ @@ARGS@@ --in-place @@RUN_SRCS@@ 2>&1
+else
+  @@YAPF@@ @@ARGS@@ --diff @@TEST_SRCS@@ 2>&1
+  readonly YAPF_RETURN_CODE=$?
+  if [[ "${YAPF_RETURN_CODE}" -eq 1 ]]; then
+    echo "--------------------------------------------------------------------------------"
+    echo "Please call"
+    echo ""
+    echo "  bazel run @@LABEL@@"
+    echo ""
+    echo "to apply the above diff."
+  fi
+  exit "${YAPF_RETURN_CODE}"
+fi

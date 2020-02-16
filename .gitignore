@@ -1,18 +1,16 @@
 *.aux
 *.log
-*.pyc
-.idea/
-build/
-.ipynb_checkpoints/
+
 venv
 solutions/
 
-cmake-build-debug/
-
 \.DS_Store
 
-\.vscode/
-
+__pycache__/
+.ipynb_checkpoints/
+/.idea/
 /.ijwb/
+/.venv/
+/.vscode/
 /bazel-*
 /user.bazelrc

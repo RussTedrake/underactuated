@@ -15,10 +15,10 @@ bzl_library(
 rt_py_test(
     name = "install_html_meta_data",
     srcs = ["install_html_meta_data.py"],
-    data = [ 
-        "//:html",
-        "header.html.in",
-        "footer.html.in"
-        ],
     args = ["--read_only"],
+    data = [
+        "footer.html.in",
+        "header.html.in",
+        "//:html",
+    ],
 )

@@ -58,6 +58,7 @@ class DoubleIntegratorVisualizer(PyPlotVisualizer):
     def draw(self, context):
         try:
             x = self.EvalVectorInput(context, 0).get_value()[0]
+            self.ax.set_title("t = {:.1f}".format(context.get_time()))
         except TypeError:
             x = context[0]
         self.brick.set_state(x)

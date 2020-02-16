@@ -298,26 +298,32 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <p> According to Newton, the dynamics of mechanical systems are second order
     ($F = ma$).  Their state is given by a vector of positions, $\bq$ (also
     known as the configuration vector), and a vector of velocities, $\dot{\bq}$,
-    and (possibly) time. The general form for a second-order controllable
+    and (possibly) time. The general form for a second-order control
     dynamical system is: $$\ddot{\bq} = {\bf f}(\bq,\dot{\bq},\bu,t),$$ where
-    $\bu$ is the control vector.  As we will see, the dynamics for many of the
-    robots that we care about turn out to be affine in commanded torque, so
-    let's consider a slightly constrained form: \begin{equation}\ddot{\bq} =
-    {\bf f}_1(\bq,\dot{\bq},t) + {\bf f}_2(\bq,\dot{\bq},t)\bu
-    \label{eq:f1_plus_f2}.\end{equation} </p>
+    $\bu$ is the control vector. </p>
 
-    <definition><h1>Fully-Actuated</h1> A control system
-    described by equation \ref{eq:f1_plus_f2} is fully-actuated in state
-    $(\bq,\dot{\bq})$ at time $t$ if it is able to command any instantaneous
-    acceleration in $\bq$: \begin{equation} \textrm{rank}\left[{\bf f}_2
-    (\bq,\dot{\bq},t)\right] = \dim\left[\bq\right].\end{equation} </definition>
+    <definition> <h1>Underactuated Control Differential Equations</h1> A
+    second-order control differential equation<sidenote>This definition can also
+    be extended to discrete-time systems and/or differential
+    inclusions.</sidenote> described by the equations \begin{equation} \ddot\bq
+    = {\bf f}(\bq, \dot\bq, \bu, t) \end{equation} is
+    <i>fully actuated</i> in state $\bx = (\bq, \dot\bq)$ and time $t$ if the
+    resulting map ${\bf f}$ is surjective: for every $\ddot\bq$ there exists a
+    $\bu$ which produces the desired response.  Otherwise it is
+    <i>underactuated</i> (in $\bx$ at time $t$).
+    </definition>
 
-    <definition><h1>Underactuated</h1> A control system
-    described by equation \ref{eq:f1_plus_f2} is underactuated in state
-    $(\bq,\dot{\bq})$ at time $t$ if it is not able to command an arbitrary
-    instantaneous acceleration in $\bq$: \begin{equation}
-    \textrm{rank}\left[{\bf f}_2(\bq,\dot{\bq},t)\right] < \dim\left[\bq\right].
-    \label{eq:underactuated_def}\end{equation} </definition>
+    <p>As we will see, the dynamics for many of the robots that we care about
+    turn out to be affine in commanded torque, so let's consider a slightly
+    constrained form: \begin{equation}\ddot{\bq} = {\bf f}_1(\bq,\dot{\bq},t) +
+    {\bf f}_2(\bq,\dot{\bq},t)\bu \label{eq:f1_plus_f2}.\end{equation}  For a
+    control dynamical system described by equation \eqref{eq:f1_plus_f2}, if we
+    have \begin{equation} \textrm{rank}\left[{\bf f}_2 (\bq,\dot{\bq},t)\right]
+    < \dim\left[\bq\right],\end{equation} then the system is underactuated.  Be
+    careful, though -- sometimes we will write equations that look like
+    \eqref{eq:f1_plus_f2} but tack on additional constraints like $|\bu|\le 1$;
+    as we will discuss below, input limits and other constraints can also make a
+    system underactuated.</p>
 
     <p>Notice that whether or not a control system is underactuated may depend
     on the state of the system or even on time, although for most systems
@@ -396,17 +402,6 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     of my center of mass (barring aerodynamic effects).  My control system is
     underactuated.</p>
 
-    <p>For completeness, let's generalize the definition of underactuation to
-    systems beyond the control-affine systems.</p>
-
-    <definition> <h1>Underactuated Control Differential Equations</h1> A
-    second-order control differential equation described by the equations
-    \begin{equation} \ddot\bq = {\bf f}(\bq, \dot\bq, t, \bu) \end{equation} is
-    <i>fully actuated</i> in state $\bx = (\bq, \dot\bq)$ and time $t$ if the
-    resulting map ${\bf f}$ is surjective: for every $\ddot\bq$ there exists a
-    $\bu$ which produces the desired response.  Otherwise it is
-    <i>underactuated</i>. </definition>
-  
     <!-- note: I've removed this nth-order version because I still strongly dislike the fact that a fully-actuated 4th order system could be written as a 2nd order underactuated system. 
 
     <definition> <h1>Underactuated Control Differential
@@ -419,10 +414,6 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     it is underactuated. </definition>
     -->  
   
-    <p>It is easy to see that equation \ref{eq:underactuated_def} is a
-    sufficient condition for underactuation.  This definition can also be
-    extended to discrete-time systems and/or differential inclusions.</p>
-
     <p>A quick note about notation.  When describing the dynamics of rigid-body
     systems in this class, I will use $\bq$ for configurations (positions),
     $\dot{\bq}$ for velocities, and use $\bx$ for the full state ($\bx =

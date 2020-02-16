@@ -1,0 +1,19 @@
+# -*- mode: python -*-
+# vi: set ft=python :
+
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
+
+rt_ipynb_test(
+    name = "autapse_and_lstm",
+    srcs = ["autapse_and_lstm.ipynb"],
+    deps = ["//underactuated"],
+)
+
+rt_ipynb_test(
+    name = "grid_world",
+    srcs = ["grid_world.ipynb"],
+    deps = ["//underactuated"],
+)

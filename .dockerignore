@@ -4,6 +4,8 @@
 .gitmodules
 .ijwb/
 .tidy.config
+.venv/
+.vscode/
 *.html
 **/__pycache__/
 **/.dockerignore

@@ -6,8 +6,6 @@
 
 load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
 
-# double_pendulum.sdf in this package is unused.
-
 # No duration arguments to keep this first textbook example simple. Just pay the
 # 10 second cost.
 rt_ipynb_test(

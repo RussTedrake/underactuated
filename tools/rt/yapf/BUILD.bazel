@@ -4,8 +4,19 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
+load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 load("@pip//:requirements.bzl", "all_requirements")
 load("@rules_python//python:defs.bzl", "py_binary")
+
+bzl_library(
+    name = "def",
+    srcs = ["def.bzl"],
+    visibility = ["//tools/rt/python:__pkg__"],
+    deps = [
+        "@bazel_skylib//lib:paths",
+        "@bazel_skylib//lib:shell",
+    ],
+)
 
 py_binary(
     name = "yapf",
@@ -16,4 +27,9 @@ py_binary(
     srcs_version = "PY3",
     visibility = ["//visibility:public"],
     deps = all_requirements,
+)
+
+exports_files(
+    ["yapf_runner.bash.in"],
+    visibility = ["//:__subpackages__"],
 )

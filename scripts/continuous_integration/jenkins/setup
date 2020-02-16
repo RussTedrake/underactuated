@@ -1,8 +1,0 @@
-#!/bin/bash
-
-# Copyright 2017 Massachusetts Institute of Technology.
-# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
-
-set -eux
-
-sudo ./scripts/continuous_integration/common/linux_ubuntu_bionic

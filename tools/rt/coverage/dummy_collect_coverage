@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+# DUMMY FILE
+
+exit 1

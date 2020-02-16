@@ -85,13 +85,27 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <jupyter>examples/double_pendulum/dynamics.ipynb</jupyter>
 
-    <p>You'll notice that we provide links to <i>both</i> Google's Colaboratory and Binder, because they both have some advantages and disadvantages.</p>
+    <p>You'll notice that we often provide links to <i>both</i> Google's Colaboratory and Binder, because they both have some advantages and disadvantages.</p>
 
-    <p><b>Google's Colaboratory</b> is a fantastic resource, with generous computational resources and a very convenient interface that allows you to save/load your work on Google Drive.  The downside of Colab is that we cannot provision the machines ahead of time.  We have a slightly ugly install script at the top of every notebook, and the first time you open each notebook it takes about two minutes to provision the machine.  At the time of this writing, it seems that the machine will stay provisioned for you <a href="https://stackoverflow.com/questions/54057011/google-colab-session-timeout">for 90 minutes if you close the browser, or 12 hours if you keep it open.</a>  Provisioning is per user and appears relatively unlimited.</p>
+    <p><b>Google's Colaboratory</b> is a fantastic resource, with generous
+    computational resources and a very convenient interface that allows you to
+    save/load your work on Google Drive.  At present, there are two major
+    downsides to Colab: <ol> <li>It does not support interactive plots
+    (specifically the <code>matplotlib notebook</code> backend).  For
+    interactive graphics, we have to <a href="https://mybinder.org/v2/gh/RobotLocomotion/drake/master?filepath=tutorials/mathematical_program.ipynb">record an animation, and convert it to an
+    html compatible format.</a> But the time/memory that these operations require often exceeds the actual simulation time and make
+    the experience significantly less interactive.</li> <li>We cannot provision
+    the machines ahead of time.  We have a slightly ugly install script at the
+    top of every notebook, and the first time you open each notebook it takes
+    about two minutes to provision the machine.  At the time of this writing, it
+    seems that the machine will stay provisioned for you <a
+    href="https://stackoverflow.com/questions/54057011/google-colab-session-timeout">for
+    90 minutes if you close the browser, or 12 hours if you keep it open.</a>
+    Provisioning is per user and appears relatively unlimited.</li></ol></p>
 
-    <p><b>Binder</b> is another great resource, which we can configure to provision directly from a Docker instance.  It appears to provision itself by project -- once one of us starts a Binder instance for an example, it should load more quickly for the rest of us.  But Binder has some potentially painful limitations -- it seems that <a href="https://mybinder.readthedocs.io/en/latest/faq.html#how-long-will-my-binder-session-last">all modifications to your notebook are lost after 10 minutes of inactivity</a>, and there is a <a href="https://mybinder.readthedocs.io/en/latest/user-guidelines.html#maximum-concurrent-users-for-a-repository">limit on the number of simultaneous users</a>.</p>
+    <p><b>Binder</b> is another great resource, which we can configure to provision directly from a Docker instance.  It appears to provision itself by project -- once one of us starts a Binder instance for an example, it should load more quickly for the rest of us.  It <i>does</i> support the <code>matplotlib notebook</code> backend, so can provide a nicer user experience.  But Binder has some potentially painful limitations -- it seems that <a href="https://mybinder.readthedocs.io/en/latest/faq.html#how-long-will-my-binder-session-last">all modifications to your notebook are lost after 10 minutes of inactivity</a>, and there is a <a href="https://mybinder.readthedocs.io/en/latest/user-guidelines.html#maximum-concurrent-users-for-a-repository">limit on the number of simultaneous users</a>.</p>
 
-    <p>As a general rule, I would currently recommend Binder for quick explorations, but strongly recommend Colab if you intend to build on any of the examples or do any of the exercises.  Please use Colab if you are taking the course and planning to submit your assignment for credit.</p>
+    <p>As a general rule, I would favor Binder for quick explorations and use it for many of the examples in the notes, but recommend Colab (or running on your own machine) if you intend to build on any of the examples or do any of the exercises.  Please use Colab if you are taking the course and planning to submit your assignment for credit.  For some examples, where I think the code runs only (or simply much better) on some platforms than others, I have removed the less appealing link(s).</p>
 
   </section>
 
