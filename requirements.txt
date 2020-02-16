@@ -54,3 +54,5 @@ webencodings==0.5.1; sys_platform == 'darwin'
 widgetsnbextension==3.5.1; sys_platform == 'darwin'
 yapf==0.29.0
 zipp==2.2.0; sys_platform == 'darwin'
+timeout-decorator==0.4.1
+gradescope-utils==0.3.1
