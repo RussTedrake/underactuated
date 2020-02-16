@@ -1,6 +1,5 @@
 import unittest
 from gradescope_utils.autograder_utils.json_test_runner import JSONTestRunner
-import dill
 import json
 from runpy import run_module
 import nbformat
@@ -13,7 +12,7 @@ class Grader:
         pass
 
     @staticmethod
-    def run_notebook(notebook_ipynb):
+    def locals_from_notebook(notebook_ipynb):
 
         banned_commands = [
             'start_recording',
@@ -40,47 +39,22 @@ class Grader:
             fh.write(source)
         
         notebook_locals =  run_module('cleaned_notebook')
-        # os.system('rm cleanded_notebook.py')
+        os.system('rm cleaned_notebook.py') 
         return notebook_locals
 
 
     @staticmethod
-    def grade_from_dills(notebook_dill_list, test_cases_list, results_json, notebook_ipynb_list):
+    def grade_from_notebooks(test_cases_list, notebook_ipynb_list, results_json):
         '''Reading notebook_locals from dills and grading on the corresponding test_cases_list. 
         Optional check for existence of student notebooks in notebook_ipynb_list.
         Result is written into results_json'''
 
-        #  # Read in all dill files into notebook_locals_list
-        # try:
-        #     notebook_locals_list = []
-        #     for notebook_dill in notebook_dill_list:
-        #         with open(notebook_dill, "rb") as dill_file:
-        #             notebook_dill_read = dill.load(dill_file)
-        #         notebook_locals_list.append(notebook_dill_read)
-        # except Exception as e:
-        #     Grader.global_fail_with_error_message("Missing file: " + notebook_dill + ', ' + str(e), results_json)
-        #     raise
-
-        # # If there are notebooks to be submitted, read in all notebook files into notebook_list
-        # if notebook_ipynb_list:
-        #     try:
-        #         notebook_list = []
-        #         for notebook_ipynb in notebook_ipynb_list:
-        #             with open(notebook_ipynb, "rb") as notebook_file:
-        #                 notebook_list.append(json.load(notebook_file))
-        #     except Exception as e:
-        #         Grader.global_fail_with_error_message("Missing file: " + notebook_ipynb + ', ' + str(e), results_json)
-        #         raise
-
-        # If there are notebooks to be submitted, read in all notebook files into notebook_list
-        # Grader.run_notebook(notebook_ipynb_list[0])
-
         try:
             notebook_locals_list = []
             for notebook_ipynb in notebook_ipynb_list:
-                notebook_locals_list.append(Grader.run_notebook(notebook_ipynb))
+                notebook_locals_list.append(Grader.locals_from_notebook(notebook_ipynb))
         except Exception as e:
-            Grader.global_fail_with_error_message("Missing file: " + notebook_ipynb + ', ' + str(e), results_json)
+            Grader.global_fail_with_error_message("Exception when running file: " + notebook_ipynb + ', ' + str(e), results_json)
             raise
 
         # Grade notebook_locals_list on test_cases_list
@@ -88,7 +62,7 @@ class Grader:
 
 
     @staticmethod
-    def grade_output(test_case_list, notebook_locals_list, results_json=None):
+    def grade_output(test_case_list, notebook_locals_list, results_json):
         '''Grading the notebook_locals with the provided test_cases'''
 
         # setup test suite for gradescope
@@ -100,8 +74,6 @@ class Grader:
                 suite.addTest(test_case(test_case_name, notebook_locals))
 
         # run all the tests in the suite
-        if not results_json:
-            results_json = 'results.json'
         with open(results_json, 'w') as fh:
             JSONTestRunner(stream=fh).run(suite)
 
