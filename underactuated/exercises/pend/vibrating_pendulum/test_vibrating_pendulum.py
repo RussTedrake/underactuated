@@ -32,3 +32,4 @@ class TestVibratingPendulum(unittest.TestCase):
             .99,
             msg='theta_dot(t=10) = {} < 0.99'.format(theta_dot[-1]),
             )
+            
