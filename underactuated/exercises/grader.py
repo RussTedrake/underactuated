@@ -6,60 +6,29 @@ import nbformat
 from nbconvert import PythonExporter
 import os
 
+
 class Grader:
 
     def __init__(self):
         pass
 
     @staticmethod
-    def locals_from_notebook(notebook_ipynb):
-
-        banned_commands = [
-            'start_recording',
-            'stop_recording',
-            'get_recording_as_animation',
-            'HTML',
-        ]
-
-        ipynb = json.load(open(notebook_ipynb))
-
-        for cell in ipynb['cells']:
-            # erase test cells to prevent recursion of tests
-            if any('## TEST ##' in line for line in cell['source']):
-                cell['source'] = []
-            # filter out all the lines with banned commands
-            if banned_commands is not None:
-                cell['source'] = [line for line in cell['source'] if not any(command in line for command in banned_commands)]
-
-        exporter = PythonExporter()
-        source, meta = exporter.from_notebook_node(
-            nbformat.reads(json.dumps(ipynb), nbformat.NO_CONVERT)
-            )
-        with open('./cleaned_notebook.py', 'w') as fh:
-            fh.write(source)
-        
-        notebook_locals =  run_module('cleaned_notebook')
-        os.system('rm cleaned_notebook.py') 
-        return notebook_locals
-
-
-    @staticmethod
     def grade_from_notebooks(test_cases_list, notebook_ipynb_list, results_json):
-        '''Reading notebook_locals from dills and grading on the corresponding test_cases_list. 
-        Optional check for existence of student notebooks in notebook_ipynb_list.
+        '''Running notebooks in notebook_ipynb_list and evaluating them on test_cases_list.
         Result is written into results_json'''
 
         try:
             notebook_locals_list = []
             for notebook_ipynb in notebook_ipynb_list:
-                notebook_locals_list.append(Grader.locals_from_notebook(notebook_ipynb))
+                notebook_locals_list.append(
+                    Grader.locals_from_notebook(notebook_ipynb))
         except Exception as e:
-            Grader.global_fail_with_error_message("Exception when running file: " + notebook_ipynb + ', ' + str(e), results_json)
+            Grader.global_fail_with_error_message(
+                "Exception when running file: " + notebook_ipynb + ', ' + str(e), results_json)
             raise
 
         # Grade notebook_locals_list on test_cases_list
         Grader.grade_output(test_cases_list, notebook_locals_list, results_json)
-
 
     @staticmethod
     def grade_output(test_case_list, notebook_locals_list, results_json):
@@ -77,19 +46,51 @@ class Grader:
         with open(results_json, 'w') as fh:
             JSONTestRunner(stream=fh).run(suite)
 
+    @staticmethod
+    def locals_from_notebook(notebook_ipynb):
+        '''Read, run, return locals of notebook'''
+
+        banned_commands = [
+            'start_recording',
+            'stop_recording',
+            'get_recording_as_animation',
+            'HTML',
+        ]
+
+        ipynb = json.load(open(notebook_ipynb))
+
+        for cell in ipynb['cells']:
+            # erase test cells, this is optional and useful for debugging to avoid recursions when developing
+            if any('## TEST ##' in line for line in cell['source']):
+                cell['source'] = []
+            # filter out all the lines with banned commands
+            if banned_commands is not None:
+                cell['source'] = [line for line in cell['source'] if not any(
+                    command in line for command in banned_commands)]
+
+        exporter = PythonExporter()
+        source, meta = exporter.from_notebook_node(
+            nbformat.reads(json.dumps(ipynb), nbformat.NO_CONVERT)
+        )
+        with open('./cleaned_notebook.py', 'w') as fh:
+            fh.write(source)
+
+        notebook_locals = run_module('cleaned_notebook')
+        os.system('rm cleaned_notebook.py')
+        return notebook_locals
 
     @staticmethod
     def global_fail_with_error_message(msg, results_json):
         '''Error message if no specific'''
         results = {"score": 0.0,
-                "output": msg}
+                   "output": msg}
 
         with open(results_json, 'w') as f:
             f.write(json.dumps(results,
-                            indent=4,
-                            sort_keys=True,
-                            separators=(',', ': '),
-                            ensure_ascii=True))
+                               indent=4,
+                               sort_keys=True,
+                               separators=(',', ': '),
+                               ensure_ascii=True))
 
     @staticmethod
     def print_test_results(results_json):
