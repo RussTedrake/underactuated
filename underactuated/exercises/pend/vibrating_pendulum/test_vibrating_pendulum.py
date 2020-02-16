@@ -5,7 +5,7 @@ from gradescope_utils.autograder_utils.decorators import weight
 class TestVibratingPendulum(unittest.TestCase):
 
     def __init__(self, test_name, notebook_locals):
-        super().__init__(test_name)  # calling the super class init varies for different python versions.  This works for 2.7
+        super().__init__(test_name)
         self.notebook_locals = notebook_locals
 
     @weight(8)
@@ -17,7 +17,7 @@ class TestVibratingPendulum(unittest.TestCase):
         # the response must be monotonically increasing
         theta_dot = self.notebook_locals['logger'].data()[-1,:]
         self.assertTrue(
-        	all(i <= j for i, j in zip(theta_dot, theta_dot[1:])),
+        	all(i <= j + 1e-4 for i, j in zip(theta_dot, theta_dot[1:])),
         	msg='theta_dot(t) is decreasing.',
         	)
 
