@@ -9,7 +9,7 @@ class TestVibratingPendulum(unittest.TestCase):
         self.notebook_locals = notebook_locals
 
     @weight(8)
-    @timeout_decorator.timeout(50.)
+    @timeout_decorator.timeout(5.)
     def test_pendulum_controller(self):
         '''"Test pendulum controller"'''
         # note: all prints here go to the output item in the json file
