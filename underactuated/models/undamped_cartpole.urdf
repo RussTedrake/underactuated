@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 
-<robot name="VibratingPendulum">
+<robot name="UndampedCartPole">
 
   <link name="base">
 
