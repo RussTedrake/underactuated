@@ -790,13 +790,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         <figcaption>Autonomous car moving at velocity $v$ on a straight road.</figcaption>
       </figure>
 
-      The figure above shows an autonomous car moving at constant velocity $v>0$ on a straight road.  Let $x$ be the (longitudinal) position of the car along the road, $y$ its (transversal) distance from the centerline, and $\theta$ the angle between the centerline and the direction of motion.  The only control action is the steering velocity $u$.  We describe the car dynamics with the simple kinematic model \begin{align*}\dot x &= v \cos \theta, \\ \dot y &= v \sin \theta, \\ \dot \theta &= u.\end{align*}  Let $\bx = [x, y, \theta]^T$ be the state vector.  To optimize the car trajectory we consider a quadratic objective function $$J = \int_{0}^{\infty} [\bx^T(t) \bQ \bx(t)  + R u^2(t)] dt,$$ where $\bQ$ is a constant positive-semidefinite (hence symmetric) matrix and $R$ is a constant nonnegative scalar (note that $R=0$ is allowed here).
+      The figure above shows an autonomous car moving at constant velocity $v>0$ on a straight road.  Let $x$ be the (longitudinal) position of the car along the road, $y$ its (transversal) distance from the centerline, and $\theta$ the angle between the centerline and the direction of motion.  The only control action is the steering velocity $u$, which is constrained in the interval $[u_{\text{min}}, u_{\text{max}}]$ (where $u_{\text{min}}<0$ and $u_{\text{max}}>0$).  We describe the car dynamics with the simple kinematic model \begin{align*}\dot x &= v \cos \theta, \\ \dot y &= v \sin \theta, \\ \dot \theta &= u.\end{align*}  Let $\bx = [x, y, \theta]^T$ be the state vector.  To optimize the car trajectory we consider a quadratic objective function $$J = \int_{0}^{\infty} [\bx^T(t) \bQ \bx(t)  + R u^2(t)] dt,$$ where $\bQ$ is a constant positive-semidefinite (hence symmetric) matrix and $R$ is a constant nonnegative scalar (note that $R=0$ is allowed here).
 
       <ol type="a">
 
-        <li>Suppose our only goal is to keep the distance $y$ between the car and the centerline as small as possible, without worrying about anything else.  What would be your choice for $\bQ$ and $R$?  (You can assume the steering velocity $u$ to be constrained in the interval $[u_{\text{min}}, u_{\text{max}}]$.)</li>
+        <li>Suppose our only goal is to keep the distance $y$ between the car and the centerline as small as possible, without worrying about anything else.  What would be your choice for $\bQ$ and $R$?</li>
 
-        <li>How would the behavior of the car change if you were to multiply the weights $\bQ$ and $R$ from the previous point by two arbitrary positive coefficients, say $k_{\bQ}$ and $k_R$?</li>
+        <li>How would the behavior of the car change if you were to multiply the weights $\bQ$ and $R$ from the previous point by an arbitrary positive coefficient $\alpha$?</li>
 
         <li>The cost function from point (a) might easily lead to excessively sharp turns.  Which entry of $\bQ$ or $R$ would you increase to mitigate this issue?</li>
 
