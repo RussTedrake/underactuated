@@ -143,7 +143,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     and algorithms, the popularity of numerical optimal control has grown at an
     incredible pace over the last few years.</p>
 
-    <example><h1>The minimum time problem for the double
+    <example id="minimum_time_double_integrator"><h1>The minimum time problem for the double
     integrator</h1>
 
       <p>For more intuition, let's do an informal derivation of the solution to
@@ -444,7 +444,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}=f(\bx,\bu)$ and
         an infinite-horizon additive cost $\int_0^\infty \ell(\bx,\bu)dt$.  Suppose
         $J(\bx)$ is a solution to the HJB equation; that is $J$ is continuously
-        differentiable in $\bx$ and is such that \[ 0 = \min_{u\in U} \left[
+        differentiable in $\bx$ and is such that \[ 0 = \min_{\bu \in U} \left[
         \ell(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx. \]
         Suppose also that $\pi^*(\bx)$ attains the minimum in the equation for
         all $\bx$.  Further assume that the differential equation described by
@@ -788,6 +788,111 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     </subsection>
 
   </section> <!-- end of extensions -->
+
+  <section><h1>Exercises</h1>
+
+    <exercise><h1>Choosing a Cost Function</h1>
+
+      <figure>
+        <img width="50%" src="figures/exercises/choosing_cost.svg"/>
+        <figcaption>Autonomous car moving at velocity $v$ on a straight road.</figcaption>
+      </figure>
+
+      <p>The figure above shows an autonomous car moving at constant velocity $v>0$ on a straight road.  Let $x$ be the (longitudinal) position of the car along the road, $y$ its (transversal) distance from the centerline, and $\theta$ the angle between the centerline and the direction of motion.  The only control action is the steering velocity $u$, which is constrained in the interval $[u_{\text{min}}, u_{\text{max}}]$ (where $u_{\text{min}}<0$ and $u_{\text{max}}>0$).  We describe the car dynamics with the simple kinematic model \begin{align*}\dot x &= v \cos \theta, \\ \dot y &= v \sin \theta, \\ \dot \theta &= u.\end{align*}  Let $\bx = [x, y, \theta]^T$ be the state vector.  To optimize the car trajectory we consider a quadratic objective function $$J = \int_{0}^{\infty} [\bx^T(t) \bQ \bx(t)  + R u^2(t)] dt,$$ where $\bQ$ is a constant positive-semidefinite (hence symmetric) matrix and $R$ is a constant nonnegative scalar (note that $R=0$ is allowed here).</p>
+
+      <ol type="a">
+
+        <li>Suppose our only goal is to keep the distance $y$ between the car and the centerline as small as possible, without worrying about anything else.  What would be your choice for $\bQ$ and $R$?</li>
+
+        <li>How would the behavior of the car change if you were to multiply the weights $\bQ$ and $R$ from the previous point by an arbitrary positive coefficient $\alpha$?</li>
+
+        <li>The cost function from point (a) might easily lead to excessively sharp turns.  Which entry of $\bQ$ or $R$ would you increase to mitigate this issue?</li>
+
+        <li>Country roads are more slippery on the sides than in the center.  Is this class of objective functions rich enough to include a penalty on sharp turns that increases with the distance of the car from the centerline?</li>
+
+        <li>Imagine somebody suggests you to choose a strictly positive-definite $\bQ$.  Would you follow his/her advice?  Why?</li>
+
+      </ol>
+
+    </exercise>
+
+    <exercise><h1>Ill-Posed Optimal Control Problem</h1>
+
+      <p>In this exercise we will see how seemingly simple cost functions can give surprising results.  Consider the single-integrator system $\dot x = u$ with initial state $x(0)=0$.  We would like to find the control signal $u(t)$ that minimizes the seemingly innocuous cost function $$J = \int_0^T x^2(t) + (u^2(t) - 1)^2 dt,$$ with $T$ finite.  To this end, we consider a <a href="https://en.wikipedia.org/wiki/Square_wave">square-wave</a> control parameterized by $\tau>0$: $$u_\tau(t) = \begin{cases} 1 &\text{if} & t \in [0, \tau) \cup [3 \tau, 5 \tau) \cup [7 \tau, 9 \tau) \cup \cdots \\ -1 &\text{if} & t \in [\tau, 3 \tau) \cup [5 \tau, 7 \tau) \cup [9 \tau, 11 \tau) \cup \cdots \end{cases}.$$</p>
+
+      <ol type="a">
+
+        <li>What are the states $x$ and the inputs $u$ for which the running cost $$\ell(x, u) = x^2 + (u^2 - 1)^2$$ is equal to zero?</li>
+
+        <li>Consider now two control signals $u_{\tau_1}(t)$ and $u_{\tau_2}(t)$, with $\tau_1 = \tau_2 / 2$.  Which one of the two incurs the lower cost $J$? (Hint: start by sketching how the system state $x(t)$ evolves under these two control signals.)</li>
+
+        <li>What happens to the cost $J$ when $\tau$ gets smaller and smaller?  What does the optimal control signal look like?  Could you implement it with a finite-bandwidth controller?</li>
+
+      </ol>
+
+    </exercise>
+
+    <exercise><h1>A Linear System with Quadratic Cost</h1>
+
+      <p>Consider the scalar control differential equation $$\dot{x} = x + u,$$ and the infinite horizon cost function $$J = \int_0^{\infty} [3x^2(t) + u^2(t)] dt.$$  As we will see in the <a href="lqr.html">chapter on linear-quadratic regulation</a>, the optimal cost-to-go for a problem of this kind assumes the form $J^* = S x^2$.  It is not hard to see that this, in turn, implies that the optimal controller has the form $u^* = - K x$.</p>
+
+      <ol type="a">
+
+        <li>Imagine that you plugged the expression $J^* = S x^2$ in the HJB equations for this problem, you solved them for $S$, and you got $S \leq 0$.  Would this result ring any alarm bells?  Explain your answer.</li>
+
+        <li>Use the HJB sufficiency theorem to derive the optimal values of $S$ and $K$.</li>
+
+        <li>
+
+          Working with digital controllers, we typically have to sample the dynamics of our systems, and approximate them with discrete-time models.  Let us introduce a time step $h > 0$ and discretize the dynamics as $$\frac{x[n+1] - x[n]}{h} = x[n] + u[n],$$ and the objective as $$h \sum_{n=0}^{\infty} (3 x^2[n] + u^2[n]).$$  One of the following expressions is the correct cost-to-go $J_h^*(x)$ for this discretized problem.  Can you identify it without solving the discrete-time HJB equation? Explain your answer.
+
+          <ol ol type="i">
+
+            <li>$J_h^* (x)= S_h x^4$ with $S_h = 3 + h + \sqrt{6}h^2$.</li>
+
+            <li>$J_h^* (x)= S_h x^2$ with $S_h = 1 + 2h + 2 \sqrt{h^2 + h +1}$.</li>
+
+            <li>$J_h^* (x)= S_h x^2$ with $S_h = 3 + 2h^2 + \sqrt{h^2 + h + 2}$.</li>
+
+          </ol>
+
+        </li>
+
+      </ol>
+
+    </exercise>
+
+    <exercise><h1>Value Iteration for Minimum-Time Problems</h1>
+
+      <p>In this exercise we analyze the performance of the value-iteration algorithm, considering its application to the <a href="#minimum_time_double_integrator">minimum time problem for the double integrator</a>.  <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/dp/minimum_time/minimum_time.ipynb" target="_blank">In this python notebook</a>, you will find everything you need for this analysis.  Take the time to go through the notebook and understand the code in it, then answer the following questions.</p>
+
+      <ol type="a">
+
+        <li>
+
+          At the end of the <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/dp/minimum_time/minimum_time.ipynb" target="_blank">notebook</a> section "Performance of the Value-Iteration Policy", we plot the state trajectory of the double integrator in closed loop with the value-iteration policy, as well as the resulting control signal.
+
+          <ol ol type="i">
+
+            <li>Does the state-space trajectory follow the theoretically-optimal quadratic arcs we have seen in <a href="#minimum_time_double_integrator">the example</a>?</li>
+
+            <li>Is the control policy we get from value iteration a bang-bang policy? In other words, does the control signal take values in the set $\{-1, 0, 1\}$ exclusively?</li>
+
+            <li>Explain in a couple of sentences, what is the reason for this behavior.</li>
+
+          </ol>
+
+        </li>
+
+        <li>In the "Value Iteration Algorithm" section of the <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/dp/minimum_time/minimum_time.ipynb" target="_blank">notebook</a>, increase the number of knot points on the $q$ and the $\dot q$ axes to refine the state-space mesh used in the value iteration.  Does this fix the issues you have seen in point (a)?</li>
+
+        <li>In the final section of the <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/dp/minimum_time/minimum_time.ipynb" target="_blank">notebook</a>, implement the theoretically-optimal control policy from <a href="#minimum_time_double_integrator">the example</a>, and use the plots to verify that the closed-loop system behaves as expected.</li>
+
+      </ol>
+
+    </exercise>
+
+  </section>
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
