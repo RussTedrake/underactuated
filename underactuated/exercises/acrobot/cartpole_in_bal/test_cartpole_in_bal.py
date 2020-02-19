@@ -10,7 +10,7 @@ class TestCartPoleInBal(unittest.TestCase):
         super().__init__(test_name)
         self.notebook_locals = notebook_locals
 
-    @weight(8)
+    @weight(2)
     @timeout_decorator.timeout(1.)
     def test_system_recovers_from_states(self):
         '''"Test for which the system is able to recover"'''
@@ -21,7 +21,7 @@ class TestCartPoleInBal(unittest.TestCase):
         self.assertEqual(a, 6260030330839110161,
                          "Incorrect states from which the system is able to recover.")
 
-    @weight(4)
+    @weight(2)
     @timeout_decorator.timeout(1.)
     def test_get_A_lin(self):
         '''"Test linearization matrix A"'''
@@ -32,7 +32,7 @@ class TestCartPoleInBal(unittest.TestCase):
         self.assertEqual(a, -4269322539335713771,
                          "Incorrect linearization matrix A.")
 
-    @weight(4)
+    @weight(2)
     @timeout_decorator.timeout(1.)
     def test_get_B_lin(self):
         '''"Test linearization matrix B"'''
@@ -43,7 +43,7 @@ class TestCartPoleInBal(unittest.TestCase):
         self.assertEqual(a, 4686582722430018711,
                          "Incorrect linearization matrix B.")
 
-    @weight(4)
+    @weight(2)
     @timeout_decorator.timeout(1.)
     def test_linearization_errors(self):
         '''"Test linearization errors"'''
@@ -66,7 +66,7 @@ class TestCartPoleInBal(unittest.TestCase):
             self.assertLessEqual(
                 lb[i], errors[i], 'Some linearization errors are too low')
 
-    @weight(8)
+    @weight(4)
     @timeout_decorator.timeout(1.)
     def test_f(self):
         '''"Test state space dynamics"'''
@@ -186,7 +186,7 @@ class TestCartPoleInBal(unittest.TestCase):
         self.assertLessEqual(np.linalg.norm(f_target - np.stack(f_eval)), 1e-5,
                              'The state space dynamics f(x,u) are not correct.')
 
-    @weight(2)
+    @weight(1)
     @timeout_decorator.timeout(1.)
     def test_x_list(self):
         '''"Test x_list content"'''
@@ -204,11 +204,6 @@ class TestCartPoleInBal(unittest.TestCase):
         self.assertLessEqual(diff, 1e-7,
                          "Incorrect x_list.")
 
-    @weight(2)
-    @timeout_decorator.timeout(1.)
-    def test_u_list(self):
-        '''"Test u_list content"'''
-        # note: all prints here go to the output item in the json file
         u_list = self.notebook_locals['u_list']
         u_list_target = [
             np.array([0]),
