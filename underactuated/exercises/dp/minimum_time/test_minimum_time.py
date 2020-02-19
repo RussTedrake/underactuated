@@ -10,7 +10,7 @@ class TestMinimumTime(unittest.TestCase):
 
     @weight(8)
     @timeout_decorator.timeout(1.)
-    def test_policy_closed_form(self):
+    def test_q1_policy_closed_form(self):
         '''"Test closed form policy"'''
         # note: all prints here go to the output item in the json file
         policy_closed_form = self.notebook_locals['policy_closed_form']

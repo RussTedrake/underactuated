@@ -4,71 +4,15 @@ from gradescope_utils.autograder_utils.decorators import weight
 import numpy as np
 
 
-class TestCartPoleInBal(unittest.TestCase):
+class TestCartPoleBalancing(unittest.TestCase):
 
     def __init__(self, test_name, notebook_locals):
         super().__init__(test_name)
         self.notebook_locals = notebook_locals
 
-    @weight(2)
-    @timeout_decorator.timeout(1.)
-    def test_system_recovers_from_states(self):
-        '''"Test for which the system is able to recover"'''
-        # note: all prints here go to the output item in the json file
-        system_recovers_from_states = self.notebook_locals['system_recovers_from_states']
-        arr = np.sort(np.asarray(system_recovers_from_states))
-        a = hash(tuple(arr))
-        self.assertEqual(a, 6260030330839110161,
-                         "Incorrect states from which the system is able to recover.")
-
-    @weight(2)
-    @timeout_decorator.timeout(1.)
-    def test_get_A_lin(self):
-        '''"Test linearization matrix A"'''
-        # note: all prints here go to the output item in the json file
-        get_A_lin = self.notebook_locals['get_A_lin']
-        A_lin = get_A_lin()
-        a = hash(tuple(np.ndarray.flatten(A_lin)))
-        self.assertEqual(a, -4269322539335713771,
-                         "Incorrect linearization matrix A.")
-
-    @weight(2)
-    @timeout_decorator.timeout(1.)
-    def test_get_B_lin(self):
-        '''"Test linearization matrix B"'''
-        # note: all prints here go to the output item in the json file
-        get_B_lin = self.notebook_locals['get_B_lin']
-        B_lin = get_B_lin()
-        a = hash(tuple(np.ndarray.flatten(B_lin)))
-        self.assertEqual(a, 4686582722430018711,
-                         "Incorrect linearization matrix B.")
-
-    @weight(2)
-    @timeout_decorator.timeout(1.)
-    def test_linearization_errors(self):
-        '''"Test linearization errors"'''
-        # note: all prints here go to the output item in the json file
-        errors = self.notebook_locals['errors']
-        linearization_error = self.notebook_locals['linearization_error']
-        x_list = self.notebook_locals['x_list']
-        u_list = self.notebook_locals['u_list']
-        for i in range(len(u_list)):
-            self.assertLess(np.linalg.norm(errors[i] - [linearization_error(x_list[i], u_list[i])]), 0.00001,
-                            'Unable to reproduce errors')
-
-        ub = [0.002, 2.4, 2.3, 26.1, 70, 0.001]
-        for i in range(len(u_list)):
-            self.assertLess(errors[i], ub[i],
-                            'Some linearization errors are too high')
-
-        lb = [0.00001, 1.0, 1.0, 23, 60, 0.00]
-        for i in range(len(u_list)):
-            self.assertLessEqual(
-                lb[i], errors[i], 'Some linearization errors are too low')
-
     @weight(4)
     @timeout_decorator.timeout(1.)
-    def test_f(self):
+    def test_q1_f(self):
         '''"Test state space dynamics"'''
         # note: all prints here go to the output item in the json file
         f = self.notebook_locals['f']
@@ -186,10 +130,31 @@ class TestCartPoleInBal(unittest.TestCase):
         self.assertLessEqual(np.linalg.norm(f_target - np.stack(f_eval)), 1e-5,
                              'The state space dynamics f(x,u) are not correct.')
 
+    @weight(2)
+    @timeout_decorator.timeout(1.)
+    def test_q2_get_A_lin(self):
+        '''"Test linearization matrix A"'''
+        # note: all prints here go to the output item in the json file
+        get_A_lin = self.notebook_locals['get_A_lin']
+        A_lin = get_A_lin()
+        a = hash(tuple(np.ndarray.flatten(A_lin)))
+        self.assertEqual(a, -4269322539335713771,
+                         "Incorrect linearization matrix A.")
+
+    @weight(2)
+    @timeout_decorator.timeout(1.)
+    def test_q3_get_B_lin(self):
+        '''"Test linearization matrix B"'''
+        # note: all prints here go to the output item in the json file
+        get_B_lin = self.notebook_locals['get_B_lin']
+        B_lin = get_B_lin()
+        a = hash(tuple(np.ndarray.flatten(B_lin)))
+        self.assertEqual(a, 4686582722430018711,
+                         "Incorrect linearization matrix B.")
     @weight(1)
     @timeout_decorator.timeout(1.)
-    def test_x_list(self):
-        '''"Test x_list content"'''
+    def test_q4_x_and_u_list(self):
+        '''"Test x_list and u_list content"'''
         # note: all prints here go to the output item in the json file
         x_list = self.notebook_locals['x_list']
         x_list_target = [
@@ -216,3 +181,40 @@ class TestCartPoleInBal(unittest.TestCase):
         diff = np.linalg.norm(np.stack(u_list) - np.stack(u_list_target))
         self.assertLessEqual(diff, 1e-7,
                          "Incorrect u_list.")
+                         
+    @weight(2)
+    @timeout_decorator.timeout(1.)
+    def test_q5_linearization_errors(self):
+        '''"Test linearization errors"'''
+        # note: all prints here go to the output item in the json file
+        errors = self.notebook_locals['errors']
+        linearization_error = self.notebook_locals['linearization_error']
+        x_list = self.notebook_locals['x_list']
+        u_list = self.notebook_locals['u_list']
+        for i in range(len(u_list)):
+            self.assertLess(np.linalg.norm(errors[i] - [linearization_error(x_list[i], u_list[i])]), 0.00001,
+                            'Unable to reproduce errors')
+
+        ub = [0.002, 2.4, 2.3, 26.1, 70, 0.001]
+        for i in range(len(u_list)):
+            self.assertLess(errors[i], ub[i],
+                            'Some linearization errors are too high')
+
+        lb = [0.00001, 1.0, 1.0, 23, 60, 0.00]
+        for i in range(len(u_list)):
+            self.assertLessEqual(
+                lb[i], errors[i], 'Some linearization errors are too low')
+
+    @weight(2)
+    @timeout_decorator.timeout(1.)
+    def test_q6_system_recovers_from_states(self):
+        '''"Test for which the system is able to recover"'''
+        # note: all prints here go to the output item in the json file
+        system_recovers_from_states = self.notebook_locals['system_recovers_from_states']
+        arr = np.sort(np.asarray(system_recovers_from_states))
+        a = hash(tuple(arr))
+        self.assertEqual(a, 6260030330839110161,
+                         "Incorrect states from which the system is able to recover.")
+
+
+
