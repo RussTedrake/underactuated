@@ -790,7 +790,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         <figcaption>Autonomous car moving at velocity $v$ on a straight road.</figcaption>
       </figure>
 
-      The figure above shows an autonomous car moving at constant velocity $v>0$ on a straight road.  Let $x$ be the (longitudinal) position of the car along the road, $y$ its (transversal) distance from the centerline, and $\theta$ the angle between the centerline and the direction of motion.  The only control action is the steering velocity $u$, which is constrained in the interval $[u_{\text{min}}, u_{\text{max}}]$ (where $u_{\text{min}}<0$ and $u_{\text{max}}>0$).  We describe the car dynamics with the simple kinematic model \begin{align*}\dot x &= v \cos \theta, \\ \dot y &= v \sin \theta, \\ \dot \theta &= u.\end{align*}  Let $\bx = [x, y, \theta]^T$ be the state vector.  To optimize the car trajectory we consider a quadratic objective function $$J = \int_{0}^{\infty} [\bx^T(t) \bQ \bx(t)  + R u^2(t)] dt,$$ where $\bQ$ is a constant positive-semidefinite (hence symmetric) matrix and $R$ is a constant nonnegative scalar (note that $R=0$ is allowed here).
+      <p>The figure above shows an autonomous car moving at constant velocity $v>0$ on a straight road.  Let $x$ be the (longitudinal) position of the car along the road, $y$ its (transversal) distance from the centerline, and $\theta$ the angle between the centerline and the direction of motion.  The only control action is the steering velocity $u$, which is constrained in the interval $[u_{\text{min}}, u_{\text{max}}]$ (where $u_{\text{min}}<0$ and $u_{\text{max}}>0$).  We describe the car dynamics with the simple kinematic model \begin{align*}\dot x &= v \cos \theta, \\ \dot y &= v \sin \theta, \\ \dot \theta &= u.\end{align*}  Let $\bx = [x, y, \theta]^T$ be the state vector.  To optimize the car trajectory we consider a quadratic objective function $$J = \int_{0}^{\infty} [\bx^T(t) \bQ \bx(t)  + R u^2(t)] dt,$$ where $\bQ$ is a constant positive-semidefinite (hence symmetric) matrix and $R$ is a constant nonnegative scalar (note that $R=0$ is allowed here).</p>
 
       <ol type="a">
 
@@ -810,7 +810,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <exercise><h1>Ill-Posed Optimal Control Problem</h1>
 
-      Consider the single-integrator system $\dot x = u$ with initial state $x(0)=0$.  We would like to find the control signal $u(t)$ that minimizes the seemingly innocuous cost function $$J = \int_0^T x^2(t) + (u^2(t) - 1)^2 dt,$$ with $T$ finite.  To this end, we consider a <a href="https://en.wikipedia.org/wiki/Square_wave">square-wave</a> control parameterized by $\tau>0$: $$u_\tau(t) = \begin{cases} 1 &\text{if} & t \in [0, \tau) \cup [3 \tau, 5 \tau) \cup [7 \tau, 9 \tau) \cup \cdots \\ -1 &\text{if} & t \in [\tau, 3 \tau) \cup [5 \tau, 7 \tau) \cup [9 \tau, 11 \tau) \cup \cdots \end{cases}.$$
+      <p>In this exercise we will see how seemingly simple cost functions can give surprising results.  Consider the single-integrator system $\dot x = u$ with initial state $x(0)=0$.  We would like to find the control signal $u(t)$ that minimizes the seemingly innocuous cost function $$J = \int_0^T x^2(t) + (u^2(t) - 1)^2 dt,$$ with $T$ finite.  To this end, we consider a <a href="https://en.wikipedia.org/wiki/Square_wave">square-wave</a> control parameterized by $\tau>0$: $$u_\tau(t) = \begin{cases} 1 &\text{if} & t \in [0, \tau) \cup [3 \tau, 5 \tau) \cup [7 \tau, 9 \tau) \cup \cdots \\ -1 &\text{if} & t \in [\tau, 3 \tau) \cup [5 \tau, 7 \tau) \cup [9 \tau, 11 \tau) \cup \cdots \end{cases}.$$</p>
 
       <ol type="a">
 
@@ -826,7 +826,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <exercise><h1>A Linear System with Quadratic Cost</h1>
 
-      Consider the scalar control differential equation $$\dot{x} = x + u,$$ and the infinite horizon cost function $$J = \int_0^{\infty} [3x^2(t) + u^2(t)] dt.$$  As we will see in the <a href="lqr.html">chapter on linear-quadratic regulation</a>, the optimal cost-to-go for a problem of this kind assumes the form $J^* = S x^2$.  It is not hard to see that this, in turn, implies that the optimal controller has the form $u^* = - K x$.
+      <p>Consider the scalar control differential equation $$\dot{x} = x + u,$$ and the infinite horizon cost function $$J = \int_0^{\infty} [3x^2(t) + u^2(t)] dt.$$  As we will see in the <a href="lqr.html">chapter on linear-quadratic regulation</a>, the optimal cost-to-go for a problem of this kind assumes the form $J^* = S x^2$.  It is not hard to see that this, in turn, implies that the optimal controller has the form $u^* = - K x$.</p>
 
       <ol type="a">
 
@@ -854,9 +854,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </exercise>
 
-    <exercise><h1>Value Iteration for Minimum Time Problems</h1>
+    <exercise><h1>Value Iteration for Minimum-Time Problems</h1>
 
-      In this exercise we analyze the performance of the value-iteration algorithm, considering its application to the <a href="#minimum_time_double_integrator">minimum time problem for the double integrator</a>.  <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/dp/minimum_time/minimum_time.ipynb" target="_blank">In this python notebook</a>, you will find everything you need for this analysis.  Take the time to go through the notebook and understand the code in it, then answer the following questions.
+      <p>In this exercise we analyze the performance of the value-iteration algorithm, considering its application to the <a href="#minimum_time_double_integrator">minimum time problem for the double integrator</a>.  <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/dp/minimum_time/minimum_time.ipynb" target="_blank">In this python notebook</a>, you will find everything you need for this analysis.  Take the time to go through the notebook and understand the code in it, then answer the following questions.</p>
 
       <ol type="a">
 
