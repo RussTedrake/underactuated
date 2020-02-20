@@ -122,4 +122,4 @@ class Quadrotor2DVisualizer(PyPlotVisualizer):
         self.right_prop_fill[0].get_path().vertices[:, 0] = x[0] + p[0, :]
         self.right_prop_fill[0].get_path().vertices[:, 1] = x[1] + p[1, :]
 
-        self.ax.set_title("t = " + str(context.get_time()))
+        self.ax.set_title("t = {:.1f}".format(context.get_time()))
