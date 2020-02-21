@@ -14,3 +14,11 @@ rt_ipynb_test(
         "//underactuated/double_integrator",
     ],
 )
+
+rt_ipynb_test(
+    name = "neural_value_iteration",
+    srcs = ["neural_value_iteration.ipynb"],
+    deps = [
+        "//underactuated",
+    ],
+)

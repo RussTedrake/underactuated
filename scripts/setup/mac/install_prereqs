@@ -24,9 +24,10 @@ brew update
 brew bundle --file="$(dirname ${(%):-%x})/Brewfile" --no-lock
 
 pip3 install --upgrade $(tr '\n' ' ' <<EOF
+ipywidgets
 pycodestyle
 pydocstyle
-ipywidgets
+torch
 EOF
 )
 
