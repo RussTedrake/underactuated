@@ -13,13 +13,17 @@ def setup_matplotlib_backend():
         1) nominal -- running locally w/ jupyter notebook
         2) unit tests (no ipython, backend is template)
         3) binder -- does have notebook backend
-        4) colab -- does NOT have notebook backend
+        4) colab -- claims to have notebook, but it doesn't work
     Puts the matplotlib backend into notebook mode, if possible,
     otherwise falls back to inline mode.
     Returns True iff the final backend is interactive.
     """
     ipython = get_ipython()
     if ipython is not None:
+        # Short-circuit for google colab.
+        if 'google.colab' in sys.modules:
+            ipython.run_line_magic("matplotlib", "inline")
+            return False
         try:
             ipython.run_line_magic("matplotlib", "notebook")
         except KeyError:
