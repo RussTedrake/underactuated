@@ -24,3 +24,9 @@ py_binary(
     visibility = ["//visibility:public"],
     deps = all_requirements,
 )
+
+py_binary(
+    name = "ipynb_output",
+    srcs = ["ipynb_output.py"],
+    visibility = ["//visibility:public"],
+)
