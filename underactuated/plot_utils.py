@@ -10,14 +10,14 @@ def plot_2d_phase_portrait(
 ):
 
     # grid state space, careful here x2 before x1
-    X2, X1 = np.mgrid[x1lim[0]:x1lim[1]:n, x2lim[0]:x2lim[1]:n]
+    X1, X2 = np.mgrid[x1lim[0]:x1lim[1]:n, x2lim[0]:x2lim[1]:n]
     X1d, X2d = f([X1, X2])
 
     # color the streamlines according to the magnitude of xdot
     color = np.sqrt(X1d**2 + X2d**2)
-    
-    # phase portrait
-    strm = plt.streamplot(X1, X2, X1d, X2d, color=color, **kwargs)
+
+    # phase portrait (annoing input format of streamplot)
+    strm = plt.streamplot(X1.T[0], X2[0], X1d.T, X2d.T, color=color.T, **kwargs)
     
     # colorbar on the right that measures the magnitude of xdot
     plt.gcf().colorbar(strm.lines, label=r'$|\dot\mathbf{x}|$')
