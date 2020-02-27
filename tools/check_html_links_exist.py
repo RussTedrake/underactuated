@@ -17,7 +17,6 @@ def get_file_as_string(filename):
 
 # Check that all links to code files exist.
 for filename in glob.glob("*.html"):
-    print(filename)
     s = get_file_as_string(filename)
 
     for tag in ['jupyter', 'pysrcinclude', 'pysrc']:
@@ -32,7 +31,6 @@ for filename in glob.glob("*.html"):
             if args.workspace:
                 file = os.path.join(args.workspace, file)
             if not os.path.exists(file):
-                print(os.environ)
                 print(filename + " tries to link to the source file " + file +
                       " which doesn't exist")
                 exit(-2)

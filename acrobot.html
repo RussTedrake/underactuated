@@ -76,7 +76,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <figure>
     <img width="40%" src="figures/acrobot.svg"/>
-    <figcaption>The Acrobot.  <a href="http://groups.csail.mit.edu/locomotion/drake/movies/acrobot_swingup.swf">Click here for an animation of the swing-up task</a> or <a href="http://youtu.be/FeCwtvrD76I">here to see a real robot</a>.</figcaption>
+    <figcaption>The Acrobot.  <a href="http://youtu.be/FeCwtvrD76I" target="_blank">Click here to see a physical Acrobot swing up and balance</a>.</figcaption>
     </figure>
 
     <p> The Acrobot is representative of the primary challenge in underactuated
@@ -157,12 +157,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         \right]
       \end{gather} -->
 
-      <example class="drake"><h1>The Acrobot in Python</h1>
+      <example><h1>The Acrobot in Python</h1>
 
-      <p>You can experiment with the Acrobot dynamics in <drake></drake> using,
-        e.g.</p>
+        <p>You can experiment with the Acrobot dynamics in <drake></drake>
+        using, e.g.</p>
 
-      <pysrc>acrobot/torque_slider_demo.py</pysrc>
+        <jupyter>examples/acrobot/constant_torque.ipynb</jupyter>
 
       </example>
 
@@ -174,12 +174,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <p> The other model system that we will investigate here is the cart-pole
     system, in which the task is to balance a simple pendulum around its
-    unstable equilibrium, using only horizontal forces on the   cart.  Balancing
-    the cart-pole system is used in many introductory   courses in control,
-    including 6.003 at MIT, because it can be   accomplished with simple linear
-    control (e.g. pole placement)   techniques.  In this chapter we will
-    consider the full swing-up and   balance control problem, which requires a
-    full nonlinear control treatment.</p>
+    unstable equilibrium, using only horizontal forces on the cart.  Balancing
+    the cart-pole system is used in many introductory courses in control,
+    including 6.003 at MIT, because it can be accomplished with simple linear
+    control (e.g. pole placement) techniques.  In this chapter we will consider
+    the full swing-up and balance control problem, which requires a full
+    nonlinear control treatment.</p>
 
     <figure>
       <img width="50%" src="figures/cartpole.svg"/>
@@ -235,13 +235,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \end{gather}
       </p>
 
-      <example class="drake"><h1>The Cart-Pole System in
+      <example><h1>The Cart-Pole System in
       Python</h1>
 
-      <p>You can experiment with the Cart-Pole dynamics in <drake></drake> using,
-        e.g.</p>
+        <p>You can experiment with the Cart-Pole dynamics in <drake></drake>
+        using, e.g.</p>
 
-      <pysrc>cartpole/force_slider_demo.py</pysrc>
+        <jupyter>examples/cartpole/constant_force.ipynb</jupyter>
 
       </example>
 
@@ -576,19 +576,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       the relative errors in state variable $x_i$ compared to the other state
       variables, and the entries $R_{ii}$ penalize actions in $u_i$.</p>
 
-      <example class="drake"><h1>LQR for the Acrobot and Cart-Pole</h1>
+      <example><h1>LQR for the Acrobot and Cart-Pole</h1>
 
-      <p>Take a minute to play around with the LQR controller for the Acrobot</p>
+        <p>Take a minute to play around with the LQR controller for the
+        Acrobot</p>
 
-      <pysrc>acrobot/balancing_lqr.py</pysrc>
+        <jupyter>examples/acrobot/lqr.ipynb</jupyter>
 
-      <p>and Cart-Pole</p>
+        <p>and Cart-Pole</p>
 
-      <pysrc>cartpole/balancing_lqr.py</pysrc>
+        <jupyter>examples/cartpole/lqr.ipynb</jupyter>
 
-      <p>Make sure that you take a minute to look at the code which runs during
-      these examples.  Can you set the ${\bf Q}$ and ${\bf R}$ matrices
-      differently, to improve the performance?</p>
+        <p>Make sure that you take a minute to look at the code which runs
+        during these examples.  Can you set the ${\bf Q}$ and ${\bf R}$ matrices
+        differently, to improve the performance?</p>
 
       </example>
 
@@ -600,18 +601,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       has 3 right-half zeros, cart-pole has 1).</p>
 
 
-      <example class="drake"><h1>LQR for a Quadrotors</h1>
+      <example><h1>LQR for a Quadrotors</h1>
 
         <p>LQR works essentially out of the box for Quadrotors, if linearized
         around a nominal fixed point (where the non-zero thrust from the
         propellers is balancing gravity).</p>
 
         <p>For the planar quadrotor, try:</p>
-        <pysrc>quadrotor2d/lqr.py</pysrc>
+        <jupyter>examples/quadrotor2d/lqr.ipynb</jupyter>
 
         <p>For the 3D quadrotor, try:</p> <pysrc>quadrotor/lqr.py</pysrc>
-        <p>Note: you'll need to open a web-browser to see the 3D visualization;
-        the instructions are printed to the console output </p>
+        <p>Note: I'm still working on porting this one to jupyter.  For now it
+        works if you have installed everything locally.  You'll need to open a
+        web-browser to see the 3D visualization; the instructions are printed to
+        the console output.</p>
 
       </example>
 
@@ -935,7 +938,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       our swing-up controller, we prefer to switch to our LQR balancing
       controller to performance to complete the task.</p>
 
-      <example class="drake"><h1>Energy Shaping for the
+      <example><h1>Energy Shaping for the
       Pendulum</h1>
 
       <p>Take a minute to play around with the energy shaping + LQR controller
@@ -1087,7 +1090,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <p>Let's start with an example...</p>
 
-    <example class="drake"><h1>Differential flatness for
+    <example><h1>Differential flatness for
       the Planar Quadrotor</h1>
 
       <p>The planar quadrotor model described above has 3 degrees of freedom
