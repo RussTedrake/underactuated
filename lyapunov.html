@@ -393,7 +393,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       formulate the search for a <i>"common Lyapunov function"</i> for uncertain
       linear systems.</p>
 
-      <example class="drake"><h1>Common Lyapunov analysis for
+      <example><h1>Common Lyapunov analysis for
       linear systems</h1>
 
         <p>Suppose you have a system governed by the equations $\dot\bx = {\bf
@@ -496,7 +496,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       optimization to solve what appear to be very non-convex optimization
       problems.</p>
 
-      <example class="drake"><h1>Global minimization via
+      <example><h1>Global minimization via
         SOS</h1>
 
         <p>Consider the following famous non-linear function of two variables
@@ -541,7 +541,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \sos. \end{align*}  Because this is a convex optimization, the solver will
       return a solution if one exists.</p>
 
-      <example class="drake"><h1>Verifying a Lyapunov candidate
+      <example><h1>Verifying a Lyapunov candidate
         via SOS</h1>
 
         <p>This example is example 7.2 from <elib>Parrilo00</elib>. Consider
@@ -557,7 +557,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       </example>
 
-      <example class="drake"><h1>Searching for a Lyapunov
+      <example><h1>Searching for a Lyapunov
         function via SOS</h1>
 
         <p>Verifying a candidate Lyapunov function is all well and good, but
@@ -797,7 +797,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <subsubsection><h1>Basic region of attraction formulation</h1>
 
-        <example class="drake"><h1>Region of attraction for the one-dimensional cubic system</h1>
+        <example><h1>Region of attraction for the one-dimensional cubic system</h1>
 
           <p>Let's return to our example from above: \[ \dot{x} = -x + x^3 \]
           and try to use SOS optimization to demonstrate that the region of
@@ -833,7 +833,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         type <code>PolynomialSystem</code>. This makes it as simple as, for
         instance:
 
-        <example class="drake"><h1>Searching for the region of
+        <example><h1>Searching for the region of
           attraction</h1> <p> <pre><code class="matlab"
           testfile="testCubicPolynomialRoa">
           cd(fullfile(getDrakePath,'examples'));
@@ -862,7 +862,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         up the <code>regionOfAttraction</code> method and understanding how it
         works.</p>
 
-        <example class="drake"><h1>Region of attraction for the time-reversed Van der Pol oscillator</h1>
+        <example><h1>Region of attraction for the time-reversed Van der Pol oscillator</h1>
 
           <pre><code class="matlab" testfile="testVanDerPol">
            cd(fullfile(getDrakePath,'examples'));
@@ -893,7 +893,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       can see that if the kinematics are polynomial, then the dynamics will be,
       too.</p>
 
-      <example class="drake"><h1>Global stability of the simple
+      <example><h1>Global stability of the simple
         pendulum via SOS</h1>
 
         <p> We opened this chapter using our intuition about energy to discuss

@@ -7,7 +7,7 @@ from underactuated import FindResource, SliderSystem
 
 builder = DiagramBuilder()
 plant, scene_graph = AddMultibodyPlantSceneGraph(builder, time_step=0.0)
-file_name = FindResource("cartpole/cartpole.urdf")
+file_name = FindResource("models/cartpole.urdf")
 Parser(plant).AddModelFromFile(file_name)
 plant.Finalize()
 

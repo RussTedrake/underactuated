@@ -8,7 +8,7 @@ from warnings import warn
 from pydrake.systems.framework import VectorSystem
 
 
-def setup_matplotlib_backend():
+def setup_matplotlib_backend(wishlist=["notebook"]):
     """Helper to support multiple workflows:
         1) nominal -- running locally w/ jupyter notebook
         2) unit tests (no ipython, backend is template)
@@ -24,15 +24,19 @@ def setup_matplotlib_backend():
         if 'google.colab' in sys.modules:
             ipython.run_line_magic("matplotlib", "inline")
             return False
-        try:
-            ipython.run_line_magic("matplotlib", "notebook")
-        except KeyError:
-            ipython.run_line_magic("matplotlib", "inline")
+        for backend in wishlist:
+            try:
+                ipython.run_line_magic("matplotlib", backend)
 
-    # import needs to happen after the backend is set.
-    import matplotlib.pyplot as plt
-    from matplotlib.rcsetup import interactive_bk
-    return plt.get_backend() in interactive_bk
+                # import needs to happen after the backend is set.
+                import matplotlib.pyplot as plt
+                from matplotlib.rcsetup import interactive_bk
+                return plt.get_backend() in interactive_bk
+
+            except KeyError:
+                continue
+        ipython.run_line_magic("matplotlib", "inline")
+    return False
 
 
 # Inspired by https://github.com/Kirill888/jupyter-ui-poll but there *must* be a
