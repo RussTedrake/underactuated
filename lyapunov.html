@@ -797,7 +797,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <subsubsection><h1>Basic region of attraction formulation</h1>
 
-        <example class="drake"><h1>Region of attraction for the one-dimensional cubic system</h1>
+        <example class="drake" id="roa_cubic_system"><h1>Region of attraction for the one-dimensional cubic system</h1>
 
           <p>Let's return to our example from above: \[ \dot{x} = -x + x^3 \]
           and try to use SOS optimization to demonstrate that the region of
@@ -986,6 +986,22 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         <li>Substitute the control law $\bu = \pi (\bx)$ in the equations of motion, and derive the closed-loop dynamics $\dot \bx = f(\bx, \pi(\bx))$.  Use LaSalle's theorem to show (global) asymptotic stability of the closed-loop system.</li>
 
         <li>In <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/lyapunov/control/control.ipynb" target="_blank">this python notebook</a> we set up a simulation environment for you to try the controller we just derived.  Type the control law from point (b) in the dedicated cell, and use the notebook plot to check your work.</li>
+
+      </ol>
+
+    </exercise>
+
+    <exercise><h1>ROA Estimation for the Van der Pol Oscillator</h1>
+
+      <p>In this exercise you will use SOS optimization to approximate the ROA of the "reversed-time" Van der Pol oscillator (a variation of the classical <a href="https://en.wikipedia.org/wiki/Van_der_Pol_oscillator"> Van der Pol oscillator</a> which evolves backwards in time).  In <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/lyapunov/van_der_pol/van_der_pol.ipynb" target="_blank">this python notebook</a>, you are asked to test the following SOS formulations.</p>
+
+      <ol type="a">
+
+        <li>The one from <a href="#roa_cubic_system">the example above</a>, augmented with a line search that maximizes the area of the ROA.</li>
+
+        <li>A single-shot SOS program that can directly maximize the area of the ROA, without any line search.</li>
+
+        <li>An improved version of the previous, where less SOS constraints are imposed in the optimization problem.</li>
 
       </ol>
 
