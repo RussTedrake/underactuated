@@ -36,6 +36,10 @@ To run the linters and unit tests
 bazel test //...
 ```
 
+If you would like to `bazel` to use a local installation of drake, you can set
+the `DRAKE_INSTALL_DIR` environment variable.  Otherwise it will look in
+`/opt/drake`.
+
 To get experimental Drake binaries
 ----------------------------------
 

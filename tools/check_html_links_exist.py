@@ -4,8 +4,15 @@ import os
 
 parser = argparse.ArgumentParser(description='Checks my html file links.')
 # Add a workspace argument to support non-hermetic testing through `bazel test`.
-parser.add_argument('--workspace', help='Path to the WORKSPACE root.')
+parser.add_argument('--cwd',
+                    default=os.path.dirname(os.path.abspath(__file__)),
+                    help='Execute using this current working directory')
 args = parser.parse_args()
+
+# Find workspace root by searching parent directories.
+os.chdir(args.cwd)
+while not os.path.isfile('WORKSPACE.bazel'):
+    os.chdir(os.path.dirname(os.getcwd()))
 
 
 def get_file_as_string(filename):
@@ -28,8 +35,6 @@ for filename in glob.glob("*.html"):
             file = s[start:end]
             if tag != 'jupyter':
                 file = os.path.join('underactuated', file)
-            if args.workspace:
-                file = os.path.join(args.workspace, file)
             if not os.path.exists(file):
                 print(filename + " tries to link to the source file " + file +
                       " which doesn't exist")
