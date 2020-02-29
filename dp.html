@@ -336,7 +336,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     \label{eq:policy_update} \end{equation} It's a simple algorithm, but playing
     with an example can help our intuition.</p>
 
-    <example class="drake"><h1>Grid World</h1>
+    <example><h1>Grid World</h1>
 
       <p>Imagine a robot living in a grid (finite state) world.  Wants to get
       to the goal location.  Possibly has to negotiate cells with obstacles.
@@ -360,7 +360,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <todo>figure/text for graph approximation of a continuous state
     space.</todo>
 
-    <example class="drake"><h1>Dynamic Programming for the Double Integrator</h1>
+    <example><h1>Dynamic Programming for the Double Integrator</h1>
 
       <p>You can run value iteration for the double integrator (using
       barycentric interpolation to interpolate between nodes) in <drake></drake>
@@ -393,7 +393,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     Let's apply it now to the simple pendulum, which was intractable
     analytically.</p>
 
-    <example class="drake"><h1>Dynamic Programming for the
+    <example><h1>Dynamic Programming for the
     Simple Pendulum</h1>
 
       <p>You can run value iteration for the simple pendulum (using barycentric
@@ -628,7 +628,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         \eqref{eq:fitted_value_iteration} is often replaced with just one step
         of gradient descent.</p>
 
-        <example class="drake"><h1>Neural Value Iteration</h1>
+        <example><h1>Neural Value Iteration</h1>
 
           <p>Let us try reproducing our double-integrator value iteration examples using neural networks in <a href="https://pytorch.org/tutorials/">PyTorch</a>:</p>
     
@@ -771,6 +771,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   <section><h1>Extensions</h1>
 
     <todo> add section on extensions.  discounting.  finite-horizon / time-varying dynamics or cost.  call-out to the stochastic case in the future chapter.</todo>
+
+    <p>There are many many nice extensions to the basic formulations that we've presented so far.  I'll try to list a few of the most important ones here.  I've also had a number of students in this course explore very interesting extensions; for example <elib>Yang20</elib> looked a imposing a low-rank structure on the (discrete-state) value function using ideas from matrix completion to obtain good estimates despite updating only a small fraction of the states.</p>
 
     <subsection><h1>Linear Programming Approach</h1>
 

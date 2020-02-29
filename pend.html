@@ -85,7 +85,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \end{equation} </p>.
 
 
-    <example class="drake"><h1>Simple Pendulum in Python</h1>
+    <example><h1>Simple Pendulum in Python</h1>
 
       <p>You can experiment with this system in <drake></drake> using</p>
 
@@ -209,11 +209,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <p> Our graph of $\dot{x}$ vs. $x$ can be used to convince ourselves of
       i.s.L. and asymptotic stability by visually inspecting $\dot{x}$ in the
       vicinity of a fixed point.  Even exponential stability can be inferred if
-      the function can be bounded away from the origin by a negatively-sloped
-      line through the fixed point, since it implies that the nonlinear system
-      will converge at least as fast as the linear system represented by the
-      straight line.  I will graphically illustrate unstable fixed points with
-      open circles and stable fixed points (i.s.L.) with filled circles. </p>
+      we can find a negatively-sloped line passing through the equilibrium point
+      which separates the graph of $f(x)$ from the horizontal axis, since it
+      implies that the nonlinear system will converge at least as fast as the
+      linear system represented by the straight line.  I will graphically
+      illustrate unstable fixed points with open circles and stable fixed points
+      (i.s.L.) with filled circles. </p>
 
       <p>Next, we need to consider what happens to initial conditions which
       begin farther from the fixed points.  If we think of the dynamics of the

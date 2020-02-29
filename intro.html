@@ -328,20 +328,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <p>Notice that whether or not a control system is underactuated may depend
     on the state of the system or even on time, although for most systems
     (including all of the systems in this book) underactuation is a global
-    property of the system.  We will refer to a system as underactuated if it
-    is underactuated in <i>all</i> states and times.  In practice, we often
-    refer informally to systems as fully actuated as long as they are fully
-    actuated in <i>most</i> states (e.g., a "fully-actuated" system might still
-    have joint limits or lose rank at a kinematic singularity).  Admittedly,
-    this permits the existence of a gray area, where it might feel awkward to
+    property of the system.  We will refer to a system as underactuated if it is
+    underactuated in <i>all</i> states and times.  In practice, we often refer
+    informally to systems as fully actuated as long as they are fully actuated
+    in <i>most</i> states (e.g., a "fully-actuated" system might still have
+    joint limits or lose rank at a kinematic singularity).  Admittedly, this
+    permits the existence of a gray area, where it might feel awkward to
     describe the <i>system</i> as either fully- or underactuated (we should
-    instead only describe its states); we'll see examples, for instance, of
-    hybrid systems like walking robots that are fully-actuated in some modes
-    but underactuated in others.  I will still informally refer to these
-    systems as being underactuated whenever reasoning about the underactuation
-    is useful/necessary for developing a control strategy.</p>
+    instead only describe its states); even powerful robot arms on factory
+    floors do have actuator limits, but we can typically design controllers for
+    them as though they were fully actuated.  The primary interest of this text
+    is in systems for which the underactuation is useful/necessary for
+    developing a control strategy.</p>
 
-    <example class="drake" id="robot_manipulators"><h1>Robot Manipulators</h1>
+    <example id="robot_manipulators"><h1>Robot Manipulators</h1>
 
       <figure>
       <img style="width:250px;" src="figures/simple_double_pend.svg"/>
@@ -448,7 +448,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     this idea to the case where ${\bf f}_1$ and ${\bf f}_2$ are estimated,
     rather than known (e.g, <elib>Slotine90</elib>).</p>
 
-    <example class="drake"><h1>Feedback Cancellation on the Double
+    <example><h1>Feedback Cancellation on the Double
     Pendulum</h1>
 
     <p> Let's say that we would like our simple double pendulum to act like a

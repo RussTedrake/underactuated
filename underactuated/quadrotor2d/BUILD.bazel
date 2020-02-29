@@ -12,23 +12,13 @@ rt_py_test(
     deps = [":quadrotor2d"],
 )
 
-rt_py_test(
-    name = "lqr",
-    srcs = ["lqr.py"],
-    args = [
-        "--duration 0.1",
-        "--trials 1",
-    ],
-    deps = [":quadrotor2d"],
-)
-
 rt_py_library(
     name = "quadrotor2d",
-    testonly = True,
     srcs = [
         "__init__.py",
         "quadrotor2d.py",
     ],
     imports = ["../.."],
     deps = ["//underactuated"],
+    visibility = ["//visibility:public"],
 )

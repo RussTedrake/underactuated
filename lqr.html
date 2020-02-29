@@ -159,7 +159,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       systems (including block diagrams built up of many subsystems); it will
       perform the linearization for you.</p>
 
-      <example class="drake"><h1>LQR for Acrobots, Cart-Poles,
+      <example><h1>LQR for Acrobots, Cart-Poles,
       and Quadrotors</h1>
 
         <p>LQR provides a very satisfying solution to the canonical "balancing"
@@ -167,9 +167,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         described for a number of model systems</a>.  Here are some of those
         examples, again:</p>
       
-        <pysrc>acrobot/balancing_lqr.py</pysrc>
-        <pysrc>cartpole/balancing_lqr.py</pysrc>
-        <pysrc>quadrotor2d/lqr.py</pysrc>
+        <jupyter>examples/acrobot/lqr.ipynb</jupyter>
+        <jupyter>examples/cartpole/lqr.ipynb</jupyter>
+        <jupyter>examples/quadrotor2d/lqr.ipynb</jupyter>
         <pysrc>quadrotor/lqr.py</pysrc>
 
         <p>I find it very compelling that the same derivation (and effectively
@@ -507,10 +507,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       general tool, for the particular formulation we are considering here it
       reduces to creating additional decision variables ${\bf \Phi}_i$, such at
       that $$\bx[n] = {\bf \Phi}_n \bx[0],$$  and writing the optimization above
-      as \begin{gather*} \min_{{\bf K}_*, {\bf \Phi}_*} \sum_{n=0}^{N-1}
-      \bx^T[0] \left( {\bf \Phi}_n^T {\bf Q \Phi}_n + {\bf K}_n^T{\bf R K}_n
-      \right) \bx[0], \\ \subjto \qquad \forall n, \quad {\bf \Phi}_{n+1} = {\bf
-      A \Phi}_n + {\bf B K}_n. \end{gather*} </p>
+      as \begin{gather*} \min_{\tilde{\bf K}_*, {\bf \Phi}_*} \sum_{n=0}^{N-1}
+      \bx^T[0] \left( {\bf \Phi}_n^T {\bf Q \Phi}_n + \tilde{\bf K}_n^T{\bf R}
+      \tilde{\bf K}_n \right) \bx[0], \\ \subjto \qquad \forall n, \quad {\bf
+      \Phi}_{n+1} = {\bf A \Phi}_n + {\bf B}\tilde{\bf K}_n. \end{gather*} </p>
       
       <p>Once again, the algorithms presented here are not as efficient as
       solving the Riccati equation if we only want the solution to the simple
