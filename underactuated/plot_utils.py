@@ -1,12 +1,13 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def plot_2d_phase_portrait(
-    f, # rhs of xdot = f(x) where x is 2d array
-    x1lim=[-1, 1], # limits for the horizontal axis
-    x2lim=[-1, 1], # limits for the vertical axis
-    n=100j, # knot points per side
-    **kwargs # keyword arguments for streamplot function
+    f,  # rhs of xdot = f(x) where x is 2d array
+    x1lim=[-1, 1],  # limits for the horizontal axis
+    x2lim=[-1, 1],  # limits for the vertical axis
+    n=100j,  # knot points per side
+    **kwargs  # keyword arguments for streamplot function
 ):
 
     # grid state space, careful here x2 before x1
@@ -18,10 +19,10 @@ def plot_2d_phase_portrait(
 
     # phase portrait (annoing input format of streamplot)
     strm = plt.streamplot(X1.T[0], X2[0], X1d.T, X2d.T, color=color.T, **kwargs)
-    
+
     # colorbar on the right that measures the magnitude of xdot
     plt.gcf().colorbar(strm.lines, label=r'$|\dot\mathbf{x}|$')
-    
+
     # misc plot settings
     plt.xlabel(r'$x_1$')
     plt.ylabel(r'$x_2$')
