@@ -13,10 +13,11 @@ class Grader:
         pass
 
     @staticmethod
-    def grade_from_notebooks(test_cases_list, notebook_ipynb_list, results_json):
-        '''Running notebooks in notebook_ipynb_list and evaluating them on test_cases_list.
-        Result is written into results_json'''
-
+    def grade_from_notebooks(test_cases_list, notebook_ipynb_list,
+                             results_json):
+        """Running notebooks in notebook_ipynb_list and evaluating
+        them on test_cases_list. Result is written into results_json
+        """
         try:
             notebook_locals_list = []
             for notebook_ipynb in notebook_ipynb_list:
@@ -24,7 +25,8 @@ class Grader:
                     Grader.locals_from_notebook(notebook_ipynb))
         except Exception as e:
             Grader.global_fail_with_error_message(
-                "Exception when running file: " + notebook_ipynb + ', ' + str(e), results_json)
+                "Exception when running file: " + notebook_ipynb + ', ' +
+                str(e), results_json)
             raise
 
         # Grade notebook_locals_list on test_cases_list
@@ -32,11 +34,11 @@ class Grader:
 
     @staticmethod
     def grade_output(test_case_list, notebook_locals_list, results_json):
-        '''Grading the notebook_locals with the provided test_cases'''
-
+        """Grading the notebook_locals with the provided test_cases"""
         # setup test suite for gradescope
         suite = unittest.TestSuite()
-        for test_case, notebook_locals in zip(test_case_list, notebook_locals_list):
+        for test_case, notebook_locals in zip(test_case_list,
+                                              notebook_locals_list):
             test_case_names = unittest.defaultTestLoader.getTestCaseNames(
                 test_case)
             for test_case_name in test_case_names:
@@ -48,8 +50,7 @@ class Grader:
 
     @staticmethod
     def locals_from_notebook(notebook_ipynb):
-        '''Read, run, return locals of notebook'''
-
+        """Read, run, return locals of notebook"""
         banned_commands = [
             'start_recording',
             'stop_recording',
@@ -60,18 +61,20 @@ class Grader:
         ipynb = json.load(open(notebook_ipynb))
 
         for cell in ipynb['cells']:
-            # erase test cells, this is optional and useful for debugging to avoid recursions when developing
+            # erase test cells, this is optional and useful for debugging
+            # to avoid recursions when developing
             if any('## TEST ##' in line for line in cell['source']):
                 cell['source'] = []
             # filter out all the lines with banned commands
             if banned_commands is not None:
-                cell['source'] = [line for line in cell['source'] if not any(
-                    command in line for command in banned_commands)]
+                cell['source'] = [
+                    line for line in cell['source']
+                    if not any(command in line for command in banned_commands)
+                ]
 
         exporter = PythonExporter()
         source, meta = exporter.from_notebook_node(
-            nbformat.reads(json.dumps(ipynb), nbformat.NO_CONVERT)
-        )
+            nbformat.reads(json.dumps(ipynb), nbformat.NO_CONVERT))
         with open('./cleaned_notebook.py', 'w') as fh:
             fh.write(source)
 
@@ -81,21 +84,20 @@ class Grader:
 
     @staticmethod
     def global_fail_with_error_message(msg, results_json):
-        '''Error message if no specific'''
-        results = {"score": 0.0,
-                   "output": msg}
+        """Error message if no specific"""
+        results = {"score": 0.0, "output": msg}
 
         with open(results_json, 'w') as f:
-            f.write(json.dumps(results,
-                               indent=4,
-                               sort_keys=True,
-                               separators=(',', ': '),
-                               ensure_ascii=True))
+            f.write(
+                json.dumps(results,
+                           indent=4,
+                           sort_keys=True,
+                           separators=(',', ': '),
+                           ensure_ascii=True))
 
     @staticmethod
     def print_test_results(results_json):
-        '''Printing the results.json'''
-
+        """Printing the results.json"""
         # open the json file for reading
         with open(results_json, 'r') as fh:
             result = json.load(fh)
@@ -106,8 +108,9 @@ class Grader:
 
         # print partial scores
         for test in result['tests']:
-            print(
-                '\nScore for {} is {}/{}.'.format(test['name'], int(test['score']), test['max_score']))
+            print('\nScore for {} is {}/{}.'.format(test['name'],
+                                                    int(test['score']),
+                                                    test['max_score']))
 
             # print error message if any
             if 'output' in test:
