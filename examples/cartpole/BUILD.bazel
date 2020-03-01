@@ -4,19 +4,18 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-load("//tools/rt/python:defs.bzl", "rt_py_test")
+load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
 
-rt_py_test(
-    name = "dircol_swingup",
-    srcs = ["dircol_swingup.py"],
+rt_ipynb_test(
+    name = "constant_force",
+    srcs = ["constant_force.ipynb"],
     data = ["//underactuated/models:cartpole.urdf"],
     deps = ["//underactuated"],
 )
 
-rt_py_test(
-    name = "force_slider_demo",
-    srcs = ["force_slider_demo.py"],
-    args = ["--duration 0.1"],
+rt_ipynb_test(
+    name = "lqr",
+    srcs = ["lqr.ipynb"],
     data = ["//underactuated/models:cartpole.urdf"],
     deps = ["//underactuated"],
 )

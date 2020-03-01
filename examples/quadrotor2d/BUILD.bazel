@@ -7,18 +7,11 @@
 load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
-    name = "value_iteration",
-    srcs = ["value_iteration.ipynb"],
+    name = "lqr",
+    srcs = ["lqr.ipynb"],
     deps = [
         "//underactuated",
-        "//underactuated/double_integrator",
+        "//underactuated/quadrotor2d",
     ],
-)
-
-rt_ipynb_test(
-    name = "neural_value_iteration",
-    srcs = ["neural_value_iteration.ipynb"],
-    deps = [
-        "//underactuated",
-    ],
+    visibility = ["//visibility:public"],
 )

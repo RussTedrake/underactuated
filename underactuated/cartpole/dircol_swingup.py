@@ -11,7 +11,7 @@ from underactuated import FindResource
 plant = MultibodyPlant(time_step=0.0)
 scene_graph = SceneGraph()
 plant.RegisterAsSourceForSceneGraph(scene_graph)
-file_name = FindResource("cartpole/cartpole.urdf")
+file_name = FindResource("models/cartpole.urdf")
 Parser(plant).AddModelFromFile(file_name)
 plant.Finalize()
 

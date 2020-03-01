@@ -117,6 +117,7 @@ s = replace_string_between(s, '<section id="table_of_contents">', '</section>',
                            toc)
 write_file_as_string("underactuated.html", s)
 
+# Write common headers / footers
 header = get_file_as_string("tools/header.html.in")
 footer = get_file_as_string("tools/footer.html.in")
 

@@ -336,7 +336,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     \label{eq:policy_update} \end{equation} It's a simple algorithm, but playing
     with an example can help our intuition.</p>
 
-    <example class="drake"><h1>Grid World</h1>
+    <example><h1>Grid World</h1>
 
       <p>Imagine a robot living in a grid (finite state) world.  Wants to get
       to the goal location.  Possibly has to negotiate cells with obstacles.
@@ -360,13 +360,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <todo>figure/text for graph approximation of a continuous state
     space.</todo>
 
-    <example class="drake"><h1>Dynamic Programming for the Double Integrator</h1>
+    <example><h1>Dynamic Programming for the Double Integrator</h1>
 
       <p>You can run value iteration for the double integrator (using
       barycentric interpolation to interpolate between nodes) in <drake></drake>
       using: </p>
 
-      <jupyter no_colab>examples/double_integrator/value_iteration.py</jupyter>
+      <jupyter no_colab>examples/double_integrator/value_iteration.ipynb</jupyter>
 
       <p>Please do take some time to try different cost functions by
       editing the code yourself.</p>
@@ -393,13 +393,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     Let's apply it now to the simple pendulum, which was intractable
     analytically.</p>
 
-    <example class="drake"><h1>Dynamic Programming for the
+    <example><h1>Dynamic Programming for the
     Simple Pendulum</h1>
 
       <p>You can run value iteration for the simple pendulum (using barycentric
       interpolation to interpolate between nodes) in <drake></drake> using:</p>
 
-      <jupyter no_colab>examples/pendulum/value_iteration.py</jupyter>
+      <jupyter no_colab>examples/pendulum/value_iteration.ipynb</jupyter>
 
     <p>Again, you can easily try different cost functions by
       editing the code yourself.</p>
@@ -573,25 +573,24 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       (and the associated interpolation functions) as just one form of
       representations for <a
       href="https://en.wikipedia.org/wiki/Function_approximation">function
-      approximation</a>.  Using a deep <a
-      href="https://en.wikipedia.org/wiki/Convolutional_neural_network">
-      convolutional neural network</a> to represent the cost-to-go would also
-      fall under the domain of function approximation, perhaps representing the
-      other extreme in terms of complexity; using deep networks in approximate
-      dynamic programming is now called  <a
+      approximation</a>.  Using a <a
+      href="https://en.wikipedia.org/wiki/Deep_learning">
+      neural network</a> to represent the cost-to-go also falls under the
+      domain of function approximation, perhaps representing the other extreme
+      in terms of complexity; using deep networks in approximate dynamic
+      programming is common in <a
       href="http://rail.eecs.berkeley.edu/deeprlcourse/">deep reinforcement
-      learning</a>.  We will discuss it more later in the book.</p>
+      learning</a>, which we will discuss more later in the book.</p>
 
       <todo>  (see Appendix C for a brief background on function approximation)
       </todo>
 
-      <subsubsection><h1>Representing the cost-to-go with function
+      <subsubsection><h1>Value iteration with function
       approximation</h1>
 
         <p>If we approximate $J^*$ with a finitely-parameterized function
         $\hat{J}_\balpha^*$, with parameter vector $\balpha$, then   this
-        immediately raises many important questions:</p>
-
+        immediately raises many important questions:
         <ul>
           <li>What if the true cost-to-go function does not live in the
         prescribed function class; e.g., there does not exist an $\balpha$ which
@@ -600,48 +599,74 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           <li>What update should we apply in the iterative algorithm?</li>
           <li>What can we say about it's convergence?</li>
         </ul>
+        Let us start by considering updates given by a least-squares approximation of the value iteration update.</p>
 
-        <todo> add quote from neuro-dynamic programming preface </todo>
+        <p>Using the least squares solution in a value iteration update is
+        sometimes referred to as <i>fitted value iteration</i>, where $\bx_k$
+        are some number of samples taken from the continuous space and for
+        discrete-time systems the iterative approximate solution to
+        \begin{gather*} J^*(\bx_0) = \min_{u[\cdot]} \sum_{n=0}^\infty
+        \ell(\bx[n],\bu[n]), \\ \text{ s.t. } \bx[n+1] = f(\bx[n], \bu[n]),
+        \bx[0] = \bx_0\end{gather*} becomes \begin{gather} J^d_k = \min_\bu
+        \left[ \ell(\bx_k,\bu) + \hat{J}^*_\alpha\left({f(\bx_k,\bu)}\right)
+        \right], \\ \balpha \Leftarrow \argmin_\balpha \sum_k
+        \left(\hat{J}^*_\balpha(\bx_k) - J^d_k \right)^2.
+        \label{eq:fitted_value_iteration} \end{gather} Since the desired values $J^d_k$ are only an initial guess of the cost-to-go, we will apply this algorithm iteratively until (hopefully) we achieve some numerical convergence.</p>
+      
+        <p>Note that the update in \eqref{eq:fitted_value_iteration} is not
+        <i>quite</i> the same as doing least-squares optimization of $$\sum_k
+        \left(\hat{J}^*_\balpha(\bx_k) - \min_\bu \left[ \ell(\bx_k,\bu) +
+        \hat{J}^*_\alpha\left({f(\bx_k,\bu)}\right) \right] \right)^2,$$ because
+        in this equation $\alpha$ has an effect on both occurences of
+        $\hat{J}^*$.  In \eqref{eq:fitted_value_iteration}, we cut that
+        dependence by taking $J_k^d$ as fixed desired values; this version
+        performs better in practice.  Like many things, this is an old idea that
+        has been given a new name in the deep reinforcement learning literature
+        -- people think of the $\hat{J}^*_\alpha$ on the right hand side as
+        being the output from a fixed "target network".  For nonlinear function
+        approximators, the update to $\alpha$ in
+        \eqref{eq:fitted_value_iteration} is often replaced with just one step
+        of gradient descent.</p>
 
-        <p>In general, many of these questions will have to go unanswered.  But
-        there are some answers available for the special case of <em>linear
-        function approximators</em>.  A linear function approximator takes the
-        form: \[ \hat{J}^*_\balpha(\bx) = \sum_i \alpha_i \psi_i(\bx) =
-        \bpsi^T(\bx) \balpha, \] where $\bpsi(\bx)$ is a vector of potentially
-        nonlinear features.  Common examples of features include polynomials,
-        radial basis functions, or most interpolation schemes used on a mesh.
-        The distinguishing feature of a linear function approximator is the
-        ability to exactly solve for $\balpha$ in order to represent a desired
-        function optimally, in a least-squares sense.  For instance, if we have
-        a desired set of $K$ input-output points, $(\bx_k,J^d_k)$, then we can
-        write down the closed-form solution to \[ \minimize_\balpha \sum_k
-        \left(\hat{J}_\balpha(\bx_k) - J^d_k \right)^2. \] Using the least
-        squares solution in a value iteration update is sometimes referred to as
-        <i>fitted value iteration</i>, where $\bx_k$ are some number of samples
-        taken from the continuous space and for discrete-time systems the
-        iterative approximate solution to \begin{gather*} J^*(\bx_0) =
-        \min_{u[\cdot]} \sum_{n=0}^\infty \ell(\bx[n],\bu[n]), \\ \text{ s.t. }
-        \bx[n+1] = f(\bx[n], \bu[n]), \bx[0] = \bx_0\end{gather*} becomes
-        \begin{gather} J^d_k = \min_\bu \left[ \ell(\bx_k,\bu) +
-        \hat{J}^*_\alpha\left({f(\bx_k,\bu)}\right) \right], \\ \balpha
-        \Leftarrow \argmin_\balpha \sum_k \left(\hat{J}^*_\balpha(\bx_k) - J^d_k
-        \right)^2. \label{eq:fitted_value_iteration} \end{gather} For linear
-        function approximators, this is simply: \begin{gather*} \balpha
-        \Leftarrow \begin{bmatrix} \bpsi^T(\bx_1) \\ \vdots \\
-        \bpsi^T(\bx_K)\end{bmatrix}^+ \begin{bmatrix} J^d_1 \\ \vdots \\ J^d_K
-        \end{bmatrix}, \end{gather*} where the $^+$ notation refers to a
-        Moore-Penrose pseudoinverse. Remarkably, for linear function
-        approximators, this update is still known to converge to the globally
-        optimal $\balpha^*$.</p>
-        
-        <p>Note that the update in \eqref{eq:fitted_value_iteration} is not <i>quite</i> the same as doing least-squares optimization of $$\sum_k \left(\hat{J}^*_\balpha(\bx_k) - \min_\bu \left[ \ell(\bx_k,\bu) +
-          \hat{J}^*_\alpha\left({f(\bx_k,\bu)}\right) \right]
-        \right)^2,$$ because in this equation $\alpha$ has an effect on both occurences of $\hat{J}^*$.  In \eqref{eq:fitted_value_iteration}, we cut that dependence by taking $J_k^d$ as fixed desired values; this version performs better in practice.  Like many things, this is an old idea that has been given a new name in the deep reinforcement learning literature -- people think of the right hand side as being the output from a fixed "target network".</p>
+        <example><h1>Neural Value Iteration</h1>
+
+          <p>Let us try reproducing our double-integrator value iteration examples using neural networks in <a href="https://pytorch.org/tutorials/">PyTorch</a>:</p>
+    
+          <jupyter>examples/double_integrator/neural_value_iteration.ipynb</jupyter>
+
+          <!--
+          <p>In this example, you'll see that we use two different approaches to
+          minimizing over $\bu$.  First, we use discrete actions where we simply
+          evaluate all possible actions and keep the best.  Second, we explore
+          the case which exploits the quadratic cost and the control-affine
+          dynamics -- but note that we also have to go to continuous time to
+          have the closed-form solution.  (Can you understand why?)</p>
+          -->
+          
+        </example>        
+
+        <p>In general, the convergence and accuracy guarantees for value
+        iteration with generic function approximators are quite weak.  But we do
+        have some results for the special case of <em>linear function
+        approximators</em>.  A linear function approximator takes the form: \[
+        \hat{J}^*_\balpha(\bx) = \sum_i \alpha_i \psi_i(\bx) = \bpsi^T(\bx)
+        \balpha, \] where $\bpsi(\bx)$ is a vector of potentially nonlinear
+        features.  Common examples of features include polynomials, radial basis
+        functions, or most interpolation schemes used on a mesh. The
+        distinguishing feature of a linear function approximator is the ability
+        to exactly solve for $\balpha$ in order to represent a desired function
+        optimally, in a least-squares sense.  For linear function approximators,
+        this is simply: \begin{gather*} \balpha \Leftarrow \begin{bmatrix}
+        \bpsi^T(\bx_1) \\ \vdots \\ \bpsi^T(\bx_K)\end{bmatrix}^+
+        \begin{bmatrix} J^d_1 \\ \vdots \\ J^d_K \end{bmatrix}, \end{gather*}
+        where the $^+$ notation refers to a Moore-Penrose pseudoinverse.
+        Remarkably, for linear function approximators, this update is still
+        known to converge to the globally optimal $\balpha^*$.</p>  
 
         <todo> add citations for convergence results </todo>
       </subsubsection>
 
-      <subsubsection><h1>Representing the cost-to-go on a mesh</h1>
+      <subsubsection><h1>Value iteration on a mesh</h1>
 
         <p>Imagine that we use a mesh to approximate the cost-to-go function
         over that state space with $K$ mesh points $\bx_k$. We would like to
@@ -746,6 +771,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   <section><h1>Extensions</h1>
 
     <todo> add section on extensions.  discounting.  finite-horizon / time-varying dynamics or cost.  call-out to the stochastic case in the future chapter.</todo>
+
+    <p>There are many many nice extensions to the basic formulations that we've presented so far.  I'll try to list a few of the most important ones here.  I've also had a number of students in this course explore very interesting extensions; for example <elib>Yang20</elib> looked a imposing a low-rank structure on the (discrete-state) value function using ideas from matrix completion to obtain good estimates despite updating only a small fraction of the states.</p>
 
     <subsection><h1>Linear Programming Approach</h1>
 
