@@ -677,6 +677,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           \end{align*}
 
         which are valid globally.</p>
+        
+        <p>Look carefully at the resulting equations.  Of course, it says that we can impose whatever accelerations we like on the cart.  But even the resulting equations of the pole happen to take a nice form here:  they have been reduced to the equations of the simple pendulum (without a cart), where the torque input is now given instead by $\ddot{x}c$.  It's as if we have a simple pendulum with torque control, except our command is modulated by a $\cos\theta$ term, and this $\cos\theta$ term is fundamental -- it's true that our control authority goes to zero when the pole is horizontal, because no amount of force on the cart in that configuration can act like a torque on the pole.</p>
 
       </subsubsection>
 
@@ -700,9 +702,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           -\frac{1}{c} \ddot\theta^d - \tan\theta.
         \end{align*}
 
-        Note that this expression is only valid when $\cos\theta \neq 0$. This
-        is not surprising, as we know that the force cannot create a torque when
-        the beam is perfectly horizontal.</p>
+        Note that this expression is only valid when $\cos\theta \neq 0$. Once again, we know that the force cannot create a torque when
+        the pole is perfectly horizontal.  In fact, the controller we have written will "blow-up" -- requesting infinite force at $\cos\theta = 0$; so make sure you saturate the command before you implement it on hardware (or even in simulation).  Although it may come as a small concellation, at least we have that $(c - \frac{2}{c})$ never goes to zero; in fact you can check for yourself that $|c - \frac{2}{c}| \ge 1$.</p>
 
       </subsubsection>
 
@@ -879,7 +880,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <p> Recall in the last chapter, <a href="pend.html#energy_shaping">we used
       energy shaping to swing up the simple pendulum</a>.  This idea turns out
       to be a bit more general than just for the simple pendulum. As we will
-      see, we can use similar concepts of `energy shaping' to produce swing-up
+      see, we can use similar concepts of "energy shaping" to produce swing-up
       controllers for the acrobot and cart-pole systems. It's important to note
       that it only takes one actuator to change the total energy of a
       system.</p>
