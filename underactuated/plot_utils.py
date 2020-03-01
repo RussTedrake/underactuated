@@ -2,14 +2,24 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-def plot_2d_phase_portrait(
-    f,  # rhs of xdot = f(x) where x is 2d array
-    x1lim=[-1, 1],  # limits for the horizontal axis
-    x2lim=[-1, 1],  # limits for the vertical axis
-    n=100j,  # knot points per side
-    **kwargs  # keyword arguments for streamplot function
-):
+def plot_2d_phase_portrait(f, x1lim=(-1, 1), x2lim=(-1, 1), n=100j, **kwargs):
+    """Plots the phase portrait for a 2D dynamical system.
 
+    Parameters
+    ----------
+    f : function
+        Callable vectorized function which implements the rhs of the
+        state-space dynamics xdot = f(x), with x 2D array.
+    x1lim : tuple
+        Minimum and maximum values (floats) for the horizontal axis of the
+        plot.
+    x2lim : tuple
+        Minimum and maximum values (floats) for the vertical axis of the
+        plot.
+    n : complex
+        Purely imaginary number with imaginary part equal to the number of knot
+        points on each axis of the plot.
+    """
     # grid state space, careful here x2 before x1
     X1, X2 = np.mgrid[x1lim[0]:x1lim[1]:n, x2lim[0]:x2lim[1]:n]
     X1d, X2d = f([X1, X2])
