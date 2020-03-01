@@ -1076,17 +1076,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     differentially flat in the outputs $x(t)$, $y(t)$.  More generally, if we
     have a dynamical system $$\dot{\bx} = f(\bx, \bu),$$ and we design some
     output coordinates (essentially "task-space"): $$\bz(t) = h\left(\bx, \bu,
-    \frac{d\bu}{dt}, ..., \frac{d^k\bu}{dt^k}\right),$$ such that
-    \begin{gather*} \bx (t) = \bx\left(\bz, \frac{d\bz}{dt}, ...,
+    \frac{d\bu}{dt}, ..., \frac{d^k\bu}{dt^k}\right),$$ such that we can write
+    the $\bx$ and $\bu$ purely as a function of the output and it's time
+    derivatives, \begin{gather*} \bx (t) = \bx\left(\bz, \frac{d\bz}{dt}, ...,
     \frac{d^k\bz}{dt^k}\right), \\ \bu (t) = \bu\left(\bz, \frac{d\bz}{dt}, ..,
     \frac{d^k\bz}{dt^k}\right),\end{gather*} then we say that the system $f$ is
-    differentially flat in the outputs $\bz$ <elib>Murray95</elib>.  Notice
-    that, in the general form, the flat outputs can also depend on the input
-    and it's time derivatives, but in our first example, they were a simple
-    function of the positions only.  And the requirement for showing that a
-    system is differentially flat in those outputs is to write the function
-    which solves for $\bx(t)$ and $\bu(t)$ as a function of only $\bz(t)$ and
-    its time derivatives.</p>
+    differentially flat in the outputs $\bz$ <elib>Murray95</elib>.  And the
+    requirement for showing that a system is differentially flat in those
+    outputs is to write the function which solves for $\bx(t)$ and $\bu(t)$ as a
+    function of only $\bz(t)$ and its time derivatives.</p>
 
     <p>I'm not aware of any numerical recipes for showing that a system is
     differentially flat nor for finding potential flat outputs, but I admit I
@@ -1095,17 +1093,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     find for your system -- typically via a little mechanical intuition and a
     lot of algebra.  Once found, it can be very useful.</p>
 
-    <example><h1>Differential flatness for
-      the 3D Quadrotor</h1>
+    <example><h1>Differential flatness for the 3D Quadrotor</h1>
 
-      <p>Probably the most famous example of differential flatness is on
-        the full 3D quadrotors. <elib>Mellinger11</elib> showed that the 3D
-        quadrotor is differentially flat in the outputs
-        $\{x,y,z,\theta_{yaw}\}$.  And they used this, to dramatic effect,
-        to perform all sorts of acrobatics.  The resulting videos are
-        awesome (and probably deserve a lot of credit for the widespread
-        popularity of quadrotors in academia and industry over the next few
-        years).
+      <p>Probably the most famous example of differential flatness is on the
+      full 3D quadrotors. <elib>Mellinger11</elib> showed that the 3D quadrotor
+      is differentially flat in the outputs $\{x,y,z,\theta_{yaw}\}$.  They used
+      this, to dramatic effect, to perform all sorts of acrobatics.  The
+      resulting videos are awesome (and probably deserve a lot of credit for the
+      widespread popularity of quadrotors in academia and industry over the next
+      few years).
       </p>
 
       <figure>
