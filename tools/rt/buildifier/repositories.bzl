@@ -11,14 +11,14 @@ def buildifier_dependencies():
         name = "buildifier_linux",
         downloaded_file_path = "buildifier",
         executable = True,
-        sha256 = "4c985c883eafdde9c0e8cf3c8595b8bfdf32e77571c369bf8ddae83b042028d6",
-        urls = ["https://github.com/bazelbuild/buildtools/releases/download/0.29.0/buildifier"],
+        sha256 = "ec064a5edd2a2a210cf8162305869a27b3ed6c7e50caa70687bc9d72177f61f3",
+        urls = ["https://github.com/bazelbuild/buildtools/releases/download/1.0.0/buildifier"],
     )
 
     http_file(
         name = "buildifier_macos",
         downloaded_file_path = "buildifier",
         executable = True,
-        sha256 = "9b108decaa9a624fbac65285e529994088c5d15fecc1a30866afc03a48619245",
-        urls = ["https://github.com/bazelbuild/buildtools/releases/download/0.29.0/buildifier.mac"],
+        sha256 = "6e7545fdfd4b142041b4fefd8f338b31dee556aa37e9fa8e244ee66a765d352f",
+        urls = ["https://github.com/bazelbuild/buildtools/releases/download/1.0.0/buildifier.mac"],
     )

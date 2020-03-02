@@ -15,7 +15,6 @@ rt_ipynb_test(
     ],
 )
 
-
 rt_ipynb_test(
     name = "lqr",
     srcs = ["lqr.ipynb"],

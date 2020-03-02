@@ -18,6 +18,7 @@ rt_py_library(
         "__init__.py",
         "jupyter.py",
         "multibody.py",
+        "plot_utils.py",
         "pyplot_visualizer.py",
         "utils.py",
     ],
