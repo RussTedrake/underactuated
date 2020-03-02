@@ -44,6 +44,7 @@ python3-ipywidgets
 python3-notebook
 python3-pip
 python3-widgetsnbextension
+python3-setuptools
 tidy
 wget
 EOF
