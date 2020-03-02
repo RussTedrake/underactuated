@@ -20,6 +20,7 @@ rt_py_library(
         "multibody.py",
         "pyplot_visualizer.py",
         "utils.py",
+        "plot_utils.py",
     ],
     imports = [".."],
     visibility = ["//visibility:public"],
