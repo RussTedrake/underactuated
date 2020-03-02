@@ -42,20 +42,55 @@ href="http://underactuated.csail.mit.edu/Spring2020/">a course being taught
 at MIT</a>. They will be updated throughout the Spring 2020 semester.  <a 
 href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos are available on YouTube</a>.</p> 
 
-<chapter><h1>Autonomous
-Driving and Unmanned Aerial
-Vehicles</h1>
+<chapter><h1>Autonomous Driving and Unmanned Aerial Vehicles</h1>
 
-Braitenberg? 
+Intro.  The models in this chapter use relatively simple dynamics, but the tasks are quite rich.  Fly though any office building without hitting anything.  Avoid other cars.  Obey the rules of the road.  (Ok, we're note going to get to that one).  
+
+Braitenberg?  Planning vs reactive control.  
+
+<section><h1>Vehicle Models</h1>
+
 Dubins car
 Bicycle model
+Simple car?
 Prius?
-
 feedback linearized quadrotor (e.g. as used in nanomap)
-airplane2d
+Airplane 2d?
+</section>
 
-emphasis on planning around obstacles (up to and including mi-convex)
-and output feedback
+<section><h1>Environment Models</h1>
+  Spline-based road (or river, ...).
+  Poisson forest.
+  Some simple environments (e.g. box room / box forest from Robin's MIQP)
+  Anything from the FLA? 
+  Indoor environments: http://aihabitat.org has a bunch (from MatterPort3D, Gibson, Replica, etc).  Would be fun to wire them up.
+
+  Obtaining and efficiently representing more detailed road maps which contain both the geometric information (where are the lane lines, where are the traffic lights and stop signs, ...) as well as the semantic information (this is a left turn lane, this is a bike lane, ...) is a serious engineering undertaking .. one that every autonomous driving team has to put serious resources on to get started.
+</section>
+
+<section><h1>Planning and Control around Obstacles</h1>
+
+  (Nonlinear) MPC
+  Mi-convex planning
+
+</section>
+
+
+<section><h1>Alternative input-output models</h1>
+
+  <p>The models so far have taken the form $$\xdot = {\bf f}(\bx, \bu), \by = {\bf g}(\bx, \bu, m),$$ where $m$ is some parameterization of the environment or <i>map</i>.  These are, in a sense, the right models for simulation.  But they do leave something to be desired for control using noisy sensors in potentially novel environments... the prediction of future outputs depends on having an accurate estimate of the state (in world coordinates) and of the map.  cite nanomap.</p>
+
+  <p>But in this section, I would also like to consider models of the form $$\by[n+1] = f(\by[n],\by[n-1], ..., \bu[n], \bu[n-1, ...).$$  These are the so-called ARX models (auto-regressive models with exogenous inputs).</p>
+
+</section>
+
+<section><h1>Output Feedback</h1></section>
+
+<section><h1>Vehicle Models At the Limits of Handling/Performance</h1>
+
+  Racecars.  Suddenly the nonlinear dynamics definitely matter.  Tire models, etc.  Is there something from Matt O'Kelly / Sertac / Borelli / Moritz Diehl that is becoming canonical?
+
+</section>
 
 </chapter>
 

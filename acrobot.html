@@ -10,9 +10,9 @@
 
     <script src="htmlbook/mathjax-config.js" defer></script> 
     <script type="text/javascript" id="MathJax-script" defer
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
     </script>
-    <script>window.MathJax || document.write('<script type="text/javascript" src="htmlbook/MathJax/es5/tex-svg.js" defer><\/script>')</script>
+    <script>window.MathJax || document.write('<script type="text/javascript" src="htmlbook/MathJax/es5/tex-chtml.js" defer><\/script>')</script>
 
     <link rel="stylesheet" href="htmlbook/highlight/styles/default.css">
     <script src="htmlbook/highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
@@ -677,6 +677,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           \end{align*}
 
         which are valid globally.</p>
+        
+        <p>Look carefully at the resulting equations.  Of course, it says that we can impose whatever accelerations we like on the cart.  But even the resulting equations of the pole happen to take a nice form here:  they have been reduced to the equations of the simple pendulum (without a cart), where the torque input is now given instead by $\ddot{x}c$.  It's as if we have a simple pendulum with torque control, except our command is modulated by a $\cos\theta$ term, and this $\cos\theta$ term is fundamental -- it's true that our control authority goes to zero when the pole is horizontal, because no amount of force on the cart in that configuration can act like a torque on the pole.</p>
 
       </subsubsection>
 
@@ -700,9 +702,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           -\frac{1}{c} \ddot\theta^d - \tan\theta.
         \end{align*}
 
-        Note that this expression is only valid when $\cos\theta \neq 0$. This
-        is not surprising, as we know that the force cannot create a torque when
-        the beam is perfectly horizontal.</p>
+        Note that this expression is only valid when $\cos\theta \neq 0$. Once again, we know that the force cannot create a torque when
+        the pole is perfectly horizontal.  In fact, the controller we have written will "blow-up" -- requesting infinite force at $\cos\theta = 0$; so make sure you saturate the command before you implement it on hardware (or even in simulation).  Although it may come as a small concellation, at least we have that $(c - \frac{2}{c})$ never goes to zero; in fact you can check for yourself that $|c - \frac{2}{c}| \ge 1$.</p>
 
       </subsubsection>
 
@@ -876,24 +877,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <subsection><h1>Energy shaping</h1>
 
-      <p> Recall the phase portraits that we used to understand the dynamics of
-      the undamped, unactuated, simple pendulum ($u=b=0$).  The orbits of this
-      phase plot were defined by contours of constant energy.  One very special
-      orbit, known as a <em>homoclinic</em> orbit, is the orbit which passes
-      through the unstable fixed point.  In fact, visual inspection will reveal
-      that any state that lies on this homoclinic orbit must pass into the
-      unstable fixed point.  Therefore, if we seek to design a nonlinear
-      feedback control policy which drives the simple pendulum from any initial
-      condition to the unstable fixed point, a very reasonable strategy would be
-      to use actuation to regulate the energy of the pendulum to place it on
-      this homoclinic orbit, then allow the system dynamics to carry us to the
-      unstable fixed point.</p>
-
-      <p> This idea turns out to be a bit more general than just for the simple
-      pendulum. As we will see, we can use similar concepts of `energy shaping'
-      to produce swing-up controllers for the acrobot and cart-pole systems.
-      It's important to note that it only takes one actuator to change the total
-      energy of a system.</p>
+      <p> Recall in the last chapter, <a href="pend.html#energy_shaping">we used
+      energy shaping to swing up the simple pendulum</a>.  This idea turns out
+      to be a bit more general than just for the simple pendulum. As we will
+      see, we can use similar concepts of "energy shaping" to produce swing-up
+      controllers for the acrobot and cart-pole systems. It's important to note
+      that it only takes one actuator to change the total energy of a
+      system.</p>
 
       <p> Although a large variety of swing-up controllers have been proposed
       for these model systems (c.f. <elib>Fantoni02</elib>,
@@ -904,66 +894,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </subsection>
 
-    <subsection id="s:pend_energy_shaping"><h1>Simple pendulum</h1>
-
-      <p> Recall the equations of motion for the undamped simple pendulum were
-      given by $$ml^2 \ddot\theta + mgl\sin\theta = u.$$  The total energy of
-      the simple pendulum is given by $$E = \frac{1}{2} m l^2 \dot\theta^2 -
-      mgl\cos\theta.$$  To understand how to control the energy, observe that
-      \begin{align*} \dot{E} =& ml^2\dot\theta \ddot\theta + \dot\theta
-      mgl\sin\theta \\ =& \dot\theta \left[ u - mgl\sin\theta \right] +
-      \dot\theta mgl\sin\theta \\ =& u\dot\theta. \end{align*} In words, adding
-      energy to the system is simple - simply apply torque in the same direction
-      as $\dot\theta$.  To remove energy, simply apply torque in the opposite
-      direction (e.g., damping).</p>
-
-      <p> To drive the system to the homoclinic orbit, we must regulate the
-      energy of the system to a particular desired energy, $$E^d = mgl.$$ If we
-      define $\tilde{E} = E - E^d$, then we have $$\dot{\tilde{E}} = \dot{E} =
-      u\dot\theta.$$ If we apply a feedback controller of the form $$u = -k
-      \dot\theta \tilde{E},\quad k>0,$$ then the resulting error dynamics are
-      $$\dot{\tilde{E}} = - k \dot\theta^2 \tilde{E}.$$ These error dynamics
-      imply an exponential convergence: $$\tilde{E} \rightarrow 0,$$ except for
-      states where $\dot\theta=0$.  The essential property is that when $E >
-      E^d$, we should remove energy from the system (damping) and when $E <
-      E^d$, we should add energy (negative damping).  Even if the control
-      actions are bounded, the convergence is easily preserved.</p>
-
-      <p> This is a nonlinear controller that will push all system trajectories
-      to the unstable equilibrium.  But does it make the unstable equilibrium
-      locally stable?  <em>It is asymptotically stable, but not stable
-      i.s.L.</em>  Small perturbations may cause the system to drive all of the
-      way around the circle in order to once again return to the unstable
-      equilibrium.  For this reason, once trajectories come into the vicinity of
-      our swing-up controller, we prefer to switch to our LQR balancing
-      controller to performance to complete the task.</p>
-
-      <example><h1>Energy Shaping for the
-      Pendulum</h1>
-
-      <p>Take a minute to play around with the energy shaping + LQR controller
-      for swinging up the pendulum</p>
-
-      <pysrc>pendulum/energy_swingup_and_balance.py</pysrc>
-
-      <p>Make sure that you take a minute to look at the code which runs during
-      these examples.  Note the somewhat arbitrary threshold for switching to
-      the LQR controller.  We'll give a much more satisfying answer for that in
-      the <a href="lyapunov.html">chapter on Lyapunov methods</a>.</p>
-
-      </example>
-
-    </subsection>
-
     <subsection><h1>Cart-Pole</h1>
 
-      <p> Having thought about the swing-up problem for the simple pendulum,
-      let's try to apply the same ideas to the cart-pole system.  The basic
-      idea, from <elib>Chung95</elib>, is to use collocated PFL to simplify the
-      dynamics, use energy shaping to regulate the pendulum to its homoclinic
-      orbit, then to add a few terms to make sure that the cart stays near the
-      origin.  The collocated PFL (when all parameters are set to 1) left us
-      with:
+      <p> Let's try to apply the energy-shaping ideas to the cart-pole system.
+      The basic idea, from <elib>Chung95</elib>, is to use collocated PFL to
+      simplify the dynamics, use energy shaping to regulate the pendulum to its
+      homoclinic orbit, then to add a few terms to make sure that the cart stays
+      near the origin.  The collocated PFL (when all parameters are set to 1)
+      left us with:
 
       \begin{gather}
       \ddot{x} = u \\
@@ -1090,8 +1028,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <p>Let's start with an example...</p>
 
-    <example><h1>Differential flatness for
-      the Planar Quadrotor</h1>
+    <example><h1>Differential flatness for the Planar Quadrotor</h1>
 
       <p>The planar quadrotor model described above has 3 degrees of freedom
       ($x,y,\theta$) but only two actuators (one for each propellor).  My claim
@@ -1127,7 +1064,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <p>I've coded up a simple example of that for you here:</p>
 
-      <pysrc>quadrotor2d/differential_flatness.py</pysrc>
+      <jupyter>examples/quadrotor2d/differential_flatness.ipynb</jupyter>
 
       <figure> <img width="100%" src="figures/differential_flatness.svg"/>
       <figcaption>Differential flatness for the planar quadrotor -- by solving
@@ -1140,17 +1077,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     differentially flat in the outputs $x(t)$, $y(t)$.  More generally, if we
     have a dynamical system $$\dot{\bx} = f(\bx, \bu),$$ and we design some
     output coordinates (essentially "task-space"): $$\bz(t) = h\left(\bx, \bu,
-    \frac{d\bu}{dt}, ..., \frac{d^k\bu}{dt^k}\right),$$ such that
-    \begin{gather*} \bx (t) = \bx\left(\bz, \frac{d\bz}{dt}, ...,
+    \frac{d\bu}{dt}, ..., \frac{d^k\bu}{dt^k}\right),$$ such that we can write
+    the $\bx$ and $\bu$ purely as a function of the output and it's time
+    derivatives, \begin{gather*} \bx (t) = \bx\left(\bz, \frac{d\bz}{dt}, ...,
     \frac{d^k\bz}{dt^k}\right), \\ \bu (t) = \bu\left(\bz, \frac{d\bz}{dt}, ..,
     \frac{d^k\bz}{dt^k}\right),\end{gather*} then we say that the system $f$ is
-    differentially flat in the outputs $\bz$ <elib>Murray95</elib>.  Notice
-    that, in the general form, the flat outputs can also depend on the input
-    and it's time derivatives, but in our first example, they were a simple
-    function of the positions only.  And the requirement for showing that a
-    system is differentially flat in those outputs is to write the function
-    which solves for $\bx(t)$ and $\bu(t)$ as a function of only $\bz(t)$ and
-    its time derivatives.</p>
+    differentially flat in the outputs $\bz$ <elib>Murray95</elib>.  And the
+    requirement for showing that a system is differentially flat in those
+    outputs is to write the function which solves for $\bx(t)$ and $\bu(t)$ as a
+    function of only $\bz(t)$ and its time derivatives.</p>
 
     <p>I'm not aware of any numerical recipes for showing that a system is
     differentially flat nor for finding potential flat outputs, but I admit I
@@ -1159,17 +1094,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     find for your system -- typically via a little mechanical intuition and a
     lot of algebra.  Once found, it can be very useful.</p>
 
-    <example><h1>Differential flatness for
-      the 3D Quadrotor</h1>
+    <example><h1>Differential flatness for the 3D Quadrotor</h1>
 
-      <p>Probably the most famous example of differential flatness is on
-        the full 3D quadrotors. <elib>Mellinger11</elib> showed that the 3D
-        quadrotor is differentially flat in the outputs
-        $\{x,y,z,\theta_{yaw}\}$.  And they used this, to dramatic effect,
-        to perform all sorts of acrobatics.  The resulting videos are
-        awesome (and probably deserve a lot of credit for the widespread
-        popularity of quadrotors in academia and industry over the next few
-        years).
+      <p>Probably the most famous example of differential flatness is on the
+      full 3D quadrotors. <elib>Mellinger11</elib> showed that the 3D quadrotor
+      is differentially flat in the outputs $\{x,y,z,\theta_{yaw}\}$.  They used
+      this, to dramatic effect, to perform all sorts of acrobatics.  The
+      resulting videos are awesome (and probably deserve a lot of credit for the
+      widespread popularity of quadrotors in academia and industry over the next
+      few years).
       </p>
 
       <figure>

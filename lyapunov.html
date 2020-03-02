@@ -10,9 +10,9 @@
 
     <script src="htmlbook/mathjax-config.js" defer></script> 
     <script type="text/javascript" id="MathJax-script" defer
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
     </script>
-    <script>window.MathJax || document.write('<script type="text/javascript" src="htmlbook/MathJax/es5/tex-svg.js" defer><\/script>')</script>
+    <script>window.MathJax || document.write('<script type="text/javascript" src="htmlbook/MathJax/es5/tex-chtml.js" defer><\/script>')</script>
 
     <link rel="stylesheet" href="htmlbook/highlight/styles/default.css">
     <script src="htmlbook/highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
@@ -797,7 +797,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <subsubsection><h1>Basic region of attraction formulation</h1>
 
-        <example><h1>Region of attraction for the one-dimensional cubic system</h1>
+        <example id="roa_cubic_system"><h1>Region of attraction for the one-dimensional cubic system</h1>
 
           <p>Let's return to our example from above: \[ \dot{x} = -x + x^3 \]
           and try to use SOS optimization to demonstrate that the region of
@@ -1059,7 +1059,6 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </exercise>
 
-
     <exercise><h1>Control-Lyapunov Function</h1>
 
       <p>Consider the problem of synthesizing a stabilizing feedback law $\bu = \pi (\bx)$ for the dynamical system $\dot \bx = f(\bx, \bu)$.  Lyapunov analysis suggests us a very simple approach to this problem: choose a candidate Lyapunov function $V(\bx)$, and design a control law $\pi (\bx)$ such that $V(\bx)$ always decreases along the trajectories of the closed-loop system $\dot \bx = f(\bx, \pi (\bx))$.  A function $V(\bx)$ for which such a control law exists is called a <i>control-Lyapunov function</i>.  In this exercise, we use this idea to drive a wheeled robot, implementing the controller proposed in <elib>Aicardi95</elib>.</p>
@@ -1127,6 +1126,23 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
         <li>We are using SOS to help find Lyapunov functions. 
           How does this help our robots?</li>
+      
+      </ol>
+
+    </exercise>
+
+    <exercise><h1>ROA Estimation for the Time-Reversed Van der Pol Oscillator</h1>
+
+      <p>In this exercise you will use SOS optimization to approximate the ROA of the time-reversed Van der Pol oscillator (a variation of the <a href="https://en.wikipedia.org/wiki/Van_der_Pol_oscillator">classical Van der Pol oscillator</a> which evolves backwards in time).  In <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/lyapunov/van_der_pol/van_der_pol.ipynb" target="_blank">this python notebook</a>, you are asked to test the following SOS formulations.</p>
+
+      <ol type="a">
+
+        <li>The one from <a href="#roa_cubic_system">the example above</a>, augmented with a line search that maximizes the area of the ROA.</li>
+
+        <li>A single-shot SOS program that can directly maximize the area of the ROA, without any line search.</li>
+
+        <li>An improved version of the previous, where less SOS constraints are imposed in the optimization problem.</li>
+
       </ol>
 
     </exercise>

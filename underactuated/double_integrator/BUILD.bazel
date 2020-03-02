@@ -13,8 +13,8 @@ rt_py_library(
         "visualizer.py",
     ],
     imports = ["../.."],
-    deps = ["//underactuated"],
     visibility = ["//visibility:public"],
+    deps = ["//underactuated"],
 )
 
 rt_py_test(

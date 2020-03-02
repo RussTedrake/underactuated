@@ -22,13 +22,3 @@ export HOMEBREW_CURL_RETRIES=4
 
 brew update
 brew bundle --file="$(dirname ${(%):-%x})/Brewfile" --no-lock
-
-pip3 install --upgrade $(tr '\n' ' ' <<EOF
-ipywidgets
-pycodestyle
-pydocstyle
-torch
-EOF
-)
-
-jupyter nbextension enable --py widgetsnbextension

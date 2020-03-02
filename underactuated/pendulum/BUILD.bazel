@@ -14,17 +14,6 @@ rt_py_test(
     deps = [":pendulum"],
 )
 
-# TODO(RussTedrake): Pass in specific initial conditions and test for successful
-# balancing.
-rt_py_test(
-    name = "energy_swingup_and_balance",
-    srcs = ["energy_swingup_and_balance.py"],
-    args = [
-        "--duration 1.0",
-        "--trials 2",
-    ],
-)
-
 rt_py_test(
     name = "global_sums_of_squares",
     srcs = ["global_sums_of_squares.py"],
@@ -37,8 +26,8 @@ rt_py_library(
         "visualizer.py",
     ],
     imports = ["../.."],
-    deps = ["//underactuated"],
     visibility = ["//visibility:public"],
+    deps = ["//underactuated"],
 )
 
 rt_py_test(
