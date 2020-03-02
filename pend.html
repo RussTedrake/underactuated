@@ -10,9 +10,9 @@
 
     <script src="htmlbook/mathjax-config.js" defer></script> 
     <script type="text/javascript" id="MathJax-script" defer
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
     </script>
-    <script>window.MathJax || document.write('<script type="text/javascript" src="htmlbook/MathJax/es5/tex-svg.js" defer><\/script>')</script>
+    <script>window.MathJax || document.write('<script type="text/javascript" src="htmlbook/MathJax/es5/tex-chtml.js" defer><\/script>')</script>
 
     <link rel="stylesheet" href="htmlbook/highlight/styles/default.css">
     <script src="htmlbook/highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
@@ -126,8 +126,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       this case, the damping term dominates the acceleration term, and we have:
       $$ml^2 \ddot\theta + b\dot\theta \approx b\dot\theta = u_0 -
       mgl\sin\theta.$$ In other words, in the case of heavy damping, the system
-      looks approximately first order. This is a general property of heavily
-      damped systems, such as fluids at very low Reynolds number. </p>
+      looks approximately first order. This is a general property of
+      heavily-damped systems, such as fluids at very low Reynolds number. </p>
 
       <p> I'd like to ignore one detail for a moment: the fact that $\theta$
       wraps around on itself every $2\pi$.  To be clear, let's write the system
@@ -354,6 +354,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         differentiating this equation with respect to time indeed results in the
         equations of motion.</p>
 
+        <p>The particular orbit defined by $E = mgl$ is special -- this is the orbit that visits the (unstable) equilibrium at the upright.  It is known as the <a href="https://en.wikipedia.org/wiki/Homoclinic_orbit">homoclinic orbit</a>.</p>
+
       </subsubsection>
 
 <!--  these are correct, but take away from the flow.  move to an appendix?
@@ -517,10 +519,94 @@ complete trajectory.</p>
     solution, and number of pumps required to reach the top, is a non-trivial
     function of the initial conditions and the torque-limits.</p>
 
-    <p>Although this system is very simple, its solution requires much of the
-    same reasoning necessary for controlling much more complex underactuated
-    systems; this problem will be a work-horse for us as we introduce new
-    algorithms throughout this book.</p>
+    <p>Although this system is very simple, obtaining a solution with
+    general-purpose algorithms requires much of the same reasoning necessary for
+    controlling much more complex underactuated systems; this problem will be a
+    work-horse for us as we introduce new algorithms throughout this book.</p>
+
+    <subsection id="energy_shaping"><h1>Energy-shaping control</h1>
+
+      <p>In the specific case of the pendulum, we can give a satisfying
+      hand-designed nonlinear controller based on our intuition of pumping
+      energy into the system.  We have already observed that the total energy of
+      the pendulum is given by $$E = \frac{1}{2} m l^2 \dot\theta^2 -
+      mgl\cos\theta.$$  To understand how to control the energy, let us examine
+      how that energy changes with time: \begin{align*} \dot{E} =&
+      ml^2\dot\theta \ddot\theta + \dot\theta mgl\sin\theta \\ =& \dot\theta
+      \left[ u - mgl\sin\theta \right] + \dot\theta mgl\sin\theta \\ =&
+      u\dot\theta. \end{align*} In words, adding energy to the system is simple
+      - apply torque in the same direction as $\dot\theta$.  To remove
+      energy, apply torque in the opposite direction (e.g., damping).</p>
+
+      <p>To swing up the pendulum, even with torque limits, let us use this
+      observation to drive the system to its homoclinic orbit, and then let the
+      dynamics of the pendulum carry us to the upright equilibrium.  Recall that
+      the homoclinic orbit has energy $mgl$ -- let's call this our
+      <i>desired</i> energy:$$E^d = mgl.$$  Furthermore, let's define the
+      difference between our current energy and this desired energy as
+      $\tilde{E} = E - E^d$, and note that we still have $$\dot{\tilde{E}} =
+      \dot{E} = u\dot\theta.$$  Now consider the feedback controller of the form
+      $$u = -k \dot\theta \tilde{E},\quad k>0.$$ I admit that this looks a bit
+      strange; it was chosen for the simple reason that it turns the resulting
+      "error dynamics" into something simple: $$\dot{\tilde{E}} = - k
+      \dot\theta^2 \tilde{E}.$$  Think about the graphical analysis of this
+      system if you were to draw $\dot{\tilde{E}}$ vs. $\tilde{E}$ for any fixed
+      $\dot\theta$ -- it's a straight line separated from the horizontal axis
+      which would imply an exponential convergence: $\tilde{E} \rightarrow 0.$
+      This is true for any $\dot\theta$, except for $\dot\theta=0$ (so it will
+      not actually swing us up from the downright fixed point... but if you
+      nudge the system just a bit, then it will start pumping energy and will
+      swing all of the way up).  The essential property is that when $E > E^d$,
+      we should remove energy from the system (damping) and when $E < E^d$, we
+      should add energy (negative damping).  Even if the control actions are
+      bounded, the convergence is easily preserved.</p>
+
+      <p> This is a nonlinear controller that will push all system trajectories
+      to the unstable equilibrium.  But does it make the unstable equilibrium
+      locally stable?  With only this controller, the fixed point is <em>
+      attractive, but is not stable</em> -- just like our example above.   Small
+      perturbations may cause the system to drive all of the way around the
+      circle in order to once again return to the unstable equilibrium.  For
+      this reason, to actually balance the system, we'll have to switch to a
+      different controller once we get near the fixed point (an idea that we'll
+      discuss more in the next chapter).</p>
+
+      <example><h1>Energy Shaping for the Pendulum</h1>
+
+      <p>Take a minute to play around with the energy shaping controller for
+      swinging up the pendulum</p>
+
+      <jupyter>examples/pendulum/energy_shaping.ipynb</jupyter>
+
+      <p>Make sure that you take a minute to look at the code which runs during
+      these examples.  Note the somewhat arbitrary threshold for switching to
+      the balancing controller.  We'll give a much more satisfying answer for
+      that in the <a href="lyapunov.html">chapter on Lyapunov methods</a>.</p>
+
+      </example>
+
+      <p>There are a few things that are extremely nice about this controller.
+      Not only is it simple, but it is actually incredibly robust to and errors
+      we might have in our estimate of the model parameters, $m$, $l$, and $g$.
+      In fact, the only place that the model enters our control equation is in
+      the calculation of $\tilde{E} = \frac{1}{2} m l^2 \dot\theta^2 + mgl(1 -
+      \cos\theta)$, and the only property of this estimate that impacts
+      stability is the location of the orbit when $\tilde{E} = 0$, which is
+      $\frac{1}{2}l\dot\theta^2 = g(\cos\theta - 1).$ This doesn't depend at all
+      on our estimate of the mass, and only linearly on our estimates of the
+      length and gravity (and if one cannot measure the length of the pendulum
+      accurately, then a proper measuring device would make an excellent
+      investment).  This is somewhat amazing; we will develop many
+      optimization-based algorithms capable of swinging up the pendulum, but it
+      will take a lot of work to find one that is as insensitive to the model
+      parameters.</p>
+
+      <p>If there is damping in the original system, of course we can cancel
+      this out, too, using $u = -k \dot\theta \tilde{E} + b\dot\theta.$  And
+      once again, the controller is quite robust if we have errors in the
+      estimated damping ratio.</p>
+
+    </subsection>
 
   </section>
 

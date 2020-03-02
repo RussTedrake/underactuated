@@ -7,6 +7,12 @@
 load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
+    name = "energy_shaping",
+    srcs = ["energy_shaping.ipynb"],
+    deps = ["//underactuated"],
+)
+
+rt_ipynb_test(
     name = "torque_slider_demo",
     srcs = ["torque_slider_demo.ipynb"],
     deps = ["//underactuated"],
