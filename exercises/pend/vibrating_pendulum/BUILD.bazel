@@ -10,5 +10,9 @@ rt_ipynb_test(
     name = "vibrating_pendulum",
     srcs = ["vibrating_pendulum.ipynb"],
     data = ["//underactuated/models:vibrating_pendulum.urdf"],
-    deps = ["//underactuated"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/pend/vibrating_pendulum"
+    ],
 )
