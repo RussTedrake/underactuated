@@ -48,13 +48,16 @@ load("//tools:environ.bzl", "environ_repository")
 
 # Allowing PWD to be loaded here is a terrible work-around that allows me to
 # pass the equivalent of BUILD_WORKSPACE_DIRECTORY as a command line argument
-# (since it's not available to tests).  This enables *non-hermetic* tests... 
+# (since it's not available to tests).  This enables *non-hermetic* tests...
 # which I introduced because it is hard to list all .py and .ipynb  files as
 # dependencies via bazel's glob since "labels are not allowed to cross the
 # package boundary and glob does not match files in subpackages."
 environ_repository(
     name = "environ",
-    vars = ["DRAKE_INSTALL_DIR", "PWD"],
+    vars = [
+        "DRAKE_INSTALL_DIR",
+        "PWD",
+    ],
 )
 
 load("@environ//:environ.bzl", "DRAKE_INSTALL_DIR")
