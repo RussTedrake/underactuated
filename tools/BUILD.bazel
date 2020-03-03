@@ -35,7 +35,5 @@ rt_py_test(
         "--cwd",
         PWD,
     ],
-    data = [
-        "//:html",
-    ],
+    data = ["//:html"],
 )

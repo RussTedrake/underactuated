@@ -8,8 +8,6 @@ load("//tools/rt/python:defs.bzl", "rt_py_library")
 
 rt_py_library(
     name = "minimum_time",
-    srcs = [
-        "test_minimum_time.py",
-    ],
+    srcs = ["test_minimum_time.py"],
     visibility = ["//visibility:public"],
 )

@@ -13,5 +13,6 @@ rt_ipynb_test(
     deps = [
         "//underactuated",
         "//underactuated/exercises",
-        "//underactuated/exercises/acrobot/cartpole_balancing"],
+        "//underactuated/exercises/acrobot/cartpole_balancing",
+    ],
 )
