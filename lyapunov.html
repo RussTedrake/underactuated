@@ -971,29 +971,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       
       <ol type="a">
 
-        <li>What is a Lyapunov function?</li>
-        
-        <li>How does Lyanpunov theory relate to robots?</li>
-
-        <li>What is the relationship between Lyapunov functions, we have been
-           writing them as $V(x)$, and cost-to-go functions, we have been
-            writing them as $J(x)$?</li>
-
         <li>What are the conditions for making a Lyapunov function valid?</li>
-
-        <li>Just a function $V(x)$ doesn't itself demand anything about how
-           the function will evolve over time. How do we bring the idea of 
-           evolution over time into our Lyapunov analysis?</li>
 
         <li>If somebody gives you a Lyapunov function $V(x)$ and a dynamical
            system $\dot{x} = f(x)$, is it hard to check if $V$ is a valid 
            Lyapunov function?</li>
-
-        <li>If you would like to find a Lyapunov function on your own, how
-           might you do that?</li>
-
-        <li>Can you prove the nonexistence of a Lyapunov function, for a
-           particular system?</li>
 
       </ol>
 
@@ -1002,10 +984,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <exercise><h1>Lyapunov Stability</h1>
 
       <p>A dynamical system is defined by the equations $\dot{x_1}=f_1(x_1,x_2)$
-         and $\dot{x_2}=f_2(x_1,x_2)$. You find that the function $V=\frac{1}{2}x_1^2$ 
-         has a derivative $\dot{V} = \left[\dfrac{dV}{dx_1}, \dfrac{dV}{dx_2}\right] 
-         \left[ f_1, f_2 \right]^T$ which is negative semidefinite. What, if anything,
-          can you prove about the behavior of this system with this function $V$?</p>
+        and $\dot{x_2}=f_2(x_1,x_2)$. You find that the function $V=\frac{1}{2}x_1^2$ 
+        has a derivative $\dot{V} = \left[\dfrac{dV}{dx_1}, \dfrac{dV}{dx_2}\right] 
+        \left[ f_1, f_2 \right]^T$ which is negative semidefinite. 
+        Can you infer global stability of the origin? Can you infer stability 
+        for $x_1$ and $x_2$ separately?</p>
       
     </exercise>
 
