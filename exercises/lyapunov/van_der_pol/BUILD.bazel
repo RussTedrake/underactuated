@@ -9,5 +9,8 @@ load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
 rt_ipynb_test(
     name = "van_der_pol",
     srcs = ["van_der_pol.ipynb"],
-    deps = ["//underactuated"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/lyapunov/van_der_pol"],
 )
