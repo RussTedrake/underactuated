@@ -112,26 +112,27 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <p>Evaluating the time derivative of the energy reveals \[ \frac{d}{dt} E
       = - b\dot\theta^2 \le 0. \] This is sufficient to demonstrate that the
       energy will never increase, but it doesn't actually prove that the energy
-      will converge to the minimum.  To take that extra step, we must observe
-      that for most of the states with $\dot{E} = 0$, which for $b>0$ is the
-      manifold where $\dot\theta=0$, the system can't actually remain in that
-      state, but will rather pass through and enter another region where it
-      continues to lose energy.  In fact, the fixed points are the only subset
-      of this $\dot{E}=0$ manifold where the system can stay on the manifold.
-      Therefore, unless the system is at a fixed point, it will continue to
-      dissipate energy.  And therefore we can conclude that as $t\rightarrow
-      \infty$, the system will indeed come to rest at a fixed point (though it
-      could be any fixed point with an energy less than or equal to the initial
-      energy in the system, $E(0)$).</p>
+      will converge to the minimum when $b>0$ because there are multiple
+      states(not only the minimum) for which $\dot{E}=0$.  To take the last
+      step, we must observe that set of states with $\dot\theta=0$ is not an
+      invariant set; that if the system is in, for instance
+      $\theta=\frac{\pi}{4}, \dot\theta=0$ that it will not stay there, because
+      $\ddot\theta \neq 0$.  And once it leaves that state, energy will decrease
+      once again.  In fact, the fixed points are the only subset the set of
+      states where $\dot{E}=0$ which do form an invariant set.  Therefore we can
+      conclude that as $t\rightarrow \infty$, the system will indeed come to
+      rest at a fixed point (though it could be any fixed point with an energy
+      less than or equal to the initial energy in the system, $E(0)$).</p>
 
     </example>
 
     <p>This is an important example.  It demonstrated that we could use a
-    relatively simple function, the system energy, to describe something about
-    the long-term dynamics of the pendulum even though the actual trajectories
-    of the system are (analytically) very complex.  It also demonstrated one of
-    the subtleties of using an energy-like function that is non-increasing
-    (instead of strictly decreasing) to prove asymptotic stability.</p>
+    relatively simple function -- the total system energy -- to describe
+    something about the long-term dynamics of the pendulum even though the
+    actual trajectories of the system are (analytically) very complex.  It also
+    demonstrated one of the subtleties of using an energy-like function that is
+    non-increasing (instead of strictly decreasing) to prove asymptotic
+    stability.</p>
 
     <p>Lyapunov functions generalize this notion of an energy function to more
     general systems, which might not be stable in the sense of some mechanical
@@ -151,15 +152,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       region ${\cal B}$ around the origin (specifically an open subset of
       $\mathbf{R}^n$ containing the origin), if I can produce a scalar,
       continuously-differentiable function $V(\bx)$, such that \begin{gather*}
-      V(\bx) > 0, \forall \bx \in {\cal B} \ne 0 \quad V(0) = 0, \text{ and} \\
-      \dot{V}(\bx) = \pd{V}{\bx} f(\bx) \le 0, \forall \bx \in {\cal B} \ne 0
-      \quad \dot{V}(0) = 0, \end{gather*} then the origin $(\bx = 0)$ is stable
-      in the sense of Lyapunov (i.s.L.). </p>
+      V(\bx) > 0, \forall \bx \in {\cal B} \setminus \{0\} \quad V(0) = 0,
+      \text{ and} \\ \dot{V}(\bx) = \pd{V}{\bx} f(\bx) \le 0, \forall \bx \in
+      {\cal B} \setminus \{0\} \quad \dot{V}(0) = 0, \end{gather*} then the
+      origin $(\bx = 0)$ is stable in the sense of Lyapunov (i.s.L.).   [Note: the notation $A \setminus B$ represents the set $A$ with the elements of $B$ removed.]</p>
 
       <p>If, additionally, we have $$\dot{V}(\bx) = \pd{V}{\bx} f(\bx) < 0,
-      \forall \bx \in {\cal B} \ne 0,$$ then the origin is (locally)
+      \forall \bx \in {\cal B} \setminus \{0\},$$ then the origin is (locally)
       asymptotically stable.  And if we have $$\dot{V}(\bx) = \pd{V}{\bx} f(\bx)
-      \le -\alpha V(x), \forall \bx \in {\cal B} \ne 0,$$ for some $\alpha>0$,
+      \le -\alpha V(x), \forall \bx \in {\cal B} \setminus \{0\},$$ for some $\alpha>0$,
       then the origin is (locally) exponentially stable. </p>
 
     </theorem>
@@ -462,9 +463,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       parameterized in this way is exactly the set of polynomials that can be
       written as a <em>sum of squares</em><elib>Parrilo00</elib>.  While it is
       known that not all positive polynomials can be written in this form, much
-      is known about the gap (and papers have been written about trying to find
-      polynomials which are uniformly positive but not sums of squares).  For
-      our purposes this gap is very small; we should remember that it exists but
+      is known about the gap.  For our purposes this gap is very small (papers
+      have been written about trying to find polynomials which are uniformly
+      positive but not sums of squares); we should remember that it exists but
       not worry about it too much for now.</p>
 
       <p>Even better, there is quite a bit that is known about how to choose

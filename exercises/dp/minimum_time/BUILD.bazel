@@ -9,5 +9,9 @@ load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
 rt_ipynb_test(
     name = "minimum_time",
     srcs = ["minimum_time.ipynb"],
-    deps = ["//underactuated"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/dp/minimum_time",
+    ],
 )

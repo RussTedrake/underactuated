@@ -10,5 +10,9 @@ rt_ipynb_test(
     name = "cartpole_balancing",
     srcs = ["cartpole_balancing.ipynb"],
     data = ["//underactuated/models:undamped_cartpole.urdf"],
-    deps = ["//underactuated"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/acrobot/cartpole_balancing",
+    ],
 )

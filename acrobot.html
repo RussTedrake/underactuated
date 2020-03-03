@@ -728,7 +728,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \begin{bmatrix} \bM_{11} & \bM_{12} \\ \bM_{21} & \bM_{22}
       \end{bmatrix}.$$ Fortunately, because $\bM$ is uniformly (e.g. for all
       $\bq$) positive definite, $\bM_{11}$ and $\bM_{22}$ are also positive
-      definite.</p>
+      definite, by the <a href="https://en.wikipedia.org/w/index.php?title=Schur_complement">Schur complement condition for positive definiteness</a>.</p>
 
       <subsubsection><h1>Collocated linearization</h1>
 
@@ -762,9 +762,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         where $\bM_{12}^+$ is a Moore-Penrose pseudo-inverse.  This inverse
         provides a unique solution when the rank of $\bM_{12}$ equals $l$, the
         number of passive degrees of freedom in the system (it cannot be more,
-        since the matrix only has $l$ rows).  This rank condition is sometimes
-        called the property of "Strong Inertial Coupling".  It is state
-        dependent. A system has Global Strong Inertial Coupling if it exhibits
+        since the matrix only has $l$ rows).  The rank condition in this 
+        context is sometimes called the property of "Strong Inertial Coupling".  It is state
+        dependent; in the cart-pole example above $\bM_{12} = \cos\theta$ and drops rank exactly when $\cos\theta = 0$. A system has Global Strong Inertial Coupling if it exhibits
         Strong Inertial Coupling in every state.</p>
 
       </subsubsection>
@@ -900,22 +900,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       The basic idea, from <elib>Chung95</elib>, is to use collocated PFL to
       simplify the dynamics, use energy shaping to regulate the pendulum to its
       homoclinic orbit, then to add a few terms to make sure that the cart stays
-      near the origin.  The collocated PFL (when all parameters are set to 1)
-      left us with:
-
+      near the origin.  This is a bit surprising... if we want to control the pendulum, shouldn't we use the non-collocated version?  Actually, we ultimately want to control both the cart and the pole, and we will build on the collocated version both because it avoids inverting the $\cos\theta$ term that can go to zero and because (when all parameters are set to 1) we were left with a particularly simple form of the equations:
       \begin{gather}
       \ddot{x} = u \\
-      \ddot\theta = - u c - s
+      \ddot\theta = - u c - s.
       %\ddot\theta = -\frac{1}{l}( u c + g s )
       \end{gather}
+      The first equation is clearly simple, but even the second equation is exactly the equations of a <i>decoupled</i> pendulum, just with a slightly odd control input that is modulated by $\cos\theta$.</p>
 
-      The energy <em>of the pendulum</em> (a unit mass, unit length, simple
+      <p>Let us regulate the energy of this decoupled pendulum using energy shaping.  
+      The energy of the pendulum (a unit mass, unit length, simple
       pendulum in unit gravity) is given by: $$E(\bx) = \frac{1}{2} \dot\theta^2
       - \cos\theta.$$ <!-- E = \frac{1}{2}ml^2\dot\theta^2 - mgl\cos\theta -->
       The desired energy, equivalent to the energy at the desired fixed-point,
       is $$E^d = 1.$$ <!--  E^d = m_p g l --> Again defining $\tilde{E}(\bx) =
       E(\bx) - E^d$, we now observe that
-
       \begin{align*}
       \dot{\tilde{E}}(\bx) =& \dot{E}(\bx) = \dot\theta \ddot\theta +
       \dot\theta s \\
@@ -925,8 +924,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       =& - u\dot\theta \cos\theta.
       % - ml u \dot\theta c
       \end{align*}
+      </p>
 
-      Therefore, if we design a controller of the form $$u = k
+      <p>Therefore, if we design a controller of the form $$u = k
       \dot\theta\cos\theta \tilde{E},\quad k>0$$ the result is $$\dot{\tilde{E}}
       = - k \dot\theta^2 \cos^2\theta \tilde{E}.$$  <!-- times ml --> This
       guarantees that $| \tilde{E} |$ is non-increasing, but isn't quite enough
@@ -934,7 +934,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \dot\theta = 0$, the system will never move.  However, if we have that
       $$\int_0^t \dot\theta^2(t') \cos^2 \theta(t') dt' \rightarrow \infty,\quad
       \text{as } t \rightarrow \infty,$$ then we have $\tilde{E}(t) \rightarrow
-      0$. This condition is satisfied for all but the trivial constant
+      0$. This condition, a version of the LaSalle's theorem that we will develop in our notes on Lyapunov methods, is satisfied for all but the trivial constant
       trajectories at fixed points.</p>
 
       <p> Now we return to the full system dynamics (which includes the cart).
