@@ -10,15 +10,105 @@ class TestControl(unittest.TestCase):
         super().__init__(test_name)
         self.notebook_locals = notebook_locals
 
-    @weight(8)
+    @weight(4)
     @timeout_decorator.timeout(1.)
-    def test_lyapunov_controller(self):
-        """Test Lyapunov controller"""
+    def test_lyapunov_controller_near_origin(self):
+        """Test Lyapunov controller near origin"""
+
+        # load controller from locals
         lyapunov_controller = self.notebook_locals['lyapunov_controller']
 
-        # Test some random points
-        f_target = np.array([
-            [-0.        ,  0.        ],
+        # function that scales a vector in such a way that the third coordinate
+        # has absolute value <= a desired tolerance
+        # needed to handle the local linearization in the controller
+        project_in = lambda x, tol: x if np.abs(x[2]) <= tol else x * tol / np.abs(x[2])
+
+        # generate random states at which evaluate the dynamics
+        n = 50
+        tol = 1e-4 # this must be smaller than the one in the notebook (= 1e-3)
+        np.random.seed(0)
+        x = [project_in(np.random.randn(3), tol) for i in range(n)]
+
+        # desired value of the dynamics at given test points
+        f_des = np.array([
+            [-1.80237445e-04,  2.40885019e-04],
+            [-2.29299489e-04, -8.90205042e-06],
+            [-9.20460164e-04, -3.46637175e-04],
+            [-2.82339256e-05,  2.09904847e-04],
+            [-1.71457707e-04,  2.27412727e-04],
+            [-1.62642401e-04,  5.28256832e-04],
+            [-1.22627869e-05, -2.33454726e-04],
+            [-8.80691725e-05, -8.35250685e-05],
+            [-4.96028881e-03, -2.97834965e-03],
+            [ 1.27391521e-05,  3.04316199e-04],
+            [-1.74532454e-05, -1.57403853e-04],
+            [ 1.26690727e-03, -2.25228291e-05],
+            [-3.17636327e-04,  1.10430312e-04],
+            [ 2.12886571e-05, -2.73840825e-04],
+            [ 3.34791107e-04,  1.82766025e-04],
+            [ 5.63446602e-05,  3.88667653e-05],
+            [ 1.80229828e-04, -2.23757479e-04],
+            [-3.27707902e-05, -2.43265392e-04],
+            [ 4.23683178e-05,  8.43941306e-04],
+            [-8.33850482e-05, -3.74869067e-04],
+            [ 8.26985819e-05, -2.44217525e-04],
+            [ 4.29657666e-04, -1.55840079e-04],
+            [ 1.79676102e-04, -1.48993377e-04],
+            [-4.02730836e-05,  7.65261365e-04],
+            [-2.83192333e-04, -1.06909774e-04],
+            [ 1.18305344e-04, -3.50435804e-04],
+            [ 2.67392673e-05, -1.95179561e-04],
+            [-5.86382545e-05, -1.69688244e-04],
+            [-1.26253646e-04,  3.60834920e-04],
+            [ 1.70633544e-05,  9.84540881e-05],
+            [ 1.93579156e-04,  7.86938038e-04],
+            [-1.38221925e-04,  2.50435880e-04],
+            [-8.27345956e-06,  1.60717126e-03],
+            [-2.98265004e-05, -6.02754193e-05],
+            [ 1.08299347e-04, -1.17366178e-04],
+            [-2.60031931e-04, -2.55336988e-04],
+            [-1.02965532e-04,  2.79275398e-04],
+            [-4.74352797e-05,  1.54911183e-04],
+            [ 2.82927224e-05,  2.84714144e-04],
+            [ 1.68086067e-05,  2.66588042e-04],
+            [-1.26216414e-04, -1.68631814e-04],
+            [-8.86416924e-04, -6.64176158e-04],
+            [ 6.47266017e-05,  4.75067403e-04],
+            [-7.55609542e-05,  5.72244360e-05],
+            [ 1.06052814e-04, -1.94993984e-04],
+            [-3.24741878e-04,  7.68095349e-05],
+            [-2.65552184e-05, -2.73297968e-04],
+            [-6.91921177e-05,  2.26246495e-04],
+            [-2.61074358e-04, -9.65319357e-05],
+            [-2.41996000e-04, -4.85084770e-04]
+        ])
+
+        # test the function at the evaluation points
+        f = np.vstack([lyapunov_controller(*xi) for xi in x])
+        np.testing.assert_array_almost_equal(f, f_des, decimal=4,
+            err_msg='The controller is not correct near the origin.')
+
+    @weight(4)
+    @timeout_decorator.timeout(1.)
+    def test_lyapunov_controller_away_from_origin(self):
+        """Test Lyapunov controller away from origin"""
+
+        # load controller from locals
+        lyapunov_controller = self.notebook_locals['lyapunov_controller']
+
+        # function that scales a vector in such a way that the third coordinate
+        # has absolute value >= a desired tolerance
+        # needed to handle the local linearization in the controller
+        project_out = lambda x, tol: x if np.abs(x[2]) >= tol else x * tol / np.abs(x[2])
+
+        # generate random states at which evaluate the dynamics
+        n = 50
+        tol = 1e-2 # this must be greater than the one in the notebook (= 1e-3)
+        np.random.seed(0)
+        x = [project_out(np.random.randn(3), tol) for i in range(n)]
+
+        # desired value of the dynamics at given test points
+        f_des = np.array([
             [-0.98446505,  1.63115278],
             [-1.25328942, -0.5549188 ],
             [-0.94503173, -0.35599057],
@@ -69,19 +159,9 @@ class TestControl(unittest.TestCase):
             [-0.35373363,  1.23793387],
             [-1.45732914, -0.89604197],
             [-1.00011818, -1.997144  ]
-            ])
-        np.random.seed(0)
-        n_rands = 50
-        tol = 0.1
-        x_list = [np.zeros(3)]
-        for i in range(n_rands):
-            x = np.random.randn(3)
-            if np.linalg.norm(x) <= tol:
-                x *= tol / np.linlag.norm(x)
-            x_list.append(x)
-        f_eval = []
-        for x in x_list:
-            f_eval.append(lyapunov_controller(*x))
-        self.assertLessEqual(
-            np.linalg.norm(f_target - np.stack(f_eval)), 1e-5,
-            'The state Lyapunov controller is not correct.')
+        ])
+
+        # test the function at the evaluation points
+        f = np.vstack([lyapunov_controller(*xi) for xi in x])
+        np.testing.assert_array_almost_equal(f, f_des, decimal=4,
+            err_msg='The controller is not correct far away from the origin.')
