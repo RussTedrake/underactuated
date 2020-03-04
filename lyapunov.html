@@ -965,6 +965,67 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
   <section><h1>Exercises</h1>
 
+    <exercise><h1>Lyapunov Stability</h1>
+
+      <p>A dynamical system is defined by the equations $\dot{x_1}=f_1(x_1,x_2)$
+        and $\dot{x_2}=f_2(x_1,x_2)$. You find that the function $V=\frac{1}{2}x_1^2$ 
+        has a derivative $\dot{V} = \left[\dfrac{dV}{dx_1}, \dfrac{dV}{dx_2}\right] 
+        \left[ f_1, f_2 \right]^T$ which is negative semidefinite. 
+        Can you infer global stability of the origin? Can you infer stability 
+        for $x_1$ and $x_2$ individually?</p>
+      
+    </exercise>
+
+    <exercise><h1>Valid Lyapunov Function</h1>
+
+      <p>For the system
+        $$\begin{align} \dot{x_1}&amp;=-\frac{6x_1}{(1+x_1^2)^2}+2x_2 \\
+         \dot{x_2}&amp;=-\frac{2(x_1+x_2)}{(1+x_1^2)^2} \end{align}$$
+        you are given the positive definite function $V(x) =\frac{x_1^2}{1 + x_1^2}+ 
+        x_2^2$ and told that, for this system, $\dot{V}$ is negative definite over 
+        the entire space. Is $V$ a valid Lyapunov function which proves global 
+        asymptotic stability to the origin for the system described by these 
+        equations? Why or why not? Hint: Try simulating a few trajectories of 
+        this system or plotting the vector field to build more intuition 
+        before answering this problem.</p>
+      
+    </exercise>
+
+    <exercise><h1>Lyapunov Analysis</h1>
+
+      <p>Given dynamics $\dot{x} = f(x)$ and a Lyapunov candidate $V(x)$, 
+        let $D$ be any domain such that for all $\hat{x} \in D$, $V(\hat{x})$ 
+        is positive definite and $\dot{V}(\hat{x})$ is negative definite.</p>
+
+      <ol type="a">
+
+        <li>Can we say that all initial conditions inside $D$ will stay inside $D$?
+           Why or why not?</li>
+        
+        <li>Can we say that all initial conditions inside $D$ will converge 
+          to the origin? Why or why not?</li>
+
+      </ol>
+
+    </exercise>
+
+    <exercise><h1>Are Lyapunov Functions Unique?</h1>
+
+      <p>If $V_1(x)$ and $V_2(x)$ are valid Lyapunov functions that prove global 
+        stability of a system to the origin, does $V_1(x)$ necessarily equal 
+        $V_2(x)$? In other words, are Lyapunov functions unique? Why or why not?</p>
+
+    </exercise>
+
+    <exercise><h1>Global Asymptotic Stability</h1>
+
+      <p>Consider the system given by $$ \dot{x}= \left(\begin{array}{c} {x_2} - 
+        {{x_1}}^3\ - {{x_2}}^3 - {x_1} \end{array}\right)\label{p2System} $$
+         Show that the Lyapunov function $$ V(x) = x_1^2 + x_2^2 $$        
+        proves global asymptotic stability of the above equation to the origin.</p>
+
+    </exercise>
+
     <exercise><h1>Control-Lyapunov Function</h1>
 
       <p>Consider the problem of synthesizing a stabilizing feedback law $\bu = \pi (\bx)$ for the dynamical system $\dot \bx = f(\bx, \bu)$.  Lyapunov analysis suggests us a very simple approach to this problem: choose a candidate Lyapunov function $V(\bx)$, and design a control law $\pi (\bx)$ such that $V(\bx)$ always decreases along the trajectories of the closed-loop system $\dot \bx = f(\bx, \pi (\bx))$.  A function $V(\bx)$ for which such a control law exists is called a <i>control-Lyapunov function</i>.  In this exercise, we use this idea to drive a wheeled robot, implementing the controller proposed in <elib>Aicardi95</elib>.</p>
@@ -988,6 +1049,51 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
         <li>In <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/lyapunov/control/control.ipynb" target="_blank">this python notebook</a> we set up a simulation environment for you to try the controller we just derived.  Type the control law from point (b) in the dedicated cell, and use the notebook plot to check your work.</li>
 
+      </ol>
+
+    </exercise>
+
+    <exercise><h1>Sums of Squares (SOS) for Lyapunov functions &mdash; Quick check
+       for understanding</h1>
+
+      <p>We recommend you stop for a second to make sure you can answer the
+         following questions:</p>
+      
+      <ol type="a">
+
+        <li>What is the simplest example of a function that is a sum of squares?</li>
+        
+        <li>What is arguably the most useful property of functions that are sums 
+          of squares? When are they positive? When are they negative?</li>
+
+        <li>Are there functions that also have this property, but do not belong
+           to the set of sums of squares? (Hint: Google the Motzkin polynomial mentioned in class.)</li>
+
+        <li>How do sums of squares (SOS) relate to Lyapunov functions?</li>
+
+        <li>Specifically, which property (or properties) of Lyapunov
+           functions do we relate to them being sums of squares or not?</li>
+
+        <li>To make an expressive set of functions over our state space, 
+          we choose some set of monomials $m(x)$. What are some examples 
+          of good choices for $m(x)$?</li>
+
+        <li>What does the form $V(x) = m^T(x) Q m^T(x)$ have to do with 
+          a function being sums of squares?</li>
+
+        <li>Searching for $Q$ in the above question can be formulated as 
+          a Semidefinite Program. What is the difference between Quadratic 
+          Programming and Semidefinite Programming?</li>
+
+        <li>If we find, using SOS optimization, a valid Lyapunov 
+          function, then what does this say about our system?</li>
+
+        <li>If we cannot find, using SOS optimization, a valid 
+          Lyapunov function, then what does this say about our system?</li>
+
+        <li>We are using SOS to help find Lyapunov functions. 
+          How does this help our robots?</li>
+      
       </ol>
 
     </exercise>
