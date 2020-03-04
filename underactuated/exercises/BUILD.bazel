@@ -8,8 +8,6 @@ load("//tools/rt/python:defs.bzl", "rt_py_library")
 
 rt_py_library(
     name = "exercises",
-    srcs = [
-        "grader.py",
-    ],
+    srcs = ["grader.py"],
     visibility = ["//visibility:public"],
 )

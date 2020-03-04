@@ -8,8 +8,6 @@ load("//tools/rt/python:defs.bzl", "rt_py_library")
 
 rt_py_library(
     name = "cartpole_balancing",
-    srcs = [
-        "test_cartpole_balancing.py",
-    ],
+    srcs = ["test_cartpole_balancing.py"],
     visibility = ["//visibility:public"],
 )

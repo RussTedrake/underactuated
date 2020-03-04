@@ -8,8 +8,6 @@ load("//tools/rt/python:defs.bzl", "rt_py_library")
 
 rt_py_library(
     name = "vibrating_pendulum",
-    srcs = [
-        "test_vibrating_pendulum.py",
-    ],
+    srcs = ["test_vibrating_pendulum.py"],
     visibility = ["//visibility:public"],
 )
