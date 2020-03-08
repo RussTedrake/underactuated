@@ -918,7 +918,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       polynomials, then velocities can as well: forward kinematics $\bp_i =
       f(\bq)$ implies that $\dot\bp_i = \frac{\partial f}{\partial \bq}\dot\bq,$
       which is polynomial in $s, c, \dot\theta$.  Since the kinetic energy of
-      our robot is given by the accumation of the kinetic energy of all the
+      our robot is given by the accumulation of the kinetic energy of all the
       mass, $T = \sum_i \frac{1}{2} m_i v_i^Tv_i,$ the kinetic energy is
       polynomial, too (even when we write it with inertial matrices and angular
       velocities).</p>
@@ -985,15 +985,37 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       Lyapunov conditions using the dynamics in implicit form, e.g. by writing
       $V(\bq,\dot\bq,\ddot\bq)$ and asking it to satisfy the Lyapunov conditions
       everywhere that $\bM(\bq)\ddot\bq + ... = ... + {\bf B}\bu$ is
-      satisfied, using the S-procedure.</p>  
+      satisfied, using the S-procedure.</p>
 
-      <p>There are a few things that break this clean polynomial view of the
-      world.  Rotary springs, for instance, if modeled as $\tau = k (\theta_0 -
-      \theta)$ will mean that $\theta$ appears alongside $\sin\theta$ and
-      $\cos\theta$, and the relationship between $\theta$ and $\sin\theta$ is
-      sadly <i>not polynomial</i>.  Linear feedback from LQR actually looks like
-      the linear spring, although writing the feedback as $u = -\bK \sin\theta$
-      is a viable alternative.</p>
+      <example><h1>Verifying dynamics in "mass-matrix form"</h1>
+        <p>Typically we write our differential equations in the form $\dot\bx =
+        {\bf f}(\bx, \bu).$  But let us consider for a moment the case where the
+        dynamics are given in the form $${\bf E}(\bx)\dot\bx = {\bf f}(\bx).$$
+        This form is strictly more general because I can always take ${\bf
+        E}(\bx)$ to be the identity matrix.  Whenever ${\bf E}(\bx)$ is
+        invertible, I can of course get back the original form; but the fact
+        that this is not strictly necessary is useful for instance when writeing
+        dynamics using the trigonometric substitutions that we used in the
+        example above.  Most importantly, if ${\bf E}(\bx)$ is a polynomial of
+        non-zero degree and ${\bf f}(\bx)$ is polynomial, then then the dynamics
+        would be a <i>rational</i> polynomial in the original explicit form.</p>
+
+        <p>Interestingly, we can check the Lyapunov conditions, $\dot{V}(\bx)
+        \le 0$, directly on the system in its mass-matrix form.  Simply define a
+        new function $Q(\bx, \bz) = \frac{\partial V(\bx)}{\partial \bx} \bz.$
+        If we can show $Q(\bx, \bz) \le 0 \in \{ \bx, \bz | {\bf E}(\bx) \bz =
+        {\bf f}(\bx) \}$ using SOS, then we have verified that $\dot{V}(\bx) \le
+        0$, albeit at the non-trivial cost of adding indeterminates $\bz$ and an
+        additional S-procedure.</p>
+      </example>  
+
+      <p>There are a few things that <i>do</i> break this clean polynomial view
+      of the world.  Rotary springs, for instance, if modeled as $\tau = k
+      (\theta_0 - \theta)$ will mean that $\theta$ appears alongside
+      $\sin\theta$ and $\cos\theta$, and the relationship between $\theta$ and
+      $\sin\theta$ is sadly <i>not polynomial</i>.  Linear feedback from LQR
+      actually looks like the linear spring, although writing the feedback as $u
+      = -\bK \sin\theta$ is a viable alternative.</p>
 
       <p>In practice, you can also Taylor approximate any smooth nonlinear
       function using polynomials.  This can be an effective strategy in
@@ -1001,10 +1023,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       in many cases it is possible to provide conservative bounds on the errors
       due to the approximation.</p>
 
+      <p>One final technique that is worth knowing about is a change of coordinates, often referred to as the <a href="https://en.wikipedia.org/wiki/Stereographic_projection">stereographic projection</a>, that provides a polynomial coordinates to represent $\sin$ and $\cos$:      <figure>
+        <img width="70%" src="figures/stereographic.svg"/>
+        <figcaption>The stereographic projection.</figcaption>
+      </figure>
+      By projecting onto the line, and using similar triangles, we find that $p = \frac{\sin\theta}{1 + \cos\theta}.$  Solving for $\sin\theta$ and $\cos\theta$ reveals $$\cos\theta = \frac{1-p^2}{1+p^2}, \quad \sin\theta = \frac{2p}{1+p^2}, \quad \text{and} \quad \frac{\partial p}{\partial \theta} = \frac{1+p^2}{2},$$ where $\frac{\partial p}{\partial \theta}$ can be used in the chain rule to derive the dynamics $\dot{p}$.  Although the equations are rational, they share the denominator $1+p^2$ and can be treated efficiently in mass-matrix form.  Compared to the simple substitution of $s=\sin\theta$ and $c=\cos\theta$, this is a minimal representation (scalar to scalar, no $s^2+c^2=1$ required); unfortunately it does have a singularity at $\theta=\pi$, so likely cannot be used for global analysis.
+    </p>
+
     </subsection>
 
-    <todo> implicit dynamics formulations.  convex ROA w/ outer approx.  control
-    design.  </todo>
+    <todo>convex ROA w/ outer approx.</todo>
+    <todo>control design w/ alternations.</todo>
 
   </section> <!-- end ROA -->
 
