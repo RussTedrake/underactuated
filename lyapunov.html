@@ -887,35 +887,59 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </subsection> <!-- ROA for polynomial -->
 
-    <subsection><h1>Rigid-body dynamics are polynomial</h1>
+    <subsection><h1>Rigid-body dynamics are (rational) polynomial</h1>
 
-      <p>Coming soon... For a nice explanation of how rigid-body kinematics are
-      polynomial, see <elib>Wampler11</elib>.  Looking at the Lagrangian, you
-      can see that if the kinematics are polynomial, then the dynamics will be,
-      too.</p>
+      <p>We've been talking a lot in this chapter about numerical methods for
+      polynomial systems.  But even our simple pendulum has a $\sin\theta$ in
+      the dynamics.  Have I been wasting your time?  Must we just resort to
+      polynomial approximations of the non-polynomial equations?  It turns out
+      that our polynomial tools can perform exact analysis of the manipulation
+      equation for almost all&dagger;<sidenote>&dagger;the most notable
+      exception to this is if your robot has helical/screw joints (see
+      <elib>Wampler11</elib>).</sidenote>of our robots.  We just have to do a
+      little more work to reveal that structure.</p>
+
+      <p>Let us first observe that rigid-body kinematics are polynomial (except
+      the helical joint).  This is fundamental -- the very nature of a "rigid
+      body" assumption is that Euclidean distance is preserved between points on
+      the body; if $\bp_1$ and $\bp_2$ are two points on a body, then the
+      kinematics enforce that $|\bp_1 - \bp_2|_2^2$ is constant -- these are
+      polynomial constraints.  Of course, we commonly write the kinematics in a
+      minimal coordinates using $\sin\theta$ and $\cos\theta$.  But because of
+      rigid body assumption, these terms only appear in the simplest forms, and
+      we can simply make new variables $s_i = \sin\theta_i, c_i = \cos\theta_i$,
+      and add the constraint that $s_i^2 + c_i^2 = 1.$  For a more thorough
+      discussion see, for instance, <elib>Wampler11</elib> and
+      <elib>Sommese05</elib>. Since the potential energy of a multi-body system
+      is simply an accumulation of weight times the vertical position for all of
+      the points on the body, the potential energy is polynomial.<p>
+
+      <p>If configurations (positions) of our robots can be described by
+      polynomials, then velocities can as well: forward kinematics $\bp_i =
+      f(\bq)$ implies that $\dot\bp_i = \frac{\partial f}{\partial \bq}\dot\bq,$
+      which is polynomial in $s, c, \dot\theta$.  Since the kinetic energy of
+      our robot is given by the accumation of the kinetic energy of all the
+      mass, $T = \sum_i \frac{1}{2} m_i v_i^Tv_i,$ the kinetic energy is
+      polynomial, too (even when we write it with inertial matrices and angular
+      velocities).</p>
+
+      <p>Finally, the <a href="multibody.html">equations of motion</a> can be
+      obtained by taking derivatives of the Lagrangian (kinetic minus
+      potential). These derivatives are still polynomial!</p>
 
       <example><h1>Global stability of the simple
         pendulum via SOS</h1>
 
         <p> We opened this chapter using our intuition about energy to discuss
-          stability on the simple pendulum. Now we'll replace that intuition with
-          convex optimization (because it will also work for more difficult
-          systems where our intuition fails).</p>
+        stability on the simple pendulum. Now we'll replace that intuition with
+        convex optimization (because it will also work for more difficult
+        systems where our intuition fails).</p>
 
-        <p>But wait!  The equations of motion of the simple pendulum are not
-          polynomial, are they (they have a $\sin(\theta)$ in them)?  Actually
-          nearly all rigid-body systems can be written as polynomials given a
-          change of coordinates.  Indeed, the rigid-body-assumption is simply an
-          assumption that points on the same body stay a constant distance apart,
-          and Euclidean distance is certainly a polynomial.  For a more thorough
-          discussion see, for instance, <elib>Wampler11</elib> and
-          <elib>Sommese05</elib>.</p>
-
-        <p>For the purposes of this example, let's change coordinates from
-          $[\theta,\dot\theta]^T$ to $\bx = [s,c,\dot\theta]^t$, where $s \equiv
-          \sin\theta$ and $c \equiv \cos\theta$.  Then we can write the pendulum
-          dynamics as $$\dot\bx = \begin{bmatrix} c \dot\theta \\ -s \dot\theta \\
-          -\frac{1}{m l^2} \left( b \dot\theta + mgls \right) \end{bmatrix}.$$
+        <p>Let's change coordinates from $[\theta,\dot\theta]^T$ to $\bx =
+        [s,c,\dot\theta]^t$, where $s \equiv \sin\theta$ and $c \equiv
+        \cos\theta$.  Then we can write the pendulum dynamics as $$\dot\bx =
+        \begin{bmatrix} c \dot\theta \\ -s \dot\theta \\ -\frac{1}{m l^2}
+        \left( b \dot\theta + mgls \right) \end{bmatrix}.$$
         </p>
 
         <p>Now let's parameterize a Lyapunov candidate $V(s,c,\dot\theta)$ as
@@ -943,12 +967,33 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
             src="figures/pend_global_sos.svg" width="400px"/></div>
 
         <p>Aha!  Not only does the optimization finds us coefficients for the
-          Lyapunov function which satisfy our Lyapunov conditions, but the result
-          looks a lot like mechanical energy.  In fact, the result is a little
-          better than energy... there are some small extra terms added which prove
-          exponential stability without having to invoke LaSalle's Theorem.</p>
+        Lyapunov function which satisfy our Lyapunov conditions, but the result
+        looks a lot like mechanical energy.  In fact, the result is a little
+        better than energy... there are some small extra terms added which prove
+        exponential stability without having to invoke LaSalle's Theorem.</p>
 
       </example>
+
+      <p>The one-degree-of-freedom pendulum did allow us to gloss over one
+      important detail: while the manipulator equations $\bM(\bq) \ddot{\bq} +
+      \bC(\bq, \dot\bq)\dot{\bq} = ...$ are polynomial, in order to solve for
+      $\ddot{\bq}$ we actually have to multiply both sides by $\bM^{-1}$.  This,
+      unfortunately, is <i>not</i> a polynomial operation, so in fact the final
+      dynamics of the multibody systems are <i>rational</i> polynomial.  Not
+      only that, but evaluating $\bM^{-1}$ symbolically is not advised -- the
+      equations get very complicated very fast.  But we can actually write the
+      Lyapunov conditions using the dynamics in implicit form, e.g. by writing
+      $V(\bq,\dot\bq,\ddot\bq)$ and asking it to satisfy the Lyapunov conditions
+      everywhere that $\bM(\bq)\ddot\bq + ... = ... + {\bf B}\bu$ is
+      satisfied, using the S-procedure.</p>  
+
+      <p>There are a few things that break this clean polynomial view of the
+      world.  Rotary springs, for instance, if modeled as $\tau = k (\theta_0 -
+      \theta)$ will mean that $\theta$ appears alongside $\sin\theta$ and
+      $\cos\theta$, and the relationship between $\theta$ and $\sin\theta$ is
+      sadly <i>not polynomial</i>.  Linear feedback from LQR actually looks like
+      the linear spring, although writing the feedback as $u = -\bK \sin\theta$
+      is a viable alternative.</p>
 
       <p>In practice, you can also Taylor approximate any smooth nonlinear
       function using polynomials.  This can be an effective strategy in
@@ -967,29 +1012,31 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <exercise><h1>Valid Lyapunov Function for Global Stability</h1>
 
-      <p>For the system \begin{align*} \dot x_1 &=-\frac{6x_1}{(1+x_1^2)^2}+2x_2, \\
-         \dot x_2 &=-\frac{2(x_1+x_2)}{(1+x_1^2)^2}, \end{align*}
-        you are given the positive definite function $V(\bx) =\frac{x_1^2}{1 + x_1^2}+ 
-        x_2^2$ and told that, for this system, $\dot V(\bx)$ is negative definite over 
-        the entire space. Is $V(\bx)$ a valid Lyapunov function to prove global 
-        asymptotic stability of the origin for the system described by the 
-        equations above? Motivate your answer.</p>
+      <p>For the system \begin{align*} \dot x_1
+      &=-\frac{6x_1}{(1+x_1^2)^2}+2x_2, \\ \dot x_2
+      &=-\frac{2(x_1+x_2)}{(1+x_1^2)^2}, \end{align*} you are given the positive
+      definite function $V(\bx) =\frac{x_1^2}{1 + x_1^2}+ x_2^2$ and told that,
+      for this system, $\dot V(\bx)$ is negative definite over the entire space.
+      Is $V(\bx)$ a valid Lyapunov function to prove global asymptotic stability
+      of the origin for the system described by the equations above? Motivate
+      your answer.</p>
       
     </exercise>
 
     <exercise><h1>Invariant Sets and Regions of Attraction</h1>
 
-      <p>Given the dynamics $\dot \bx = f(\bx)$ and a Lyapunov candidate function $V(\bx)$, 
-        let $D$ be a set (with the origin in its interior) such that, for all $\bx \in D$, $V(\bx)$ 
-        is positive definite and $\dot V (\bx)$ is negative definite.</p>
+      <p>Given the dynamics $\dot \bx = f(\bx)$ and a Lyapunov candidate
+      function $V(\bx)$, let $D$ be a set (with the origin in its interior) such
+      that, for all $\bx \in D$, $V(\bx)$ is positive definite and $\dot V
+      (\bx)$ is negative definite.</p>
 
       <ol type="a">
 
-        <li>Can we say that, for all initial conditions inside $D$, the system's state will always stay inside $D$?
-           Motivate your answer.</li>
+        <li>Can we say that, for all initial conditions inside $D$, the system's
+        state will always stay inside $D$? Motivate your answer.</li>
         
-        <li>Can we say that, for all initial conditions inside $D$, the system's state will converge 
-          to the origin? Motivate your answer.</li>
+        <li>Can we say that, for all initial conditions inside $D$, the system's
+        state will converge to the origin? Motivate your answer.</li>
 
       </ol>
 
@@ -997,41 +1044,84 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <exercise><h1>Are Lyapunov Functions Unique?</h1>
 
-      <p>If $V_1(\bx)$ and $V_2(\bx)$ are valid Lyapunov functions that prove global asymptotic
-        stability of the origin, does $V_1(\bx)$ necessarily equal 
-        $V_2(\bx)$?</p>
+      <p>If $V_1(\bx)$ and $V_2(\bx)$ are valid Lyapunov functions that prove
+      global asymptotic stability of the origin, does $V_1(\bx)$ necessarily
+      equal $V_2(\bx)$?</p>
 
     </exercise>
 
     <exercise><h1>Proving Global Asymptotic Stability</h1>
 
-      <p>Consider the system given by \begin{align*} \dot x_1 &= x_2 - x_1^3, \\ \dot x_2 &= - x_1 - x_2^3. \end{align*}
-      Show that the Lyapunov function $V(\bx) = x_1^2 + x_2^2$ proves global asymptotic stability of the origin for this system.</p>
+      <p>Consider the system given by \begin{align*} \dot x_1 &= x_2 - x_1^3, \\
+      \dot x_2 &= - x_1 - x_2^3. \end{align*} Show that the Lyapunov function
+      $V(\bx) = x_1^2 + x_2^2$ proves global asymptotic stability of the origin
+      for this system.</p>
 
     </exercise>
 
     <exercise><h1>Control-Lyapunov Function</h1>
 
-      <p>Consider the problem of synthesizing a stabilizing feedback law $\bu = \pi (\bx)$ for the dynamical system $\dot \bx = f(\bx, \bu)$.  Lyapunov analysis suggests us a very simple approach to this problem: choose a candidate Lyapunov function $V(\bx)$, and design a control law $\pi (\bx)$ such that $V(\bx)$ always decreases along the trajectories of the closed-loop system $\dot \bx = f(\bx, \pi (\bx))$.  A function $V(\bx)$ for which such a control law exists is called a <i>control-Lyapunov function</i>.  In this exercise, we use this idea to drive a wheeled robot, implementing the controller proposed in <elib>Aicardi95</elib>.</p>
+      <p>Consider the problem of synthesizing a stabilizing feedback law $\bu =
+      \pi (\bx)$ for the dynamical system $\dot \bx = f(\bx, \bu)$.  Lyapunov
+      analysis suggests us a very simple approach to this problem: choose a
+      candidate Lyapunov function $V(\bx)$, and design a control law $\pi (\bx)$
+      such that $V(\bx)$ always decreases along the trajectories of the
+      closed-loop system $\dot \bx = f(\bx, \pi (\bx))$.  A function $V(\bx)$
+      for which such a control law exists is called a <i>control-Lyapunov
+      function</i>.  In this exercise, we use this idea to drive a wheeled
+      robot, implementing the controller proposed in <elib>Aicardi95</elib>.</p>
       
-      <p>Similar to <a href="intro.html#wheeled_robot">this previous example</a>, we use a kinematic model of the robot.  We represent with $z_1$ and $z_2$ its Cartesian position and with $z_3$ its orientation.  The controls are the linear $u_1$ and angular $u_2$ velocities.  The equations of motion read \begin{align*} \dot z_1 &= u_1 \cos z_3, \\ \dot z_2 &= u_1 \sin z_3, \\ \dot z_3 &= u_2.\end{align*}  The goal is to design a feedback law $\pi(\bz)$ that drives the robot to the origin $\bz=0$ from any initial condition.  As pointed out in <elib>Aicardi95</elib>, this problem becomes dramatically easier if we analyze it in polar coordinates.  As depicted below, we let $x_1$ be the radial and $x_2$ the angular coordinate of the robot, and we define $x_3 = x_2 - z_3$.  Analyzing the figure, basic kinematic considerations lead to  \begin{align*} \dot x_1 &= u_1 \cos x_3, \\ \dot x_2 &= - \frac{u_1 \sin x_3}{x_1}, \\ \dot x_3 &= - \frac{u_1 \sin x_3}{x_1} - u_2.\end{align*}</p>
+      <p>Similar to <a href="intro.html#wheeled_robot">this previous
+      example</a>, we use a kinematic model of the robot.  We represent with
+      $z_1$ and $z_2$ its Cartesian position and with $z_3$ its orientation.
+      The controls are the linear $u_1$ and angular $u_2$ velocities.  The
+      equations of motion read \begin{align*} \dot z_1 &= u_1 \cos z_3, \\ \dot
+      z_2 &= u_1 \sin z_3, \\ \dot z_3 &= u_2.\end{align*}  The goal is to
+      design a feedback law $\pi(\bz)$ that drives the robot to the origin
+      $\bz=0$ from any initial condition.  As pointed out in
+      <elib>Aicardi95</elib>, this problem becomes dramatically easier if we
+      analyze it in polar coordinates.  As depicted below, we let $x_1$ be the
+      radial and $x_2$ the angular coordinate of the robot, and we define $x_3 =
+      x_2 - z_3$.  Analyzing the figure, basic kinematic considerations lead to
+      \begin{align*} \dot x_1 &= u_1 \cos x_3, \\ \dot x_2 &= - \frac{u_1 \sin
+      x_3}{x_1}, \\ \dot x_3 &= - \frac{u_1 \sin x_3}{x_1} -
+      u_2.\end{align*}</p>
 
       <figure>
         <img width="40%" src="figures/exercises/wheeled_robot.svg"/>
-        <figcaption>Wheeled robot with Cartesian $\bz$ and polar $\bx$ coordinate system.</figcaption>
+        <figcaption>Wheeled robot with Cartesian $\bz$ and polar $\bx$
+        coordinate system.</figcaption>
       </figure>
 
       <ol type="a">
 
-        <li>For the candidate Lyapunov function $V(\bx) = V_1(x_1) + V_2(x_2, x_3)$, with $V_1(x_1) = \frac{1}{2} x_1^2$ and $V_2(x_2, x_3) = \frac{1}{2}(x_2^2 + x_3^2)$, compute the time derivatives $\dot V_1 (\bx, u_1)$ and $\dot V_2(\bx, \bu)$.</li>
+        <li>For the candidate Lyapunov function $V(\bx) = V_1(x_1) + V_2(x_2,
+        x_3)$, with $V_1(x_1) = \frac{1}{2} x_1^2$ and $V_2(x_2, x_3) =
+        \frac{1}{2}(x_2^2 + x_3^2)$, compute the time derivatives $\dot V_1
+        (\bx, u_1)$ and $\dot V_2(\bx, \bu)$.</li>
 
-        <li>Show that the choice \begin{align*} u_1 &= \pi_1(\bx) = - x_1 \cos x_3, \\ u_2 &= \pi_2(\bx) = x_3 + \frac{(x_2 + x_3) \cos x_3 \sin x_3}{x_3}, \end{align*} makes $\dot V_1 (\bx, \pi_1(\bx)) \leq 0$ and $\dot V_2 (\bx, \pi(\bx)) \leq 0$ for all $\bx$.  (Technically speaking, $\pi_2(\bx)$ is not defined for $x_3=0$.  In this case, we let $\pi_2(\bx)$ assume its limiting value $x_2 + 2 x_3$, ensuring continuity of the feedback law.)</li>
+        <li>Show that the choice \begin{align*} u_1 &= \pi_1(\bx) = - x_1 \cos
+        x_3, \\ u_2 &= \pi_2(\bx) = x_3 + \frac{(x_2 + x_3) \cos x_3 \sin
+        x_3}{x_3}, \end{align*} makes $\dot V_1 (\bx, \pi_1(\bx)) \leq 0$ and
+        $\dot V_2 (\bx, \pi(\bx)) \leq 0$ for all $\bx$.  (Technically speaking,
+        $\pi_2(\bx)$ is not defined for $x_3=0$.  In this case, we let
+        $\pi_2(\bx)$ assume its limiting value $x_2 + 2 x_3$, ensuring
+        continuity of the feedback law.)</li>
 
-        <li>Explain why Lyapunov's direct method does not allow us to establish asymptotic stability of the closed-loop system.</li>
+        <li>Explain why Lyapunov's direct method does not allow us to establish
+        asymptotic stability of the closed-loop system.</li>
 
-        <li>Substitute the control law $\bu = \pi (\bx)$ in the equations of motion, and derive the closed-loop dynamics $\dot \bx = f(\bx, \pi(\bx))$.  Use LaSalle's theorem to show (global) asymptotic stability of the closed-loop system.</li>
+        <li>Substitute the control law $\bu = \pi (\bx)$ in the equations of
+        motion, and derive the closed-loop dynamics $\dot \bx = f(\bx,
+        \pi(\bx))$.  Use LaSalle's theorem to show (global) asymptotic stability
+        of the closed-loop system.</li>
 
-        <li>In <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/lyapunov/control/control.ipynb" target="_blank">this python notebook</a> we set up a simulation environment for you to try the controller we just derived.  Type the control law from point (b) in the dedicated cell, and use the notebook plot to check your work.</li>
+        <li>In <a
+        href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/lyapunov/control/control.ipynb"
+        target="_blank">this python notebook</a> we set up a simulation
+        environment for you to try the controller we just derived.  Type the
+        control law from point (b) in the dedicated cell, and use the notebook
+        plot to check your work.</li>
 
       </ol>
 
