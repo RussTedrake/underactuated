@@ -17,3 +17,9 @@ rt_ipynb_test(
     srcs = ["grid_world.ipynb"],
     deps = ["//underactuated"],
 )
+
+rt_ipynb_test(
+    name = "trajectory_optimization",
+    srcs = ["trajectory_optimization.ipynb"],
+    deps = ["//underactuated"],
+)
