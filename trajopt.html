@@ -693,6 +693,39 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   <section><h1>Iterative LQR and Differential Dynamic
   Programming</h1>
 
+    <p>There is another approach to trajectory optimization (at least for
+    initial-value problems) that has gotten quite popular lately. Iterative LQR
+    (iLQR)<elib>Li04</elib> also known as Sequential Linear Quadratic optimial
+    control) <elib>Sideris05</elib>. The idea is simple enough: given an initial
+    guess at the input and state trajectory, make a linear approximation of the
+    dynamics and a quadratic approximation of the cost function.  Then compute
+    and simulate the time-varying LQR controller to find a new input and state
+    trajectory.  Repeat until convergence.</p>
+
+    <p>The motivation behind iterative LQR is quite appealing -- it leverages
+    the surprising structure of the Riccati equations to come up with a
+    second-order update to the trajectory after a single backward pass of the
+    Riccati equation followed by a forward simulation.  Anecdotally, the
+    convergence is fast and robust.  Numerous applications...<elib>Buchli, Hutter, ...</elib></p>
+
+    <p>One key limitation of iLQR is that it only supports unconstrained
+    trajectory optimization -- at least via the Riccati solution.  The natural
+    extension for constrained optimization would be to replace the Riccati
+    solution with an iterative linear model-predictive control (MPC)
+    optimization; this would result in a quadratic program and is very close to what is happening in SQP.  But a more common
+    approach in the current robotics literature is to add any constraints into
+    the objective function using <a
+    href="https://en.wikipedia.org/wiki/Penalty_method">penalty methods</a>, especially using <a href="https://en.wikipedia.org/wiki/Augmented_Lagrangian_method">Augmented Lagrangian</a>.</p>
+
+    <!--
+    <p>Thinking about the MPC version of iLQR leads to a curious observation.  I
+    think everyone using iLQR by solving Riccati equations is doing more work
+    than they need to.  Clearly, in the discrete-time unconstrained form, the
+    time-varying LQR + forward simulation is solving the following optimization
+    problem: \begin{gather*} \min \sum_{n=0}^N  \bx[n]^T \bQ \bx[n] + ...
+    \end{gather*}</p>
+    -->
+
   </section>
 
   <section><h1>Case Study: A glider that can land on a perch
