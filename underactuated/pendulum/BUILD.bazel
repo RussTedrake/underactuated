@@ -14,11 +14,6 @@ rt_py_test(
     deps = [":pendulum"],
 )
 
-rt_py_test(
-    name = "global_sums_of_squares",
-    srcs = ["global_sums_of_squares.py"],
-)
-
 rt_py_library(
     name = "pendulum",
     srcs = [
@@ -28,14 +23,4 @@ rt_py_library(
     imports = ["../.."],
     visibility = ["//visibility:public"],
     deps = ["//underactuated"],
-)
-
-rt_py_test(
-    name = "torque_slider_demo",
-    srcs = ["torque_slider_demo.py"],
-    args = ["--duration 1.0"],
-    deps = [
-        ":pendulum",
-        "//underactuated",
-    ],
 )

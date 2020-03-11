@@ -23,11 +23,6 @@ rt_py_test(
 )
 
 rt_py_test(
-    name = "six_hump_camel",
-    srcs = ["six_hump_camel.py"],
-)
-
-rt_py_test(
     name = "stochastic_system_particles",
     srcs = ["stochastic_system_particles.py"],
     deps = ["//underactuated"],

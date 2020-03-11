@@ -429,7 +429,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
         <p> You can try this example for yourself in <drake></drake>.</p>
 
-        <pysrc>lyapunov/linear_systems_common_lyapunov.py</pysrc>
+        <jupyter>examples/lyapunov.ipynb</jupyter>
 
         <p>As always, make sure that you open up the code and take a look.</p>
 
@@ -516,7 +516,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         and play with the code (most of the lines are only for plotting; the
         actual optimization problem is nice and simple to formulate). </p>
 
-        <pysrc>simple/six_hump_camel.py</pysrc>
+        <jupyter>examples/optimization.ipynb</jupyter>
 
         <p>Note that this finds the minimum value, but does not actually
         produce the $\bx$ value which mimimizes it.  This is possible
@@ -542,8 +542,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \sos. \end{align*}  Because this is a convex optimization, the solver will
       return a solution if one exists.</p>
 
-      <example><h1>Verifying a Lyapunov candidate
-        via SOS</h1>
+      <example><h1>Verifying a Lyapunov candidate via SOS</h1>
 
         <p>This example is example 7.2 from <elib>Parrilo00</elib>. Consider
         the nonlinear system: \begin{align*} \dot{x}_0 =& -x_0 - 2x_1^2 \\
@@ -554,12 +553,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         <p>The numerical solution can be written in a few lines of code, and
         is a convex optimization.</p>
 
-        <pysrc>lyapunov/verify_global_polynomial.py</pysrc>
+        <jupyter>examples/lyapunov.ipynb</jupyter>
 
       </example>
 
-      <example><h1>Searching for a Lyapunov
-        function via SOS</h1>
+      <example><h1>Searching for a Lyapunov function via SOS</h1>
 
         <p>Verifying a candidate Lyapunov function is all well and good, but
         the real excitement starts when we use optimization to <i>find</i> the
@@ -571,7 +569,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         = 1$.  Then we write: \begin{align*} \find_{\bc} \ \ \subjto \ \ &
         V\text{ is sos, } \\ & -\dot{V} \text{ is sos.}\end{align*}</p>
 
-        <pysrc>lyapunov/search_global_polynomial.py</pysrc>
+        <jupyter>examples/lyapunov.ipynb</jupyter>
 
         <p>Up to numerical convergence tolerance, it discovers the same
         coefficients that we chose above (zeroing out the unnecessary
@@ -630,19 +628,18 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </theorem>
 
-    <example><h1>Region of attraction for a one-dimensional
-    system</h1>
+    <example><h1>Region of attraction for a one-dimensional system</h1>
 
       <p> Consider the first-order, one-dimensional system $\dot{x} = -x + x^3.$
       We can quickly understand this system using our tools for graphical
       analysis.</p> <figure> <img width="80%"
-      src="figures/cubicPolynomialExample.svg"/> </figure> <p>In the
-      vicinity of the origin, $\dot{x}$ looks like $-x$, and as we move away it
-      looks increasingly like $x^3$.  There is a stable fixed point at the
-      origin and unstable fixed points at $\pm 1$.  In fact, we can deduce
-      visually that the region of attraction to the stable fixed point at the
-      origin is $\bx \in (-1,1)$.  Let's see if we can demonstrate this with a
-      Lyapunov argument.</p>
+      src="figures/cubicPolynomialExample.svg"/> </figure> <p>In the vicinity of
+      the origin, $\dot{x}$ looks like $-x$, and as we move away it looks
+      increasingly like $x^3$.  There is a stable fixed point at the origin and
+      unstable fixed points at $\pm 1$.  In fact, we can deduce visually that
+      the region of attraction to the stable fixed point at the origin is $\bx
+      \in (-1,1)$.  Let's see if we can demonstrate this with a Lyapunov
+      argument.</p>
 
       <p>First, let us linearize the dynamics about the origin and use the
       Lyapunov equation for linear systems to find a candidate $V(\bx)$.  Since
@@ -717,8 +714,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       of $0.01$ radians, but you would like to guarantee that it definitely does
       not flip over and crash into the ground.</p>
 
-      <example><h1>A one-dimensional system with additive
-      uncertainty</h1>
+      <example><h1>A one-dimensional system with additive uncertainty</h1>
 
         <p>Now consider the system: $$\dot{x} = -x + x^3 + \alpha, \quad
         -\frac{1}{4} < \alpha < \frac{1}{4}.$$  Plotting the graph of the
@@ -754,8 +750,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </subsection> <!-- end common lyap -->
 
-    <subsection><h1>Region of attraction estimation for
-    polynomial systems</h1>
+    <subsection><h1>Region of attraction estimation for polynomial systems</h1>
 
       <p>Now we have arrived at the tool that I believe can be a work-horse for
       many serious robotics applications.  Most of our robots are not actually
@@ -798,7 +793,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <subsubsection><h1>Basic region of attraction formulation</h1>
 
-        <example id="roa_cubic_system"><h1>Region of attraction for the one-dimensional cubic system</h1>
+        <example id="roa_cubic_system"><h1>Region of attraction for the
+        one-dimensional cubic system</h1>
 
           <p>Let's return to our example from above: \[ \dot{x} = -x + x^3 \]
           and try to use SOS optimization to demonstrate that the region of
@@ -806,13 +802,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           the Lyapunov candidate $V = x^2.$ </p>
 
           <p>First, define the multiplier polynomial, \[ \lambda(x) = c_0 + c_1
-          x + c_2 x^2 + c_3 x^3 + c_4 x^4. \]  Then define the optimization
+          x + c_2 x^2. \]  Then define the optimization
           \begin{align*} \find_{\bf c} \quad & \\  \subjto \quad& - \dot{V}(x) -
           \lambda(x) (1-V(x)) \sos \\ & \lambda(x) \sos \end{align*} </p>
 
           <p>You can try this example for yourself in <drake></drake>.</p>
 
-          <pysrc>lyapunov/cubic_polynomial.py</pysrc>
+          <jupyter>examples/lyapunov.ipynb</jupyter>
 
         </example>
 
@@ -827,42 +823,28 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         the numerics of the problem better for the solvers.</p>
 
 
-        <!-- make this true for pydrake:
+        <example><h1>Region of Attraction codes in Drake</h1>
 
-        In <drake></drake>, we have packaged all of these up into a
-        <code>regionOfAttraction</code> method that is defined for objects of
-        type <code>PolynomialSystem</code>. This makes it as simple as, for
-        instance:
+          <p>In <drake></drake>, we have packaged most of the work in setting up
+          and solving the sums-of-squares optimization for regions of attraction
+          into a single method <code>RegionOfAttraction(system, context,
+          options)</code>. This makes it as simple as, for instance:</p>
+  
+          <pre><code class="python">x = Variable("x")
+sys = SymbolicVectorSystem(state=[x], dynamics=[-x+x**3])
+context = sys.CreateDefaultContext()
+V = RegionOfAttraction(sys, context)           
+          </code></pre>  
 
-        <example><h1>Searching for the region of
-          attraction</h1> <p> <pre><code class="matlab"
-          testfile="testCubicPolynomialRoa">
-          cd(fullfile(getDrakePath,'examples'));
+          <jupyter>examples/lyapunov.ipynb</jupyter>
 
-          % create a new CubicPolynomialExample object
-          p = CubicPolynomialExample();
-
-          % compute region of attraction
-          % the levelset V<1 is the region of attraction
-          V=regionOfAttraction(p,Point(p.getStateFrame,0));
-
-          % display the polynomial representation of V that results
-          display(V.getPoly);
-          </code></pre>
-
-          which yields the console output:
-          <pre><code>
-          [  (1)*x1^2  ]
-          </code>
-          </pre>
-          The algorithm successfully found that $x \in (-1,1)$ is the region of attraction.
+          <p>Remember that although we have tried to make it convenient to call
+          these functions, they are not a black box.  I highly recommend opening
+          up the <code>RegionOfAttraction</code> method and understanding how it
+          works.  There are lots of different options / formulations, and numerous numerical recipes to improve the numerics of the optimization problem.</p>
         </example>
 
-        <p>Remember that although we have tried to make it convenient to call
-        these functions, they are not a black box.  I highly recommend opening
-        up the <code>regionOfAttraction</code> method and understanding how it
-        works.</p>
-
+        <!--
         <example><h1>Region of attraction for the time-reversed Van der Pol oscillator</h1>
 
           <pre><code class="matlab" testfile="testVanDerPol">
@@ -871,8 +853,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           </code></pre>
 
         </example>
-        -->
-
+-->
       </subsubsection>
 
       <subsubsection><h1>Seeding the optimization with linear analysis</h1>
@@ -958,7 +939,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       for style points, in the code example in <drake></drake> we ask for
       exponential stability:</p>
 
-      <pysrc>pendulum/global_sums_of_squares.py</pysrc>
+      <jupyter>examples/lyapunov.ipynb</jupyter>
 
       <p>As always, make sure that you open up the code and take a look.  The
         result is a Lyapunov function that looks familiar (visualized as a
@@ -995,17 +976,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       form is strictly more general because I can always write ${\bf
       g}(\bx,\bu,\dot\bx) = f(\bx,\bu) - \dot\bx$, but importantly here I can
       also write the bottom rows of ${\bf g}$ as $\bM(\bq)\ddot\bq +
-      \bC(\bq,\dot\bq)\dot\bq - \btau_g - \bB \bu$.  This form can also represent <a href="https://en.wikipedia.org/wiki/Differential-algebraic_system_of_equations">differential algebraic equations (DAEs)</a> which are more general than ODEs; $\bg$ could even include algebraic constraints like $s_i^2 + c^2 - 1$.  Most
-      importantly, for manipulators, ${\bf g}$ can be polyonimal, even if
-      ${\bf f}$ would have been rational.</p>
+      \bC(\bq,\dot\bq)\dot\bq - \btau_g - \bB \bu$.  This form can also
+      represent <a
+      href="https://en.wikipedia.org/wiki/Differential-algebraic_system_of_equations">differential
+      algebraic equations (DAEs)</a> which are more general than ODEs; $\bg$
+      could even include algebraic constraints like $s_i^2 + c^2 - 1$.  Most
+      importantly, for manipulators, ${\bf g}$ can be polyonimal, even if ${\bf
+      f}$ would have been rational.</p>
 
-      <p>Interestingly, we can check the Lyapunov conditions, $\dot{V}(\bx)
-      \le 0$, directly on a system (with no inputs) in its implicit form,
+      <p>Interestingly, we can check the Lyapunov conditions, $\dot{V}(\bx) \le
+      0$, directly on a system (with no inputs) in its implicit form,
       $\bg(\bx,\dot\bx)=0$.  Simply define a new function $Q(\bx, \bz) =
-      \frac{\partial V(\bx)}{\partial \bx} \bz.$ If we can show $Q(\bx, \bz)
-      \le 0, \forall \bx,\bz \in \{ \bx, \bz | \bg(\bx,\bz) = 0 \}$ using SOS, then
-      we have verified that $\dot{V}(\bx) \le 0$, albeit at the non-trivial
-      cost of adding indeterminates $\bz$ and an additional S-procedure.</p>
+      \frac{\partial V(\bx)}{\partial \bx} \bz.$ If we can show $Q(\bx, \bz) \le
+      0, \forall \bx,\bz \in \{ \bx, \bz | \bg(\bx,\bz) = 0 \}$ using SOS, then
+      we have verified that $\dot{V}(\bx) \le 0$, albeit at the non-trivial cost
+      of adding indeterminates $\bz$ and an additional S-procedure.</p>
     </example>  
 
     <p>There are a few things that <i>do</i> break this clean polynomial view

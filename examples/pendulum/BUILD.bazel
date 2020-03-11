@@ -5,6 +5,7 @@
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
 load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
+load("//tools/rt/python:defs.bzl", "rt_py_test")
 
 rt_ipynb_test(
     name = "energy_shaping",
@@ -12,8 +13,18 @@ rt_ipynb_test(
     deps = ["//underactuated"],
 )
 
-rt_ipynb_test(
+rt_py_test(
     name = "torque_slider_demo",
+    srcs = ["torque_slider_demo.py"],
+    args = ["--duration 0.1"],
+    deps = [
+        "//underactuated/pendulum",
+        "//underactuated",
+    ],
+)
+
+rt_ipynb_test(
+    name = "torque_slider_demo_nb",
     srcs = ["torque_slider_demo.ipynb"],
     deps = ["//underactuated"],
 )
