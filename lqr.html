@@ -66,10 +66,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <p>Consider a linear time-invariant system in state-space form, $$\dot{\bx}
     = {\bf A}\bx + \bB\bu,$$ with the infinite-horizon cost function given by
     $$J = \int_0^\infty \left[ \bx^T {\bf Q} \bx + \bu^T {\bf R} \bu \right] dt,
-    \quad {\bf Q} = {\bf Q}^T \ge {\bf 0}, {\bf R} = {\bf R}^T > 0.$$  Our goal
-    is to find the optimal cost-to-go function $J^*(\bx)$ which satisfies the
-    HJB: $$\forall \bx, \quad 0 = \min_\bu \left[ \bx^T {\bf Q} \bx + \bu^T {\bf
-    R} \bu + \pd{J^*}{\bx} \left( {\bf A}\bx + \bB\bu \right) \right].$$</p>
+    \quad {\bf Q} = {\bf Q}^T \succeq {\bf 0}, {\bf R} = {\bf R}^T \succ 0.$$
+    Our goal is to find the optimal cost-to-go function $J^*(\bx)$ which
+    satisfies the HJB: $$\forall \bx, \quad 0 = \min_\bu \left[ \bx^T {\bf Q}
+    \bx + \bu^T {\bf R} \bu + \pd{J^*}{\bx} \left( {\bf A}\bx + \bB\bu \right)
+    \right].$$</p>
 
     <p> There is one important step here -- it is well known that for this
     problem the optimal cost-to-go function is quadratic.  This is easy to
@@ -104,7 +105,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <p>If the appearance of the quadratic form of the cost-to-go seemed
     mysterious, consider that the solution to the linear system $\dot\bx = (\bA
     - \bB\bK)\bx$ takes the form $\bx(t) = e^{(\bA-\bB\bK)t}\bx(0)$, and try
-    inserting this back into the integral cost function.  You'll see that the cost takes the form $J=\bx^T(0) {\bf S} \bx(0)$.</p>
+    inserting this back into the integral cost function.  You'll see that the
+    cost takes the form $J=\bx^T(0) {\bf S} \bx(0)$.</p>
 
     <p>It is worth examining the form of the optimal policy more closely. Since
     the value function represents cost-to-go, it would be sensible to move down
@@ -121,7 +123,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <example><h1>LQR for the Double Integrator</h1>
 
-      <p>Now can use LQR to reproduce our <a href="dp.html#hjb_double_integrator">HJB example</a> from the previous
+      <p>Now can use LQR to reproduce our <a
+      href="dp.html#hjb_double_integrator">HJB example</a> from the previous
       chapter:</p>
 
       <pysrcinclude>double_integrator/lqr.py</pysrcinclude>
@@ -193,10 +196,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       $$\dot{\bx} = {\bf A}\bx + \bB\bu,$$ and a finite-horizon cost function
       with
 
-      \begin{gather*}
-      h(\bx) = \bx^T {\bf Q}_f \bx,\quad {\bf Q}_f = {\bf Q}_f^T \ge {\bf 0}
-      \\ \ell(\bx,\bu,t) = \bx^T {\bf Q} \bx + \bu^T {\bf R} \bu, \quad {\bf Q} =
-         {\bf Q}^T \ge 0, {\bf R}={\bf R}^T>0
+      \begin{gather*} h(\bx) = \bx^T {\bf Q}_f \bx,\quad {\bf Q}_f = {\bf Q}_f^T
+      \succeq {\bf 0} \\ \ell(\bx,\bu,t) = \bx^T {\bf Q} \bx + \bu^T {\bf R}
+      \bu, \quad {\bf Q} = {\bf Q}^T \succeq 0, {\bf R}={\bf R}^T \succ 0
       \end{gather*}
 
       Writing the HJB, we have $$ 0 = \min_\bu \left[\bx^T {\bf Q} \bx + \bu^T
@@ -211,7 +213,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       In order to proceed, we need to investigate a particular form for the
       cost-to-go function, $J^*(\bx,t)$.  Let's try a solution of the form:
-      $$J^*(\bx,t) = \bx^T {\bf S}(t) \bx, \quad {\bf S}(t) = {\bf S}^T(t) >
+      $$J^*(\bx,t) = \bx^T {\bf S}(t) \bx, \quad {\bf S}(t) = {\bf S}^T(t)\succ
       {\bf 0}.$$ In this case we have $$\pd{J^*}{\bx} = 2 \bx^T {\bf S}(t),
       \quad \pd{J*}{t} = \bx^T \dot{\bf S}(t) \bx,$$ and therefore
 
@@ -235,7 +237,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       on the infinite-horizon solution as the horizon time limits to infinity.
       </p>
 
-      <todo>Example to show how the tvlqr solution converges to the tilqr solution for the double integrator example, and make the connection back to the value iteration visualizations that we did in the previous chapter.</todo>
+      <todo>Example to show how the tvlqr solution converges to the tilqr
+      solution for the double integrator example, and make the connection back
+      to the value iteration visualizations that we did in the previous
+      chapter.</todo>
 
     </subsection>
 
@@ -263,15 +268,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       the system to zero.  Consider now the problem:
 
       \begin{gather*} \dot{\bx} = {\bf A}\bx + \bB\bu \\ h(\bx) = (\bx -
-      \bx^d(T))^T {\bf Q}_f (\bx - \bx^d(T)), \quad {\bf Q}_f = {\bf Q}_f^T \ge
-      0 \\ \ell(\bx,\bu,t) = (\bx - \bx^d(t))^T {\bf Q} (\bx - \bx^d(t)) + (\bu -
-      \bu^d(t))^T {\bf R} (\bu - \bu^d(t)),\\ {\bf Q} = {\bf Q}^T \ge 0, {\bf
-      R}={\bf R}^T>0 \end{gather*}
+      \bx^d(T))^T {\bf Q}_f (\bx - \bx^d(T)), \quad {\bf Q}_f = {\bf Q}_f^T
+      \succeq 0 \\ \ell(\bx,\bu,t) = (\bx - \bx^d(t))^T {\bf Q} (\bx - \bx^d(t))
+      + (\bu - \bu^d(t))^T {\bf R} (\bu - \bu^d(t)),\\ {\bf Q} = {\bf Q}^T
+      \succeq 0, {\bf R}={\bf R}^T \succ 0 \end{gather*}
 
       Now, guess a solution
 
       \begin{gather*} J^*(\bx,t) = \bx^T {\bf S_2}(t) \bx + \bx^T {\bf s_1}(t) +
-      s_0(t), \quad {\bf S_2}(t) = {\bf S_2}^T(t) > {\bf 0}. \end{gather*}
+      s_0(t), \quad {\bf S_2}(t) = {\bf S_2}^T(t)\succ {\bf 0}. \end{gather*}
 
       In this case, we have $$\pd{J^*}{\bx} = 2 \bx^T {\bf S_2}(t) + {\bf
       s_1}^T(t),\quad \pd{J^*}{t} = \bx^T \dot{\bf S_2}(t) \bx + \bx^T \dot{\bf
@@ -351,10 +356,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \begin{gather*}
       \dot{\bx} = {\bf A}\bx + \bB\bu \\
       h(\bx) = \bx^T {\bf Q}_f \bx,
-      \quad {\bf Q}_f = {\bf Q}_f^T \ge 0 \\
+      \quad {\bf Q}_f = {\bf Q}_f^T \succeq 0 \\
       \ell(\bx,\bu,t) = 1 + \bx^T {\bf Q} \bx + \bu {\bf R} \bu,\\
       {\bf Q} = {\bf
-      Q}^T \ge 0, {\bf R}={\bf R}^T>0
+      Q}^T \succeq 0, {\bf R}={\bf R}^T  \succ 0
       \end{gather*}
 
     </subsection>
@@ -377,16 +382,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       K[n]}\bx[n] = -({\bf R} + {\bf B}^T {\bf S}[n] {\bf B})^{-1} {\bf B}^T
       {\bf S}[n] {\bf A} \bx[n],$$ yielding $${\bf S}[n-1] = {\bf Q} + {\bf
       A}^T{\bf S}[n]{\bf A} - ({\bf A}^T{\bf S}[n]{\bf B})({\bf R} + {\bf B}^T
-      {\bf S}[n] {\bf B})^{-1} ({\bf B}^T {\bf S}[n]{\bf A}^T), \quad {\bf
-      S}[N] = 0,$$ which is the famous <i>Riccati difference equation</i>. The
+      {\bf S}[n] {\bf B})^{-1} ({\bf B}^T {\bf S}[n]{\bf A}^T), \quad {\bf S}[N]
+      = 0,$$ which is the famous <i>Riccati difference equation</i>. The
       infinite-horizon LQR solution is given by the (positive-definite)
       fixed-point of this equation: $${\bf S} = {\bf Q} + {\bf A}^T{\bf S}{\bf
       A} - ({\bf A}^T{\bf S}{\bf B})({\bf R} + {\bf B}^T {\bf S} {\bf B})^{-1}
       ({\bf B}^T {\bf S}{\bf A}^T).$$  Like in the continuous time case, this
       equation is so important that we have special numerical recipes for
-      solving this discrete-time algebraic Riccati equation (DARE).  <drake> </drake> delegates to these numerical methods automatically when you evaluate the <code>LinearQuadraticRegulator</code> method on a system that has only discrete state and a single periodic timestep.</p> 
+      solving this discrete-time algebraic Riccati equation (DARE).  <drake>
+      </drake> delegates to these numerical methods automatically when you
+      evaluate the <code>LinearQuadraticRegulator</code> method on a system that
+      has only discrete state and a single periodic timestep.</p> 
 
-      <todo>Example where the discrete-time solutions converge to the continuous time solutions as dt-> 0.</todo>
+      <todo>Example where the discrete-time solutions converge to the continuous
+      time solutions as dt-> 0.</todo>
     </subsection>
 
     <subsection><h1>LQR with input and state constraints</h1>
