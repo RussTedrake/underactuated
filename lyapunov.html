@@ -1053,18 +1053,13 @@ V = RegionOfAttraction(sys, context)
 
     <exercise><h1>Invariant Sets and Regions of Attraction</h1>
 
-      <p>Given the dynamics $\dot \bx = f(\bx)$ and a Lyapunov candidate
-      function $V(\bx)$, let $D$ be a set (with the origin in its interior) such
-      that, for all $\bx \in D$, $V(\bx)$ is positive definite and $\dot V
-      (\bx)$ is negative definite.</p>
+      <p>You are given a dynamical system $\dot \bx = f(\bx)$ with a fixed point in the origin.  Let $B_r$ be a ball of (finite) radius $r > 0$ centered in the origin: $B_r = \{ \bx : \| \bx \| \leq r \}$. Assume you found a scalar function $V(\bx)$ such that: $V(0) = 0$, $V(\bx) > 0$ for all $\bx \neq 0$ in $B_r$, and $\dot V(\bx) < 0$ for all $\bx \neq 0$ in $B_r$. Determine whether the following statements are true or false. Briefly justify your answer.</p>
 
       <ol type="a">
 
-        <li>Can we say that, for all initial conditions inside $D$, the system's
-        state will always stay inside $D$? Motivate your answer.</li>
+        <li>$B_r$ is an invariant set for the given system, i.e.: if the initial state $\bx(0)$ lies in $B_r$, then $\bx(t)$ will belong to $B_r$ for all $t \geq 0$.</li>
         
-        <li>Can we say that, for all initial conditions inside $D$, the system's
-        state will converge to the origin? Motivate your answer.</li>
+        <li>$B_r$ is a subset of the ROA of the fixed point $\bx = 0$, i.e.: if $\bx(0)$ lies in $B_r$, then $\lim_{t \rightarrow \infty} \bx(t) = 0$.</li>
 
       </ol>
 
