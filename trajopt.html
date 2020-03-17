@@ -83,10 +83,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     defined over a finite interval, $t\in[t_0,t_f]$,   we can compute the
     long-term (finite-horizon) cost of executing that trajectory   using the
     standard additive-cost optimal control objective, \[ J_{\bu(\cdot)}(\bx_0) =
-    \int_{t_0}^{t_f} \ell(\bx(t),\bu(t)) dt. \]  We will write the trajectory
-    optimization problem as \begin{align*} \min_{\bu(\cdot)} \quad &
-    \int_{t_0}^{t_f} \ell(\bx(t),\bu(t)) dt \\ \subjto \quad & \forall t,
-    \dot{\bx}(t) = f(\bx(t),\bu(t)), \\ & \bx(t_0) = \bx_0. \\ \end{align*} Some
+    \ell_f (\bx(t_f)) + \int_{t_0}^{t_f} \ell(\bx(t),\bu(t)) dt. \]  We will
+    write the trajectory optimization problem as \begin{align*}
+    \min_{\bu(\cdot)} \quad & \ell_f (\bx(t_f)) + \int_{t_0}^{t_f}
+    \ell(\bx(t),\bu(t)) dt \\ \subjto \quad & \dot{\bx}(t) = f(\bx(t),\bu(t)),
+    \quad \forall t\in[t_0, t_f] \\ & \bx(t_0) = \bx_0. \\ \end{align*} Some
     trajectory optimization problems may also include additional constraints,
     such as collision avoidance (e.g., where the constraint is that the signed
     distance between the robot's geometry and the obstacles stays positive) or
@@ -108,6 +109,193 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     more about the numerics of integration along a trajectory.</p>
 
   </section>
+
+  <section><h1>Linear Systems</h1>
+  
+    <p>Let us first consider the case of linear systems.  In fact, if we start
+    in discrete time, we can even defer the question of how to best discretize
+    the continuous-time problem.  There are a few different ways that we might
+    "transcribe" this optimization problem into a concrete mathematical program.</p>
+
+    <subsection><h1>Direct Transcription</h1>
+    
+      <p>For instance, let us start by writing both $\bu[\cdot]$ and
+      $\bx[\cdot]$ as decision variables. Then we can write: \begin{align*}
+      \min_{\bx[\cdot],\bu[\cdot]} \quad & \ell_f(\bx[N]) + \sum_{n_0}^{N}
+      \ell(\bx[n],\bu[n]) \\ \subjto \quad & \bx[n+1] = {\bf A}\bx[n] + {\bf
+      B}\bu[n], \quad \forall n\in[0, N-1] \\ & \bx[0] = \bx_0 \\ & +
+      \text{additional constraints}. \end{align*}  We call this modeling choice
+      -- adding $\bx[\cdot]$ as decision variables and modeling the discrete
+      dynamics as explicit constraints -- the "<i>direct transcription</i>".
+      Importantly, for linear systems, the dynamics constraints are linear
+      constraints in these decision variables.  As a result, if we can restrict
+      our our additional constraints to linear inequality constraints and our
+      objective function to being linear/quadratic in $\bx$ and $\bu$, then the
+      resulting trajectory optimization is a convex optimization (specifically a
+      linear program or quadratic program depending on the objective).  As a
+      result, we can reliably solve these problems to global optimality at quite
+      large scale, potentially even online -- consider the case where the
+      constraints, like staying in a lane, are not known until runtime.</p>
+
+      <example><h1>Trajectory optimization for the Double Integrator</h1>
+
+        <p>We've looked at a few optimal control problems for the double
+        integrator using value iteration.  For one of them -- the quadratic
+        objective with no constraints on $\bu$ -- we know now that we could have
+        solved the problem "exactly" using LQR.  But the minimum-time problem
+        and even the LQR problem with constraints do not yet have more
+        satisyfing solutions than discretizing state space, which causes
+        potentially large numerical artifacts.</p>
+
+        <p>In the trajectory formulation, we can solve these problems exactly
+        for the discrete-time double integrator, and with better accuracy for
+        the continuous-time double integrator.  Take a moment to appreciate
+        that!  The bang-bang policy and cost-to-go functions are fairly
+        nontrivial functions of state; it's quite satisfying that we can
+        evaluate them using convex optimization!  The limitation, of course, is
+        that we are only solving them for one initial condition at a time.</p>
+
+        <jupyter>examples/trajectory_optimization.ipynb</jupyter>
+
+      </example>
+
+      <p>If you have not studied linear programming before, you might be
+      surprised by the modeling power of even linear objectives within this
+      framework.  Consider, for instance, that we want to drive a system to the
+      origin.  It turns out that taking $$\ell(\bx,\bu) = |\bx| + |\bu|,$$ the
+      direct transcription can still be formulated as a linear program.  To do
+      it, add additional decision variables ${\bf s}_x[\cdot]$ and ${\bf
+      s}_u[\cdot]$ -- these are commonly referred to as <i>slack variables</i>
+      -- and write $$\min_{\bx,\bu,{\bf s}_x,{\bf s}_u} \sum_n^{N-1} {\bf
+      s}_x[n] + {\bf s}_u[n], \quad \text{s.t.} \quad {\bf s}_x[n] \ge x[n],
+      \quad {\bf s}_x[n] \ge -x[n], \quad ...$$  The field of convex
+      optimization is replete with tricks like this.  Knowing and recognizing
+      them are skills of the (optimization) trade.  But there are many relevant
+      constraints which cannot be recast into convex constraints with any amount
+      of skill -- going either left or right around an obstacle is one of the
+      most important examples.  These represent a fundamentally non-convex
+      constraints in $\bx$; we'll discuss the implications of using non-convex
+      optimization for trajectory optimization below.</p>
+
+    </subsection>
+
+    <subsection><h1>Direct Shooting</h1>
+
+      <p>The savvy reader might have noticed that adding $\bx[\cdot]$ as
+      decision variables was not strictly necessary.  If we know $\bx[0]$ and we
+      know $\bu[\cdot]$, then we should be able to solve for $\bx[n]$ (that's
+      just forward simulation).  For our discrete linear systems, this is
+      particularly easy and nice: \begin{align*}\bx[1] =& {\bf A}\bx[0] + {\bf
+      B}\bu[0] \\ \bx[2] =& {\bf A}({\bf A}\bx[0] + {\bf B}\bu[0]) + {\bf
+      B}\bu[1] \\ \bx[n] =& {\bf A}^n\bx[0] + \sum_{k=0}^{n-1} {\bf
+      A}^{n-1-k}{\bf B}u[k].\end{align*}  What's more, the solution is still
+      linear in $\bu[\cdot]$.  This is amazing... we can get rid of a bunch of
+      decision variables, and turn a constrained optimization problem into an
+      unconstrained optimization problem (assuming we don't have any other
+      constraints).  This approach -- using $\bu[\cdot]$ but <i>not</i>
+      $\bx[\cdot]$ as decision variables and evaluating $\ell(\bx[n],\bu[n])$ by
+      effectively forward simulating to obtain $\bx[n]$ -- is called the
+      <i>direct shooting</i> transcription.  For linear systems with
+      linear/quadratic objectives in $\bx$, and $\bu$, it is still a convex
+      optimization, and has less decision variables and constraints than the
+      direct transcription.</p>
+
+      <p>So is this uniformly better than the direct transcription approach?  I
+      think it is not.  There are a few potential reason that one might prefer
+      the direct transcription: <ul><li>Numerical conditioning.  While it is
+      fundamental to the trajectory optimization problem that control input
+      $\bu[0]$ has more opportunity to have a large impact on the total cost
+      than control input $\bu[N-1]$.  The direct transcription approach spreads
+      this out over a large number of well-balanced constraints.  Shooting
+      involves calculating ${\bf A}^n$ for potentially large $n$.</li><li>Adding
+      state constraints.  Having $\bx[n]$ as explicit decision variables makes
+      it very easy/natural to add additional state constraints; and the solver
+      effectively reuses the computation of ${\bf A}^n$ for each constraint.  In
+      shooting, one has to unroll those terms for each new
+      constraint.</li><li>Parallelization.  For larger problems, evaluating the
+      constraints can be a substantial cost.  In direct transcription, one can
+      evaluate the dynamics/constraints in parallel (because each iteration
+      begins with $\bx[n]$ already given), whereas shooting is more
+      fundamentally a serial operation.</li></ul></p>
+
+      <p>For linear convex problems, the solvers are mature enough that these
+      differences often don't amount to much.  For nonlinear optimization
+      problems, the differences can be substantial.  And both approaches have
+      their loyal camps.</p>
+
+    </subsection>
+
+    <subsection><h1>Continuous Time</h1>
+
+      <p>If we wish to solve the continuous-time version of the problem, then we
+      can discretize time and use the formulations above.  The most important
+      decision is the discretization / numerical integration scheme.  For linear
+      systems, if we assume that the control inputs are held constant for each
+      time step (this approach is known as a <a
+      href="https://en.wikipedia.org/wiki/Zero-order_hold">zero-order hold</a>),
+      then we can integrate the dynamics perfectly; $$\bx[n+1] =
+      \int_{t_n}^{t_{n+1}} \left[ {\bf A} \bx(t) + {\bf B}\bu \right]dt = e^{{\bf A}h}\bx[n] + {\bf A}^{-1}(e^{{\bf A}h} - {\bf I}){\bf B}\bu[n],$$ is the simple case (when ${\bf A}$ is invertible).  But in general, we can use any finitely-parameterized representation of $\bu(t)$ and any numerical integration scheme to obtain $\bx[n+1]={\bf f}(\bx[n], \bu[n])$.</p>
+
+    </subsection>
+
+    <subsection><h1>Model-Predictive Control</h1>
+
+      <p>The maturity, robustness, and speed of solving trajectory optimization
+      using convex optimization leads to a beautiful idea: if we can optimize
+      trajectories quickly enough, then we can use our trajectory optimization
+      as a feedback policy.  The recipe is simple: (1) measure the current
+      state, (2) optimize a trajectory from the current state, (3) execute the
+      first action from the optimized trajectory, (4) let the dynamics evolve
+      for one step and repeat.  This recipe is known as <i>model-predictive
+      control</i> (MPC). </p>
+
+      <p>Despite the very computational nature of this controller (there is no
+      closed-form representation of this policy; it is represented only
+      implicitly as the solution of the optimization), there is a bounty of
+      theoretical and algorithmic results on MPC
+      <elib>Garcia89+Camacho13</elib>.  And there are a few core ideas that
+      practitioners should really understand.</p>
+
+      <p>One core idea is the concept of <i>receding-horizon</i> MPC. Since our
+      trajectory optimization problems are formulated over a finite-horizon, we
+      can think each optimization as reasoning about the next $N$ timesteps.  If
+      our true objective is to optimize the performance over a horizon longer
+      than $N$ (e.g. over the infinite horizon), then it is standard to continue
+      solving for an $N$ step horizon on each evaluation of the controller.  In
+      this sense, the total horizon under consideration continues to move
+      forward in time (e.g. to recede).</p>  
+      
+      <p>Some care must be taken in receding-horizon formulations because on
+      each new step we are introducing new costs and constraints into the
+      problem (the ones that would have been associated with time $N+1$ on the
+      previous solve) -- it would be very bad to march forward in time solving
+      convex optimization problems only to suddenly encounter a situation where
+      the solver returns "infeasible!".  One can design MPC formulations that
+      guarantee <i>recursive feasibility</i> -- e.g. guarantee that if a
+      feasible solution is found at time $n$, then the solver will also find a
+      feasible solution at time $n+1$.  Perhaps the simplest mechanism for
+      guaranteeing recursive feasibility in an optimization for stabilizing a
+      fixed point, $(\bx^*, \bu^*)$, is to add a final-value constraint to the
+      receding horizon, $\bx[N] = \bx^*$.  The idea is simple but important --
+      if at time $n$ the controller can get to the goal in $N$ time-steps, then
+      the solution from time $n$ with the first step removed, and $\bu^*$
+      inserted at the end, is guaranteed to be a feasible solution to the new
+      optimization problem at time $n+1$.  With feasibility guaranteed, the
+      solver is free to search for a lower-cost solution (which may be available
+      now because we've shifted the final-value constraint further into the
+      future). It is also possible to formulate MPC problems that guarantee
+      recursive feasibility even in the presence of modeling errors and
+      disturbances (c.f. <elib>Bemporad99</elib>).</p>
+
+      <p>The theoretical and practical aspects of Linear MPC are so well
+      understood today that it is considered the de-facto generalization of LQR
+      for controlling a linear system subject to (linear) constraints.</p>
+
+    </subsection>
+  
+  </section>
+
+  <p><b>NOTE: I'm making relatively major revisions to this chapter, and so far have only gotten about this far.  There will be some redundancy in the text below until I finish that revision.</b></p>
 
   <section><h1>Computational Tools for Nonlinear
   Optimization</h1>
@@ -650,25 +838,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     </subsection>
   </section> <!-- end pontryagin -->
 
-  <section><h1>Trajectory optimization as a convex
-  optimization</h1>
+  <section><h1>Extensions</h1>
 
-    <subsection><h1>Linear systems with convex linear
-    constraints</h1>
-
-      <p>An important special case.  Linear/Quadratic objectives results in an
-      LP/QP $\Rightarrow$ Convex optimization.</p>
-
-    </subsection>
-
-    <subsection><h1>Differential Flatness</h1>
-
-    </subsection>
+    <a href="acrobot.html#differntial_flatness">Differential flatness</a>.
 
     <subsection><h1>Mixed-integer convex optimization for
     non-convex constraints</h1>
 
     </subsection>
+
+    <subsection><h1>Explicit model-predictive control</h1></subsection>
 
   </section>
 
