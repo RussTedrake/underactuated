@@ -449,91 +449,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </subsection>
 
-    <subsection><h1>Sums-of-squares optimization</h1>
-
-      <p>It turns out that in the same way that we can use SDP to search over
-      the positive quadratic equations, we can generalize this to search over
-      the positive polynomial equations.  To be clear, for quadratic equations
-      we have \[ {\bf P}\succeq 0 \quad \Rightarrow \quad \bx^T {\bf P} \bx \ge
-      0, \quad \forall \bx. \]  It turns out that we can generalize this to \[
-      {\bf P}\succeq 0 \quad \Rightarrow \quad {\bf m}^T(\bx) {\bf P} {\bf
-      m}(\bx) \ge 0, \quad \forall \bx, \] where ${\bf m}(\bx)$ is a vector of
-      polynomial equations, typically chosen as a vector of <em>monomials</em>
-      (polynomials with only one term).  The set of positive polynomials
-      parameterized in this way is exactly the set of polynomials that can be
-      written as a <em>sum of squares</em><elib>Parrilo00</elib>.  While it is
-      known that not all positive polynomials can be written in this form, much
-      is known about the gap.  For our purposes this gap is very small (papers
-      have been written about trying to find polynomials which are uniformly
-      positive but not sums of squares); we should remember that it exists but
-      not worry about it too much for now.</p>
-
-      <p>Even better, there is quite a bit that is known about how to choose
-      the terms in ${\bf m}(\bx)$.  For example, if you give me the polynomial
-      \[ p(x) = 2 - 4x + 5x^2 \] and ask if it is positive for all real $x$, I
-      can convince you that it is by producing the sums-of-squares
-      factorization \[ p(x) = 1 + (1-2x)^2 + x^2, \] and I know that I can
-      formulate the problem without needing any monomials of degree greater
-      than 1 (the square-root of the degree of $p$) in my monomial vector.  In
-      practice, what this means for us is that people have authored
-      optimization front-ends which take a high-level specification with
-      constraints on the positivity of polynomials and they automatically
-      generate the SDP problem for you, without having to think about what
-      terms should appear in ${\bf m}(\bx)$ (c.f. <elib>Prajna04</elib>).
-      This class of optimization problems is called Sums-of-Squares (SOS)
-      optimization.</p>
-
-      <p>As it happens, the particular choice of ${\bf m}(\bx)$ can have a huge
-      impact on the numerics of the resulting semidefinite program (and on your
-      ability to solve it with commercial solvers). <drake></drake> implements
-      some particularly novel/advanced algorithms to make this work well
-      <elib>Permenter17</elib>.</p>
-
-      <p>We will write optimizations using sums-of-squares constraints as \[
-      p(\bx) \sos \] as shorthand for the constraint that $p(\bx) \ge 0$ for all
-      $\bx$, as demonstrated by finding a sums-of-squares decomposition.</p>
-
-      <p>This is surprisingly powerful.  It allows us to use convex
-      optimization to solve what appear to be very non-convex optimization
-      problems.</p>
-
-      <example><h1>Global minimization via
-        SOS</h1>
-
-        <p>Consider the following famous non-linear function of two variables
-        (called the "six-hump-camel": $$p(x) = 4x^2 + xy - 4y^2 - 2.1x^4 + 4y^4
-        + \frac{1}{3}x^6.$$  This function has six local minima, two of them
-        being global minima <elib>Henrion09a</elib>.</p>
-
-        <div  style="text-align:center"><img
-                src="figures/six_hump_camel.svg" width="90%"/></div>
-
-        <p>By formulating a simple sums-of-squares optimization, we can
-        actually find the minimum value of this function (technically, it is
-        only a lower bound, but in this case and many cases, it is surprisingly
-        tight) by writing: \begin{align*} \max_\lambda \ \ & \lambda \\
-        \text{s.t. } & p(x) - \lambda \text{ is sos.} \end{align*}  Go ahead
-        and play with the code (most of the lines are only for plotting; the
-        actual optimization problem is nice and simple to formulate). </p>
-
-        <jupyter>examples/optimization.ipynb</jupyter>
-
-        <p>Note that this finds the minimum value, but does not actually
-        produce the $\bx$ value which mimimizes it.  This is possible
-        <elib>Henrion09a</elib>, but it requires examining the dual of the
-        sums-of-squares solutions (which we don't need for the goals of this
-        chapter).</p>
-      </example>
-
-    </subsection>
-
     <subsection><h1>Lyapunov analysis for polynomial systems</h1>
 
-      <p>Now we can see that it may be possible to generalize the optimization
-      approach using SDP to search for Lyapunov functions for linear systems to
-      searching for Lyapunov functions for at least the polynomial systems:
-      $\dot\bx = f(\bx),$ where $f$ is a vector-valued polynomial function.  If
-      we parameterize a <em>fixed-degree</em> Lyapunov candidate as a polynomial
+      <p><a href="optimization.html#sums_of_squares">Sums of squares
+      optimization</a> provides a natural generalization of SDP to optimizing
+      over positive polynomials (if you are not familiar, take a moment to <a
+      href="optimization.html#sums_of_squares">read the appendix</a>).  This
+      suggests that it may be possible to generalize the optimization approach
+      using SDP to search for Lyapunov functions for linear systems to searching
+      for Lyapunov functions for at least the polynomial systems: $\dot\bx =
+      f(\bx),$ where $f$ is a vector-valued polynomial function.  If we
+      parameterize a <em>fixed-degree</em> Lyapunov candidate as a polynomial
       with unknown coefficients, e.g., \[ V_\alpha(\bx) = \alpha_0 + \alpha_1
       x_1 + \alpha_2 x_2 + \alpha_3 x_1x_2 + \alpha_4 x_1^2 + ..., \] then the
       time-derivative of $V$ is also a polynomial, and I can formulate the
