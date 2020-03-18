@@ -24,8 +24,7 @@ class TestOrbitalTransfer(unittest.TestCase):
         np.testing.assert_array_almost_equal(
             residuals,
             np.zeros(residuals.shape),
-            err_msg='The initial state in not on the Earth orbit.'
-            )
+            err_msg='The initial state in not on the Earth orbit.')
 
         # final state in Mars orbit
         residuals = universe.constraint_state_to_orbit(state[-1], 'Mars')
@@ -33,22 +32,16 @@ class TestOrbitalTransfer(unittest.TestCase):
             residuals,
             np.zeros(residuals.shape),
             # decimal=4,
-            err_msg='The final state in not on the Mars orbit.'
-            )
+            err_msg='The final state in not on the Mars orbit.')
 
         # discretized dynamics
         for t in range(time_steps):
             residuals = universe.rocket_discrete_dynamics(
-                state[t],
-                state[t+1],
-                thrust[t],
-                time_interval
-                )
+                state[t], state[t + 1], thrust[t], time_interval)
             np.testing.assert_array_almost_equal(
                 residuals,
                 np.zeros(residuals.shape),
-                err_msg=f'The discrete dynamics at time step {t} is not verified.'
-                )
+                err_msg=f'Discrete dynamics at time step {t} is not verified.')
 
     @weight(3)
     @timeout_decorator.timeout(1.)
@@ -66,10 +59,8 @@ class TestOrbitalTransfer(unittest.TestCase):
         tol = 1e-3
         thrust_limit = universe.rocket.thrust_limit
         for t in range(time_steps):
-            self.assertTrue(
-                np.linalg.norm(thrust[t]) <= thrust_limit + tol,
-                msg=f'Thrust limit violated at time step {t}.'
-                )
+            self.assertTrue(np.linalg.norm(thrust[t]) <= thrust_limit + tol,
+                            msg=f'Thrust limit violated at time step {t}.')
 
     @weight(3)
     @timeout_decorator.timeout(1.)
@@ -87,10 +78,8 @@ class TestOrbitalTransfer(unittest.TestCase):
         tol = 1e-3
         velocity_limit = universe.rocket.velocity_limit
         for t in range(time_steps):
-            self.assertTrue(
-                np.linalg.norm(velocity[t]) <= velocity_limit + tol,
-                msg=f'Velocity limit violated at time step {t}.'
-                )
+            self.assertTrue(np.linalg.norm(velocity[t]) <= velocity_limit + tol,
+                            msg=f'Velocity limit violated at time step {t}.')
 
     @weight(6)
     @timeout_decorator.timeout(1.)
@@ -112,9 +101,8 @@ class TestOrbitalTransfer(unittest.TestCase):
             for t in range(time_steps):
                 p = universe.position_wrt_planet(state[t], f'Asteroid_{i}')
                 self.assertTrue(
-                    p.dot(p) >= asteroid_orbit ** 2 - tol,
-                    msg=f'Detected collision with asteroid {i} at time step {t}.'
-                    )
+                    p.dot(p) >= asteroid_orbit**2 - tol,
+                    msg=f'Collision with asteroid {i} at time step {t}.')
 
     @weight(3)
     @timeout_decorator.timeout(1.)
@@ -132,5 +120,4 @@ class TestOrbitalTransfer(unittest.TestCase):
         consumption = time_interval * sum(t.dot(t) for t in thrust)
         self.assertTrue(
             consumption <= 200,
-            msg=f'Fuel consumption is {consumption}, greater than 200.'
-            )
+            msg=f'Fuel consumption is {consumption}, greater than 200.')

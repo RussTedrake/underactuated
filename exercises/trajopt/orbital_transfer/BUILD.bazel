@@ -9,5 +9,9 @@ load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
 rt_ipynb_test(
     name = "orbital_transfer",
     srcs = ["orbital_transfer.ipynb"],
-    deps = ["//underactuated"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/trajopt/orbital_transfer",
+    ],
 )
