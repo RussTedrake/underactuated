@@ -131,6 +131,6 @@ class TestOrbitalTransfer(unittest.TestCase):
         # check maximum consumption
         consumption = time_interval * sum(t.dot(t) for t in thrust)
         self.assertTrue(
-            consumption <= 250,
-            msg=f'Fuel consumption is {consumption}, greater than 250.'
+            consumption <= 200,
+            msg=f'Fuel consumption is {consumption}, greater than 200.'
             )
