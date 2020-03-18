@@ -115,7 +115,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <p>Let us first consider the case of linear systems.  In fact, if we start
     in discrete time, we can even defer the question of how to best discretize
     the continuous-time problem.  There are a few different ways that we might
-    "transcribe" this optimization problem into a concrete mathematical program.</p>
+    "transcribe" this optimization problem into a concrete mathematical
+    program.</p>
 
     <subsection><h1>Direct Transcription</h1>
     
@@ -183,14 +184,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <p>The savvy reader might have noticed that adding $\bx[\cdot]$ as
       decision variables was not strictly necessary.  If we know $\bx[0]$ and we
-      know $\bu[\cdot]$, then we should be able to solve for $\bx[n]$ (that's
-      just forward simulation).  For our discrete linear systems, this is
-      particularly easy and nice: \begin{align*}\bx[1] =& {\bf A}\bx[0] + {\bf
-      B}\bu[0] \\ \bx[2] =& {\bf A}({\bf A}\bx[0] + {\bf B}\bu[0]) + {\bf
-      B}\bu[1] \\ \bx[n] =& {\bf A}^n\bx[0] + \sum_{k=0}^{n-1} {\bf
-      A}^{n-1-k}{\bf B}u[k].\end{align*}  What's more, the solution is still
-      linear in $\bu[\cdot]$.  This is amazing... we can get rid of a bunch of
-      decision variables, and turn a constrained optimization problem into an
+      know $\bu[\cdot]$, then we should be able to solve for $\bx[n]$ -- that's
+      just forward simulation.  Indeed, by satisfying the constraints in direct
+      transcription, the solver is effectively solving the difference equation
+      (acausally).  For our discrete-time linear systems, this is particularly
+      easy and nice: \begin{align*}\bx[1] =& {\bf A}\bx[0] + {\bf B}\bu[0] \\
+      \bx[2] =& {\bf A}({\bf A}\bx[0] + {\bf B}\bu[0]) + {\bf B}\bu[1] \\ \bx[n]
+      =& {\bf A}^n\bx[0] + \sum_{k=0}^{n-1} {\bf A}^{n-1-k}{\bf
+      B}u[k].\end{align*}  What's more, the solution is still linear in
+      $\bu[\cdot]$.  This is amazing... we can get rid of a bunch of decision
+      variables, and turn a constrained optimization problem into an
       unconstrained optimization problem (assuming we don't have any other
       constraints).  This approach -- using $\bu[\cdot]$ but <i>not</i>
       $\bx[\cdot]$ as decision variables and evaluating $\ell(\bx[n],\bu[n])$ by
@@ -204,23 +207,23 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <subsection><h1>Computational Considerations</h1></subsection>
 
-      <p>So is this uniformly better than the direct transcription approach?  I
-      think it is not.  There are a few potential reason that one might prefer
-      the direct transcription: <ul><li>Numerical conditioning.  While it is
-      fundamental to the trajectory optimization problem that control input
-      $\bu[0]$ has more opportunity to have a large impact on the total cost
-      than control input $\bu[N-1]$.  The direct transcription approach spreads
-      this out over a large number of well-balanced constraints.  Shooting
-      involves calculating ${\bf A}^n$ for potentially large $n$.</li><li>Adding
-      state constraints.  Having $\bx[n]$ as explicit decision variables makes
-      it very easy/natural to add additional state constraints; and the solver
-      effectively reuses the computation of ${\bf A}^n$ for each constraint.  In
-      shooting, one has to unroll those terms for each new
-      constraint.</li><li>Parallelization.  For larger problems, evaluating the
-      constraints can be a substantial cost.  In direct transcription, one can
-      evaluate the dynamics/constraints in parallel (because each iteration
-      begins with $\bx[n]$ already given), whereas shooting is more
-      fundamentally a serial operation.</li></ul></p>
+      <p>So is direct shooting uniformly better than the direct transcription
+      approach?  I think it is not.  There are a few potential reason that one
+      might prefer the direct transcription: <ul><li>Numerical conditioning.
+      While it is fundamental to the trajectory optimization problem that
+      control input $\bu[0]$ has more opportunity to have a large impact on the
+      total cost than control input $\bu[N-1]$.  The direct transcription
+      approach spreads this out over a large number of well-balanced
+      constraints.  Shooting involves calculating ${\bf A}^n$ for potentially
+      large $n$.</li><li>Adding state constraints.  Having $\bx[n]$ as explicit
+      decision variables makes it very easy/natural to add additional state
+      constraints; and the solver effectively reuses the computation of ${\bf
+      A}^n$ for each constraint.  In shooting, one has to unroll those terms for
+      each new constraint.</li><li>Parallelization.  For larger problems,
+      evaluating the constraints can be a substantial cost.  In direct
+      transcription, one can evaluate the dynamics/constraints in parallel
+      (because each iteration begins with $\bx[n]$ already given), whereas
+      shooting is more fundamentally a serial operation.</li></ul></p>
 
       <p>For linear convex problems, the solvers are mature enough that these
       differences often don't amount to much.  For nonlinear optimization
@@ -243,107 +246,85 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       can discretize time and use the formulations above.  The most important
       decision is the discretization / numerical integration scheme.  For linear
       systems, if we assume that the control inputs are held constant for each
-      time step (this approach is known as a <a
+      time step (aka <a
       href="https://en.wikipedia.org/wiki/Zero-order_hold">zero-order hold</a>),
-      then we can integrate the dynamics perfectly; $$\bx[n+1] =
-      \int_{t_n}^{t_{n+1}} \left[ {\bf A} \bx(t) + {\bf B}\bu \right]dt =
-      e^{{\bf A}h}\bx[n] + {\bf A}^{-1}(e^{{\bf A}h} - {\bf I}){\bf B}\bu[n],$$
-      is the simple case (when ${\bf A}$ is invertible).  But in general, we can
-      use any finitely-parameterized representation of $\bu(t)$ and any
-      numerical integration scheme to obtain $\bx[n+1]={\bf f}(\bx[n],
-      \bu[n])$.</p>
+      then we can integrate the dynamics perfectly: $$\bx[n+1] =
+      \int_{t_n}^{t_n + h} \left[ {\bf A} \bx(t) + {\bf B}\bu \right]dt =
+      e^{{\bf A}h}\bx[n] + {\bf A}^{-1}(e^{{\bf A}h} - {\bf I}){\bf B}\bu[n],$$ is the simple case (when ${\bf A}$ is
+      invertible). But in general, we can use any finitely-parameterized
+      representation of $\bu(t)$ and any numerical integration scheme to obtain
+      $\bx[n+1]={\bf f}(\bx[n], \bu[n])$.</p>
 
     </subsection>
 
   </section>
 
-  <p><b>NOTE: I'm making relatively major revisions to this chapter, and so far
-  have only gotten about this far.  There will be some redundancy in the text
-  below until I finish that revision.</b></p>
-
   <section><h1>Nonconvex Trajectory Optimization</h1>
 
-    <p>Nonlinear dynamics, nonlinear objectives or constraints.</p>
+    <p>I humbly recommend that you study the convex trajectory optimization case
+    for clarity and sense of purpose, in practice trajectory optimization is
+    often used to solve nonconvex problems.  Our formulation can become
+    non-convex for a number of reasons -- if the dynamics are nonlinear then the
+    dynamic constraints are non-convex.  You may also wish to have a nonconvex
+    objective or nonconvex additional constraint (e.g. non-collision), even if
+    your dynamics are linear.  Typically we formulate these problems using tools
+    from <a href="optimization.html#nonlinear">nonlinear programming</a>.</p>
 
-    <subsection><h1>Direct Transcription</h1>
+    <subsection><h1>Direct Transcription and Direct Shooting</h1>
 
-      <p> Let us start by representing the finite-time trajectories, $\bx(t)$
-      and $\bu(t)$ $\forall t\in[t_0,t_f]$, by their values at a series of
-      <em>break points</em>, $t_0,t_1,t_2,t_3$, and denoting the values at those
-      points (aka the <em>knot points</em>) $\bx_0,...,\bx_N$ and
-      $\bu_0,...,\bu_N$, respectively.</p>
+      <p>The formulations that we wrote for direct transcription and direct
+      shooting above are still valid when the dynamics are nonlinear, it's just
+      that the resulting problem is nonconvex.  For instance, the direct
+      transcription for discrete-time systems becomes the more general:
+      \begin{align*} \min_{\bx[\cdot],\bu[\cdot]} \quad & \ell_f(\bx[N]) +
+      \sum_{n_0}^{N} \ell(\bx[n],\bu[n]) \\ \subjto \quad & \bx[n+1] = {\bf
+      f}(\bx[n], \bu[n]), \quad \forall n\in[0, N-1] \\ & \bx[0] = \bx_0 \\ & +
+      \text{additional constraints}. \end{align*}  Direct shooting still works,
+      too, since on each iteration of the algorithm we can compute $\bx[n]$
+      given $\bx[0]$ and $\bu[\cdot]$ by forward simulation.  But things get a
+      bit more interesting when we consider continuous-time systems.</p>
 
-      <p>Then perhaps the simplest mapping of the trajectory optimization
-      problem onto a nonlinear program is to fix the break points at even
-      intervals, $dt$, and use Euler integration to write \begin{align*}
-      \minimize_{\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1}} & \sum_{n=0}^{N-1}
-      \ell(\bx_n,\bu_n)dt \\ & \bx_{n+1} = \bx_n + f(\bx_n,\bu_n)dt, \quad \forall
-      n\in [0,N-1]. \end{align*} Note that the decision variables here are
-      $(\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1})$, because $\bx_0$ is given, and
-      $\bu_{N}$ does not appear in the cost nor any of the constraints.  It is
-      easy to generalize this approach to add additional costs or constraints on
-      $\bx$ and/or $\bu$. (Note that this formulation does not actually benefit
-      from the additive cost structure, so more general cost formulations are
-      also possible.)  Computing the gradients of the objective and constraints
-      is essentially as simple as computing the gradients of $\ell()$ and $f()$.
-      </p>
+      <p>For nonlinear dynamics, there is no one obvious choice for how realize
+      the discrete dynamics $$\bx[n+1] = \bx[n] + \int_{t[n]}^{t[n+1]} f(\bx(t),
+      \bu(t)) dt, \quad \bx(t[n]) = \bx[n].$$  For instance, in <drake></drake>
+      we have an entire <a
+      href="https://drake.mit.edu/doxygen_cxx/group__integrators.html">suite of
+      numerical integrators</a> that achieve different levels of simulation
+      speed and/or accuracy, both of which can be highly dependent on the
+      details of ${\bf f}(\bx,\bu)$.  The can also have subtle effects on the
+      resulting optimization problem -- for instance in optimization we
+      typically avoid variable-step integration because gradients can be
+      discontinuous based on the integrators decision to take a step (or
+      not).</p>
 
-      <!-- <todo>re-implement this.  note that it is nonlinear if dt is a decision variable (which could make sense for the minimum-time problem).</todo>
-      https://github.com/RobotLocomotion/drake/blob/last_sha_with_original_matlab/drake/examples/DoubleIntegrator.m#L125
-      might actually be better to replace it with the pendulum (and fixed dt).
+      <todo>Finish supporting IntegratorBase in DirectTranscription and write an
+      example showing how to use it here.</todo>
 
-      <example><h1>Direct Transcription for the
-      Double Integrator</h1>
-
-        <p>We have implemented an optimization class hierarchy in
-        <drake></drake> which makes it easy to try out these algorithms.
-        Watching the way that they perform on our simple problems is a very nice
-        way to gain intuition.  Here is some simple code to solve the
-        (time-discretized) minimum-time problem for the double integrator.</p>
-
-        <pre><code class="matlab" testfile="testDoubleIntegratorDirtran">
-        % note: requires Drake ver >= 0.9.7
-
-        cd(fullfile(getDrakePath,'examples'));
-        DoubleIntegrator.runDirtran;
-        </code></pre>
-
-        Make sure you take a look at the code:
-        <pre><code class="matlab">
-        edit('DoubleIntegrator.runDirtran')
-        </code></pre>
-
-        <p>Nothing compares to running it yourself, and poking around in the
-        code.  But you can also click <a target="_blank"
-        href="figures/dirtran_mintime_double_integrator.swf">here</a> to watch
-        the result. I hope that you recognize the parabolic trajectory from the
-        initial condition up to the switching surface, and then the second
-        parabolic trajectory down to the origin.  You should also notice that
-        the transition between $u=1$ and $u=-1$ is imperfect, due to the
-        discretization error.  As an exercise, try increasing the number of knot
-        points (the variable <code>N</code> in the code) to see if you can get a
-        sharper response, like <a target="_blank"
-        href="figures/dirtran_mintime_double_integrator_fine.swf">this.</a></p>
-
-      </example>
-      -->
-
-      <p>If you take a moment to think about what the direct transcription
-      algorithm is doing,   you will see that by satisfying the dynamic
-      constraints, the optimization is effectively   solving the (Euler
-      approximation of the) differential equation.  But instead of marching
-      forward through time, it is minimizing the inconsistency at each of the
-      knot points simultaneously.   While it's easy enough to generalize the
-      constraints to use higher-order integration schemes,   paying attention to
-      the trade-off between the number of times the constraint must be evaluated
-      vs the density of the knot points in time, if the goal is to obtain smooth
-      $\bx$ trajectory   solutions then another approach quickly emerges: the
-      approach taken by the so-called <em>collocation methods</em>.</p>
+      <p>But once we have opened the door to nonlinear optimization approaches,
+      then a new trick becomes available.  In the convex formulation, we chose
+      the time discretization apriori, and left it fixed for the duration of the
+      optimization.  That is because time enters in a nonlinear way into the
+      constraints.  But, as I've hinted with my notation above, we can now
+      imagine adding $t[\cdot]$ to the problem as decision variables, allowing
+      the optimizer to stretch or shrink the time intervals in order to solve
+      the problem.  Adding some constraints to these time variables is essential
+      in order to avoid trivial solutions (like collapsing to a trajectory of
+      zero duration); one could potentially even add more advanced constraints
+      to control the integration error.</p>
 
     </subsection> <!-- end dirtran -->
 
-    <subsection id="direct_collocation"><h1>Direct
-    Collocation</h1>
+    <subsection id="direct_collocation"><h1>Direct Collocation</h1>
+
+      <p>It is very satisfying to have a suite of numerical integration routines
+      available for our direct transcription.  But numerical integrators are
+      designed to solve forward in time, and this represents a design constraint
+      that we don't have in our direct transcription formulation.  If our goal
+      is to obtain an accurate solution to the differential equation with a
+      small number of function evaluations / decision variables / constraints,
+      then some new formulations are possible that take advantage of the
+      constrained optimization fomulation.  These include the the so-called
+      <em>collocation methods</em>.</p>
 
       <p> In direct collocation (c.f., <elib>Hargraves87</elib>), both the
       input trajectory and the state trajectory are represented explicitly as
@@ -426,6 +407,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </subsection> <!-- end dircol -->
 
+    <p><b>NOTE: I'm making relatively major revisions to this chapter, and so
+    far have only gotten about this far.  There will be some redundancy in the
+    text below until I finish that revision.</b></p>
+    
     <subsection><h1>Shooting Methods</h1>
 
       <p>In the methods described above, by asking the optimization package to

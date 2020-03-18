@@ -191,23 +191,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     </subsection>
   </section>
 
-  <section><h1>Nonlinear optimization</h1>
-
-    <p>Before we dive in, we need to take a moment to understand the
-    optimization tools that we will be using.  In the graph-search dynamic
-    programming algorithm, we were magically able to provide an iterative
-    algorithm that was known to converge to the optimal cost-to-go function.
-    With LQR we were able to reduce the problem to a matrix Riccati equation,
-    for which we have scalable numerical methods to solve.  In the Lyapunov
-    analysis chapter, we were able to formulate a very specific kind of
-    optimization problem--a semi-definite program (or SDP)--which is a subset of
-    convex optimization, and relied on custom solvers like Gurobi or Mosek to
-    solve the problems for us. Convex optimization is a hugely important subset
-    of nonlinear optimization, in which we can guarantee that the optimization
-    has no "local minima". In this chapter we won't be so lucky; most of the
-    optimizations that we formulate may have local minima and the solution
-    techniques will at best only guarantee that they give a locally optimal
-    solution.</p>
+  <section id="nonlinear"><h1>Nonlinear programming</h1>
 
     <p>The generic formulation of a nonlinear optimization problem is     \[
     \min_z c(z) \quad \subjto \quad \bphi(z) \le 0, \]     where $z$ is a
