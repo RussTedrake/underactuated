@@ -8,6 +8,13 @@ from warnings import warn
 from pydrake.systems.framework import VectorSystem
 
 
+def pyplot_is_interactive():
+    # import needs to happen after the backend is set.
+    import matplotlib.pyplot as plt
+    from matplotlib.rcsetup import interactive_bk
+    return plt.get_backend() in interactive_bk
+
+
 def setup_matplotlib_backend(wishlist=["notebook"]):
     """Helper to support multiple workflows:
         1) nominal -- running locally w/ jupyter notebook
@@ -27,12 +34,7 @@ def setup_matplotlib_backend(wishlist=["notebook"]):
         for backend in wishlist:
             try:
                 ipython.run_line_magic("matplotlib", backend)
-
-                # import needs to happen after the backend is set.
-                import matplotlib.pyplot as plt
-                from matplotlib.rcsetup import interactive_bk
-                return plt.get_backend() in interactive_bk
-
+                return pyplot_is_interactive()
             except KeyError:
                 continue
         ipython.run_line_magic("matplotlib", "inline")

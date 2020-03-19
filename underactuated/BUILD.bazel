@@ -25,3 +25,11 @@ rt_py_library(
     imports = [".."],
     visibility = ["//visibility:public"],
 )
+
+rt_py_library(
+    name = "pendulum",
+    srcs = ["pendulum.py"],
+    imports = [".."],
+    visibility = ["//visibility:public"],
+    deps = ["underactuated"],
+)
