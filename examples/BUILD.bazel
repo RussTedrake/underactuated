@@ -33,5 +33,9 @@ rt_ipynb_test(
 rt_ipynb_test(
     name = "trajectory_optimization",
     srcs = ["trajectory_optimization.ipynb"],
-    deps = ["//underactuated"],
+    data = ["//underactuated/models:cartpole.urdf"],
+    deps = [
+        "//underactuated",
+        "//underactuated:pendulum",
+    ],
 )
