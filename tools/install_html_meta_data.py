@@ -126,8 +126,15 @@ for id in chapter_ids:
     filename = id + ".html"
     s = get_file_as_string(filename)
 
+    # Extract the chapter title
+    name_start = s.find("<chapter")
+    name_start = s.find("<h1>", name_start) + len("<h1>")
+    name_end = s.find("</h1>", name_start)
+    name = s[name_start:name_end]
+
     # Rewrite the header
-    this_header = header.replace("$CHAPTER$", id, 1)
+    this_header = header.replace("$CHAPTER-ID$", id)
+    this_header = this_header.replace("$CHAPTER-NAME$", name)
     s = replace_string_before(s, "<chapter", this_header)
 
     # Rewrite the footer
