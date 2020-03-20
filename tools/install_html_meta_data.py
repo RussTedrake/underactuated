@@ -127,7 +127,8 @@ for id in chapter_ids:
     s = get_file_as_string(filename)
 
     # Rewrite the header
-    s = replace_string_before(s, "<chapter", header)
+    this_header = header.replace("$CHAPTER$", id, 1)
+    s = replace_string_before(s, "<chapter", this_header)
 
     # Rewrite the footer
     s = replace_string_after(s, "</chapter>", footer)
