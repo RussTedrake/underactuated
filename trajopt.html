@@ -323,12 +323,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <p>It is very satisfying to have a suite of numerical integration routines
       available for our direct transcription.  But numerical integrators are
       designed to solve forward in time, and this represents a design constraint
-      that we don't have in our direct transcription formulation.  If our goal
-      is to obtain an accurate solution to the differential equation with a
-      small number of function evaluations / decision variables / constraints,
-      then some new formulations are possible that take advantage of the
-      constrained optimization fomulation.  These include the the so-called
-      <em>collocation methods</em>.</p>
+      that we don't actually have in our direct transcription formulation.  If
+      our goal is to obtain an accurate solution to the differential equation
+      with a small number of function evaluations / decision variables /
+      constraints, then some new formulations are possible that take advantage
+      of the constrained optimization fomulation.  These include the the
+      so-called <em>collocation methods</em>.</p>
 
       <p> In direct collocation (c.f., <elib>Hargraves87</elib>), both the
       input trajectory and the state trajectory are represented explicitly as
@@ -341,7 +341,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       break points of the spline.  You might think that you would need the
       coefficients of the cubic spline parameters, but you do not.  For the
       first order interpolation on $\bu(t)$, given $\bu(t_k)$ and
-      $\bu(t_{k+1})$, we can solve for every value $\bu(t)$ over the internval
+      $\bu(t_{k+1})$, we can solve for every value $\bu(t)$ over the interval
       $t \in [k, k+1]$.  But we also have everything that we need for the cubic
       spline: given $\bx(t_k)$ and $\bu(t_k)$, we can compute $\dot\bx(t_k) = f
       (\bx(t_k), \bu(t_k))$; and the four values $\bx(t_k), \bx(t_{k+1}),
@@ -407,19 +407,49 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </subsection> <!-- end dircol -->
 
+    <subsection><h1>Pseudo-spectral Methods</h1>
+
+      <p>The direct collocation method of <elib>Hargraves87</elib> was our first
+      example of explicitly representing the solution of the optimal control
+      problem as a parameterized trajectory, and adding constraints to the
+      derivatives at a series of collocation points.  In the algorithm above,
+      the representation of choice was <i>piecewise-polynomials</i>, e.g. cubic
+      spines, and the spline coefficients were the decision variables.  A
+      closely related approach, often called "pseudo-spectral" optimal control,
+      uses the same collocation idea, but represents the trajectories instead
+      using a linear combination of <i>global polynomial</i> basis functions.
+      These methods use typically much higher degree polynomials, but can
+      leverage clever parameterizations to write sparse collocation objectives
+      and to select the collocation points <elib>Garg11+Ross12a</elib>.
+      Interestingly, The continuously-differentiable nature of the the
+      representation of these methods has led to compartively more theorems and
+      analysis than we have seen for other direct trajectory optimization
+      methods <elib>Ross12a</elib> -- but despite some of the language used in
+      these articles please remember they are still local optimization methods
+      trying to solve a nonconvex optimization problem.  While the direct
+      collocation method above might be expected to converge to the true optimal
+      solution by adding more segments to the piecewise polynomial (and having
+      each segement represent a smaller interval of time), here we expect
+      convergence to happen as we increase the degree of the polynomials.</p>  
+      
+      <p>The pseudo-spectral methods are also sometimes knowns as "orthogonal
+      collocation" because the $N$ basis polynomials, $\phi_j(t)$, are chosen so
+      that at the $N$th collocation point $t_j$, we have $$\phi_i(t_j) =
+      \begin{cases} 1 & i=j, \\ 0 & \text{otherwise.}\end{cases}$$  This can be
+      accomplished by choosing $$\phi_j(t) = \prod_{i=0, i\ne j}^{N}
+      \frac{t-t_i}{t_j - t_i}.$$  Note that for both numerical reasons and for
+      analysis, time is traditionally rescaled from the interval $[t_0, t_f]$ to
+      $[-1, 1]$.  Collocation points are chosen based on small variations of <a href="https://en.wikipedia.org/wiki/Gaussian_quadrature"></a>Gaussian quadrature</a>, known as the "Gauss-Lobatto" which includes collocation points at $t=-1$ and $t=1$.</p>
+
+      <p>Interestingly, a number of papers have also infinite-horizon psuedo-spectral optimization by the nonlinear rescaling of the time interval $t\in[t_0, \infty)$ to the half-open interval $\tau\in[-1, 1)$ via $\tau = \frac{t-1}{t+1}$ <elib>Garg11+Ross12a</elib>.  In this case, one chooses the collocation times so that they do not include $\tau=1$, using the so-called "Gauss-Radau" points <elib>Garg11</elib>.</p>
+
+    </subsection>
+
     <p><b>NOTE: I'm making relatively major revisions to this chapter, and so
     far have only gotten about this far.  There will be some redundancy in the
     text below until I finish that revision.</b></p>
     
-    <subsection><h1>Shooting Methods</h1>
-
-      <p>In the methods described above, by asking the optimization package to
-      perform the numerical integration of the equations of motion, we are
-      effectively over-parameterizing the problem.  In fact, the optimization is
-      perfectly well defined if we restrict the decision variables to
-      $\bu_0,...,\bu_{N-1}$ only--we can compute $\bx_1,...,\bx_{N}$ ourselves
-      by knowing $\bx_0$, and $\bu(\cdot)$.  This is exactly the approach taken
-      in the shooting methods.</p>
+    <subsection><h1>Solution techniques</h1>
 
       <subsubsection><h1>Computing gradients</h1>
 
@@ -429,26 +459,27 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         that the solvers are faster and more robust when   exact gradients are
         provided.  Now that we have removed the $\bx$ decision variables   from
         the program, we have to take a little extra care to compute the
-        gradients.  This   is still easily accomplished using the chain rule.
-        To be concise (and slightly more general),   let us define
+        gradients.  This   is still easily accomplished using the chain rule. To
+        be concise (and slightly more general),   let us define
         $\bx[n+1]=f_d(\bx[n],\bu[n])$ as the discrete-time approximation of the
         continuous dynamics; for example, the forward Euler integration scheme
         used above would give   $f_d(\bx[n],\bu[n]) =
         \bx[n]+f(\bx[n],\bu[n])dt.$  Then we have   \[ \pd{J}{\bu_k} =
-        \sum_{n=0}^{N-1} \left( \pd{\ell(\bx[n],\bu[n])}{\bx[n]} \pd{\bx[n]}{\bu_k}
-        + \pd{\ell(\bx[n],\bu[n])}{\bu_k} \right), \]   where the gradient of the
-        state with respect to the inputs can be computed   during the "forward
-        simulation",   \[ \pd{\bx[n+1]}{\bu_k} = \pd{f_d(\bx[n],\bu[n])}{\bx[n]}
-        \pd{\bx[n]}{\bu_k} + \pd{f_d(\bx[n],\bu[n])}{\bu_k}.  \]   These
-        simulation gradients can   also be used in the chain rule to provide the
-        gradients of any constraints.  Note that there are a lot of terms to
-        keep around here, on the order of (state dim) $\times$ (control dim)
-        $\times$ (number of timesteps).   Ouch.  Note also that many of these
-        terms are zero; for instance with the Euler integration scheme above
-        $\pd{\bu[n]}{\bu_k} = 0$ if $k\ne n$.  (If this looks like I'm mixing
-        two notations here, recall that I'm using $\bu_k$ to represent the
-        decision variable and $\bu[n]$ to represent the input used in the $n$th
-        step of the simulation.)</p>
+        \sum_{n=0}^{N-1} \left( \pd{\ell(\bx[n],\bu[n])}{\bx[n]}
+        \pd{\bx[n]}{\bu_k} + \pd{\ell(\bx[n],\bu[n])}{\bu_k} \right), \]   where
+        the gradient of the state with respect to the inputs can be computed
+        during the "forward simulation",   \[ \pd{\bx[n+1]}{\bu_k} =
+        \pd{f_d(\bx[n],\bu[n])}{\bx[n]} \pd{\bx[n]}{\bu_k} +
+        \pd{f_d(\bx[n],\bu[n])}{\bu_k}.  \]   These simulation gradients can
+        also be used in the chain rule to provide the gradients of any
+        constraints.  Note that there are a lot of terms to keep around here, on
+        the order of (state dim) $\times$ (control dim) $\times$ (number of
+        timesteps).   Ouch.  Note also that many of these terms are zero; for
+        instance with the Euler integration scheme above $\pd{\bu[n]}{\bu_k} =
+        0$ if $k\ne n$.  (If this looks like I'm mixing two notations here,
+        recall that I'm using $\bu_k$ to represent the decision variable and
+        $\bu[n]$ to represent the input used in the $n$th step of the
+        simulation.)</p>
 
       </subsubsection>  <!-- gradients -->
 
@@ -492,18 +523,6 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       </subsubsection>
 
-    </subsection> <!-- end shooting -->
-
-    <subsection><h1>Pseudo-spectral Methods</h1></subsection>
-
-    <subsection><h1>Discussion</h1>
-
-      <p>Although the decision about which algorithm is best may depend on the
-      situation,   in our work we have come to favor the direct collocation
-      method (and occasionally direct   transcription) for most of our work.
-      There are a number of arguments for and   against each approach; I will
-      try to discuss a few of them here.</p>
-
       <subsubsection><h1>Solver performance</h1>
 
         <p>Numerical conditioning.  Tail wagging the dog.</p>
@@ -528,6 +547,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         implicit form.</p>
 
       </subsubsection>
+
+      <!-- maybe: relaxing dynamic constraints (as in the formulation n Ross and Karpenko, 2012 between eq 16 and 17) -->
 
       <subsubsection><h1>Variations in the problem formulation</h1>
 
