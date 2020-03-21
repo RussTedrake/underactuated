@@ -367,7 +367,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     </subsection>
     -->
 
-    <subsection><h1>Discrete-time Riccati Equations</h1>
+    <subsection id="dt_riccati"><h1>Discrete-time Riccati Equations</h1>
 
       <p>Essentially all of the results above have a natural correlate for
       discrete-time systems. What's more, the discrete time versions tend to be
@@ -384,12 +384,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       K[n]}\bx[n] = -({\bf R} + {\bf B}^T {\bf S}[n] {\bf B})^{-1} {\bf B}^T
       {\bf S}[n] {\bf A} \bx[n],$$ yielding $${\bf S}[n-1] = {\bf Q} + {\bf
       A}^T{\bf S}[n]{\bf A} - ({\bf A}^T{\bf S}[n]{\bf B})({\bf R} + {\bf B}^T
-      {\bf S}[n] {\bf B})^{-1} ({\bf B}^T {\bf S}[n]{\bf A}^T), \quad {\bf S}[N]
+      {\bf S}[n] {\bf B})^{-1} ({\bf B}^T {\bf S}[n]{\bf A}), \quad {\bf S}[N]
       = 0,$$ which is the famous <i>Riccati difference equation</i>. The
       infinite-horizon LQR solution is given by the (positive-definite)
       fixed-point of this equation: $${\bf S} = {\bf Q} + {\bf A}^T{\bf S}{\bf
       A} - ({\bf A}^T{\bf S}{\bf B})({\bf R} + {\bf B}^T {\bf S} {\bf B})^{-1}
-      ({\bf B}^T {\bf S}{\bf A}^T).$$  Like in the continuous time case, this
+      ({\bf B}^T {\bf S}{\bf A}).$$  Like in the continuous time case, this
       equation is so important that we have special numerical recipes for
       solving this discrete-time algebraic Riccati equation (DARE).  <drake>
       </drake> delegates to these numerical methods automatically when you
