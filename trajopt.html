@@ -441,31 +441,94 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       analysis, time is traditionally rescaled from the interval $[t_0, t_f]$ to
       $[-1, 1]$.  Collocation points are chosen based on small variations of <a href="https://en.wikipedia.org/wiki/Gaussian_quadrature"></a>Gaussian quadrature</a>, known as the "Gauss-Lobatto" which includes collocation points at $t=-1$ and $t=1$.</p>
 
-      <p>Interestingly, a number of papers have also infinite-horizon psuedo-spectral optimization by the nonlinear rescaling of the time interval $t\in[t_0, \infty)$ to the half-open interval $\tau\in[-1, 1)$ via $\tau = \frac{t-1}{t+1}$ <elib>Garg11+Ross12a</elib>.  In this case, one chooses the collocation times so that they do not include $\tau=1$, using the so-called "Gauss-Radau" points <elib>Garg11</elib>.</p>
+      <p>Interestingly, a number of papers have also infinite-horizon
+      psuedo-spectral optimization by the nonlinear rescaling of the time
+      interval $t\in[0, \infty)$ to the half-open interval $\tau\in[-1, 1)$ via
+      $\tau = \frac{t-1}{t+1}$ <elib>Garg11+Ross12a</elib>.  In this case, one
+      chooses the collocation times so that they include $\tau = -1$ but do not
+      include $\tau=1$, using the so-called "Gauss-Radau" points
+      <elib>Garg11</elib>.</p>
+
+      <todo>Add an example.  Acrobot swingup?</todo>
+
+      <subsubsection><h1>Dynamic constraints in implicit form</h1>
+        
+        <p>There is another, seemingly subtle but potentially important,
+        opportunity that can be exploited in a few of these transcriptions, if
+        our main interest is in optimizing systems with significant multibody
+        dynamics.  In some cases, we can actually write the dynamics constraints
+        directly in their implicit form.  We've <a
+        href="lyapunov.html#ex:implicit">introduced this idea already</a> in the
+        context of Lyapunov analysis.  In many cases, is it nicer or more
+        efficient to obtain the equations of motion in an implicit form, ${\bf
+        g}(\bx,\bu,\dot\bx) = 0$, and to avoid ever having to solve for the
+        explicit form $\dot\bx = {\bf f}(\bx,\bu).$  This can become even more
+        important when we consider systems for which the explicit form doesn't
+        have a unique solution -- we will see examples of this when we study
+        trajectory optimization through contact because the Coulomb model for
+        friction actually results in a differential inclusion instead of a
+        differential equation.</p>
+
+        <p>The collocation methods, which operate on the dynamic constraints at
+        collocation points directly in their continuous form, can use the
+        implicit form directly.  It is possible to write a time-stepping
+        (discrete-time approximation) for direct transcription using implicit
+        integrators -- again providing constraints in implicit form.  The
+        implicit form is harder to exploit in the shooting methods.</p>
+        
+      </subsubsection>
 
     </subsection>
 
-    <p><b>NOTE: I'm making relatively major revisions to this chapter, and so
-    far have only gotten about this far.  There will be some redundancy in the
-    text below until I finish that revision.</b></p>
-    
     <subsection><h1>Solution techniques</h1>
 
-      <subsubsection><h1>Computing gradients</h1>
+      <p>The different transcriptions presented above represent different ways
+      to map the (potentially continuous-time) optimal control problem into a
+      finite set of decision variables, objectives, and constraints.  But even
+      once that choice is made, there are numerous approaches to solving this
+      optimization problem.  Any general approach to <a
+      href="optimization.html#nonlinear_programming">nonlinear programming</a>
+      can be applied here; in the python examples we've included so far, the
+      problems are handed directly to the sequential-quadratic programming (SQP)
+      solver SNOPT, or to the interior-point solver IPOPT.</p>
 
-        <p>Again, providing gradients of the objectives and constraints to the
-        solver is not   strictly required -- most solvers will obtain them from
-        finite differences if they   are not provided -- but I feel strongly
-        that the solvers are faster and more robust when   exact gradients are
-        provided.  Now that we have removed the $\bx$ decision variables   from
-        the program, we have to take a little extra care to compute the
-        gradients.  This   is still easily accomplished using the chain rule. To
-        be concise (and slightly more general),   let us define
+      <p>There is also quite a bit of exploitable problem-specific stucture in
+      these trajectory optimization problems due to the sequential nature of the
+      problem. As a result, there are some ideas that are fairly specific to the
+      trajectory optimization formulation of optimal control, and customized
+      solvers can often (and sometimes dramatically) outperform general purpose
+      solvers.</p>
+      
+      <p>This trajectory-optimization structure is easiest to discuss, and
+      implement, in unconstrained formulations, so we will start there. In fact,
+      in recent years we have seen a surge in popularity in robotics for doing
+      trajectory optimization using (often special-purpose) solvers for
+      unconstrained trajectory optimization, where the constrained problems are
+      transformed into unconstrained problem via <a
+      href="optimization.html#penalty">penalty methods</a>.  I would say penalty
+      methods based on the augmented Lagrangian are particularly popular for
+      trajectory optimization these days <elib>Lin91+Toussaint14</elib>.</p>
+
+      <subsubsection><h1>Efficiently computing gradients</h1>
+
+        <p>Providing gradients of the objectives and constraints to the solver
+        is not strictly required -- most solvers will obtain them from finite
+        differences if they are not provided -- but I feel strongly that the
+        solvers are faster and more robust when exact gradients are provided.
+        Providing the gradients for the direct transcription methods is very
+        straight-forward -- we simply provide the gradients for each constraint
+        individually.  But in the direct shooting approach, where we have
+        removed the $\bx$ decision variables from the program but still write
+        objectives and constraints in terms of $\bx$, it would become very
+        inefficient to compute the gradients of each objective/constraint
+        independently.  We need to leverage the chain rule.</p>
+        
+        <p>To be concise (and slightly more general),   let us define
         $\bx[n+1]=f_d(\bx[n],\bu[n])$ as the discrete-time approximation of the
         continuous dynamics; for example, the forward Euler integration scheme
-        used above would give   $f_d(\bx[n],\bu[n]) =
-        \bx[n]+f(\bx[n],\bu[n])dt.$  Then we have   \[ \pd{J}{\bu_k} =
-        \sum_{n=0}^{N-1} \left( \pd{\ell(\bx[n],\bu[n])}{\bx[n]}
+        used above would give $f_d(\bx[n],\bu[n]) = \bx[n]+f(\bx[n],\bu[n])dt.$
+        Then we have \[\pd{J}{\bu_k} = \pd{\ell_f(\bx[N])}{\bu_k} +
+        \sum_{n=0}^{N-1} \left(\pd{\ell(\bx[n],\bu[n])}{\bx[n]}
         \pd{\bx[n]}{\bu_k} + \pd{\ell(\bx[n],\bu[n])}{\bu_k} \right), \]   where
         the gradient of the state with respect to the inputs can be computed
         during the "forward simulation",   \[ \pd{\bx[n+1]}{\bu_k} =
@@ -483,8 +546,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       </subsubsection>  <!-- gradients -->
 
-      <subsubsection><h1>The special case of optimization without
-      state constraints</h1>
+      <subsubsection><h1>The special case of direct shooting without state
+      constraints</h1>
 
         <p>By solving for $\bx(\cdot)$ ourselves, we've removed a large number
         of constraints from the optimization.  If no additional state
@@ -492,44 +555,24 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         the gradients of the objective, then a surprisingly efficient algorithm
         emerges.  I'll give the steps here without derivation, but will derive
         it in the Pontryagin section below: <ol> <li>Simulate forward:
-        $$\bx[n+1] = f_d(\bx[n],\bu_n),$$ from  $\bx[0] = \bx_0$</li>
+        $$\bx[n+1] = f_d(\bx[n],\bu_n),$$ from  $\bx[0] = \bx_0$.</li>
         <li>Calculate backwards: $$\lambda[n-1] =
         \pd{\ell(\bx[n],\bu[n])}{\bx[n]}^T + \pd{f(\bx[n],\bu[n])}{\bx[n]}^T
-        \lambda[n],$$ from $\lambda[N-1]=0$</li> <li>Extract the gradients:
-        $$\pd{J}{\bu[n]} = \pd{\ell(\bx[n],\bu[n])}{\bu[n]} + \lambda[n]^T
+        \lambda[n],$$ from $\lambda[N-1]=\pd{\ell_f(\bx[N])}{\bx[N]}$.</li>
+        <li>Extract the gradients: $$\pd{J}{\bu[n]} =
+        \pd{\ell(\bx[n],\bu[n])}{\bu[n]} + \lambda[n]^T
         \pd{f(\bx[n],\bu[n])}{\bu[n]},$$ with $\pd{J}{\bu_k} = \sum_n
         \pd{J}{\bu[n]}\pd{\bu[n]}{\bu_k}$.</li> </ol> <p>Here $\lambda[n]$ is a
         vector the same size as $\bx[n]$ which has an interpretation as
         $\lambda[n]=\pd{J}{\bx[n+1]}^T$.  The equation governing $\lambda$ is
         known as the <em>adjoint equation</em>, and it represents a dramatic
-        efficient improvement over calculating the huge number of simulation
-        gradients described above. In case you are interested, the adjoint
-        equation is known as the <em>backpropagation algorithm</em> in the
-        neural networks literature and it is one of the primary reasons that
-        training neural networks became so popular in the 1980's; super fast GPU
-        implementations of this algorithm are also one of the reasons that
-        <em>deep learning</em> is incredibly popular right now (the availability
-        of massive training databases is perhaps the other main reason). </p>
-
-        <p>To take advantage of this efficiency, advocates of the shooting
-        methods often use penalty methods   instead of enforcing hard state
-        constraints; instead of telling the solver about   the constraint
-        explicitly, you simply add an additional term to the cost function
-        which gives a large penalty commensurate with the amount by which the
-        constraint   is violated. These are not quite as accurate and can be
-        harder to tune (you'd   like the cost to be high compared to other
-        costs, but making it too high can   lead to numerical conditioning
-        issues), but they can work.</p>
-
-      </subsubsection>
-
-      <subsubsection><h1>Solver performance</h1>
-
-        <p>Numerical conditioning.  Tail wagging the dog.</p>
-
-        <p>Sparse constraints.  Potential for parallel evaluation of the
-        constraints (computing the dynamics and their derivatives are often the
-        most expensive part). </p>
+        efficiency improvement over calculating the huge number of simulation
+        gradients described above. In case you are interested, yes the adjoint
+        equation exactly the <em>backpropagation algorithm</em> that is famous
+        in the neural networks literature, or more generally a bespoke version
+        of reverse-mode <a
+        href="https://en.wikipedia.org/wiki/Automatic_differentiation">automatic
+        differentiation</a>. </p>
 
       </subsubsection>
 
@@ -540,59 +583,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       </subsubsection>
 
-      <subsubsection><h1>Implicit dynamics</h1>
-
-        <p>Another potential advantage of the direct transcription and
-        collocation methods is that the dynamics constraints can be written in
-        implicit form.</p>
-
-      </subsubsection>
-
       <!-- maybe: relaxing dynamic constraints (as in the formulation n Ross and Karpenko, 2012 between eq 16 and 17) -->
-
-      <subsubsection><h1>Variations in the problem formulation</h1>
-
-        <p>There are number of useful variations to the problem formulations
-        I've presented above. By far the most common is the addition of a
-        terminal cost, e.g.: $$\min \quad h(\bx[N]) + \sum_{n=0}^{N-1}
-        \ell(\bx[n],\bu[n]).$$ These terms are easily added to the cost function in
-        the any of methods, and the adjoint equations of the shooting method
-        simply require the a modified terminal condition $$\lambda[N-1] =
-        \pd{h(\bx[N])}{\bx[N]}$$ when computing the gradients.</p>
-
-        <p>Another common modification is including the spacing of the
-        breakpoints as additional decision variables.  This is particularly easy
-        in the direct transcription and collocation methods, and can also be
-        worked into the shooting methods.  Typically we add a lower-bound on the
-        time-step so that they don't all vanish to zero.</p>
-
-      </subsubsection>
-
-      <subsubsection><h1>Accuracy of numerical integration</h1>
-
-        <p>One potential complaint about the direct transcription and
-        collocation algorithms is that we tend to use simplistic numerical
-        integration methods and often fix the integration timestep (e.g. by
-        choosing Euler integration and selecting a $dt$); it is difficult to
-        bound the resulting integration errors in the solution.  One tantalizing
-        possibility in the shooting methods is that the forward integration
-        could be accomplished by more sophisticated methods, like variable-step
-        integration.  But I must say that I have not had much success with this
-        approach, because while the numerical accuracy of any one function
-        evaluation might be improved, these integration schemes do not
-        necessarily give smooth outputs as you make incremental changes to the
-        initial conditions and control (changing $\bu_2$ by $\epsilon$ could
-        result in taking a different number of steps in the integration scheme).
-        This lack of smoothness can wreak havoc on the convergence of the
-        optimization. If numerical accuracy is a premium, then I think you will
-        have more success by imposing consistency constraints (e.g. as in the
-        Runge-Kutta 4th order simulation with 5th order error checking method)
-        as additional constraints on the time-steps; shooting methods do not
-        have any particular advantage here.</p>
-
-        <todo>reference DMOC</todo>
-
-      </subsubsection> <!-- end accuracy -->
 
     </subsection> <!-- end pros/cons -->
 
@@ -697,12 +688,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       our constrained trajectory optimization problem in discrete time
       \begin{align*} \minimize_{\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1}} &
       \sum_{n=0}^{N-1} \ell(\bx[n],\bu[n]),\\ \subjto \quad & \bx[n+1] =
-      f_d(\bx[n],\bu[n]). \end{align*} Formulate the Lagrangian, \[
-      L(\bx[\cdot],\bu[\cdot],\lambda[\cdot]) = \sum_{n=0}^{N-1}
-      \ell(\bx[n],\bu[n]) + \sum_{n=0}^{N-1} \lambda^T[n] \left(f_d(\bx[n],\bu[n])
-      - \bx[n+1]\right), \] and set the derivatives to zero to obtain the
-      adjoint equation method described for the shooting algorithm above:
-      \begin{gather*} \forall n\in[0,N-1], \pd{L}{\lambda[n]} =
+      f_d(\bx[n],\bu[n]). \end{align*} Formulate the Lagrangian,
+      \[L(\bx[\cdot],\bu[\cdot],\lambda[\cdot]) = \sum_{n=0}^{N-1}
+      \ell(\bx[n],\bu[n]) + \sum_{n=0}^{N-1} \lambda^T[n]
+      \left(f_d(\bx[n],\bu[n]) - \bx[n+1]\right), \] and set the derivatives to
+      zero to obtain the adjoint equation method described for the shooting
+      algorithm above: \begin{gather*} \forall n\in[0,N-1], \pd{L}{\lambda[n]} =
       f_d(\bx[n],\bu[n]) - \bx[n+1] = 0 \Rightarrow \bx[n+1] = f(\bx[n],\bu[n])
       \\ \forall n\in[0,N-1], \pd{L}{\bx[n]} = \pd{\ell(\bx[n],\bu[n])}{\bx} +
       \lambda^T[n] \pd{f_d(\bx[n],\bu[n])}{\bx} - \lambda^T[n-1] = 0 \\ \quad
@@ -721,8 +712,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </subsection>
 
-    <subsection><h1>Necessary conditions for optimality in
-    continuous time</h1>
+    <subsection><h1>Necessary conditions for optimality in continuous time</h1>
 
       <p>You won't be surprised to hear that these necessary conditions have an
       analogue in continuous time. I'll state it here without derivation.  Given
@@ -738,7 +728,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <p>In fact the statement can be generalized even beyond this to the case
       where $\bu$ has constraints. The result is known as Pontryagin's minimum
       principle -- giving <em>necessary conditions</em> for a trajectory to be
-      optimal.</p>P
+      optimal.</p>
 
       <theorem><h1>Pontryagin's Minimum Principle</h1>
 
@@ -767,34 +757,41 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
   <section><h1>Variations and Extensions</h1>
 
+    <todo>Multiple Shooting: Direct transcription is the limit of multiple shooting where every timestep is a different "shot".</todo>
+
     <a href="acrobot.html#differntial_flatness">Differential flatness</a>.
 
     <subsection><h1>Iterative LQR and Differential Dynamic
       Programming</h1>
     
         <p>There is another approach to trajectory optimization (at least for
-        initial-value problems) that has gotten quite popular lately. Iterative LQR
-        (iLQR)<elib>Li04</elib> also known as Sequential Linear Quadratic optimial
-        control) <elib>Sideris05</elib>. The idea is simple enough: given an initial
-        guess at the input and state trajectory, make a linear approximation of the
-        dynamics and a quadratic approximation of the cost function.  Then compute
-        and simulate the time-varying LQR controller to find a new input and state
-        trajectory.  Repeat until convergence.</p>
+        initial-value problems) that has gotten quite popular lately. Iterative
+        LQR (iLQR)<elib>Li04</elib> also known as Sequential Linear Quadratic
+        optimial control) <elib>Sideris05</elib>. The idea is simple enough:
+        given an initial guess at the input and state trajectory, make a linear
+        approximation of the dynamics and a quadratic approximation of the cost
+        function.  Then compute and simulate the time-varying LQR controller to
+        find a new input and state trajectory.  Repeat until convergence.</p>
     
-        <p>The motivation behind iterative LQR is quite appealing -- it leverages
-        the surprising structure of the Riccati equations to come up with a
-        second-order update to the trajectory after a single backward pass of the
-        Riccati equation followed by a forward simulation.  Anecdotally, the
-        convergence is fast and robust.  Numerous applications...<elib>Buchli, Hutter, ...</elib></p>
+        <p>The motivation behind iterative LQR is quite appealing -- it
+        leverages the surprising structure of the Riccati equations to come up
+        with a second-order update to the trajectory after a single backward
+        pass of the Riccati equation followed by a forward simulation.
+        Anecdotally, the convergence is fast and robust.  Numerous
+        applications...<elib>Buchli, Hutter, ...</elib></p>
     
         <p>One key limitation of iLQR is that it only supports unconstrained
-        trajectory optimization -- at least via the Riccati solution.  The natural
-        extension for constrained optimization would be to replace the Riccati
-        solution with an iterative linear model-predictive control (MPC)
-        optimization; this would result in a quadratic program and is very close to what is happening in SQP.  But a more common
-        approach in the current robotics literature is to add any constraints into
-        the objective function using <a
-        href="https://en.wikipedia.org/wiki/Penalty_method">penalty methods</a>, especially using <a href="https://en.wikipedia.org/wiki/Augmented_Lagrangian_method">Augmented Lagrangian</a>.</p>
+        trajectory optimization -- at least via the Riccati solution.  The
+        natural extension for constrained optimization would be to replace the
+        Riccati solution with an iterative linear model-predictive control (MPC)
+        optimization; this would result in a quadratic program and is very close
+        to what is happening in SQP.  But a more common approach in the current
+        robotics literature is to add any constraints into the objective
+        function using <a
+        href="https://en.wikipedia.org/wiki/Penalty_method">penalty methods</a>,
+        especially using <a
+        href="https://en.wikipedia.org/wiki/Augmented_Lagrangian_method">Augmented
+        Lagrangian</a>.</p>
     
         <!--
         <p>Thinking about the MPC version of iLQR leads to a curious observation.  I
@@ -806,6 +803,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         -->
     
       </subsection>
+
+    <todo>DMOC</todo>
 
     <subsection><h1>Mixed-integer convex optimization for
     non-convex constraints</h1>
