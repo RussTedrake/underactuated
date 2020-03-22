@@ -475,6 +475,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         (discrete-time approximation) for direct transcription using implicit
         integrators -- again providing constraints in implicit form.  The
         implicit form is harder to exploit in the shooting methods.</p>
+
+        <todo>There should really be better versions of direct transcription and the collocation methods that are specialized for second-order systems.  We should only have $\bq$ as a decision variable, and be able to impose the dynamics only on the second derivatives (the first derivatives are consistent by construction).  This is one of the main talking points in DMOC, even though the emphasis is on the discrete mechanics.</todo>
         
       </subsubsection>
 
@@ -584,7 +586,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         
         <p>The first is tuning your cost function -- some people spend a lot of time adding new elements to the objective or adjusting the relative weight of the different components of the objective.  This is a slippery slope, and I tend to try to avoid it (possibly to a fault; other groups tend to put out more compelling videos!).</p>
 
-        <p>The second approach is to give a better initial guess to your solver to put it in the vicinity of the "right" local minimal.  I find this approach more satisfying, because for most problems I think there really is a "correct" formulation for the objective and constraints, and we should just aim to find the optimal solution.  Once again, we do see a difference here between the direct shooting algorithms and the direct transcription / collocation algorithms.  For shooting, we can only provide the solver with an initial guess for $\bu(\cdot)$, whereas the other methods allow us to also specify an initial guess for $\bx(\cdot)$ directly.  I find that this can help substantially, even with very simple initializations.  In the direct collocation examples for the swing-up problem of the acrobot and cart-pole, simply providing the initial guess for $\bx(\cdot)$ as a straight line trajectory between the start and the goal was enough to help the solver find a good solution; in fact it was necessary.</p>
+        <p>The second approach is to give a better initial guess to your solver
+        to put it in the vicinity of the "right" local minimal.  I find this
+        approach more satisfying, because for most problems I think there really
+        is a "correct" formulation for the objective and constraints, and we
+        should just aim to find the optimal solution.  Once again, we do see a
+        difference here between the direct shooting algorithms and the direct
+        transcription / collocation algorithms.  For shooting, we can only
+        provide the solver with an initial guess for $\bu(\cdot)$, whereas the
+        other methods allow us to also specify an initial guess for $\bx(\cdot)$
+        directly.  I find that this can help substantially, even with very
+        simple initializations.  In the direct collocation examples for the
+        swing-up problem of the acrobot and cart-pole, simply providing the
+        initial guess for $\bx(\cdot)$ as a straight line trajectory between the
+        start and the goal was enough to help the solver find a good solution;
+        in fact it was necessary.</p>
 
       </subsubsection>
 
