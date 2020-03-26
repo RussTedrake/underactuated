@@ -7,19 +7,11 @@
 load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
-    name = "differential_flatness",
-    srcs = ["differential_flatness.ipynb"],
+    name = "orbital_transfer",
+    srcs = ["orbital_transfer.ipynb"],
     deps = [
         "//underactuated",
-        "//underactuated:quadrotor2d",
-    ],
-)
-
-rt_ipynb_test(
-    name = "lqr",
-    srcs = ["lqr.ipynb"],
-    deps = [
-        "//underactuated",
-        "//underactuated:quadrotor2d",
+        "//underactuated/exercises",
+        "//underactuated/exercises/trajopt/orbital_transfer",
     ],
 )

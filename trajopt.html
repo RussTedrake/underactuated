@@ -126,7 +126,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     
       <p>For instance, let us start by writing both $\bu[\cdot]$ and
       $\bx[\cdot]$ as decision variables. Then we can write: \begin{align*}
-      \min_{\bx[\cdot],\bu[\cdot]} \quad & \ell_f(\bx[N]) + \sum_{n_0}^{N}
+      \min_{\bx[\cdot],\bu[\cdot]} \quad & \ell_f(\bx[N]) + \sum_{n_0}^{N-1}
       \ell(\bx[n],\bu[n]) \\ \subjto \quad & \bx[n+1] = {\bf A}\bx[n] + {\bf
       B}\bu[n], \quad \forall n\in[0, N-1] \\ & \bx[0] = \bx_0 \\ & +
       \text{additional constraints}. \end{align*}  We call this modeling choice
@@ -281,7 +281,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       that the resulting problem is nonconvex.  For instance, the direct
       transcription for discrete-time systems becomes the more general:
       \begin{align*} \min_{\bx[\cdot],\bu[\cdot]} \quad & \ell_f(\bx[N]) +
-      \sum_{n_0}^{N} \ell(\bx[n],\bu[n]) \\ \subjto \quad & \bx[n+1] = {\bf
+      \sum_{n_0}^{N-1} \ell(\bx[n],\bu[n]) \\ \subjto \quad & \bx[n+1] = {\bf
       f}(\bx[n], \bu[n]), \quad \forall n\in[0, N-1] \\ & \bx[0] = \bx_0 \\ & +
       \text{additional constraints}. \end{align*}  Direct shooting still works,
       too, since on each iteration of the algorithm we can compute $\bx[n]$
@@ -475,6 +475,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         (discrete-time approximation) for direct transcription using implicit
         integrators -- again providing constraints in implicit form.  The
         implicit form is harder to exploit in the shooting methods.</p>
+
+        <todo>There should really be better versions of direct transcription and
+        the collocation methods that are specialized for second-order systems.
+        We should only have $\bq$ as a decision variable, and be able to impose
+        the dynamics only on the second derivatives (the first derivatives are
+        consistent by construction).  This is one of the main talking points in
+        DMOC, even though the emphasis is on the discrete mechanics.</todo>
         
       </subsubsection>
 
@@ -584,7 +591,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         
         <p>The first is tuning your cost function -- some people spend a lot of time adding new elements to the objective or adjusting the relative weight of the different components of the objective.  This is a slippery slope, and I tend to try to avoid it (possibly to a fault; other groups tend to put out more compelling videos!).</p>
 
-        <p>The second approach is to give a better initial guess to your solver to put it in the vicinity of the "right" local minimal.  I find this approach more satisfying, because for most problems I think there really is a "correct" formulation for the objective and constraints, and we should just aim to find the optimal solution.  Once again, we do see a difference here between the direct shooting algorithms and the direct transcription / collocation algorithms.  For shooting, we can only provide the solver with an initial guess for $\bu(\cdot)$, whereas the other methods allow us to also specify an initial guess for $\bx(\cdot)$ directly.  I find that this can help substantially, even with very simple initializations.  In the direct collocation examples for the swing-up problem of the acrobot and cart-pole, simply providing the initial guess for $\bx(\cdot)$ as a straight line trajectory between the start and the goal was enough to help the solver find a good solution; in fact it was necessary.</p>
+        <p>The second approach is to give a better initial guess to your solver
+        to put it in the vicinity of the "right" local minimal.  I find this
+        approach more satisfying, because for most problems I think there really
+        is a "correct" formulation for the objective and constraints, and we
+        should just aim to find the optimal solution.  Once again, we do see a
+        difference here between the direct shooting algorithms and the direct
+        transcription / collocation algorithms.  For shooting, we can only
+        provide the solver with an initial guess for $\bu(\cdot)$, whereas the
+        other methods allow us to also specify an initial guess for $\bx(\cdot)$
+        directly.  I find that this can help substantially, even with very
+        simple initializations.  In the direct collocation examples for the
+        swing-up problem of the acrobot and cart-pole, simply providing the
+        initial guess for $\bx(\cdot)$ as a straight line trajectory between the
+        start and the goal was enough to help the solver find a good solution;
+        in fact it was necessary.</p>
 
       </subsubsection>
 
@@ -691,11 +712,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <p>Let us use Lagrange multipliers to derive the necessary conditions for
       our constrained trajectory optimization problem in discrete time
-      \begin{align*} \minimize_{\bx_1,...,\bx_N,\bu_0,...,\bu_{N-1}} &
+      \begin{align*} \min_{\bx[\cdot],\bu[\cdot]} & \ell_f(\bx[N]) +
       \sum_{n=0}^{N-1} \ell(\bx[n],\bu[n]),\\ \subjto \quad & \bx[n+1] =
       f_d(\bx[n],\bu[n]). \end{align*} Formulate the Lagrangian,
-      \[L(\bx[\cdot],\bu[\cdot],\lambda[\cdot]) = \sum_{n=0}^{N-1}
-      \ell(\bx[n],\bu[n]) + \sum_{n=0}^{N-1} \lambda^T[n]
+      \[L(\bx[\cdot],\bu[\cdot],\lambda[\cdot]) = \ell_f(\bx[N]) +
+      \sum_{n=0}^{N-1} \ell(\bx[n],\bu[n]) + \sum_{n=0}^{N-1} \lambda^T[n]
       \left(f_d(\bx[n],\bu[n]) - \bx[n+1]\right), \] and set the derivatives to
       zero to obtain the adjoint equation method described for the shooting
       algorithm above: \begin{gather*} \forall n\in[0,N-1], \pd{L}{\lambda[n]} =
@@ -704,16 +725,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \lambda^T[n] \pd{f_d(\bx[n],\bu[n])}{\bx} - \lambda^T[n-1] = 0 \\ \quad
       \Rightarrow \lambda[n-1] = \pd{\ell(\bx[n],\bu[n])}{\bx}^T +
       \pd{f_d(\bx[n],\bu[n])}{\bx}^T \lambda[n]. \\ \pd{L}{\bx[N]} =
-      -\lambda[N-1] = 0 \Rightarrow \lambda[N-1] = 0 \\ \forall n\in[0,N-1],
-      \pd{L}{\bu[n]} = \pd{\ell(\bx[n],\bu[n])}{\bu} + \lambda^T[n]
-      \pd{f_d(\bx[n],\bu[n])}{\bu} = 0. \end{gather*} Therefore, if we are given
-      an initial condition $\bx_0$ and an input trajectory $\bu[\cdot]$, we can
-      verify that it satisfies the necessary conditions for optimality by
-      simulating the system forward in time to solve for $\bx[\cdot]$, solving
-      the adjoint equation backwards in time to solve for $\lambda[\cdot]$, and
-      verifying that $\pd{L}{\bu[n]} = 0$ for all $n$. The fact that
-      $\pd{J}{\bu} = \pd{L}{\bu}$ when $\pd{L}{\bx} = 0$ and $\pd{L}{\lambda} =
-      0$ follows from some basic results in the calculus of variations.</p>
+      \pd{\ell_f}{\bx}^T - \lambda^T[N-1] = 0 \Rightarrow \lambda[N-1] =
+      \pd{\ell_f}{\bx} \\ \forall n\in[0,N-1], \pd{L}{\bu[n]} =
+      \pd{\ell(\bx[n],\bu[n])}{\bu} + \lambda^T[n] \pd{f_d(\bx[n],\bu[n])}{\bu}
+      = 0. \end{gather*} Therefore, if we are given an initial condition $\bx_0$
+      and an input trajectory $\bu[\cdot]$, we can verify that it satisfies the
+      necessary conditions for optimality by simulating the system forward in
+      time to solve for $\bx[\cdot]$, solving the adjoint equation backwards in
+      time to solve for $\lambda[\cdot]$, and verifying that $\pd{L}{\bu[n]} =
+      0$ for all $n$. The fact that $\pd{J}{\bu} = \pd{L}{\bu}$ when
+      $\pd{L}{\bx} = 0$ and $\pd{L}{\lambda} = 0$ follows from some basic
+      results in the calculus of variations.</p>
 
     </subsection>
 
@@ -726,9 +748,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       $\bx(\cdot),\bu(\cdot)$ defined over $t\in[t_0,t_f]$  to  be optimal it
       must satisfy the conditions that \begin{align*} \forall
       t\in[t_0,t_f],\quad & \dot{\bx} = f(\bx,\bu), \quad &\bx(0)=\bx_0\\
-      \forall t\in[t_0,t_f],\quad & -\dot\lambda = \pd{g}{\bx}^T + \pd{f}{\bx}^T
-      \lambda, \quad &\lambda(T) = 0\\ \forall t\in[t_0,t_f],\quad & \pd{g}{\bu}
-      + \lambda^T\pd{f}{\bu} = 0.& \end{align*}</p>
+      \forall t\in[t_0,t_f],\quad & -\dot\lambda = \pd{\ell}{\bx}^T +
+      \pd{f}{\bx}^T \lambda, \quad &\lambda(T) = \pd{\ell_f}{\bx}^T \\ \forall
+      t\in[t_0,t_f],\quad & \pd{\ell}{\bu} + \lambda^T\pd{f}{\bu} = 0.&
+      \end{align*}</p>
 
       <p>In fact the statement can be generalized even beyond this to the case
       where $\bu$ has constraints. The result is known as Pontryagin's minimum
@@ -743,19 +766,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         $\bx^*(\cdot),\bu^*(\cdot)$ defined over $t\in[t_0,t_f]$  to  be optimal
         is must satisfy the conditions that \begin{align*} \forall
         t\in[t_0,t_f],\quad & \dot{\bx}^* = f(\bx^*,\bu^*), \quad
-        &\bx^*(0)=\bx_0\\ \forall t\in[t_0,t_f],\quad & -\dot\lambda =
-        \pd{g}{\bx}^T + \pd{f}{\bx}^T \lambda, \quad &\lambda(T) = 0\\ \forall
-        t\in[t_0,t_f],\quad & u^* = \argmin_{\bu\in{\cal U}} \left[ \ell(\bx^*,\bu)
-        + \lambda^T f(\bx^*,\bu) \right].& \end{align*}</p>
+        &\bx^*(0)=\bx_0\\ \forall t\in[t_0,t_f],\quad & -\dot \lambda^* =
+        \pd{\ell}{\bx}^T + \pd{f}{\bx}^T \lambda^*, \quad &\lambda^*(T) =
+        \pd{\ell_f}{\bx}^T \\ \forall t\in[t_0,t_f],\quad & u^* =
+        \argmin_{\bu\in{\cal U}} \left[\ell(\bx^*,\bu) + (\lambda^*)^T f(\bx^*,\bu)
+        \right].& \end{align*}</p>
 
       </theorem>
 
       <p>Note that the terms which are minimized in the final line of the
       theorem are commonly referred to as the Hamiltonian of the optimal control
-      problem, $$H(\bx,\bu,\lambda,t) = \ell(\bx,\bu) + \lambda^T f(\bx,\bu).$$ It
-      is distinct from, but inspired by, the Hamiltonian of classical mechanics.
-      Remembering that $\lambda$ has an interpretation as $\pd{J}{\bx}^T$, you
-      should also recognize it from the HJB. </p>
+      problem, $$H(\bx,\bu,\lambda,t) = \ell(\bx,\bu) + \lambda^T f(\bx,\bu).$$
+      It is distinct from, but inspired by, the Hamiltonian of classical
+      mechanics. Remembering that $\lambda$ has an interpretation as
+      $\pd{J}{\bx}^T$, you should also recognize it from the HJB. </p>
 
     </subsection>
   </section> <!-- end pontryagin -->
@@ -817,6 +841,28 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     </subsection>
 
     <subsection><h1>Explicit model-predictive control</h1></subsection>
+
+  </section>
+  
+  <section><h1>Exercises</h1>
+
+    <exercise><h1>Orbital Transfer via Trajectory Optimization</h1>
+
+      <p>For this exercise you will work exclusively in <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/trajopt/orbital_transfer/orbital_transfer.ipynb" target="_blank">this notebook</a>.  You are asked to find, via nonlinear trajectory optimization, a path that efficiently transfers a rocket from the Earth to Mars, while avoiding a cloud of asteroids.  The skeleton of the optimization problem is already there, but several important pieces are missing.  More details are in the notebook, but you will need to:</p>
+
+      <ol type="a">
+
+        <li>Enforce the maximum thrust constraints.</li>
+
+        <li>Enforce the maximum velocity constraints.</li>
+
+        <li>Ensure that the rocket does not collide with any of the asteroids.</li>
+
+        <li>Add an objective function to minimize fuel consumption.</li>
+
+      </ol>
+
+    </exercise>
 
   </section>
 

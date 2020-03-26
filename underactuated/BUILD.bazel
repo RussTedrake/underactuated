@@ -33,3 +33,11 @@ rt_py_library(
     visibility = ["//visibility:public"],
     deps = ["underactuated"],
 )
+
+rt_py_library(
+    name = "quadrotor2d",
+    srcs = ["quadrotor2d.py"],
+    imports = [".."],
+    visibility = ["//visibility:public"],
+    deps = ["underactuated"],
+)
