@@ -6,7 +6,7 @@
 <robot
   name="glider">
   <link
-    name="fuselagev_main">
+    name="fuselage">
     <inertial>
       <origin
         xyz="-0.0818128241934648 -1.22124532708767E-15 -0.00908986598442222"
@@ -44,23 +44,6 @@
           filename="meshes/fuselagev_main.obj" />
       </geometry>
     </collision>
-  </link>
-  <link
-    name="fuselagev_top">
-    <inertial>
-      <origin
-        xyz="-0.122154884255199 -1.19348975147204E-15 0.0448400237267089"
-        rpy="0 0 0" />
-      <mass
-        value="0.000596588502705233" />
-      <inertia
-        ixx="3.80000970278718E-08"
-        ixy="4.42073107447041E-23"
-        ixz="-6.99328282729347E-08"
-        iyy="2.8379035244958E-06"
-        iyz="2.72571067559618E-22"
-        izz="2.8005449191986E-06" />
-    </inertial>
     <visual>
       <origin
         xyz="0 0 0"
@@ -84,36 +67,6 @@
           filename="meshes/fuselagev_top.obj" />
       </geometry>
     </collision>
-  </link>
-  <joint
-    name="fuselagev_top"
-    type="fixed">
-    <origin
-      xyz="0 0 0"
-      rpy="0 0 0" />
-    <parent
-      link="fuselagev_main" />
-    <child
-      link="fuselagev_top" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
-  <link
-    name="fuselagev_vstab">
-    <inertial>
-      <origin
-        xyz="-0.367100580503442 -4.16333634234434E-16 0.0408138673155665"
-        rpy="0 0 0" />
-      <mass
-        value="0.00142386169560276" />
-      <inertia
-        ixx="2.19511287870144E-06"
-        ixy="1.20213124446566E-20"
-        ixz="-5.03742351978414E-07"
-        iyy="3.64302119207023E-06"
-        iyz="-1.0921120117993E-20"
-        izz="1.44943934438802E-06" />
-    </inertial>
     <visual>
       <origin
         xyz="0 0 0"
@@ -137,36 +90,6 @@
           filename="meshes/fuselagev_vstab.obj" />
       </geometry>
     </collision>
-  </link>
-  <joint
-    name="fuselagev_vstab"
-    type="fixed">
-    <origin
-      xyz="0 0 0"
-      rpy="0 0 0" />
-    <parent
-      link="fuselagev_main" />
-    <child
-      link="fuselagev_vstab" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
-  <link
-    name="fuselageh_main">
-    <inertial>
-      <origin
-        xyz="-0.0412640931003597 0.000296083945920261 -2.16840434497101E-19"
-        rpy="0 0 0" />
-      <mass
-        value="0.00357832012285189" />
-      <inertia
-        ixx="2.27119073549076E-06"
-        ixy="9.32333367532589E-08"
-        ixz="-9.67376864609472E-23"
-        iyy="5.37068436366245E-05"
-        iyz="-2.6764892799213E-22"
-        izz="5.59741867237645E-05" />
-    </inertial>
     <visual>
       <origin
         xyz="0 0 0"
@@ -190,36 +113,6 @@
           filename="meshes/fuselageh_main.obj" />
       </geometry>
     </collision>
-  </link>
-  <joint
-    name="fuselageh_main"
-    type="fixed">
-    <origin
-      xyz="0 0 0"
-      rpy="0 0 0" />
-    <parent
-      link="fuselagev_main" />
-    <child
-      link="fuselageh_main" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
-  <link
-    name="fuselageh_hstab">
-    <inertial>
-      <origin
-        xyz="-0.302847264038088 -3.40768133778036E-05 -1.30104260698261E-18"
-        rpy="0 0 0" />
-      <mass
-        value="0.000351089174075715" />
-      <inertia
-        ixx="4.76251353548625E-07"
-        ixy="4.45730172623813E-11"
-        ixz="-4.75895834702594E-24"
-        iyy="2.13932700672557E-08"
-        iyz="-6.97350617688961E-25"
-        izz="4.9726710912997E-07" />
-    </inertial>
     <visual>
       <origin
         xyz="0 0 0"
@@ -243,36 +136,6 @@
           filename="meshes/fuselageh_hstab.obj" />
       </geometry>
     </collision>
-  </link>
-  <joint
-    name="fuselageh_hstab"
-    type="fixed">
-    <origin
-      xyz="0 0 0"
-      rpy="0 0 0" />
-    <parent
-      link="fuselagev_main" />
-    <child
-      link="fuselageh_hstab" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
-  <link
-    name="wing_left">
-    <inertial>
-      <origin
-        xyz="-0.0446961711203674 0.147048318317452 -0.00253999999999994"
-        rpy="0 0 0" />
-      <mass
-        value="0.00314601830153589" />
-      <inertia
-        ixx="2.50176405723312E-05"
-        ixy="-7.32208747222608E-07"
-        ixz="-9.42744483281764E-22"
-        iyy="2.70529403546331E-06"
-        iyz="-8.83669243567919E-21"
-        izz="2.77195517991821E-05" />
-    </inertial>
     <visual>
       <origin
         xyz="0 0 0"
@@ -296,36 +159,6 @@
           filename="meshes/wing_left.obj" />
       </geometry>
     </collision>
-  </link>
-  <joint
-    name="wing_left"
-    type="fixed">
-    <origin
-      xyz="0 0 0"
-      rpy="0 0 0" />
-    <parent
-      link="fuselagev_main" />
-    <child
-      link="wing_left" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
-  <link
-    name="wing_right">
-    <inertial>
-      <origin
-        xyz="-0.0435806762084641 -0.145504645075978 -0.00254000000000004"
-        rpy="0 0 0" />
-      <mass
-        value="0.00313122154113208" />
-      <inertia
-        ixx="2.4640472268601E-05"
-        ixy="8.76160554214535E-07"
-        ixz="-3.98474855562213E-22"
-        iyy="2.70499608481495E-06"
-        iyz="-8.2574185592676E-21"
-        izz="2.73421014552668E-05" />
-    </inertial>
     <visual>
       <origin
         xyz="0 0 0"
@@ -350,19 +183,6 @@
       </geometry>
     </collision>
   </link>
-  <joint
-    name="wing_right"
-    type="fixed">
-    <origin
-      xyz="0 0 0"
-      rpy="0 0 0" />
-    <parent
-      link="fuselagev_main" />
-    <child
-      link="wing_right" />
-    <axis
-      xyz="0 0 0" />
-  </joint>
   <link
     name="elevator">
     <inertial>
@@ -407,17 +227,17 @@
     name="elevator_hinge"
     type="revolute">
     <origin
-      xyz="-0.31696 -0.00014046 0"
+      xyz="-0.317 0 0"
       rpy="0 0 0" />
     <parent
-      link="fuselagev_main" />
+      link="fuselage" />
     <child
       link="elevator" />
     <axis
       xyz="0 1 0" />
     <limit
-      lower="-0.8"
-      upper="0.8"
+      lower="-0.9473"
+      upper="0.4463"
       effort="0"
       velocity="0" />
   </joint>
