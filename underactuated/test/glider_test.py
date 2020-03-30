@@ -3,8 +3,7 @@ import unittest
 import matplotlib.pyplot as plt
 
 from pydrake.all import (ConstantVectorSource, ConnectDrakeVisualizer,
-                         DiagramBuilder, ConnectPlanarSceneGraphVisualizer,
-                         SceneGraph)
+                         DiagramBuilder, SceneGraph)
 from underactuated.glider import GliderGeometry, GliderState
 
 
@@ -21,7 +20,7 @@ class TestGlider(unittest.TestCase):
         source = builder.AddSystem(ConstantVectorSource(state[:]))
         geom = GliderGeometry.AddToBuilder(builder, source.get_output_port(0),
                                            scene_graph)
-        plt_vis = ConnectPlanarSceneGraphVisualizer(builder, scene_graph)
+        # plt_vis = ConnectPlanarSceneGraphVisualizer(builder, scene_graph)
         drake_viz = ConnectDrakeVisualizer(builder, scene_graph)
         diagram = builder.Build()
 
