@@ -4,10 +4,8 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-exports_files(
-    glob([
-        "*.sdf",
-        "*.urdf",
-    ]),
+filegroup(
+    name = "glider",
+    srcs = ["glider.urdf"] + glob(["meshes/*.obj"]),
     visibility = ["//:__subpackages__"],
 )
