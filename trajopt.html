@@ -134,7 +134,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       dynamics as explicit constraints -- the "<i>direct transcription</i>".
       Importantly, for linear systems, the dynamics constraints are linear
       constraints in these decision variables.  As a result, if we can restrict
-      our our additional constraints to linear inequality constraints and our
+      our additional constraints to linear inequality constraints and our
       objective function to being linear/quadratic in $\bx$ and $\bu$, then the
       resulting trajectory optimization is a convex optimization (specifically a
       linear program or quadratic program depending on the objective).  As a
@@ -295,11 +295,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       href="https://drake.mit.edu/doxygen_cxx/group__integrators.html">suite of
       numerical integrators</a> that achieve different levels of simulation
       speed and/or accuracy, both of which can be highly dependent on the
-      details of ${\bf f}(\bx,\bu)$.  The can also have subtle effects on the
-      resulting optimization problem -- for instance in optimization we
-      typically avoid variable-step integration because gradients can be
-      discontinuous based on the integrators decision to take a step (or
-      not).</p>
+      details of ${\bf f}(\bx,\bu)$.  Choosing a different integrator can also
+      have subtle effects on the resulting optimization problem -- for instance
+      in optimization we typically avoid variable-step integration because
+      gradients can be discontinuous based on the integrators decision to take a
+      step (or not).</p>
 
       <todo>Finish supporting IntegratorBase in DirectTranscription and write an
       example showing how to use it here.</todo>
@@ -422,7 +422,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       leverage clever parameterizations to write sparse collocation objectives
       and to select the collocation points <elib>Garg11+Ross12a</elib>.
       Interestingly, The continuously-differentiable nature of the the
-      representation of these methods has led to compartively more theorems and
+      representation of these methods has led to comparatively more theorems and
       analysis than we have seen for other direct trajectory optimization
       methods <elib>Ross12a</elib> -- but despite some of the language used in
       these articles please remember they are still local optimization methods
