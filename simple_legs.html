@@ -149,12 +149,13 @@ of Walking and Running</h1>
     using \[ \min_\tau || \bx(t) - \bx^*(\tau) ||.\]  Here the quantity of
     interest is the distance between our trajectory and the
     <i>closest point</i> on the orbit.  Depending on exactly how this distance
-    evolves with time, we can define <i>orbital stability</i> (for every small
+    evolves with time, we can define <i>orbital stability</i>: for every small
     $\epsilon>0$, we can find a $\delta>0$ such that $\min_\tau||\bx(t_0) -
-    \bx(\tau)|| < \delta$ implies $\forall t, \min_\tau ||\bx(t) - \bx(\tau)|| <
-    \epsilon$), asymptotic orbital stability, exponential orbital stability, or
-    even finite-time orbital stability, and also define an unstable orbit.  In
-    the case of limit cycles, this $\bx^*(t)$ is a periodic solution with
+    \bx^*(\tau)|| < \delta$ implies $\forall t, \min_\tau ||\bx(t) -
+    \bx^*(\tau)|| < \epsilon$).  The definitions for asymptotic orbital
+    stability, exponential orbital stability, finite-time orbital stability
+    follow naturally, as does the definition of an unstable orbit.  In the case
+    of limit cycles, this $\bx^*(t)$ is a periodic solution with
     $\bx^*(t+t_{period}) = \bx^*(t)$. </p>
 
     <p>As we begin to extend our notions of stability, allow me to make a few
@@ -649,8 +650,9 @@ of Walking and Running</h1>
 
       <figure>
         <iframe width="560" height="315"
-        src="https://www.youtube.com/embed/LewVEF2B_pM?rel=0" frameborder="0"
-        allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        src="https://www.youtube.com/embed/LewVEF2B_pM" frameborder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope"
+        allowfullscreen></iframe>
         <figcaption>Theo Jansen's Strandbeest "evolution".</figcaption>
       </figure>
 
