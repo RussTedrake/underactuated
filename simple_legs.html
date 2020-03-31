@@ -64,41 +64,67 @@ of Walking and Running</h1>
   incredible progress here.  The control systems implemented on these systems,
   though, are still surprisingly heuristic -- they require dramatically higher
   bandwidth and lower latency that the human motor control system and still
-  perform worse in challenging environments.  I may be biased, but I think a lot
-  of the work left to do involves thinking about underactuated control.</p>
+  perform worse in challenging environments.<p>  
+    
+  <p>The control of walking robots is fundamentally underactuated -- assuming we
+  cannot pull on the ground (and barring any aerodynamic effects!), then no
+  matter how powerful my actuators are, there is nothing that they can do to
+  accelerate the center of mass of the robot towards the ground faster than
+  gravity.  But beyond the underactuated systems we have studied so far, the
+  control of walking robots faces an additional complexity: <b>controlling
+  through contact</b>.  The fact that we can get non-zero contact forces iff two
+  bodies are in contact introduces a fundamentally discrete/combinatorial
+  element into the problem&dagger;<sidenote>&dagger;I've had some interesting
+  arguments with folks on this point, because it's possible to write contact
+  models that smooth the discontinuity, and/or to model systems that have
+  neglible collision events.  But replacing a discontinuity in the vector field
+  with a stiff but smooth change does change the fundamental nature of the
+  decisions about whether or not your robot should make contact to accomplish a
+  task.</sidenote>.</p>
 
-  <p>In this chapter we'll introduce some of the simple models of walking and
-  robots, the control problems that result, and a very brief summary of some of
-  the control solutions described in the literature.  Compared to the robots
-  that we have studied so far, our investigations of legged locomotion will
-  require additional tools for thinking about limit cycle dynamics and dealing
-  with impacts.</p>
+  <p>Contact is fundamental for many aspects of robotics (manipulation is my
+  other favorite example); it's sad to see so many robots going through life
+  avoiding contact at any cost.  Controlling contact means that your robot is
+  capable of performing physical work on the environment; isn't that the point
+  of robotics, afterall?</p>
+
+  <p>I like to start our discussion of contact with walking robots for a few
+  important reasons.  As you'll see in this chapter, there are a number of
+  elegant "simple models" of walking that capture much of the essence of the
+  problem with minimal complexity. <todo>call-out to the PDW and put the youtuve
+  video link in again?</todo> But there is another, more subtle, reason: I want
+  to continue to use the language of stability.  At this point we've seen both
+  finite-horizon and infinite-horizon problem formulations -- when we can some
+  something about the behavior of a system in the limit as time goes to
+  infinity, it's almost always cleaner than a finite-time analysis (because time
+  drops away).  Walking provides a very clean way use stability in studying
+  behavior of systems that are sometimes in contact but sometimes out of contact
+  in the limiting case; we just need to extend our notions from stability of a
+  fixed point to the stability of a (periodic) cycle. 
+  </p>
 
   <section><h1>Limit Cycles</h1>
 
-    <p>In many of the systems that we have studied so far, we have analyzed the
-    stability of a fixed-point, or even an (infinite-horizon) trajectory.  For
-    walking systems the natural equivalent is to talk about the stability of
-    periodic solutions -- a fixed "gait" is a cycle that repeats footstep after
-    footstep.  So we begin our discussion with a discussion of the stability of
-    a cycle.</p>
-
-    <p> A limit cycle is an asymptotically stable or unstable periodic
-    orbit&dagger;<sidenote>&dagger; Marginally-stable orbits, such as the
-    closed-orbits of the undamped simple pendulum, are typically not called
-    limit cycles.</sidenote>.  One of the simplest models of limit cycle
-    behavior is the Van der Pol oscillator.  Let's examine that first...</p>
+    <p> A limit cycle is an periodic orbit that is the limit set of some other
+    trajectory; they can be stable (the limit set of neighboring trajectories as
+    time goes to infinity) or unstable (the limit set of neighboring
+    trajectories as time goes to negative infinity).  Orbits such as the closed
+    orbits of the undamped simple pendulum are technically not considered limit
+    cycles (they are not the limit set of another trajectory).  One of the
+    simplest models of limit cycle behavior is the Van der Pol oscillator. Let's
+    examine that first...</p>
 
     <example><h1>Van der Pol Oscillator</h1>
 
-      <p>$$\ddot{q} + \mu (q^2 - 1)\dot{q} + q = 0, \quad \mu>0$$ One can think
-      of this system as almost a simple spring-mass-damper system, except that
-      it has nonlinear damping.  In particular, the velocity term dissipates
-      energy when $|q|>1$, and adds energy when $|q|<1$.  Therefore, it is not
-      terribly surprising to see that the system settles into a stable
-      oscillation from almost any initial conditions (the exception is the state
-      $q=0,\dot{q}=0$).  This can be seen nicely in the phase portrait
-      below.</p>
+      <p>The van der Pol oscillator is described by a second-order differential
+      equation in one variable: $$\ddot{q} + \mu (q^2 - 1)\dot{q} + q = 0, \quad
+      \mu>0$$ One can think of this system as almost a simple spring-mass-damper
+      system, except that it has nonlinear damping.  In particular, the velocity
+      term dissipates energy when $|q|>1$, and adds energy when $|q|<1$.
+      Therefore, it is not terribly surprising to see that the system settles
+      into a stable oscillation from almost any initial conditions (the
+      exception is the state $q=0,\dot{q}=0$).  This can be seen nicely in the
+      phase portrait below.</p>
 
       <figure>
         <table width="100%"><tr><td width="50%">
@@ -110,29 +136,28 @@ of Walking and Running</h1>
           =.2$. (Left) phase portrait.  (Right) time domain.</figcaption>
       </figure>
 
-      <p>However, as you can see from the plot of system trajectories in the
-      time domain, then a slightly different picture emerges. Although the phase
-      portrait clearly reveals that all trajectories converge to the same orbit,
-      the time domain plot reveals that these trajectories do not necessarily
-      synchronize in time.</p>
+      <p>However, if we examine system trajectories in the time domain (see the
+      right panel of the figure above), then we can see that our traditional
+      notion for stability of a trajectory, $\lim_{t\rightarrow \infty} |\bx(t)
+      - \bx^*(t)| = 0$, is not satisfied here for any $\bx^*(t)$. Although the
+      phase portrait clearly reveals that all trajectories converge to the same
+      orbit, the time domain plot reveals that these trajectories do not
+      necessarily synchronize in time.</p>
 
     </example> <!-- end of VdP example -->
 
-    <p>The Van der Pol oscillator clearly demonstrates what we would think of as
-    a stable limit cycle, but also exposes the subtlety in defining this limit
-    cycle stability.  Neighboring trajectories do not necessarily converge on a
-    stable limit cycle.  In contrast, defining the stability of a particular
-    trajectory (parameterized by time) is relatively easy.</p>
-
-    <p>Let's make a few quick points about the existence of closed-orbits. If we
-    can define a closed region of phase space which does not contain any fixed
-    points, then it must contain a closed-orbit<elib>Strogatz94</elib>. By
-    closed, I mean that any trajectory which enters the region will stay in the
-    region (this is the Poincar&eacute-Bendixson Theorem).  It's also
-    interesting to note that gradient potential fields (e.g. Lyapunov functions)
-    cannot have a closed-orbit<elib>Strogatz94</elib>, and consequently Lyapunov
-    analysis cannot be applied to limit cycle stability without some
-    modification.</p>
+    <p>As we begin to think extend our notions of stability, allow me to make a
+    few quick connections to the discussion of stability in the <a
+    href="lyapunov.html">chapter on Lyapunov analysis</a>.  It's interesting to
+    know that if we can find an <a href="lypaunov.html#lasalle">invariant
+    set</a>in state space which does not contain any fixed points, then this set
+    must contain a closed orbit (this is the Poincar&eacute-Bendixson
+    Theorem)<elib>Strogatz94</elib>.  It's also interesting to note that
+    gradient potential fields (and Lyapunov functions with $\dot{V}(\bx) \prec
+    0$) cannot have a closed orbit<elib>Strogatz94</elib>, and consequently we
+    will also have to modify our Lyapunov analysis to handle limit cycles. We'll
+    discuss this in some details in a <a
+    href="limit_cycles.html#lyapunov"></a>later chapter</a>.</p>
 
     <subsection><h1>Poincar&eacute; Maps</h1>
 
@@ -145,17 +170,20 @@ of Walking and Running</h1>
       $S$ to itself:  $$\bx_p[n+1] = {\bf P}(\bx_p[n]),$$ where $\bx_p[n]$ is
       the state of the system at the $n$th crossing of the surface of section.
       Note that we will use the notation $\bx_p$ to distinguish the state of the
-      discrete-time system from the continuous time system; they are related by
+      discrete-time system from the continuous-time system; they are related by
       $\bx_p[n] = \bx(t_c[n])$, where $t_c[n]$ is the time of the $n$th crossing
       of $S$.</p>
 
       <example><h1>Return map for the Van der Pol Oscillator</h1>
 
-        <p>Since the full system is two dimensional, the return map dynamics are
-        one dimensional.  One dimensional maps, like one dimensional flows, are
-        amenable to graphical analysis.  To define a Poincar&eacute section for
-        the Van der Pol oscillator, let $S$ be the line segment where $q = 0$,
-        $\dot{q} > 0$.</p>
+        <p>Since the state space of this system is two-dimensional, a return map
+        for the system must have dimension one.  For instance, we can take $S$
+        to be the line segment where $q = 0$, $\dot{q} > 0$.  It is easy to see
+        that all trajectories that start on S are transverse to it.</p>  
+        
+        <p>One dimensional maps, like one dimensional flows, are amenable to
+        graphical analysis.
+        </p>
 
         <figure> <table><tr><td> <img width="100%"
         src="figures/vanderPol_section.svg" /> </td><td> <img width="100%"
@@ -399,6 +427,16 @@ of Walking and Running</h1>
         converge to the rolling fixed point, $\omega_{roll}^*$; the white
         regions converge to zero velocity ($\omega_{stand}^*$).</figcaption>
         </figure>
+
+      </subsubsection>
+
+      <subsubsection><h1>Stability of standing still</h1>
+
+        <p>I opened this chapter with the idea that the natural notion of
+        stability for a walking system is periodic stability, and I'll stand by
+        it.  But we can also examine the stability of a fixed-point (of the
+        original coordinates; no Poincar&eacute this time) for a system that has
+        contact mechanics.  For a legged robot, a fixed point means standing still.  It's a little subtle.</p>
 
       </subsubsection>
 
