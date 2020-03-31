@@ -274,25 +274,25 @@ of Walking and Running</h1>
     though the system is passive, we believe that the periodic gait you see in
     the video is actually stable!</p>
 
-    <subsection><h1>The Ballistic Walker</h1>
-
-      <p>Well before the first passive walkers, one of the earliest models of
-      walking was proposed by McMahon<elib>McMahon80</elib>, who argued that
-      humans use a mostly ballistic (passive) gait.  COM trajectory looks like a
-      pendulum (roughly walking by vaulting).  EMG activity in stance legs is
-      high, but EMG in swing leg is very low, except for very beginning and end
-      of swing. Proposed a three-link "ballistic walker" model, which models a
-      single swing phase (but not transitions to the next swing nor stability).
-      Interestingly, in recent years the field has developed a considerably
-      deeper appreciation for the role of compliance during walking; simple
-      walking-by-vaulting models are starting to fall out of favor.</p>
-
-      <p>McGeer<elib>McGeer90</elib> followed up with a series of walking
-      machines, called "passive dynamic walkers".  The walking machine by
-      Collins and Ruina<elib>Collins01</elib> is the most impressive passive
-      walker to date.</p>
-
-    </subsection> <!-- end of ballistic walker -->
+    <p>Well before the first passive walkers, one of the earliest models of
+    walking was proposed by McMahon<elib>McMahon80</elib>, who argued that
+    humans use a mostly ballistic (passive) gait.  He observed that muscle
+    activity (recorded via <a
+    href="https://en.wikipedia.org/wiki/Electromyography">EMG</a>) in the
+    "stance leg" is relatively high, but muscle activity in the "swing leg" is
+    very low, except for at the very beginning and end of swing.  He proposed a
+    "ballistic walker" model -- a three-link pendulum in the <a
+    href="https://en.wikipedia.org/wiki/Sagittal_plane">sagittal plane</a>, with
+    one link from the ankle to the hip representing a straight "stance leg", the
+    second link from the hip back down to the "swing leg" knee, and the final
+    link from the knee down to the swing foot -- and argued that this model
+    could largely reproduce the kinematics of gait.  This model of "walking by
+    vaulting" is considered overly simplistic today, as we now understand much
+    better the role of compliance in the stance leg during walking.  His model
+    was also restricted to the continuous portion of gait, not the actual
+    dynamics of taking a step.  But it was the start.  Nearly a decade later,
+    McGeer<elib>McGeer90</elib> followed up with a series of similarly inspired
+    walking machines, which he coined "passive-dynamic walkers".</p>
 
     <subsection><h1>The Rimless Wheel</h1>
 
@@ -302,16 +302,17 @@ of Walking and Running</h1>
       $\theta$, is measured clockwise from the vertical axis. </figcaption>
       </figure>
 
-      <p>The most elementary model of passive dynamic walking, first used in the
-      context of walking by <elib>McGeer90</elib>, is the rimless wheel.  This
-      simplified system has rigid legs and only a point mass at the hip as
-      illustrated in the figure above.  To further simplify the analysis, we
-      make the following modeling assumptions:</p> <ul> <li> Collisions with
-      ground are inelastic and impulsive (only angular momentum is conserved
-      around the point of collision).</li> <li> The stance foot acts as a pin
-      joint and does not slip.</li> <li> The transfer of support at the time of
-      contact is instantaneous (no double support phase).</li> <li> $0 \le
-      \gamma < \frac{\pi}{2}$, $0 < \alpha < \frac{\pi}{2}$, $l > 0$.</li> </ul>
+      <p>The most elementary model of passive-dynamic walking, introduced as the
+      conceptual framework for passive-dynamic walking by
+      McGeer<elib>McGeer90</elib>, is the rimless wheel.  This simplified system
+      has rigid legs and only a point mass at the hip as illustrated in the
+      figure above.  To further simplify the analysis, we make the following
+      modeling assumptions:</p> <ul> <li> Collisions with ground are inelastic
+      and impulsive (only angular momentum is conserved around the point of
+      collision).</li> <li> The stance foot acts as a pin joint and does not
+      slip.</li> <li> The transfer of support at the time of contact is
+      instantaneous (no double support phase).</li> <li> $0 \le \gamma <
+      \frac{\pi}{2}$, $0 < \alpha < \frac{\pi}{2}$, $l > 0$.</li> </ul>
       <p>Note that the coordinate system used here is slightly different than
       for the simple pendulum ($\theta=0$ is at the top, and the sign of
       $\theta$ has changed).</p> <todo> update the coordinates (here and in
@@ -326,7 +327,7 @@ of Walking and Running</h1>
         $$\ddot\theta = \frac{g}{l}\sin(\theta).$$ If we assume that the system
         is started in a configuration directly after a transfer of support
         ($\theta(0^+) = \gamma-\alpha$), then forward walking occurs when the
-        system has an initial velocity, $\dot\theta(0^+) > \omega_1$, where
+        system has an initial velocity, $\dot\theta(0^+) > \omega_1,$ where
         $$\omega_1 = \sqrt{ 2 \frac{g}{l} \left[ 1 - \cos \left (\gamma-\alpha
         \right) \right]}.$$ $\omega_1$ is the threshold at which the system has
         enough kinetic energy to vault the mass over the stance leg and take a
