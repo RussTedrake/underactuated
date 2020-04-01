@@ -999,6 +999,37 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </exercise>
 
+    <exercise><h1>Iterative Linear Quadratic Regulator</h1>
+
+      <p>The exercise is self-contaiend in 
+        <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/trajopt/ilqr_driving/ilqr_driving.ipynb" 
+        target="_blank">this notebook</a>.  
+        In this exercise you will derive and implement the iterative Linear Quadratic Regulator (iLQR). 
+        You will evaluate it's functionality by planning trajectories for an autonomous vehicle.
+        You will need to:</p>
+
+      <ol type="a">
+
+        <li>Define an integrator for continuous dynamics.</li>
+
+        <li>Compute a trajectory given an initial state and a control trajecotry.</li>
+
+        <li>Sum up the total cost of that trajectory.</li>
+
+        <li>Derive the coefficients of the quadratic Q-function.</li>
+
+        <li>Optimize for the optimal control law.</li>
+
+        <li>Derive the update of the value function backwards in time.</li>
+
+        <li>Implement the forward pass of iLQR.</li>
+
+        <li>Implement the backward pass of iLQR.</li>
+
+      </ol>
+
+    </exercise>
+
   </section>
 
 </chapter>
