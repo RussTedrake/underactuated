@@ -10,7 +10,7 @@ class TestShootingVsTranscription(unittest.TestCase):
         super().__init__(test_name)
         self.notebook_locals = notebook_locals
 
-    @weight(3)
+    @weight(2)
     @timeout_decorator.timeout(1.)
     def test_lost_bits_shooting(self):
         """Test number of bits lost with direct shooting"""
@@ -49,7 +49,69 @@ class TestShootingVsTranscription(unittest.TestCase):
                                    lost_bits_shooting[i],
                                    msg='lost_bits_shooting are incorrect.')
 
-    @weight(4)
+    @weight(3)
+    @timeout_decorator.timeout(1.)
+    def test_Mb_diagonal_block(self):
+        """Test construction of diagonal block of Mb"""
+        # get function to construct the block
+        Mb_diagonal_block = self.notebook_locals['Mb_diagonal_block']
+
+        # test function directly on the problem data
+        A = np.array([[1, .5], [.5, 1]])
+        B = np.array([[0], [.5]])
+        Q = np.array([[1, 0], [0, 0]])
+        R = np.array([[1]])
+
+        # run sudent function
+        Mb_block = Mb_diagonal_block(A, B, Q, R).toarray()
+
+        # correct solution for the fake data
+        Mb_block_target = np.array([
+            [-1, 0, 2, 0, 0, 1, .5, 0, 0],
+            [0, -1, 0, 0, 0, .5, 1, 0, 0],
+            [0, 0, 0, 0, 2, 0, .5, 0, 0],
+            [0, 0, 1, .5, 0, 0, 0, -1, 0],
+            [0, 0, .5, 1, .5, 0, 0, 0, -1],
+        ])
+        self.assertTrue(
+            Mb_block.shape == Mb_block_target.shape,
+            'The matrix we got from Mb_diagonal_block has wrong dimensions.')
+        np.testing.assert_array_almost_equal(
+            Mb_block,
+            Mb_block_target,
+            err_msg='The function Mb_diagonal_block is incorrect on the ' +
+            f'problem data A = {A}, B = {B}, Q = {Q}, and R = {R}.')
+
+        # test function directly on synthtic data
+        A = np.arange(9).reshape(3, 3)
+        B = np.arange(6).reshape(3, 2)
+        Q = np.ones((3, 3)) * 2
+        R = np.ones((2, 2)) * 3
+
+        # run sudent function
+        Mb_block = Mb_diagonal_block(A, B, Q, R).toarray()
+
+        # correct solution for the fake data
+        Mb_block_target = np.array([
+            [-1, 0, 0, 4, 4, 4, 0, 0, 0, 3, 6, 0, 0, 0],
+            [0, -1, 0, 4, 4, 4, 0, 0, 1, 4, 7, 0, 0, 0],
+            [0, 0, -1, 4, 4, 4, 0, 0, 2, 5, 8, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 6, 6, 0, 2, 4, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 6, 6, 1, 3, 5, 0, 0, 0],
+            [0, 0, 0, 0, 1, 2, 0, 1, 0, 0, 0, -1, 0, 0],
+            [0, 0, 0, 3, 4, 5, 2, 3, 0, 0, 0, 0, -1, 0],
+            [0, 0, 0, 6, 7, 8, 4, 5, 0, 0, 0, 0, 0, -1],
+        ])
+        self.assertTrue(
+            Mb_block.shape == Mb_block_target.shape,
+            'The matrix we got from Mb_diagonal_block has wrong dimensions.')
+        np.testing.assert_array_almost_equal(
+            Mb_block,
+            Mb_block_target,
+            err_msg='The function Mb_diagonal_block is incorrect on the ' +
+            f'problem data A = {A}, B = {B}, Q = {Q}, and R = {R}.')
+
+    @weight(3)
     @timeout_decorator.timeout(1.)
     def test_J_star_N_transcription(self):
         """Test value function direct transcription"""
@@ -68,24 +130,9 @@ class TestShootingVsTranscription(unittest.TestCase):
             'floats nor ints.')
 
         # check values
-        J_star_N_transcription_30 = [
-            10.75, 18.506849315068486, 24.221925133689844, 26.538390153365242,
-            27.14309163681062, 27.243582216689386, 27.24200007642889,
-            27.231499085690622, 27.22561231689258, 27.223217461345868,
-            27.222393413120635, 27.222143703386458, 27.222076887248058,
-            27.222061591713526, 27.222058929530345, 27.22205878066236,
-            27.22205892600524, 27.222059017397388, 27.22205905444769,
-            27.222059066651674, 27.222059070055884, 27.222059070835737,
-            27.222059070957886, 27.22205907095374, 27.222059070939768,
-            27.22205907093212, 27.222059070929042, 27.222059070927997,
-            27.222059070927685, 27.222059070927596
-        ]
-        for i, J in enumerate(J_star_N):
-            self.assertAlmostEqual(J,
-                                   J_star_N_transcription_30[min(i, 29)],
-                                   msg='J_star_N_transcription are incorrect.')
+        self._test_J_star(J_star_N, 'J_star_N_transcription is incorrect.')
 
-    @weight(3)
+    @weight(2)
     @timeout_decorator.timeout(1.)
     def test_lost_bits_transcription(self):
         """Test number of bits lost with direct transcription"""
@@ -121,7 +168,7 @@ class TestShootingVsTranscription(unittest.TestCase):
                                    lost_bits_transcription_30[min(i, 29)],
                                    msg='lost_bits_transcription are incorrect.')
 
-    @weight(4)
+    @weight(3)
     @timeout_decorator.timeout(1.)
     def test_J_star_N_riccati(self):
         """Test value function Riccati recursion"""
@@ -138,7 +185,12 @@ class TestShootingVsTranscription(unittest.TestCase):
             'Some entries in J_star_N_riccati are neither floats' + 'nor ints.')
 
         # check values
-        J_star_N_riccati_30 = [
+        self._test_J_star(J_star_N, 'J_star_N_riccati is incorrect.')
+
+    def _test_J_star(self, J_star_N, msg):
+
+        # check values
+        J_star_N_30 = [
             10.75, 18.506849315068493, 24.221925133689837, 26.538390153365242,
             27.14309163681062, 27.243582216689365, 27.242000076428884,
             27.231499085690622, 27.225612316892573, 27.223217461345843,
@@ -151,6 +203,4 @@ class TestShootingVsTranscription(unittest.TestCase):
             27.222059070927678, 27.222059070927585
         ]
         for i, J in enumerate(J_star_N):
-            self.assertAlmostEqual(J,
-                                   J_star_N_riccati_30[min(i, 29)],
-                                   msg='J_star_N_riccati are incorrect.')
+            self.assertAlmostEqual(J, J_star_N_30[min(i, 29)], msg=msg)
