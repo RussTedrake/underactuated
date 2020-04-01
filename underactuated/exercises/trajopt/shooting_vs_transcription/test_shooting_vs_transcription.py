@@ -10,7 +10,7 @@ class TestShootingVsTranscription(unittest.TestCase):
         super().__init__(test_name)
         self.notebook_locals = notebook_locals
 
-    @weight(2)
+    @weight(3)
     @timeout_decorator.timeout(1.)
     def test_lost_bits_shooting(self):
         """Test number of bits lost with direct shooting"""
@@ -49,7 +49,7 @@ class TestShootingVsTranscription(unittest.TestCase):
                                    lost_bits_shooting[i],
                                    msg='lost_bits_shooting are incorrect.')
 
-    @weight(3)
+    @weight(4)
     @timeout_decorator.timeout(1.)
     def test_Mb_diagonal_block(self):
         """Test construction of diagonal block of Mb"""
@@ -111,7 +111,7 @@ class TestShootingVsTranscription(unittest.TestCase):
             err_msg='The function Mb_diagonal_block is incorrect on the ' +
             f'problem data A = {A}, B = {B}, Q = {Q}, and R = {R}.')
 
-    @weight(3)
+    @weight(4)
     @timeout_decorator.timeout(1.)
     def test_J_star_N_transcription(self):
         """Test value function direct transcription"""
@@ -132,7 +132,7 @@ class TestShootingVsTranscription(unittest.TestCase):
         # check values
         self._test_J_star(J_star_N, 'J_star_N_transcription is incorrect.')
 
-    @weight(2)
+    @weight(3)
     @timeout_decorator.timeout(1.)
     def test_lost_bits_transcription(self):
         """Test number of bits lost with direct transcription"""
@@ -168,7 +168,7 @@ class TestShootingVsTranscription(unittest.TestCase):
                                    lost_bits_transcription_30[min(i, 29)],
                                    msg='lost_bits_transcription are incorrect.')
 
-    @weight(3)
+    @weight(4)
     @timeout_decorator.timeout(1.)
     def test_J_star_N_riccati(self):
         """Test value function Riccati recursion"""
