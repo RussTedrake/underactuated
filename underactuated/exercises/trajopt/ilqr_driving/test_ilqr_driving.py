@@ -10,7 +10,7 @@ class TestIlqrDriving(unittest.TestCase):
         super().__init__(test_name)
         self.notebook_locals = notebook_locals
 
-    @weight(2)
+    @weight(1)
     @timeout_decorator.timeout(1.)
     def test1_discrete_dynamics(self):
         """Test discrete_dynamics"""
@@ -41,7 +41,7 @@ class TestIlqrDriving(unittest.TestCase):
                 err_msg='The discrete dynamics are incorrect. '
                 f'Expected output {f_target[i]} with x={x} and u={u}')
 
-    @weight(3)
+    @weight(1)
     @timeout_decorator.timeout(1.)
     def test2_rollout(self):
         """Test rollout"""
@@ -62,9 +62,9 @@ class TestIlqrDriving(unittest.TestCase):
             u_trj = np.random.randn(N - 1, n_u) * 0.4
             f_eval_hash = hash(
                 tuple(np.ndarray.flatten(self.round(f(x0, u_trj), 4))))
-            self.assertEqual(f_eval_hash, f_target_hash, "Incorrect rollout")
+            self.assertEqual(f_eval_hash, f_target_hash[i], "Incorrect rollout")
 
-    @weight(3)
+    @weight(1)
     @timeout_decorator.timeout(1.)
     def test3_cost_trj(self):
         """Test cost_trj"""
@@ -123,7 +123,7 @@ class TestIlqrDriving(unittest.TestCase):
         self.assertEqual(Q_ux_hash, -1344468598834810301, "Incorrect Q_ux")
         self.assertEqual(Q_uu_hash, -1135300939716028365, "Incorrect Q_uu")
 
-    @weight(5)
+    @weight(3)
     @timeout_decorator.timeout(1.)
     def test5_gains(self):
         """Test gains"""
@@ -144,7 +144,7 @@ class TestIlqrDriving(unittest.TestCase):
 
         self.assertEqual(K_hash, -4694246526328938179, "Incorrect K gain")
 
-    @weight(5)
+    @weight(3)
     @timeout_decorator.timeout(1.)
     def test6_V_terms(self):
         """Test V_terms"""
@@ -171,7 +171,7 @@ class TestIlqrDriving(unittest.TestCase):
 
         self.assertEqual(V_xx_hash, -7844670117842396785, "Incorrect V_xx")
 
-    @weight(5)
+    @weight(2)
     @timeout_decorator.timeout(1.)
     def test7_forward_pass(self):
         """Test forward_pass"""
@@ -201,7 +201,7 @@ class TestIlqrDriving(unittest.TestCase):
         self.assertEqual(u_trj_new_hash, 5430054884692290987,
                          "Incorrect u_trj_new")
 
-    @weight(5)
+    @weight(2)
     @timeout_decorator.timeout(1.)
     def test8_backward_pass(self):
         """Test backward_pass"""
