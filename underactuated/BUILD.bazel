@@ -27,8 +27,25 @@ rt_py_library(
 )
 
 rt_py_library(
+    name = "glider",
+    srcs = ["glider.py"],
+    data = ["//underactuated/models/glider"],
+    imports = [".."],
+    visibility = ["//visibility:public"],
+    deps = ["underactuated"],
+)
+
+rt_py_library(
     name = "pendulum",
     srcs = ["pendulum.py"],
+    imports = [".."],
+    visibility = ["//visibility:public"],
+    deps = ["underactuated"],
+)
+
+rt_py_library(
+    name = "quadrotor2d",
+    srcs = ["quadrotor2d.py"],
     imports = [".."],
     visibility = ["//visibility:public"],
     deps = ["underactuated"],

@@ -64,41 +64,65 @@ of Walking and Running</h1>
   incredible progress here.  The control systems implemented on these systems,
   though, are still surprisingly heuristic -- they require dramatically higher
   bandwidth and lower latency that the human motor control system and still
-  perform worse in challenging environments.  I may be biased, but I think a lot
-  of the work left to do involves thinking about underactuated control.</p>
+  perform worse in challenging environments.<p>  
+    
+  <p>The control of walking robots is fundamentally underactuated -- assuming we
+  cannot pull on the ground (and barring any aerodynamic effects!), then no
+  matter how powerful my actuators are, there is nothing that they can do to
+  accelerate the center of mass of the robot towards the ground faster than
+  gravity.  But beyond the underactuated systems we have studied so far, the
+  control of walking robots faces an additional complexity: <b>controlling
+  through contact</b>.  The fact that we can get non-zero contact forces iff two
+  bodies are in contact introduces a fundamentally discrete/combinatorial
+  element into the problem&dagger;<sidenote>&dagger;I've had some interesting
+  arguments with folks on this point, because it's possible to write contact
+  models that smooth the discontinuity, and/or to model systems that have
+  neglible collision events.  But replacing a discontinuity in the vector field
+  with a stiff but smooth transition does not remove the need to decide whether
+  or not your robot should make contact to accomplish a task.</sidenote>.</p>
 
-  <p>In this chapter we'll introduce some of the simple models of walking and
-  robots, the control problems that result, and a very brief summary of some of
-  the control solutions described in the literature.  Compared to the robots
-  that we have studied so far, our investigations of legged locomotion will
-  require additional tools for thinking about limit cycle dynamics and dealing
-  with impacts.</p>
+  <p>Contact is fundamental for many aspects of robotics (manipulation is my
+  other favorite example); it's sad to see so many robots going through life
+  avoiding contact at any cost.  Controlling contact means that your robot is
+  capable of performing physical work on the environment; isn't that the point
+  of robotics, afterall?</p>
+
+  <p>I like to start our discussion of contact with walking robots for a few
+  important reasons.  As you'll see in this chapter, there are a number of
+  elegant "simple models" of walking that capture much of the essence of the
+  problem with minimal complexity.  But there is another, more subtle, reason: I
+  want to continue to use the language of stability.  At this point we've seen
+  both finite-horizon and infinite-horizon problem formulations -- when we can
+  some something about the behavior of a system in the limit as time goes to
+  infinity, it's almost always cleaner than a finite-time analysis (because time
+  drops away).  Walking provides a very clean way use stability in studying
+  behavior of systems that are sometimes in contact but sometimes out of contact
+  in the limiting case; we just need to extend our notions from stability of a
+  fixed point to the stability of a (periodic) cycle. 
+  </p>
 
   <section><h1>Limit Cycles</h1>
 
-    <p>In many of the systems that we have studied so far, we have analyzed the
-    stability of a fixed-point, or even an (infinite-horizon) trajectory.  For
-    walking systems the natural equivalent is to talk about the stability of
-    periodic solutions -- a fixed "gait" is a cycle that repeats footstep after
-    footstep.  So we begin our discussion with a discussion of the stability of
-    a cycle.</p>
-
-    <p> A limit cycle is an asymptotically stable or unstable periodic
-    orbit&dagger;<sidenote>&dagger; Marginally-stable orbits, such as the
-    closed-orbits of the undamped simple pendulum, are typically not called
-    limit cycles.</sidenote>.  One of the simplest models of limit cycle
-    behavior is the Van der Pol oscillator.  Let's examine that first...</p>
+    <p> A limit cycle is an periodic orbit that is the limit set of some other
+    trajectory; they can be stable (the limit set of neighboring trajectories as
+    time goes to infinity) or unstable (the limit set of neighboring
+    trajectories as time goes to negative infinity).  Orbits such as the closed
+    orbits of the undamped simple pendulum are technically not considered limit
+    cycles (they are not the limit set of another trajectory).  One of the
+    simplest models of limit cycle behavior is the Van der Pol oscillator. Let's
+    examine that first...</p>
 
     <example><h1>Van der Pol Oscillator</h1>
 
-      <p>$$\ddot{q} + \mu (q^2 - 1)\dot{q} + q = 0, \quad \mu>0$$ One can think
-      of this system as almost a simple spring-mass-damper system, except that
-      it has nonlinear damping.  In particular, the velocity term dissipates
-      energy when $|q|>1$, and adds energy when $|q|<1$.  Therefore, it is not
-      terribly surprising to see that the system settles into a stable
-      oscillation from almost any initial conditions (the exception is the state
-      $q=0,\dot{q}=0$).  This can be seen nicely in the phase portrait
-      below.</p>
+      <p>The van der Pol oscillator is described by a second-order differential
+      equation in one variable: $$\ddot{q} + \mu (q^2 - 1)\dot{q} + q = 0, \quad
+      \mu>0$$ One can think of this system as almost a simple spring-mass-damper
+      system, except that it has nonlinear damping.  In particular, the velocity
+      term dissipates energy when $|q|>1$, and adds energy when $|q|<1$.
+      Therefore, it is not terribly surprising to see that the system settles
+      into a stable oscillation from almost any initial conditions (the
+      exception is the state $q=0,\dot{q}=0$).  This can be seen nicely in the
+      phase portrait below.</p>
 
       <figure>
         <table width="100%"><tr><td width="50%">
@@ -110,52 +134,69 @@ of Walking and Running</h1>
           =.2$. (Left) phase portrait.  (Right) time domain.</figcaption>
       </figure>
 
-      <p>However, as you can see from the plot of system trajectories in the
-      time domain, then a slightly different picture emerges. Although the phase
-      portrait clearly reveals that all trajectories converge to the same orbit,
-      the time domain plot reveals that these trajectories do not necessarily
-      synchronize in time.</p>
+      <p>However, if we examine system trajectories in the time domain (see the
+      right panel of the figure above), then we can see that our traditional
+      notion for stability of a trajectory, $\lim_{t\rightarrow \infty} |\bx(t)
+      - \bx^*(t)| = 0$, is not satisfied here for any $\bx^*(t)$. Although the
+      phase portrait clearly reveals that all trajectories converge to the same
+      orbit, the time domain plot reveals that these trajectories do not
+      necessarily synchronize in time.</p>
 
     </example> <!-- end of VdP example -->
 
-    <p>The Van der Pol oscillator clearly demonstrates what we would think of as
-    a stable limit cycle, but also exposes the subtlety in defining this limit
-    cycle stability.  Neighboring trajectories do not necessarily converge on a
-    stable limit cycle.  In contrast, defining the stability of a particular
-    trajectory (parameterized by time) is relatively easy.</p>
+    <p>This example shows that stability of a trajectory (in time) is not what
+    we want.  Instead we will define the stability of an orbit, $\bx^*(t)$,
+    using \[ \min_\tau || \bx(t) - \bx^*(\tau) ||.\]  Here the quantity of
+    interest is the distance between our trajectory and the
+    <i>closest point</i> on the orbit.  Depending on exactly how this distance
+    evolves with time, we can define <i>orbital stability</i>: for every small
+    $\epsilon>0$, we can find a $\delta>0$ such that $\min_\tau||\bx(t_0) -
+    \bx^*(\tau)|| < \delta$ implies $\forall t, \min_\tau ||\bx(t) -
+    \bx^*(\tau)|| < \epsilon$).  The definitions for asymptotic orbital
+    stability, exponential orbital stability, finite-time orbital stability
+    follow naturally, as does the definition of an unstable orbit.  In the case
+    of limit cycles, this $\bx^*(t)$ is a periodic solution with
+    $\bx^*(t+t_{period}) = \bx^*(t)$. </p>
 
-    <p>Let's make a few quick points about the existence of closed-orbits. If we
-    can define a closed region of phase space which does not contain any fixed
-    points, then it must contain a closed-orbit<elib>Strogatz94</elib>. By
-    closed, I mean that any trajectory which enters the region will stay in the
-    region (this is the Poincar&eacute-Bendixson Theorem).  It's also
-    interesting to note that gradient potential fields (e.g. Lyapunov functions)
-    cannot have a closed-orbit<elib>Strogatz94</elib>, and consequently Lyapunov
-    analysis cannot be applied to limit cycle stability without some
-    modification.</p>
+    <p>As we begin to extend our notions of stability, allow me to make a few
+    quick connections to the discussion of stability in the <a
+    href="lyapunov.html">chapter on Lyapunov analysis</a>.  It's interesting to
+    know that if we can find an <a href="lypaunov.html#lasalle">invariant
+    set</a> in state space which does not contain any fixed points, then this
+    set must contain a closed orbit (this is the Poincar&eacute-Bendixson
+    Theorem)<elib>Strogatz94</elib>.  It's also interesting to note that
+    gradient potential fields (and Lyapunov functions with $\dot{V}(\bx) \prec
+    0$) cannot have a closed orbit<elib>Strogatz94</elib>, and consequently we
+    will also have to modify our Lyapunov analysis to handle limit cycles. We'll
+    discuss this in some details in a <a href="limit_cycles.html#lyapunov">later
+    chapter</a>.</p>
 
     <subsection><h1>Poincar&eacute; Maps</h1>
 
-      <p> One definition for the stability of a limit cycle uses the method of
-      Poincar&eacute.  Let's consider an $n$ dimensional dynamical system,
-      $\dot{\bx} = {\bf f}(\bx).$ Define an $n-1$ dimensional <em>surface of
-      section</em>, $S$.  We will also require that $S$ is transverse to the
-      flow (i.e., all trajectories starting on $S$ flow through $S$, not
-      parallel to it).  The Poincar&eacute map (or return map) is a mapping from
-      $S$ to itself:  $$\bx_p[n+1] = {\bf P}(\bx_p[n]),$$ where $\bx_p[n]$ is
-      the state of the system at the $n$th crossing of the surface of section.
-      Note that we will use the notation $\bx_p$ to distinguish the state of the
-      discrete-time system from the continuous time system; they are related by
-      $\bx_p[n] = \bx(t_c[n])$, where $t_c[n]$ is the time of the $n$th crossing
-      of $S$.</p>
+      <p>The first tool one should know for analyzing the stability of a limit
+      cycle, and one that will serve us quite well for the examples in this
+      chapter, is the method of Poincar&eacute.  Let's consider an $n$
+      dimensional dynamical system, $\dot{\bx} = {\bf f}(\bx).$ Define an $n-1$
+      dimensional <em>surface of section</em>, $S$.  We will also require that
+      $S$ is transverse to the flow (i.e., all trajectories starting on $S$ flow
+      through $S$, not parallel to it).  The Poincar&eacute map (or return map)
+      is a mapping from $S$ to itself:  $$\bx_p[n+1] = {\bf P}(\bx_p[n]),$$
+      where $\bx_p[n]$ is the state of the system at the $n$th crossing of the
+      surface of section. Note that we will use the notation $\bx_p$ to
+      distinguish the state of the discrete-time system from the continuous-time
+      system; they are related by $\bx_p[n] = \bx(t_c[n])$, where $t_c[n]$ is
+      the time of the $n$th crossing of $S$.</p>
 
       <example><h1>Return map for the Van der Pol Oscillator</h1>
 
-        <p>Since the full system is two dimensional, the return map dynamics are
-        one dimensional.  One dimensional maps, like one dimensional flows, are
-        amenable to graphical analysis.  To define a Poincar&eacute section for
-        the Van der Pol oscillator, let $S$ be the line segment where $q = 0$,
-        $\dot{q} > 0$.</p>
+        <p>Since the state space of this system is two-dimensional, a return map
+        for the system must have dimension one.  For instance, we can take $S$
+        to be the line segment where $q = 0$, $\dot{q} > 0$.  It is easy to see
+        that all trajectories that start on S are transverse to it.</p>  
+        
+        <p>One dimensional maps, like one dimensional flows, are amenable to
+        graphical analysis.
+        </p>
 
         <figure> <table><tr><td> <img width="100%"
         src="figures/vanderPol_section.svg" /> </td><td> <img width="100%"
@@ -167,28 +208,44 @@ of Walking and Running</h1>
 
       </example>
 
-      <p>If ${\bf P}(\bx_p)$ exists for all $\bx_p \in S$, then this method
-      turns the stability analysis for a limit cycle into the stability analysis
-      of a fixed point on a discrete map.  In practice it is often difficult or
-      impossible to find ${\bf P}$ analytically, but it can be obtained quite
-      reasonably numerically.  Once ${\bf P}$ is obtained, we can infer local
-      limit cycle stability with an eigenvalue analysis.  There will always be a
-      single eigenvalue of 0 - corresponding to perturbations along the limit
-      cycle which do not change the state of first return. The limit cycle is
-      considered locally exponentially stable if all remaining eigenvalues,
-      $\lambda_i$, have magnitude less than one, $|\lambda_i|<1$.</p>
+      <p>If we can demonstrate that ${\bf P}(\bx_p)$ exists for all $\bx_p \in
+      S$, (all trajectories that leave $S$ eventually return to $S$), then
+      something remarkable happens: we can reduce the stability analysis for a
+      limit cycle in the original coordinates into the stability analysis of a
+      fixed point on the discrete map.  If $\bx^*_p$ is a (stable,
+      asymptotically stable, exponentially stable, unstable) fixed point of the
+      map ${\bf P}$, then there exists a unique periodic orbit $\bx^*(t)$ which
+      passes through $\bx^*_p$ that is a (stable, asymptotically stable,
+      exponentially stable, unstable) limit cycle.</p>  
+      
+      <p>In practice it is often difficult or impossible to find ${\bf P}$
+      analytically, but it can be sampled quite reasonably numerically.  Once a
+      fixed point of ${\bf P}$ is obtained (by finding a solution to$\bx^*_p =
+      {\bf P}(\bx^*_p)$), we can infer local limit cycle stability with an
+      eigenvalue analysis.  If this eigen-analysis is performed in the original
+      coordinates (as opposed to the $n-1$ dimensional coordinates of $S$), then
+      there will always be a at least one zero eigenvalue - corresponding to
+      perturbations along the limit cycle which do not change the state of first
+      return. The limit cycle is considered locally exponentially stable if all
+      remaining eigenvalues, $\lambda_i$, have magnitude less than one,
+      $|\lambda_i|<1$.</p>
 
-      <p>In fact, it is often possible to infer more global stability properties
-      of the return map by examining ${\bf P}$. <elib>Koditschek91</elib>
-      describes some of the stability properties known for <em>unimodal</em>
-      maps.</p>
+      <p>It is sometimes possible to infer more global stability properties of
+      the return map by examining ${\bf P}$.  We will study computational
+      methods in the <a href="limit_cycle.html">later chapter</a>.
+      <elib>Koditschek91</elib> describes some less computational stability
+      properties known for <em>unimodal</em> maps which are useful for the
+      simple systems we study in this chapter.</p>
 
       <p>A particularly graphical method for understanding the dynamics of a
       one-dimensional iterated map is with the staircase method.  Sketch the
-      Poincar&eacute map and also the line of slope one.  Fixed points are the
-      crossings with the unity line.  Asymptotically stable if $|\lambda| < 1$.
-      Unlike one dimensional flows, one dimensional maps can have oscillations
-      (happens whenever $\lambda < 0$).</p>
+      Poincar&eacute map and also the line of slope one.  Fixed points points
+      where the return map crosses this line.  We can infer local exponential
+      stability if $|\lambda| < 1$.  Understanding the regions of attraction of
+      these fixed-points requires a little more care, though, than the
+      continuous time flows we examined before.  The discrete maps can jump a
+      finite distance on each step, and will in fact oscillate back and forth
+      from either side of the fixed point when $\lambda < 0.$</p>
 
       <todo>[insert staircase diagram of van der Pol oscillator return map
       here]</todo>
@@ -199,25 +256,43 @@ of Walking and Running</h1>
 
   <section><h1>Simple Models of Walking</h1>
 
-    <subsection><h1>The Ballistic Walker</h1>
+    <p>Much of fundamental work in the dynamics of legged robots was done originally in the context of studying <i>passive-dynamic walkers</i> (often just "passive walker").  We've already seen my favorite example of a passive walker, in the first chapter, but here it is again:</p>
 
-      <p>One of the earliest models of walking was proposed by
-      McMahon<elib>McMahon80</elib>, who argued that humans use a mostly
-      ballistic (passive) gait.  COM trajectory looks like a pendulum (roughly
-      walking by vaulting).  EMG activity in stance legs is high, but EMG in
-      swing leg is very low, except for very beginning and end of swing.
-      Proposed a three-link "ballistic walker" model, which models a single
-      swing phase (but not transitions to the next swing nor stability).
-      Interestingly, in recent years the field has developed a considerably
-      deeper appreciation for the role of compliance during walking; simple
-      walking-by-vaulting models are starting to fall out of favor.</p>
+    <figure>
+      <p>
+        <video width="80%" controls title="If your browser cannot play this video, then download it using the link below.">
+          <source src="http://ruina.tam.cornell.edu/research/topics/locomotion_and_robotics/3d_passive_dynamic/from_angle.mpg" type="video/mp4"/>
+          <source src="figures/passive_angle.ogg" type="video/ogg"/>
+        </video>
+      </p>
+      <figcaption>A 3D passive dynamic walker by Steve Collins and Andy Ruina<elib>Collins01</elib>.</figcaption>
+    </figure>
 
-      <p>McGeer<elib>McGeer90</elib> followed up with a series of walking
-      machines, called "passive dynamic walkers".  The walking machine by
-      Collins and Ruina<elib>Collins01</elib> is the most impressive passive
-      walker to date.</p>
+    <p>This amazing robot has no motors and no controllers... it walks down a
+    tiny ramp and is powered entirely by gravity.  We can build up to this robot
+    in a series of steps.  As we will see, what is remarkable is that even
+    though the system is passive, we believe that the periodic gait you see in
+    the video is actually stable!</p>
 
-    </subsection> <!-- end of ballistic walker -->
+    <p>Well before the first passive walkers, one of the earliest models of
+    walking was proposed by McMahon<elib>McMahon80</elib>, who argued that
+    humans use a mostly ballistic (passive) gait.  He observed that muscle
+    activity (recorded via <a
+    href="https://en.wikipedia.org/wiki/Electromyography">EMG</a>) in the
+    "stance leg" is relatively high, but muscle activity in the "swing leg" is
+    very low, except for at the very beginning and end of swing.  He proposed a
+    "ballistic walker" model -- a three-link pendulum in the <a
+    href="https://en.wikipedia.org/wiki/Sagittal_plane">sagittal plane</a>, with
+    one link from the ankle to the hip representing a straight "stance leg", the
+    second link from the hip back down to the "swing leg" knee, and the final
+    link from the knee down to the swing foot -- and argued that this model
+    could largely reproduce the kinematics of gait.  This model of "walking by
+    vaulting" is considered overly simplistic today, as we now understand much
+    better the role of compliance in the stance leg during walking.  His model
+    was also restricted to the continuous portion of gait, not the actual
+    dynamics of taking a step.  But it was the start.  Nearly a decade later,
+    McGeer<elib>McGeer90</elib> followed up with a series of similarly inspired
+    walking machines, which he coined "passive-dynamic walkers".</p>
 
     <subsection><h1>The Rimless Wheel</h1>
 
@@ -227,16 +302,17 @@ of Walking and Running</h1>
       $\theta$, is measured clockwise from the vertical axis. </figcaption>
       </figure>
 
-      <p>The most elementary model of passive dynamic walking, first used in the
-      context of walking by <elib>McGeer90</elib>, is the rimless wheel.  This
-      simplified system has rigid legs and only a point mass at the hip as
-      illustrated in the figure above.  To further simplify the analysis, we
-      make the following modeling assumptions:</p> <ul> <li> Collisions with
-      ground are inelastic and impulsive (only angular momentum is conserved
-      around the point of collision).</li> <li> The stance foot acts as a pin
-      joint and does not slip.</li> <li> The transfer of support at the time of
-      contact is instantaneous (no double support phase).</li> <li> $0 \le
-      \gamma < \frac{\pi}{2}$, $0 < \alpha < \frac{\pi}{2}$, $l > 0$.</li> </ul>
+      <p>The most elementary model of passive-dynamic walking, introduced as the
+      conceptual framework for passive-dynamic walking by
+      McGeer<elib>McGeer90</elib>, is the rimless wheel.  This simplified system
+      has rigid legs and only a point mass at the hip as illustrated in the
+      figure above.  To further simplify the analysis, we make the following
+      modeling assumptions:</p> <ul> <li> Collisions with ground are inelastic
+      and impulsive (only angular momentum is conserved around the point of
+      collision).</li> <li> The stance foot acts as a pin joint and does not
+      slip.</li> <li> The transfer of support at the time of contact is
+      instantaneous (no double support phase).</li> <li> $0 \le \gamma <
+      \frac{\pi}{2}$, $0 < \alpha < \frac{\pi}{2}$, $l > 0$.</li> </ul>
       <p>Note that the coordinate system used here is slightly different than
       for the simple pendulum ($\theta=0$ is at the top, and the sign of
       $\theta$ has changed).</p> <todo> update the coordinates (here and in
@@ -251,7 +327,7 @@ of Walking and Running</h1>
         $$\ddot\theta = \frac{g}{l}\sin(\theta).$$ If we assume that the system
         is started in a configuration directly after a transfer of support
         ($\theta(0^+) = \gamma-\alpha$), then forward walking occurs when the
-        system has an initial velocity, $\dot\theta(0^+) > \omega_1$, where
+        system has an initial velocity, $\dot\theta(0^+) > \omega_1,$ where
         $$\omega_1 = \sqrt{ 2 \frac{g}{l} \left[ 1 - \cos \left (\gamma-\alpha
         \right) \right]}.$$ $\omega_1$ is the threshold at which the system has
         enough kinetic energy to vault the mass over the stance leg and take a
@@ -293,16 +369,10 @@ of Walking and Running</h1>
         <example><h1>Numerical simulation of the
         rimless wheel</h1>
 
-          <pysrc>rimless_wheel/simulate.py</pysrc>
+          <jupyter>examples/rimless_wheel.ipynb</jupyter>
 
-          <p>Optionally you can specify the initial conditions.  Here are a few
-          good values to try:</p>
-
-          <pysrc args="--initial_angular_velocity=5.0">rimless_wheel/simulate.py</pysrc>
-          <pysrc args="--initial_angular_velocity=10.0">rimless_wheel/simulate.py</pysrc>
-          <pysrc args="--initial_angular_velocity=0.95">rimless_wheel/simulate.py</pysrc>
-          <pysrc args="--initial_angular_velocity=-5.0">rimless_wheel/simulate.py</pysrc>
-          <pysrc args="--initial_angular_velocity=-4.8">rimless_wheel/simulate.py</pysrc>
+          <p>I've setup the notebook to make it easy for you to try a handful of
+          interesting initial conditions.</p>
 
         </example>
 
@@ -311,7 +381,7 @@ of Walking and Running</h1>
         much about.  So you will recognize the phase portraits of the system
         below - they are centered around the unstable fixed point of the simple
         pendulum.  Phase plots of the trajectories from the various initial
-        conditions recommended above are plotted below.</p>
+        conditions recommended in the notebook example are plotted below.</p>
 
         <figure>
          <img width="80%" src="figures/rimlessWheel_phase1.svg"/>
@@ -399,6 +469,16 @@ of Walking and Running</h1>
         converge to the rolling fixed point, $\omega_{roll}^*$; the white
         regions converge to zero velocity ($\omega_{stand}^*$).</figcaption>
         </figure>
+
+      </subsubsection>
+
+      <subsubsection><h1>Stability of standing still</h1>
+
+        <p>I opened this chapter with the idea that the natural notion of
+        stability for a walking system is periodic stability, and I'll stand by
+        it.  But we can also examine the stability of a fixed-point (of the
+        original coordinates; no Poincar&eacute this time) for a system that has
+        contact mechanics.  For a legged robot, a fixed point means standing still.  It's a little subtle.</p>
 
       </subsubsection>
 
@@ -550,6 +630,38 @@ of Walking and Running</h1>
       <figcaption>Limit cycle (phase portrait) of the kneed walker</figcaption>
       </figure>
 
+    </subsection>
+
+    <subsection><h1>And beyond...</h1>
+
+      <p>The world has seen all sorts of great variations on the passive-dynamic
+      walker theme.  Almost certainly the most impressive are the creations of
+      Dutch artist Theo Jansen -- he likes to say that he is creating "new forms
+      of life" which he calls the <a
+      href="https://www.strandbeest.com/">Strandbeest</a>. There are many
+      variations of these amazing machines -- including his beach walkers which
+      are powered only by the wind (I've actually been able to visit Theo's
+      workshop once; it is <i>very</i> windy there).</p>
+
+      <figure>
+        <iframe width="560" height="315"
+        src="https://www.youtube.com/embed/LewVEF2B_pM" frameborder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope"
+        allowfullscreen></iframe>
+        <figcaption>Theo Jansen's Strandbeest "evolution".</figcaption>
+      </figure>
+
+      <p>These results are very real.  Robin Deits (an exceptionally talented
+      student who felt particularly inspired once on a long weekend) once
+      reproduced one of his most early creations in <drake></drake>.</p>
+
+      <figure>
+        <iframe width="560" height="315"
+        src="https://www.youtube.com/embed/H6fL-8ScUnU?rel=0" frameborder="0"
+        allow="autoplay; encrypted-media" allowfullscreen></iframe>
+        <figcaption>Robin Deits' <a href="https://github.com/RobotLocomotion/drake/tree/last_sha_with_original_matlab/drake/examples/Strandbeest">simulation of the Strandbeest</a>.</figcaption>
+      </figure>
+    
     </subsection>
 
   </section> <!-- end of walking -->

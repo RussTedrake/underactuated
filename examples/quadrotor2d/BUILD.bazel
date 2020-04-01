@@ -11,7 +11,7 @@ rt_ipynb_test(
     srcs = ["differential_flatness.ipynb"],
     deps = [
         "//underactuated",
-        "//underactuated/quadrotor2d",
+        "//underactuated:quadrotor2d",
     ],
 )
 
@@ -20,6 +20,6 @@ rt_ipynb_test(
     srcs = ["lqr.ipynb"],
     deps = [
         "//underactuated",
-        "//underactuated/quadrotor2d",
+        "//underactuated:quadrotor2d",
     ],
 )
