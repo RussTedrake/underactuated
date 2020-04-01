@@ -31,6 +31,19 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
+    name = "perching",
+    srcs = ["perching.ipynb"],
+    data = ["//underactuated/models/glider"],
+    deps = ["//underactuated"],
+)
+
+rt_ipynb_test(
+    name = "rimless_wheel",
+    srcs = ["rimless_wheel.ipynb"],
+    deps = ["//underactuated"],
+)
+
+rt_ipynb_test(
     name = "trajectory_optimization",
     srcs = ["trajectory_optimization.ipynb"],
     data = ["//underactuated/models:cartpole.urdf"],

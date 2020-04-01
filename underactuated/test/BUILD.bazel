@@ -6,9 +6,11 @@
 
 load("//tools/rt/python:defs.bzl", "rt_py_test")
 
-# RimlessWheel.xacro in this package is unused.
-
 rt_py_test(
-    name = "dircol_limitcycle",
-    srcs = ["dircol_limitcycle.py"],
+    name = "glider_test",
+    srcs = ["glider_test.py"],
+    deps = [
+        "//underactuated",
+        "//underactuated:glider",
+    ],
 )
