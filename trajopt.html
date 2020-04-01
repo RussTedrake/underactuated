@@ -184,7 +184,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </subsection>
 
-    <subsection><h1>Direct Shooting</h1>
+    <subsection id="direct_shooting"><h1>Direct Shooting</h1>
 
       <p>The savvy reader might have noticed that adding $\bx[\cdot]$ as
       decision variables was not strictly necessary.  If we know $\bx[0]$ and we
@@ -209,7 +209,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </subsection>
 
-    <subsection><h1>Computational Considerations</h1></subsection>
+    <subsection id="computational_considerations"><h1>Computational Considerations</h1></subsection>
 
       <p>So is direct shooting uniformly better than the direct transcription
       approach?  I think it is not.  There are a few potential reason that one
@@ -985,6 +985,26 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   </section>
   
   <section><h1>Exercises</h1>
+
+    <exercise><h1>Direct Shooting vs Direct Transcription</h1>
+
+      <p>In this coding exercise we explore in detail the <a href="#computational_considerations">computational advantages of direct transcription over direct shooting methods</a>.  The exercise can be completed entirely in this <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/trajopt/shooting_vs_transcription/shooting_vs_transcription.ipynb" target="_blank">python notebook</a>.  To simplify the analysis, we will apply these two methods to a finite-horizon LQR problem.  You are asked to complete four pieces of code:</p>
+
+      <ol type="a">
+
+        <li>Use the given implementation of direct shooting to analyze the numerical conditioning of this approach.</li>
+
+        <li>Complete the given implementation of the direct transcription method.</li>
+
+        <li>Verify that the cost to go from direct trascription approaches the LQR cost to go as the time horizon grows.</li>
+
+        <li>Analyze the numerical conditioning of direct transcription.</li>
+
+        <li>Implement the dynamic programming recursion (a.k.a. "Riccati recursion") to efficiently solve the linear algebra underlying the direct transcription method.</li>
+
+      </ol>
+
+    </exercise>
 
     <exercise><h1>Orbital Transfer via Trajectory Optimization</h1>
 
