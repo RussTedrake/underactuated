@@ -7,12 +7,12 @@
 load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
-    name = "hopper",
-    srcs = ["hopper.ipynb"],
-    data = ["//underactuated/models:hopper.urdf"],
+    name = "one_d_hopper",
+    srcs = ["one_d_hopper.ipynb"],
+    data = ["//underactuated/models:one_d_hopper.urdf"],
     deps = [
         "//underactuated",
         "//underactuated/exercises",
-        "//underactuated/exercises/simple_legs/hopper",
+        "//underactuated/exercises/simple_legs/one_d_hopper",
     ],
 )

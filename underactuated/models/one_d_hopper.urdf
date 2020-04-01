@@ -1,6 +1,6 @@
 <?xml vertsion="1.0"?>
 
-<robot name="Hopper">
+<robot name="OneDHopper">
 
   <link name="leg"> 
 

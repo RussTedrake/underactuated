@@ -7,7 +7,7 @@
 load("//tools/rt/python:defs.bzl", "rt_py_library")
 
 rt_py_library(
-    name = "hopper",
-    srcs = ["test_hopper.py"],
+    name = "one_d_hopper",
+    srcs = ["test_one_d_hopper.py"],
     visibility = ["//visibility:public"],
 )
