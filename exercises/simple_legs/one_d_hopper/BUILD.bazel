@@ -1,0 +1,18 @@
+# -*- mode: python -*-
+# vi: set ft=python :
+
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
+
+rt_ipynb_test(
+    name = "one_d_hopper",
+    srcs = ["one_d_hopper.ipynb"],
+    data = ["//underactuated/models:one_d_hopper.urdf"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/simple_legs/one_d_hopper",
+    ],
+)
