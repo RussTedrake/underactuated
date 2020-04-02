@@ -50,6 +50,12 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
+    name = "spring_loaded_inverted_pendulum",
+    srcs = ["spring_loaded_inverted_pendulum.ipynb"],
+    deps = ["//underactuated"],
+)
+
+rt_ipynb_test(
     name = "trajectory_optimization",
     srcs = ["trajectory_optimization.ipynb"],
     data = ["//underactuated/models:cartpole.urdf"],
