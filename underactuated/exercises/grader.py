@@ -52,9 +52,9 @@ class Grader:
     def locals_from_notebook(notebook_ipynb):
         """Read, run, return locals of notebook"""
         banned_commands = [
-            'start_recording',
-            'stop_recording',
-            'get_recording_as_animation',
+            # 'start_recording',
+            # 'stop_recording',
+            # 'get_recording_as_animation',
             'HTML',
         ]
 
