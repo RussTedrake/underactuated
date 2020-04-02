@@ -373,6 +373,15 @@ of Walking and Running</h1>
           <p>I've setup the notebook to make it easy for you to try a handful of
           interesting initial conditions.</p>
 
+          <p><a
+          href="https://github.com/RobotLocomotion/drake/blob/e08fc2bb0d289deddb5d76d0235f3a75ef3795d3/examples/rimless_wheel/rimless_wheel.h" target="_blank">The
+          rimless wheel model</a> actually uses a number of the more nuanced
+          features of <drake></drake> in order to simulate the hybrid system
+          accurately (as do many of the examples in this chapter). It actually
+          registers the collision events of the system -- the simulator uses
+          zero-crossing detection to ensure that the time/state of collision is
+          obtained accurately, and then applies the reset map.</p>
+
         </example>
 
         <p>One of the fantastic things about the rimless wheel is that the
@@ -479,7 +488,7 @@ of Walking and Running</h1>
         stability for a walking system is periodic stability, and I'll stand by
         it.  But we can also examine the stability of a fixed-point (of the
         original coordinates; no Poincar&eacute this time) for a system that has
-        contact mechanics.  For a legged robot, a fixed point means standing still.  It's a little subtle.</p>
+        contact mechanics.  For a legged robot, a fixed point means standing still.  It's a little subtle. [Coming soon.]</p>
 
       </subsubsection>
 
@@ -491,10 +500,11 @@ of Walking and Running</h1>
       simply assumes that there will always be a swing leg in position at the
       time of collision.  To remove this assumption, we take away all but two of
       the spokes, and place a pin joint at the hip.  To model the dynamics of
-      swing, we add point masses to each of the legs.  For actuation, we first
-      consider the case where there is a torque source at the hip - resulting in
-      swing dynamics equivalent to an Acrobot (although in a different
-      coordinate frame).</p>
+      swing, we add point masses to each of the legs.  I've derived the
+      equations of motion for the system assuming that we have a torque actuator
+      at the hip - resulting in swing dynamics equivalent to an Acrobot
+      (although in a different coordinate frame) - but let's examine the passive
+      dynamics of the system first ($\bu = 0$).</p>
 
       <figure>
       <img width="45%" src="figures/compass_gait.svg"/>
@@ -527,8 +537,8 @@ of Walking and Running</h1>
       <p>The foot collision is an instantaneous change of velocity caused by a
       impulsive force at the foot that brings the foot to rest.  The update to
       the velocities can be calculated using the derivation for impulsive
-      collisions derived in the appendix.  To use it, we proceed with the
-      following steps:</p>
+      collisions <a href="multibody.html#impulsive_collision">derived in the
+      appendix</a>.  To use it, we proceed with the following steps:</p>
 
       <ul> <li>Add a "floating base" to the system by adding a free (x,y) joint
       at the pre-impact stance toe, $\bq_{fb} =
@@ -546,14 +556,20 @@ of Walking and Running</h1>
       coordinates.</li> <li>Switch the stance and swing leg positions and
       velocities.</li> </ul>
 
-      <!-- My derivation is here: https://www.wolframcloud.com/objects/60e3d6c1-156f-4604-bf70-1e374f471407 -->
+      <!-- My derivation is here:
+      https://www.wolframcloud.com/objects/60e3d6c1-156f-4604-bf70-1e374f471407
+      -->
 
-      <example><h1>Numerical simulation of the
-        compass gait</h1>
+      <example><h1>Numerical simulation of the compass gait</h1>
 
-        You can simulate the passive compass gait using:
+        <p>You can simulate the passive compass gait using:</p>
 
-        <pysrc>compass_gait/simulate.py</pysrc>
+        <jupyter>examples/compass_gait.ipynb</jupyter>
+
+        <p>Try playing with the initial conditions.  You'll find this system is
+        <i>much</i> more sensitive to initial conditions than the rimless wheel.
+        It actually took some work to find the initial conditions that make it
+        walk stably.</p>
 
       </example>
 
@@ -640,17 +656,9 @@ of Walking and Running</h1>
       Dutch artist Theo Jansen -- he likes to say that he is creating "new forms
       of life" which he calls the <a
       href="https://www.strandbeest.com/">Strandbeest</a>. There are many
-      variations of these amazing machines -- including his beach walkers which
-      are powered only by the wind (I've actually been able to visit Theo's
+      variations of these amazing machines -- including his <a href="https://youtu.be/LewVEF2B_pM" target="_blank">beach walkers which
+      are powered only by the wind</a> (I've actually been able to visit Theo's
       workshop once; it is <i>very</i> windy there).</p>
-
-      <figure>
-        <iframe width="560" height="315"
-        src="https://www.youtube.com/embed/LewVEF2B_pM" frameborder="0"
-        allow="accelerometer; autoplay; encrypted-media; gyroscope"
-        allowfullscreen></iframe>
-        <figcaption>Theo Jansen's Strandbeest "evolution".</figcaption>
-      </figure>
 
       <p>These results are very real.  Robin Deits (an exceptionally talented
       student who felt particularly inspired once on a long weekend) once

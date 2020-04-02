@@ -13,6 +13,12 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
+    name = "compass_gait",
+    srcs = ["compass_gait.ipynb"],
+    deps = ["//underactuated"],
+)
+
+rt_ipynb_test(
     name = "grid_world",
     srcs = ["grid_world.ipynb"],
     deps = ["//underactuated"],
