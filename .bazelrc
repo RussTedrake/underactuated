@@ -8,7 +8,7 @@ build --coverage_report_generator=//tools/rt/coverage:coverage_report_generator
 build --coverage_support=//tools/rt/coverage:coverage_support
 build --enable_platform_specific_config=yes
 
-build --incompatible_applicable_licenses=yes
+#build --incompatible_applicable_licenses=yes
 build --incompatible_disable_target_provider_fields=yes
 # TODO(jamiesnape): Uncomment this when RobotLocomotion/drake#12605 merges.
 # build --incompatible_load_python_rules_from_bzl=yes

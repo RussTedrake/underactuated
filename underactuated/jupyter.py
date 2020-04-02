@@ -1,7 +1,7 @@
 import asyncio
 import sys
 from IPython import get_ipython
-from IPython.display import display
+from IPython.display import HTML, display
 from ipywidgets.widgets import FloatSlider
 from warnings import warn
 
@@ -13,6 +13,21 @@ def pyplot_is_interactive():
     import matplotlib.pyplot as plt
     from matplotlib.rcsetup import interactive_bk
     return plt.get_backend() in interactive_bk
+
+
+def AdvanceToAndVisualize(simulator, visualizer, time):
+    """Helper to support visualizing a simulation with pyplot visualizer.
+    Will simply simulate if visualizer.show = True, or will record
+    and render an animation if visualizer.show = False.
+    """
+    if not visualizer._show:
+        print("simulating... ", end=" ")
+        visualizer.start_recording()
+    simulator.AdvanceTo(time)
+    if not visualizer._show:
+        print("generating animation...")
+        ani = visualizer.get_recording_as_animation()
+        display(HTML(ani.to_jshtml()))
 
 
 def setup_matplotlib_backend(wishlist=["notebook"]):
