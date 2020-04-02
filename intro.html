@@ -308,8 +308,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     second-order control differential equation<sidenote>This definition can also
     be extended to discrete-time systems and/or differential
     inclusions.</sidenote> described by the equations \begin{equation} \ddot\bq
-    = {\bf f}(\bq, \dot\bq, \bu, t) \end{equation} is
-    <i>fully actuated</i> in state $\bx = (\bq, \dot\bq)$ and time $t$ if the
+    = {\bf f}(\bq, \dot\bq, \bu, t) \label{eq:underactuated_def}\end{equation}
+    is <i>fully actuated</i> in state $\bx = (\bq, \dot\bq)$ and time $t$ if the
     resulting map ${\bf f}$ is surjective: for every $\ddot\bq$ there exists a
     $\bu$ which produces the desired response.  Otherwise it is
     <i>underactuated</i> (in $\bx$ at time $t$).
@@ -321,11 +321,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     {\bf f}_2(\bq,\dot{\bq},t)\bu \label{eq:f1_plus_f2}.\end{equation}  For a
     control dynamical system described by equation \eqref{eq:f1_plus_f2}, if we
     have \begin{equation} \textrm{rank}\left[{\bf f}_2 (\bq,\dot{\bq},t)\right]
-    < \dim\left[\bq\right],\end{equation} then the system is underactuated.  Be
-    careful, though -- sometimes we will write equations that look like
-    \eqref{eq:f1_plus_f2} but tack on additional constraints like $|\bu|\le 1$;
-    as we will discuss below, input limits and other constraints can also make a
-    system underactuated.</p>
+    < \dim\left[\bq\right],\label{eq:underactuated_low_rank}\end{equation} then
+    the system is underactuated. Be careful, though -- sometimes we will write
+    equations that look like \eqref{eq:f1_plus_f2} but tack on additional
+    constraints like $|\bu|\le 1$; as we will discuss below, input limits and
+    other constraints can also make a system underactuated.</p>
 
     <p>Notice that whether or not a control system is underactuated may depend
     on the state of the system or even on time, although for most systems
@@ -606,7 +606,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       ground, then the degrees of freedom of the system include both the
       internal joints and the six degrees of freedom which define the position
       and orientation of the robot in space.  Since $\bu \in \Re^N$ and $\bq \in
-      \Re^{N+6}$, equation \ref{eq:underactuated_def} is satisfied.</li>
+      \Re^{N+6}$, equation \eqref{eq:underactuated_low_rank} is satisfied.</li>
 
       <li> (Most) Swimming and flying robots are underactuated.  The story is
       the same here as for legged machines.  Each control surface adds one
