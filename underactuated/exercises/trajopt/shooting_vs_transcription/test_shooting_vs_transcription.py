@@ -47,7 +47,7 @@ class TestShootingVsTranscription(unittest.TestCase):
         for i, bits in enumerate(lost_bits):
             self.assertAlmostEqual(bits,
                                    lost_bits_shooting[i],
-                                   places=3,
+                                   places=2,
                                    msg='lost_bits_shooting are incorrect.')
 
     @weight(4)
