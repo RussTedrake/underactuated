@@ -93,28 +93,28 @@ of Walking and Running</h1>
   problem with minimal complexity.  But there is another, more subtle, reason: I
   want to continue to use the language of stability.  At this point we've seen
   both finite-horizon and infinite-horizon problem formulations -- when we can
-  some something about the behavior of a system in the limit as time goes to
+  say something about the behavior of a system in the limit as time goes to
   infinity, it's almost always cleaner than a finite-time analysis (because time
-  drops away).  Walking provides a very clean way use stability in studying
-  behavior of systems that are sometimes in contact but sometimes out of contact
-  in the limiting case; we just need to extend our notions from stability of a
-  fixed point to the stability of a (periodic) cycle. 
+  drops away).  Walking provides a very clean way to use the language of
+  stability in studying behavior of systems that are sometimes in contact but
+  sometimes out of contact in the limiting case; we just need to extend our
+  notions from stability of a fixed point to the stability of a (periodic)
+  cycle. 
   </p>
 
   <section><h1>Limit Cycles</h1>
 
-    <p> A limit cycle is an periodic orbit that is the limit set of some other
-    trajectory; they can be stable (the limit set of neighboring trajectories as
-    time goes to infinity) or unstable (the limit set of neighboring
-    trajectories as time goes to negative infinity).  Orbits such as the closed
-    orbits of the undamped simple pendulum are technically not considered limit
-    cycles (they are not the limit set of another trajectory).  One of the
+    <p> A limit cycle is an periodic orbit that is a <a
+    href="https://en.wikipedia.org/wiki/Limit_set">limit set</a> of the
+    dynamical system; they can be stable (the limit set of neighboring
+    trajectories as time goes to infinity) or unstable (the limit set of
+    neighboring trajectories as time goes to negative infinity).  One of the
     simplest models of limit cycle behavior is the Van der Pol oscillator. Let's
     examine that first...</p>
 
     <example><h1>Van der Pol Oscillator</h1>
 
-      <p>The van der Pol oscillator is described by a second-order differential
+      <p>The Van der Pol oscillator is described by a second-order differential
       equation in one variable: $$\ddot{q} + \mu (q^2 - 1)\dot{q} + q = 0, \quad
       \mu>0$$ One can think of this system as almost a simple spring-mass-damper
       system, except that it has nonlinear damping.  In particular, the velocity
@@ -144,10 +144,10 @@ of Walking and Running</h1>
 
     </example> <!-- end of VdP example -->
 
-    <p>This example shows that stability of a trajectory (in time) is not what
-    we want.  Instead we will define the stability of an orbit, $\bx^*(t)$,
-    using \[ \min_\tau || \bx(t) - \bx^*(\tau) ||.\]  Here the quantity of
-    interest is the distance between our trajectory and the
+    <p>This example shows that stability of a trajectory (in time) is not the
+    definition we want.  Instead we will define the stability of an orbit,
+    $\bx^*(t)$, using \[ \min_\tau || \bx(t) - \bx^*(\tau) ||.\]  Here the
+    quantity of interest is the distance between our trajectory and the
     <i>closest point</i> on the orbit.  Depending on exactly how this distance
     evolves with time, we can define <i>orbital stability</i>: for every small
     $\epsilon>0$, we can find a $\delta>0$ such that $\min_\tau||\bx(t_0) -
@@ -167,16 +167,16 @@ of Walking and Running</h1>
     Theorem)<elib>Strogatz94</elib>.  It's also interesting to note that
     gradient potential fields (and Lyapunov functions with $\dot{V}(\bx) \prec
     0$) cannot have a closed orbit<elib>Strogatz94</elib>, and consequently we
-    will also have to modify our Lyapunov analysis to handle limit cycles. We'll
-    discuss this in some details in a <a href="limit_cycles.html#lyapunov">later
-    chapter</a>.</p>
+    will also have to slightly modify the Lyapunov analysis we have introduced
+    so far to handle limit cycles. We'll discuss this in some details in an <a
+    href="limit_cycles.html#lyapunov">upcoming chapter</a>.</p>
 
     <subsection><h1>Poincar&eacute; Maps</h1>
 
       <p>The first tool one should know for analyzing the stability of a limit
       cycle, and one that will serve us quite well for the examples in this
-      chapter, is the method of Poincar&eacute.  Let's consider an $n$
-      dimensional dynamical system, $\dot{\bx} = {\bf f}(\bx).$ Define an $n-1$
+      chapter, is the method of Poincar&eacute.  Let's consider adynamical
+      system, $\dot{\bx} = {\bf f}(\bx),$ with $\bx \in \Re^n.$  Define an $n-1$
       dimensional <em>surface of section</em>, $S$.  We will also require that
       $S$ is transverse to the flow (i.e., all trajectories starting on $S$ flow
       through $S$, not parallel to it).  The Poincar&eacute map (or return map)
@@ -191,8 +191,8 @@ of Walking and Running</h1>
 
         <p>Since the state space of this system is two-dimensional, a return map
         for the system must have dimension one.  For instance, we can take $S$
-        to be the line segment where $q = 0$, $\dot{q} > 0$.  It is easy to see
-        that all trajectories that start on S are transverse to it.</p>  
+        to be the line segment where $q = 0$, $\dot{q} \ge 0$.  It is easy to
+        see that all trajectories that start on S are transverse to it.</p>  
         
         <p>One dimensional maps, like one dimensional flows, are amenable to
         graphical analysis.
@@ -238,10 +238,20 @@ of Walking and Running</h1>
       simple systems we study in this chapter.</p>
 
       <p>A particularly graphical method for understanding the dynamics of a
-      one-dimensional iterated map is with the staircase method.  Sketch the
-      Poincar&eacute map and also the line of slope one.  Fixed points points
-      where the return map crosses this line.  We can infer local exponential
-      stability if $|\lambda| < 1$.  Understanding the regions of attraction of
+      one-dimensional iterated map is the "staircase method":  Sketch the
+      Poincar&eacute map -- a plot of $x[n]$ vs $x[n+1]$ -- and also the line of
+      slope one.  In order to "iterate" the map, take an initial condition on
+      the plot as a point $\left( x[k], x[k] \right)$, and move vertically on
+      the plot to the point $\left( x[k], x[k+1] = f(x[k]) \right)$.  Now move
+      horizontally to the next point $\left( \bx[k+1], \bx[k+1] \right)$ and
+      repeat.</p>
+
+      <todo>Add a staircase diagram here.</todo>
+      
+      <p>We can quickly recognize the fixed points as the points where the
+      return map crosses this line.  We can infer local exponential stability if
+      the absolute value of the slope of return map at the fixed point is less
+      than one ($|\lambda| < 1$). Understanding the regions of attraction of
       these fixed-points requires a little more care, though, than the
       continuous time flows we examined before.  The discrete maps can jump a
       finite distance on each step, and will in fact oscillate back and forth
@@ -677,6 +687,10 @@ of Walking and Running</h1>
 
   <section><h1>Simple Models of Running</h1>
 
+    <p>Just like walking, our understanding of the dynamics and control fo running has evolved by a nice interplay between the field of biomechanics and the field of robotics.  But in running, I think it's fair to say that the roboticists got off the starting blocks first.  And I think it's fair to say that it started with a series of hopping machines build by Marc Raibert and the Leg Laboratory (which was first at CMU, but moved to MIT) in the early 1980's.  At a time where many roboticsts were building relatively clumsy walking robots that moved very slowly (when they managed to stay up!), the Leg Laboratory build a series of hopping machines that threw themselves through the air with considerable kinetic energy and considerable flair.</p>
+
+    <p>To this day, I'm still a bit surprised that impressive running robots (assuming you accept hopping as the first form of running) appeared before the impressive walking robots...</p>
+
     <subsection><h1>The Spring-Loaded Inverted Pendulum</h1>
 
       <p>The model is a point mass, $m$, on top of a massless, springy leg with
@@ -710,8 +724,31 @@ of Walking and Running</h1>
       </example>
 
     </subsection>
+    
+    <subsection id="leglab"><h1>Hopping Robots from the MIT Leg Laboratory</h1>
 
-    <subsection><h1>The Planar Monopod Hopper</h1></subsection>
+      <figure>
+        <iframe width="560" height="315"
+        src="https://www.youtube.com/embed/Bd5iEke6UlE" frameborder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope;
+        picture-in-picture" allowfullscreen></iframe>
+      </figure>
+
+      <subsubsection><h1>The Planar Monopod Hopper</h1>
+      
+      <p>A three-part control strategy: decoupling the control of hopping
+      height, body attitude, and forward velocity <elib>Raibert86a</elib>.</p>
+      
+      </subsubsection>
+      
+      <subsubsection><h1>Running on four legs as though they were
+      one</h1>
+    
+      <p>bipeds, quadrupeds, and backflips...<elib>Raibert86</elib></p>
+
+      </subsubsection>
+
+    </subsection>
 
   </section> <!-- end of running -->
 
