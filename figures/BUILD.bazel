@@ -10,3 +10,8 @@ rt_py_test(
     name = "stereographic",
     srcs = ["stereographic.py"],
 )
+
+rt_py_test(
+    name = "vanderpol_staircase",
+    srcs = ["vanderpol_staircase.py"],
+)

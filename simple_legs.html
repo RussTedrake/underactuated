@@ -239,15 +239,18 @@ of Walking and Running</h1>
 
       <p>A particularly graphical method for understanding the dynamics of a
       one-dimensional iterated map is the "staircase method":  Sketch the
-      Poincar&eacute map -- a plot of $x[n]$ vs $x[n+1]$ -- and also the line of
+      Poincar&eacute map -- a plot of $x_p[n]$ vs $x_p[n+1]$ -- and also the line of
       slope one.  In order to "iterate" the map, take an initial condition on
-      the plot as a point $\left( x[k], x[k] \right)$, and move vertically on
-      the plot to the point $\left( x[k], x[k+1] = f(x[k]) \right)$.  Now move
-      horizontally to the next point $\left( \bx[k+1], \bx[k+1] \right)$ and
+      the plot as a point $\left( x_p[k], x_p[k] \right)$, and move vertically on
+      the plot to the point $\left( x_p[k], x_p[k+1] = f(x_p[k]) \right)$.  Now move
+      horizontally to the next point $\left( x_p[k+1], x_p[k+1] \right)$ and
       repeat.</p>
 
-      <todo>Add a staircase diagram here.</todo>
-      
+      <figure>
+        <img width="70%" src="figures/vanderpol_staircase.svg"/>
+        <figcaption>The "staircase" on the return map of the Van der Pol Oscillator with $\mu = 0.2$, starting from two initial conditions ($\dot{q}_p[0] = 1$ and $\dot{q}_p[0] = 3.5$).</figcaption>
+      </figure>
+
       <p>We can quickly recognize the fixed points as the points where the
       return map crosses this line.  We can infer local exponential stability if
       the absolute value of the slope of return map at the fixed point is less
