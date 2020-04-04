@@ -1,7 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-from pydrake.all import Simulator, LeafSystem, WitnessFunctionDirection, UnrestrictedUpdateEvent
+from pydrake.all import (Simulator, LeafSystem, WitnessFunctionDirection,
+                         UnrestrictedUpdateEvent)
 
 
 class VanDerPolOscillator(LeafSystem):

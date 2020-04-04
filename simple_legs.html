@@ -212,11 +212,12 @@ of Walking and Running</h1>
       S$, (all trajectories that leave $S$ eventually return to $S$), then
       something remarkable happens: we can reduce the stability analysis for a
       limit cycle in the original coordinates into the stability analysis of a
-      fixed point on the discrete map.  If $\bx^*_p$ is a (stable,
-      asymptotically stable, exponentially stable, unstable) fixed point of the
-      map ${\bf P}$, then there exists a unique periodic orbit $\bx^*(t)$ which
-      passes through $\bx^*_p$ that is a (stable, asymptotically stable,
-      exponentially stable, unstable) limit cycle.</p>  
+      fixed point on the discrete map.  If $\bx^*_p$ is a stable (or unstable)
+      fixed point of the map ${\bf P}$, then there exists a unique periodic
+      orbit $\bx^*(t)$ which passes through $\bx^*_p$ that is a (stable, or
+      unstable) limit cycle.  If we are able to upper-bound the time it takes
+      for trajectories leaving $S$ to return, then it is also possible to infer
+      asympotitic orbital or even exponential orbital stability.</p>
       
       <p>In practice it is often difficult or impossible to find ${\bf P}$
       analytically, but it can be sampled quite reasonably numerically.  Once a
@@ -239,12 +240,12 @@ of Walking and Running</h1>
 
       <p>A particularly graphical method for understanding the dynamics of a
       one-dimensional iterated map is the "staircase method":  Sketch the
-      Poincar&eacute map -- a plot of $x_p[n]$ vs $x_p[n+1]$ -- and also the line of
-      slope one.  In order to "iterate" the map, take an initial condition on
-      the plot as a point $\left( x_p[k], x_p[k] \right)$, and move vertically on
-      the plot to the point $\left( x_p[k], x_p[k+1] = f(x_p[k]) \right)$.  Now move
-      horizontally to the next point $\left( x_p[k+1], x_p[k+1] \right)$ and
-      repeat.</p>
+      Poincar&eacute map -- a plot of $x_p[n]$ vs $x_p[n+1]$ -- and also the
+      line of slope one.  In order to "iterate" the map, take an initial
+      condition on the plot as a point $\left( x_p[k], x_p[k] \right)$, and move
+      vertically on the plot to the point $\left( x_p[k], x_p[k+1] = f(x_p[k])
+      \right)$.  Now move horizontally to the next point $\left( x_p[k+1],
+      x_p[k+1] \right)$ and repeat.</p>
 
       <figure>
         <img width="70%" src="figures/vanderpol_staircase.svg"/>
