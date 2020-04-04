@@ -150,6 +150,7 @@ class TestIlqrDriving(unittest.TestCase):
         """Test V_terms"""
         # load locals
         V_terms = self.notebook_locals['V_terms']
+        gains = self.notebook_locals['gains']
 
         np.random.seed(7)
         Q_x = np.random.randn(5)
@@ -159,17 +160,16 @@ class TestIlqrDriving(unittest.TestCase):
         Q_ux = np.random.randn(2, 5)
         Q_xx = np.random.randn(5, 5)
         Q_xx = 0.5 * (Q_xx + Q_xx.T)
-        k = np.random.randn(2)
-        K = np.random.randn(2, 5)
+        k, K = gains(Q_uu, Q_u, Q_ux)
 
         V_x, V_xx = V_terms(Q_x, Q_u, Q_xx, Q_ux, Q_uu, K, k)
 
         V_x_hash = hash(tuple(np.ndarray.flatten(self.round(V_x, 4))))
         V_xx_hash = hash(tuple(np.ndarray.flatten(self.round(V_xx, 4))))
 
-        self.assertEqual(V_x_hash, -4894238880663973404, "Incorrect V_x")
+        self.assertEqual(V_x_hash, 2222446538856429062, "Incorrect V_x")
 
-        self.assertEqual(V_xx_hash, -7844670117842396785, "Incorrect V_xx")
+        self.assertEqual(V_xx_hash, 1880932214702358488, "Incorrect V_xx")
 
     @weight(2)
     @timeout_decorator.timeout(1.)
