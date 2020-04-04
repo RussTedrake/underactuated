@@ -90,7 +90,7 @@ def staircase(xp, n=3):
         xp = xpn
 
 
-staircase(1)
+staircase(.5, 4)
 staircase(3.5, 2)
 
 plt.savefig('vanderpol_staircase.svg')
