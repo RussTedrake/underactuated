@@ -7,9 +7,9 @@
   <link name="ground">
 
     <visual>
-      <origin xyz="2 0 -0.25" rpy="0 0 0"/>
+      <origin xyz="2 0 -.25" rpy="0 0 0"/>
       <geometry>
-        <box size="6 1 0.5" />
+        <box size="6 1 .5" />
       </geometry>
       <material name="green">
         <color rgba="0 1 0 1" />
@@ -17,9 +17,9 @@
     </visual>
 
     <collision>
-      <origin xyz="2 0 -0.25" rpy="0 0 0"/>
+      <origin xyz="2 0 -.25" rpy="0 0 0"/>
       <geometry>
-        <box size="6 1 0.5" />
+        <box size="6 1 .5" />
       </geometry>
     </collision>
 
@@ -59,19 +59,19 @@
   <link name="stance_leg">
 
     <inertial>
-      <origin xyz="0 0 0.5"/>
-      <mass value="5"/>
+      <origin xyz="0 0 .5"/>
+      <mass value=".1"/>
     </inertial>
 
     <inertial>
       <origin xyz="0 0 1"/>
-      <mass value="10"/>
+      <mass value="1"/>
     </inertial>
 
     <visual>
-      <origin xyz="0 0 0.5"/>
+      <origin xyz="0 0 .5"/>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius=".05"/>
       </geometry>
       <material>
         <color rgba="1 0 0 1"/>
@@ -79,9 +79,9 @@
     </visual>
 
     <visual>
-      <origin xyz="0 0 0.5"/>
+      <origin xyz="0 0 .5"/>
       <geometry>
-        <cylinder length="1" radius="0.01"/>
+        <cylinder length="1" radius=".01"/>
       </geometry>
       <material>
         <color rgba="1 0 0 1"/>
@@ -110,14 +110,14 @@
   <link name="swing_leg">
 
     <inertial>
-      <origin xyz="0 0 -0.5"/>
-      <mass value="5"/>
+      <origin xyz="0 0 -.5"/>
+      <mass value=".1"/>
     </inertial>
 
     <visual>
-      <origin xyz="0 0 -0.5"/>
+      <origin xyz="0 0 -.5"/>
       <geometry>
-        <sphere radius="0.05"/>
+        <sphere radius=".05"/>
       </geometry>
       <material>
         <color rgba="0 0 1 1"/>
@@ -127,7 +127,7 @@
     <visual>
       <origin xyz="0 0 0"/>
       <geometry>
-        <sphere radius="0.1"/>
+        <sphere radius=".1"/>
       </geometry>
       <material>
         <color rgba="1 1 1 1"/>
@@ -135,9 +135,9 @@
     </visual>
 
     <visual>
-      <origin xyz="0 0 -0.5"/>
+      <origin xyz="0 0 -.5"/>
       <geometry>
-        <cylinder length="1.0" radius="0.01"/>
+        <cylinder length="1" radius=".01"/>
       </geometry>
       <material>
         <color rgba="0 0 1 1"/>
@@ -145,7 +145,7 @@
     </visual>
 
     <collision>
-      <origin xyz="0 0 -1.0"/>
+      <origin xyz="0 0 -1"/>
       <geometry>
         <sphere radius="0"/>
       </geometry>
