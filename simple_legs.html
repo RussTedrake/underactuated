@@ -72,14 +72,15 @@ of Walking and Running</h1>
   accelerate the center of mass of the robot towards the ground faster than
   gravity.  But beyond the underactuated systems we have studied so far, the
   control of walking robots faces an additional complexity: <b>controlling
-  through contact</b>.  The fact that we can get non-zero contact forces iff two
-  bodies are in contact introduces a fundamentally discrete/combinatorial
-  element into the problem&dagger;<sidenote>&dagger;I've had some interesting
-  arguments with folks on this point, because it's possible to write contact
-  models that smooth the discontinuity, and/or to model systems that have
-  neglible collision events.  But replacing a discontinuity in the vector field
-  with a stiff but smooth transition does not remove the need to decide whether
-  or not your robot should make contact to accomplish a task.</sidenote>.</p>
+  through contact</b>.  The fact that we can get non-zero contact forces if and
+  only if two bodies are in contact introduces a fundamentally
+  discrete/combinatorial element into the problem&dagger;<sidenote>&dagger;I've
+  had some interesting arguments with folks on this point, because it's possible
+  to write contact models that smooth the discontinuity, and/or to model systems
+  that have neglible collision events.  But replacing a discontinuity in the
+  vector field with a stiff but smooth transition does not remove the need to
+  decide whether or not your robot should make contact to accomplish a
+  task.</sidenote>.</p>
 
   <p>Contact is fundamental for many aspects of robotics (manipulation is my
   other favorite example); it's sad to see so many robots going through life
@@ -161,7 +162,7 @@ of Walking and Running</h1>
     <p>As we begin to extend our notions of stability, allow me to make a few
     quick connections to the discussion of stability in the <a
     href="lyapunov.html">chapter on Lyapunov analysis</a>.  It's interesting to
-    know that if we can find an <a href="lypaunov.html#lasalle">invariant
+    know that if we can find an <a href="lyapunov.html#lasalle">invariant
     set</a> in state space which does not contain any fixed points, then this
     set must contain a closed orbit (this is the Poincar&eacute-Bendixson
     Theorem)<elib>Strogatz94</elib>.  It's also interesting to note that
@@ -175,7 +176,7 @@ of Walking and Running</h1>
 
       <p>The first tool one should know for analyzing the stability of a limit
       cycle, and one that will serve us quite well for the examples in this
-      chapter, is the method of Poincar&eacute.  Let's consider adynamical
+      chapter, is the method of Poincar&eacute.  Let's consider a dynamical
       system, $\dot{\bx} = {\bf f}(\bx),$ with $\bx \in \Re^n.$  Define an $n-1$
       dimensional <em>surface of section</em>, $S$.  We will also require that
       $S$ is transverse to the flow (i.e., all trajectories starting on $S$ flow
@@ -721,7 +722,7 @@ of Walking and Running</h1>
 
   <section><h1>Simple Models of Running</h1>
 
-    <p>Just like walking, our understanding of the dynamics and control fo
+    <p>Just like walking, our understanding of the dynamics and control of
     running has evolved by a nice interplay between the field of biomechanics
     and the field of robotics.  But in running, I think it's fair to say that
     the roboticists got off the starting blocks first.  And I think it's fair to
