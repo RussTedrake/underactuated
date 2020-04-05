@@ -63,4 +63,5 @@ rt_ipynb_test(
         "//underactuated",
         "//underactuated:pendulum",
     ],
+    timeout = "moderate",
 )
