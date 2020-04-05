@@ -51,12 +51,7 @@ class Grader:
     @staticmethod
     def locals_from_notebook(notebook_ipynb):
         """Read, run, return locals of notebook"""
-        banned_commands = [
-            'start_recording',
-            'stop_recording',
-            'get_recording_as_animation',
-            'HTML',
-        ]
+        banned_commands = ['HTML']
 
         ipynb = json.load(open(notebook_ipynb))
 
