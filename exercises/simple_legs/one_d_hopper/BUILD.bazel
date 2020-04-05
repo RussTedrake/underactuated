@@ -15,4 +15,5 @@ rt_ipynb_test(
         "//underactuated/exercises",
         "//underactuated/exercises/simple_legs/one_d_hopper",
     ],
+    timeout = "moderate",
 )

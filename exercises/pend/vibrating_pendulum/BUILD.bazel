@@ -15,4 +15,5 @@ rt_ipynb_test(
         "//underactuated/exercises",
         "//underactuated/exercises/pend/vibrating_pendulum",
     ],
+    timeout = "moderate",
 )

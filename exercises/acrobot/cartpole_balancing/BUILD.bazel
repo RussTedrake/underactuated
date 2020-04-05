@@ -15,4 +15,5 @@ rt_ipynb_test(
         "//underactuated/exercises",
         "//underactuated/exercises/acrobot/cartpole_balancing",
     ],
+    timeout = "moderate",
 )
