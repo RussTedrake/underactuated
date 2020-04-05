@@ -1,0 +1,165 @@
+<?xml version="1.0" ?>
+
+<robot name="compass_gait">
+
+  <!-- ground -->
+
+  <link name="ground">
+
+    <visual>
+      <origin xyz="2 0 -0.25" rpy="0 0 0"/>
+      <geometry>
+        <box size="6 1 0.5" />
+      </geometry>
+      <material name="green">
+        <color rgba="0 1 0 1" />
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="2 0 -0.25" rpy="0 0 0"/>
+      <geometry>
+        <box size="6 1 0.5" />
+      </geometry>
+    </collision>
+
+  </link>
+
+  <joint name="ground_is_world" type="fixed">
+
+    <parent link="world" />
+    <child link="ground" />
+
+  </joint>
+
+  <!-- floating base -->
+
+  <link name="floating_base_x" />
+
+  <joint name="floating_base_x" type="prismatic">
+
+    <parent link="ground"/>
+    <child link="floating_base_x"/>
+    <axis xyz="1 0 0"/>
+
+  </joint>
+
+  <link name="floating_base_z" />
+
+  <joint name="floating_base_z" type="prismatic">
+
+    <parent link="floating_base_x"/>
+    <child link="floating_base_z"/>
+    <axis xyz="0 0 1"/>
+
+  </joint>
+
+  <!-- stance leg -->
+
+  <link name="stance_leg">
+
+    <inertial>
+      <origin xyz="0 0 0.5"/>
+      <mass value="5"/>
+    </inertial>
+
+    <inertial>
+      <origin xyz="0 0 1"/>
+      <mass value="10"/>
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0.5"/>
+      <geometry>
+        <sphere radius="0.05"/>
+      </geometry>
+      <material>
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+
+    <visual>
+      <origin xyz="0 0 0.5"/>
+      <geometry>
+        <cylinder length="1" radius="0.01"/>
+      </geometry>
+      <material>
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0"/>
+      </geometry>
+    </collision>
+
+  </link>
+
+  <joint name="floating_base_y" type="continuous">
+
+    <parent link="floating_base_z"/>
+    <child link="stance_leg"/>
+    <axis xyz="0 -1 0"/>
+
+  </joint>
+
+  <!-- swing leg -->
+
+  <link name="swing_leg">
+
+    <inertial>
+      <origin xyz="0 0 -0.5"/>
+      <mass value="5"/>
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 -0.5"/>
+      <geometry>
+        <sphere radius="0.05"/>
+      </geometry>
+      <material>
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+
+    <visual>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.1"/>
+      </geometry>
+      <material>
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+
+    <visual>
+      <origin xyz="0 0 -0.5"/>
+      <geometry>
+        <cylinder length="1.0" radius="0.01"/>
+      </geometry>
+      <material>
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 -1.0"/>
+      <geometry>
+        <sphere radius="0"/>
+      </geometry>
+    </collision>
+
+  </link>
+
+  <joint name="hip_pin" type="continuous">
+
+    <parent link="stance_leg"/>
+    <child link="swing_leg"/>
+    <origin xyz="0 0 1"/>
+    <axis xyz="0 -1 0"/>
+
+  </joint>
+
+</robot>
