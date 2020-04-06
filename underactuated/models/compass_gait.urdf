@@ -63,11 +63,6 @@
       <mass value=".1"/>
     </inertial>
 
-    <inertial>
-      <origin xyz="0 0 1"/>
-      <mass value="1"/>
-    </inertial>
-
     <visual>
       <origin xyz="0 0 .5"/>
       <geometry>
@@ -105,6 +100,35 @@
 
   </joint>
 
+  <!-- body -->
+
+  <link name="body">
+
+    <inertial>
+      <origin xyz="0 0 1"/>
+      <mass value="1"/>
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <sphere radius=".1"/>
+      </geometry>
+      <material>
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+
+  </link>
+
+  <joint name="body_on_stance_leg" type="fixed">
+
+    <parent link="stance_leg" />
+    <child link="body" />
+    <origin xyz="0 0 1"/>
+
+  </joint>
+
   <!-- swing leg -->
 
   <link name="swing_leg">
@@ -121,16 +145,6 @@
       </geometry>
       <material>
         <color rgba="0 0 1 1"/>
-      </material>
-    </visual>
-
-    <visual>
-      <origin xyz="0 0 0"/>
-      <geometry>
-        <sphere radius=".1"/>
-      </geometry>
-      <material>
-        <color rgba="1 1 1 1"/>
       </material>
     </visual>
 
@@ -155,9 +169,8 @@
 
   <joint name="hip_pin" type="continuous">
 
-    <parent link="stance_leg"/>
+    <parent link="body"/>
     <child link="swing_leg"/>
-    <origin xyz="0 0 1"/>
     <axis xyz="0 -1 0"/>
 
   </joint>
