@@ -29,6 +29,7 @@
 
     <parent link="world" />
     <child link="ground" />
+    <origin xyz="0 0 0" rpy="0 .04 0"/>
 
   </joint>
 
