@@ -16,13 +16,6 @@
       </material>
     </visual>
 
-    <collision>
-      <origin xyz="2 0 -.25" rpy="0 0 0"/>
-      <geometry>
-        <box size="6 1 .5" />
-      </geometry>
-    </collision>
-
   </link>
 
   <joint name="ground_is_world" type="fixed">
@@ -83,13 +76,6 @@
         <color rgba="1 0 0 1"/>
       </material>
     </visual>
-
-    <collision>
-      <origin xyz="0 0 0"/>
-      <geometry>
-        <sphere radius="0"/>
-      </geometry>
-    </collision>
 
   </link>
 
@@ -158,13 +144,6 @@
         <color rgba="0 0 1 1"/>
       </material>
     </visual>
-
-    <collision>
-      <origin xyz="0 0 -1"/>
-      <geometry>
-        <sphere radius="0"/>
-      </geometry>
-    </collision>
 
   </link>
 
