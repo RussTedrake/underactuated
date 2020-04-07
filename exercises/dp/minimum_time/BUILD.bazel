@@ -14,4 +14,5 @@ rt_ipynb_test(
         "//underactuated/exercises",
         "//underactuated/exercises/dp/minimum_time",
     ],
+    timeout = "moderate",
 )

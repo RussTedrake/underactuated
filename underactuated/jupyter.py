@@ -17,20 +17,25 @@ def pyplot_is_interactive():
 
 def AdvanceToAndVisualize(simulator, visualizer, time):
     """Helper to support visualizing a simulation with pyplot visualizer.
-    Will simply simulate if visualizer.show = True, or will record
-    and render an animation if visualizer.show = False.
+    Will simply simulate (with target_realtime_rate = 1) if visualizer.show =
+    True, or will record and render an animation if visualizer.show = False.
     """
-    if not visualizer._show:
+    if visualizer._show:
+        target_rate = simulator.get_target_realtime_rate()
+        simulator.set_target_realtime_rate(1.)
+    else:
         print("simulating... ", end=" ")
         visualizer.start_recording()
     simulator.AdvanceTo(time)
-    if not visualizer._show:
+    if visualizer._show:
+        simulator.set_target_realtime_rate(target_rate)
+    else:
         print("generating animation...")
         ani = visualizer.get_recording_as_animation()
         display(HTML(ani.to_jshtml()))
 
 
-def setup_matplotlib_backend(wishlist=["notebook"]):
+def SetupMatplotlibBackend(wishlist=["notebook"]):
     """Helper to support multiple workflows:
         1) nominal -- running locally w/ jupyter notebook
         2) unit tests (no ipython, backend is template)
@@ -54,6 +59,11 @@ def setup_matplotlib_backend(wishlist=["notebook"]):
                 continue
         ipython.run_line_magic("matplotlib", "inline")
     return False
+
+
+# Deprecate this:
+def setup_matplotlib_backend(**kwargs):
+    SetupMatplotlibBackend(**kwargs)
 
 
 # Inspired by https://github.com/Kirill888/jupyter-ui-poll but there *must* be a

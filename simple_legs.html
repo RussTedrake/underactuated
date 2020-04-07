@@ -72,14 +72,15 @@ of Walking and Running</h1>
   accelerate the center of mass of the robot towards the ground faster than
   gravity.  But beyond the underactuated systems we have studied so far, the
   control of walking robots faces an additional complexity: <b>controlling
-  through contact</b>.  The fact that we can get non-zero contact forces iff two
-  bodies are in contact introduces a fundamentally discrete/combinatorial
-  element into the problem&dagger;<sidenote>&dagger;I've had some interesting
-  arguments with folks on this point, because it's possible to write contact
-  models that smooth the discontinuity, and/or to model systems that have
-  neglible collision events.  But replacing a discontinuity in the vector field
-  with a stiff but smooth transition does not remove the need to decide whether
-  or not your robot should make contact to accomplish a task.</sidenote>.</p>
+  through contact</b>.  The fact that we can get non-zero contact forces if and
+  only if two bodies are in contact introduces a fundamentally
+  discrete/combinatorial element into the problem&dagger;<sidenote>&dagger;I've
+  had some interesting arguments with folks on this point, because it's possible
+  to write contact models that smooth the discontinuity, and/or to model systems
+  that have neglible collision events.  But replacing a discontinuity in the
+  vector field with a stiff but smooth transition does not remove the need to
+  decide whether or not your robot should make contact to accomplish a
+  task.</sidenote>.</p>
 
   <p>Contact is fundamental for many aspects of robotics (manipulation is my
   other favorite example); it's sad to see so many robots going through life
@@ -161,7 +162,7 @@ of Walking and Running</h1>
     <p>As we begin to extend our notions of stability, allow me to make a few
     quick connections to the discussion of stability in the <a
     href="lyapunov.html">chapter on Lyapunov analysis</a>.  It's interesting to
-    know that if we can find an <a href="lypaunov.html#lasalle">invariant
+    know that if we can find an <a href="lyapunov.html#lasalle">invariant
     set</a> in state space which does not contain any fixed points, then this
     set must contain a closed orbit (this is the Poincar&eacute-Bendixson
     Theorem)<elib>Strogatz94</elib>.  It's also interesting to note that
@@ -175,7 +176,7 @@ of Walking and Running</h1>
 
       <p>The first tool one should know for analyzing the stability of a limit
       cycle, and one that will serve us quite well for the examples in this
-      chapter, is the method of Poincar&eacute.  Let's consider adynamical
+      chapter, is the method of Poincar&eacute.  Let's consider a dynamical
       system, $\dot{\bx} = {\bf f}(\bx),$ with $\bx \in \Re^n.$  Define an $n-1$
       dimensional <em>surface of section</em>, $S$.  We will also require that
       $S$ is transverse to the flow (i.e., all trajectories starting on $S$ flow
@@ -186,6 +187,12 @@ of Walking and Running</h1>
       distinguish the state of the discrete-time system from the continuous-time
       system; they are related by $\bx_p[n] = \bx(t_c[n])$, where $t_c[n]$ is
       the time of the $n$th crossing of $S$.</p>
+
+      <p>For our purposes in this chapter, it will be useful for us to allow the
+      Poincar&eacute; maps to also include fixed points of the original
+      continuous-time system, and to define the return time to be zero.  These
+      points do not satisfy the transversality condition, and require some care
+      numerically, but they do not compromise our analysis.</p>
 
       <example><h1>Return map for the Van der Pol Oscillator</h1>
 
@@ -249,20 +256,22 @@ of Walking and Running</h1>
 
       <figure>
         <img width="70%" src="figures/vanderpol_staircase.svg"/>
-        <figcaption>The "staircase" on the return map of the Van der Pol Oscillator with $\mu = 0.2$, starting from two initial conditions ($\dot{q}_p[0] = 1$ and $\dot{q}_p[0] = 3.5$).</figcaption>
+        <figcaption>The "staircase" on the return map of the Van der Pol
+        Oscillator with $\mu = 0.2$, starting from two initial conditions
+        ($\dot{q}_p[0] = .5$ and $\dot{q}_p[0] = 3.5$).</figcaption>
       </figure>
 
       <p>We can quickly recognize the fixed points as the points where the
       return map crosses this line.  We can infer local exponential stability if
       the absolute value of the slope of return map at the fixed point is less
-      than one ($|\lambda| < 1$). Understanding the regions of attraction of
-      these fixed-points requires a little more care, though, than the
-      continuous time flows we examined before.  The discrete maps can jump a
+      than one ($|\lambda| < 1$). The figure above illustrates the stability of
+      the Van der Pol limit cycle; it also illustrates the (one-sided)
+      instability of the fixed point at the origin.  Understanding the regions
+      of attraction of fixed points on an iterated map (or any discrete-time
+      system) graphically requires a little more care, though, than the
+      continuous-time flows we examined before.  The discrete maps can jump a
       finite distance on each step, and will in fact oscillate back and forth
       from either side of the fixed point when $\lambda < 0.$</p>
-
-      <todo>[insert staircase diagram of van der Pol oscillator return map
-      here]</todo>
 
     </subsection> <!-- end of Poincare -->
 
@@ -283,10 +292,10 @@ of Walking and Running</h1>
     </figure>
 
     <p>This amazing robot has no motors and no controllers... it walks down a
-    tiny ramp and is powered entirely by gravity.  We can build up to this robot
-    in a series of steps.  As we will see, what is remarkable is that even
-    though the system is passive, we believe that the periodic gait you see in
-    the video is actually stable!</p>
+    tiny ramp and is powered entirely by gravity.  We can build up our
+    understanding of this robot in a series of steps.  As we will see, what is
+    remarkable is that even though the system is passive, we believe that the
+    periodic gait you see in the video is actually a stable limit cycle!</p>
 
     <p>Well before the first passive walkers, one of the earliest models of
     walking was proposed by McMahon<elib>McMahon80</elib>, who argued that
@@ -316,17 +325,18 @@ of Walking and Running</h1>
       $\theta$, is measured clockwise from the vertical axis. </figcaption>
       </figure>
 
-      <p>The most elementary model of passive-dynamic walking, introduced as the
-      conceptual framework for passive-dynamic walking by
-      McGeer<elib>McGeer90</elib>, is the rimless wheel.  This simplified system
-      has rigid legs and only a point mass at the hip as illustrated in the
-      figure above.  To further simplify the analysis, we make the following
-      modeling assumptions:</p> <ul> <li> Collisions with ground are inelastic
-      and impulsive (only angular momentum is conserved around the point of
-      collision).</li> <li> The stance foot acts as a pin joint and does not
-      slip.</li> <li> The transfer of support at the time of contact is
-      instantaneous (no double support phase).</li> <li> $0 \le \gamma <
-      \frac{\pi}{2}$, $0 < \alpha < \frac{\pi}{2}$, $l > 0$.</li> </ul>
+      <p>Perhaps the simplest possible model of a legged robot, introduced as
+      the conceptual framework for passive-dynamic walking by
+      McGeer<elib>McGeer90</elib>, is the rimless wheel.  This system has rigid
+      legs and only a point mass at the hip as illustrated in the figure above.
+      To further simplify the analysis, we make the following modeling
+      assumptions:</p> <ul> <li>
+      Collisions with ground are inelastic and impulsive (only angular momentum
+      is conserved around the point of collision).</li> <li> The stance foot
+      acts as a pin joint and does not slip.</li> <li> The transfer of support
+      at the time of contact is instantaneous (no double support phase).</li>
+      <li> $0 \le \gamma < \frac{\pi}{2}$, $0 < \alpha < \frac{\pi}{2}$, $l >
+      0$.</li> </ul>
       <p>Note that the coordinate system used here is slightly different than
       for the simple pendulum ($\theta=0$ is at the top, and the sign of
       $\theta$ has changed).</p> <todo> update the coordinates (here and in
@@ -346,11 +356,13 @@ of Walking and Running</h1>
         \right) \right]}.$$ $\omega_1$ is the threshold at which the system has
         enough kinetic energy to vault the mass over the stance leg and take a
         step.  This threshold is zero for $\gamma = \alpha$ and does not exist
-        for $\gamma > \alpha$.  The next foot touches down when $\theta(t) =
-        \gamma+\alpha$, at which point the conversion of potential energy into
-        kinetic energy yields the velocity $$\dot\theta(t^-) = \sqrt{
-        \dot\theta^2(0^+) + 4\frac{g}{l} \sin\alpha \sin\gamma }.$$ $t^-$
-        denotes the time immediately before the collision.</p>
+        for $\gamma > \alpha$ (because when $\gamma > \alpha$ the mass is always
+        ahead of the stance foot, and the standing fixed point disappears).  The
+        next foot touches down when $\theta(t) = \gamma+\alpha$, at which point
+        the conversion of potential energy into kinetic energy yields the
+        velocity $$\dot\theta(t^-) = \sqrt{\dot\theta^2(0^+) + 4\frac{g}{l}
+        \sin\alpha \sin\gamma }.$$ $t^-$ denotes the time immediately before the
+        collision.</p>
 
       </subsubsection>
 
@@ -401,7 +413,7 @@ of Walking and Running</h1>
         <p>One of the fantastic things about the rimless wheel is that the
         dynamics are exactly the undamped simple pendulum that we've thought so
         much about.  So you will recognize the phase portraits of the system
-        below - they are centered around the unstable fixed point of the simple
+        -- they are centered around the unstable fixed point of the simple
         pendulum.  Phase plots of the trajectories from the various initial
         conditions recommended in the notebook example are plotted below.</p>
 
@@ -503,6 +515,8 @@ of Walking and Running</h1>
         it.  But we can also examine the stability of a fixed-point (of the
         original coordinates; no Poincar&eacute this time) for a system that has
         contact mechanics.  For a legged robot, a fixed point means standing still.  It's a little subtle. [Coming soon.]</p>
+
+        <todo>call out to the fact that I left the origin OUT of the poincare map on the van der pol.</todo>
 
       </subsubsection>
 
@@ -614,8 +628,10 @@ of Walking and Running</h1>
 
       <p>To achieve a more anthropomorphic gait, as well as to acquire better
       foot clearance and ability to walk on rough terrain, we want to model a
-      walker that includes knee<elib>Hsu07</elib>. For this, we model each leg
-      as two links with a point mass each.</p>
+      walker that includes a knee<elib>Hsu07</elib>.  The mathematical modeling
+      would be simpler if we used a single link for the stance leg, but we'll go
+      ahead and use two links for each leg (and each with a point mass) because
+      this robot can actually be built!</p>
 
       <figure>
       <img width="60%" src="figures/kneedwalker.svg"/>
@@ -661,6 +677,21 @@ of Walking and Running</h1>
       <figcaption>Limit cycle (phase portrait) of the kneed walker</figcaption>
       </figure>
 
+      <todo>reproduce this model in drake.</todo>
+
+    </subsection>
+
+    <subsection><h1>Curved feet</h1>
+    
+      <p>The region of attraction of the kneed-walking limit cycle can be improved considerably by the addition of curved feet...</p>
+
+      <todo>also knee "de-bouncers" (suction cups).  Simulation model?</todo>
+
+      <figure>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/WOPED7I5Lac" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <figcaption>Tad McGeer's kneed walker.  <a href="https://www.youtube.com/watch?v=Uv7gDLWCZug">Here is</a> Matt Haberland's guide to launching it successfully.  It's nontrivial!</figcaption>
+      </figure>
+
     </subsection>
 
     <subsection id="strandbeest"><h1>And beyond...</h1>
@@ -691,9 +722,36 @@ of Walking and Running</h1>
 
   <section><h1>Simple Models of Running</h1>
 
-    <p>Just like walking, our understanding of the dynamics and control fo running has evolved by a nice interplay between the field of biomechanics and the field of robotics.  But in running, I think it's fair to say that the roboticists got off the starting blocks first.  And I think it's fair to say that it started with a series of hopping machines build by Marc Raibert and the Leg Laboratory (which was first at CMU, but moved to MIT) in the early 1980's.  At a time where many roboticsts were building relatively clumsy walking robots that moved very slowly (when they managed to stay up!), the Leg Laboratory build a series of hopping machines that threw themselves through the air with considerable kinetic energy and considerable flair.</p>
+    <p>Just like walking, our understanding of the dynamics and control of
+    running has evolved by a nice interplay between the field of biomechanics
+    and the field of robotics.  But in running, I think it's fair to say that
+    the roboticists got off the starting blocks first.  And I think it's fair to
+    say that it started with a series of hopping machines built by Marc Raibert
+    and the Leg Laboratory (which was first at CMU, but moved to MIT) in the
+    early 1980's.  At a time where many roboticsts were building relatively
+    clumsy walking robots that moved very slowly (when they managed to stay
+    up!), the Leg Laboratory produced a series of hopping machines that threw
+    themselves through the air with considerable kinetic energy and considerable
+    flair.</p>
 
-    <p>To this day, I'm still a bit surprised that impressive running robots (assuming you accept hopping as the first form of running) appeared before the impressive walking robots...</p>
+    <p>To this day, I'm still a bit surprised that impressive running robots
+    (assuming you accept hopping as the first form of running) appeared before
+    the impressive walking robots.  I would have thought that running would be a
+    more difficult control and engineering task than walking.  But these hopping
+    machines turned out to be an incredibly clever way to build something simple
+    and very dynamic.</p>
+
+    <p>Shortly after Raibert built his machines, Dan Koditschek and Martin
+    Buehler started analyzing them with simpler models
+    <elib>Koditschek91</elib>.  Years later, in collaboration with biologist Bob
+    Full, they started to realize that the simple models used to describe the
+    dynamics of Raibert's hoppers could also be used to describe experimental
+    data obtained from running animals.  In fact, they described an incredible
+    range of experimental results, for animals ranging in size from a cockroach
+    up to a horse<elib>Full99</elib> (I think the best overall summary of this
+    line of work is <elib>Holmes06</elib>).  The most successful of the simple
+    models was the so-called "spring-loaded inverted pendulum" (or "SLIP", for
+    short).</p>  
 
     <subsection><h1>The Spring-Loaded Inverted Pendulum</h1>
 

@@ -1,184 +1,176 @@
-<?xml version="1.0" standalone="no"?>
-<!-- Creator: fig2dev Version 3.2.6a -->
-<!-- CreationDate: 2020-03-29 09:30:21 -->
-<!-- Magnification: 1 -->
-<svg	xmlns="http://www.w3.org/2000/svg"
-	xmlns:xlink="http://www.w3.org/1999/xlink"
-	width="239pt" height="206pt"
-	viewBox="2460 1328 3968 3418">
-<g fill="none">
-<!-- Arc -->
-<defs>
-<clipPath id="cp0">
-	<path clip-rule="evenodd" d="M 2460,1328 H 6428 V 4746 H 2460 z
-		M 5911,1625 5958,1588 5851,1491 5841,1499z
-		M 6086,1886 6026,1894 6069,2033 6083,2031z"/>
-</clipPath>
-</defs>
-<path d="M 6075,2025 A 849 849 0 0 0 5850 1500" clip-path="url(#cp0)"
-	stroke="#000000" stroke-width="8px"/>
-<!-- Forward arrow to point 5850,1500 -->
-<polygon points=" 5958,1588 5860,1513 5911,1625 5958,1588"
-	stroke="#000000" stroke-width="8px" stroke-miterlimit="8" fill="#000000"/>
-<!-- Backward arrow to point 6075,2025 -->
-<polygon points=" 6026,1894 6073,2009 6086,1886 6026,1894"
-	stroke="#000000" stroke-width="8px" stroke-miterlimit="8" fill="#000000"/>
-<!-- Line -->
-<polyline points=" 5850,1350 3450,4125"
-	stroke="#000000" stroke-width="15px"/>
-<!-- Line -->
-<defs>
-<clipPath id="cp1">
-	<path clip-rule="evenodd" d="M 2460,1328 H 6428 V 4746 H 2460 z
-		M 3139,4057 3129,3998 2992,4044 2994,4058z
-		M 3311,3968 3321,4027 3458,3981 3456,3967z"/>
-</clipPath>
-</defs>
-<polyline points=" 3450,3975 3000,4050" clip-path="url(#cp1)"
-	stroke="#000000" stroke-width="8px"/>
-<!-- Forward arrow to point 3000,4050 -->
-<polygon points=" 3129,3998 3016,4047 3139,4057 3129,3998"
-	stroke="#000000" stroke-width="8px" stroke-miterlimit="8" fill="#000000"/>
-<!-- Backward arrow to point 3450,3975 -->
-<polygon points=" 3321,4027 3434,3978 3311,3968 3321,4027"
-	stroke="#000000" stroke-width="8px" stroke-miterlimit="8" fill="#000000"/>
-<!-- Line -->
-<defs>
-<clipPath id="cp2">
-	<path clip-rule="evenodd" d="M 2460,1328 H 6428 V 4746 H 2460 z
-		M 4002,1767 4039,1719 3898,1635 3885,1652z
-		M 3311,3968 3321,4027 3458,3981 3456,3967z"/>
-</clipPath>
-</defs>
-<polyline points=" 4875,2400 3900,1650" clip-path="url(#cp2)"
-	stroke="#000000" stroke-width="15px"/>
-<!-- Forward arrow to point 3900,1650 -->
-<polygon points=" 4039,1719 3926,1670 4002,1767 4039,1719"
-	stroke="#000000" stroke-width="15px" stroke-miterlimit="8" fill="#000000"/>
-<!-- Line -->
-<defs>
-<clipPath id="cp3">
-	<path clip-rule="evenodd" d="M 2460,1328 H 6428 V 4746 H 2460 z
-		M 5580,4264 5520,4264 5543,4407 5557,4407z
-		M 3311,3968 3321,4027 3458,3981 3456,3967z"/>
-</clipPath>
-</defs>
-<polyline points=" 5550,3560 5550,4400" clip-path="url(#cp3)"
-	stroke="#000000" stroke-width="8px"/>
-<!-- Forward arrow to point 5550,4400 -->
-<polygon points=" 5520,4264 5550,4384 5580,4264 5520,4264"
-	stroke="#000000" stroke-width="8px" stroke-miterlimit="8" fill="#000000"/>
-<!-- Line -->
-<polyline points=" 5268,2001 4968,1776"
-	stroke="#000000" stroke-width="8px"/>
-<!-- Line -->
-<defs>
-<clipPath id="cp4">
-	<path clip-rule="evenodd" d="M 2460,1328 H 6428 V 4746 H 2460 z
-		M 4698,2102 4653,2063 4576,2186 4587,2195z
-		M 4819,1872 4864,1911 4941,1788 4930,1779z"/>
-</clipPath>
-</defs>
-<polyline points=" 4931,1789 4586,2185" clip-path="url(#cp4)"
-	stroke="#000000" stroke-width="8px"/>
-<!-- Forward arrow to point 4586,2185 -->
-<polygon points=" 4653,2063 4597,2173 4698,2102 4653,2063"
-	stroke="#000000" stroke-width="8px" stroke-miterlimit="8" fill="#000000"/>
-<!-- Backward arrow to point 4931,1789 -->
-<polygon points=" 4864,1911 4920,1801 4819,1872 4864,1911"
-	stroke="#000000" stroke-width="8px" stroke-miterlimit="8" fill="#000000"/>
-<!-- Line -->
-<defs>
-<clipPath id="cp5">
-	<path clip-rule="evenodd" d="M 2460,1328 H 6428 V 4746 H 2460 z
-		M 2873,3301 2931,3289 2878,3134 2858,3138z
-		M 4819,1872 4864,1911 4941,1788 4930,1779z"/>
-</clipPath>
-</defs>
-<polyline points=" 3095,4196 2870,3146" clip-path="url(#cp5)"
-	stroke="#000000" stroke-width="15px"/>
-<!-- Forward arrow to point 2870,3146 -->
-<polygon points=" 2931,3289 2877,3178 2873,3301 2931,3289"
-	stroke="#000000" stroke-width="15px" stroke-miterlimit="8" fill="#000000"/>
-<!-- Line -->
-<polyline points=" 6225,2025 5475,2025"
-	stroke="#000000" stroke-width="8px"/>
-<!-- Line -->
-<polyline points=" 2925,4650 3300,4275"
-	stroke="#000000" stroke-width="8px"/>
-<!-- Line -->
-<polygon points=" 4275,3000 5325,1800 5400,1875 4350,3075" fill="#8f0000"
-	stroke="#000000" stroke-width="15px"/>
-<!-- Line -->
-<polygon points=" 3455,4074 2780,4224 2780,4299 3455,4149" fill="#8f0000"
-	stroke="#000000" stroke-width="15px"/>
-<!-- Line -->
-<defs>
-<clipPath id="cp6">
-	<path clip-rule="evenodd" d="M 2460,1328 H 6428 V 4746 H 2460 z
-		M 3411,3876 3365,3838 3290,3962 3301,3971z
-		M 4959,1946 5005,1984 5080,1860 5069,1851z"/>
-</clipPath>
-</defs>
-<polyline points=" 5070,1861 3300,3961" clip-path="url(#cp6)"
-	stroke="#000000" stroke-width="8px"/>
-<!-- Forward arrow to point 3300,3961 -->
-<polygon points=" 3365,3838 3310,3949 3411,3876 3365,3838"
-	stroke="#000000" stroke-width="8px" stroke-miterlimit="8" fill="#000000"/>
-<!-- Backward arrow to point 5070,1861 -->
-<polygon points=" 5005,1984 5060,1873 4959,1946 5005,1984"
-	stroke="#000000" stroke-width="8px" stroke-miterlimit="8" fill="#000000"/>
-<!-- Line -->
-<polyline points=" 3375,4050 3225,3900"
-	stroke="#000000" stroke-width="8px"/>
-<!-- Text -->
-<text xml:space="preserve" x="4050" y="1650" fill="#000000" font-family="Times" font-style="italic" font-weight="normal" font-size="216" text-anchor="start">F</text>
-<!-- Text -->
-<text xml:space="preserve" x="2475" y="3375" fill="#000000" font-family="Times" font-style="italic" font-weight="normal" font-size="216" text-anchor="start">F</text>
-<!-- Text -->
-<text xml:space="preserve" x="5700" y="3975" fill="#000000" font-family="Times" font-style="italic" font-weight="normal" font-size="216" text-anchor="start">g</text>
-<!-- Text -->
-<text xml:space="preserve" x="4200" y="1725" fill="#000000" font-family="Times" font-style="italic" font-weight="normal" font-size="120" text-anchor="start">w</text>
-<!-- Text -->
-<text xml:space="preserve" x="2625" y="3450" fill="#000000" font-family="Times" font-style="italic" font-weight="normal" font-size="120" text-anchor="start">e</text>
-<!-- Text -->
-<text xml:space="preserve" x="4650" y="1875" fill="#000000" font-family="Times" font-style="italic" font-weight="normal" font-size="216" text-anchor="start">l</text>
-<!-- Text -->
-<text xml:space="preserve" x="4710" y="1905" fill="#000000" font-family="Times" font-style="italic" font-weight="normal" font-size="120" text-anchor="start">w</text>
-<!-- Text -->
-<text xml:space="preserve" x="3150" y="3930" fill="#000000" font-family="Times" font-style="italic" font-weight="normal" font-size="120" text-anchor="start">e</text>
-<!-- Text -->
-<text xml:space="preserve" x="3090" y="3900" fill="#000000" font-family="Times" font-style="italic" font-weight="normal" font-size="216" text-anchor="start">l</text>
-<!-- Text -->
-<text xml:space="preserve" x="5100" y="2550" fill="#000000" font-family="Times" font-style="italic" font-weight="normal" font-size="216" text-anchor="start">m, I</text>
-<!-- Text -->
-<text xml:space="preserve" x="6075" y="1800" fill="#000000" font-family="Times,Symbol" font-style="normal" font-weight="normal" font-size="216" text-anchor="start">&#8722;&#952;</text>
-<!-- Text -->
-<text xml:space="preserve" x="5400" y="2250" fill="#000000" font-family="Times" font-style="italic" font-weight="normal" font-size="216" text-anchor="start">(x, z)</text>
-<!-- Text -->
-<text xml:space="preserve" x="2625" y="4650" fill="#000000" font-family="Times,Symbol" font-style="normal" font-weight="normal" font-size="216" text-anchor="start">&#981;</text>
-<!-- Text -->
-<text xml:space="preserve" x="3900" y="3150" fill="#000000" font-family="Times" font-style="italic" font-weight="normal" font-size="120" text-anchor="start">h</text>
-<!-- Text -->
-<text xml:space="preserve" x="3825" y="3075" fill="#000000" font-family="Times" font-style="italic" font-weight="normal" font-size="216" text-anchor="start">l</text>
-<!-- Arc -->
-<defs>
-<clipPath id="cp7">
-	<path clip-rule="evenodd" d="M 2460,1328 H 6428 V 4746 H 2460 z
-		M 2886,4495 2863,4550 3004,4584 3009,4571z
-		M 2761,4414 2821,4407 2781,4267 2767,4269z"/>
-</clipPath>
-</defs>
-<path d="M 2775,4275 A 265 265 0 0 0 3000 4575" clip-path="url(#cp7)"
-	stroke="#000000" stroke-width="8px"/>
-<!-- Forward arrow to point 3000,4575 -->
-<polygon points=" 2863,4550 2985,4569 2886,4495 2863,4550"
-	stroke="#000000" stroke-width="8px" stroke-miterlimit="8" fill="#000000"/>
-<!-- Backward arrow to point 2775,4275 -->
-<polygon points=" 2821,4407 2777,4291 2761,4414 2821,4407"
-	stroke="#000000" stroke-width="8px" stroke-miterlimit="8" fill="#000000"/>
-<!-- Circle -->
-<circle cx="5280" cy="2025" r="75" fill="#ff0000"
-	stroke="#000000" stroke-width="15px"/>
-</g>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:xl="http://www.w3.org/1999/xlink" viewBox="0 0 1245.31 1433" width="1245.31" height="1433">
+  <defs>
+    <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker" stroke-linejoin="miter" stroke-miterlimit="10" viewBox="-1 -2 5 4" markerWidth="5" markerHeight="4" color="black">
+      <g>
+        <path d="M 2.4 0 L 0 -.9 L 0 .9 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+      </g>
+    </marker>
+    <font-face font-family="Times New Roman" font-size="100" panose-1="2 2 5 3 5 4 5 9 3 4" units-per-em="1000" underline-position="-108.88672" underline-thickness="48.828125" slope="-163.32993" x-height="430.1758" cap-height="662.1094" ascent="891.1133" descent="-216.3086" font-style="italic" font-weight="400">
+      <font-face-src>
+        <font-face-name name="TimesNewRomanPS-ItalicMT"/>
+      </font-face-src>
+    </font-face>
+    <font-face font-family="Times New Roman" font-size="72" panose-1="2 2 5 3 5 4 5 9 3 4" units-per-em="1000" underline-position="-108.88672" underline-thickness="48.828125" slope="-226.84712" x-height="430.1758" cap-height="662.1094" ascent="891.1133" descent="-216.3086" font-style="italic" font-weight="400">
+      <font-face-src>
+        <font-face-name name="TimesNewRomanPS-ItalicMT"/>
+      </font-face-src>
+    </font-face>
+    <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker_2" stroke-linejoin="miter" stroke-miterlimit="10" viewBox="-1 -4 10 8" markerWidth="10" markerHeight="8" color="black">
+      <g>
+        <path d="M 8 0 L 0 -3 L 0 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+      </g>
+    </marker>
+    <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker_3" stroke-linejoin="miter" stroke-miterlimit="10" viewBox="-9 -4 10 8" markerWidth="10" markerHeight="8" color="black">
+      <g>
+        <path d="M -8 0 L 0 3 L 0 -3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+      </g>
+    </marker>
+    <font-face font-family="Times" font-size="100" panose-1="0 0 5 0 0 0 0 9 0 0" units-per-em="1000" underline-position="-75.68359" underline-thickness="49.316406" slope="-150" x-height="446.28906" cap-height="652.34375" ascent="750" descent="-250" font-style="italic" font-weight="400">
+      <font-face-src>
+        <font-face-name name="Times-Italic"/>
+      </font-face-src>
+    </font-face>
+    <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker_4" stroke-linejoin="miter" stroke-miterlimit="10" viewBox="-4 -2 6 4" markerWidth="6" markerHeight="4" color="black">
+      <g>
+        <path d="M -2.4 0 L 0 .9 L 0 -.9 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+      </g>
+    </marker>
+    <font-face font-family="Times New Roman" font-size="60" panose-1="2 2 5 3 5 4 5 9 3 4" units-per-em="1000" underline-position="-108.88672" underline-thickness="48.828125" slope="-272.21654" x-height="430.1758" cap-height="662.1094" ascent="891.1133" descent="-216.3086" font-style="italic" font-weight="400">
+      <font-face-src>
+        <font-face-name name="TimesNewRomanPS-ItalicMT"/>
+      </font-face-src>
+    </font-face>
+    <font-face font-family="Times New Roman" font-size="40" panose-1="2 2 5 3 5 4 5 9 3 4" units-per-em="1000" underline-position="-108.88672" underline-thickness="48.828125" slope="-408.3248" x-height="430.1758" cap-height="662.1094" ascent="891.1133" descent="-216.3086" font-style="italic" font-weight="400">
+      <font-face-src>
+        <font-face-name name="TimesNewRomanPS-ItalicMT"/>
+      </font-face-src>
+    </font-face>
+  </defs>
+  <metadata> Produced by OmniGraffle 7.15 
+    <dc:date>2020-04-05 16:20:04 +0000</dc:date>
+  </metadata>
+  <g id="Canvas_1" stroke-opacity="1" stroke-dasharray="none" stroke="none" fill="none" fill-opacity="1">
+    <title>Canvas 1</title>
+    <g id="Canvas_1: Layer 1">
+      <title>Layer 1</title>
+      <g id="Graphic_2">
+        <path d="M 405.95 1106.1738 L 405.85 1106.2738 L 405.85 1106.3738 L 405.95 1106.5738 L 406.05 1106.6738 L 406.45 1106.6738 L 406.45 1106.5738 M 406.45 1106.5738 L 406.45 1106.6738 L 406.05 1106.6738 L 405.95 1106.5738 L 405.85 1106.3738 M 405.85 1106.3738 L 405.85 1106.2738 L 405.95 1106.1738 M 211.75 1144.8738 L 264.95 1135.3738 M 210.45 1137.5738 L 211.75 1144.8738 M 405.95 1106.1738 L 405.85 1106.2738 L 405.85 1106.5738 L 405.95 1106.6738 L 406.15 1106.7738 L 406.25 1106.7738 L 406.35 1106.6738 L 406.45 1106.5738 M 264.95 1135.3738 L 459.05 1100.6738 M 405.85 1106.4738 L 405.85 1106.5738 L 405.95 1106.6738 L 406.15 1106.7738 L 406.25 1106.7738 L 406.35 1106.6738 L 406.45 1106.5738 L 406.55 1106.4738 L 406.55 1106.3738 L 406.45 1106.1738 L 406.35 1106.0738 L 405.95 1106.0738 L 405.85 1106.1738 L 405.85 1106.4738 M 263.65 1128.1738 L 264.95 1135.3738 M 459.05 1100.6738 L 472.85 1098.1738 M 471.55 1090.9738 L 472.85 1098.1738 M 457.75 1093.4738 L 459.05 1100.6738 M 414.35 1101.1738 L 418.45 1100.4738 M 401.15 1103.5738 L 404.05 1102.9738 M 404.05 1102.9738 L 333.25 1115.6738 M 418.45 1100.3738 L 414.35 1101.1738 M 333.25 1115.6738 L 340.05 1114.4738 M 340.05 1114.4738 L 343.45 1113.8738 L 346.25 1113.3738 L 348.25 1112.9738 L 349.25 1112.7738 L 348.25 1112.9738 L 346.25 1113.3738 L 343.45 1113.8738 L 340.05 1114.4738 M 340.05 1114.4738 L 210.45 1137.5738 M 210.45 1137.5738 L 263.65 1128.1738 M 263.65 1128.1738 L 457.75 1093.4738 M 457.75 1093.4738 L 471.55 1090.9738 M 471.55 1090.9738 L 401.15 1103.5738 M 1162.05 15.37383 L 1168.05 19.57383 M 1167.35 19.07383 L 1168.05 19.57383 M 1161.95 15.47383 L 1162.05 15.37383 M 1162.05 15.37383 L 1168.05 19.57383 M 1148.75 34.37383 L 1161.95 15.47383 M 1161.95 15.47383 L 1168.05 19.67383 M 920.95 361.27383 L 1138.35 49.37383 M 448.25 1039.6738 L 745.15 613.4738 M 1138.35 49.37383 L 1140.15 46.77383 L 1141.85 44.27383 L 1143.55 41.87383 L 1145.05 39.77383 L 1146.35 37.87383 L 1147.45 36.37383 L 1148.25 35.17383 L 1148.75 34.37383 M 1148.75 34.37383 L 1154.85 38.57383 M 1138.35 49.37383 L 1144.35 53.57383 M 406.45 1106.5738 L 406.45 1106.6738 L 406.05 1106.6738 M 406.05 1106.6738 L 405.95 1106.5738 L 405.85 1106.3738 L 405.85 1106.2738 L 405.95 1106.1738 M 404.05 1103.0738 L 441.35 1049.4738 M 406.45 1106.5738 L 406.55 1106.4738 L 406.55 1106.1738 L 406.45 1106.0738 L 406.05 1106.0738 L 405.95 1106.1738 M 441.35 1049.4738 L 448.25 1039.6738 M 448.25 1039.6738 L 454.25 1043.8738 M 441.35 1049.4738 L 447.35 1053.6738 M 1085.75 137.77383 L 1085.45 138.17383 L 1085.25 138.47383 L 1085.05 138.67383 L 1084.95 138.77383 L 1085.05 138.67383 L 1085.25 138.47383 L 1085.45 138.17383 L 1085.75 137.77383 L 1085.95 137.37383 L 1086.25 136.97383 L 1086.35 136.77383 L 1086.25 136.97383 L 1085.95 137.37383 L 1085.75 137.77383 M 607.45 824.0738 L 620.35 805.4738 M 1005.95 252.17383 L 1043.35 198.57383 M 1168.05 19.67383 L 1168.05 19.57383 M 1154.85 38.57383 L 1168.05 19.67383 M 1144.35 53.57383 L 1146.15 50.97383 L 1147.95 48.47383 L 1149.55 46.07383 L 1151.05 43.97383 L 1152.35 42.07383 L 1153.45 40.57383 L 1154.25 39.37383 L 1154.85 38.57383 M 927.45 364.77383 L 1144.35 53.57383 M 454.25 1043.8738 L 750.35 618.9738 M 447.35 1053.6738 L 454.25 1043.8738 M 414.25 1101.1738 L 447.35 1053.6738 M 416.65 1097.7738 L 414.25 1101.1738 M 1168.05 19.57383 L 1113.75 97.57383 M 1059.85 174.87383 L 1100.35 116.77383 M 738.35 636.1738 L 748.45 621.6738 M 479.25 1008.0738 L 489.85 992.7738 M 430.55 1077.8738 L 441.45 1062.2738 M 495.45 984.7738 L 495.15 985.1738 L 494.95 985.4738 L 494.75 985.7738 L 494.95 985.4738 L 495.15 985.1738 L 495.45 984.7738 L 495.65 984.3738 L 495.95 984.0738 L 496.05 983.8738 L 496.15 983.7738 L 496.05 983.8738 L 495.95 984.0738 L 495.65 984.3738 L 495.45 984.7738 M 927.75 364.37383 L 935.75 352.97383 M 935.75 352.97383 L 941.75 357.17383 M 748.45 621.6738 L 750.85 618.2738 M 756.45 622.1738 L 756.85 622.4738 M 927.45 364.87383 L 927.75 364.37383 M 927.75 364.37383 L 933.85 368.57383 M 927.45 364.87383 L 933.45 369.07383 M 778.05 591.9738 L 790.25 574.5738 M 933.85 368.57383 L 941.75 357.17383 M 933.45 369.07383 L 933.85 368.57383 M 756.85 622.4738 L 933.45 369.07383 M 754.45 625.8738 L 756.85 622.4738 M 905.85 408.57383 L 916.55 393.37383 M 750.85 618.2738 L 596.95 488.37383 M 750.85 618.2738 L 756.45 622.1738 M 596.95 488.37383 L 751.25 266.87383 M 596.95 488.37383 L 602.55 492.27383 M 933.05 368.77383 L 756.45 622.1738 M 602.55 492.27383 L 756.95 270.77383 M 756.45 622.1738 L 602.55 492.27383 M 756.95 270.77383 L 933.05 368.77383 M 927.45 364.87383 L 933.05 368.77383 M 751.25 266.87383 L 927.45 364.87383 M 751.25 266.87383 L 756.95 270.77383 M 751.35 266.67383 L 830.35 310.77383 M 751.35 266.87383 L 751.35 266.67383 M 268.65 1408.4738 L 396.95 1227.8738 M 463.95 1231.6738 L 463.45 1232.3738 M 333.25 1115.6738 L 332.25 1112.9738 L 329.55 1103.1738 L 327.75 1093.1738 L 327.15 1083.0738 L 327.55 1072.8738 M 464.85 1168.5738 L 455.45 1172.3738 L 445.75 1175.2738 L 435.75 1177.0738 L 425.65 1177.8738 L 415.55 1177.5738 L 405.45 1176.2738 L 395.65 1173.8738 L 386.05 1170.4738 L 376.95 1166.1738 L 368.25 1160.7738 L 360.25 1154.5738 L 352.95 1147.4738 L 346.45 1139.7738 L 340.75 1131.2738 L 336.15 1122.5738 M 89.65 952.0738 L 337.95 989.5738 M 376.15 975.7738 L 372.15 980.2738 L 367.35 984.0738 L 361.95 987.0738 L 356.25 989.1738 L 350.15 990.2738 L 344.05 990.3738 L 337.95 989.5738 M 576.55 1076.3738 L 463.95 1231.6738 M 830.25 310.77383 L 844.05 304.77383 L 866.05 296.17383 M 1034.85 197.87383 L 1034.75 197.87383 M 1034.75 197.87383 L 1051.35 174.17383 M 1225.75 203.77383 L 1207.45 234.27383 L 1188.65 264.37383 L 1169.35 294.07383 L 1149.45 323.37383 L 1128.95 352.37383 L 1107.95 380.97383 L 1097.95 394.17383 M 929.95 208.17383 L 943.15 190.97383 L 970.25 156.97383 L 997.95 123.37383 L 1026.25 90.37383 L 1055.25 57.97383 L 1084.85 26.07383 M 1084.85 26.07383 L 1092.05 20.27383 L 1099.95 15.37383 L 1108.45 11.57383 L 1117.45 8.87383 L 1126.55 7.27383 L 1135.95 6.97383 L 1145.15 7.77383 L 1154.25 9.77383 M 1218.25 55.27383 L 1154.25 9.77383 M 1218.25 55.27383 L 1225.15 65.27383 L 1231.05 75.87383 L 1235.95 86.97383 L 1239.85 98.47383 L 1242.65 110.27383 L 1244.35 122.27383 L 1244.95 134.47383 L 1244.45 146.57383 L 1242.85 158.57383 L 1240.15 170.47383 L 1236.35 181.97383 L 1231.55 193.17383 L 1225.75 203.77383 M 941.75 357.17383 L 918.15 391.07383 M 905.95 408.57383 L 790.35 574.4738 M 779.75 589.6738 L 754.75 625.4738 M 935.75 352.97383 L 1005.95 252.17383 M 941.75 357.17383 L 935.75 352.97383 M 607.45 824.0738 L 489.85 992.7738 M 738.35 636.1738 L 620.35 805.4738 M 479.25 1008.0738 L 441.45 1062.2738 M 1034.85 197.87383 L 1034.75 197.87383 M 1034.75 197.87383 L 1051.35 174.17383 M 333.25 1115.6738 L 332.25 1112.9738 L 329.55 1103.1738 L 327.75 1093.1738 L 327.15 1083.0738 L 327.55 1072.8738 M 464.85 1168.5738 L 455.45 1172.3738 L 445.75 1175.2738 L 435.75 1177.0738 L 425.65 1177.8738 L 415.55 1177.6738 L 405.45 1176.2738 L 395.65 1173.8738 L 386.05 1170.4738 L 376.95 1166.1738 L 368.25 1160.7738 L 360.25 1154.5738 L 352.95 1147.4738 L 346.45 1139.7738 L 340.75 1131.2738 L 336.15 1122.6738 M 410.65 1093.5738 L 327.55 1072.8738 M 416.65 1097.7738 L 430.55 1077.8738 M 423.05 1107.1738 L 464.85 1168.5738 M 416.65 1097.7738 L 418.45 1100.4738 M 576.55 1076.3738 L 463.95 1231.6738 M 576.55 1076.3738 L 1064.35 436.97383 M 1225.75 203.77383 L 1207.45 234.27383 L 1188.65 264.37383 L 1169.35 294.07383 L 1149.45 323.37383 L 1128.95 352.37383 L 1107.95 380.97383 L 1086.45 409.17383 L 1064.35 436.97383 M 1218.25 55.27383 L 1225.15 65.27383 L 1231.05 75.87383 L 1235.95 86.97383 L 1239.85 98.47383 L 1242.65 110.27383 L 1244.35 122.27383 L 1244.95 134.47383 L 1244.45 146.57383 L 1242.85 158.57383 L 1240.15 170.47383 L 1236.35 181.97383 L 1231.55 193.17383 L 1225.75 203.77383 M 1218.25 55.27383 L 1154.25 9.77383 M 1084.85 26.07383 L 1092.05 20.27383 L 1099.95 15.37383 L 1108.45 11.57383 L 1117.35 8.87383 L 1126.55 7.27383 L 1135.95 6.97383 L 1145.15 7.77383 L 1154.25 9.77383 M 866.05 296.17383 L 891.15 260.67383 L 916.85 225.57383 L 943.15 190.97383 L 970.25 156.97383 L 997.95 123.37383 L 1026.25 90.37383 L 1055.25 57.97383 L 1084.85 26.07383 M 830.25 310.77383 L 844.05 304.77383 L 866.05 296.17383 M 602.05 520.7738 L 613.05 501.97383 M 381.95 964.8738 L 406.55 907.9738 L 432.05 851.4738 L 458.35 795.2738 L 485.45 739.5738 L 513.35 684.2738 L 542.15 629.2738 L 571.65 574.8738 L 602.05 520.7738 M 381.95 964.8738 L 379.55 970.4738 L 376.25 975.6738 L 372.15 980.2738 L 367.35 984.0738 L 361.95 987.0738 L 356.25 989.1738 L 350.15 990.2738 L 344.05 990.3738 L 337.95 989.5738 M 89.65 952.0738 L 337.95 989.5738 M .35 1078.0738 L 89.65 952.0738 M .35 1078.0738 L 243.05 1427.4738 M 268.65 1408.4738 L 243.05 1427.4738 M 268.65 1408.4738 L 396.95 1227.8738 M 396.95 1227.8738 L 413.95 1239.8738 M 463.95 1231.6738 L 459.85 1236.3738 L 455.05 1240.3738 L 449.55 1243.3738 L 443.75 1245.4738 L 437.55 1246.4738 L 431.35 1246.3738 L 425.15 1245.2738 L 419.35 1243.0738 L 413.95 1239.8738" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </g>
+      <g id="Graphic_48">
+        <path d="M 723.5304 598.9629 L 899.6184 347.4832 L 927.4696 366.9848 L 751.3816 618.4645 Z" fill="#8f0000"/>
+        <path d="M 723.5304 598.9629 L 899.6184 347.4832 L 927.4696 366.9848 L 751.3816 618.4645 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+      </g>
+      <g id="Graphic_50">
+        <path d="M 472.8668 1096.451 L 207.95349 1143.1624 L 204.13323 1121.4966 L 469.0465 1074.7853 Z" fill="#8f0000"/>
+        <path d="M 472.8668 1096.451 L 207.95349 1143.1624 L 204.13323 1121.4966 L 469.0465 1074.7853 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_52">
+        <circle cx="986" cy="279.97383" r="25.0000399475474" fill="#8f0000"/>
+        <circle cx="986" cy="279.97383" r="25.0000399475474" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="4"/>
+      </g>
+      <g id="Graphic_55">
+        <path d="M 788 458.9101 L 804.0601 435.97383 L 826.9964 452.03397 L 810.9363 474.9702 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_56">
+        <line x1="808" y1="474.97383" x2="544.8395" y2="286.30616" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/>
+      </g>
+      <g id="Graphic_58">
+        <path d="M 338.43677 1097.2564 L 310.86215 1102.1186 L 306 1074.544 L 333.5746 1069.6818 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_57">
+        <line x1="338.33333" y1="1098.1186" x2="297.30614" y2="862.7482" marker-end="url(#FilledArrow_Marker)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/>
+      </g>
+      <g id="Graphic_59">
+        <text transform="translate(177.03343 779.025)" fill="black">
+          <tspan font-family="Times New Roman" font-size="100" font-style="italic" font-weight="400" fill="black" x="34.629135" y="89">f</tspan>
+          <tspan font-family="Times New Roman" font-size="72" font-style="italic" font-weight="400" fill="black" y="121">e</tspan>
+        </text>
+      </g>
+      <g id="Graphic_60">
+        <text transform="translate(563.0021 179.94603)" fill="black">
+          <tspan font-family="Times New Roman" font-size="100" font-style="italic" font-weight="400" fill="black" x="5.59668" y="89">f</tspan>
+          <tspan font-family="Times New Roman" font-size="72" font-style="italic" font-weight="400" fill="black" y="121">w</tspan>
+        </text>
+      </g>
+      <g id="Line_68">
+        <line x1="413" y1="1073.9738" x2="407.02604" y2="1040.4842" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_69">
+        <line x1="443" y1="1112.9738" x2="501" y2="1149.6405" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_70">
+        <line x1="849" y1="507.9738" x2="870.526" y2="522.85925" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_71">
+        <line x1="1015" y1="300.97383" x2="1076.6198" y2="343.8905" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_73">
+        <line x1="1022" y1="278.97383" x2="1217.5052" y2="276.10404" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_81">
+        <path d="M 1162.6646 264.40902 C 1162.5861 249.98495 1160.3492 222.0261 1146.3333 195.6405 C 1132.5171 169.63067 1111.7344 153.5821 1100.1588 146.1228" marker-end="url(#FilledArrow_Marker_2)" marker-start="url(#FilledArrow_Marker_3)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_82">
+        <text transform="translate(1141 117.3498)" fill="black">
+          <tspan font-family="Times New Roman" font-size="100" font-style="italic" font-weight="400" fill="black" x="2.2890625" y="89">-θ</tspan>
+        </text>
+      </g>
+      <g id="Line_84">
+        <line x1="398" y1="1125.9738" x2="315.64583" y2="1227.8645" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_85">
+        <path d="M 283.78782 1145.1408 C 286.64583 1153.9083 291.7955 1167.5622 299.66667 1180.9738 C 306.90814 1193.3125 314.57157 1202.2404 319.97985 1207.7596" marker-end="url(#FilledArrow_Marker_2)" marker-start="url(#FilledArrow_Marker_3)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_86">
+        <text transform="translate(231.66667 1134.3072)" fill="black">
+          <tspan font-family="Times" font-size="100" font-style="italic" font-weight="400" fill="black" x="0" y="95">φ</tspan>
+        </text>
+      </g>
+      <g id="Line_88">
+        <line x1="1073.6822" y1="1037.0755" x2="1071.0015" y2="776.4738" marker-start="url(#FilledArrow_Marker_4)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/>
+      </g>
+      <g id="Graphic_87">
+        <text transform="translate(1087.9791 873.376)" fill="black">
+          <tspan font-family="Times New Roman" font-size="100" font-style="italic" font-weight="400" fill="black" x="3.5" y="89">g</tspan>
+        </text>
+      </g>
+      <g id="Line_91">
+        <line x1="965.3597" y1="245.5129" x2="910.793" y2="155.69649" marker-start="url(#FilledArrow_Marker_3)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_92">
+        <text transform="translate(696.5042 54.85816)" fill="black">
+          <tspan font-family="Times New Roman" font-size="100" font-style="italic" font-weight="400" fill="black" x="110.54883" y="89">(x,z)</tspan>
+        </text>
+      </g>
+      <g id="Line_94">
+        <line x1="870.758" y1="506.92056" x2="1008.9659" y2="313.62085" marker-end="url(#FilledArrow_Marker_2)" marker-start="url(#FilledArrow_Marker_3)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_95">
+        <line x1="503.7423" y1="1133.9093" x2="1062.2838" y2="349.49145" marker-end="url(#FilledArrow_Marker_2)" marker-start="url(#FilledArrow_Marker_3)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Line_96">
+        <line x1="348.70396" y1="1063.0134" x2="397.30646" y2="1053.1947" marker-end="url(#FilledArrow_Marker_2)" marker-start="url(#FilledArrow_Marker_3)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      </g>
+      <g id="Graphic_97">
+        <text transform="translate(342.99582 981.1587)" fill="black">
+          <tspan font-family="Times New Roman" font-size="60" font-style="italic" font-weight="400" fill="black" x="11.288086" y="53">l</tspan>
+          <tspan font-family="Times New Roman" font-size="40" font-style="italic" font-weight="400" fill="black" y="71">e</tspan>
+        </text>
+      </g>
+      <g id="Graphic_100">
+        <text transform="translate(700 720.1504)" fill="black">
+          <tspan font-family="Times New Roman" font-size="60" font-style="italic" font-weight="400" fill="black" x="10.165039" y="53">l</tspan>
+          <tspan font-family="Times New Roman" font-size="40" font-style="italic" font-weight="400" fill="black" y="71">h</tspan>
+        </text>
+      </g>
+      <g id="Graphic_101">
+        <text transform="translate(926 402.1462)" fill="black">
+          <tspan font-family="Times New Roman" font-size="60" font-style="italic" font-weight="400" fill="black" x="6.825195" y="53">l</tspan>
+          <tspan font-family="Times New Roman" font-size="40" font-style="italic" font-weight="400" fill="black" y="71">w</tspan>
+        </text>
+      </g>
+    </g>
+  </g>
 </svg>
