@@ -365,19 +365,27 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       how $\bx(t_{k+1})$ is related to $\bx(t_k)$, etc.  In direct collocation,
       the constraint that we add is that the derivative of the spline at the
       <i>collocation points</i> matches the dynamics.  In particular, for our
-      sweet spot, if we choose the collocation points to be the midpoints of
-      the spline, then we have that \begin{gather*} t_{c} =
-      \frac{1}{2}\left(t_k + t_{k+1}\right), \qquad h = t_{k+1} - t_k, \\
-      \bu(t_c) = \frac{1}{2}\left(\bu(t_k) + \bu(t_{k+1})\right), \\ \bx(t_c) =
+      sweet spot, if we choose the collocation points to be the midpoints of the
+      spline, then we have that \begin{gather*} t_{c,k} = \frac{1}{2}\left(t_k +
+      t_{k+1}\right), \qquad h_k = t_{k+1} - t_k, \\ \bu(t_{c,k}) =
+      \frac{1}{2}\left(\bu(t_k) + \bu(t_{k+1})\right), \\ \bx(t_{c,k}) =
       \frac{1}{2}\left(\bx(t_k) + \bx(t_{k+1})\right) + \frac{h}{8}
-      \left(\dot\bx(t_k) - \dot\bx(t_{k+1})\right), \\ \dot\bx(t_c) =
+      \left(\dot\bx(t_k) - \dot\bx(t_{k+1})\right), \\ \dot\bx(t_{c,k}) =
       -\frac{3}{2h}\left(\bx(t_k) - \bx(t_{k+1})\right) - \frac{1}{4}
       \left(\dot\bx(t_k) + \dot\bx(t_{k+1})\right). \end{gather*} These
       equations come directly from the equations that fit the cubic spline to
       the end points/derivatives then interpolate them at the midpoint.  They
-      give us precisely what we need to add the constraint to our optimization
-      that $\dot{\bx(t_c}) = f(\bx(t_c), \bu(t_c))$, for each segment of the
-      spline.</p>
+      give us precisely what we need to add the dynamics constraint to our
+      optimization at the collocation points:\begin{align*}
+      \min_{\bx[\cdot],\bu[\cdot]} \quad & \ell_f(\bx[N]) + \sum_{n_0}^{N-1} h_n
+      \ell(\bx[n],\bu[n]) \\ \subjto \quad & \dot\bx(t_{c,n}) = f(\bx(t_{c,n}),
+      \bu(t_{c,n})), & \forall n \in [0,N-1]  \\ & \bx[0] = \bx_0 \\ & +
+      \text{additional constraints}. \end{align*}  I hope this notation is clear
+      -- I'm using $\bx[k] = \bx(t_k)$ as the decision variables, and the
+      collocation constraint at $t_{c,k}$ depends on the decision variables:
+      $\bx[k], \bx[k+1], \bu[k], \bu[k+1]$. The actual equations of motion get
+      evaluated at both the break points, $t_k$, and the collocation points,
+      $t_{c,k}$.</p>
 
       <p>Once again, direct collocation effectively integrates the equations of
       motion by satisfying the constraints of the optimization -- this time

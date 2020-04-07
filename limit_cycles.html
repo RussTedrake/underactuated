@@ -65,31 +65,41 @@ for Limit Cycles</h1>
   <p>The first natural question we must ask is, given a system $\dot{\bx} =
   f(\bx)$, or a control system $\dot{x} = f(\bx,\bu)$, how do we go about
   finding periodic solutions which may be passively stable, open-loop stable, or
-  stabilized with closed-loop feedback? It turns out that the trajectory
-  optimization tools that we developed in the last chapter are very well suited
-  to this task.</p>
+  stabilizable via closed-loop feedback? It turns out that the trajectory
+  optimization tools that we developed already are very well suited to this
+  task.</p>
 
   <section><h1>Trajectory optimization</h1>
 
     <p>I introduced the trajectory optimization tools as means for optimizing a
-    single trajectory of the system from a particular known initial condition.
-    But they can be used in a slightly different way, too -- in some
-    formulations we might choose to have the initial conditions as one of the
-    decision variables.  In fact, the simplest formulation for finding a
-    periodic solution is to leave the entire trajectory as a decision variable,
-    but to add <em>periodicity constraints</em> enforcing that the initial
-    conditions and the final conditions match.  Some care is needed here; if
-    you're not careful then these constraints will all be met if the entire
-    trajectory remains at a fixed point in the system.  In the example below, we
-    constrain that the initial and final conditions lie on the surface of
-    section that we used before, and additionally constrain that the velocity at
-    the initial/final points is non-zero (to avoid the fixed point
-    solution).</p>
+    control trajectory starting from a particular known initial condition. But
+    the fundamental idea of optimizing over individual trajectories of the
+    system is useful more broadly.  Even for a passive system, we can formulate
+    the search for a periodic solution as an optimization over trajectories that
+    satisfy the dynamic constraints and <em>periodicity constraints</em>,
+    $\bx[0] = \bx[N]$: \begin{align*} \find_{\bx[\cdot]} \quad \subjto \quad &
+    \bx[n+1] = f(\bx[n]), \quad \forall n\in[0, N-1] \\ & \bx[0] = \bx[N].
+    \end{align*} Certainly we can add control inputs back into the formulation,
+    too, but let's start with this simple case.  Take a moment to think about
+    the feasible solutions to this problem formulation.  Certainly a fixed point
+    $\bx[n] = \bx^*$ will satisfy the constraints; if we don't want these
+    solutions to come out of the solver we might need to exclude them with
+    constraints or add an objective that guides the solver towards the desired
+    solutions.  The other possible solutions are trajectories that are periodic
+    in exactly $N$ steps.  That's pretty restrictive.
+    </p>
 
-    <p>Note that although we introduced trajectory optimization as searching
-    over control inputs $\bu$, this formulation is now rich enough that it
-    solves an important problem even for passive systems -- with no control
-    input at all.</p>
+    <p>We can do better if we use the continuous-time formulations.  For
+    instance, in our introduction of <a
+    href="trajopt.html#direct_collocation">direct collocation</a>, we wrote
+    \begin{align*} \min_{\bx[\cdot],\bu[\cdot]} \quad & \ell_f(\bx[N]) +
+    \sum_{n_0}^{N-1} h_n \ell(\bx[n],\bu[n]) \\ \subjto \quad & \dot\bx(t_{c,n})
+    = f(\bx(t_{c,n}), \bu(t_{c,n})), & \forall n \in [0,N-1] \\ & \bx[0] = \bx_0
+    \\ & + \text{additional constraints}. \end{align*}  But we can also add
+    $h_n$ as decision variables in the optimization (reminder: I recommend
+    setting a lower-bound $h_n \ge h_{min} > 0$).  This allows our $N$-step
+    trajectory optimization to scale and shrink time in order to satisfy the
+    periodicity constraint.  The result is simple and powerful.</p>
 
     <example><h1>Finding the limit cycle of the
     Van der Pol oscillator</h1>
@@ -100,15 +110,16 @@ for Limit Cycles</h1>
 
       <p>Formulate the direct collocation optimization:
         \begin{align*}
-          \find_{\bx_0,...,\bx_N,dt} \quad \\
-          \subjto \quad    & q_0 = 0, \quad \dot{q}_0 > 0, \\
-          & \bx_N = \bx_0, \text{(periodicity constraint)}\\
-          & \text{collocation dynamic constraints}
+          \find_{\bx[\cdot],h} \quad \\
+          \subjto \quad & q[0] = 0, \quad \dot{q}[0] > 0, \\
+          & \bx[N] = \bx[0], \text{(periodicity constraint)}\\
+          & \text{collocation dynamic constraints} \\
+          & 0.01 \le h \le 0.5
         \end{align*}
       </p>
 
       <p>Try it yourself:</p>
-        <pysrc>van_der_pol/dircol.py</pysrc>
+      <jupyter>examples/limit_cycles.ipynb</jupyter>
 
       <p>As always, make sure that you take a look at the code.  Poke around.
       Try changing some things.</p>

@@ -136,22 +136,23 @@ Control through Contact</h1>
     from the boundary of the friction cone, and on and on.</p>
 
     <p>Fortunately, there is an alternative modeling approach for deriving the
-    modes, guards, and resets for contact that is less work.  We can instead
-    model the robot in the <i>floating-base coordinates</i> -- we add a
-    fictitious six degree-of-freedom "floating-base" joint connecting some part
-    of the robot to the world (in planar models, we use just three
-    degrees-of-freedom, e.g. $(x,y,\theta)$).  We can derive the equations of
-    motion for the floating-base robot once, without considering contact, then
-    add the additional constraints that come from being in contact as contact
-    forces which get applied to the bodies. The resulting manipulator equations
-    take the form \begin{equation}\bM({\bq})\ddot{\bq} +
-    \bC(\bq,\dot{\bq})\dot\bq = \btau_g(\bq) + \bB\bu + \sum_i \bJ_i^T(\bq)
-    \blambda_i,\end{equation} where $\blambda_i$ are the constraint forces and
-    $\bJ_i$ are the constraint Jacobians.  Conveniently, if the guard function
-    in our contact equations is the signed distance from contact,
-    $\phi_i(\bq)$, then this Jacobian is simply $\bJ_i(\bq) =
-    \pd{\phi_i}{\bq}$.  I've written the basic derivations for the common cases
-    (position constraints, velocity constraints, impact equations, etc) in the
+    modes, guards, and resets for contact that is more general (though
+    admittedly also more complex).  We can instead model the robot in the
+    <i>floating-base coordinates</i> -- we add a fictitious six
+    degree-of-freedom "floating-base" joint connecting some part of the robot to
+    the world (in planar models, we use just three degrees-of-freedom, e.g.
+    $(x,z,\theta)$).  We can derive the equations of motion for the
+    floating-base robot once, without considering contact, then add the
+    additional constraints that come from being in contact as contact forces
+    which get applied to the bodies. The resulting manipulator equations take
+    the form \begin{equation}\bM({\bq})\ddot{\bq} + \bC(\bq,\dot{\bq})\dot\bq =
+    \btau_g(\bq) + \bB\bu + \sum_i \bJ_i^T(\bq) \blambda_i,\end{equation} where
+    $\blambda_i$ are the constraint forces and $\bJ_i$ are the constraint
+    Jacobians.  Conveniently, if the guard function in our contact equations is
+    the signed distance from contact, $\phi_i(\bq)$, then this Jacobian is
+    simply $\bJ_i(\bq) = \pd{\phi_i}{\bq}$.  I've written the basic derivations
+    for the common cases (position constraints, velocity constraints, impact
+    equations, etc) in the
     <a href="multibody.html">appendix</a>. What is
     important to understand here is that this is an alternative formulation for
     the equations governing the modes, guards, and resets, but that is it no
@@ -163,22 +164,26 @@ Control through Contact</h1>
     friction cone). This will have implications for our algorithms.</p>
 
     <p>Finally, there are many recipes for simulating these systems.  At one
-    extreme, we have integrators that do explicit event detection -- we
-    register the guards of our system as "witness functions" for the event and
-    the integrator ensures that it obtains a high-accuracy integration step at
-    the event.  For the complicated simulations that you see in computer
-    graphics, coarser approximations are often used, such as the time-stepping
-    approximations which solve a small optimization problem at every
-    integration step to compute time-averaged contact forces to summarize the
-    impact events without explicit event detection.  I'll leave the details to
-    the <a href="multibody.html">appendix</a>, but will
-    use both approaches in this chapter for control and analysis. </p>
+    extreme, we have integrators that do explicit event detection -- we register
+    the guards of our system as "witness functions" for the event and the
+    integrator ensures that it obtains a high-accuracy integration step at the
+    event.  For the simulations that you see in computer graphics with a massive
+    number of objects interacting with each other, coarser approximations are
+    often used, such as the time-stepping approximations which solve a small
+    optimization problem at every integration step to compute time-averaged
+    contact forces to summarize the impact events without explicit event
+    detection.  I'll leave the details to the <a
+    href="multibody.html">appendix</a>, but will use both approaches in this
+    chapter for control and analysis. </p>
 
   </section>
 
   <section><h1>Trajectory Optimization</h1>
 
-
+    <subsection><h1>Hybrid trajectory optimization (in minimal
+    coordinates)</h1>
+  
+    </subsection>
 
   </section>
 

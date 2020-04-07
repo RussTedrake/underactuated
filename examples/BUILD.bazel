@@ -25,6 +25,12 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
+    name = "limit_cycles",
+    srcs = ["limit_cycles.ipynb"],
+    deps = ["//underactuated"],
+)
+
+rt_ipynb_test(
     name = "lyapunov",
     srcs = ["lyapunov.ipynb"],
     deps = ["//underactuated"],
