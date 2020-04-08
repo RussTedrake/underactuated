@@ -7,6 +7,11 @@ from warnings import warn
 
 from pydrake.systems.framework import VectorSystem
 
+# Use a global variable here because some calls to IPython will actually case an
+# interpreter to be created.  This file needs to be imported BEFORE that
+# happens.
+running_as_notebook = (get_ipython() is not None)
+
 
 def pyplot_is_interactive():
     # import needs to happen after the backend is set.
@@ -45,8 +50,8 @@ def SetupMatplotlibBackend(wishlist=["notebook"]):
     otherwise falls back to inline mode.
     Returns True iff the final backend is interactive.
     """
-    ipython = get_ipython()
-    if ipython is not None:
+    if running_as_notebook:
+        ipython = get_ipython()
         # Short-circuit for google colab.
         if 'google.colab' in sys.modules:
             ipython.run_line_magic("matplotlib", "inline")
