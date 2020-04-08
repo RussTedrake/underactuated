@@ -86,33 +86,38 @@ Control through Contact</h1>
     href="limit_cycle.html">already seen</a> that trajectory optimization can be
     used as a tool for finding limit cycles of a smooth passive system, e.g. by
     formulating a direct collocation problem: \begin{align*}
-    \find_{\bx[\cdot],h} \quad \subjto \quad & \dot\bx(t_{c,n}) =
-    f(\bx(t_{c,n})), & \forall n \in [0,N-1] \\ & \bx[0] = \bx[N], \\ & h_{min}
-    \le h \le h_{max},\end{align*} where $h$ was the timestep between the
-    trajectory break points, and $t_{c,n}$ are the collocation points.</p>
+    \find_{\bx[\cdot],h} \quad \subjto \quad & \text{collocation
+    constraints}(\bx[n], \bx[n+1], h), \quad \forall n \in [0, N-1] \\ & \bx[0]
+    = \bx[N], \\ & h_{min} \le h \le h_{max},\end{align*} where $h$ was the
+    timestep between the trajectory break points.</p>
 
-    <p>It turns out that applying this to the rimless wheel is quite
-    straight-forward.  We still want to find a periodic trajectory, but now have
-    to take into account the collision event.  We can do this by modifying the
+    <p>It turns out that applying this to the rimless wheel is quite straight
+    forward.  We still want to find a periodic trajectory, but now have to take
+    into account the collision event.  We can do this by modifying the
     periodicity condition.  Let's force the initial state to be just after the
     collision, and the final state to be just before the collision, and make
     sure they are related to each other via the collision equation:
-    \begin{align*} \find_{\bx[\cdot],h} \quad \subjto \quad & \dot\bx(t_{c,n}) =
-    f(\bx(t_{c,n})), & \forall n \in [0,N-1] \\ & \theta[0] = \gamma - \alpha,
-    \\ & \theta[N] = \gamma + \alpha, \\ & \dot\theta[0] = \dot\theta[N]
-    \cos(2\alpha)\\ & h_{min} \le h \le h_{max}. \end{align*}  Although it is
-    likely not needed for this simple example (since the dynamics are
-    sufficiently limited), for completeness one should also add constraints to
-    ensure that none of the intermediate points are in contact, $$\gamma -
-    \alpha \le \theta[n] < \gamma + \alpha, \quad \forall n \in [1,N-1].$$</p>
+    \begin{align*} \find_{\bx[\cdot],h} \quad \subjto \quad & \text{collocation
+    constraints}(\bx[n], \bx[n+1], h), \quad \forall n \in [0, N-1] \\ &
+    \theta[0] = \gamma - \alpha, \\ & \theta[N] = \gamma + \alpha, \\ &
+    \dot\theta[0] = \dot\theta[N] \cos(2\alpha)\\ & h_{min} \le h \le h_{max}.
+    \end{align*}  Although it is likely not needed for this simple example
+    (since the dynamics are sufficiently limited), for completeness one should
+    also add constraints to ensure that none of the intermediate points are in
+    contact, $$\gamma - \alpha \le \theta[n] < \gamma + \alpha, \quad \forall n
+    \in [1,N-1].$$</p>
 
-    <p>The result is a simple and clean numerical algorithm for finding the rolling limit cycle solution of the rimless wheel.  Please take it for a spin:</p>
+    <p>The result is a simple and clean numerical algorithm for finding the
+    rolling limit cycle solution of the rimless wheel.  Please take it for a
+    spin:</p>
 
     <jupyter>examples/contact.ipynb</jupyter>
 
   </example>
 
-  <p>The specific case of the rimless wheel is quite clean.  But if we want to apply it to the compass gait, the kneed compass gait, the spring-loaded inverted pendulum, etc, then we should stop and figure out a more general form.</p>
+  <p>The specific case of the rimless wheel is quite clean.  But before we apply
+  it to the compass gait, the kneed compass gait, the spring-loaded inverted
+  pendulum, etc, then we should stop and figure out a more general form.</p>
 
   <section><h1>(Autonomous) Hybrid Systems</h1>
   
@@ -157,31 +162,47 @@ Control through Contact</h1>
   
     <figure> <img width="90%" src="figures/hybrid.svg"/>
     <figcaption>Modeling contact as a hybrid system.</figcaption>
-    <todo>annotate with the mode, guard, reset language</todo> </figure>
+    </figure>
 
-    <subsection><h1>Simulating Hybrid Systems</h1>
+    <p>For this robot foot, we can decompose the dynamics into distinct modes: (1) foot in the air, (2) only heel on the ground, (3) heel and toe on the ground, (4) only toe on the ground (push-off). More generally, we will write the dynamics of mode $i$ as ${\bf f}_i$, the guard which signals the transition mode $i$ to mode $j$ as ${\bf \phi}_{i,j}$ (where $\phi_{i,j}(\bx_i) > 0$ inside mode $i$), and the reset map from $i$ to $j$ as ${\bf \Delta}_{i,j}$, as illustrated in the following figure:</p>
 
-      <p>There are many recipes for simulating these systems.  At one extreme,
-      we have integrators that do explicit event detection -- we register the
-      guards of our system as "witness functions" for the event and the
-      integrator ensures that it obtains a high-accuracy integration step at the
-      event.  For the simulations that you see in computer graphics with a
-      massive number of objects interacting with each other, coarser
-      approximations are often used, such as the time-stepping approximations
-      which solve a small optimization problem at every integration step to
-      compute time-averaged contact forces to summarize the impact events
-      without explicit event detection.  I'll leave the details to the <a
-      href="multibody.html">appendix</a>, but will use both approaches in this
-      chapter for control and analysis. </p>
+    <figure> <img width="100%" src="figures/hybrid_guard_reset.svg"/>
+      <figcaption>The language of hybrid systems: modes, guards, and reset maps.</figcaption>
+    </figure>
   
-    </subsection>
 
     <subsection><h1>Hybrid trajectory optimization</h1>
     
+      <p>Using the more general language of modes, guards, and resets, we can begin to formulate the "hybrid trajectory optimization" problem.  In hybrid trajectory optimization, there is a major distinction between trajectory optimization where <i>the mode sequence is known apriori</i> and the optimization is just attempting to solve for the continuous-time trajectories, vs one in which we must also discover the mode sequence.</p>
+
+      <p>For the case when the mode sequence is fixed, then hybrid trajectory
+      optimization is as simple as stitching together multiple individual
+      mathematical programs into a single mathematical program, with the
+      boundary conditions constrained to enforce the guard/reset constraints.
+      For a simple hybrid system with a given a mode sequence and using the
+      shorthand $\bx_k$, etc, for the state in mode in the $k$th segment of the
+      sequence, we can write: \begin{align*} \find_{\bx_k[\cdot],h_k} \quad
+      \subjto \quad & \bx_0[0] = \bx_0, \\ \forall k \quad &
+      \phi_{k,k+1}(\bx_k[N_k]) = 0, \\ & \bx_{k+1}[0] = {\bf
+      \Delta}_{i,j}(\bx_k[N_k]), \\ & \phi_{k,k'}(\bx_k[n_k]) > 0, \quad \forall
+      n_k \in [0, N_k], \forall k' \\ & h_{min} \le h_k \le h_{max}, \\ &
+      \text{collocation constraints}_k(\bx_k[n_k], \bx_k[n_k+1], h_k), \quad
+      \forall n_k \in [0, N_k-1]. \end{align*} It is then natural to add control
+      inputs (as additional decision variables), and to add an objective and any
+      more constraints.
+      </p>
+
+      <example><h1>A basketball trick shot.</h1>
+      
+        <p></p>
+      
+      </example>
+
     </subsection>
   
 
-    <subsection><h1>Minimal vs floating-base coordinates</h1>
+    <subsection><h1>Deriving hybrid models: minimal vs floating-base
+    coordinates</h1>
 
       <p>There is some work to do in order to derive the equations of motion in
       this form.  Do you remember how we did it for the <a
@@ -201,6 +222,8 @@ Control through Contact</h1>
       guards which compute the contact force for a given state and the distance
       from the boundary of the friction cone, and on and on.</p>
     
+      <!-- But, actually, it could get more complicated still: in each of the contact modes the foot could be in the static friction regime or could be sliding.  And what if there is rough terrain, so we could make contact at more points.  And what if we -->
+
       <p>Fortunately, there is an alternative modeling approach for deriving the
       modes, guards, and resets for contact that is more general (though
       admittedly also more complex).  We can instead model the robot in the
