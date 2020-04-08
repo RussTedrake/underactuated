@@ -69,7 +69,7 @@ for Limit Cycles</h1>
   optimization tools that we developed already are very well suited to this
   task.</p>
 
-  <section><h1>Trajectory optimization</h1>
+  <section id="trajopt"><h1>Trajectory optimization</h1>
 
     <p>I introduced the trajectory optimization tools as means for optimizing a
     control trajectory starting from a particular known initial condition. But
@@ -108,14 +108,11 @@ for Limit Cycles</h1>
       \mu (q^2 - 1) \dot{q} + q = 0, \quad \mu>0,$$ which exhibited a stable
       limit cycle.</p>
 
-      <p>Formulate the direct collocation optimization:
-        \begin{align*}
-          \find_{\bx[\cdot],h} \quad \\
-          \subjto \quad & q[0] = 0, \quad \dot{q}[0] > 0, \\
-          & \bx[N] = \bx[0], \text{(periodicity constraint)}\\
-          & \text{collocation dynamic constraints} \\
-          & 0.01 \le h \le 0.5
-        \end{align*}
+      <p>Formulate the direct collocation optimization: \begin{align*}
+      \find_{\bx[\cdot],h} \quad \subjto \quad & q[0] = 0, \quad \dot{q}[0] > 0,
+      \\ & \bx[N] = \bx[0], \text{(periodicity constraint)}\\ &
+      \text{collocation dynamic constraints} \\ & 0.01 \le h \le 0.5
+      \end{align*}
       </p>
 
       <p>Try it yourself:</p>

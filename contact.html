@@ -68,42 +68,84 @@ Control through Contact</h1>
   <p>My goal for this chapter is to extend our computational tools into this
   richer class of models.  Many of our core tools still work: trajectory
   optimization, Lyapunov analysis (e.g. with sums-of-squares), and LQR all have
-  natural equivalents. </p>
+  natural equivalents.</p>
 
-  <section><h1>Modeling and Simulating through Contact</h1>
+  <p>Let's start with a warm-up exercise: trajectory optimization for the rimless wheel.  We already have basically everything that we need for this, and it will form a nice basis for generalizing our approach throughout the chapter.</p>
 
-    <p>Recall how we modeled the dynamics of the simple legged robots. First,
-    we derived the equations of motion (independently) for each possible
-    contact configuration -- for example, in the spring-loaded inverted
-    pendulum (SLIP) model we had one set of equations governing the $(x,y)$
-    position of the mass during the flight phase, and a completely separate set
-    of equations written in polar coordinates, $(r,\theta)$, describing the
-    stance phase.  Then we did a little additional work to describe the
-    transitions between these models -- e.g., in SLIP we transitioned from
-    flight to stance when the foot first touches the ground.  When simulating
-    this model, it means that we have a discrete "event" which occurs at the
-    moment of foot collision, and an immediate discontinuous change to the
-    state of the robot (in this case we even change out the state variables).
-    </p>
+  <example><h1>Trajectory optmization for the rimless wheel</h1>
 
+    <figure>
+      <img width="40%" src="figures/rimlessWheel.svg"/>
+      <figcaption>The rimless wheel. The orientation of the stance leg,
+      $\theta$, is measured clockwise from the vertical axis. </figcaption>
+    </figure>
+
+    <p>The <a href="simple_legs.html#rimless_wheel">rimless wheel</a> was our
+    simplest example of a passive-dynamic walker; it has no control inputs but
+    exhibits a passively stable rolling fixed point.  We've also <a
+    href="limit_cycle.html">already seen</a> that trajectory optimization can be
+    used as a tool for finding limit cycles of a smooth passive system, e.g. by
+    formulating a direct collocation problem: \begin{align*}
+    \find_{\bx[\cdot],h} \quad \subjto \quad & \dot\bx(t_{c,n}) =
+    f(\bx(t_{c,n})), & \forall n \in [0,N-1] \\ & \bx[0] = \bx[N], \\ & h_{min}
+    \le h \le h_{max},\end{align*} where $h$ was the timestep between the
+    trajectory break points, and $t_{c,n}$ are the collocation points.</p>
+
+    <p>It turns out that applying this to the rimless wheel is quite
+    straight-forward.  We still want to find a periodic trajectory, but now have
+    to take into account the collision event.  We can do this by modifying the
+    periodicity condition.  Let's force the initial state to be just after the
+    collision, and the final state to be just before the collision, and make
+    sure they are related to each other via the collision equation:
+    \begin{align*} \find_{\bx[\cdot],h} \quad \subjto \quad & \dot\bx(t_{c,n}) =
+    f(\bx(t_{c,n})), & \forall n \in [0,N-1] \\ & \theta[0] = \gamma - \alpha,
+    \\ & \theta[N] = \gamma + \alpha, \\ & \dot\theta[0] = \dot\theta[N]
+    \cos(2\alpha)\\ & h_{min} \le h \le h_{max}. \end{align*}  Although it is
+    likely not needed for this simple example (since the dynamics are
+    sufficiently limited), for completeness one should also add constraints to
+    ensure that none of the intermediate points are in contact, $$\gamma -
+    \alpha \le \theta[n] < \gamma + \alpha, \quad \forall n \in [1,N-1].$$</p>
+
+    <p>The result is a simple and clean numerical algorithm for finding the rolling limit cycle solution of the rimless wheel.  Please take it for a spin:</p>
+
+    <jupyter>examples/contact.ipynb</jupyter>
+
+  </example>
+
+  <p>The specific case of the rimless wheel is quite clean.  But if we want to apply it to the compass gait, the kneed compass gait, the spring-loaded inverted pendulum, etc, then we should stop and figure out a more general form.</p>
+
+  <section><h1>(Autonomous) Hybrid Systems</h1>
+  
+    <p>Recall how we modeled the dynamics of the simple legged robots. First, we
+    derived the equations of motion (independently) for each possible contact
+    configuration -- for example, in the spring-loaded inverted pendulum (SLIP)
+    model we had one set of equations governing the $(x,y)$ position of the mass
+    during the flight phase, and a completely separate set of equations written
+    in polar coordinates, $(r,\theta)$, describing the stance phase.  Then we
+    did a little additional work to describe the transitions between these
+    models -- e.g., in SLIP we transitioned from flight to stance when the foot
+    first touches the ground.  When simulating this model, it means that we have
+    a discrete "event" which occurs at the moment of foot collision, and an
+    immediate discontinuous change to the state of the robot (in this case we
+    even change out the state variables).</p>
+  
     <p>The language of <i>hybrid systems</i> gives us a rich language for
-    describing systems like this, and a suite of tools for simulating them.
-    <sidenote>The term "hybrid systems" means a lot of things to a lot of
-    people... here we use "hybrid" to mean both discrete and continuous, and
-    the particular systems we consider here are sometimes called
-    <i>autonomous</i> hybrid systems because the internal dynamics can cause
-    the discrete changes without any exogeneous input; in contrast to, for
-    instance, the model of a power-train where a change in gears comes as an
-    external input.</sidenote>  More generally, we say that a hybrid systems is
-    described by a set of <i>modes</i> each described by (ideally smooth)
-    continuous dynamics, a set of <i>guards</i> which here are continuous
-    functions who's zero-level set describes the conditions which trigger an
-    event, and a set of <i>resets</i> which describe the discrete update to the
-    state that is triggered by the guard.  Each guard is associated with a
-    particular mode, and we can have multiple guards per mode. Every guard has
-    at most one reset.  You will occasionally here guards referred to as
-    "witness functions", since they play that role in simulation, and resets
-    are sometimes referred to as "transition functions".</p>
+    describing systems of this form, and a suite of tools for analyzing and
+    controlling them.  The term "hybrid systems" is a bit overloaded, here we
+    use "hybrid" to mean both discrete- and continuous-time, and the particular
+    systems we consider here are sometimes called <i>autonomous</i>
+    hybrid systems because the internal dynamics can cause the discrete changes
+    without any exogeneous input&dagger;<sidenote>&dagger;This is in contrast
+    to, for instance, the model of a power-train where a change in gears comes
+    as an external input.</sidenote>.  In the hybrid systems formulation, we describe a system by a set of <i>modes</i> each described by (ideally
+    smooth) continuous dynamics, a set of <i>guards</i> which here are
+    continuous functions whos zero-level set describes the conditions which
+    trigger an event, and a set of <i>resets</i> which describe the discrete
+    update to the state that is triggered by the guard.  Each guard is
+    associated with a particular mode, and we can have multiple guards per mode.
+    Every guard has at most one reset.  You will occasionally here guards
+    referred to as "witness functions", since they play that role in simulation,
+    and resets are sometimes referred to as "transition functions".</p>
 
     <p>The imagery that I like to keep in my head for hybrid systems is
     illustrated below for a simple example of a robot's heel striking the
@@ -112,81 +154,86 @@ Control through Contact</h1>
     trajectory hits the zero-level set of the guard (here the distance between
     the heel and the ground becomes zero), with the reset describing the
     discrete change in the state variables.</p>
-
+  
     <figure> <img width="90%" src="figures/hybrid.svg"/>
     <figcaption>Modeling contact as a hybrid system.</figcaption>
     <todo>annotate with the mode, guard, reset language</todo> </figure>
 
-    <p>There is some work to do in order to derive the equations of motion in
-    this form.  Do you remember how we did it for the <a
-    href="simple_legs.html">rimless wheel and compass
-    gait</a> examples?  In both cases we assumed that exactly one foot was
-    attached to the ground and that it would not slip, this allowed us to write
-    the Lagrangian as if there was a pin joint attaching the foot to the ground
-    to obtain the equations of motion.  For the SLIP model, we derived the
-    flight phase and stance phase using separate Lagrangian equations each with
-    different state representations.  I would describe this as the <i>minimal
-    coordinates</i> modeling approach -- it is elegant and has some important
-    computational advantages that we will come to appreciate in the algorithms
-    below. But it's a lot of work!  For instance, if we also wanted to consider
-    friction in the foot contact of the rimless wheel, we would have to derive
-    yet another set of equations to describe the sliding mode (adding, for
-    instance, a prismatic joint that moved the foot along the ramp), plus the
-    guards which compute the contact force for a given state and the distance
-    from the boundary of the friction cone, and on and on.</p>
+    <subsection><h1>Simulating Hybrid Systems</h1>
 
-    <p>Fortunately, there is an alternative modeling approach for deriving the
-    modes, guards, and resets for contact that is more general (though
-    admittedly also more complex).  We can instead model the robot in the
-    <i>floating-base coordinates</i> -- we add a fictitious six
-    degree-of-freedom "floating-base" joint connecting some part of the robot to
-    the world (in planar models, we use just three degrees-of-freedom, e.g.
-    $(x,z,\theta)$).  We can derive the equations of motion for the
-    floating-base robot once, without considering contact, then add the
-    additional constraints that come from being in contact as contact forces
-    which get applied to the bodies. The resulting manipulator equations take
-    the form \begin{equation}\bM({\bq})\ddot{\bq} + \bC(\bq,\dot{\bq})\dot\bq =
-    \btau_g(\bq) + \bB\bu + \sum_i \bJ_i^T(\bq) \blambda_i,\end{equation} where
-    $\blambda_i$ are the constraint forces and $\bJ_i$ are the constraint
-    Jacobians.  Conveniently, if the guard function in our contact equations is
-    the signed distance from contact, $\phi_i(\bq)$, then this Jacobian is
-    simply $\bJ_i(\bq) = \pd{\phi_i}{\bq}$.  I've written the basic derivations
-    for the common cases (position constraints, velocity constraints, impact
-    equations, etc) in the
-    <a href="multibody.html">appendix</a>. What is
-    important to understand here is that this is an alternative formulation for
-    the equations governing the modes, guards, and resets, but that is it no
-    longer a minimal coordinate system -- the equations of motion are written
-    in $2N$ state variables but the system might actually be constrained to
-    evolve only along a lower dimensional manifold (if we write the rimless
-    wheel equations with three configuration variables for the floating base,
-    it still only rotates around the toe when it is in stance and is inside the
-    friction cone). This will have implications for our algorithms.</p>
-
-    <p>Finally, there are many recipes for simulating these systems.  At one
-    extreme, we have integrators that do explicit event detection -- we register
-    the guards of our system as "witness functions" for the event and the
-    integrator ensures that it obtains a high-accuracy integration step at the
-    event.  For the simulations that you see in computer graphics with a massive
-    number of objects interacting with each other, coarser approximations are
-    often used, such as the time-stepping approximations which solve a small
-    optimization problem at every integration step to compute time-averaged
-    contact forces to summarize the impact events without explicit event
-    detection.  I'll leave the details to the <a
-    href="multibody.html">appendix</a>, but will use both approaches in this
-    chapter for control and analysis. </p>
-
-  </section>
-
-  <section><h1>Trajectory Optimization</h1>
-
-    <subsection><h1>Hybrid trajectory optimization (in minimal
-    coordinates)</h1>
+      <p>There are many recipes for simulating these systems.  At one extreme,
+      we have integrators that do explicit event detection -- we register the
+      guards of our system as "witness functions" for the event and the
+      integrator ensures that it obtains a high-accuracy integration step at the
+      event.  For the simulations that you see in computer graphics with a
+      massive number of objects interacting with each other, coarser
+      approximations are often used, such as the time-stepping approximations
+      which solve a small optimization problem at every integration step to
+      compute time-averaged contact forces to summarize the impact events
+      without explicit event detection.  I'll leave the details to the <a
+      href="multibody.html">appendix</a>, but will use both approaches in this
+      chapter for control and analysis. </p>
   
     </subsection>
 
+    <subsection><h1>Hybrid trajectory optimization</h1>
+    
+    </subsection>
+  
+
+    <subsection><h1>Minimal vs floating-base coordinates</h1>
+
+      <p>There is some work to do in order to derive the equations of motion in
+      this form.  Do you remember how we did it for the <a
+      href="simple_legs.html">rimless wheel and compass gait</a> examples?  In
+      both cases we assumed that exactly one foot was attached to the ground and
+      that it would not slip, this allowed us to write the Lagrangian as if
+      there was a pin joint attaching the foot to the ground to obtain the
+      equations of motion.  For the SLIP model, we derived the flight phase and
+      stance phase using separate Lagrangian equations each with different state
+      representations.  I would describe this as the <i>minimal coordinates</i>
+      modeling approach -- it is elegant and has some important computational
+      advantages that we will come to appreciate in the algorithms below. But
+      it's a lot of work!  For instance, if we also wanted to consider friction
+      in the foot contact of the rimless wheel, we would have to derive yet
+      another set of equations to describe the sliding mode (adding, for
+      instance, a prismatic joint that moved the foot along the ramp), plus the
+      guards which compute the contact force for a given state and the distance
+      from the boundary of the friction cone, and on and on.</p>
+    
+      <p>Fortunately, there is an alternative modeling approach for deriving the
+      modes, guards, and resets for contact that is more general (though
+      admittedly also more complex).  We can instead model the robot in the
+      <i>floating-base coordinates</i> -- we add a fictitious six
+      degree-of-freedom "floating-base" joint connecting some part of the robot
+      to the world (in planar models, we use just three degrees-of-freedom, e.g.
+      $(x,z,\theta)$).  We can derive the equations of motion for the
+      floating-base robot once, without considering contact, then add the
+      additional constraints that come from being in contact as contact forces
+      which get applied to the bodies. The resulting manipulator equations take
+      the form \begin{equation}\bM({\bq})\ddot{\bq} + \bC(\bq,\dot{\bq})\dot\bq
+      = \btau_g(\bq) + \bB\bu + \sum_i \bJ_i^T(\bq) \blambda_i,\end{equation}
+      where $\blambda_i$ are the constraint forces and $\bJ_i$ are the
+      constraint Jacobians.  Conveniently, if the guard function in our contact
+      equations is the signed distance from contact, $\phi_i(\bq)$, then this
+      Jacobian is simply $\bJ_i(\bq) = \pd{\phi_i}{\bq}$.  I've written the
+      basic derivations for the common cases (position constraints, velocity
+      constraints, impact equations, etc) in the
+      <a href="multibody.html">appendix</a>. What is important to understand
+      here is that this is an alternative formulation for the equations
+      governing the modes, guards, and resets, but that is it no longer a
+      minimal coordinate system -- the equations of motion are written in $2N$
+      state variables but the system might actually be constrained to evolve
+      only along a lower dimensional manifold (if we write the rimless wheel
+      equations with three configuration variables for the floating base, it
+      still only rotates around the toe when it is in stance and is inside the
+      friction cone). This will have implications for our algorithms.</p>
+
+    </subsection>
+  
   </section>
 
+<!--
   <section><h1>Randomized Motion Planning</h1></section>
 
   <section><h1>Stabilizing a Fixed-Point</h1>
@@ -197,7 +244,7 @@ Control through Contact</h1>
 
     <p>Transverse stabilization (build off limit cycle chapter)</p>
   </section>
-
+-->
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 
