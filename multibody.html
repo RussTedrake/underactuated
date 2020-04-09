@@ -369,15 +369,41 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
         <p>We can add friction at the contact.  Rigid bodies will almost always
         experience contact at only a point, so we typically ignore torsional
-        friction <elib>Featherstone06</elib>, and model only tangential
-        friction by replacing $\Phi$ with a matrix $\bJ$ that has $\Phi$ as one
-        row, but two additional rows to capture the gradient of the contact
-        location tangent to the contact surface, written in joint coordinates
-        (c.f. <elib>Stewart96</elib>). Then $\blambda$ becomes a Cartesian
-        force vector, but the equations above remain unchanged. If $\blambda$
-        is restricted to a friction cone, as in Coulomb friction, in general we
-        have to solve an optimization to solve for $\dot\bq^+$ subject to the
-        inequality constraints. </p>
+        friction <elib>Featherstone06</elib>, and model only tangential friction
+        by replacing $\Phi$ with a matrix $\bJ$ that has $\Phi$ as one row, but
+        two additional rows to capture the gradient of the contact location
+        tangent to the contact surface, written in joint coordinates (c.f.
+        <elib>Stewart96</elib>). Then $\blambda$ becomes a Cartesian force
+        vector, and (for infinite friction) the post-impact velocity condition
+        becomes ${\bf J}\dot{\bq}^+ = \text{diag}(-e, 0, 0) {\bf J}\dot{\bq}^-,$
+        resulting in the equations: \begin{equation}\dot{\bq}^+ = \left[ \bI -
+        \bM^{-1} \bJ^T \text{diag}(1+e, 1, 1) \left[\bJ \bM^{-1} \bJ^T \right]^+
+        \bJ \right]\dot{\bq}^-.\end{equation} If $\blambda$ is restricted to a
+        friction cone, as in Coulomb friction, in general we have to solve an
+        optimization to solve for $\dot\bq^+$ subject to the inequality
+        constraints.</p>
+
+        <example id="spinning_ball_bouncing"><h1>A spinning ball bouncing on the
+        ground.</h1>
+        
+          <p>Imagine a ball (a hollow-sphere) in the plane with mass $m$, radius
+          $r$.  The configuration is given by $q = \begin{bmatrix} x, z, \theta
+          \end{bmatrix}^T.$  The equations of motion are $$\bM(\bq)\ddot\bq =
+          \begin{bmatrix} m & 0 & 0 \\ 0 & m & 0 \\ 0 & 0 & \frac{2}{3}mr^2
+          \end{bmatrix} \ddot\bq = \begin{bmatrix} 0 \\ -g \\ 0 \end{bmatrix} +
+          \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ r & 0 \end{bmatrix} \begin{bmatrix}
+          \lambda_x \\ \lambda_z \end{bmatrix} = \tau_g + \bJ^T {\bf \lambda},$$
+          where ${\bf \lambda}$ are the contact forces (which are zero except
+          during the impulsive collision).  Given a coefficient of restitution
+          $e$ and a collision with a horizontal ground, the post-impact
+          velocities are: $$ \dot{\bq}^+ = \begin{bmatrix} \frac{3}{5} & 0 &
+          -\frac{2}{5} r \\ 0 & - e & 0 \\ -\frac{3}{5r} & 0 &
+          \frac{2}{5}\end{bmatrix}\dot{\bq}^-.$$
+        </p>
+
+        <!-- Derivation is here: https://www.wolframcloud.com/obj/russt/Published/BouncingBallWithSpin.nb-->
+        
+        </example>
 
       </subsubsection>
 
