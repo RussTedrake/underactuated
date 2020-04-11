@@ -5,7 +5,7 @@ chapter_ids = [
     "intro", "pend", "acrobot", "simple_legs", "humanoids", "stochastic", "dp",
     "lqr", "lyapunov", "trajopt", "planning", "feedback_motion_planning",
     "policy_search", "robust", "output_feedback", "limit_cycles", "contact",
-    "sysid", "state_estimation", "rl_policy_search", "value_learning", 
+    "sysid", "state_estimation", "rl_policy_search", "value_learning",
     "actor_critic", "drake", "multibody", "optimization", "playbook"
 ]
 

@@ -57,30 +57,99 @@ Output Feedback (aka Pixels-to-Torques)</h1>
 
   <p>In this chapter we will start considering systems of the form:
   \begin{gather*} \bx[n+1] = {\bf f}(\bx[n], \bu[n], \bw[n], n) \\ \by[n] = {\bf
-  g}(\bx[n], \bu[n], \bv[n], n).\end{gather*}
+  g}(\bx[n], \bu[n], \bv[n], n).\end{gather*}  In other words, we'll finally
+  start addressing the fact that we have to make decisions based on sensor
+  measurements -- most of our discussions until now have tacitly assumed that we
+  have access to the true state of the system for use in our feedback
+  controllers (and that's already been a hard problem).
   </p>
 
-  <todo>Perhaps a call-out to classical control.  (e.g. Pole-placement, Loop-shaping)?</todo>
+  <p>In some cases, we will see that the assumption of "full-state feedback" is
+  not so bad -- we do have good tools for state estimation from raw sensor data.
+  But even our best state estimation algorithms do add some dynamics to the
+  system in order to filter out noisy measurements; if the time constants of
+  these filters is near the time constant of our dynamics, then it becomes
+  important that we include the dynamics of the estimator in our analysis of the
+  closed-loop system.</p>
+
+  <p>In other cases, it's entirely too optimistic to design a controller
+  assuming that we will have an estimate of the full state of the system.  Some
+  state variables might be completely unobservable, others might require
+  specific "information-gathering" actions on the part of the controller.</p>
+
+  <p>For me, the problem of robot manipulation is the application domain where
+  more direct approaches to output feedback become critically important. Imagine
+  you are trying to design a controller for a robot that needs to button the
+  buttons on your dress shirt.  If step one is to estimate the state of the
+  shirt (how many degrees of freedom does my shirt have?), then it feels like
+  we're not going to be successful.  Or if you want to program a robot to make a
+  salad -- what's the state of the salad?  Do I really need to know the
+  positions and velocities of every piece of lettuce in order to be
+  successful?</p>
+
+  <section><h1>The Classical Perspective</h1>
+
+    <p>To some extent, this idea of calling out "output feedback" as a special,
+    advanced topic is a new problem.  Before state space and optimization-based
+    approaches to control ushered in "modern control", we had "classical
+    control".  Classical control focused predominantly (though not exclusively)
+    on linear time-invariant (LTI) systems, and made very heavy use of
+    frequency-domain analysis (e.g. via the Fourier Transform/Laplace
+    Transform).  There are many excellent books on the subject;
+    <elib>Hespanha09+Astrom10</elib> are nice examples of modern treatments that
+    start with state-space representations but also treat the frequency-domain
+    perspective.</p>
+
+    <p>What's important for us to acknowledge here is that in classical control,
+    basically everything was built around the idea of output feedback.  The
+    fundamental concept is the transfer function of a system, which is a
+    input-to-output map (in frequency domain) that can completely characterize
+    an LTI system.  Core concepts like pole placement and loop shaping were
+    fundamentally addressing the challenge of output feedback that we are
+    discussing here.  Sometimes I feel that, despite all of the things we've
+    gain with modern, optimization-based control, I worry that we've lost
+    something in terms of considering rich characterizations of closed-loop
+    performance (rise time, dwell time, overshoot, ...) and perhaps even in
+    practical robustness of our systems to unmodeled errors.</p>
+
+    <todo>Add a few examples here that capture it.</todo>
+
+  </section>  
 
   <section><h1>Observer-based Feedback</h1>
 
     <subsection><h1>Luenberger Observer</h1></subsection>
 
-    <subsection><h1>Linear Quadratic Regulator w/ Gaussian Noise (LQG)</h1></subsection>
+    <subsection><h1>Linear Quadratic Regulator w/ Gaussian Noise
+    (LQG)</h1></subsection>
 
     <subsection><h1>Partially-observable Markov Decision Processes</h1>
     
     </subsection>
 
     <todo>Defer the rest of the discussion to the state estimation
-    chapter</todo>>
+    chapter</todo>
 
   </section>
 
-  <section><h1>Static Output Feedback for Linear Systems</h1></section>
+  <section><h1>Static Output Feedback</h1>
   
-  <section><h1>Disturbance-based feedback</h1></section>
+    <subsection><h1>For Linear Systems</h1></subsection>
 
+    <todo>Bilinear alternations with SOS, Policy search with SGD</todo>
+  
+  </section>
+  
+  <section><h1>Disturbance-based feedback</h1>
+  
+    <todo>State-space models.  ARX Models.</todo>
+    <subsection><h1>System-Level Synthesis</h1></subsection>
+  
+  </section>
+
+  <todo>Task-relevant variables</todo>
+
+<!--  <section><h1>Feedback from Pixels</h1></section> -->
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
