@@ -155,7 +155,7 @@ Control through Contact</h1>
     <p>The imagery that I like to keep in my head for hybrid systems is
     illustrated below for a simple example of a robot's heel striking the
     ground.  A solution trajectory of the hybrid system has a continuous
-    trajectory inside each mode, punctionated by discrete updates when the
+    trajectory inside each mode, punctuated by discrete updates when the
     trajectory hits the zero-level set of the guard (here the distance between
     the heel and the ground becomes zero), with the reset describing the
     discrete change in the state variables.</p>
@@ -203,7 +203,7 @@ Control through Contact</h1>
         interval without contact of duration $h$, we can actually integrate
         these dynamics perfectly: $$\bx(t+h) = \begin{bmatrix} x(t) +
         h\dot{x}(t) \\ z(t) + h \dot{z}(t) - \frac{1}{2}gh^2 \\ \dot{x}(t) \\
-        \dot{z}(t) - hg \end{bmatrix}.$$  We the bounce pass, we just consider
+        \dot{z}(t) - hg \end{bmatrix}.$$  With the bounce pass, we just consider
         collisions with the ground, so we have a guard, ${\bf \phi}(\bx) = z,$
         which triggers when $z=0$, and a reset map which assumes an elastic
         collision with <a
@@ -256,6 +256,7 @@ Control through Contact</h1>
 
     </subsection>
   
+    <subsection><h1>Stabilizing hybrid models.</h1></subsection>
 
     <subsection><h1>Deriving hybrid models: minimal vs floating-base
     coordinates</h1>
