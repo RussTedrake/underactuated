@@ -335,10 +335,22 @@ Search</a></li>
   <li><a href="output_feedback.html">Chapter 15: 
 Output Feedback (aka Pixels-to-Torques)</a></li>
   <ul>
-    <li><a href=output_feedback.html#section1>Partially-observable Markov Decision Processes</a></li>
-    <li><a href=output_feedback.html#section2>Linear Quadratic Gaussian</a></li>
-    <li><a href=output_feedback.html#section3>Static Output Feedback for Linear
-  Systems</a></li>
+    <li><a href=output_feedback.html#section1>The Classical Perspective</a></li>
+    <li><a href=output_feedback.html#section2>Observer-based Feedback</a></li>
+    <ul>
+      <li>Luenberger Observer</li>
+      <li>Linear Quadratic Regulator w/ Gaussian Noise
+    (LQG)</li>
+      <li>Partially-observable Markov Decision Processes</li>
+    </ul>
+    <li><a href=output_feedback.html#section3>Static Output Feedback</a></li>
+    <ul>
+      <li>For Linear Systems</li>
+    </ul>
+    <li><a href=output_feedback.html#section4>Disturbance-based feedback</a></li>
+    <ul>
+      <li>System-Level Synthesis</li>
+    </ul>
   </ul>
   <li><a href="limit_cycles.html">Chapter 16: Algorithms
 for Limit Cycles</a></li>
@@ -352,6 +364,7 @@ for Limit Cycles</a></li>
     </ul>
     <li><a href=limit_cycles.html#section3>Feedback design</a></li>
     <ul>
+      <li>For underactuation degree one.</li>
       <li>Transverse LQR</li>
       <li>Orbital stabilization for non-periodic trajectories</li>
     </ul>
@@ -362,13 +375,32 @@ Control through Contact</a></li>
     <li><a href=contact.html#section1>(Autonomous) Hybrid Systems</a></li>
     <ul>
       <li>Hybrid trajectory optimization</li>
+      <li>Stabilizing hybrid models.</li>
       <li>Deriving hybrid models: minimal vs floating-base
     coordinates</li>
     </ul>
   </ul>
 <p style="margin-bottom: 0; text-decoration: underline;font-variant: small-caps;"><b>Estimation and Learning</b></p>
   <li><a href="sysid.html">Chapter 18: System Identification</a></li>
-  <li><a href="estimation.html">Chapter 19: State Estimation</a></li>
+  <ul>
+    <li><a href=sysid.html#section1>Equation Error vs Simulation Error</a></li>
+    <li><a href=sysid.html#section2>Linear State-Space Models</a></li>
+    <ul>
+      <li>From state observations</li>
+      <li>From input-output data</li>
+      <li>Adding stability constraints</li>
+    </ul>
+    <li><a href=sysid.html#section3>Linear ARX Models</a></li>
+    <li><a href=sysid.html#section4>Nonlinear System Identification</a></li>
+    <li><a href=sysid.html#section5>Parameter Identification for Mechanical Systems</a></li>
+    <li><a href=sysid.html#section6>Optimal Experiment Design</a></li>
+  </ul>
+  <li><a href="state_estimation.html">Chapter 19: State Estimation</a></li>
+  <ul>
+    <li><a href=state_estimation.html#section1>Observers and the Kalman Filter</a></li>
+    <li><a href=state_estimation.html#section2>Recursive Bayesian Filters</a></li>
+    <li><a href=state_estimation.html#section3>Smoothing</a></li>
+  </ul>
   <li><a href="rl_policy_search.html">Chapter 20: Model-Free Policy Search</a></li>
   <ul>
     <li><a href=rl_policy_search.html#section1>Policy Gradient Methods</a></li>

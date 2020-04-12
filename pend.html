@@ -291,7 +291,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       change the constant torque input, $u_0$.  <!-- This is the subject of
       exercise~\ref{p:pend_bifurcation}.-->  Finally, let's return to the
       original equations in $\theta$, instead of in $x$.  Only one point to
-      make: because of the wrap-around, this system will <em>appear</em> have
+      make: because of the wrap-around, this system will <em>appear</em> to have
       oscillations.  In fact, the graphical analysis reveals that the pendulum
       will turn forever whenever $|u_0| > mgl$, but now you understand
       that this is not an oscillation, but an instability with $\theta
@@ -575,7 +575,7 @@ complete trajectory.</p>
 
       <example><h1>Energy Shaping for the Pendulum</h1>
 
-      <p>Take a minute to play around with the energy shaping controller for
+      <p>Take a minute to play around with the energy-shaping controller for
       swinging up the pendulum</p>
 
       <jupyter>examples/pendulum/energy_shaping.ipynb</jupyter>
@@ -588,13 +588,13 @@ complete trajectory.</p>
       </example>
 
       <p>There are a few things that are extremely nice about this controller.
-      Not only is it simple, but it is actually incredibly robust to and errors
-      we might have in our estimate of the model parameters, $m$, $l$, and $g$.
+      Not only is it simple, but it is actually incredibly robust to errors
+      we might have in our estimate of the model parameters, $m,$ $l,$ and $g.$
       In fact, the only place that the model enters our control equation is in
-      the calculation of $\tilde{E} = \frac{1}{2} m l^2 \dot\theta^2 + mgl(1 -
+      the calculation of $\tilde{E} = \frac{1}{2} m l^2 \dot\theta^2 - mgl(1 +
       \cos\theta)$, and the only property of this estimate that impacts
       stability is the location of the orbit when $\tilde{E} = 0$, which is
-      $\frac{1}{2}l\dot\theta^2 = g(\cos\theta - 1).$ This doesn't depend at all
+      $\frac{1}{2}l\dot\theta^2 = g(\cos\theta + 1).$ This doesn't depend at all
       on our estimate of the mass, and only linearly on our estimates of the
       length and gravity (and if one cannot measure the length of the pendulum
       accurately, then a proper measuring device would make an excellent

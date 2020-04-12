@@ -771,7 +771,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       </subsubsection>
 
-      <subsubsection><h1>Task-space partial feedback linearization</h1>
+      <subsubsection id="task_space_pfl"><h1>Task-space partial feedback linearization</h1>
 
         <p> In general, we can define some combination of active and passive
         joints that we would like to control.  This combination is sometimes
@@ -793,33 +793,24 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         \right) = p, \label{eq:rank_condition}\end{equation} </p>
 
         <p><b>Proof Sketch.</b>
-        Differentiating the output function we have
-        \begin{gather*}
-        \dot\by = \bH \dot\bq \\
-        \ddot\by = \dot\bH \dot\bq + \bH_1 \ddot\bq_1 + \bH_2 \ddot\bq_2.
-        \end{gather*}
-        Solving \ref{eq:passive_dyn} for the dynamics of the unactuated joints
-        we have:
-        \begin{equation}
-        \ddot\bq_1 = \bM_{11}^{-1} (\btau_1 - \bM_{12} \ddot\bq_2) \label{eq:q1cmd}
-        \end{equation}
-        Substituting, we have
-        \begin{align}
-        \ddot\by =& \dot\bH \dot\bq + \bH_1 \bM_{11}^{-1}(\btau_1 -
-          \bM_{12}\ddot\bq_2) + \bH_2 \ddot\bq_2 \\
-        =& \dot\bH \dot\bq + \bar{\bH} \ddot\bq_2 + \bH_1 \bM_{11}^{-1}\btau_1 \\
-        =& \ddot\by^d
-        \end{align}
-        Note that the last line required the rank condition
-        ($\ref{eq:rank_condition}$) on $\bar\bH$ to ensure that the rows
-        of $\bar{\bH}$ are linearly independent, allowing $\bar\bH
-        \bar\bH^+ = \bI$.</p>
+        Differentiating the output function we have \begin{gather*} \dot\by =
+        \bH \dot\bq \\ \ddot\by = \dot\bH \dot\bq + \bH_1 \ddot\bq_1 + \bH_2
+        \ddot\bq_2. \end{gather*} Solving \ref{eq:passive_dyn} for the dynamics
+        of the unactuated joints we have: \begin{equation} \ddot\bq_1 =
+        \bM_{11}^{-1} (\btau_1 - \bM_{12} \ddot\bq_2) \label{eq:q1cmd}
+        \end{equation} Substituting, we have \begin{align} \ddot\by =& \dot\bH
+        \dot\bq + \bH_1 \bM_{11}^{-1}(\btau_1 - \bM_{12}\ddot\bq_2) + \bH_2
+        \ddot\bq_2 \\ =& \dot\bH \dot\bq + \bar{\bH} \ddot\bq_2 + \bH_1
+        \bM_{11}^{-1}\btau_1 \\ =& \ddot\by^d \end{align} Note that the last
+        line required the rank condition ($\ref{eq:rank_condition}$) on
+        $\bar\bH$ to ensure that the rows of $\bar{\bH}$ are linearly
+        independent, allowing $\bar\bH \bar\bH^+ = \bI$.</p>
 
       </theorem>
 
         <p> In order to execute a task space trajectory one could command
-        $$\ddot\by^d = \ddot{\bar{\by}}^d + \bK_d (\dot{\bar{\by}}^d - \dot\by) +
-        \bK_p (\bar{\by}^d -\by).$$ Assuming the internal dynamics are stable,
+        $$\ddot\by^d = \ddot{\bar{\by}}^d + \bK_d (\dot{\bar{\by}}^d - \dot\by)
+        + \bK_p (\bar{\by}^d -\by).$$ Assuming the internal dynamics are stable,
         this yields converging error dynamics, $(\bar{\by}^d - \by)$, when
         $\bK_p,\bK_d > 0$<elib>Slotine90</elib>.  For a position control robot,
         the acceleration command of ($\ref{eq:q2cmd}$) suffices. Alternatively,
@@ -902,16 +893,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       The basic idea, from <elib>Chung95</elib>, is to use collocated PFL to
       simplify the dynamics, use energy shaping to regulate the pendulum to its
       homoclinic orbit, then to add a few terms to make sure that the cart stays
-      near the origin.  This is a bit surprising... if we want to control the pendulum, shouldn't we use the non-collocated version?  Actually, we ultimately want to control both the cart and the pole, and we will build on the collocated version both because it avoids inverting the $\cos\theta$ term that can go to zero and because (when all parameters are set to 1) we were left with a particularly simple form of the equations:
-      \begin{gather}
-      \ddot{x} = u \\
-      \ddot\theta = - u c - s.
-      %\ddot\theta = -\frac{1}{l}( u c + g s )
-      \end{gather}
-      The first equation is clearly simple, but even the second equation is exactly the equations of a <i>decoupled</i> pendulum, just with a slightly odd control input that is modulated by $\cos\theta$.</p>
+      near the origin.  This is a bit surprising... if we want to control the
+      pendulum, shouldn't we use the non-collocated version?  Actually, we
+      ultimately want to control both the cart and the pole, and we will build
+      on the collocated version both because it avoids inverting the
+      $\cos\theta$ term that can go to zero and because (when all parameters are
+      set to 1) we were left with a particularly simple form of the equations:
+      \begin{gather} \ddot{x} = u \\ \ddot\theta = - u c - s. %\ddot\theta =
+      -\frac{1}{l}( u c + g s ) \end{gather} The first equation is clearly
+      simple, but even the second equation is exactly the equations of a
+      <i>decoupled</i> pendulum, just with a slightly odd control input that is
+      modulated by $\cos\theta$.</p>
 
-      <p>Let us regulate the energy of this decoupled pendulum using energy shaping.  
-      The energy of the pendulum (a unit mass, unit length, simple
+      <p>Let us regulate the energy of this decoupled pendulum using energy
+      shaping. The energy of the pendulum (a unit mass, unit length, simple
       pendulum in unit gravity) is given by: $$E(\bx) = \frac{1}{2} \dot\theta^2
       - \cos\theta.$$ <!-- E = \frac{1}{2}ml^2\dot\theta^2 - mgl\cos\theta -->
       The desired energy, equivalent to the energy at the desired fixed-point,
@@ -936,8 +931,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \dot\theta = 0$, the system will never move.  However, if we have that
       $$\int_0^t \dot\theta^2(t') \cos^2 \theta(t') dt' \rightarrow \infty,\quad
       \text{as } t \rightarrow \infty,$$ then we have $\tilde{E}(t) \rightarrow
-      0$. This condition, a version of the LaSalle's theorem that we will develop in our notes on Lyapunov methods, is satisfied for all but the trivial constant
-      trajectories at fixed points.</p>
+      0$. This condition, a version of the LaSalle's theorem that we will
+      develop in our notes on Lyapunov methods, is satisfied for all but the
+      trivial constant trajectories at fixed points.</p>
 
       <p> Now we return to the full system dynamics (which includes the cart).
       <elib>Chung95</elib> and <elib>Spong96</elib> use the simple pendulum

@@ -276,6 +276,48 @@ for Limit Cycles</h1>
 
   <section><h1>Feedback design</h1>
 
+    <subsection><h1>For underactuation degree one.</h1>
+      
+      <p>It turns out many of our simple walking models -- particulary ones with
+      a point foot that are derived in the minimal coordinates -- are only short
+      one actuator (between the foot and the ground).  One can represent even
+      fairly complex robots this way; much of the theory that I'll elude to here
+      was originally developed by Jessy Grizzle and his group in the context of
+      the bipedal robot <a
+      href="https://web.eecs.umich.edu/~grizzle/papers/RABBITExperiments.html">RABBIT</a>.
+      Jessy's key observation was that limit cycle stability is effectively
+      stability in $n-1$ degrees of freedom, and you can often achieve it
+      easily with $n-1$ actuators -- he called this line of work "Hybrid
+      Zero Dynamics" (HZD).  We'll deal with the "hybrid" part of that in the
+      next chapter, but here is a simple example to illustrate the "zero
+      dynamics" concept.  [Coming sooon...] </p>
+
+      <todo>Add a simple example here.</todo>
+
+      <p>Stabilizing the zero dynamics is synonymous with achieving orbital
+      stability.  Interestingly, it doesn't actually guarantee that you will go
+      around the limit cycle.  One "feature" of the HZD walkers is that you can
+      actually stand in front of them and stop their forward progress with your
+      hand -- the control system will continue to act, maintaining itself on the
+      cycle, but progress along the cycle has stopped.  In some of the robots
+      you could even push them backwards and they would move through the same
+      walking cycle in reverse.  If one wants to certify that forward progress
+      will be achieved, then the tasks is reduced to inspecting the
+      one-dimensional dynamics of the phase variable along the cycle.</p>
+
+      <p>The notion of "zero dynamics" is certainly not restricted to systems
+      with underactuation of degree one.  In general, we can easily stabilize a
+      manifold of dimension $m$ with $m$ actuators (we saw this in the section
+      on <a href="acrobot.html#task_space_pfl"> task-space partial feedback
+      linearization</a>), and if being on that manifold is sufficient to achieve
+      our task, or if we can certify that the resulting dynamics on the manifold
+      are sufficient for our task, then life is good.  But in the
+      "underactuation degree one" case, the manifold under study is a
+      trajectory/orbit, and the tools from this chapter are immediately
+      applicable.</p>
+
+    </subsection>
+
     <subsection><h1>Transverse LQR</h1>
 
     </subsection>
