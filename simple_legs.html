@@ -397,40 +397,33 @@ of Walking and Running</h1>
           <jupyter>examples/simple_legs.ipynb</jupyter>
 
           <p>I've setup the notebook to make it easy for you to try a handful of
-          interesting initial conditions.</p>
+          interesting initial conditions.  And even made an interactive widget
+          for you to watch the simulation phase portrait as you change those
+          initial conditions.  Give it a try!  (I recommend using Binder instead
+          of Colab so you get the interactive features)</p>
 
           <p><a
-          href="https://github.com/RobotLocomotion/drake/blob/e08fc2bb0d289deddb5d76d0235f3a75ef3795d3/examples/rimless_wheel/rimless_wheel.h" target="_blank">The
-          rimless wheel model</a> actually uses a number of the more nuanced
-          features of <drake></drake> in order to simulate the hybrid system
-          accurately (as do many of the examples in this chapter). It actually
-          registers the collision events of the system -- the simulator uses
-          zero-crossing detection to ensure that the time/state of collision is
-          obtained accurately, and then applies the reset map.</p>
+          href="https://github.com/RobotLocomotion/drake/blob/e08fc2bb0d289deddb5d76d0235f3a75ef3795d3/examples/rimless_wheel/rimless_wheel.h"
+          target="_blank">The rimless wheel model</a> actually uses a number of
+          the more nuanced features of <drake></drake> in order to simulate the
+          hybrid system accurately (as do many of the examples in this chapter).
+          It actually registers the collision events of the system -- the
+          simulator uses zero-crossing detection to ensure that the time/state
+          of collision is obtained accurately, and then applies the reset
+          map.</p>
 
-        </example>
+          <figure>
+            <img width="80%" src="figures/rimless_wheel_phase.svg"/>
+            <figcaption>Phase portrait of the rimless wheel
+            ($m=1$, $l=1$, $g=9.8$, $\alpha=\pi/8$, $\gamma=0.08$).</figcaption>
+           </figure>
 
-        <p>One of the fantastic things about the rimless wheel is that the
-        dynamics are exactly the undamped simple pendulum that we've thought so
-        much about.  So you will recognize the phase portraits of the system
-        -- they are centered around the unstable fixed point of the simple
-        pendulum.  Phase plots of the trajectories from the various initial
-        conditions recommended in the notebook example are plotted below.</p>
-
-        <todo>generate these plots in the rimless_wheel notebook.</todo>
-
-        <figure>
-         <img width="80%" src="figures/rimlessWheel_phase1.svg"/>
-         <img width="80%" src="figures/rimlessWheel_phase2.svg"/>
-         <img width="80%" src="figures/rimlessWheel_phase3.svg"/>
-         <img width="80%" src="figures/rimlessWheel_phase4.svg"/>
-         <figcaption>Phase portrait trajectories of the rimless wheel
-         ($m=1$, $l=1$, $g=9.8$, $\alpha=\pi/8$, $\gamma=0.08$).</figcaption>
-        </figure>
-
-        <p>Take a minute to make sure you can follow these trajectories through
-        state space for each of the initial conditions.  It's non-trivial, but
-        worth the effort.</p>
+          <p>One of the fantastic things about the rimless wheel is that the
+          dynamics are exactly the undamped simple pendulum that we've thought
+          so much about.  So you will recognize the phase portraits of the
+          system -- they are centered around the unstable fixed point of the
+          simple pendulum.</p>
+      </example>
 
       </subsubsection> <!-- end of forward simulation -->
 
