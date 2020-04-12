@@ -12,5 +12,7 @@ rt_ipynb_test(
     deps = [
         "//underactuated",
         "//underactuated/exercises",
-        "//underactuated/exercises/humanoids/footstep_planning"],
+        "//underactuated/exercises/humanoids/footstep_planning",
+    ],
+    timeout = "moderate",
 )

@@ -333,6 +333,33 @@ Robots</h1>
 
   </section>
 
+  <section><h1>Exercises</h1>
+
+    <exercise><h1>Footstep Planning via Mixed-Integer Optimization</h1>
+
+      <p>In this exercise we implement a simplified version of the footstep
+      planning method proposed in <elib>Deits14a</elib>.  You will find all the
+      details <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/humanoids/footstep_planning/footstep_planning.ipynb" target="_blank">in this notebook</a>.
+      Your goal is to code most of the components of the mixed-integer program
+      at the core of the footstep planner:</p>
+
+      <ol type="a">
+
+        <li>The constraint that limit the maximum step length.</li>
+
+        <li>The constraint for which a foot cannot be in two stepping stones at
+        the same time.</li>
+
+        <li>The constraint that assign each foot to a stepping stone, for each
+        step of the robot.</li>
+
+        <li>The objective function that minimizes the sum of the squares of the
+        step lengths.</li>
+
+      </ol>
+
+    </exercise>
+
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 

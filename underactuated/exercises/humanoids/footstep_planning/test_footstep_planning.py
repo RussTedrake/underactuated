@@ -22,10 +22,7 @@ class TestFootstepPlanning(unittest.TestCase):
         self.footstep_planner = self.notebook_locals['footstep_planner']
 
         # empty solution of the benchmark problems
-        self.terrains = {
-            'A': Terrain([1, 1, 1, 1]),
-            'B': Terrain([1, 1, 1, 0])
-        }
+        self.terrains = {'A': Terrain([1, 1, 1, 1]), 'B': Terrain([1, 1, 1, 0])}
         self.n_steps = 8
         self.step_span = .8
         self.plans = {'A': {}, 'B': {}}
@@ -33,9 +30,9 @@ class TestFootstepPlanning(unittest.TestCase):
     def _solve_benchmarks(self):
         """Solves the benchmark problems."""
         for plan in ['A', 'B']:
-            self.plans[plan]['vars'], \
-            self.plans[plan]['cost'] = self.footstep_planner(
-                self.terrains[plan], self.n_steps, self.step_span)
+            self.plans[plan]['vars'], self.plans[plan][
+                'cost'] = self.footstep_planner(self.terrains[plan],
+                                                self.n_steps, self.step_span)
 
     @weight(4)
     @timeout_decorator.timeout(30.)
@@ -58,8 +55,7 @@ class TestFootstepPlanning(unittest.TestCase):
                     f'square of side {self.step_span} centered at the ' + \
                     'other foot.'
                 np.testing.assert_array_less(relative_position[t], c2c, msg)
-                np.testing.assert_array_less(- relative_position[t], c2c, msg)
-
+                np.testing.assert_array_less(-relative_position[t], c2c, msg)
 
     @weight(3)
     @timeout_decorator.timeout(30.)
@@ -73,11 +69,16 @@ class TestFootstepPlanning(unittest.TestCase):
             for t in range(self.n_steps + 1):
                 msg = f'Error at foot step {t} when solving the problem ' + \
                     f'for terrain_{plan}: '
-                self.assertAlmostEqual(sum(stone_left[t]), 1, places=4,
-                    msg = msg + f'stone_left[{t}] do not sum up to one.')
-                self.assertAlmostEqual(sum(stone_right[t]), 1, places=4,
-                    msg = msg + f'stone_right[{t}] do not sum up to one.')
-
+                self.assertAlmostEqual(sum(stone_left[t]),
+                                       1,
+                                       places=4,
+                                       msg=msg +
+                                       f'stone_left[{t}] do not sum up to one.')
+                self.assertAlmostEqual(
+                    sum(stone_right[t]),
+                    1,
+                    places=4,
+                    msg=msg + f'stone_right[{t}] do not sum up to one.')
 
     @weight(5)
     @timeout_decorator.timeout(30.)
@@ -96,29 +97,26 @@ class TestFootstepPlanning(unittest.TestCase):
                 i = np.where(np.isclose(stone_left[t], 1, atol=tol))[0][0]
                 stone = self.terrains[plan].stepping_stones[i]
                 np.testing.assert_array_less(
-                    stone.A.dot(position_left[t]),
-                    stone.b + tol,
+                    stone.A.dot(position_left[t]), stone.b + tol,
                     f'Solving the problem for terrain_{plan}, the binary ' +
                     f'variable stone_left[{t}, {i}] is one but the left foot ' +
-                    f'is not in stone {i} at time {t}.'
-                    )
+                    f'is not in stone {i} at time {t}.')
 
                 # right foot
                 i = np.where(np.isclose(stone_right[t], 1, atol=tol))[0][0]
                 stone = self.terrains[plan].stepping_stones[i]
                 np.testing.assert_array_less(
-                    stone.A.dot(position_right[t]),
-                    stone.b + tol,
+                    stone.A.dot(position_right[t]), stone.b + tol,
                     f'Solving the problem for terrain_{plan}, the binary ' +
                     f'variable stone_right[{t}, {i}] is one but the right ' +
-                    f'foot is not in stone {i} at time {t}.'
-                    )
+                    f'foot is not in stone {i} at time {t}.')
 
     @weight(4)
     @timeout_decorator.timeout(30.)
     def test_minimize_step_length(self):
         """Tests that the positioning of the feet minimized the sum of the
-        square of the two norm of the step lengths."""
+        square of the two norm of the step lengths.
+        """
         self._solve_benchmarks()
         tol = 1e-2
 
@@ -130,5 +128,4 @@ class TestFootstepPlanning(unittest.TestCase):
                 target_cost[plan],
                 places=2,
                 msg=f'Target cost of {target_cost[plan]} is not achieved for ' +
-                f'terrain_{plan}.'
-                )
+                f'terrain_{plan}.')
