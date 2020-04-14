@@ -38,9 +38,8 @@ class TestRRTPlanning(unittest.TestCase):
                   obstacle_list=obstacles)
         path = rrt.plan()
 
-        self.assertFalse(
-            path is None,
-            'The plan method is not implemented correctly')
+        self.assertFalse(path is None,
+                         'The plan method is not implemented correctly')
 
         np.testing.assert_array_almost_equal(
             start,
@@ -55,10 +54,10 @@ class TestRRTPlanning(unittest.TestCase):
             'goal location')
 
         for i in range(len(path) - 1):
-            is_in_collision = RRT.collision(
-                RRT.Node(path[i]), RRT.Node(path[i + 1]), obstacles)
-            self.assertFalse(
-                is_in_collision, 'The path is colliding with obstacles')
+            is_in_collision = RRT.collision(RRT.Node(path[i]),
+                                            RRT.Node(path[i + 1]), obstacles)
+            self.assertFalse(is_in_collision,
+                             'The path is colliding with obstacles')
 
     @weight(6)
     @timeout_decorator.timeout(20.)
@@ -111,7 +110,8 @@ class TestRRTPlanning(unittest.TestCase):
             'The choose_parent method does not check for collisions')
 
         np.testing.assert_array_almost_equal(
-            node4.parent.p, node1.p,
+            node4.parent.p,
+            node1.p,
             err_msg='The choose_parent method does not seem to' +
             ' select the best parent node')
 
@@ -119,14 +119,16 @@ class TestRRTPlanning(unittest.TestCase):
         node4 = rrt_star.steer(rrt_star.start, node4)
         rrt_star.rewire(node4, near_inds)
         np.testing.assert_array_almost_equal(
-            node1.parent.p, node4.p,
+            node1.parent.p,
+            node4.p,
             err_msg='The rewiring method does not rewire the correct nodes')
 
         node3.cost = 100
         node4 = rrt_star.steer(rrt_star.start, node4)
         rrt_star.rewire(node4, near_inds)
-        self.assertFalse(np.linalg.norm(node3.parent.p - node4.p) < 1e-5,
-                         'The rewiring method does not check for collision')
+        self.assertFalse(
+            np.linalg.norm(node3.parent.p - node4.p) < 1e-5,
+            'The rewiring method does not check for collision')
 
         np.random.seed(7)
         rrt_star = RRTStar(start=start,
@@ -150,10 +152,11 @@ class TestRRTPlanning(unittest.TestCase):
             'goal location')
 
         for i in range(len(path) - 1):
-            is_in_collision = RRTStar.collision(
-                RRTStar.Node(path[i]), RRTStar.Node(path[i + 1]), obstacles)
-            self.assertFalse(
-                is_in_collision, 'The path is colliding with obstacles')
+            is_in_collision = RRTStar.collision(RRTStar.Node(path[i]),
+                                                RRTStar.Node(path[i + 1]),
+                                                obstacles)
+            self.assertFalse(is_in_collision,
+                             'The path is colliding with obstacles')
 
         def path_cost(path):
             total = 0
