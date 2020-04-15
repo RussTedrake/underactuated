@@ -100,52 +100,38 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       task is to stabilize the unstable fixed point $\bx = [\pi,0,0,0]^T$.</p>
 
       <p>
-      We will derive the equations of motion for the Acrobot using the
-      method of Lagrange.  The kinematics are given by:
-      \begin{equation}
-      \bx_1 = \begin{bmatrix} l_1 s_1 \\ -l_1 c_1
-        \end{bmatrix}, \quad \bx_2 = \bx_1 + \begin{bmatrix} l_2 s_{1+2} \\
-        - l_2 c_{1+2} \end{bmatrix} .
-      \end{equation}
-      The energy <!--\footnote{The complicated expression for $T_2$ comes from
-        $T_2 = \frac{1}{2} m_2 v_{c2}^2 + \frac{1}{2}I_{c2} (\dot{q}_1 +
-        \dot{q}_2)^2$, where $v_{c2}$ is the velocity of the center of mass
-        of the second link and $I_{c2} = I_2 - m_2 l_{c2}^2$ is the moment
-        of inertia about that point.  Use $c_1 c_{1+2} + s_1 s_{1+2} =
-        c_2$ to simplify.}--> is given by:
-      \begin{gather}
-      T = T_1 + T_2, \quad T_1 = \frac{1}{2} I_1 \dot{q}_1^2 \\
-      T_2 = \frac{1}{2} ( m_2 l_1^2 + I_2 + 2 m_2 l_1 l_{c2} c_2 )
-      \dot{q}_1^2 + \frac{1}{2} I_2 \dot{q}_2^2 + (I_2 + m_2 l_1 l_{c2} c_2
-      ) \dot{q}_1 \dot{q}_2 \\
-      % from expanding sum of point masses
-      U = -m_1 g l_{c1} c_1 - m_2 g (l_1 c_1 + l_{c2} c_{1+2})
-      \end{gather}
-      Entering these quantities into the Lagrangian yields the equations of
-      motion:
-      \begin{gather}
-      (I_1 + I_2 + m_2 l_1^2 + 2m_2 l_1 l_{c2} c_2) \ddot{q}_1 + (I_2 + m_2
-        l_1 l_{c2} c_2)\ddot{q}_2 - 2m_2 l_1 l_{c2} s_2 \dot{q}_1 \dot{q}_2
-        \\ \quad -m_2 l_1 l_{c2} s_2 \dot{q}_2^2 + m_1 g l_{c1}s_1 + m_2 g
-        (l_1 s_1 + l_{c2} s_{1+2}) = 0 \\
-      (I_2 + m_2 l_1 l_{c2} c_2) \ddot{q}_1 + I_2 \ddot{q}_2 + m_2 l_1
-        l_{c2} s_2 \dot{q}_1^2 + m_2 g l_{c2} s_{1+2} = \tau
-      \end{gather}
-      In standard, manipulator equation form:
-      $$\bM(\bq)\ddot\bq + \bC(\bq,\dot\bq)\dot\bq = \btau_g(\bq) +
-      \bB\bu,$$ using $\bq = [\theta_1,\theta_2]^T$, $\bu = \tau$ we have:
-      \begin{gather}
-      \bM(\bq) = \begin{bmatrix} I_1 + I_2 + m_2 l_1^2 + 2m_2 l_1 l_{c2}
-        c_2 & I_2 + m_2 l_1 l_{c2} c_2 \\ I_2 + m_2 l_1 l_{c2} c_2 & I_2
-        \end{bmatrix},\label{eq:Hacrobot}\\
-      \bC(\bq,\dot{\bq}) = \begin{bmatrix} -2 m_2
-        l_1 l_{c2} s_2 \dot{q}_2 & -m_2 l_1 l_{c2} s_2 \dot{q}_2 \\ m_2 l_1
-        l_{c2} s_2 \dot{q}_1 & 0 \end{bmatrix}, \\
-      \btau_g(\bq) = \begin{bmatrix} -m_1 g l_{c1}s_1 -
-        m_2 g (l_1 s_1 + l_{c2}s_{1+2}) \\
-        -m_2 g l_{c2} s_{1+2} \end{bmatrix}, \quad
-      \bB = \begin{bmatrix} 0 \\ 1 \end{bmatrix}.
-      \end{gather}
+      We will derive the equations of motion for the Acrobot using the method of
+      Lagrange.  The locations of the center of mass of each link, $\bp_{c1},
+      \bp_{c2},$ are given by the kinematics: \begin{equation} \bp_{c1} =
+      \begin{bmatrix} l_{c1} s_1 \\ -l_{c1} c_1 \end{bmatrix}, \quad \bp_{c2} =
+      \begin{bmatrix} l_1 s_1 + l_{c2} s_{1+2} \\ -l_1 c_1 - l_{c2} c_{1+2}
+      \end{bmatrix} . \end{equation} The energy <!--\footnote{The complicated
+      expression for $T_2$ comes from $T_2 = \frac{1}{2} m_2 v_{c2}^2 +
+      \frac{1}{2}I_{c2} (\dot{q}_1 + \dot{q}_2)^2$, where $v_{c2}$ is the
+      velocity of the center of mass of the second link and $I_{c2} = I_2 - m_2
+      l_{c2}^2$ is the moment of inertia about that point.  Use $c_1 c_{1+2} +
+      s_1 s_{1+2} = c_2$ to simplify.}--> is given by: \begin{gather} T = T_1 +
+      T_2, \quad T_1 = \frac{1}{2} I_1 \dot{q}_1^2 \\ T_2 = \frac{1}{2} ( m_2
+      l_1^2 + I_2 + 2 m_2 l_1 l_{c2} c_2 ) \dot{q}_1^2 + \frac{1}{2} I_2
+      \dot{q}_2^2 + (I_2 + m_2 l_1 l_{c2} c_2) \dot{q}_1 \dot{q}_2 \\ 
+      <!-- from expanding sum of point masses --> U = -m_1 g l_{c1} c_1 - m_2 g (l_1 c_1 +
+      l_{c2} c_{1+2}) \end{gather} Entering these quantities into the Lagrangian
+      yields the equations of motion: \begin{gather} (I_1 + I_2 + m_2 l_1^2 +
+      2m_2 l_1 l_{c2} c_2) \ddot{q}_1 + (I_2 + m_2 l_1 l_{c2} c_2)\ddot{q}_2 -
+      2m_2 l_1 l_{c2} s_2 \dot{q}_1 \dot{q}_2 \\ \quad -m_2 l_1 l_{c2} s_2
+      \dot{q}_2^2 + m_1 g l_{c1}s_1 + m_2 g (l_1 s_1 + l_{c2} s_{1+2}) = 0 \\
+      (I_2 + m_2 l_1 l_{c2} c_2) \ddot{q}_1 + I_2 \ddot{q}_2 + m_2 l_1 l_{c2}
+      s_2 \dot{q}_1^2 + m_2 g l_{c2} s_{1+2} = \tau \end{gather} In standard,
+      manipulator equation form: $$\bM(\bq)\ddot\bq + \bC(\bq,\dot\bq)\dot\bq =
+      \btau_g(\bq) + \bB\bu,$$ using $\bq = [\theta_1,\theta_2]^T$, $\bu = \tau$
+      we have: \begin{gather} \bM(\bq) = \begin{bmatrix} I_1 + I_2 + m_2 l_1^2 +
+      2m_2 l_1 l_{c2} c_2 & I_2 + m_2 l_1 l_{c2} c_2 \\ I_2 + m_2 l_1 l_{c2} c_2
+      & I_2 \end{bmatrix},\label{eq:Hacrobot}\\ \bC(\bq,\dot{\bq}) =
+      \begin{bmatrix} -2 m_2 l_1 l_{c2} s_2 \dot{q}_2 & -m_2 l_1 l_{c2} s_2
+      \dot{q}_2 \\ m_2 l_1 l_{c2} s_2 \dot{q}_1 & 0 \end{bmatrix}, \\
+      \btau_g(\bq) = \begin{bmatrix} -m_1 g l_{c1}s_1 - m_2 g (l_1 s_1 +
+      l_{c2}s_{1+2}) \\ -m_2 g l_{c2} s_{1+2} \end{bmatrix}, \quad \bB =
+      \begin{bmatrix} 0 \\ 1 \end{bmatrix}. \end{gather}
       </p>
       <!--
       Solving directly for the accelerations, we have
