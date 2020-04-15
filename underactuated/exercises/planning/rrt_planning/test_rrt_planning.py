@@ -10,7 +10,7 @@ class TestRRTPlanning(unittest.TestCase):
         super().__init__(test_name)
         self.notebook_locals = notebook_locals
 
-    @weight(6)
+    @weight(7)
     @timeout_decorator.timeout(1.)
     def test1_rrt_path(self):
         """Test RRT"""
@@ -59,9 +59,9 @@ class TestRRTPlanning(unittest.TestCase):
             self.assertFalse(is_in_collision,
                              'The path is colliding with obstacles')
 
-    @weight(6)
+    @weight(7)
     @timeout_decorator.timeout(20.)
-    def test1_rrt_star_path(self):
+    def test2_rrt_star_path(self):
         """Test RRT*"""
         # load locals
         RRTStar = self.notebook_locals['RRTStar']
