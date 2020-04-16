@@ -13,9 +13,7 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
     # starts by testing the constraints we already implemented
     # but gives zero points for each test
 
-    @weight(0)
-    @timeout_decorator.timeout(1.)
-    def test_time_intervals(self):
+    def _test_time_intervals(self):
         """Time intervals are within bounds"""
         # retrieve variables from notebook
         T = self.notebook_locals['T']
@@ -33,9 +31,7 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
                             msg=f'Time interval upper bound violated at time ' +
                             f'step {t}.')
 
-    @weight(0)
-    @timeout_decorator.timeout(1.)
-    def test_dynamic_feasibility(self):
+    def _test_dynamic_feasibility(self):
         """Implicit Euler equations are verified"""
         # retrieve variables from notebook
         T = self.notebook_locals['T']
@@ -48,27 +44,31 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
 
         # link configurations, velocities, accelerations using implicit Euler
         for t in range(T):
-            np.testing.assert_array_almost_equal(
+            np.testing.assert_allclose(
                 q[t + 1],
                 q[t] + h[t] * qd[t + 1],
+                atol=1e-5,
+                rtol=1e-5,
                 err_msg='Configurations q and velocities qd do not verify ' +
                 f'the Implicit Euler rule at time step {t}.')
-            np.testing.assert_array_almost_equal(
+            np.testing.assert_allclose(
                 qd[t + 1],
                 qd[t] + h[t] * qdd[t],
+                atol=1e-5,
+                rtol=1e-5,
                 err_msg='Velocities qd and accelerations qdd do not verify ' +
                 f'the Implicit Euler rule at time step {t}.')
             vars = np.concatenate((q[t + 1], qd[t + 1], qdd[t], f[t]))
             manipulator_equations_violation = manipulator_equations(vars)
-            np.testing.assert_array_almost_equal(
+            np.testing.assert_allclose(
                 manipulator_equations_violation,
                 np.zeros(q.shape[1]),
+                atol=1e-5,
+                rtol=1e-5,
                 err_msg='Manipulator equations are not verified at time ' +
                 f'step {t}.')
 
-    @weight(0)
-    @timeout_decorator.timeout(1.)
-    def test_impulsive_collision(self):
+    def _test_impulsive_collision(self):
         """Impulsive collision is verified at the heel strike"""
         # retrieve variables from notebook
         q = self.notebook_locals['q_opt']
@@ -81,14 +81,14 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
         # link pre and post impact velocities
         vars = np.concatenate((q[-1], qd[-1], qd_post, imp))
         reset_velocity_heelstrike_violation = reset_velocity_heelstrike(vars)
-        np.testing.assert_array_almost_equal(
+        np.testing.assert_allclose(
             reset_velocity_heelstrike_violation,
             np.zeros(q.shape[1] + imp.size),
+            atol=1e-5,
+            rtol=1e-5,
             err_msg='Impulsive collision equations are not verified.')
 
-    @weight(0)
-    @timeout_decorator.timeout(1.)
-    def test_periodicity(self):
+    def _test_periodicity(self):
         """Periodicity of the walking gait"""
         # retrieve variables from notebook
         q = self.notebook_locals['q_opt']
@@ -96,16 +96,20 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
         qd_post = self.notebook_locals['qd_post_opt']
 
         # periodicity of the configuration
-        np.testing.assert_array_almost_equal(
+        np.testing.assert_allclose(
             q[0],
             -q[-1],
+            atol=1e-5,
+            rtol=1e-5,
             err_msg='Configuration vector q does not verify periodicity ' +
             'conditions.')
 
         # periodicity of the  velocities
-        np.testing.assert_array_almost_equal(
+        np.testing.assert_allclose(
             qd[0],
             np.array([0, 0, qd_post[2] + qd_post[3], -qd_post[3]]),
+            atol=1e-5,
+            rtol=1e-5,
             err_msg='Velocity vector qd does not verify periodicity ' +
             'conditions.')
 
@@ -115,9 +119,15 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
     # function
 
     @weight(3)
-    @timeout_decorator.timeout(1.)
+    @timeout_decorator.timeout(3.)
     def test_stance_foot_on_ground(self):
         """Stance foot on the ground for all times"""
+        # run the tests for the constraints already in the notebook
+        self._test_time_intervals()
+        self._test_dynamic_feasibility()
+        self._test_impulsive_collision()
+        self._test_periodicity()
+
         # retrieve variables from notebook
         T = self.notebook_locals['T']
         q = self.notebook_locals['q_opt']
@@ -128,9 +138,15 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
                 msg=f'Stance foot is not on the ground at time step {t}.')
 
     @weight(2)
-    @timeout_decorator.timeout(1.)
+    @timeout_decorator.timeout(3.)
     def test_swing_foot_on_ground(self):
         """Swing foot on the ground at time zero"""
+        # run the tests for the constraints already in the notebook
+        self._test_time_intervals()
+        self._test_dynamic_feasibility()
+        self._test_impulsive_collision()
+        self._test_periodicity()
+
         # retrieve variables from notebook
         q = self.notebook_locals['q_opt']
         swing_foot_height = self.notebook_locals['swing_foot_height']
@@ -140,9 +156,15 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
             msg='Swing foot is not on the ground at time zero.')
 
     @weight(3)
-    @timeout_decorator.timeout(1.)
+    @timeout_decorator.timeout(3.)
     def test_no_penetration(self):
         """No penetration of the swing foot in the ground for all times"""
+        # run the tests for the constraints already in the notebook
+        self._test_time_intervals()
+        self._test_dynamic_feasibility()
+        self._test_impulsive_collision()
+        self._test_periodicity()
+
         # retrieve variables from notebook
         T = self.notebook_locals['T']
         q = self.notebook_locals['q_opt']
@@ -155,9 +177,15 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
                 msg=f'Swing foot in penetration with ground at time step {t}.')
 
     @weight(3)
-    @timeout_decorator.timeout(1.)
+    @timeout_decorator.timeout(3.)
     def test_stance_foot_friction(self):
         """Stance-foot contact force in friction cone for all times"""
+        # run the tests for the constraints already in the notebook
+        self._test_time_intervals()
+        self._test_dynamic_feasibility()
+        self._test_impulsive_collision()
+        self._test_periodicity()
+
         # retrieve variables from notebook
         T = self.notebook_locals['T']
         friction = self.notebook_locals['friction']
@@ -176,9 +204,15 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
                 f'step {t}.')
 
     @weight(2)
-    @timeout_decorator.timeout(1.)
+    @timeout_decorator.timeout(3.)
     def test_swing_foot_friction(self):
         """Swing-foot impulse in friction cone"""
+        # run the tests for the constraints already in the notebook
+        self._test_time_intervals()
+        self._test_dynamic_feasibility()
+        self._test_impulsive_collision()
+        self._test_periodicity()
+
         # retrieve variables from notebook
         friction = self.notebook_locals['friction']
         imp = self.notebook_locals['imp_opt']
