@@ -128,8 +128,8 @@ class TestFootstepPlanning(unittest.TestCase):
             # https://github.com/RobotLocomotion/drake/blob/88c93118df507777eb3f99628d1aa7c808f81f49/solvers/branch_and_bound.cc#L711
             # with the tolerances from
             # https://github.com/RobotLocomotion/drake/blob/4ee674e7931527df838bd33e79cf2f4dad57bd20/solvers/branch_and_bound.h#L674
-            atol = 1e-2
-            rtol = 1e-2
+            atol = 2e-2  # double the tolerances from the C++ code
+            rtol = 2e-2
             gap = self.plans[plan]['cost'] - target_cost[plan]
             atol_convergence = gap <= atol
             rtol_convergence = gap / target_cost[plan] <= rtol
