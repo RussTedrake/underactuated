@@ -126,9 +126,9 @@ class TestFootstepPlanning(unittest.TestCase):
 
             # same convergence check as in
             # https://github.com/RobotLocomotion/drake/blob/88c93118df507777eb3f99628d1aa7c808f81f49/solvers/branch_and_bound.cc#L711
-            # with the tolerances from
+            # with double the tolerances from
             # https://github.com/RobotLocomotion/drake/blob/4ee674e7931527df838bd33e79cf2f4dad57bd20/solvers/branch_and_bound.h#L674
-            atol = 2e-2  # double the tolerances from the C++ code
+            atol = 2e-2
             rtol = 2e-2
             gap = self.plans[plan]['cost'] - target_cost[plan]
             atol_convergence = gap <= atol
@@ -137,4 +137,4 @@ class TestFootstepPlanning(unittest.TestCase):
                 atol_convergence or rtol_convergence,
                 f'Target cost of {target_cost[plan]} is not achieved for ' +
                 f'terrain_{plan}, with absolute tolerance {atol} and ' +
-                f'relative tolerance {rtol}')
+                f'relative tolerance {rtol}.')
