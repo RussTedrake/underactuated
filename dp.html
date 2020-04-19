@@ -308,15 +308,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     Furthermore we will denote the transition "dynamics" using \[ s[n+1] =
     f(s[n],a[n]). \] For instance, in the graph above, $f(s_1,a_1) = s_2$.</p>
 
-    <p>There are many algorithms for finding (or approximating) the optimal
-    path from a start to a goal on directed graphs.  In dynamic programming,
-    the key insight is that we can find the shortest path from every node by
-    solving recursively for the optimal <em>cost-to-go</em> (the cost that will
-    be accumulated when running the optimal controller) from every node to the
+    <p>There are many algorithms for finding (or approximating) the optimal path
+    from a start to a goal on directed graphs.  In dynamic programming, the key
+    insight is that we can find the shortest path from every node by solving
+    recursively for the optimal <em>cost-to-go</em> (the cost that will be
+    accumulated when running the optimal controller) from every node to the
     goal. One such algorithm starts by initializing an estimate $\hat{J}^*=0$
     for all $s_i$, then proceeds with an iterative algorithm which sets
-    \begin{equation} \hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[ \ell(s_i,a) +
-    \hat{J}^*\left({f(s_i,a)}\right) \right]. \label{eq:value_update}
+    \begin{equation} \hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[ \ell(s_i,a)
+    + \hat{J}^*\left({f(s_i,a)}\right) \right]. \label{eq:value_update}
     \end{equation} In software, $\hat{J}^*$ can be represented as a vector with
     dimension equal to the number of discrete states.  This algorithm,
     appropriately known as <em>value iteration</em>, is guaranteed to converge
@@ -324,10 +324,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     J^* + c$ <elib>Bertsekas96</elib>, and in practice does so rapidly.
     Typically the update is done in <em>batch</em> -- e.g. the estimate is
     updated for all $i$ at once -- but the <em>asynchronous</em> version where
-    states are updated one at a time is also known to converge, so long as
-    every state is eventually updated infinitely often.  Assuming the graph has
-    a goal state with a zero-cost self-transition, then this cost-to-go
-    function represents the weighted shortest distance to the goal. </p>
+    states are updated one at a time is also known to converge, so long as every
+    state is eventually updated infinitely often.  Assuming the graph has a goal
+    state with a zero-cost self-transition, then this cost-to-go function
+    represents the weighted shortest distance to the goal. </p>
 
     <p> Value iteration is an amazingly simple algorithm, but it accomplishes
     something quite amazing: it efficiently computes the long-term cost of an
@@ -786,22 +786,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       efficient for some instances of the problem.</p>
 
       <todo>I've moved the stochastic dp equations, but this text depended on them.</todo>
-      <p>Recall the optimality conditions from Eq.
-      (\ref{eq:stochastic_dp_optimality_cond}).  If we describe the cost-to-go
-      function as a vector, $J_i = J(s_i)$, then these optimality conditions can
-      be rewritten in vector form as \begin{equation} \bJ = \min_a \left[ {\bf \ell}(a)
-      + \bT(a) \bJ \right], \label{eq:vector_stochastic_dp} \end{equation} where
-      $\ell_i(a) = \ell(s_i,a)$ is the cost vector, and $T_{i,j}(a) = \Pr(s_j|s_i,a)$
-      is the transition probability matrix.  Let us take $\bJ$ as the vector of
+      <p>Recall the optimality conditions from Eq. \eqref{eq:value_update}.  If
+      we describe the cost-to-go function as a vector, $J_i = J(s_i)$, then
+      these optimality conditions can be rewritten in vector form as
+      \begin{equation} \bJ = \min_a \left[ {\bf \ell}(a) + \bT(a) \bJ \right],
+      \label{eq:vector_stochastic_dp} \end{equation} where $\ell_i(a) =
+      \ell(s_i,a)$ is the cost vector, and $T_{i,j}(a) = \Pr(s_j|s_i,a)$ is the
+      transition probability matrix.  Let us take $\bJ$ as the vector of
       decision variables, and replace Eq. (\ref{eq:vector_stochastic_dp}) with
-      the constraints: \begin{equation} \forall a, \bJ \le {\bf \ell}(a) + \bT(a)
-      \bJ.\end{equation}  Clearly, for finite $a$, this is finite list of linear
-      constraints, and for any vector $\bJ$ satisfying these constraints we have
-      $\bJ \le \bJ^*$ (elementwise).  Now write the linear program:
+      the constraints: \begin{equation} \forall a, \bJ \le {\bf \ell}(a) +
+      \bT(a) \bJ.\end{equation}  Clearly, for finite $a$, this is finite list of
+      linear constraints, and for any vector $\bJ$ satisfying these constraints
+      we have $\bJ \le \bJ^*$ (elementwise).  Now write the linear program:
       \begin{gather*} \maximize_\bJ \quad \bc^T \bJ, \\ \subjto \quad \forall a,
-      \bJ \le
-      {\bf \ell}(a) + \bT(a) \bJ, \end{gather*} where $c$ is any positive vector.  The
-      solution to this problem is $\bJ = \bJ^*$.</p>
+      \bJ \le {\bf \ell}(a) + \bT(a) \bJ, \end{gather*} where $c$ is any
+      positive vector.  The solution to this problem is $\bJ = \bJ^*$.</p>
 
       <p>Perhaps even more interesting is that this approach can be generalized
       to linear function approximators.  Taking a vector form of my notation

@@ -15,7 +15,7 @@ def setup_drake():
     try:
         import pydrake
     except ImportError:
-        if platform.system() is "Darwin":
+        if platform.system() == "Darwin":
             get_ipython().system(
                 u"if [ ! -d '/opt/drake' ]; then curl -o drake.tar.gz https://drake-packages.csail.mit.edu/drake/continuous/drake-latest-mac.tar.gz && tar -xzf drake.tar.gz -C /opt && export HOMEBREW_CURL_RETRIES=4 && brew update && brew bundle --file=/opt/drake/share/drake/setup/Brewfile --no-lock; fi"  # noqa
             )
@@ -43,7 +43,7 @@ def setup_underactuated():
     try:
         import underactuated
     except ImportError:
-        if platform.system() is "Darwin":
+        if platform.system() == "Darwin":
             get_ipython().system(
                 u"if [ ! -d '/opt/underactuated' ]; then git clone https://github.com/RussTedrake/underactuated.git /opt/underactuated && /opt/underactuated/scripts/setup/mac/install_prereqs; fi"  # noqa
             )
