@@ -55,14 +55,95 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <chapter class="appendix" style="counter-reset: chapter 2"><h1>Optimization and
   Mathematical Programming</h1>
 
+  <p>The view of dynamics and controls taken in these notes builds heavily on
+  tools from optimization -- and our success in practice depends heavily on the
+  effective application of numerical optimization.  There are many excellent
+  books on optimization, for example <elib>Nocedal06</elib> is an excellent
+  reference on smooth optimization and <elib>Boyd04a</elib> is an excellent
+  reference on convex optimization (which we use extensively).  I will provide
+  more references for the specific optimization formulations below.</p>
+  
+  <p>The intention of this chapter is, therefore, mainly to provide a launchpad
+  and to address some topics that are particularly relevant in robotics but
+  might be more hidden in the existing general treatments.  You can get far very
+  quickly as a consumer of these tools with just a high-level understanding.
+  But, as with many things, sometimes the details matter and it becomes
+  important to understand what is going on under the hood.  We can often
+  formulate an optimization problem in multiple ways that might be
+  mathematically equivalent, but perform very differently in practice.</p>
+
   <section><h1>Optimization software</h1>
 
-    <p>We have a short introduction to mathematical programming in
-      <drake></drake> <a href="https://nbviewer.jupyter.org/github/RobotLocomotion/drake/blob/master/tutorials/mathematical_program.ipynb">here</a>.</p>
+    <p>Some of the algorithms from optimization are quite simple to implement
+    yourself; stochastic gradient descent is perhaps the classic example.  Even
+    more of them are conceptually fairly simple, but for some of the algorithms,
+    the implementation details matter a great deal -- the difference between an
+    expert implementation and a novice implementation of the numerical recipe,
+    in terms of speed and/or robustness, can be dramatic.  These packages often
+    use a wealth of techniques for numerically conditioning the problems, for
+    discarding trivially valid constraints, and for warm-starting optimization
+    between solves.  Not all solvers support all types of objectives and
+    constraints, and even if we have two commercial solvers that both claim to
+    solve, e.g. quadratic programs, then they might perform differently on the
+    particular structure/conditioning of your problem.  In some cases, we also
+    have nicely designed open-source alternatives to these commercial solvers
+    (often written by academics who are experts in optimization) -- sometimes
+    they compete well with the commercial solvers or even outperform them in
+    particular problem types.</p>
+
+    <p>As a result, there are also a handful of software packages that attempt
+    to provide a layer of abstraction between the formulation of a mathematical
+    program and the instantiation of that problem in each of the particular
+    solvers.  Famous examples of this include <a
+    href="http://cvxr.com/cvx/">CVX</a> and <a
+    href="https://yalmip.github.io/">YALMIP</a> for MATLAB, and <a
+    href="https://www.juliaopt.org/JuMP.jl/stable/">JuMP</a> for Julia.
+    <drake></drake>'s MathematicalProgram classes provide a middle layer like
+    this for C++ and Python; its creation was motivated initially and
+    specifically by the need to support the optimization formulations we use in
+    this text.</p>
+
+    <p>We have a number of tutorials on mathematical programming in
+    <drake></drake>, starting with a general introduction <a
+    href="https://mybinder.org/v2/gh/RobotLocomotion/drake/nightly-release?filepath=tutorials/mathematical_program.ipynb">here</a>.  Drake <a href="https://drake.mit.edu/doxygen_cxx/group__solvers.html">supports a number of custom, open-source, and commercial solvers</a> (and even some of the commercial solvers are free to academic users).</p>
 
   </section>
 
   <section><h1>General concepts</h1>
+
+    <p>The general formulation is ... </p>
+
+    <p>It's important to realize that even though this formulation is incredibly
+    general, it does have it's limits.  As just one example, when write
+    optimizations to plan trajectories of a robot, in this formulation we
+    typically have to choose a-priori as particular number of decision variables
+    that will encode the solution.  Although we can of course write algorithms
+    that change the number of variables and call the optimizer again, somehow I
+    feel that this "general" formulation fails to capture, for instance, the
+    type of mathematical programming that occurs in sample-based optimization
+    planning -- where the resulting solutions can be described by any finite
+    number of parameters, and the computation flexibly transitions amongst
+    them.</p>
+
+    <subsection><h1>Convex vs nonconvex optimization</h1>
+    
+      <p>Local optima.  Convex functions, convex constraints.</p>
+
+      <p>If an optimization problem is nonconvex, it does not necessarily mean
+      that the optimization is hard. There are many cases in deep learning where
+      we can reliably solve seemingly very high-dimensional and nonconvex
+      optimization problems.  Our understanding of these phenomenon is evolving
+      rapidly, and I suspect anything I write here will shortly become outdated.
+      But the current thinking in supervised learning mostly revolves around the
+      idea that over-parameterization is key -- that many of these success
+      stories are happening in a regime where we actually have more decision
+      variables than we have data, and that the search space is actually dense
+      with solutions that can fit the data perfectly (the so-called
+      "interpolating solutions"), that not all global minima are equally robust,
+      and that the optimization algorithms are performing some form of implicit
+      regularization in order to pick a "good" interpolating solution.</p>
+    
+    </subsection>
 
     <subsection><h1>Constrained optimization with Lagrange multipliers</h1>
   
@@ -112,6 +193,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     </subsection>
     <subsection><h1>Semidefinite Programming and Linear Matrix Inequalities</h1>
     </subsection>
+
     <subsection id=sums_of_squares><h1>Sums-of-squares optimization</h1>
 
       <p>It turns out that in the same way that we can use SDP to search over
@@ -160,8 +242,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       optimization to solve what appear to be very non-convex optimization
       problems.</p>
 
-      <example><h1>Global minimization via
-        SOS</h1>
+      <example><h1>Global minimization via SOS</h1>
 
         <p>Consider the following famous non-linear function of two variables
         (called the "six-hump-camel": $$p(x) = 4x^2 + xy - 4y^2 - 2.1x^4 + 4y^4
@@ -187,6 +268,26 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         sums-of-squares solutions (which we don't need for the goals of this
         chapter).</p>
       </example>
+
+      <subsubsection><h1>Sums of squares on a Semi-Algebraic Set</h1>
+      
+        <p>The S-procedure.</p>
+      
+      </subsubsection>
+
+      <subsubsection><h1>Sums of squares optimization on an Algebraic Variety</h1>
+      
+        <p>The S-procedure</p>
+
+        <p>Using the quotient ring</p>
+
+        <p>Quotient rings via sampling</p>
+
+      </subsubsection>
+
+      <subsubsection><h1>DSOS and SDSOS</h1>
+      
+      </subsubsection>
 
     </subsection>
     
@@ -283,7 +384,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
   <section><h1>Combinatorial optimization</h1>
     <subsection><h1>Search, SAT, First order logic, SMT solvers, LP interpretation</h1></subsection>
-    <subsection><h1>Mixed-integer convex optimization</h1></subsection>
+    <subsection><h1>Mixed-integer convex optimization</h1>
+    
+      <p>An advanced, but very readable book on MIP <elib>Conforti14</elib>.  Nice survey paper on MILP <elib>Vielma15</elib>.</p>
+    
+    </subsection>
   </section>
   <section><h1>"Black-box" optimization</h1>
     Derivative-free methods.  Some allow noisy evaluations. 
