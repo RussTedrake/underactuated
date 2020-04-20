@@ -4,9 +4,12 @@
 import os
 import re
 import sys
+import warnings
 
-from nbconvert.exporters import PythonExporter
-from nbconvert.writers import StdoutWriter
+warnings.filterwarnings("ignore", category=SyntaxWarning)
+
+from nbconvert.exporters import PythonExporter  # noqa: E402
+from nbconvert.writers import StdoutWriter  # noqa: E402
 
 
 def main(notebook_filename):
