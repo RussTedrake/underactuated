@@ -12,5 +12,6 @@ rt_ipynb_test(
     deps = [
         "//underactuated",
         "//underactuated/exercises",
-        "//underactuated/exercises/lyapunov/control"],
+        "//underactuated/exercises/lyapunov/control",
+    ],
 )

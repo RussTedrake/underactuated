@@ -8,6 +8,7 @@ load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
     name = "cartpole_balancing",
+    timeout = "moderate",
     srcs = ["cartpole_balancing.ipynb"],
     data = ["//underactuated/models:undamped_cartpole.urdf"],
     deps = [
@@ -15,5 +16,4 @@ rt_ipynb_test(
         "//underactuated/exercises",
         "//underactuated/exercises/acrobot/cartpole_balancing",
     ],
-    timeout = "moderate",
 )

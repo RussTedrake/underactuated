@@ -63,11 +63,11 @@ rt_ipynb_test(
 
 rt_ipynb_test(
     name = "trajectory_optimization",
+    timeout = "moderate",
     srcs = ["trajectory_optimization.ipynb"],
     data = ["//underactuated/models:cartpole.urdf"],
     deps = [
         "//underactuated",
         "//underactuated:pendulum",
     ],
-    timeout = "moderate",
 )

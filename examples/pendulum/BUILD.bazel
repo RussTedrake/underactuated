@@ -18,8 +18,8 @@ rt_py_test(
     srcs = ["torque_slider_demo.py"],
     args = ["--duration 0.1"],
     deps = [
-        "//underactuated:pendulum",
         "//underactuated",
+        "//underactuated:pendulum",
     ],
 )
 
