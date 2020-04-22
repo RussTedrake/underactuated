@@ -38,14 +38,15 @@ on:
   push:
     branches:
       - master
-  schedule:
-    - cron: '0 8 * * *'
 jobs:
   bionic:
     name: ubuntu 18.04 bionic beaver
     runs-on: ubuntu-18.04
     container: ubuntu:18.04
     steps:
+      - name: df
+        run: df -h
+        shell: bash
       - name: pre-checkout setup
         run: |
           export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 DEBIAN_FRONTEND=noninteractive
@@ -57,16 +58,31 @@ jobs:
           apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends git
           rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*
         shell: bash
+      - name: df
+        run: df -h
+        shell: bash
       - name: checkout
         uses: actions/checkout@v2
+      - name: df
+        run: df -h
+        shell: bash
       - name: submodule checkout
         run:  ./scripts/workflows/ci/bionic/submodule_checkout
+        shell: bash
+      - name: df
+        run: df -h
         shell: bash
       - name: post-checkout setup
         run: ./scripts/workflows/ci/bionic/setup
         shell: bash
+      - name: df
+        run: df -h
+        shell: bash
       - name: test
         run: ./scripts/workflows/ci/bionic/test
+        shell: bash
+      - name: df
+        run: df -h
         shell: bash
   catalina:
     name: macos catalina 10.15
