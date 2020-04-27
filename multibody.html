@@ -362,9 +362,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         coefficient of restitution</a>, yielding: $$ \Phi \dot{\bq}^+ -
         \Phi\dot{\bq}^- = -(1+e)\Phi\dot{\bq}^-,$$ and therefore
         $$\int_{t_c^-}^{t_c^+} \lambda dt = - (1+e)\left[ \Phi \bM^{-1} \Phi^T
-        \right]^+ \Phi \dot{\bq}^-.$$ Substituting this back in above results in
-        \begin{equation}\dot{\bq}^+ = \left[ \bI - (1+e)\bM^{-1} \Phi^T \left[
-        \Phi \bM^{-1} \Phi^T \right]^+ \Phi \right]
+        \right]^\# \Phi \dot{\bq}^-.$$ I've used the notation $A^\#$ here to
+        denote the pseudoinverse of $A$ (I would normally write $A^+,$ but
+        have changed it for this section to avoid confusion).  Substituting this
+        back in above results in \begin{equation}\dot{\bq}^+ = \left[ \bI -
+        (1+e)\bM^{-1} \Phi^T \left[\Phi \bM^{-1} \Phi^T \right]^\# \Phi \right]
         \dot{\bq}^-.\end{equation}</p>
 
         <p>We can add friction at the contact.  Rigid bodies will almost always
@@ -377,11 +379,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         vector, and (for infinite friction) the post-impact velocity condition
         becomes ${\bf J}\dot{\bq}^+ = \text{diag}(-e, 0, 0) {\bf J}\dot{\bq}^-,$
         resulting in the equations: \begin{equation}\dot{\bq}^+ = \left[ \bI -
-        \bM^{-1} \bJ^T \text{diag}(1+e, 1, 1) \left[\bJ \bM^{-1} \bJ^T \right]^+
-        \bJ \right]\dot{\bq}^-.\end{equation} If $\blambda$ is restricted to a
-        friction cone, as in Coulomb friction, in general we have to solve an
-        optimization to solve for $\dot\bq^+$ subject to the inequality
-        constraints.</p>
+        \bM^{-1} \bJ^T \text{diag}(1+e, 1, 1) \left[\bJ \bM^{-1} \bJ^T
+        \right]^\# \bJ \right]\dot{\bq}^-.\end{equation} If $\blambda$ is
+        restricted to a friction cone, as in Coulomb friction, in general we
+        have to solve an optimization to solve for $\dot\bq^+$ subject to the
+        inequality constraints.</p>
 
         <example id="spinning_ball_bouncing"><h1>A spinning ball bouncing on the
         ground.</h1>
