@@ -540,6 +540,76 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     
   </section>
 
+  <section><h1>Exercises</h1>
+  
+  </section>
+
+  <section><h1>Notes</h1>
+  
+    <subsection id="finite_horizon_derivation"><h1>Finite-horizon LQR derivation (general form)</h1>
+
+      <p>For completeness, I've included here the derivation for continuous-time finite-horizon LQR with all of the bells and whistles.</p>
+
+      <p>Consider an time-varying affine (approximation of a) continuous-time
+      dynamical system in state-space form: $$\dot{\bx} = {\bf A}(t)\bx + {\bf
+      B}(t)\bu + {\bf c}(t),$$ and a running cost function in the general
+      quadratic form: \begin{gather*} \ell(t, \bx,\bu) = \bx^T{\bf Q}_1(t) \bx +
+      \bx^T\bq_2(t) + q_3(t) + \bu^T{\bf R}_1(t) \bu + \bu^T{\bf r}_2(t) +
+      2\bx^T{\bf N}(t)\bu, \\ \forall t\in[t_0, t_f], \quad \bQ_1(t) \succeq 0,
+      \bR_1(t) \succ 0.\end{gather*}  Let's search for a positive quadratic,
+      time-varying cost-to-go function of the form: \begin{gather*} J(t,
+      \bx)=\bx^T{\bf S}_1(t)\bx + \bx^T{\bf s}_2(t) + s_3(t), \quad {\bf
+      S}_1(t) \succ 0, \\ \frac{\partial J}{\partial \bx} = 2\bx^T{\bf S}_1 +
+      {\bf s}_2^T, \quad \frac{\partial J}{\partial t} = \bx^T\dot{\bf S}_1\bx +
+      \bx^T\dot{\bf s}_2 + \dot{s}_3. \end{gather*} Writing out the HJB:
+      \begin{gather*} \min_\bu \left[ \ell(\bx,\bu) + \frac{\partial J}{\partial
+      \bx} \left[{\bf A}(t)\bx + {\bf B}(t)\bu + {\bf c}(t) \right] +
+      \frac{\partial J}{\partial t} \right] = 0, \end{gather*} we can find the
+      minimizing $\bu$ with \begin{gather*} \frac{\partial}{\partial \bu} =
+      2\bu^T{\bf R}_1 + {\bf r}_2^T + 2\bx^T{\bf N} + (2\bx^T{\bf S}_1 + {\bf
+      s}_2^T){\bf B} = 0 \\ \bu^* = -{\bf R}_{1}^{-1} ({\bf N}_B \bx + {\bf
+      r}_s), \quad {\bf N}_B \equiv {\bf N}^T+{\bf B}^T {\bf S}_1, \quad {\bf
+      r}_s \equiv \frac{1}{2} ({\bf r}_2 + {\bf B}^T{\bf s}_2). \end{gather*}
+      Inserting this back into the HJB gives us the updated Riccati differential
+      equation: \begin{gather*} \bx^T{\bf Q}_1\bx+\bx^T{\bf q}_2+q_3+
+      ({\bf N}_B x + {\bf r}_s)^T{\bf R}_1^{-1} ({\bf N}_B\bx + {\bf r}_s)  -
+      ({\bf N}_B \bx^T + {\bf r}_s ) {\bf R}_1^{-1} {\bf r}_2 \quad ... \\ -
+      2\bx^T{\bf N R}_1^{-1} ({\bf N}_B \bx + {\bf r}_s ) + \bx^T{\bf S}_1 {\bf
+      A} \bx + \bx^T{\bf A}^T{\bf S}_1 \bx + {\bf s}_2^T{\bf A}\bx - 2\bx^T {\bf
+      S}_1 {\bf B R}_1^{-1} ({\bf N}_B x + {\bf r}_s) \quad ... \\ - {\bf s}_2^T
+      {\bf B R}^{-1} ({\bf N}_B \bx + {\bf r}_s) + 2\bx^T{\bf S}_1{\bf c} + {\bf
+      s}_2' {\bf c} + \bx^T\dot{\bf S}_1\bx + \bx^T\dot{\bf s}_2 + \dot{s}_3
+      = 0. \end{gather*} A solution of this equation can be found be integrating
+      the following coupled differential equations describing the terms in $J$:
+      \begin{align*} -\dot{\bf S}_1 =& \bQ_1 + {\bf N}_B^T{\bf R}_1^{-1}{\bf
+      N}_B - 2 {\bf NR}_1^{-1}{\bf N}_B + {\bf S}_1{\bf A} + {\bf A}^T{\bf S}_1
+      - 2 {\bf S}_1 {\bf B} {\bf R}_1^{-1} {\bf N}_B \\ =& {\bf Q}_1 - {\bf
+      N}_B^T{\bf R}_1^{-1}{\bf N}_B + {\bf S}_1{\bf A} + {\bf A}^T{\bf S}_1, \\
+      -\dot{\bf s}_2 =& \bq_2 + 2 {\bf N}_B^T{\bf R}_1^{-1} {\bf r}_s - {\bf
+      N}_B^T{\bf R}_1^{-1}{\bf r}_2 - 2 {\bf N R}_1^{-1} {\bf r}_s + {\bf
+      A}^T{\bf s}_2 - 2 {\bf S}_1 {\bf B R}_1^{-1} {\bf r}_s - {\bf N}_B'{\bf
+      R}_1^{-1} {\bf B}^T {\bf s}_2 + 2{\bf S}_1{\bf c} \\ =& \bq_2 - 2{\bf
+      N}_B^T{\bf R}_1^{-1}{\bf r}_s + {\bf A}^T{\bf s}_2 + 2{\bf S}_1{\bf c}, \\
+      -\dot{s}_3 =& q_3 + {\bf r}_s'{\bf R}_1^{-1}{\bf r}_s - {\bf
+      r}_s^T{\bf R}_1^{-1} {\bf r}_2 - {\bf s}_2^T{\bf BR}_1^{-1} {\bf r}_s +
+      {\bf s}_2^T {\bf c} \\ =& q_3 - {\bf r}_s^T{\bf R}_1^{-1} {\bf r}_s +
+      {\bf s}_2^T {\bf c}. \end{align*}
+      </p>
+
+      <todo>Provide the sqrt formulation of the S1 equation here</todo>
+
+      <p>In the discrete-time version, we have... </p>
+
+      <p>Phew!  Numerical solutions to these equations can be obtained by
+      calling the <a
+      href="https://drake.mit.edu/doxygen_cxx/group__control__systems.html#ga58307d2135757a498c434e96d7b99853"><code>FiniteHorizonLinearQuadraticRegulator</code></a>
+      methods in <drake></drake>.  May you never have to type them in and unit
+      test them yourself.</p>
+
+    </subsection>
+
+  </section>
+
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 
