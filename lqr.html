@@ -270,7 +270,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       the system to zero.  Consider now the problem:
 
       \begin{gather*} \dot{\bx} = {\bf A}\bx + \bB\bu \\ h(\bx) = (\bx -
-      \bx_d(T))^T {\bf Q}_f (\bx - \bx_d(T)), \quad {\bf Q}_f = {\bf Q}_f^T
+      \bx_d(t_f))^T {\bf Q}_f (\bx - \bx_d(t_f)), \quad {\bf Q}_f = {\bf Q}_f^T
       \succeq 0 \\ \ell(\bx,\bu,t) = (\bx - \bx_d(t))^T {\bf Q} (\bx - \bx_d(t))
       + (\bu - \bu_d(t))^T {\bf R} (\bu - \bu_d(t)),\\ {\bf Q} = {\bf Q}^T
       \succeq 0, {\bf R}={\bf R}^T \succ 0 \end{gather*}
@@ -309,9 +309,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       from the final conditions
 
       \begin{align*}
-      {\bf S}_{xx}(T) =& {\bf Q}_f\\
-      {\bf s}_{x}(T) =& -{\bf Q}_f \bx_d(t) \\
-      s_0(T) =& \bx_d^T(t) {\bf Q}_f \bx_d(t).
+      {\bf S}_{xx}(t_f) =& {\bf Q}_f\\
+      {\bf s}_{x}(t_f) =& -{\bf Q}_f \bx_d(t_f) \\
+      s_0(t_f) =& \bx_d^T(t_f) {\bf Q}_f \bx_d(t_f).
       \end{align*}
 
       Notice that the solution for ${\bf S}_{xx}$ is the same as the simpler LQR
@@ -563,28 +563,31 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \end{bmatrix}, \bQ_{xx}(t) \succeq 0, \quad \bR(t) = \begin{bmatrix}
       \bR_{uu}(t) & {\bf r}_u(t) \\ {\bf r}_u^T(t) & r_0(t) \end{bmatrix},
       \bR_{uu}(t) \succ 0.\end{gather*}  Observe that our LQR "optimal tracking"
-      derivation fits in this form, as we can always write, e.g., $$(\bx -
-      \bx_d(t))^T \bQ (\bx - \bx_d(t)) = \begin{bmatrix} \bx \\ 1
-      \end{bmatrix}^T \begin{bmatrix} \bQ & -\bQ\bx_d(t) \\ -\bx_d^T(t)\bQ &
-      \bx_d^T(t)\bQ \bx_d(t) \end{bmatrix} \begin{bmatrix} \bx \\ 1
-      \end{bmatrix}.$$ Let's search for a positive quadratic, time-varying
-      cost-to-go function of the form: \begin{gather*} J(t, \bx)=\begin{bmatrix}
-      \bx \\ 1 \end{bmatrix}^T {\bf S}(t) \begin{bmatrix} \bx \\ 1
-      \end{bmatrix}, \quad {\bf S}(t) = \begin{bmatrix} {\bf S}_{xx}(t) & {\bf
-      s}_x(t) \\ {\bf s}_x^T(t) & s_0(t) \end{bmatrix},  {\bf S}_{xx}(t) \succ
-      0, \\ \frac{\partial J}{\partial \bx} = 2\bx^T{\bf S}_{xx} + 2{\bf s}_x^T,
-      \quad \frac{\partial J}{\partial t} = \begin{bmatrix} \bx \\ 1
-      \end{bmatrix}^T\dot{\bf S} \begin{bmatrix} \bx \\ 1 \end{bmatrix}.
-      \end{gather*} Writing out the HJB: \begin{gather*} \min_\bu
-      \left[\ell(\bx,\bu) + \frac{\partial J}{\partial \bx} \left[{\bf A}(t)\bx
-      + {\bf B}(t)\bu + {\bf c}(t) \right] + \frac{\partial J}{\partial t}
-      \right] = 0, \end{gather*} we can find the minimizing $\bu$ with
+      derivation fits in this form, as we can always write $$(\bx - \bx_d(t))^T
+      \bQ_t (\bx - \bx_d(t)) + (\bu - \bu_d(t))^T \bR_t (\bu - \bu_d(t)) + 2
+      (\bx - \bx_d(t))^T {\bf N}_t (\bu - \bu_d(t)),$$ by taking \begin{gather*}
+      \bQ_{xx} = \bQ_t,\quad \bq_x = -\bQ_t \bx_d - {\bf N}_t\bu_d, \quad q_0 =
+      \bx_d^T \bQ_t \bx_d + 2 \bx_d^T {\bf N}_t \bu_d, \\ \bR_{uu} = \bR_t,
+      \quad {\bf r}_u = -\bR_t \bu_d - {\bf N}_t^T \bx_d, \quad r_0 = \bu_d^T
+      \bR_t \bu_d, \quad {\bf N} = {\bf N}_t.\end{gather*} Of course, we can
+      also add a quadratic final cost with $\bQ_f$. Let's search for a positive
+      quadratic, time-varying cost-to-go function of the form: \begin{gather*}
+      J(t, \bx)=\begin{bmatrix} \bx \\ 1 \end{bmatrix}^T {\bf S}(t)
+      \begin{bmatrix} \bx \\ 1 \end{bmatrix}, \quad {\bf S}(t) = \begin{bmatrix}
+      {\bf S}_{xx}(t) & {\bf s}_x(t) \\ {\bf s}_x^T(t) & s_0(t) \end{bmatrix},
+      {\bf S}_{xx}(t) \succ 0, \\ \frac{\partial J}{\partial \bx} = 2\bx^T{\bf
+      S}_{xx} + 2{\bf s}_x^T, \quad \frac{\partial J}{\partial t} =
+      \begin{bmatrix} \bx \\ 1 \end{bmatrix}^T\dot{\bf S} \begin{bmatrix} \bx \\
+      1 \end{bmatrix}. \end{gather*} Writing out the HJB: \begin{gather*}
+      \min_\bu \left[\ell(\bx,\bu) + \frac{\partial J}{\partial \bx} \left[{\bf
+      A}(t)\bx + {\bf B}(t)\bu + {\bf c}(t) \right] + \frac{\partial J}{\partial
+      t} \right] = 0, \end{gather*} we can find the minimizing $\bu$ with
       \begin{gather*} \frac{\partial}{\partial \bu} = 2\bu^T{\bf R}_{uu} + 2{\bf
       r}_u^T + 2\bx^T{\bf N} + (2\bx^T{\bf S}_{xx} + 2{\bf s}_x^T){\bf B} = 0 \\
       \bu^* = -{\bf R}_{uu}^{-1} \begin{bmatrix} {\bf N} + {\bf S}_{xx} \bB \\
       {\bf r}^T_{u} + {\bf s}^T_{x}\bB \end{bmatrix}^T \begin{bmatrix} \bx \\ 1
       \end{bmatrix} = -{\bf K}(t) \begin{bmatrix} \bx \\ 1 \end{bmatrix} = -{\bf
-      K}_x(t) \bx - k_0(t). \end{gather*} Inserting this back into the HJB gives
+      K}_x(t) \bx - {\bf k}_0(t). \end{gather*} Inserting this back into the HJB gives
       us the updated Riccati differential equation. Since this must hold for all
       $\bx$, we can collect the quadratic, linear, and offset terms and set them
       each individually equal to zero, yielding: \begin{align*} -\dot{\bf
@@ -593,8 +596,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       -\dot{\bf s}_x =& \bq_x - ({\bf N} + {\bf S}_{xx} \bB){\bf R}_{uu}^{-1}
       ({\bf r}_u + \bB^T {\bf s}_x ) + {\bf A}^T{\bf s}_x + {\bf S}_{xx}{\bf c},
       \\ -\dot{s}_0 =& q_0 + r_0 - ({\bf r}_u + \bB^T {\bf s}_x)^T{\bf
-      R}_{uu}^{-1} ({\bf r}_u + \bB^T {\bf s}_x) + 2{\bf s}_x^T {\bf c}.
-      \end{align*}
+      R}_{uu}^{-1} ({\bf r}_u + \bB^T {\bf s}_x) + 2{\bf s}_x^T {\bf c},
+      \end{align*} with the final conditions ${\bf S}(t_f) = {\bf Q}_f.$
       </p>
 
       <todo>Provide the sqrt formulation of the S1 equation here</todo>
