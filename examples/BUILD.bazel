@@ -43,6 +43,12 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
+    name = "miqp_planning",
+    srcs = ["miqp_planning.ipynb"],
+    deps = ["//underactuated"],
+)
+
+rt_ipynb_test(
     name = "optimization",
     srcs = ["optimization.ipynb"],
     deps = ["//underactuated"],
