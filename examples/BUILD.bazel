@@ -46,6 +46,7 @@ rt_ipynb_test(
     name = "miqp_planning",
     srcs = ["miqp_planning.ipynb"],
     deps = ["//underactuated"],
+    tags = ["no-sandbox"],  # For gurobi license.
 )
 
 rt_ipynb_test(
@@ -76,4 +77,5 @@ rt_ipynb_test(
         "//underactuated",
         "//underactuated:pendulum",
     ],
+    tags = ["no-sandbox"],  # For gurobi license.
 )

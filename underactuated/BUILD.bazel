@@ -10,6 +10,7 @@ load("//tools/rt/python:defs.bzl", "rt_py_library")
 rt_ipynb_test(
     name = "mathematical_program_examples_ipynb",
     srcs = ["mathematical_program_examples.ipynb"],
+    tags = ["no-sandbox"],  # For gurobi license.
 )
 
 rt_py_library(
