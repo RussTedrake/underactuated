@@ -4,7 +4,7 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
+load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test", "rt_ipynb_binary")
 
 rt_ipynb_test(
     name = "autapse_and_lstm",
@@ -42,7 +42,8 @@ rt_ipynb_test(
     deps = ["//underactuated"],
 )
 
-rt_ipynb_test(
+# TODO(russt): Change from binary to test pending resolution of drake #13299.
+rt_ipynb_binary(
     name = "miqp_planning",
     srcs = ["miqp_planning.ipynb"],
     deps = ["//underactuated"],
