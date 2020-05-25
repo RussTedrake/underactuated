@@ -21,6 +21,14 @@ rt_py_library(
 )
 
 rt_py_library(
+    name = "double_integrator",
+    srcs = ["double_integrator.py"],
+    imports = [".."],
+    visibility = ["//visibility:public"],
+    deps = ["underactuated"],
+)
+
+rt_py_library(
     name = "glider",
     srcs = ["glider.py"],
     data = ["//underactuated/models/glider"],

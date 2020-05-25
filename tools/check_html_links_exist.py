@@ -33,8 +33,6 @@ for filename in glob.glob("*.html"):
             end = s.find('</' + tag + '>', start)
             index = end + len(tag) + 3
             file = s[start:end]
-            if tag != 'jupyter':
-                file = os.path.join('underactuated', file)
             if not os.path.exists(file):
                 print(filename + " tries to link to the source file " + file +
                       " which doesn't exist")
