@@ -164,15 +164,81 @@ with Stochasticity</h1>
     linear(!) ; a fact that can enable closed-form solutions to some impressive
     long-term statistics, like mean time to failure or first passage
     times<elib>Byl08a</elib>. Unfortunately, it is often difficult to perform
-    the integral in closed form, so we must often resort to discretation or
+    the integral in closed form, so we must often resort to discretization or
     numerical analysis. </p>
 
+    <example id="logistic"><h1>The Logistic Map</h1>
+    
+      <p>In fact, one does not actually need stochastic dynamics in order for
+      the dynamics of the distribution to be the meaningful object of study;
+      random initial conditions can be enough.  One of the best examples comes
+      from perhaps the simplest and most famous example of a chaotic system: the
+      logistic map.  This example is described beautifully in
+      <elib>Lasota13</elib>.</p>
+
+      <p>Consider the following difference equation: $$x[n+1] = 4
+      x[n](1-x[n]),$$ which we will study over the (invariant) interval $x \in
+      [0, 1]$. </p>
+
+      <figure> <img width="80%" src="figures/logistic_map.svg"/>
+      <figcaption>The discrete-time dynamics of the "logistic map" (plotted
+      alongside the line $x[n+1] = x[n]$).</figcaption>
+      </figure>
+      
+      <p>It takes only a moment of tracing your finger along the plot using the
+      "<a href="simple_legs.html#staircase">staircase method</a>" to see what
+      makes this system so interesting -- rollouts from a single initial
+      condition end up bouncing all over the interval $(0,1)$, and neighboring
+      initial conditions will end up taking arbitrarily different trajectories
+      (this is the hallmark of a "chaotic" system).</p>
+
+      <figure> <img width="80%" src="figures/logistic_map_rollouts.svg"/>
+        <figcaption>Two simulations of the logistic map from different initial
+        conditions.  Remember, there is no stochasticity here -- the dynamics are entirely
+        deterministic!</figcaption>
+        </figure>
+
+      <p>Here's what's completely fascinating -- even though the dynamics of any
+      one initial condition for this system are extremely complex, if we study
+      the dynamics of a distribution of states through the system, they are
+      surprisingly simple and well-behaved.  This system is one of the rare
+      cases when we can write the master equation in closed
+      form<elib>Lasota13</elib>: $$p_{n+1}(x) = \frac{1}{4\sqrt{1-x}} \left[
+      p_n\left(\frac{1}{2}-\frac{1}{2}\sqrt{1-x}\right) + p_n\left(\frac{1}{2} +
+      \frac{1}{2}\sqrt{1-x}\right) \right].$$  Moreover, this master equation
+      has a steady-state solution: $$p_*(x) = \frac{1}{\pi\sqrt{x(1-x)}}.$$ </p>
+
+      <figure> <img width="116%" style="margin-left:-8%" src="figures/logistic_map_master.svg"/>
+        <figcaption>Plotting the (closed-form) evolution of the master equation
+        for the logistic map, initialized with $p_0(x) = 1$, reveals surprising
+        simplicity, and rapid convergence to a stationary
+        distribution (dashed orange line).</figcaption>
+        </figure>
+
+      <p>For this system (and many chaotic systems), the dynamics of a single initial condition are complicated, but the dynamics a <i>distribution</i> of initial conditions are beautiful and simple!</p>
+
+      <p>Note: when the dynamical system under study has deterministic dynamics
+      (but a distribution of initial conditions), the linear map given by the
+      master equation is known as the <i>Perron-Frobenius operator</i>, and it
+      gives rise the the Liouville equation that we will study later in the
+      chapter.</p>
+
+    </example>
+
     <p>The slightly more general form of the master equation, which works for
-    multivariable distributions with state-domain ${\cal X}$, and systems with
+    multivariate distributions with state-domain ${\cal X}$, and systems with
     control inputs $\bu$, is \[ p_{n+1}(\bx) = \int_{\cal X} p(\bx|\bx',\bu)
     p_n(\bx') d\bx'. \] This is a (continuous-state) Markov Decision
     Process.</p>
 
+    <p>Continuous-time formulations are also possible -- these lead to the
+    so-called <a
+    href="https://en.wikipedia.org/wiki/Fokker%E2%80%93Planck_equation">
+    Fokker-Planck equation</a>.</p>
+
+    <todo>mention Chapman-Kolmogorov?</todo>
+    <todo>mention Ito Calculus?</todo>
+  
   </section>
 
   <section><h1>Stationary Distributions</h1>
@@ -317,6 +383,7 @@ with Stochasticity</h1>
 
   </section>
 
+
   <section><h1>Extended Example: The Rimless Wheel on Rough
   Terrain</h1>
 
@@ -347,11 +414,16 @@ with Stochasticity</h1>
     <p>L2-gain with dissipation inequalities.  Finite-time verification with
     sums of squares.</p>
 
+    <p>Occupation Measures</p>
+
+    <todo>Section on the liouville equation (ode describring the Perron-Frobenius along a path.</todo>
+
   </section>
 
 
   <section><h1>Control Design (a preview)</h1>
 
+   
   </section>
 
 </chapter>
