@@ -20,10 +20,15 @@ def pyplot_is_interactive():
     return plt.get_backend() in interactive_bk
 
 
-def AdvanceToAndVisualize(simulator, visualizer, time):
+def AdvanceToAndVisualize(simulator,
+                          visualizer,
+                          time,
+                          time_if_running_headless=None):
     """Helper to support visualizing a simulation with pyplot visualizer.
     Will simply simulate (with target_realtime_rate = 1) if visualizer.show =
-    True, or will record and render an animation if visualizer.show = False.
+    True, or will record and render an animation if visualizer.show = False. If
+    specified, time_if_running_headless will be used instead of time if
+    running_as_notebook is False.
     """
     if visualizer._show:
         target_rate = simulator.get_target_realtime_rate()
@@ -31,6 +36,8 @@ def AdvanceToAndVisualize(simulator, visualizer, time):
     else:
         print("simulating... ", end=" ")
         visualizer.start_recording()
+    if time_if_running_headless and not running_as_notebook:
+        time = time_if_running_headless
     simulator.AdvanceTo(time)
     if visualizer._show:
         simulator.set_target_realtime_rate(target_rate)
@@ -117,8 +124,8 @@ def update_widgets(num_ui_events_to_process=1):
     if loop.is_running():
         loop.call_soon(lambda: _replay_events(shell, events))
     else:
-        warn('Automatic execution of scheduled cells only works with asyncio \
-              based ipython')
+        warn('Automatic execution of scheduled cells only works with '
+             'asyncio-based ipython')
 
 
 # TODO(russt): generalize this to e.g. WidgetSystem (should work for any widget,

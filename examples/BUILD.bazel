@@ -70,6 +70,12 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
+    name = "stochastic",
+    srcs = ["stochastic.ipynb"],
+    deps = ["//underactuated"],
+)
+
+rt_ipynb_test(
     name = "trajectory_optimization",
     timeout = "moderate",
     srcs = ["trajectory_optimization.ipynb"],
