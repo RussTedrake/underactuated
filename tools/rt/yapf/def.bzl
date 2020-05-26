@@ -121,7 +121,7 @@ def py_yapf_test(**kwargs):
     tags = kwargs.get("tags", [])
     if "block-network" not in tags:
         tags.append("block-network")
-    if "require-network" in tags:
-        tags.remove("require-network")
+    if "requires-network" in tags:
+        tags.remove("requires-network")
     kwargs["tags"] = tags
     _py_yapf_test(**kwargs)

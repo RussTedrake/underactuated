@@ -91,7 +91,7 @@ def html_tidy_test(**kwargs):
     # TODO(jamiesnape): Work out why tidy fails when sandboxed.
     if "no-sandbox" not in tags:
         tags.append("no-sandbox")
-    if "require-network" in tags:
-        tags.remove("require-network")
+    if "requires-network" in tags:
+        tags.remove("requires-network")
     kwargs["tags"] = tags
     _html_tidy_test(**kwargs)
