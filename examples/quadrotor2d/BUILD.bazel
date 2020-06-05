@@ -14,12 +14,3 @@ rt_ipynb_test(
         "//underactuated:quadrotor2d",
     ],
 )
-
-rt_ipynb_test(
-    name = "lqr",
-    srcs = ["lqr.ipynb"],
-    deps = [
-        "//underactuated",
-        "//underactuated:quadrotor2d",
-    ],
-)

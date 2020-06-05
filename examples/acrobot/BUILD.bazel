@@ -13,12 +13,6 @@ rt_ipynb_test(
     deps = ["//underactuated"],
 )
 
-rt_ipynb_test(
-    name = "lqr",
-    srcs = ["lqr.ipynb"],
-    deps = ["//underactuated"],
-)
-
 rt_py_test(
     name = "torque_slider_demo",
     srcs = ["torque_slider_demo.py"],

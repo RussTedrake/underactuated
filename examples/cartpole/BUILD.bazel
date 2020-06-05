@@ -14,13 +14,6 @@ rt_ipynb_test(
     deps = ["//underactuated"],
 )
 
-rt_ipynb_test(
-    name = "lqr",
-    srcs = ["lqr.ipynb"],
-    data = ["//underactuated/models:cartpole.urdf"],
-    deps = ["//underactuated"],
-)
-
 rt_py_test(
     name = "force_slider_demo",
     srcs = ["force_slider_demo.py"],

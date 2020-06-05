@@ -37,6 +37,14 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
+    name = "lqr",
+    srcs = ["lqr.ipynb"],
+    data = ["//underactuated/models:cartpole.urdf"],
+    deps = ["//underactuated",
+            "//underactuated:quadrotor2d"],
+)
+
+rt_ipynb_test(
     name = "lyapunov",
     srcs = ["lyapunov.ipynb"],
     deps = ["//underactuated"],
