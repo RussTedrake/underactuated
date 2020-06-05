@@ -4,7 +4,7 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test", "rt_ipynb_binary")
+load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_binary", "rt_ipynb_test")
 
 rt_ipynb_test(
     name = "autapse_and_lstm",
@@ -46,8 +46,8 @@ rt_ipynb_test(
 rt_ipynb_binary(
     name = "miqp_planning",
     srcs = ["miqp_planning.ipynb"],
-    deps = ["//underactuated"],
     tags = ["requires-network"],  # For gurobi license.
+    deps = ["//underactuated"],
 )
 
 rt_ipynb_test(
@@ -80,9 +80,9 @@ rt_ipynb_test(
     timeout = "moderate",
     srcs = ["trajectory_optimization.ipynb"],
     data = ["//underactuated/models:cartpole.urdf"],
+    tags = ["requires-network"],  # For gurobi license.
     deps = [
         "//underactuated",
         "//underactuated:pendulum",
     ],
-    tags = ["requires-network"],  # For gurobi license.
 )
