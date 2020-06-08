@@ -4,8 +4,8 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
-load("//tools/rt/python:defs.bzl", "rt_py_test")
+load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
+load("//htmlbook/tools/python:defs.bzl", "rt_py_test")
 
 rt_ipynb_test(
     name = "energy_shaping",

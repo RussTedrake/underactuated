@@ -10,12 +10,7 @@ load("@bazel_skylib//:bzl_library.bzl", "bzl_library")
 # WORKSPACE.bazel) to pass in the source directory here since
 # BUILD_WORKSPACE_DIRECTORY is not available during bazel test.
 load("@environ//:environ.bzl", "PWD")
-load("//tools/rt/python:defs.bzl", "rt_py_test")
-
-bzl_library(
-    name = "environ",
-    srcs = ["environ.bzl"],
-)
+load("//htmlbook/tools/python:defs.bzl", "rt_py_test")
 
 rt_py_test(
     name = "install_html_meta_data",

@@ -4,7 +4,7 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-load("//tools/rt/tidy:def.bzl", "html_tidy_test")
+load("//htmlbook/tools/tidy:def.bzl", "html_tidy_test")
 
 exports_files(
     ["LICENSE.TXT"],
