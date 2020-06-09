@@ -389,7 +389,28 @@ with Stochasticity</h1>
   <section><h1>Extended Example: The Rimless Wheel on Rough
   Terrain</h1>
 
-    <p>Coming soon.  Read the paper <elib>Byl08f</elib> and/or watch the <a
+    <p>My favorite example of a meaningful source of randomness on a model
+    underactuated system is the <a href="simple_legs.html#rimless_wheel">rimless
+    wheel</a> rolling down stochastically "rough" terrain<elib>Byl08f</elib>.
+    Generating interesting/relevant probabilistic models of terrain in general
+    can be quite complex, but the rimless wheel makes it easy -- since the robot
+    only contacts that ground at the point foot, we can model almost arbitrary
+    rough terrain by simply taking the ramp angle, $\gamma$, to be a random
+    variable. If we restrict our analysis to rolling only in one direction (e.g.
+    only downhill), then we can even consider this ramp angle to be i.i.d.;
+    after each footstep we will independently draw a new ramp angle $\gamma[n]$
+    for the next step.</p>
+
+    <figure>
+      <img width="40%" src="figures/rimlessWheel.svg"/>
+      <figcaption>The rimless wheel. The orientation of the stance leg,
+      $\theta$, is measured clockwise from the vertical axis. </figcaption>
+      <todo>Update this to have rough terrain.</todo>
+    </figure>
+
+    <p>In our original analysis of the rimless wheel, we derived the "post-collision" return map -- mapping the angular velocity from the beginning of the stance phase to the (post-collision) angular velocity at the next stance phase.  But now that the relative location of the ground is changing on every step, we instead write the "apex-to-apex" return map, which maps the angular velocity from one apex (the moment that the leg is vertical) to the next, which is given by: $$\dot\theta[n+1] = \sqrt{\cos^2\alpha \left( \dot\theta^2[n] + \frac{2g}{l}\left(1-\cos(\alpha + \gamma[n])\right)\right) - \frac{2g}{l}(1 - \cos(\alpha - \gamma[n]))}.$$ </p>
+
+    <p>More coming soon.  Read the paper <elib>Byl08f</elib> and/or watch the <a
         href="https://youtu.be/TaaJgvjYBQc">video</a>.</p>
 
   </section>
