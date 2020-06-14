@@ -4,13 +4,7 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
-load("//tools/rt/python:defs.bzl", "rt_py_library")
-
-rt_ipynb_test(
-    name = "mathematical_program_examples_ipynb",
-    srcs = ["mathematical_program_examples.ipynb"],
-)
+load("//htmlbook/tools/python:defs.bzl", "rt_py_library")
 
 rt_py_library(
     name = "underactuated",
@@ -24,6 +18,14 @@ rt_py_library(
     ],
     imports = [".."],
     visibility = ["//visibility:public"],
+)
+
+rt_py_library(
+    name = "double_integrator",
+    srcs = ["double_integrator.py"],
+    imports = [".."],
+    visibility = ["//visibility:public"],
+    deps = ["underactuated"],
 )
 
 rt_py_library(

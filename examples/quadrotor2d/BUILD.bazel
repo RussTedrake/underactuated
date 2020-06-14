@@ -4,20 +4,11 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
+load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
     name = "differential_flatness",
     srcs = ["differential_flatness.ipynb"],
-    deps = [
-        "//underactuated",
-        "//underactuated:quadrotor2d",
-    ],
-)
-
-rt_ipynb_test(
-    name = "lqr",
-    srcs = ["lqr.ipynb"],
     deps = [
         "//underactuated",
         "//underactuated:quadrotor2d",

@@ -7,7 +7,7 @@
 workspace(name = "underactuated")
 
 load(
-    "//tools/rt:repositories.bzl",
+    "//htmlbook/tools:repositories.bzl",
     "rt_dependencies",
     "rt_toolchains",
 )
@@ -21,7 +21,7 @@ load("@bazel_skylib//lib:versions.bzl", "versions")
 versions.check("2.0.0")
 
 load(
-    "//tools/rt/python:repositories.bzl",
+    "//htmlbook/tools/python:repositories.bzl",
     "rt_pip3_import",
     "rt_python_repositories",
 )
@@ -34,17 +34,17 @@ load("@pip//:requirements.bzl", "pip_install")
 
 pip_install()
 
-load("//tools/rt/buildifier:repositories.bzl", "buildifier_dependencies")
+load("//htmlbook/tools/buildifier:repositories.bzl", "buildifier_dependencies")
 
 buildifier_dependencies()
 
-load("//tools/rt/tidy:repositories.bzl", "tidy_dependencies")
+load("//htmlbook/tools/tidy:repositories.bzl", "tidy_dependencies")
 
 tidy_dependencies()
 
 # Set the DRAKE_INSTALL_DIR environment variable to the correct path; if
 # DRAKE_INSTALL_DIR is not set it will look in "/opt/drake".
-load("//tools:environ.bzl", "environ_repository")
+load("//htmlbook/tools:environ.bzl", "environ_repository")
 
 # Allowing PWD to be loaded here is a terrible work-around that allows me to
 # pass the equivalent of BUILD_WORKSPACE_DIRECTORY as a command line argument

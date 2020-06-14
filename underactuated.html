@@ -167,6 +167,7 @@ Robots</a></li>
     <li><a href=humanoids.html#section4>Whole-Body Control</a></li>
     <li><a href=humanoids.html#section5>Footstep planning and push recovery</a></li>
     <li><a href=humanoids.html#section6>Beyond ZMP planning</a></li>
+    <li><a href=humanoids.html#section7>Exercises</a></li>
   </ul>
   <li><a href="stochastic.html">Chapter 6: Model Systems
 with Stochasticity</a></li>
@@ -205,7 +206,7 @@ with Stochasticity</a></li>
     <ul>
       <li>Local stabilization of nonlinear systems</li>
     </ul>
-    <li><a href=lqr.html#section2>Finite-horizon formulations</a></li>
+    <li><a href=lqr.html#finite_horizon>Finite-horizon formulations</a></li>
     <ul>
       <li>Finite-horizon LQR</li>
       <li>Time-varying LQR</li>
@@ -219,6 +220,11 @@ with Stochasticity</a></li>
       <li>LQR as a convex optimization</li>
       <li>Finite-horizon LQR via least
     squares</li>
+    </ul>
+    <li><a href=lqr.html#section4>Exercises</a></li>
+    <li><a href=lqr.html#section5>Notes</a></li>
+    <ul>
+      <li>Finite-horizon LQR derivation (general form)</li>
     </ul>
   </ul>
   <li><a href="lyapunov.html">Chapter 9: Lyapunov
@@ -287,8 +293,8 @@ with Stochasticity</a></li>
     <ul>
       <li>Iterative LQR and Differential Dynamic
       Programming</li>
-      <li>Mixed-integer convex optimization for
-    non-convex constraints</li>
+      <li>Mixed-integer convex optimization for non-convex
+    constraints</li>
       <li>Explicit model-predictive control</li>
     </ul>
     <li><a href=trajopt.html#section8>Exercises</a></li>
@@ -305,6 +311,7 @@ Search</a></li>
       <li>Discussion</li>
     </ul>
     <li><a href=planning.html#section3>Decomposition methods</a></li>
+    <li><a href=planning.html#section4>Exercises</a></li>
   </ul>
   <li><a href="feedback_motion_planning.html">Chapter 12: Feedback Motion
   Planning</a></li>
@@ -389,7 +396,7 @@ Control through Contact</a></li>
       <li>From input-output data</li>
       <li>Adding stability constraints</li>
     </ul>
-    <li><a href=sysid.html#section3>Linear ARX Models</a></li>
+    <li><a href=sysid.html#section3>Linear ARMAX Models</a></li>
     <li><a href=sysid.html#section4>Nonlinear System Identification</a></li>
     <li><a href=sysid.html#section5>Parameter Identification for Mechanical Systems</a></li>
     <li><a href=sysid.html#section6>Optimal Experiment Design</a></li>
@@ -420,9 +427,6 @@ Control through Contact</a></li>
       <li>Performance of Weight Perturbation</li>
     </ul>
   </ul>
-  <li><a href="value_learning.html">Chapter 21: Model
-  -Free Value Function Methods</a></li>
-  <li><a href="actor_critic.html">Chapter 22: Actor-Critic Methods</a></li>
 <p style="margin-bottom: 0; text-decoration: underline;font-variant: small-caps;"><b>Appendix</b></p>
   <li><a href="drake.html">Appendix A: Drake</a></li>
   <ul>
@@ -434,12 +438,13 @@ Control through Contact</a></li>
     </ul>
     <li><a href=drake.html#section4>Getting help</a></li>
   </ul>
-  <li><a href="multibody.html">Appendix B: Rigid-Body
+  <li><a href="multibody.html">Appendix B: Multi-Body
   Dynamics</a></li>
   <ul>
     <li><a href=multibody.html#section1>Deriving the equations of motion (an example)</a></li>
     <li><a href=multibody.html#section2>The Manipulator Equations</a></li>
     <ul>
+      <li>Recursive Dynamics Algorithms</li>
       <li>Bilateral Position Constraints</li>
       <li>Bilateral Velocity Constraints</li>
     </ul>
@@ -447,11 +452,9 @@ Control through Contact</a></li>
     <ul>
       <li>Compliant Contact Models</li>
       <li>Rigid Contact with Event Detection</li>
-      <li>Time-stepping Approximations for Rigid
-      Contact</li>
+      <li>Time-stepping Approximations for Rigid Contact</li>
     </ul>
-    <li><a href=multibody.html#section4>Recursive Dynamics Algorithms</a></li>
-    <li><a href=multibody.html#section5>Parameter Estimation</a></li>
+    <li><a href=multibody.html#section4>Parameter Estimation</a></li>
   </ul>
   <li><a href="optimization.html">Appendix C: Optimization and
   Mathematical Programming</a></li>
@@ -459,6 +462,7 @@ Control through Contact</a></li>
     <li><a href=optimization.html#section1>Optimization software</a></li>
     <li><a href=optimization.html#section2>General concepts</a></li>
     <ul>
+      <li>Convex vs nonconvex optimization</li>
       <li>Constrained optimization with Lagrange multipliers</li>
     </ul>
     <li><a href=optimization.html#section3>Convex optimization</a></li>

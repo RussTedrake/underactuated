@@ -4,5 +4,4 @@
 brew "bazel"
 brew "buildifier"
 brew "ffmpeg"
-brew "python"
 brew "tidy-html5"

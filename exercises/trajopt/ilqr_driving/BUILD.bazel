@@ -4,7 +4,7 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
+load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
     name = "ilqr_driving",

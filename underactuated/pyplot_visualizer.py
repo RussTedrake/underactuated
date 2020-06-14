@@ -1,4 +1,5 @@
 from matplotlib.widgets import Slider
+from matplotlib.animation import HTMLWriter
 
 from pydrake.systems.framework import VectorSystem
 
@@ -17,3 +18,14 @@ class SliderSystem(VectorSystem):
 
     def DoCalcVectorOutput(self, context, unused, unused2, output):
         output[:] = self.value
+
+
+def AdvanceToAndSaveAnimation(simulator, visualizer, time, filename):
+    visualizer.start_recording()
+    simulator.AdvanceTo(time)
+    ani = visualizer.get_recording_as_animation()
+    # Note: Wanted to use embed_frames=True, but it did not render
+    # the image properly for me.
+    writer = HTMLWriter()
+    writer.frame_format = 'svg'
+    ani.save(filename, writer=writer)

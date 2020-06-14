@@ -32,7 +32,8 @@
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
     <p style="font-size: 14px; text-align: right;"> 
       &copy; Russ Tedrake, 2020<br/>
-      <a href="tocite.html">How to cite these notes</a><br/>
+      <a href="tocite.html">How to cite these notes</a> &nbsp; | &nbsp;
+      <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSesAhROfLRfexrRFebHWLtRpjhqtb8k_iEagWMkvc7xau08iQ/viewform?usp=sf_link">Send me your feedback</a><br/>
     </p>
   </header>
 </div>
@@ -129,7 +130,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       href="dp.html#hjb_double_integrator">HJB example</a> from the previous
       chapter:</p>
 
-      <pysrcinclude>double_integrator/lqr.py</pysrcinclude>
+      <pysrcinclude>examples/double_integrator/lqr.py</pysrcinclude>
 
       <p>As in the hand-derived example, our numerical solution returns $${\bf
       K} = [ 1, \sqrt{3} ], \qquad{\bf S} = \begin{bmatrix} \sqrt{3} & 1 \\ 1 &
@@ -172,10 +173,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         described for a number of model systems</a>.  Here are some of those
         examples, again:</p>
       
-        <jupyter>examples/acrobot/lqr.ipynb</jupyter>
-        <jupyter>examples/cartpole/lqr.ipynb</jupyter>
-        <jupyter>examples/quadrotor2d/lqr.ipynb</jupyter>
-        <pysrc>quadrotor/lqr.py</pysrc>
+        <jupyter>examples/lqr.ipynb</jupyter>
 
         <p>I find it very compelling that the same derivation (and effectively
         identical code) can stabilize such a diversity of systems!</p>
@@ -185,7 +183,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
   </section> <!-- end basic derivation -->
 
-  <section><h1>Finite-horizon formulations</h1>
+  <section id="finite_horizon"><h1>Finite-horizon formulations</h1>
 
     <p>Recall that the cost-to-go for finite-horizon problems is time-dependent,
     and therefore the HJB sufficiency condition requires an additional term for
@@ -270,57 +268,59 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       the system to zero.  Consider now the problem:
 
       \begin{gather*} \dot{\bx} = {\bf A}\bx + \bB\bu \\ h(\bx) = (\bx -
-      \bx^d(T))^T {\bf Q}_f (\bx - \bx^d(T)), \quad {\bf Q}_f = {\bf Q}_f^T
-      \succeq 0 \\ \ell(\bx,\bu,t) = (\bx - \bx^d(t))^T {\bf Q} (\bx - \bx^d(t))
-      + (\bu - \bu^d(t))^T {\bf R} (\bu - \bu^d(t)),\\ {\bf Q} = {\bf Q}^T
+      \bx_d(t_f))^T {\bf Q}_f (\bx - \bx_d(t_f)), \quad {\bf Q}_f = {\bf Q}_f^T
+      \succeq 0 \\ \ell(\bx,\bu,t) = (\bx - \bx_d(t))^T {\bf Q} (\bx - \bx_d(t))
+      + (\bu - \bu_d(t))^T {\bf R} (\bu - \bu_d(t)),\\ {\bf Q} = {\bf Q}^T
       \succeq 0, {\bf R}={\bf R}^T \succ 0 \end{gather*}
 
       Now, guess a solution
 
-      \begin{gather*} J^*(\bx,t) = \bx^T {\bf S_2}(t) \bx + \bx^T {\bf s_1}(t) +
-      s_0(t), \quad {\bf S_2}(t) = {\bf S_2}^T(t)\succ {\bf 0}. \end{gather*}
+      \begin{gather*} J^*(\bx,t) = \bx^T {\bf S}_{xx}(t) \bx + 2\bx^T {\bf
+      s}_x(t) + s_0(t), \quad {\bf S}_{xx}(t) = {\bf S}_{xx}^T(t)\succ {\bf 0}.
+      \end{gather*}
 
-      In this case, we have $$\pd{J^*}{\bx} = 2 \bx^T {\bf S_2}(t) + {\bf
-      s_1}^T(t),\quad \pd{J^*}{t} = \bx^T \dot{\bf S_2}(t) \bx + \bx^T \dot{\bf
-      s_1}(t) + \dot{s_0}(t).$$ Using the HJB, $$ 0 = \min_\bu \left[(\bx -
-      \bx^d(t))^T {\bf Q} (\bx - \bx^d(t)) + (\bu - \bu^d(t))^T {\bf R} (\bu -
-      \bu^d(t)) + \pd{J^*}{\bx} \left({\bf A} \bx + \bB \bu \right) +
-      \pd{J^*}{t} \right], $$ we have
+      In this case, we have $$\pd{J^*}{\bx} = 2 \bx^T {\bf S}_{xx}(t) + 2{\bf
+      s}_{x}^T(t),\quad \pd{J^*}{t} = \bx^T \dot{\bf S}_{xx}(t) \bx + 2\bx^T
+      \dot{\bf s}_x(t) + \dot{s}_0(t).$$ Using the HJB, $$ 0 = \min_\bu
+      \left[(\bx - \bx_d(t))^T {\bf Q} (\bx - \bx_d(t)) + (\bu - \bu_d(t))^T
+      {\bf R} (\bu - \bu_d(t)) + \pd{J^*}{\bx} \left({\bf A} \bx + \bB \bu
+      \right) + \pd{J^*}{t} \right], $$ we have
 
-      \begin{gather*} \pd{}{\bu} = 2 (\bu - \bu^d(t))^T{\bf R} + (2\bx^T{\bf
-      S_2}(t) + {\bf s_1}^T(t))\bB = 0,\\ \bu^*(t) =  \bu^d(t) - {\bf R}^{-1}
-      \bB^T\left[{\bf S_2}(t)\bx + \frac{1}{2}{\bf s_1}(t)\right] \end{gather*}
+      \begin{gather*} \pd{}{\bu} = 2 (\bu - \bu_d(t))^T{\bf R} + (2\bx^T{\bf
+      S}_{xx}(t) + 2{\bf s}_x^T(t))\bB = 0,\\ \bu^*(t) =  \bu_d(t) - {\bf
+      R}^{-1} \bB^T\left[{\bf S}_{xx}(t)\bx + {\bf s}_x(t)\right]
+      \end{gather*}
 
       The HJB can be satisfied by integrating backwards
 
       \begin{align*}
-      -\dot{\bf S_2}(t) =& {\bf Q} - {\bf S_2}(t) \bB {\bf R}^{-1} {\bf
-      B}^T {\bf S_2}(t) + {\bf S_2}(t) {\bf A} + {\bf A}^T {\bf S_2}(t)\\
-      -\dot{\bf s_1}(t) =& -2 {\bf Q} \bx^d(t) + \left[{\bf A}^T - {\bf S}_2
-        \bB {\bf R}^{-1} \bB^T \right]{\bf s_1}(t) + 2{\bf
-        S_2}(t) \bB \bu^d(t)\\
-      -\dot{s_0}(t) =&  \bx^d(t)^T {\bf Q} \bx^d(t) - \frac{1}{4} {\bf
-        s_1}^T(t) \bB {\bf R}^{-1} \bB^T {\bf s_1}(t) + {\bf
-        s_1}(t)^T \bB \bu^d(t),
+      -\dot{\bf S}_{xx}(t) =& {\bf Q} - {\bf S}_{xx}(t) \bB {\bf R}^{-1} {\bf
+      B}^T {\bf S}_{xx}(t) + {\bf S}_{xx}(t) {\bf A} + {\bf A}^T {\bf S}_{xx}(t)\\
+      -\dot{\bf s}_x(t) =& - {\bf Q} \bx_d(t) + \left[{\bf A}^T - {\bf S}_{xx}
+        \bB {\bf R}^{-1} \bB^T \right]{\bf s}_x(t) + {\bf
+        S}_{xx}(t) \bB \bu_d(t)\\
+      -\dot{s}_0(t) =&  \bx_d(t)^T {\bf Q} \bx_d(t) - {\bf
+        s}_x^T(t) \bB {\bf R}^{-1} \bB^T {\bf s}_x(t) + 2{\bf
+        s}_x(t)^T \bB \bu_d(t),
       \end{align*}
 
       from the final conditions
 
       \begin{align*}
-      {\bf S_2}(T) =& {\bf Q}_f\\
-      {\bf s_1}(T) =& -2 {\bf Q}_f \bx^d(T) \\
-      s_0(T) =& \left[\bx^d(T)\right]^T {\bf Q}_f \left[ \bx^d(T) \right].
+      {\bf S}_{xx}(t_f) =& {\bf Q}_f\\
+      {\bf s}_{x}(t_f) =& -{\bf Q}_f \bx_d(t_f) \\
+      s_0(t_f) =& \bx_d^T(t_f) {\bf Q}_f \bx_d(t_f).
       \end{align*}
 
-      Notice that the solution for ${\bf S_2}$ is the same as the simpler LQR
+      Notice that the solution for ${\bf S}_{xx}$ is the same as the simpler LQR
       derivation, and is symmetric (as we assumed).  Note also that $s_0(t)$ has
       no effect on control (even indirectly), and so can often be ignored.</p>
 
       <p>A quick observation about the quadratic form, which might be helpful in
-      debugging.  We know that $J(x,t)$ must be uniformly positive.  This is
-      true iff ${\bf S}_2>0$ and $s_0 > \frac{1}{4} {\bf s}_1^T {\bf S}_2^{-1}
-      {\bf s}_1$, which comes from evaluating the function at $x_{min}$ defined
-      by $\pd{}{x} = 0$.</p>
+      debugging.  We know that $J(\bx,t)$ must be uniformly positive.  This is
+      true iff ${\bf S}_{xx}\succ 0$ and $s_0 > {\bf s}_x^T {\bf S}_{xx}^{-1}
+      {\bf s}_x$, which comes from evaluating the function at $\bx_{min}(t)$ defined
+      by $\left[ \pd{J^*(\bx,t)}{\bx} \right]_{\bx=\bx_{min}(t)} = 0$.</p>
 
       <todo>test this on an example, get my notation consistent (s(t)^T vs
       s^T(t), etc.</todo>
@@ -538,6 +538,78 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       Minimum-time LQR
     </todo>
     
+  </section>
+
+  <section><h1>Exercises</h1>
+  
+  </section>
+
+  <section><h1>Notes</h1>
+  
+    <subsection id="finite_horizon_derivation"><h1>Finite-horizon LQR derivation (general form)</h1>
+
+      <p>For completeness, I've included here the derivation for continuous-time finite-horizon LQR with all of the bells and whistles.</p>
+
+      <p>Consider an time-varying affine (approximation of a) continuous-time
+      dynamical system in state-space form: $$\dot{\bx} = {\bf A}(t)\bx + {\bf
+      B}(t)\bu + {\bf c}(t),$$ and a running cost function in the general
+      quadratic form: \begin{gather*} \ell(t, \bx,\bu) = \begin{bmatrix} \bx \\
+      1 \end{bmatrix}^T {\bf Q}(t) \begin{bmatrix} \bx \\ 1 \end{bmatrix} +
+      \begin{bmatrix} \bu \\ 1 \end{bmatrix}^T {\bf R}(t) \begin{bmatrix} \bu \\
+      1 \end{bmatrix} + 2\bx^T{\bf N}(t)\bu, \\ \forall t\in[t_0, t_f], \quad
+      \bQ(t) = \begin{bmatrix} \bQ_{xx}(t) & \bq_x(t) \\ \bq_x^T(t) & q_0(t)
+      \end{bmatrix}, \bQ_{xx}(t) \succeq 0, \quad \bR(t) = \begin{bmatrix}
+      \bR_{uu}(t) & {\bf r}_u(t) \\ {\bf r}_u^T(t) & r_0(t) \end{bmatrix},
+      \bR_{uu}(t) \succ 0.\end{gather*}  Observe that our LQR "optimal tracking"
+      derivation fits in this form, as we can always write $$(\bx - \bx_d(t))^T
+      \bQ_t (\bx - \bx_d(t)) + (\bu - \bu_d(t))^T \bR_t (\bu - \bu_d(t)) + 2
+      (\bx - \bx_d(t))^T {\bf N}_t (\bu - \bu_d(t)),$$ by taking \begin{gather*}
+      \bQ_{xx} = \bQ_t,\quad \bq_x = -\bQ_t \bx_d - {\bf N}_t\bu_d, \quad q_0 =
+      \bx_d^T \bQ_t \bx_d + 2 \bx_d^T {\bf N}_t \bu_d, \\ \bR_{uu} = \bR_t,
+      \quad {\bf r}_u = -\bR_t \bu_d - {\bf N}_t^T \bx_d, \quad r_0 = \bu_d^T
+      \bR_t \bu_d, \quad {\bf N} = {\bf N}_t.\end{gather*} Of course, we can
+      also add a quadratic final cost with $\bQ_f$. Let's search for a positive
+      quadratic, time-varying cost-to-go function of the form: \begin{gather*}
+      J(t, \bx)=\begin{bmatrix} \bx \\ 1 \end{bmatrix}^T {\bf S}(t)
+      \begin{bmatrix} \bx \\ 1 \end{bmatrix}, \quad {\bf S}(t) = \begin{bmatrix}
+      {\bf S}_{xx}(t) & {\bf s}_x(t) \\ {\bf s}_x^T(t) & s_0(t) \end{bmatrix},
+      {\bf S}_{xx}(t) \succ 0, \\ \frac{\partial J}{\partial \bx} = 2\bx^T{\bf
+      S}_{xx} + 2{\bf s}_x^T, \quad \frac{\partial J}{\partial t} =
+      \begin{bmatrix} \bx \\ 1 \end{bmatrix}^T\dot{\bf S} \begin{bmatrix} \bx \\
+      1 \end{bmatrix}. \end{gather*} Writing out the HJB: \begin{gather*}
+      \min_\bu \left[\ell(\bx,\bu) + \frac{\partial J}{\partial \bx} \left[{\bf
+      A}(t)\bx + {\bf B}(t)\bu + {\bf c}(t) \right] + \frac{\partial J}{\partial
+      t} \right] = 0, \end{gather*} we can find the minimizing $\bu$ with
+      \begin{gather*} \frac{\partial}{\partial \bu} = 2\bu^T{\bf R}_{uu} + 2{\bf
+      r}_u^T + 2\bx^T{\bf N} + (2\bx^T{\bf S}_{xx} + 2{\bf s}_x^T){\bf B} = 0 \\
+      \bu^* = -{\bf R}_{uu}^{-1} \begin{bmatrix} {\bf N} + {\bf S}_{xx} \bB \\
+      {\bf r}^T_{u} + {\bf s}^T_{x}\bB \end{bmatrix}^T \begin{bmatrix} \bx \\ 1
+      \end{bmatrix} = -{\bf K}(t) \begin{bmatrix} \bx \\ 1 \end{bmatrix} = -{\bf
+      K}_x(t) \bx - {\bf k}_0(t). \end{gather*} Inserting this back into the HJB gives
+      us the updated Riccati differential equation. Since this must hold for all
+      $\bx$, we can collect the quadratic, linear, and offset terms and set them
+      each individually equal to zero, yielding: \begin{align*} -\dot{\bf
+      S}_{xx} =& \bQ_{xx} - ({\bf N} + {\bf S}_{xx} \bB){\bf R}_{uu}^{-1}({\bf
+      N} + {\bf S}_{xx} \bB)^T + {\bf S}_{xx}{\bf A} + {\bf A}^T{\bf S}_{xx}, \\
+      -\dot{\bf s}_x =& \bq_x - ({\bf N} + {\bf S}_{xx} \bB){\bf R}_{uu}^{-1}
+      ({\bf r}_u + \bB^T {\bf s}_x ) + {\bf A}^T{\bf s}_x + {\bf S}_{xx}{\bf c},
+      \\ -\dot{s}_0 =& q_0 + r_0 - ({\bf r}_u + \bB^T {\bf s}_x)^T{\bf
+      R}_{uu}^{-1} ({\bf r}_u + \bB^T {\bf s}_x) + 2{\bf s}_x^T {\bf c},
+      \end{align*} with the final conditions ${\bf S}(t_f) = {\bf Q}_f.$
+      </p>
+
+      <todo>Provide the sqrt formulation of the S1 equation here</todo>
+
+      <p>In the discrete-time version, we have... </p>
+
+      <p>Phew!  Numerical solutions to these equations can be obtained by
+      calling the <a
+      href="https://drake.mit.edu/doxygen_cxx/group__control__systems.html#ga58307d2135757a498c434e96d7b99853"><code>FiniteHorizonLinearQuadraticRegulator</code></a>
+      methods in <drake></drake>.  May you never have to type them in and unit
+      test them yourself.</p>
+
+    </subsection>
+
   </section>
 
 </chapter>

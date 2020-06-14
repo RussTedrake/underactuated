@@ -32,7 +32,8 @@
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
     <p style="font-size: 14px; text-align: right;"> 
       &copy; Russ Tedrake, 2020<br/>
-      <a href="tocite.html">How to cite these notes</a><br/>
+      <a href="tocite.html">How to cite these notes</a> &nbsp; | &nbsp;
+      <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSesAhROfLRfexrRFebHWLtRpjhqtb8k_iEagWMkvc7xau08iQ/viewform?usp=sf_link">Send me your feedback</a><br/>
     </p>
   </header>
 </div>
@@ -317,10 +318,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <p> In this section we restrict ourselves to the simplest case when $u_0 =
       0$. Let's sketch the phase portrait.  First sketch along the
       $\theta$-axis. The $x$-component of the vector field here is zero, the
-      $y$-component is $-mgl\sin\theta.$ As expected, we have fixed points at
-      $\pm \pi, ...$ Now sketch the rest of the vector field.  Can you tell me
-      which fixed points are stable? Some of them are stable i.s.L., none are
-      asymptotically stable.</p>
+      $y$-component is $-\frac{g}{l}\sin\theta.$ As expected, we have fixed
+      points at $\pm \pi, ...$ Now sketch the rest of the vector field.  Can you
+      tell me which fixed points are stable? Some of them are stable i.s.L.,
+      none are asymptotically stable.</p>
 
       <figure> <img width="80%" src="figures/pend_undamped_phase.svg"/>
       </figure>
@@ -347,14 +348,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
         Using this, if you tell me $\theta$ I can determine one of two possible
         values for $\dot\theta$, and the solution has all of the richness of the
-        black countour lines from the plot.  This equation has a real solution
+        black contour lines from the plot.  This equation has a real solution
         when $\cos(\theta) > \cos(\theta_{max})$, where $$\theta_{max} =
-        \begin{cases} \cos^{-1}\left( \frac{E}{mgl} \right), & E < mgl \\ \pi, &
-        \text{otherwise}. \end{cases}$$ Of course this is just the intuitive
-        notion that the pendulum will not swing above the height where the total
-        energy equals the potential energy.  As an exercise, you can verify that
-        differentiating this equation with respect to time indeed results in the
-        equations of motion.</p>
+        \begin{cases} \cos^{-1}\left( -\frac{E_0}{mgl} \right), & E_0 < mgl \\
+        \pi, & \text{otherwise}. \end{cases}$$ Of course this is just the
+        intuitive notion that the pendulum will not swing above the height where
+        the total energy equals the potential energy.  As an exercise, you can
+        verify that differentiating this equation with respect to time indeed
+        results in the equations of motion.</p>
 
         <p>The particular orbit defined by $E = mgl$ is special -- this is the orbit that visits the (unstable) equilibrium at the upright.  It is known as the <a href="https://en.wikipedia.org/wiki/Homoclinic_orbit">homoclinic orbit</a>.</p>
 
@@ -670,7 +671,7 @@ complete trajectory.</p>
 
         <li>Find all the equilibrium points of this system (no need to look outside the portion of state space depicted above).  Use the notebook to double check your answer: simulate the evolution of the system setting the equilibrium points you identified as initial conditions.</li>
 
-        <li>Determine whether the equilibria you identified at the previous point are Lyapunov attractive and/or stable i.s.L.  Explain briefly your reasoning, and feel free to include some plots generated with the notebook in your written answer.</li>
+        <li>Determine whether the equilibria you identified at the previous point are attractive and/or stable i.s.L.  Explain briefly your reasoning, and feel free to include some plots generated with the notebook in your written answer.</li>
 
         <li>This dynamical system is a (very) close relative of one of the systems we analyzed in this chapter.  Can you guess which one is it?  What is the connection between the two?  Extra points: support your claim with a mathematical derivation.</li>
 

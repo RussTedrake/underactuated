@@ -16,6 +16,7 @@ def ManipulatorDynamics(plant, q, v=None):
     B = plant.MakeActuationMatrix()
     forces = MultibodyForces_(plant)
     plant.CalcForceElementsContribution(context, forces)
+    # TODO(russt): add in contact forces to tauExt.
     tauExt = forces.generalized_forces()
 
     return (M, Cv, tauG, B, tauExt)

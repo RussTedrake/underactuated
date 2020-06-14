@@ -4,14 +4,15 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-load("//tools/rt/jupyter:defs.bzl", "rt_ipynb_test")
+load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
+load("//htmlbook/tools/python:defs.bzl", "rt_py_test")
 
 rt_ipynb_test(
     name = "value_iteration",
     srcs = ["value_iteration.ipynb"],
     deps = [
         "//underactuated",
-        "//underactuated/double_integrator",
+        "//underactuated:double_integrator",
     ],
 )
 
@@ -19,4 +20,9 @@ rt_ipynb_test(
     name = "neural_value_iteration",
     srcs = ["neural_value_iteration.ipynb"],
     deps = ["//underactuated"],
+)
+
+rt_py_test(
+    name = "lqr",
+    srcs = ["lqr.py"],
 )

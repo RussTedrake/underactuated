@@ -34,7 +34,8 @@ with Stochasticity" content="text/html; charset=utf-8;" />
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
     <p style="font-size: 14px; text-align: right;"> 
       &copy; Russ Tedrake, 2020<br/>
-      <a href="tocite.html">How to cite these notes</a><br/>
+      <a href="tocite.html">How to cite these notes</a> &nbsp; | &nbsp;
+      <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSesAhROfLRfexrRFebHWLtRpjhqtb8k_iEagWMkvc7xau08iQ/viewform?usp=sf_link">Send me your feedback</a><br/>
     </p>
   </header>
 </div>
@@ -132,7 +133,7 @@ with Stochasticity</h1>
       animation</a></figcaption> </figure>
 
       <p>You can run this demo for yourself:</p>
-      <pysrc>simple/stochastic_system_particles.py</pysrc>
+      <jupyter>examples/stochastic.ipynb</jupyter>
 
     </example>
 
@@ -164,15 +165,81 @@ with Stochasticity</h1>
     linear(!) ; a fact that can enable closed-form solutions to some impressive
     long-term statistics, like mean time to failure or first passage
     times<elib>Byl08a</elib>. Unfortunately, it is often difficult to perform
-    the integral in closed form, so we must often resort to discretation or
+    the integral in closed form, so we must often resort to discretization or
     numerical analysis. </p>
 
+    <example id="logistic"><h1>The Logistic Map</h1>
+    
+      <p>In fact, one does not actually need stochastic dynamics in order for
+      the dynamics of the distribution to be the meaningful object of study;
+      random initial conditions can be enough.  One of the best examples comes
+      from perhaps the simplest and most famous example of a chaotic system: the
+      logistic map.  This example is described beautifully in
+      <elib>Lasota13</elib>.</p>
+
+      <p>Consider the following difference equation: $$x[n+1] = 4
+      x[n](1-x[n]),$$ which we will study over the (invariant) interval $x \in
+      [0, 1]$. </p>
+
+      <figure> <img width="80%" src="figures/logistic_map.svg"/>
+      <figcaption>The discrete-time dynamics of the "logistic map" (plotted
+      alongside the line $x[n+1] = x[n]$).</figcaption>
+      </figure>
+      
+      <p>It takes only a moment of tracing your finger along the plot using the
+      "<a href="simple_legs.html#staircase">staircase method</a>" to see what
+      makes this system so interesting -- rollouts from a single initial
+      condition end up bouncing all over the interval $(0,1)$, and neighboring
+      initial conditions will end up taking arbitrarily different trajectories
+      (this is the hallmark of a "chaotic" system).</p>
+
+      <figure> <img width="80%" src="figures/logistic_map_rollouts.svg"/>
+        <figcaption>Two simulations of the logistic map from different initial
+        conditions.  Remember, there is no stochasticity here -- the dynamics
+        are entirely deterministic!</figcaption>
+        </figure>
+
+      <p>Here's what's completely fascinating -- even though the dynamics of any
+      one initial condition for this system are extremely complex, if we study
+      the dynamics of a distribution of states through the system, they are
+      surprisingly simple and well-behaved.  This system is one of the rare
+      cases when we can write the master equation in closed
+      form<elib>Lasota13</elib>: $$p_{n+1}(x) = \frac{1}{4\sqrt{1-x}} \left[
+      p_n\left(\frac{1}{2}-\frac{1}{2}\sqrt{1-x}\right) + p_n\left(\frac{1}{2} +
+      \frac{1}{2}\sqrt{1-x}\right) \right].$$  Moreover, this master equation
+      has a steady-state solution: $$p_*(x) = \frac{1}{\pi\sqrt{x(1-x)}}.$$ </p>
+
+      <figure> <img width="116%" style="margin-left:-8%" src="figures/logistic_map_master.svg"/>
+        <figcaption>Plotting the (closed-form) evolution of the master equation
+        for the logistic map, initialized with $p_0(x) = 1$, reveals surprising
+        simplicity, and rapid convergence to a stationary
+        distribution (dashed orange line).</figcaption>
+        </figure>
+
+      <p>For this system (and many chaotic systems), the dynamics of a single initial condition are complicated, but the dynamics a <i>distribution</i> of initial conditions are beautiful and simple!</p>
+
+      <p>Note: when the dynamical system under study has deterministic dynamics
+      (but a distribution of initial conditions), the linear map given by the
+      master equation is known as the <i>Perron-Frobenius operator</i>, and it
+      gives rise to the Liouville equation that we will study later in the
+      chapter.</p>
+
+    </example>
+
     <p>The slightly more general form of the master equation, which works for
-    multivariable distributions with state-domain ${\cal X}$, and systems with
+    multivariate distributions with state-domain ${\cal X}$, and systems with
     control inputs $\bu$, is \[ p_{n+1}(\bx) = \int_{\cal X} p(\bx|\bx',\bu)
     p_n(\bx') d\bx'. \] This is a (continuous-state) Markov Decision
     Process.</p>
 
+    <p>Continuous-time formulations are also possible -- these lead to the
+    so-called <a
+    href="https://en.wikipedia.org/wiki/Fokker%E2%80%93Planck_equation">
+    Fokker-Planck equation</a>.</p>
+
+    <todo>mention Chapman-Kolmogorov?</todo>
+    <todo>mention Ito Calculus?</todo>
+  
   </section>
 
   <section><h1>Stationary Distributions</h1>
@@ -253,11 +320,12 @@ with Stochasticity</h1>
       $t=30$. <br/><a href="figures/cubic_histogram.swf">Click here to see the
       animation</a></figcaption> </figure>
 
-      <p>Be sure to watch the animation.  Or better yet, run the simulation
-        for yourself by changing the sign of the derivative in the example
-        and re-running:</p>
+      <p>Be sure to watch the animation.  Or better yet, run the simulation for
+      yourself by changing the sign of the derivative in the bistability example
+      and re-running:</p>
 
-      <pysrc>simple/stochastic_system_particles.py</pysrc>
+      <p>You can run this demo for yourself:</p>
+      <jupyter>examples/stochastic.ipynb</jupyter>
 
       <p>Now try increasing the noise (e.g. pre-multiply the noise input,
         $w$, in the dynamics by a scalar like 2).</p>
@@ -295,7 +363,7 @@ with Stochasticity</h1>
       think about it a little more, and then watch the animation (or run the
       simulation yourself).</p>
 
-      <pysrc>van_der_pol/particles.py</pysrc>
+      <jupyter>examples/stochastic.ipynb</jupyter>
 
       <p style="text-align:center"><a
       href="figures/vanderpol_particles.swf">Click here to see the animation
@@ -317,10 +385,32 @@ with Stochasticity</h1>
 
   </section>
 
+
   <section><h1>Extended Example: The Rimless Wheel on Rough
   Terrain</h1>
 
-    <p>Coming soon.  Read the paper <elib>Byl08f</elib> and/or watch the <a
+    <p>My favorite example of a meaningful source of randomness on a model
+    underactuated system is the <a href="simple_legs.html#rimless_wheel">rimless
+    wheel</a> rolling down stochastically "rough" terrain<elib>Byl08f</elib>.
+    Generating interesting/relevant probabilistic models of terrain in general
+    can be quite complex, but the rimless wheel makes it easy -- since the robot
+    only contacts that ground at the point foot, we can model almost arbitrary
+    rough terrain by simply taking the ramp angle, $\gamma$, to be a random
+    variable. If we restrict our analysis to rolling only in one direction (e.g.
+    only downhill), then we can even consider this ramp angle to be i.i.d.;
+    after each footstep we will independently draw a new ramp angle $\gamma[n]$
+    for the next step.</p>
+
+    <figure>
+      <img width="40%" src="figures/rimlessWheel.svg"/>
+      <figcaption>The rimless wheel. The orientation of the stance leg,
+      $\theta$, is measured clockwise from the vertical axis. </figcaption>
+      <todo>Update this to have rough terrain.</todo>
+    </figure>
+
+    <p>In our original analysis of the rimless wheel, we derived the "post-collision" return map -- mapping the angular velocity from the beginning of the stance phase to the (post-collision) angular velocity at the next stance phase.  But now that the relative location of the ground is changing on every step, we instead write the "apex-to-apex" return map, which maps the angular velocity from one apex (the moment that the leg is vertical) to the next, which is given by: $$\dot\theta[n+1] = \sqrt{\cos^2\alpha \left( \dot\theta^2[n] + \frac{2g}{l}\left(1-\cos(\alpha + \gamma[n])\right)\right) - \frac{2g}{l}(1 - \cos(\alpha - \gamma[n]))}.$$ </p>
+
+    <p>More coming soon.  Read the paper <elib>Byl08f</elib> and/or watch the <a
         href="https://youtu.be/TaaJgvjYBQc">video</a>.</p>
 
   </section>
@@ -347,11 +437,16 @@ with Stochasticity</h1>
     <p>L2-gain with dissipation inequalities.  Finite-time verification with
     sums of squares.</p>
 
+    <p>Occupation Measures</p>
+
+    <todo>Section on the liouville equation (ode describring the Perron-Frobenius along a path.</todo>
+
   </section>
 
 
   <section><h1>Control Design (a preview)</h1>
 
+   
   </section>
 
 </chapter>

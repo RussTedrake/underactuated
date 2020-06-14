@@ -34,7 +34,8 @@
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
     <p style="font-size: 14px; text-align: right;"> 
       &copy; Russ Tedrake, 2020<br/>
-      <a href="tocite.html">How to cite these notes</a><br/>
+      <a href="tocite.html">How to cite these notes</a> &nbsp; | &nbsp;
+      <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSesAhROfLRfexrRFebHWLtRpjhqtb8k_iEagWMkvc7xau08iQ/viewform?usp=sf_link">Send me your feedback</a><br/>
     </p>
   </header>
 </div>
@@ -252,12 +253,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       systems, if we assume that the control inputs are held constant for each
       time step (aka <a
       href="https://en.wikipedia.org/wiki/Zero-order_hold">zero-order hold</a>),
-      then we can integrate the dynamics perfectly: $$\bx[n+1] =
+      then we can integrate the dynamics perfectly: $$\bx[n+1] = \bx[n] +
       \int_{t_n}^{t_n + h} \left[ {\bf A} \bx(t) + {\bf B}\bu \right]dt =
-      e^{{\bf A}h}\bx[n] + {\bf A}^{-1}(e^{{\bf A}h} - {\bf I}){\bf B}\bu[n],$$ is the simple case (when ${\bf A}$ is
-      invertible). But in general, we can use any finitely-parameterized
-      representation of $\bu(t)$ and any numerical integration scheme to obtain
-      $\bx[n+1]={\bf f}(\bx[n], \bu[n])$.</p>
+      e^{{\bf A}h}\bx[n] + {\bf A}^{-1}(e^{{\bf A}h} - {\bf I}){\bf B}\bu[n],$$
+      is the simple case (when ${\bf A}$ is invertible). But in general, we can
+      use any finitely-parameterized representation of $\bu(t)$ and any
+      numerical integration scheme to obtain $\bx[n+1]={\bf f}(\bx[n],
+      \bu[n])$.</p>
 
     </subsection>
 
@@ -983,8 +985,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <todo>DMOC</todo>
 
-    <subsection><h1>Mixed-integer convex optimization for
-    non-convex constraints</h1>
+    <subsection><h1>Mixed-integer convex optimization for non-convex
+    constraints</h1>
+
+      <example><h1>Mixed-integer planning around obstacles</h1>
+
+        <jupyter no_colab>examples/miqp_planning.ipynb</jupyter>
+
+      </example>
 
     </subsection>
 
