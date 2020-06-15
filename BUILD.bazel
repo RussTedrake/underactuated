@@ -5,7 +5,6 @@
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
 load("//htmlbook/tools/tidy:def.bzl", "html_tidy_test")
-load("//htmlbook/tools/python:defs.bzl", "rt_py_library")
 
 exports_files(
     ["LICENSE.TXT"],
@@ -29,8 +28,8 @@ html_tidy_test(
     config = ".tidy.config",
 )
 
-rt_py_library(
+filegroup(
     name = "chapters",
-    srcs = ["chapters.py"],
+    srcs = ["chapters.json"],
     visibility = ["//visibility:public"],
 )
