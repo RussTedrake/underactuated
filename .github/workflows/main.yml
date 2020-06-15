@@ -60,13 +60,13 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: submodule checkout
-        run:  ./scripts/workflows/ci/bionic/submodule_checkout
+        run:  ./scripts/submodule_checkout
         shell: bash
       - name: post-checkout setup
-        run: ./scripts/workflows/ci/bionic/setup
+        run: ./htmlbook/workflows/ci/bionic/setup
         shell: bash
       - name: test
-        run: ./scripts/workflows/ci/bionic/test
+        run: ./htmlbook/workflows/ci/bionic/test
         shell: bash
   catalina:
     name: macos catalina 10.15
@@ -75,12 +75,12 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: submodule checkout
-        run:  ./scripts/workflows/ci/catalina/submodule_checkout
+        run:  ./scripts/submodule_checkout
         shell: zsh -efuo pipefail {0}
       - name: setup
-        run: ./scripts/workflows/ci/catalina/setup
+        run: ./htmlbook/workflows/ci/catalina/setup
         shell: zsh -efuo pipefail {0}
       - name: test
-        run: ./scripts/workflows/ci/catalina/test
+        run: ./htmlbook/workflows/ci/catalina/test
         shell: zsh -efuo pipefail {0}
 ...
