@@ -1,0 +1,35 @@
+{
+  "chapter_ids" : [
+    "intro",
+    "pend",
+    "acrobot",
+    "simple_legs",
+    "humanoids",
+    "stochastic",
+    "dp",
+    "lqr",
+    "lyapunov",
+    "trajopt",
+    "planning",
+    "feedback_motion_planning",
+    "policy_search",
+    "robust",
+    "output_feedback",
+    "limit_cycles",
+    "contact",
+    "sysid",
+    "state_estimation",
+    "rl_policy_search",
+    "drake",
+    "multibody",
+    "optimization",
+    "playbook"
+  ],
+  "parts_format": "dict(first chapter id, name of the part)",
+  "parts" : {
+    "pend": "Model Systems",
+    "dp": "Nonlinear Planning and Control",
+    "sysid": "Estimation and Learning",
+    "drake": "Appendix"
+  }
+}
