@@ -18,7 +18,10 @@ exports_files(
 
 filegroup(
     name = "html",
-    srcs = glob(["*.html", "*.html.in"]),
+    srcs = glob([
+        "*.html",
+        "*.html.in",
+    ]),
     visibility = ["//:__subpackages__"],
 )
 

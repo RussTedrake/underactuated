@@ -40,8 +40,10 @@ rt_ipynb_test(
     name = "lqr",
     srcs = ["lqr.ipynb"],
     data = ["//underactuated/models:cartpole.urdf"],
-    deps = ["//underactuated",
-            "//underactuated:quadrotor2d"],
+    deps = [
+        "//underactuated",
+        "//underactuated:quadrotor2d",
+    ],
 )
 
 rt_ipynb_test(
