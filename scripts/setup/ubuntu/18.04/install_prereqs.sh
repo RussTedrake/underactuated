@@ -3,7 +3,7 @@
 # Copyright 2017 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-set -euo pipefail
+set -euxo pipefail
 
 if [[ "${EUID:-}" -ne 0 ]]; then
   echo 'ERROR: This script must be run as root' >&2
@@ -14,37 +14,45 @@ if command -v conda &>/dev/null; then
   echo 'WARNING: Anaconda is NOT supported. Please remove the Anaconda bin directory from the PATH.' >&2
 fi
 
-apt-get update -o APT::Acquire::Retries=4 -qq
-apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends lsb-release
+apt-get update -qq || (sleep 15; apt-get update -qq)
+
+apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy \
+  --no-install-recommends lsb-release
 
 if [[ "$(lsb_release -cs)" != 'bionic' ]]; then
   echo 'ERROR: This script requires Ubuntu 18.04 (Bionic)' >&2
   exit 2
 fi
 
-apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends $(tr '\n' ' ' <<EOF
-apt-transport-https
-ca-certificates
-gnupg
-EOF
-)
+apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy \
+  --no-install-recommends ca-certificates gnupg
 
-apt-key adv --fetch-keys https://bazel.build/bazel-release.pub.gpg
-echo 'deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8' > /etc/apt/sources.list.d/bazel.list
-apt-get update -o APT::Acquire::Retries=4 -qq
-apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends $(tr '\n' ' ' <<EOF
+APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key adv \
+  -q --fetch-keys https://bazel.build/bazel-release.pub.gpg
+
+echo 'deb [arch=amd64] https://storage.googleapis.com/bazel-apt stable jdk1.8' \
+  > /etc/apt/sources.list.d/bazel.list
+
+apt-get update -qq || (sleep 15; apt-get update -qq)
+
+apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy \
+  --no-install-recommends $(cat <<EOF
 bazel
 ffmpeg
 jupyter
-jupyter-notebook
 jupyter-nbconvert
+jupyter-notebook
 locales
 python3
+python3-future
 python3-ipywidgets
-python3-notebook
+python3-matplotlib
+python3-numpy
 python3-pip
-python3-widgetsnbextension
+python3-scipy
 python3-setuptools
+python3-wheel
+python3-widgetsnbextension
 tidy
 wget
 EOF
@@ -52,10 +60,9 @@ EOF
 
 locale-gen en_US.UTF-8
 
-LC_CTYPE=en_US.UTF-8 LANG=en_US.UTF-8 pip3 install --upgrade $(tr '\n' ' ' <<EOF
-torch
-timeout-decorator
+LC_CTYPE=en_US.UTF-8 LANG=en_US.UTF-8 pip3 install --disable-pip-version-check $(cat <<EOF
 gradescope-utils
+timeout-decorator
 EOF
 )
 

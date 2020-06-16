@@ -29,7 +29,6 @@ LABEL org.opencontainers.image.vendor="Massachusetts Institute of Technology"
 COPY scripts/docker/pip.conf /root/.config/pip/pip.conf
 COPY scripts/setup/ubuntu/18.04/install_prereqs /tmp/
 RUN /tmp/install_prereqs \
- && rm -rf /opt/drake/share/sdformat \
  && rm -rf /root/.cache \
  && rm -rf /root/.config \
  && rm -f /tmp/install_prereqs \

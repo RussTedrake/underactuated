@@ -3,9 +3,9 @@
 # Copyright 2017 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-set -euo pipefail
+set -euxo pipefail
 
-if [[ "${EUID}" -eq 0 ]]; then
+if [[ "${EUID:-}" -eq 0 ]]; then
   echo 'ERROR: This script must NOT be run as root' >&2
   exit 1
 fi
@@ -15,7 +15,7 @@ if command -v conda &>/dev/null; then
 fi
 
 if ! command -v brew &>/dev/null; then
-  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
 fi
 
 export HOMEBREW_CURL_RETRIES=4
