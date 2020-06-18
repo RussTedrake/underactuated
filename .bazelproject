@@ -3,11 +3,8 @@
 
 directories:
   .
-  -.circleci
-  -cmake
-  -figures
-  -htmlbook
-  -scripts
+  -.binder
+  -.github
 
 derive_targets_from_directories: true
 
