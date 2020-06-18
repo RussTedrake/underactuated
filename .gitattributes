@@ -5,27 +5,34 @@
 *.bazel         text diff=python
 *.bazelrc       text
 *.bzl           text diff=python
+*.cfg           text
 *.cgi           text diff=perl
+*.conf          text
 *.css           text diff=css
 *.gv            text
 *.html          text diff=html
 *.html.in       text diff=html
 *.ipynb         text
+*.jpeg          binary
 *.jpg           binary
 *.js            text
 *.json          text
 *.m             text diff=matlab
 *.md            text
+*.obj           text
 *.ogg           binary
 *.pdf           binary
+*.png           binary
 *.py            text diff=python
 *.sdf           text
+*.sh            text eol=lf
 *.svg           text
 *.swf           binary
 *.tex           text diff=tex
 *.txt           text
 *.TXT           text
 *.urdf          text
+*.xfig          text
 *.xml           text
 *.xpr           text
 *.yml           text
