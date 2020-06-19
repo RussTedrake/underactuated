@@ -186,9 +186,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <subsection><h1>Recursive Dynamics Algorithms</h1>
 
       <p>The equations of motions for our machines get complicated quickly.
-      Fortunately, for robots with a tree-link kinematic structure, there are very
-      efficient and natural recursive algorithms for generating these equations of
-      motion.  For a detailed reference on these methods, see
+      Fortunately, for robots with a tree-link kinematic structure, there are
+      very efficient and natural recursive algorithms for generating these
+      equations of motion.  For a detailed reference on these methods, see
       <elib>Featherstone07</elib>; some people prefer reading about the
       Articulated Body Method in <elib>Mirtich96</elib>.  The implementation in
       <drake></drake> uses a related formulation from <elib>Jain11</elib>.</p>
@@ -215,10 +215,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       equal to the location of the other end of the chain. The equations of
       motion can be written \begin{equation}\bM({\bq})\ddot{\bq} +
       \bC(\bq,\dot{\bq})\dot\bq = \btau_g(\bq) + \bB\bu + \bH^T(\bq)
-      \blambda,\end{equation} where $\bH(\bq) = \pd\bh{\bq}$ and ${\blambda}$ is
-      the constraint force.  Let's use the shorthand \begin{equation}
-      \bM({\bq})\ddot{\bq} = \btau(q,\dot{q},u) + \bH^T(\bq) \blambda.
-      \label{eq:manip_short} \end{equation}</p>
+      \blambda,\label{eq:constrained_manip}\end{equation} where $\bH(\bq) =
+      \pd\bh{\bq}$ and ${\blambda}$ is the constraint force.  Let's use the
+      shorthand \begin{equation} \bM({\bq})\ddot{\bq} = \btau(q,\dot{q},u) +
+      \bH^T(\bq) \blambda. \label{eq:manip_short} \end{equation}</p>
 
       <p>Using \begin{gather}\dot\bh = \bH\dot\bq,\\ \ddot\bh = \bH \ddot\bq +
       \dot\bH \dot\bq, \label{eq:ddoth} \end{gather} we can solve for
@@ -226,7 +226,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       therefore $\dot\bh=0$ and $\ddot\bh=0$.  Inserting the dynamics
       (\ref{eq:manip_short}) into (\ref{eq:ddoth}) yields
       \begin{equation}\blambda =- (\bH \bM^{-1} \bH^T)^+ (\bH \bM^{-1} \btau +
-      \dot\bH\dot\bq).\end{equation} The $^+$ notation refers to a Moore-Penrose
+      \dot\bH\dot\bq).\label{eq:lambda_from_h}\end{equation} The $^+$ notation refers to a Moore-Penrose
       pseudo-inverse.  In many cases, this matrix will be full rank (for
       instance, in the case of multiple independent four-bar linkages) and the
       traditional inverse could have been used.  When the matrix drops rank
@@ -240,11 +240,36 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       = \bH\ddot\bq + \dot\bH\dot\bq = -2\alpha \dot\bh - \alpha^2
       \bh,\end{equation} where $\alpha>0$ is a stiffness parameter. This is
       known as Baumgarte's stabilization technique, implemented here with a
-      single parameter to provide a critically-damped response.
-      Carrying
-      this through yields \begin{equation} \blambda =- (\bH \bM^{-1} \bH^T)^+
-      (\bH \bM^{-1} \btau + (\dot{\bH} + 2\alpha \bH)\dot{\bq} + \alpha^2 \bh).
+      single parameter to provide a critically-damped response. Carrying this
+      through yields \begin{equation} \blambda =- (\bH \bM^{-1} \bH^T)^+ (\bH
+      \bM^{-1} \btau + (\dot{\bH} + 2\alpha \bH)\dot{\bq} + \alpha^2 \bh).
       \end{equation}</p>
+
+      <p>There is an important optimization-based derivation/interpretation of
+      these equations, which we will build on below, using <a
+      href="https://en.wikipedia.org/wiki/Gauss%27s_principle_of_least_constraint">Gauss's
+      Principle of Least Constraint</a>.  This principle says that we can
+      derived the constrained dynamics as : \begin{align} \min_\ddot{\bq} \quad
+      & \frac{1}{2} (\ddot{\bq} - \ddot{\bq}_{uc})^T \bM (\ddot{\bq} -
+      \ddot{\bq}_{uc}), \label{eq:least_constraint} \\ \subjto \quad &
+      \ddot{\bh}(\bq,\dot\bq,\ddot\bq) = 0 = \bH \ddot{\bq} + \dot\bH \dot{\bq},
+      \nonumber \end{align} where $\ddot{\bq}_{uc} = \bM^{-1}\tau$ is the
+      "unconstrained acceleration"
+      <elib>Udwadia92</elib>. Equation \eqref{eq:constrained_manip} comes right
+      out of the optimality conditions with $\lambda$ acting precisely as the
+      Lagrange multiplier.  This is a convex quadratic program with equality
+      constraints, which has a closed-form solution that is precisely Equation
+      \eqref{eq:lambda_from_h} above.  It is also illustrative to look at the
+      dual formulation of this optimization, which can be written as
+      $$\min_\lambda \frac{1}{2} \lambda^T \bH \bM^{-1} \bH^T \lambda -
+      \lambda^T (\bH \bM^{-1}\btau + \dot\bH \dot{\bq}).$$  Observe that the
+      linear term is contains the acceleration of $\bh$ if the dynamics evolved
+      without the constraint forces applied; let's call that $\ddot\bh_{uc}$:
+      $$\min_\lambda \frac{1}{2} \lambda^T \bH \bM^{-1} \bH^T \lambda -
+      \lambda^T \ddot{\bh}_{uc}.$$ The primal formulation has accelerations as
+      the decision variables, and the dual formulation has constraint forces as
+      the decision variables.  For now this is merely a cute observation; we'll
+      build on it more when we get to discussing contact forces.</p>
 
     </subsection>
 
@@ -271,83 +296,144 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     </subsection>
 
   </section>
-  <section><h1>Contact Models</h1>
+  <section><h1>The Dynamics of Contact</h1>
 
-    <p>Now let $\phi(\bq)$ indicate the relative (signed) distance between
-      two rigid bodies.  For rigid contact, we would like to enforce the
-      unilateral constraint: \begin{equation} \phi(\bq) \geq 0.
-      \end{equation}</p>
+    <p>The dynamics of multibody systems that make and break contact are closely
+    related to the dynamics of constrained systems, but tend to be much more
+    complex.  In the simplest form, you can think of non-penetration as an
+    <i>inequality</i> constraint: the signed distance between collision bodies
+    must be non-negative.  But, as we have seen in the chapters on walking, the
+    transitions when these constraints become active correspond to collisions,
+    and for systems with momentum they require some care.  We'll also see that
+    frictional contact adds its own challenges.</p>
 
     <p>There are three main approaches used to modeling contact with "rigid"
     body systems:  1) rigid contact approximated with stiff compliant contact,
     2) hybrid models with collision event detection, impulsive reset maps, and
     continuous (constrained) dynamics between collision events, and 3) rigid
-    contact approximated with time-averaged forces (time-stepping).  Each
-    modeling approach has advantages/disadvantages for different
-    applications...</p>
+    contact approximated with time-averaged forces (impulses) in a time-stepping
+    scheme. Each modeling approach has advantages/disadvantages for different
+    applications.</p>
+
+    <p>Before we begin, there is a bit of notation that we will use throughout.
+    Let $\phi(\bq)$ indicate the relative (signed) distance between two rigid
+    bodies.  For rigid contact, we would like to enforce the unilateral
+    constraint: \begin{equation} \phi(\bq) \geq 0. \end{equation}  We'll use
+    ${\bf n} = \pd{\phi}{\bq}$ to denote the "contact normal", as well as ${\bf
+    t}_1$ and ${\bf t}_2$ as any orthonormal basis for the tangents at the
+    contact, all represented as row vectors in joint coordinates.  
+    </p>
+
+    <figure><img width="100%" src="figures/contact_coordinates_2d.jpg"
+    /><figcaption>Contact coordinates in 2D.  (a) The signed distance between
+    contact bodies, $\phi(\bq)$. (b) The normal (${\bf n}$) and tangent (${\bf
+    t}$) contact vectors -- note that these can be drawn in 2D when the $\bq$ is
+    the $x,y$ positions of one of the bodies, but more generally the vectors
+    live in the configuration space. (c) Sometimes it will be helpful for us to
+    express the tangential coordinates using $d_1$ and $d_2$; this will make
+    more sense in the 3D case.</figcaption></figure>
+
+    <figure><img width="100%" src="figures/contact_coordinates_3d.jpg"
+      /><figcaption>Contact coordinates in 3D.</figcaption></figure>
+
+    <p>We will also find it useful to assemble the contact normal and tangent
+    vectors into a single matrix, $\bJ$, that we'll call the <i>contact
+    Jacobian</i>: $$\bJ(\bq) = \begin{bmatrix} {\bf n}\\ {\bf t}_1\\ {\bf t}_2
+    \end{bmatrix}.$$  As written, $\bJ\bv$ gives the relative velocity of the
+    closest points in the contact coordinates; it can be also be extended with
+    three more rows to output a full spatial velocity (e.g. when modeling
+    torsional friction).  The generalized force produced by the contact is given
+    by $\bJ^T \lambda$, where $\lambda = [f_n, f_{t1}, f_{t2}]^T:$
+    \begin{equation} \bM(\bq) \dot{\bv} + \bC(\bq,\bv)\bv = \btau_g(\bq) + \bB
+    \bu + \bJ^T(\bq)\lambda. \end{equation}</p>
 
     <subsection><h1>Compliant Contact Models</h1>
 
       <p>Most compliant contact models are conceptually straight-forward: we
-      will implement contact forces using a stiff spring (and damper) that
-      produces forces to resist penetration (and grossly model the dissipation
-      of collision and/or friction).  However, the devil is in the details.</p>
+      will implement contact forces using a stiff spring (and
+      damper<elib>Hunt75</elib>) that produces forces to resist penetration (and
+      grossly model the dissipation of collision and/or friction).  For
+      instance, for the normal force, $f_n$, we can use a simple (piecewise)
+      linear spring law:</p>
 
-      <p>The first detail comes in defining the signed distance function,
-      $\phi(\bq)$.  It is natural to define the distance between two objects
-      that are not in collision as the smallest Euclidean distance between any
-      two points on the bodies, and the distance for two bodies in collision as
-      the (negative) maximum penetration depth.  Unfortunately, computing the
-      penetration depth for arbitrary bodies is a very complex numerical
-      geometry problem, and is generally considered too expensive to be
-      computed exactly inside, for instance, a simulation loop.</p>
+      <figure>
+        <img width="50%" src="figures/contact_spring.jpg" />
+      </figure>
 
-      <p>The second detail is about where we should put the spring/dampers. One
-      candidate would be to add a spring along the line of maximal penetration,
-      but even if one could compute it accurately this line might not be
-      unique, and can move discontinuously with small changes in $\bq$. (This
-      is one of the reasons that simulated robots can "explode" in a number of
-      modern simulators; as we will see the time-stepping methods can have the
-      same pitfall).  Also a single point force cannot capture effects like
-      torsional friction, and performs badly in some very simple cases (imaging
-      a box sitting on a table).  As a result, many of the most effective
-      algorithms for contact restrict themselves to very limited/simplified
-      geometry.  For instance, one can place "point contacts" (zero-radius
-      spheres) in the four corners of a robot's foot; in this case adding
-      forces at exactly those four points as they penetrate some other
-      body/mesh can give more consistent contact force locations/directions. A
-      surprising number of simulators, especially for legged robots, do
-      this.</p>
+      <p>Coulomb friction is described by two parameters -- $\mu_{static}$ and
+      $\mu_{dynamic}$ -- which are the coefficients of static and dynamic
+      friction.  When the contact tangential velocity (given by ${\bf t}\bv$) is
+      zero, then friction will produce whatever force is necessary to resist
+      motion, up to the threshold $\mu_{static} f_n.$ But once this threshold is
+      exceeding, we have slip (non-zero contact tangential velocity); during
+      slip friction will produce a constant drag force $|f_t| = \mu_{dynamic}
+      f_n$ in the direction opposing the motion.  This behaviour is not a simple
+      function of the current state, but we can approximate it with a continuous
+      function as pictured below.</p>
 
-      <p>In practice, most collision detection algorithms will return a list of
-      "collision point pairs" given the list of bodies (with one point pair per
-      pair of bodies in collision, or more if they are using the aforementioned
-      "multi-contact" heuristics), and our contact force model simply attaches
-      springs between these pairs. Given a point-pair, $p_A$ and $p_B$, both in
-      world coordinates, ...</p>
+      <figure>
+        <img width="90%" src="figures/contact_stribeck.jpg" />
+        <figcaption>(left) The Coloumb friction model.  (right) A continuous piecewise-linear approximation of friction (green) and the <a href="https://drake.mit.edu/doxygen_cxx/group__stribeck__approximation.html">Stribeck approximation of Coloumb friction</a> (blue); the $x$-axis is the contact tangential velocity, and the $y$-axis is the friction coefficient.</figcaption>
+      </figure>
 
-      <todo>Some diagrams could help a LOT here.</todo>
-
-      <p>For this simple case, we can define the normal force direction as...
-      the frictional force as... and write a spring-law...</p>
+      <p>With these two laws, we can recover the contact forces as relatively
+      simple functions of the current state.  However, the devil is in the
+      details.  There are a few features of this approach that can make it
+      numerically unstable. If you've ever been working in a robotics simulator
+      and watched your robot take a step only to explode out of the ground and
+      go flying through the air, you know what I mean.  </p>
 
       <p>In order to tightly approximate the (nearly) rigid contact that most
-      robots make with the world, the stiffness of these springs must be quite
-      high.  For instance, I might want my 180kg humanoid robot model to
+      robots make with the world, the stiffness of the contact "springs" must be
+      quite high.  For instance, I might want my 180kg humanoid robot model to
       penetrate into the ground no more than 1mm during steady-state standing.
       The challenge with adding stiff springs to our model is that this results
       in <a href="https://en.wikipedia.org/wiki/Stiff_equation">stiff
       differential equations</a> (it is not a coincidence that the word
-      <em>stiff</em> is the common term for this in both springs and ODEs). As
-      a result, the best implementations of compliant contact for simulation
-      must use stiff ODE solvers, and these models are often difficult or
-      impossible to use in e.g. trajectory/feedback optimization.</p>
+      <em>stiff</em> is the common term for this in both springs and ODEs). As a
+      result, the best implementations of compliant contact for simulation make
+      use of special-purpose numerical integration recipes (e.g.
+      <elib>Castro20</elib>) and compliant contact models are often difficult to
+      use in e.g. trajectory/feedback optimization.</p>
 
-      <p>Some of the advantages of this approach include (1) the fact that it
-      is easy to implement, at least for simple geometries, (2) by virtue of
-      being a continuous-time model it can be simulated with error-controlled
-      integrators, and (3) the tightness of the approximation of "rigid"
-      contact can be controlled through relatively intuitive parameters.</p>
+      <p>But there is another serious numerical challenge with the basic
+      implementation of this model.  Computing the signed-distance function,
+      $\phi(\bq)$, when it is non-negative is straightforward, but robustly
+      computing the "penetration depth" once two bodies are in collision is not.
+      Consider the case of use $\bphi(\bq)$ to represent the maximum penetration
+      depth of, say, two boxes that are contacting each other.  With compliant
+      contact, we must have some penetration to produce any contact force.  But
+      the direction of the normal vector, ${\bf n} = \pd{\bphi}{\bq},$ can
+      easily change discontinuously as the point of maximal penetration moves,
+      as I've tried to illustrate here:</p>
+
+      <figure><img width=90% src="figures/contact_penetration_normals.jpg" />
+      <figcaption>(Left) Two boxes in penetration, with the signed distance
+      defined by the maximum penetration depth.  (Right) The contact normal for
+      various points of maximal penetration.
+      </figcaption></figure>
+
+      <p>If you really think about this example, it actually even more of the
+      foibles of trying to even define the contact points and normals
+      consistently.  It seems reasonable to define the point on body B as the
+      point of maximal penetration into body A, but notice that as I've drawn
+      it, that isn't actually unique!  The corresponding point on body A should
+      probably be the point on the surface with the minimal distance from the
+      max penetration point (other tempting choices would likely cause the
+      distance to be discontinuous at the onset of penetration).  But this whole
+      strategy is asymmetric;  why shouldn't I have picked the vector going with
+      maximal penetration into body B?  My point is simply that these cases
+      exist, and that even our best software implementations get pretty
+      unsatisfying when you look into the details.  And in practice, it's a lot to expect the collision engine to give consistent and smooth contact points out in every situation.</p>
+
+      <p>Some of the advantages of this approach include (1) the fact that it is
+      easy to implement, at least for simple geometries, (2) by virtue of being
+      a continuous-time model it can be simulated with error-controlled
+      integrators, and (3) the tightness of the approximation of "rigid" contact
+      can be controlled through relatively intuitive parameters.  However, the
+      numerical challenges of dealing with penetration are very real, and they
+      motivate our other two approaches that attempt to more strictly enforce
+      the non-penetration constraints.</p>
 
     </subsection>
 
@@ -358,45 +444,46 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         <p>The collision event is described by the zero-crossings (from positive
         to negative) of $\phi$. Let us start by assuming frictionless
         collisions, allowing us to write \begin{equation}\bM\ddot{\bq} = \btau +
-        \Phi^T \lambda,\end{equation} where $\Phi = \pd{\phi}{\bq}$ and $\lambda
-        \ge 0$ is now a (scalar) impulsive force that is well-defined when
-        integrated over the time of the collision (denoted $t_c^-$ to $t_c^+$).
-        Integrate both sides of the equation over that (instantaneous) interval:
-        \begin{align*}\int_{t_c^-}^{t_c^+} dt\left[\bM \ddot{\bq} \right] =
-        \int_{t_c^-}^{t_c^+} dt \left[ \btau + \Phi^T \lambda \right]
-        \end{align*} Since $\bM$, $\btau$, and $\bPhi$ are constants over this
-        interval, we are left with $$\bM\dot{\bq}^+ - \bM\dot{\bq}^- = \Phi^T
-        \int_{t_c^-}^{t_c^+} \lambda dt,$$ where $\dot{\bq}^+$ is short-hand for
-        $\dot{\bq}(t_c^+)$. Multiplying both sides by $\Phi \bM^{-1}$, we have
-        $$ \Phi \dot{\bq}^+ - \Phi\dot{\bq}^- = \Phi \bM^{-1} \Phi^T
-        \int_{t_c^-}^{t_c^+} \lambda dt.$$ After the collision, we have
-        $\dot\phi^+ = -e \dot\phi^-$, with $0 \le e \le 1$ denoting the <a
+        \lambda {\bf n}^T,\end{equation} where ${\bf n}$ is the "contact normal"
+        we defined above and $\lambda \ge 0$ is now a (scalar) impulsive force
+        that is well-defined when integrated over the time of the collision
+        (denoted $t_c^-$ to $t_c^+$). Integrate both sides of the equation over
+        that (instantaneous) interval: \begin{align*}\int_{t_c^-}^{t_c^+}
+        dt\left[\bM \ddot{\bq} \right] = \int_{t_c^-}^{t_c^+} dt \left[ \btau +
+        \lambda {\bf n}^T \right] \end{align*} Since $\bM$, $\btau$, and ${\bf
+        n}$ are constants over this interval, we are left with $$\bM\dot{\bq}^+
+        - \bM\dot{\bq}^- = {\bf n}^T \int_{t_c^-}^{t_c^+} \lambda dt,$$ where
+        $\dot{\bq}^+$ is short-hand for $\dot{\bq}(t_c^+)$. Multiplying both
+        sides by ${\bf n} \bM^{-1}$, we have $$ {\bf n} \dot{\bq}^+ - {\bf
+        n}\dot{\bq}^- = {\bf n} \bM^{-1} {\bf n}^T \int_{t_c^-}^{t_c^+}
+        \lambda dt.$$ After the collision, we have $\dot\phi^+ = -e \dot\phi^-$,
+        with $0 \le e \le 1$ denoting the <a
         href="https://en.wikipedia.org/wiki/Coefficient_of_restitution">
-        coefficient of restitution</a>, yielding: $$ \Phi \dot{\bq}^+ -
-        \Phi\dot{\bq}^- = -(1+e)\Phi\dot{\bq}^-,$$ and therefore
-        $$\int_{t_c^-}^{t_c^+} \lambda dt = - (1+e)\left[ \Phi \bM^{-1} \Phi^T
-        \right]^\# \Phi \dot{\bq}^-.$$ I've used the notation $A^\#$ here to
-        denote the pseudoinverse of $A$ (I would normally write $A^+,$ but
-        have changed it for this section to avoid confusion).  Substituting this
-        back in above results in \begin{equation}\dot{\bq}^+ = \left[ \bI -
-        (1+e)\bM^{-1} \Phi^T \left[\Phi \bM^{-1} \Phi^T \right]^\# \Phi \right]
-        \dot{\bq}^-.\end{equation}</p>
+        coefficient of restitution</a>, yielding: $$ {\bf n} \dot{\bq}^+ -
+        {\bf n}\dot{\bq}^- = -(1+e){\bf n}\dot{\bq}^-,$$ and therefore
+        $$\int_{t_c^-}^{t_c^+} \lambda dt = - (1+e)\left[ {\bf n} \bM^{-1}
+        {\bf n}^T \right]^\# {\bf n} \dot{\bq}^-.$$ I've used the notation
+        $A^\#$ here to denote the pseudoinverse of $A$ (I would normally write
+        $A^+,$ but have changed it for this section to avoid confusion).
+        Substituting this back in above results in \begin{equation}\dot{\bq}^+ =
+        \left[ \bI - (1+e)\bM^{-1} {\bf n}^T \left[{\bf n} \bM^{-1} {\bf n}^T
+        \right]^\# {\bf n} \right] \dot{\bq}^-.\end{equation}</p>
 
         <p>We can add friction at the contact.  Rigid bodies will almost always
         experience contact at only a point, so we typically ignore torsional
         friction <elib>Featherstone06</elib>, and model only tangential friction
-        by replacing $\Phi$ with a matrix $\bJ$ that has $\Phi$ as one row, but
-        two additional rows to capture the gradient of the contact location
-        tangent to the contact surface, written in joint coordinates (c.f.
-        <elib>Stewart96</elib>). Then $\blambda$ becomes a Cartesian force
-        vector, and (for infinite friction) the post-impact velocity condition
-        becomes ${\bf J}\dot{\bq}^+ = \text{diag}(-e, 0, 0) {\bf J}\dot{\bq}^-,$
-        resulting in the equations: \begin{equation}\dot{\bq}^+ = \left[ \bI -
-        \bM^{-1} \bJ^T \text{diag}(1+e, 1, 1) \left[\bJ \bM^{-1} \bJ^T
-        \right]^\# \bJ \right]\dot{\bq}^-.\end{equation} If $\blambda$ is
-        restricted to a friction cone, as in Coulomb friction, in general we
-        have to solve an optimization to solve for $\dot\bq^+$ subject to the
-        inequality constraints.</p>
+        by extending ${\bf n}$ to a matrix $$\bJ = \begin{bmatrix} {\bf n}\\
+        {\bf t}_1\\ {\bf t}_2 \end{bmatrix},$$ to capture the gradient of the
+        contact location tangent to the contact surface. Then $\blambda$ becomes
+        a Cartesian vector representing the contact impulse, and (for infinite
+        friction) the post-impact velocity condition becomes ${\bf J}\dot{\bq}^+
+        = \text{diag}(-e, 0, 0) {\bf J}\dot{\bq}^-,$ resulting in the equations:
+        \begin{equation}\dot{\bq}^+ = \left[ \bI - \bM^{-1} \bJ^T
+        \text{diag}(1+e, 1, 1) \left[\bJ \bM^{-1} \bJ^T \right]^\# \bJ
+        \right]\dot{\bq}^-.\end{equation} If $\blambda$ is restricted to a
+        friction cone, as in Coulomb friction, in general we have to solve an
+        optimization to solve for $\dot\bq^+$ subject to the inequality
+        constraints.</p>
 
         <example id="spinning_ball_bouncing"><h1>A spinning ball bouncing on the
         ground.</h1>
@@ -406,8 +493,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           \end{bmatrix}^T.$  The equations of motion are $$\bM(\bq)\ddot\bq =
           \begin{bmatrix} m & 0 & 0 \\ 0 & m & 0 \\ 0 & 0 & \frac{2}{3}mr^2
           \end{bmatrix} \ddot\bq = \begin{bmatrix} 0 \\ -g \\ 0 \end{bmatrix} +
-          \begin{bmatrix} 1 & 0 \\ 0 & 1 \\ r & 0 \end{bmatrix} \begin{bmatrix}
-          \lambda_x \\ \lambda_z \end{bmatrix} = \tau_g + \bJ^T {\bf \lambda},$$
+          \begin{bmatrix} 0 & 1 \\ 1 & 0 \\ 0 & r \end{bmatrix} \begin{bmatrix}
+          \lambda_z \\ \lambda_x \end{bmatrix} = \tau_g + \bJ^T {\bf \lambda},$$
           where ${\bf \lambda}$ are the contact forces (which are zero except
           during the impulsive collision).  Given a coefficient of restitution
           $e$ and a collision with a horizontal ground, the post-impact
@@ -462,77 +549,341 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       allow for stable simulations with potentially much larger and more
       consistent time steps.</p>
 
-      <p>What class of mathematical program due we need to simulate contact? The
-      discrete nature of contact suggests that we might need some form of
-      combinatorial optimization.  Indeed, the most common transcription is to a
-      Linear Complementarity Problem (LCP) <elib>Murty88</elib>, as introduced
-      by <elib>Stewart96</elib> and <elib>Anitescu97</elib>.  An LCP is
-      typically written as \begin{align*} \find_{\bw,\bz} \quad \subjto \quad &
-      \bw = \bq + \bM \bz, \\ & \bw \ge 0, \bz \ge 0, \bw^T\bz = 0.\end{align*}
-      They are directly related to the optimality conditions of a (potentially
-      non-convex) quadratic program  and
-      <elib>Anitescu97</elib>> showed that the LCP's generated by our rigid-body
-      contact problems can be solved by Lemke's algorithm.  As short-hand we will write these complementarity constraints as $$\find_{\bz}\quad \subjto \quad 0 \le (\bq + \bM\bz) \perp \bz \ge 0.$$</p>
+      <subsubsection><h1>Complementarity formulations</h1>
 
-      <p>Rather than dive into the full transcription, which has many terms and
-      can be relatively difficult to parse, let me start with two very simple
-      examples.</p>
+        <p>What class of mathematical program due we need to simulate contact?
+        The discrete nature of contact suggests that we might need some form of
+        combinatorial optimization.  Indeed, the most common transcription is to
+        a Linear Complementarity Problem (LCP) <elib>Murty88</elib>, as
+        introduced by <elib>Stewart96</elib> and <elib>Anitescu97</elib>.  An
+        LCP is typically written as \begin{align*} \find_{\bw,\bz} \quad \subjto
+        \quad & \bw = \bq + \bM \bz, \\ & \bw \ge 0, \bz \ge 0, \bw^T\bz =
+        0.\end{align*} They are directly related to the optimality conditions of
+        a (potentially non-convex) quadratic program  and
+        <elib>Anitescu97</elib>> showed that the LCP's generated by our
+        rigid-body contact problems can be solved by Lemke's algorithm.  As
+        short-hand we will write these complementarity constraints as
+        $$\find_{\bz}\quad \subjto \quad 0 \le (\bq + \bM\bz) \perp \bz \ge
+        0.$$</p>
 
-      <example><h1>Time-stepping LCP: Normal force</h1>
+        <p>Rather than dive into the full transcription, which has many terms
+        and can be relatively difficult to parse, let me start with two very
+        simple examples.</p>
 
-        <p>Consider our favorite simple mass being actuated by a horizontal
-        force (with the double integrator dynamics), but this time we will
-        add a wall that will prevent the cart position from taking negative
-        values: our non-penetration constraint is $q \ge 0$.  Physically, this
-        constraint is implemented by a normal (horizontal) force, $f$, yielding
-        the equations of motion: $$m\ddot{q} = u + f.$$</p>
+        <example><h1>Time-stepping LCP: Normal force</h1>
 
-        <figure><img width=40% src="figures/lcp_brick_normal_force.jpg"> 
-        </figure>
+          <p>Consider our favorite simple mass being actuated by a horizontal
+          force (with the double integrator dynamics), but this time we will add
+          a wall that will prevent the cart position from taking negative
+          values: our non-penetration constraint is $q \ge 0$.  Physically, this
+          constraint is implemented by a normal (horizontal) force, $f$,
+          yielding the equations of motion: $$m\ddot{q} = u + f.$$</p>
 
-        <p>$f$ is defined as the force required to enforce the non-penetration
-        constraint; certainly the following are true: $f \ge 0$ and $q \cdot  f
-        = 0$.  $q \cdot f = 0$ is the "complementarity constraint", and you can
-        read it here as "either q is zero or force is zero" (or both); it is our
-        "no force at a distance" constraint, and it is clearly non-convex.  It
-        turns out that satisfying these constraints, plus $q \ge 0$, is
-        sufficient to fully define $f$.</p>
+          <figure><img width=40% src="figures/lcp_brick_normal_force.jpg"> 
+          </figure>
 
-        <p>To define the LCP, we first discretize time, by approximating
-        \begin{gather*}q[n+1] = q[n] + h v[n+1], \\ v[n+1] = v[n] +
-        \frac{h}{m}(u[n] - f[n]).\end{gather*}  This is almost the standard
-        Euler approximation, but note the use of $v[n+1]$ in the right-hand side
-        of the first equation -- this is actually a <a
-        href="https://en.wikipedia.org/wiki/Semi-implicit_Euler_method">semi-implicit
-        Euler approximation</a>, and this choice is essential in the
-        derivation.</p>
+          <p>$f$ is defined as the force required to enforce the non-penetration
+          constraint; certainly the following are true: $f \ge 0$ and $q \cdot
+          f = 0$.  $q \cdot f = 0$ is the "complementarity constraint", and you
+          can read it here as "either q is zero or force is zero" (or both); it
+          is our "no force at a distance" constraint, and it is clearly
+          non-convex.  It turns out that satisfying these constraints, plus $q
+          \ge 0$, is sufficient to fully define $f$.</p>
 
-        <p>Given $h, q[n], v[n],$ and $u[n]$, we can solve for $f[n]$ and $q[n+1]$ simultaneously, by solving the following LCP: \begin{gather*} q[n+1] = \left[ q[n] + h v[n] + \frac{h^2}{m} u[n] \right] + \frac{h^2}{m} f[n] \\ q[n+1] \ge 0, \quad f[n] \ge 0, \quad q[n+1]\cdot f[n] = 0. \end{gather*}  Take a moment and convince yourself that this fits into the LCP prescription given above.</p>
+          <p>To define the LCP, we first discretize time, by approximating
+          \begin{gather*}q[n+1] = q[n] + h v[n+1], \\ v[n+1] = v[n] +
+          \frac{h}{m}(u[n] + f[n]).\end{gather*}  This is almost the standard
+          Euler approximation, but note the use of $v[n+1]$ in the right-hand
+          side of the first equation -- this is actually a <a
+          href="https://en.wikipedia.org/wiki/Semi-implicit_Euler_method">semi-implicit
+          Euler approximation</a>, and this choice is essential in the
+          derivation.</p>
 
-        <figure><img width=40% src="figures/lcp_brick_sol_vectors.jpg"> 
-        </figure>
+          <p>Given $h, q[n], v[n],$ and $u[n]$, we can solve for $f[n]$ and
+          $q[n+1]$ simultaneously, by solving the following LCP: \begin{gather*}
+          q[n+1] = \left[ q[n] + h v[n] + \frac{h^2}{m} u[n] \right] +
+          \frac{h^2}{m} f[n] \\ q[n+1] \ge 0, \quad f[n] \ge 0, \quad
+          q[n+1]\cdot f[n] = 0. \end{gather*}  Take a moment and convince
+          yourself that this fits into the LCP prescription given above.</p>
 
-        <p>It's important to understand that this is a non-convex problem due to the complementarity constraints which force any solution to lie on <i>either</i> the positive x-axis ($f[n] \ge 0$) <i>or</i> the positive y-axis ($q[n+1] \ge 0$).  In this simple example, the equality constraint is simply a line that will intersect with this constraint manifold at the solution.  Note: Please don't confuse this visualization with the more common visualization of the solution space for an LCP (in two or more dimensions) in terms of "complementary cones"<elib>Murty88</elib>.</p>
+          <figure><img width=40%
+          src="figures/lcp_brick_sol_vectors.jpg"></figure>
 
-      </example>
+          <p>Note: Please don't confuse this visualization with the more common
+          visualization of the solution space for an LCP (in two or more
+          dimensions) in terms of "complementary cones"<elib>Murty88</elib>.</p>
 
-      <example><h1>Time-stepping LCP: Friction</h1>
+          <p>Perhaps it's also helpful to plot the solution, $q[n+1], f[n]$ as a function of $q[n], v[n]$.  I've done it here for $m=1, h=0.1, u[n]=0$:</p>
+          <figure>
+<!--            <iframe id="igraph" scrolling="no" style="border:none;"
+            seamless="seamless" src="data/lcp_cart.html" height="250"
+            width="100%"></iframe> -->
+          </figure>
 
-        <p>We can also use LCP to find a feasible solution with Coulomb friction, but it requires some gymnastics with slack variables to make it work.  For this case in particular, I believe the very simple example is best.  Let's take our brick and remove the wall and the wheels (so we now have friction with the ground).</p>  
-  
-        <figure><img width=40% src="figures/lcp_brick_friction.jpg"> 
-        </figure>
-  
-        <p>The dynamics are the same as our previous example, $$m\ddot{q} = u + f,$$ but this time I'm using $f$ for the friction force which is inside the friction cone if $\dot{q} = 0$ and on the boundary of the friction cone if $\dot{q} \ne 0.$  Here the magnitude of the normal force is always $mg$, so we have $|f| \le \mu mg,$ where $\mu$ is the coefficient of friction.  And we will use the same semi-implicit Euler approximation to cast this into discrete time.</p>
+        </example>
 
-        <p>Now, to write the friction constraints as an LCP, we must introduce some slack variables.  First, we'll break the force into a positive component and a negative component: $f[n] = f^+ - f^-.$  And we will introduce one more variable $v_{abs}$ which will be non-zero if the velocity is non-zero (in either direction).  Now we can write the LCP: \begin{align*} \find_{v_{abs}, f^+, f^-} \quad \subjto && \\ 0 \le v_{abs} + v[n+1] \quad &\perp& f^+ \ge 0, \\ 0 \le v_{abs} - v[n+1] \quad &\perp& f^- \ge 0, \\ 0 \le \mu mg - f^+ - f^- \quad &\perp& v_{abs} \ge 0,\end{align*} where each instance of $v[n+1]$ we write out with $$v[n+1] = v[n] + \frac{h}{m}(u + f^+ - f^-).$$ It's enough to make your head spin!  But if you work it out, all of the constraints we want are there.  For example, for $v[n+1] > 0$, then we must have $f^+=0$, $v_{abs} = v[n+1]$, and $f^- = \mu mg$.  When $v[n+1] = 0$, we can have $v_{abs} = 0$, $f^+ - f^- \le \mu mg$, and those forces must add up to make $v[n+1] = 0$.</p>
+        <p>In the (time-stepping, "impulse-velocity") LCP formulation, we write
+        the contact problem in it's combinatorial form.  In the simple example
+        above, the complementarity constraints force any solution to lie on
+        <i>either</i> the positive x-axis ($f[n] \ge 0$) <i>or</i> the positive
+        y-axis ($q[n+1] \ge 0$).  The equality constraint is simply a line that
+        will intersect with this constraint manifold at the solution.  But in
+        this frictionless case, it is important to realize that these are simply
+        the optimality conditions of a convex optimization problem: the
+        discrete-time version of Gauss's principle that we used above.  Using
+        $\bv'$ as shorthand for $\bv[n+1]$, and replacing $\ddot{\bq} =
+        \frac{\bv' - \bv}{h}$ in Eq \eqref{eq:least_constraint} and scaling the
+        objective by $h^2$ we have: \begin{align*} \min_{\bv'} \quad &
+        \frac{1}{2} \left(\bv' - \bv - h\bM^{-1}\btau\right)^T \bM \left(\bv' -
+        \bv - h\bM^{-1}\btau\right) \\ \subjto \quad & \frac{1}{h}\phi(\bq') =
+        \frac{1}{h} \phi(\bq + h\bv') \approx \frac{1}{h}\phi(\bq) + {\bf n}\bv'
+        \ge 0. \end{align*}  The objective is even cleaner/more intuitive if we
+        denote the next step velocity that would have occurred before the
+        contact impulse is applied as $\bv^- = \bv + h\bM^{-1}\btau$:
+        \begin{align*} \min_{\bv'} \quad & \frac{1}{2} \left(\bv' -
+        \bv^-\right)^T \bM \left(\bv' - \bv^-\right) \\ \subjto \quad &
+        \frac{1}{h}\phi(\bq') \ge 0. \end{align*} The LCP for the frictionless
+        contact dynamics is precisely the optimality conditions of this convex
+        (because $\bM \succeq 0$) quadratic program, and once again the contact
+        impulse, ${\bf f} \ge 0$, plays the role of the Lagrange multiplier
+        (with units $N\cdot s$).</p>
+
+        <p>So why do we talk so much about LCPs instead of QPs?  Well LCPs can
+        also represent a wider class of problems, which is what we arrive at
+        with the standard transcription of Coulomb friction.  In the limit of
+        infinite friction, then we could add an additional constraint that the
+        tangential velocity at each contact point was equal to zero (but these
+        equation may not always have a feasible solution).  Once we admit limits on the magnitude of the friction forces, the non-convexity of the disjunctive form rear's it's ugly head.</p>
+
+        <example><h1>Time-stepping LCP: Coulomb Friction</h1>
+
+          <p>We can use LCP to find a feasible solution with Coulomb
+          friction, but it requires some gymnastics with slack variables to make
+          it work.  For this case in particular, I believe a very simple
+          example is best.  Let's take our brick and remove the wall and the
+          wheels (so we now have friction with the ground).</p>  
+    
+          <figure><img width=40% src="figures/lcp_brick_friction.jpg"> 
+          </figure>
+    
+          <p>The dynamics are the same as our previous example, $$m\ddot{q} = u
+          + f,$$ but this time I'm using $f$ for the friction force which is
+          inside the friction cone if $\dot{q} = 0$ and on the boundary of the
+          friction cone if $\dot{q} \ne 0;$ this is known as the principle of
+          maximum dissipation<elib>Stuart96</elib>.  Here the magnitude of the
+          normal force is always $mg$, so we have $|f| \le \mu mg,$ where $\mu$
+          is the coefficient of friction.  And we will use the same
+          semi-implicit Euler approximation to cast this into discrete time.</p>
+
+          <p>Now, to write the friction constraints as an LCP, we must introduce
+          some slack variables.  First, we'll break the force into a positive
+          component and a negative component: $f[n] = f^+ - f^-.$  And we will
+          introduce one more variable $v_{abs}$ which will be non-zero if the
+          velocity is non-zero (in either direction).  Now we can write the LCP:
+          \begin{align*} \find_{v_{abs}, f^+, f^-} \quad \subjto && \\ 0 \le
+          v_{abs} + v[n+1] \quad &\perp& f^+ \ge 0, \\ 0 \le v_{abs} - v[n+1]
+          \quad &\perp& f^- \ge 0, \\ 0 \le \mu mg - f^+ - f^- \quad &\perp&
+          v_{abs} \ge 0,\end{align*} where each instance of $v[n+1]$ we write
+          out with $$v[n+1] = v[n] + \frac{h}{m}(u + f^+ - f^-).$$ It's enough
+          to make your head spin!  But if you work it out, all of the
+          constraints we want are there.  For example, for $v[n+1] > 0$, then we
+          must have $f^+=0$, $v_{abs} = v[n+1]$, and $f^- = \mu mg$.  When
+          $v[n+1] = 0$, we can have $v_{abs} = 0$, $f^+ - f^- \le \mu mg$, and
+          those forces must add up to make $v[n+1] = 0$.</p>
+        
+        </example>
+
+        <p>We can put it all together and write an LCP with both normal forces
+        and friction forces, related by Coulomb friction (using a polyhedral
+        approximation of the friction cone in 3d)<elib>Stewart96</elib>.
+        Although the solution to any LCP <a
+        href="https://en.wikipedia.org/wiki/Linear_complementarity_problem">can
+        also be represented as the solution to a QP</a>, the QP for this problem
+        is non-convex.</p>
+
+      </subsubsection>
+
+      <subsubsection><h1>A convex relaxation</h1>
+
+        <p>In <elib>Anitescu06</elib>, Anitescu described the natural convex
+        relaxation of this problem by dropping the maximum dissipation
+        inequalities and allowing any force inside the friction cone.  Consider
+        the following optimization: \begin{align*} \min_{\bv'} \quad &
+        \frac{1}{2} \left( \bv' - \bv^-\right)^T \bM \left(\bv' - \bv^-\right)
+        \\ \subjto \quad & \frac{1}{h}\phi(\bq') + \mu {\bf d}_i \bv' \ge 0,
+        \qquad \forall i \in 1,...,m \end{align*} where ${\bf d}_i, \forall i\in
+        1,...,m$ are a set of tangent row vectors in joint coordinates
+        parameterizing the polyhedral approximation of the friction cone (as in
+        <elib>Stewart96</elib>).  Importantly, for each ${\bf d}_i$ we must also
+        have $-{\bf d}_i$ in the set.  By writing the Lagrangian, $$L(\bv', {\bf
+        \beta}) = \frac{1}{2}(\bv' - \bv^-)^T\bM(\bv' - \bv^-) - \sum_i \beta_i
+        \left(\frac{1}{h}\phi(\bq) + ({\bf n} + \mu {\bf d})\bv'\right),$$ and checking the
+        stationarity condition: $$\pd{L}{\bv'}^T = \bM(\bv' - \bv) - h\btau -
+        \sum_i \beta_i ({\bf n} + \mu{\bf d}_i)^T = 0,$$ we can see that the
+        Lagrange multiplier, $\beta_i \ge 0$, associated with the $i$th
+        constraint is the magnitude of the impulse (with units $N \cdot s$) in
+        the direction ${\bf n} - \mu {\bf d}_i,$ where ${\bf n} =
+        \pd{\phi}{\bq}$ is the contact normal; the sum of the forces is an
+        affine combination of these extreme rays of the polyhedral friction
+        cone.  As written, the optimization is a QP.</p>  
+        
+        <p>But be careful!  Although the primal solution was convex, and the
+        dual problems are in a sense always convex, the objective here can be
+        positive semi-definite.  This isn't a mistake -- <elib>Anitescu06</elib>
+        describes a few simple examples where the solution to $\bv'$ is unique,
+        but the impulses that produce it are not (think of a table with four
+        legs).</p>
+
+        <p>When the tangential velocity is zero, this constraint is tight; for
+        sliding contact the relaxation effectively causes the contact to
+        "hydroplane" up out of contact, because $\phi(\bq') \ge h\mu \sqrt{({\bf
+        t}_1\bv')^2 + ({\bf t}_2\bv')^2}.$  It seems like a quite reasonable
+        approximation to me, especially for small $h$!</p>
+
+        <p>Let's continue on and write the dual program.  To make the notation a
+        little better, the us stack the Jacobian vectors into $\bJ_\beta$, such
+        that the $i$th row is ${\bf n} + \mu{\bf d_i}$, so that we have
+        $$\pd{L}{\bv'}^T = \bM(\bv' - \bv) - h\btau - \bJ_\beta^T \beta = 0.$$
+        Substituting this back into the Lagrangian give us the dual program:
+        $$\min_{\beta \ge 0} \frac{1}{2} \beta^T \bJ_\beta \bM^{-1} \bJ_\beta^T
+        \beta +  \frac{1}{h}\phi(\bq) \sum_i \beta_i.$$</p>
+
+        <p>According to <elib>Todorov14</elib>, Todorov implements a slight
+        variation of this convex relaxation in the popular <a
+        href="http://www.mujoco.org/">MuJoCo simulator</a>.  He writes the
+        optimization: \begin{align*} \min_\lambda \quad & \frac{1}{2} \lambda^T
+        \bJ \bM^{-1} \bJ^T \lambda + \frac{1}{h}\lambda^T \bJ (\bv^- - \bv^*),
+        \\ \subjto \quad & \lambda \in \mathcal{FC}(\bq),\end{align*} where
+        $\bJ\bv^*$ is a "desired contact velocity", and $\mathcal{FC}(\bq)$
+        describes the friction cone.  Note that we have $\bJ^T \lambda =
+        \bJ_\beta^T \beta$, where $\beta \ge 0$ is a clever parameterization of
+        the friction cone in the polyhedral case; the only difference is in the
+        linear term.  In fact, <elib>Todorov14</elib> proposed $\bv^* = \bv -
+        h\mathcal{B} \bv - h \mathcal{K} \phi(\bq),$ so the differences are
+        subtle.</p>
+
+        <p>In dual form, it is natural to consider the full conic description of
+        the friction cone: $$\mathcal{FC}(\bq) = \left\{{\bf f} = [f_n, f_{t1},
+        f_{t2}]^T \middle| f_n \ge 0, \sqrt{f^2_{t1}+f^2_{t2}} \le \mu f_n
+        \right\}.$$  The resulting dual optimization is has a quadratic objective and second-order cone constraints (SOCP).</p>
+        
+        <p>There are a number of other important relaxations that happen in
+        MuJoCo.  To address the positive indefiniteness in the objective,
+        <elib>Todorov14</elib> relaxes the dual objective by adding a small term
+        to the diagonal.  This guarantees convexity, but the convex optimization
+        can still be poorly conditioned.  The stabilization terms in the
+        objective are another form of relaxation, and <elib>Todorov14</elib>
+        also implements adding additional stabilization to the inertial matrix,
+        called the "implicit damping inertia".  These relaxations can
+        dramatically improve simulation speed, both by making each convex
+        optimization faster to solve, and by allowing the simulator to take
+        larger integration time steps.  MuJoCo boasts a special-purpose solver
+        that can simulate complex scenes at seriously impressive speeds -- often
+        orders of magnitude faster than real time.  But these relaxations can
+        also be abused -- it's unfortunately quite common to see physically
+        absurd MuJoCo simulations, especially when machine learning researchers
+        start changing simulation parameters to optimize their learning
+        curves.</p>
+
+        <p>One final note: I've written just one contact point here to simplify
+        the notation, but of course we repeat the constraint(s) for each contact
+        point; <elib>Anitescu06</elib> studies the typical case of only
+        including potential contact pairs with $\phi(\bq) \le \epsilon$, for
+        small $\epsilon \ge 0$.  </p>
+
+      </subsubsection>
+
+      <todo>
+
+      <subsubsection><h1>Relaxing the dual</h1>
+
+        <p>Despite being a convex QP, the formulation above can still be
+        challenging to solve numerically.  Examining the dual of the QP reveals
+        that the dual is only positive semi-definite -- the solution to the dual
+        variables (contact impulses) is, in fact, not unique even though the
+        primal (velocities) does have a unique solution
+        <elib>Anitescu06</elib>.</p>
       
-      </example>
+        <p>A newer trend, popularized by the <a
+        href="http://www.mujoco.org/"></a>MuJoCo simulator</a>, is to even
+        further relax the constraints of contact via a penalty method in an
+        unconstrained optimization.  Todorov calls this a "relaxed
+        complementarity-free" approach<elib>Todorov14</elib>.  What this
+        approach gives up in terms of accuracy, it makes up for in terms of
+        speed -- MuJoCo can simulate impressively complex scenes at sometimes
+        orders of magnitude faster than real time.  The soft constraints also
+        make the dynamics invertible, which can be useful for (especially
+        gradient-based or inverse-dynamics-based) control design.</p>
 
+        <p>It takes a bit of work to understand the implications of the
+        relaxation terms in the dynamics, and therefore to appreciate just how
+        far we are deviating from our preferred contact models.  Let me start by
+        repeating the simple examples.</p>
+      
+        <example><h1>Relaxed complementarity-free formulation: Normal force</h1>
 
+          <p>What equations do we get if we simulate the simple cart colliding
+          with a wall example that we used above?</p>
+
+          <figure><img width=40% src="figures/lcp_brick_normal_force.jpg"> 
+          </figure>
+
+          <p>Following <elib>Todorov14</elib>, the first relaxation we find is
+          the addition of "implicit damping inertia", which effectively adds
+          some inertia and some damping, parameterized by the regularization
+          term $b$, to the explicit form of the equations.  As a result our
+          discrete-time cart dynamics are given by $$(m+b)\frac{v[n+1] -
+          v[n]}{h} = u[n] + f[n] - bv[n].$$</p>
+
+          <p>What remains is to compute $f[n]$, and here is where things get
+          interesting.  Motivated by the idea of "softening the Gauss principle"
+          (e.g. the principle of least constraint <elib>Udwadia92</elib>) by
+          replacing the hard constraints with a soft penalty term, we end up
+          with a convex optimization which, in this scalar frictionless case,
+          reduces to: \begin{gather*}f[n] = \argmin_{f \ge 0}  \frac{1}{2} f^2
+          \frac{1 + \epsilon}{m+b} + f(v^- - v^*),\end{gather*} where $v^- =
+          v[n] + \frac{h}{m + b}(u[n] - bv[n])$ is the next-step velocity before
+          the contact impulse.  $v^*$ is another regularization term: the
+          "desired contact velocity" which is implemented like a by Baumgarte
+          stabilization: $$v^* = v[n] - 2h \frac{1 + \epsilon}{\kappa} v[n] -
+          h\frac{1+\epsilon}{\kappa^2} q[n].$$  This introduced two additional
+          relaxation parameters; MuJoCo calls $\epsilon$ the "impulse
+          regularization scaling" and $\kappa$ the "error-reduction time
+          constant".</p>
+        </example>
+      </subsubsection>
+      </todo>
+
+      <subsubsection><h1>Beyond Point Contact</h1>
+    
+        <p>Coming soon... Box-on-plane example.  Multi-contact.</p>
+    
+        <p>Also a single point force cannot capture effects like torsional
+        friction, and performs badly in some very simple cases (imaging a box
+        sitting on a table).  As a result, many of the most effective algorithms
+        for contact restrict themselves to very limited/simplified geometry.
+        For instance, one can place "point contacts" (zero-radius spheres) in
+        the four corners of a robot's foot; in this case adding forces at
+        exactly those four points as they penetrate some other body/mesh can
+        give more consistent contact force locations/directions. A surprising
+        number of simulators, especially for legged robots, do this.</p>
+    
+        <p>In practice, most collision detection algorithms will return a list
+        of "collision point pairs" given the list of bodies (with one point pair
+        per pair of bodies in collision, or more if they are using the
+        aforementioned "multi-contact" heuristics), and our contact force model
+        simply attaches springs between these pairs. Given a point-pair, $p_A$
+        and $p_B$, both in world coordinates, ...</p>
+        
+        <p>Hydroelastic model in drake<elib>Elandt19</elib>. </p>
+  
+      </subsubsection>
+  
     </subsection>
 
+
   </section>
+
 
   <todo> numerical integration.  discrete-time approximations of continuous
   systems (lots of edx people had trouble with this.  some found:
