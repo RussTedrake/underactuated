@@ -703,7 +703,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       </subsubsection>
 
-      <subsubsection><h1>A convex relaxation</h1>
+      <subsubsection><h1>Anitescu's convex relaxation</h1>
 
         <p>In <elib>Anitescu06</elib>, Anitescu described the natural convex
         relaxation of this problem by dropping the maximum dissipation
@@ -747,6 +747,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         $$\min_{\beta \ge 0} \frac{1}{2} \beta^T \bJ_\beta \bM^{-1} \bJ_\beta^T
         \beta +  \frac{1}{h}\phi(\bq) \sum_i \beta_i.$$</p>
 
+        <p>One final note: I've written just one contact point here to simplify
+        the notation, but of course we repeat the constraint(s) for each contact
+        point; <elib>Anitescu06</elib> studies the typical case of only
+        including potential contact pairs with $\phi(\bq) \le \epsilon$, for
+        small $\epsilon \ge 0$.  </p>
+  
+      </subsubsection>
+
+      <subsubsection><h1>Todorov's convex relaxation</h1>
+
         <p>According to <elib>Todorov14</elib>, the popular <a
         href="http://www.mujoco.org/">MuJoCo simulator</a> uses a slight
         variation of this convex relaxation, with the optimization:
@@ -754,18 +764,36 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         \bJ^T \lambda + \frac{1}{h}\lambda^T \left( \bJ \bv^- - \dot\bx^d
         \right), \\ \subjto \quad & \lambda \in \mathcal{FC}(\bq),\end{align*}
         where $\dot\bx^d$ is a "desired contact velocity", and
-        $\mathcal{FC}(\bq)$ describes the friction cone.  Note that we have
-        $\bJ^T \lambda = \bJ_\beta^T \beta$, where $\beta \ge 0$ is a clever
-        parameterization of the friction cone in the polyhedral case; the only
-        difference is in the linear term.  <elib>Todorov14</elib>
-        proposed $\dot\bx^d = \bJ \bv - h\mathcal{B} \bJ \bv - h \mathcal{K}
-        [\phi(\bq), 0, 0]^T,$ with $\mathcal{B}$ and $\mathcal{K}$ stabilization
-        gains that are chosen to yield a critically damped response. </p>
+        $\mathcal{FC}(\bq)$ describes the friction cone.  The friction cone
+        constraint looks new but is not; observe that $\bJ^T \lambda =
+        \bJ_\beta^T \beta$, where $\beta \ge 0$ is a clever parameterization of
+        the friction cone in the polyhedral case.  The bigger difference is in
+        the linear term: <elib>Todorov14</elib> proposed $\dot\bx^d = \bJ \bv -
+        h\mathcal{B} \bJ \bv - h \mathcal{K} [\phi(\bq), 0, 0]^T,$ with
+        $\mathcal{B}$ and $\mathcal{K}$ stabilization gains that are chosen to
+        yield a critically damped response. </p>
+
+        <p>How should we interpret this?  If you expand the linear terms, you
+        will see that this is almost exactly the dual form we get from the
+        position equality constraints formulation, including the Baumgarte
+        stabilization.  <!--One term is missing: the $\dot\bJ\bv$ term, but
+        <elib>Todorov14</elib> avoids this by saying that they consider
+        constraints of the form $\bJ\bv = 0 (+ \text{stabilization});$ I think
+        that's a clever way of saying you don't want to bother computing the
+        discrete-time equivalent of $\dot\bJ\bv$. --> It's interesting to think
+        about the implications of this formulation -- like the Anitescu
+        relaxation, it is possible to get some "force at a distance" because we
+        have not in any way expressed that $\lambda = 0$ when $\phi(\bq) > 0.$
+        In Anitescu, it happened in a velocity-dependent boundary layer; here it
+        could happen if you are "coming in hot" -- moving towards contact with
+        enough relative velocity that the stabilization terms want to slow you
+        down.</p>
 
         <p>In dual form, it is natural to consider the full conic description of
-        the friction cone: $$\mathcal{FC}(\bq) = \left\{{\bf \lambda} = [f_n, f_{t1},
-        f_{t2}]^T \middle| f_n \ge 0, \sqrt{f^2_{t1}+f^2_{t2}} \le \mu f_n
-        \right\}.$$  The resulting dual optimization is has a quadratic objective and second-order cone constraints (SOCP).</p>
+        the friction cone: $$\mathcal{FC}(\bq) = \left\{{\bf \lambda} = [f_n,
+        f_{t1}, f_{t2}]^T \middle| f_n \ge 0, \sqrt{f^2_{t1}+f^2_{t2}} \le \mu
+        f_n \right\}.$$  The resulting dual optimization is has a quadratic
+        objective and second-order cone constraints (SOCP).</p>
         
         <p>There are a number of other important relaxations that happen in
         MuJoCo.  To address the positive indefiniteness in the objective,
@@ -785,41 +813,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         much about the physics start changing simulation parameters to optimize
         their learning curves!</p>
 
-        <p>One final note: I've written just one contact point here to simplify
-        the notation, but of course we repeat the constraint(s) for each contact
-        point; <elib>Anitescu06</elib> studies the typical case of only
-        including potential contact pairs with $\phi(\bq) \le \epsilon$, for
-        small $\epsilon \ge 0$.  </p>
-
       </subsubsection>
 
       <todo>
 
-      <subsubsection><h1>Relaxing the dual</h1>
-
-        <p>Despite being a convex QP, the formulation above can still be
-        challenging to solve numerically.  Examining the dual of the QP reveals
-        that the dual is only positive semi-definite -- the solution to the dual
-        variables (contact impulses) is, in fact, not unique even though the
-        primal (velocities) does have a unique solution
-        <elib>Anitescu06</elib>.</p>
-      
-        <p>A newer trend, popularized by the <a
-        href="http://www.mujoco.org/"></a>MuJoCo simulator</a>, is to even
-        further relax the constraints of contact via a penalty method in an
-        unconstrained optimization.  Todorov calls this a "relaxed
-        complementarity-free" approach<elib>Todorov14</elib>.  What this
-        approach gives up in terms of accuracy, it makes up for in terms of
-        speed -- MuJoCo can simulate impressively complex scenes at sometimes
-        orders of magnitude faster than real time.  The soft constraints also
-        make the dynamics invertible, which can be useful for (especially
-        gradient-based or inverse-dynamics-based) control design.</p>
-
-        <p>It takes a bit of work to understand the implications of the
-        relaxation terms in the dynamics, and therefore to appreciate just how
-        far we are deviating from our preferred contact models.  Let me start by
-        repeating the simple examples.</p>
-      
         <example><h1>Relaxed complementarity-free formulation: Normal force</h1>
 
           <p>What equations do we get if we simulate the simple cart colliding
@@ -851,7 +848,6 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           regularization scaling" and $\kappa$ the "error-reduction time
           constant".</p>
         </example>
-      </subsubsection>
       </todo>
 
       <subsubsection><h1>Beyond Point Contact</h1>
