@@ -728,16 +728,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         cone.  As written, the optimization is a QP.</p>  
         
         <p>But be careful!  Although the primal solution was convex, and the
-        dual problems are in a sense always convex, the objective here can be
-        positive semi-definite.  This isn't a mistake -- <elib>Anitescu06</elib>
+        dual problems are always convex, the objective here can be positive
+        semi-definite.  This isn't a mistake -- <elib>Anitescu06</elib>
         describes a few simple examples where the solution to $\bv'$ is unique,
         but the impulses that produce it are not (think of a table with four
         legs).</p>
 
         <p>When the tangential velocity is zero, this constraint is tight; for
         sliding contact the relaxation effectively causes the contact to
-        "hydroplane" up out of contact, because $\phi(\bq') \ge h\mu \sqrt{({\bf
-        t}_1\bv')^2 + ({\bf t}_2\bv')^2}.$  It seems like a quite reasonable
+        "hydroplane" up out of contact, because $\phi(\bq') \ge h\mu {\bf d}_i\bv'.$  It seems like a quite reasonable
         approximation to me, especially for small $h$!</p>
 
         <p>Let's continue on and write the dual program.  To make the notation a
@@ -748,22 +747,23 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         $$\min_{\beta \ge 0} \frac{1}{2} \beta^T \bJ_\beta \bM^{-1} \bJ_\beta^T
         \beta +  \frac{1}{h}\phi(\bq) \sum_i \beta_i.$$</p>
 
-        <p>According to <elib>Todorov14</elib>, Todorov implements a slight
-        variation of this convex relaxation in the popular <a
-        href="http://www.mujoco.org/">MuJoCo simulator</a>.  He writes the
-        optimization: \begin{align*} \min_\lambda \quad & \frac{1}{2} \lambda^T
-        \bJ \bM^{-1} \bJ^T \lambda + \frac{1}{h}\lambda^T \bJ (\bv^- - \bv^*),
-        \\ \subjto \quad & \lambda \in \mathcal{FC}(\bq),\end{align*} where
-        $\bJ\bv^*$ is a "desired contact velocity", and $\mathcal{FC}(\bq)$
-        describes the friction cone.  Note that we have $\bJ^T \lambda =
-        \bJ_\beta^T \beta$, where $\beta \ge 0$ is a clever parameterization of
-        the friction cone in the polyhedral case; the only difference is in the
-        linear term.  In fact, <elib>Todorov14</elib> proposed $\bv^* = \bv -
-        h\mathcal{B} \bv - h \mathcal{K} \phi(\bq),$ so the differences are
-        subtle.</p>
+        <p>According to <elib>Todorov14</elib>, the popular <a
+        href="http://www.mujoco.org/">MuJoCo simulator</a> uses a slight
+        variation of this convex relaxation, with the optimization:
+        \begin{align*} \min_\lambda \quad & \frac{1}{2} \lambda^T \bJ \bM^{-1}
+        \bJ^T \lambda + \frac{1}{h}\lambda^T \left( \bJ \bv^- - \dot\bx^d
+        \right), \\ \subjto \quad & \lambda \in \mathcal{FC}(\bq),\end{align*}
+        where $\dot\bx^d$ is a "desired contact velocity", and
+        $\mathcal{FC}(\bq)$ describes the friction cone.  Note that we have
+        $\bJ^T \lambda = \bJ_\beta^T \beta$, where $\beta \ge 0$ is a clever
+        parameterization of the friction cone in the polyhedral case; the only
+        difference is in the linear term.  <elib>Todorov14</elib>
+        proposed $\dot\bx^d = \bJ \bv - h\mathcal{B} \bJ \bv - h \mathcal{K}
+        [\phi(\bq), 0, 0]^T,$ with $\mathcal{B}$ and $\mathcal{K}$ stabilization
+        gains that are chosen to yield a critically damped response. </p>
 
         <p>In dual form, it is natural to consider the full conic description of
-        the friction cone: $$\mathcal{FC}(\bq) = \left\{{\bf f} = [f_n, f_{t1},
+        the friction cone: $$\mathcal{FC}(\bq) = \left\{{\bf \lambda} = [f_n, f_{t1},
         f_{t2}]^T \middle| f_n \ge 0, \sqrt{f^2_{t1}+f^2_{t2}} \le \mu f_n
         \right\}.$$  The resulting dual optimization is has a quadratic objective and second-order cone constraints (SOCP).</p>
         
@@ -781,9 +781,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         that can simulate complex scenes at seriously impressive speeds -- often
         orders of magnitude faster than real time.  But these relaxations can
         also be abused -- it's unfortunately quite common to see physically
-        absurd MuJoCo simulations, especially when machine learning researchers
-        start changing simulation parameters to optimize their learning
-        curves.</p>
+        absurd MuJoCo simulations, especially when researchers who don't care
+        much about the physics start changing simulation parameters to optimize
+        their learning curves!</p>
 
         <p>One final note: I've written just one contact point here to simplify
         the notation, but of course we repeat the constraint(s) for each contact
