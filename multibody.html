@@ -249,7 +249,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       these equations, which we will build on below, using <a
       href="https://en.wikipedia.org/wiki/Gauss%27s_principle_of_least_constraint">Gauss's
       Principle of Least Constraint</a>.  This principle says that we can
-      derived the constrained dynamics as : \begin{align} \min_\ddot{\bq} \quad
+      derive the constrained dynamics as : \begin{align} \min_\ddot{\bq} \quad
       & \frac{1}{2} (\ddot{\bq} - \ddot{\bq}_{uc})^T \bM (\ddot{\bq} -
       \ddot{\bq}_{uc}), \label{eq:least_constraint} \\ \subjto \quad &
       \ddot{\bh}(\bq,\dot\bq,\ddot\bq) = 0 = \bH \ddot{\bq} + \dot\bH \dot{\bq},
@@ -320,8 +320,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     bodies.  For rigid contact, we would like to enforce the unilateral
     constraint: \begin{equation} \phi(\bq) \geq 0. \end{equation}  We'll use
     ${\bf n} = \pd{\phi}{\bq}$ to denote the "contact normal", as well as ${\bf
-    t}_1$ and ${\bf t}_2$ as any orthonormal basis for the tangents at the
-    contact, all represented as row vectors in joint coordinates.  
+    t}_1$ and ${\bf t}_2$ as a basis for the tangents at the contact
+    (orthonormal vectors in the Cartesian space, projected into joint space),
+    all represented as row vectors in joint coordinates.  
     </p>
 
     <figure><img width="100%" src="figures/contact_coordinates_2d.jpg"
@@ -703,10 +704,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       </subsubsection>
 
-      <subsubsection><h1>Anitescu's convex relaxation</h1>
+      <subsubsection><h1>Anitescu's convex formulation</h1>
 
         <p>In <elib>Anitescu06</elib>, Anitescu described the natural convex
-        relaxation of this problem by dropping the maximum dissipation
+        formulation of this problem by dropping the maximum dissipation
         inequalities and allowing any force inside the friction cone.  Consider
         the following optimization: \begin{align*} \min_{\bv'} \quad &
         \frac{1}{2} \left( \bv' - \bv^-\right)^T \bM \left(\bv' - \bv^-\right)
@@ -755,7 +756,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   
       </subsubsection>
 
-      <subsubsection><h1>Todorov's convex relaxation</h1>
+      <subsubsection><h1>Todorov's convex formulation</h1>
 
         <p>According to <elib>Todorov14</elib>, the popular <a
         href="http://www.mujoco.org/">MuJoCo simulator</a> uses a slight
