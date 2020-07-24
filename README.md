@@ -30,6 +30,10 @@ used the instructions at
 https://websitebeaver.com/set-up-localhost-on-macos-high-sierra-apache-mysql-and-php-7-with-sslhttps
 and just pointed by root doc directory directly at my underactuated checkout.
 
+
+*Boilerplate on hypothes.is etiquette*:  For typos and small corrections, please remove your comment once it has been addressed.
+
+
 To run the linters and unit tests
 ---------------------------------
 
