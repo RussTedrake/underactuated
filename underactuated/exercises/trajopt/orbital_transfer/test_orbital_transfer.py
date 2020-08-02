@@ -77,7 +77,7 @@ class TestOrbitalTransfer(unittest.TestCase):
         # check velocity limits
         tol = 1e-3
         velocity_limit = universe.rocket.velocity_limit
-        for t in range(time_steps):
+        for t in range(time_steps + 1):
             self.assertTrue(np.linalg.norm(velocity[t]) <= velocity_limit + tol,
                             msg=f'Velocity limit violated at time step {t}.')
 
@@ -98,7 +98,7 @@ class TestOrbitalTransfer(unittest.TestCase):
         tol = 1e-3
         for i in range(n_asteroids):
             asteroid_orbit = universe.get_planet(f'Asteroid_{i}').orbit
-            for t in range(time_steps):
+            for t in range(time_steps + 1):
                 p = universe.position_wrt_planet(state[t], f'Asteroid_{i}')
                 self.assertTrue(
                     p.dot(p) >= asteroid_orbit**2 - tol,
@@ -119,5 +119,5 @@ class TestOrbitalTransfer(unittest.TestCase):
         # check maximum consumption
         consumption = time_interval * sum(t.dot(t) for t in thrust)
         self.assertTrue(
-            consumption <= 200,
-            msg=f'Fuel consumption is {consumption}, greater than 200.')
+            consumption <= 250,
+            msg=f'Fuel consumption is {consumption}, greater than 250.')
