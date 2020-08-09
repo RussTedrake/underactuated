@@ -1,12 +1,13 @@
 import numpy as np
 
 from pydrake.common.containers import namedview
+from pydrake.common.value import AbstractValue
 from pydrake.math import RigidTransform, RotationMatrix
 from pydrake.geometry import FramePoseVector
 from pydrake.multibody.plant import MultibodyPlant
 from pydrake.multibody.parsing import Parser
-from pydrake.systems.framework import (AbstractValue, BasicVector, BasicVector_,
-                                       LeafSystem_, LeafSystem)
+from pydrake.systems.framework import (BasicVector, BasicVector_, LeafSystem_,
+                                       LeafSystem)
 from pydrake.systems.scalar_conversion import TemplateSystem
 
 from underactuated import FindResource
