@@ -485,15 +485,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         find the corresponding vector ${\bf w}$.  This is only possible when the
         rows of the controllability matrix are linearly independent.  Therefore,
         the condition of controllability is that this controllability matrix is
-        full rank.</p>
-
-        <p> Although we only treated the case of a scalar $u$, it is possible to
-        extend the analysis to a vector $\bu$ of size $m$, yielding the
-        condition $$\text{rank} \begin{bmatrix} \bB & {\bf AB} & {\bf A}^2\bB &
-        \cdots & {\bf A}^{n-1}\bB \end{bmatrix}_{n \times (nm)} = n.$$ In Matlab
-        (using the Control Systems Toolbox), you can obtain the controllability
-        matrix using <code>Cm = ctrb(A,B)</code>, and evaluate its rank with
-        <code>rank(Cm)</code>.</p>
+        full rank.  In <drake></drake> you can obtain the controllability matrix for a linear system using <a href="https://drake.mit.edu/doxygen_cxx/group__control__systems.html#gaedff9f0a8ddce5d29888ed611ce8bee2"><code>ControllabilityMatrix</code></a>, or check the rank condition directly using <a href="https://drake.mit.edu/doxygen_cxx/group__control__systems.html#ga8bc6169b50b1b127ed5f1b70afcb64ca"><code>IsControllable</code></a>.</p>
 
         <p>Note that a linear feedback to change the eigenvalues of the
         eigenmodes is not sufficient to accomplish our goal of getting to the
