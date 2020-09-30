@@ -44,14 +44,14 @@ class TestRRTPlanning(unittest.TestCase):
         np.testing.assert_array_almost_equal(
             start,
             path[-1],
-            err_msg='The start location of the path is not the correct ' +
-            'start location')
+            err_msg='The start location of the path is not the correct '
+            + 'start location')
 
         np.testing.assert_array_almost_equal(
             goal,
             path[0],
-            err_msg='The goal location of the path is not the correct ' +
-            'goal location')
+            err_msg='The goal location of the path is not the correct '
+            + 'goal location')
 
         for i in range(len(path) - 1):
             is_in_collision = RRT.collision(RRT.Node(path[i]),
@@ -112,8 +112,8 @@ class TestRRTPlanning(unittest.TestCase):
         np.testing.assert_array_almost_equal(
             node4.parent.p,
             node1.p,
-            err_msg='The choose_parent method does not seem to' +
-            ' select the best parent node')
+            err_msg='The choose_parent method does not seem to'
+            + ' select the best parent node')
 
         # Check the rewiring method
         node4 = rrt_star.steer(rrt_star.start, node4)
@@ -142,14 +142,14 @@ class TestRRTPlanning(unittest.TestCase):
         np.testing.assert_array_almost_equal(
             start,
             path[-1],
-            err_msg='The start location of the path is not the correct ' +
-            'start location')
+            err_msg='The start location of the path is not the correct '
+            + 'start location')
 
         np.testing.assert_array_almost_equal(
             goal,
             path[0],
-            err_msg='The goal location of the path is not the correct ' +
-            'goal location')
+            err_msg='The goal location of the path is not the correct '
+            + 'goal location')
 
         for i in range(len(path) - 1):
             is_in_collision = RRTStar.collision(RRTStar.Node(path[i]),

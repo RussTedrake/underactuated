@@ -24,7 +24,8 @@ def AdvanceToAndVisualize(simulator,
                           visualizer,
                           time,
                           time_if_running_headless=None):
-    """Helper to support visualizing a simulation with pyplot visualizer.
+    """
+    Helper to support visualizing a simulation with pyplot visualizer.
     Will simply simulate (with target_realtime_rate = 1) if visualizer.show =
     True, or will record and render an animation if visualizer.show = False. If
     specified, time_if_running_headless will be used instead of time if
@@ -48,7 +49,8 @@ def AdvanceToAndVisualize(simulator,
 
 
 def SetupMatplotlibBackend(wishlist=["notebook"]):
-    """Helper to support multiple workflows:
+    """
+    Helper to support multiple workflows:
         1) nominal -- running locally w/ jupyter notebook
         2) unit tests (no ipython, backend is template)
         3) binder -- does have notebook backend

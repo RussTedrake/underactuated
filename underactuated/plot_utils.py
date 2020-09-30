@@ -6,7 +6,8 @@ from pydrake.all import System
 
 
 def plot_2d_phase_portrait(f, x1lim=(-1, 1), x2lim=(-1, 1), n=100j, **kwargs):
-    """Plots the phase portrait for a 2D dynamical system.
+    """
+    Plots the phase portrait for a 2D dynamical system.
 
     Parameters
     ----------

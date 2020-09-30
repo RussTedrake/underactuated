@@ -15,7 +15,8 @@ class Grader:
     @staticmethod
     def grade_from_notebooks(test_cases_list, notebook_ipynb_list,
                              results_json):
-        """Running notebooks in notebook_ipynb_list and evaluating
+        """
+        Running notebooks in notebook_ipynb_list and evaluating
         them on test_cases_list. Result is written into results_json
         """
         try:
@@ -25,8 +26,8 @@ class Grader:
                     Grader.locals_from_notebook(notebook_ipynb))
         except Exception as e:
             Grader.global_fail_with_error_message(
-                "Exception when running file: " + notebook_ipynb + ', ' +
-                str(e), results_json)
+                "Exception when running file: " + notebook_ipynb + ', '
+                + str(e), results_json)
             raise
 
         # Grade notebook_locals_list on test_cases_list
