@@ -23,8 +23,8 @@ class TestShootingVsTranscription(unittest.TestCase):
             'The list lost_bits_shooting must have length equal' + 'to 45.')
         bits_type = [isinstance(bits, (float, int)) for bits in lost_bits]
         self.assertTrue(
-            all(bits_type), 'Some entries in lost_bits_shooting are neither' +
-            'floats nor ints.')
+            all(bits_type), 'Some entries in lost_bits_shooting are neither'
+            + 'floats nor ints.')
 
         # check values
         lost_bits_shooting = [
@@ -80,8 +80,8 @@ class TestShootingVsTranscription(unittest.TestCase):
         np.testing.assert_array_almost_equal(
             Mb_block,
             Mb_block_target,
-            err_msg='The function Mb_diagonal_block is incorrect on the ' +
-            f'problem data A = {A}, B = {B}, Q = {Q}, and R = {R}.')
+            err_msg='The function Mb_diagonal_block is incorrect on the '
+            + f'problem data A = {A}, B = {B}, Q = {Q}, and R = {R}.')
 
         # test function directly on synthtic data
         A = np.arange(9).reshape(3, 3)
@@ -109,8 +109,8 @@ class TestShootingVsTranscription(unittest.TestCase):
         np.testing.assert_array_almost_equal(
             Mb_block,
             Mb_block_target,
-            err_msg='The function Mb_diagonal_block is incorrect on the ' +
-            f'problem data A = {A}, B = {B}, Q = {Q}, and R = {R}.')
+            err_msg='The function Mb_diagonal_block is incorrect on the '
+            + f'problem data A = {A}, B = {B}, Q = {Q}, and R = {R}.')
 
     @weight(4)
     @timeout_decorator.timeout(1.)
@@ -122,13 +122,13 @@ class TestShootingVsTranscription(unittest.TestCase):
         # check list length and types
         self.assertEqual(
             len(J_star_N), 100,
-            'The list J_star_N_transcription must have length' +
-            'equal to 100.')
+            'The list J_star_N_transcription must have length'
+            + 'equal to 100.')
         J_star_type = [isinstance(J, (float, int)) for J in J_star_N]
         self.assertTrue(
             all(J_star_type),
-            'Some entries in J_star_N_transcription are neither' +
-            'floats nor ints.')
+            'Some entries in J_star_N_transcription are neither'
+            + 'floats nor ints.')
 
         # check values
         self._test_J_star(J_star_N, 'J_star_N_transcription is incorrect.')
@@ -143,13 +143,13 @@ class TestShootingVsTranscription(unittest.TestCase):
         # check list length and types
         self.assertEqual(
             len(lost_bits), 100,
-            'The list lost_bits_transcription must have length' +
-            'equl to 100.')
+            'The list lost_bits_transcription must have length'
+            + 'equl to 100.')
         bits_type = [isinstance(bits, (float, int)) for bits in lost_bits]
         self.assertTrue(
             all(bits_type),
-            'Some entries in lost_bits_transcription are neither' +
-            'floats nor ints.')
+            'Some entries in lost_bits_transcription are neither'
+            + 'floats nor ints.')
 
         # check values
         lost_bits_transcription_30 = [

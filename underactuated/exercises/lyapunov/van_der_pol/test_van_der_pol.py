@@ -24,8 +24,8 @@ class TestVanDerPol(unittest.TestCase):
         is_verified = self.notebook_locals['is_verified']
         self.assertTrue(
             is_verified(rho_method_1),
-            "Could not verify the level set rho_method_1 with the function" +
-            "is_verified(rho).")
+            "Could not verify the level set rho_method_1 with the function"
+            + "is_verified(rho).")
         rho_step = self.notebook_locals['rho_step']
         self.assertAlmostEqual(
             rho_step,
@@ -33,8 +33,8 @@ class TestVanDerPol(unittest.TestCase):
             msg="rho_step is different from the predefined value of 0.01.")
         self.assertFalse(
             is_verified(rho_method_1 + rho_step),
-            "The function is_verified(rho) could verify the level set" +
-            "rho_method_1 + rho_step: line search is not complete.")
+            "The function is_verified(rho) could verify the level set"
+            + "rho_method_1 + rho_step: line search is not complete.")
 
     @weight(5)
     @timeout_decorator.timeout(5.)

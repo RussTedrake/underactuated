@@ -4,7 +4,8 @@ from IPython import get_ipython
 
 
 def setup_drake():
-    """Install drake (if necessary) and set up the path.
+    """
+    Install drake (if necessary) and set up the path.
 
     On Google Colab:
 
@@ -31,7 +32,8 @@ def setup_drake():
 
 
 def setup_underactuated():
-    """Install underactuated (if necessary) and set up the path.
+    """
+    Install underactuated (if necessary) and set up the path.
 
     On Google Colab:
 

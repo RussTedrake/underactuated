@@ -7,7 +7,8 @@ import numpy as np
 class TestFootstepPlanning(unittest.TestCase):
 
     def __init__(self, test_name, notebook_locals):
-        """Since the planner raises an error if the problem is infeasible, it is
+        """
+        Since the planner raises an error if the problem is infeasible, it is
         better to solve the optimizations inside each method rather than here in
         the __init__ method. This way if the plan is infeasible, students get
         zero points instead of an error from the test file. Note also that each
@@ -69,11 +70,11 @@ class TestFootstepPlanning(unittest.TestCase):
             for t in range(self.n_steps + 1):
                 msg = f'Error at foot step {t} when solving the problem ' + \
                     f'for terrain_{plan}: '
-                self.assertAlmostEqual(sum(stone_left[t]),
-                                       1,
-                                       places=4,
-                                       msg=msg +
-                                       f'stone_left[{t}] do not sum up to one.')
+                self.assertAlmostEqual(
+                    sum(stone_left[t]),
+                    1,
+                    places=4,
+                    msg=msg + f'stone_left[{t}] do not sum up to one.')
                 self.assertAlmostEqual(
                     sum(stone_right[t]),
                     1,
@@ -98,23 +99,24 @@ class TestFootstepPlanning(unittest.TestCase):
                 stone = self.terrains[plan].stepping_stones[i]
                 np.testing.assert_array_less(
                     stone.A.dot(position_left[t]), stone.b + tol,
-                    f'Solving the problem for terrain_{plan}, the binary ' +
-                    f'variable stone_left[{t}, {i}] is one but the left foot ' +
-                    f'is not in stone {i} at time {t}.')
+                    f'Solving the problem for terrain_{plan}, the binary '
+                    + f'variable stone_left[{t}, {i}] is one but the left foot '
+                    + f'is not in stone {i} at time {t}.')
 
                 # right foot
                 i = np.where(np.isclose(stone_right[t], 1, atol=tol))[0][0]
                 stone = self.terrains[plan].stepping_stones[i]
                 np.testing.assert_array_less(
                     stone.A.dot(position_right[t]), stone.b + tol,
-                    f'Solving the problem for terrain_{plan}, the binary ' +
-                    f'variable stone_right[{t}, {i}] is one but the right ' +
-                    f'foot is not in stone {i} at time {t}.')
+                    f'Solving the problem for terrain_{plan}, the binary '
+                    + f'variable stone_right[{t}, {i}] is one but the right '
+                    + f'foot is not in stone {i} at time {t}.')
 
     @weight(4)
     @timeout_decorator.timeout(30.)
     def test_minimize_step_length(self):
-        """Tests that the positioning of the feet minimized the sum of the
+        """
+        Tests that the positioning of the feet minimized the sum of the
         square of the two norm of the step lengths.
         """
         self._solve_benchmarks()
@@ -135,6 +137,6 @@ class TestFootstepPlanning(unittest.TestCase):
             rtol_convergence = gap / target_cost[plan] <= rtol
             self.assertTrue(
                 atol_convergence or rtol_convergence,
-                f'Target cost of {target_cost[plan]} is not achieved for ' +
-                f'terrain_{plan}, with absolute tolerance {atol} and ' +
-                f'relative tolerance {rtol}.')
+                f'Target cost of {target_cost[plan]} is not achieved for '
+                + f'terrain_{plan}, with absolute tolerance {atol} and '
+                + f'relative tolerance {rtol}.')

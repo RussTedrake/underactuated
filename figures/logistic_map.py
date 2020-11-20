@@ -60,8 +60,8 @@ fig, ax = plt.subplots(1, 3, figsize=(10, 4))
 x = np.linspace(0.01, 0.99, 100)
 p0 = 1 + 0 * x
 p1 = 1. / (2 * np.sqrt(1 - x))
-p2 = np.sqrt(2) / (8 * np.sqrt(1 - x)) * (1. / np.sqrt(1 + np.sqrt(1 - x)) +
-                                          1. / np.sqrt(1 - np.sqrt(1 - x)))
+p2 = np.sqrt(2) / (8 * np.sqrt(1 - x)) * (1. / np.sqrt(1 + np.sqrt(1 - x))
+                                          + 1. / np.sqrt(1 - np.sqrt(1 - x)))
 pstar = 1 / (np.pi * np.sqrt(x * (1 - x)))
 
 ax[0].plot(x, p0)

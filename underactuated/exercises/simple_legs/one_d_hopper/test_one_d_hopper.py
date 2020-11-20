@@ -27,14 +27,14 @@ class TestOneDHopper(unittest.TestCase):
         # check size of E
         self.assertFalse(
             isinstance(E, (float, int)),
-            msg=f'The function mechanical_energy does not take vectorized ' +
-            'inputs.')
+            msg=f'The function mechanical_energy does not take vectorized '
+            + 'inputs.')
         self.assertTrue(
             E.size == N,
-            msg=f'Passing an array of shape (4, {N}) for the states and an ' +
-            f'array of shape ({N},) for delta, got back an array of size ' +
-            f'{E.size} from the function mechanical_energy. The output array ' +
-            f'must have size {N} instead.')
+            msg=f'Passing an array of shape (4, {N}) for the states and an '
+            + f'array of shape ({N},) for delta, got back an array of size '
+            + f'{E.size} from the function mechanical_energy. The output array '
+            + f'must have size {N} instead.')
 
         # compare with target values
         E_target = np.array([
@@ -66,8 +66,8 @@ class TestOneDHopper(unittest.TestCase):
         np.testing.assert_array_almost_equal(
             E_target,
             E.flatten(),
-            err_msg='The function mechanical_energy does not return the ' +
-            'correct values when evaluated at random points.')
+            err_msg='The function mechanical_energy does not return the '
+            + 'correct values when evaluated at random points.')
 
     @weight(10)
     @timeout_decorator.timeout(15.)
@@ -115,14 +115,14 @@ class TestOneDHopper(unittest.TestCase):
             tol = .1
             self.assertTrue(
                 max(zb_tail) < h + tol,
-                msg=f'Starting from the state {initial_state} and having a ' +
-                f'target hopping height of {h}, the hopper body still hops ' +
-                f'above {h} after {duration - tail} seconds.')
+                msg=f'Starting from the state {initial_state} and having a '
+                + f'target hopping height of {h}, the hopper body still hops '
+                + f'above {h} after {duration - tail} seconds.')
 
             # ensure that in final 2 seconds of simulation the body achieves
             # the hopping height h at least once
             self.assertTrue(
                 max(zb_tail) > h - tol,
-                msg=f'Starting from the state {initial_state} and having a ' +
-                f'target hopping height of {h}, the hopper body does not ' +
-                f'reach the height {h} after {duration - tail} seconds.')
+                msg=f'Starting from the state {initial_state} and having a '
+                + f'target hopping height of {h}, the hopper body does not '
+                + f'reach the height {h} after {duration - tail} seconds.')

@@ -142,8 +142,8 @@ class TestCartPoleBalancing(unittest.TestCase):
         u_list = self.notebook_locals['u_list']
         for i in range(len(u_list)):
             self.assertLess(
-                np.linalg.norm(errors[i] -
-                               [linearization_error(x_list[i], u_list[i])]),
+                np.linalg.norm(errors[i]
+                               - [linearization_error(x_list[i], u_list[i])]),
                 0.00001, 'Unable to reproduce errors')
 
         ub = [0.002, 2.4, 2.3, 26.1, 70, 0.001]

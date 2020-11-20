@@ -25,11 +25,11 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
         tol = 1e-4
         for t in range(T):
             self.assertTrue(h_opt[t] >= h_min - tol,
-                            msg=f'Time interval lower bound violated at time ' +
-                            f'step {t}.')
+                            msg=f'Time interval lower bound violated at time '
+                            + f'step {t}.')
             self.assertTrue(h_opt[t] <= h_max + tol,
-                            msg=f'Time interval upper bound violated at time ' +
-                            f'step {t}.')
+                            msg=f'Time interval upper bound violated at time '
+                            + f'step {t}.')
 
     def _test_dynamic_feasibility(self):
         """Implicit Euler equations are verified"""
@@ -49,15 +49,15 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
                 q[t] + h[t] * qd[t + 1],
                 atol=1e-5,
                 rtol=1e-5,
-                err_msg='Configurations q and velocities qd do not verify ' +
-                f'the Implicit Euler rule at time step {t}.')
+                err_msg='Configurations q and velocities qd do not verify '
+                + f'the Implicit Euler rule at time step {t}.')
             np.testing.assert_allclose(
                 qd[t + 1],
                 qd[t] + h[t] * qdd[t],
                 atol=1e-5,
                 rtol=1e-5,
-                err_msg='Velocities qd and accelerations qdd do not verify ' +
-                f'the Implicit Euler rule at time step {t}.')
+                err_msg='Velocities qd and accelerations qdd do not verify '
+                + f'the Implicit Euler rule at time step {t}.')
             vars = np.concatenate((q[t + 1], qd[t + 1], qdd[t], f[t]))
             manipulator_equations_violation = manipulator_equations(vars)
             np.testing.assert_allclose(
@@ -65,8 +65,8 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
                 np.zeros(q.shape[1]),
                 atol=1e-5,
                 rtol=1e-5,
-                err_msg='Manipulator equations are not verified at time ' +
-                f'step {t}.')
+                err_msg='Manipulator equations are not verified at time '
+                + f'step {t}.')
 
     def _test_impulsive_collision(self):
         """Impulsive collision is verified at the heel strike"""
@@ -101,8 +101,8 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
             -q[-1],
             atol=1e-5,
             rtol=1e-5,
-            err_msg='Configuration vector q does not verify periodicity ' +
-            'conditions.')
+            err_msg='Configuration vector q does not verify periodicity '
+            + 'conditions.')
 
         # periodicity of the  velocities
         np.testing.assert_allclose(
@@ -110,8 +110,8 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
             np.array([0, 0, qd_post[2] + qd_post[3], -qd_post[3]]),
             atol=1e-5,
             rtol=1e-5,
-            err_msg='Velocity vector qd does not verify periodicity ' +
-            'conditions.')
+            err_msg='Velocity vector qd does not verify periodicity '
+            + 'conditions.')
 
     # tests constraints implemented by the students
     # does not use the same expressions that must be used in the constraint
@@ -195,13 +195,13 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
             self.assertGreater(
                 f[t, 1],
                 -tol,
-                msg='Stance-foot normal contact force is negative at time ' +
-                f'step {t}.')
+                msg='Stance-foot normal contact force is negative at time '
+                + f'step {t}.')
             self.assertLess(
                 np.abs(f[t, 0]),
                 friction * f[t, 1] + tol,
-                msg='Stance-foot contact force outside friction cone at time ' +
-                f'step {t}.')
+                msg='Stance-foot contact force outside friction cone at time '
+                + f'step {t}.')
 
     @weight(2)
     @timeout_decorator.timeout(3.)
