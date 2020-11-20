@@ -20,19 +20,12 @@ load("@bazel_skylib//lib:versions.bzl", "versions")
 
 versions.check("2.0.0")
 
-load(
-    "//htmlbook/tools/python:repositories.bzl",
-    "rt_pip3_import",
-    "rt_python_repositories",
+load("@rules_python//python:pip.bzl", "pip_install")
+
+pip_install(
+    requirements = "//:requirements.txt",
+    name = "pip",
 )
-
-rt_python_repositories()
-
-rt_pip3_import(name = "pip")
-
-load("@pip//:requirements.bzl", "pip_install")
-
-pip_install()
 
 load("//htmlbook/tools/buildifier:repositories.bzl", "buildifier_dependencies")
 

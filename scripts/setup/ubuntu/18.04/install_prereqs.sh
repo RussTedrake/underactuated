@@ -44,11 +44,13 @@ jupyter-nbconvert
 jupyter-notebook
 locales
 python3
+python3-bs4
 python3-future
 python3-ipywidgets
 python3-matplotlib
 python3-numpy
 python3-pip
+python3-requests
 python3-scipy
 python3-setuptools
 python3-wheel
@@ -59,13 +61,6 @@ EOF
 )
 
 locale-gen en_US.UTF-8
-
-LC_CTYPE=en_US.UTF-8 LANG=en_US.UTF-8 pip3 install --disable-pip-version-check $(cat <<EOF
-gradescope-utils
-timeout-decorator
-torch
-EOF
-)
 
 jupyter nbextension enable --system --py widgetsnbextension
 

@@ -40,4 +40,10 @@ build:linux --action_env=PATH=/usr/sbin:/usr/bin:/sbin:/bin
 build:macos --action_env=PATH=/usr/local/opt/python@3.8/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 build:macos --test_timeout=120,600,1800,7200
 
+# Disable python imports from ~/.local (pip -U) during build and test.
+# https://github.com/bazelbuild/bazel/issues/4939
+# https://github.com/RobotLocomotion/drake/issues/8475
+build --action_env=PYTHONNOUSERSITE=1
+build --test_env=PYTHONNOUSERSITE=1
+
 try-import %workspace%/user.bazelrc
