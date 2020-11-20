@@ -1,0 +1,11 @@
+beautifulsoup4>=4.9.3
+gradescope-utils>=0.4.0
+pycodestyle>=2.6.0
+pydocstyle>=5.1.1
+pydot>=1.4.1
+PyYAML>=5.3.1
+requests>=2.14.2
+scipy>=1.5.2 # this should come only indirectly (e.g. from drake), but brew scipy moved to python 3.9 and is currently broken.
+timeout-decorator>=0.4.1
+torch>=1.6.0
+yapf>=0.30.0

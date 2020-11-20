@@ -84,9 +84,9 @@ Control through Contact</h1>
     <p>The <a href="simple_legs.html#rimless_wheel">rimless wheel</a> was our
     simplest example of a passive-dynamic walker; it has no control inputs but
     exhibits a passively stable rolling fixed point.  We've also <a
-    href="limit_cycle.html">already seen</a> that trajectory optimization can be
-    used as a tool for finding limit cycles of a smooth passive system, e.g. by
-    formulating a direct collocation problem: \begin{align*}
+    href="limit_cycles.html">already seen</a> that trajectory optimization can
+    be used as a tool for finding limit cycles of a smooth passive system, e.g.
+    by formulating a direct collocation problem: \begin{align*}
     \find_{\bx[\cdot],h} \quad \subjto \quad & \text{collocation
     constraints}(\bx[n], \bx[n+1], h), \quad \forall n \in [0, N-1] \\ & \bx[0]
     = \bx[N], \\ & h_{min} \le h \le h_{max},\end{align*} where $h$ was the
@@ -235,7 +235,7 @@ Control through Contact</h1>
         = 3m,$ and introduce a vertical wall at $x=0$, and move our initial
         conditions back to $x_0=-.25m.$  The collision dynamics, which now must
         take into account the spin of the ball, are <a
-        href="multibody.html#spinning_bouncing_ball">in the appendix</a>.  The
+        href="multibody.html#spinning_ball_bouncing">in the appendix</a>.  The
         first bounce is against the wall, the second is against the floor.  I'll
         also constrain the final velocity to be down (have to approach the hoop
         from above).  Try it out.</p>
