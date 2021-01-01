@@ -34,6 +34,10 @@
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
     <p style="font-size: 14px; text-align: right;"> 
       &copy; Russ Tedrake, 2020<br/>
+      Last modified <span id="last_modified"></span>.</br>
+      <script>
+      var d = new Date(document.lastModified);
+      document.getElementById("last_modified").innerHTML = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();</script>
       <a href="tocite.html">How to cite these notes</a> &nbsp; | &nbsp;
       <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSesAhROfLRfexrRFebHWLtRpjhqtb8k_iEagWMkvc7xau08iQ/viewform?usp=sf_link">Send me your feedback</a><br/>
     </p>
@@ -1112,6 +1116,120 @@ V = RegionOfAttraction(sys, context)
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+
+<div id="references"><section><h1>References</h1>
+
+<table>
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Slotine90">1</a>]
+</td>
+<td class="bibtexitem">
+Jean-Jacques&nbsp;E. Slotine and Weiping Li.
+ <em>Applied Nonlinear Control</em>.
+ Prentice Hall, October 1990.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Khalil01">2</a>]
+</td>
+<td class="bibtexitem">
+Hassan&nbsp;K. Khalil.
+ <em>Nonlinear Systems</em>.
+ Prentice Hall, 3rd edition, December 2001.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Boyd94">3</a>]
+</td>
+<td class="bibtexitem">
+S.&nbsp;Boyd, L.&nbsp;El Ghaoui, E.&nbsp;Feron, and V.&nbsp;Balakrishnan.
+ <em>Linear Matrix Inequalities in System and Control Theory</em>.
+ SIAM, 1994.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Parrilo00">4</a>]
+</td>
+<td class="bibtexitem">
+Pablo&nbsp;A. Parrilo.
+ <em>Structured Semidefinite Programs and Semialgebraic Geometry
+  Methods in Robustness and Optimization</em>.
+ PhD thesis, California Institute of Technology, May 18 2000.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Ahmadi11a">5</a>]
+</td>
+<td class="bibtexitem">
+Amir&nbsp;Ali Ahmadi, Miroslav Krstic, and Pablo&nbsp;A. Parrilo.
+ A globally asymptotically stable polynomial vector field with no
+  polynomial lyapunov function.
+ In <em>Proceedings of the Conference on Decision and Control</em>, 2011.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Wampler11">6</a>]
+</td>
+<td class="bibtexitem">
+Charles&nbsp;W. Wampler and Andrew&nbsp;J. Sommese.
+ Numerical algebraic geometry and algebraic kinematics.
+ <em>Acta Numerica</em>, 20:469--567, 2011.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Sommese05">7</a>]
+</td>
+<td class="bibtexitem">
+Sommese, A.J., Wampler, and C.W.
+ <em>The Numerical solution of systems of polynomials arising in
+  engineering and science</em>.
+ World Scientific Pub Co Inc, 2005.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Aicardi95">8</a>]
+</td>
+<td class="bibtexitem">
+Michele Aicardi, Giuseppe Casalino, Antonio Bicchi, and Aldo Balestrino.
+ Closed loop steering of unicycle like vehicles via lyapunov
+  techniques.
+ <em>IEEE Robotics &amp; Automation Magazine</em>, 2(1):27--35, 1995.
+
+</td>
+</tr>
+</table>
+</section><p/>
+</div>
 
 <table style="width:100%;"><tr style="width:100%">
   <td style="width:33%;text-align:left;"><a class="previous_chapter" href=lqr.html>Previous Chapter</a></td>

@@ -34,6 +34,10 @@
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
     <p style="font-size: 14px; text-align: right;"> 
       &copy; Russ Tedrake, 2020<br/>
+      Last modified <span id="last_modified"></span>.</br>
+      <script>
+      var d = new Date(document.lastModified);
+      document.getElementById("last_modified").innerHTML = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();</script>
       <a href="tocite.html">How to cite these notes</a> &nbsp; | &nbsp;
       <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSesAhROfLRfexrRFebHWLtRpjhqtb8k_iEagWMkvc7xau08iQ/viewform?usp=sf_link">Send me your feedback</a><br/>
     </p>
@@ -894,6 +898,274 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+
+<div id="references"><section><h1>References</h1>
+
+<table>
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Craig89">1</a>]
+</td>
+<td class="bibtexitem">
+John Craig.
+ <em>Introduction to Robotics: Mechanics and Control</em>.
+ Addison Wesley, 2nd edition, January 1989.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Goldstein02">2</a>]
+</td>
+<td class="bibtexitem">
+Herbert Goldstein.
+ <em>Classical Mechanics</em>.
+ Addison Wesley, 3rd edition, 2002.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Thornton03">3</a>]
+</td>
+<td class="bibtexitem">
+Stephen&nbsp;T. Thornton and Jerry&nbsp;B. Marion.
+ <em>Classical Dynamics of Particles and Systems</em>.
+ Brooks Cole, 5th edition, 2003.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Asada86">4</a>]
+</td>
+<td class="bibtexitem">
+H.&nbsp;Asada and J.E. Slotine.
+ Robot analysis and control.
+ pages 93--131, 1986.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Featherstone05">5</a>]
+</td>
+<td class="bibtexitem">
+Roy Featherstone.
+ Efficient factorization of the joint space inertia matrix for
+  branched kinematic trees.
+ <em>International Journal of Robotics Research</em>, 24(6):487–500,
+  2005.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Choset05">6</a>]
+</td>
+<td class="bibtexitem">
+H.&nbsp;Choset, K.&nbsp;M. Lynch, S.&nbsp;Hutchinson, G.&nbsp;Kantor, W.&nbsp;Burgard, L.&nbsp;E. Kavraki,
+  and S.&nbsp;Thrun.
+ <em>Principles of Robot Motion-Theory, Algorithms, and
+  Implementations</em>.
+ The MIT Press, 2005.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Duindam06">7</a>]
+</td>
+<td class="bibtexitem">
+Vincent Duindam.
+ <em>Port-Based Modeling and Control for Efficient Bipedal Walking
+  Robots</em>.
+ PhD thesis, University of Twente, March 2006.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Featherstone07">8</a>]
+</td>
+<td class="bibtexitem">
+Roy Featherstone.
+ <em>Rigid Body Dynamics Algorithms</em>.
+ Springer, 2007.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Mirtich96">9</a>]
+</td>
+<td class="bibtexitem">
+Brian Mirtich.
+ <em>Impulse-based Dynamic Simulation of Rigid Body Systems</em>.
+ PhD thesis, 1996.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Jain11">10</a>]
+</td>
+<td class="bibtexitem">
+Abhinandan Jain.
+ <em>Robot and Multibody Dynamics: Analysis and Algorithms</em>.
+ Springer US, 2011.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Udwadia92">11</a>]
+</td>
+<td class="bibtexitem">
+Firdaus&nbsp;E Udwadia and Robert&nbsp;E Kalaba.
+ A new perspective on constrained motion.
+ <em>Proceedings of the Royal Society of London. Series A:
+  Mathematical and Physical Sciences</em>, 439(1906):407--410, 1992.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Hunt75">12</a>]
+</td>
+<td class="bibtexitem">
+K.&nbsp;H. Hunt and F.&nbsp;R.&nbsp;E. Crossley.
+ Coefficient of restitution interpreted as damping in vibroimpact.
+ <em>Journal of Applied Mechanics</em>, 42 Series E(2):440--445, 1975.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Castro20">13</a>]
+</td>
+<td class="bibtexitem">
+Alejandro&nbsp;M Castro, Ante Qu, Naveen Kuppuswamy, Alex Alspach, and Michael
+  Sherman.
+ A transition-aware method for the simulation of compliant contact
+  with regularized friction.
+ <em>IEEE Robotics and Automation Letters</em>, 5(2):1859--1866, 2020.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Murty88">14</a>]
+</td>
+<td class="bibtexitem">
+Katta&nbsp;G Murty and Feng-Tien Yu.
+ <em>Linear complementarity, linear and nonlinear programming</em>,
+  volume&nbsp;3.
+ Citeseer, 1988.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Stewart96">15</a>]
+</td>
+<td class="bibtexitem">
+D.E. Stewart and J.C. Trinkle.
+ An implicit time-stepping scheme for rigid body dynamics with
+  inelastic collisions and coulomb friction.
+ <em>International Journal for Numerical Methods in Engineering</em>,
+  39(15):2673--2691, 1996.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Anitescu97">16</a>]
+</td>
+<td class="bibtexitem">
+M.&nbsp;Anitescu and F.A. Potra.
+ Formulating dynamic multi-rigid-body contact problems with friction
+  as solvable linear complementarity problems.
+ <em>Nonlinear Dynamics</em>, 14(3):231--247, 1997.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Anitescu06">17</a>]
+</td>
+<td class="bibtexitem">
+Mihai Anitescu.
+ Optimization-based simulation of nonsmooth rigid multibody dynamics.
+ <em>Mathematical Programming</em>, 105(1):113--143, jan 2006.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Todorov14">18</a>]
+</td>
+<td class="bibtexitem">
+Emanuel Todorov.
+ Convex and analytically-invertible dynamics with contacts and
+  constraints: Theory and implementation in MuJoCo.
+ In <em>2014 IEEE International Conference on Robotics and Automation
+  (ICRA)</em>, pages 6054--6061. IEEE, 2014.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Elandt19">19</a>]
+</td>
+<td class="bibtexitem">
+Ryan Elandt, Evan Drumwright, Michael Sherman, and Andy Ruina.
+ A pressure field model for fast, robust approximation of net contact
+  force and moment between nominally rigid objects.
+ pages 8238--8245, 11 2019.
+
+</td>
+</tr>
+</table>
+</section><p/>
+</div>
 
 <table style="width:100%;"><tr style="width:100%">
   <td style="width:33%;text-align:left;"><a class="previous_chapter" href=drake.html>Previous Chapter</a></td>

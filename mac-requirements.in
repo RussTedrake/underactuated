@@ -1,5 +1,6 @@
 beautifulsoup4>=4.9.3
 gradescope-utils>=0.4.0
+mysql-connector-python
 pycodestyle>=2.6.0
 pydocstyle>=5.1.1
 pydot>=1.4.1
