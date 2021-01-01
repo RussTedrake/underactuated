@@ -34,6 +34,10 @@
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
     <p style="font-size: 14px; text-align: right;"> 
       &copy; Russ Tedrake, 2020<br/>
+      Last modified <span id="last_modified"></span>.</br>
+      <script>
+      var d = new Date(document.lastModified);
+      document.getElementById("last_modified").innerHTML = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();</script>
       <a href="tocite.html">How to cite these notes</a> &nbsp; | &nbsp;
       <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSesAhROfLRfexrRFebHWLtRpjhqtb8k_iEagWMkvc7xau08iQ/viewform?usp=sf_link">Send me your feedback</a><br/>
     </p>
@@ -214,6 +218,53 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+
+<div id="references"><section><h1>References</h1>
+
+<table>
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Jacobson73">1</a>]
+</td>
+<td class="bibtexitem">
+D.&nbsp;Jacobson.
+ Optimal stochastic linear systems with exponential performance
+  criteria and their relation to deterministic differential games.
+ <em>IEEE Transactions on Automatic Control</em>, 18(2):124--131, apr
+  1973.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Boyd07">2</a>]
+</td>
+<td class="bibtexitem">
+S.&nbsp;Boyd, S.-J. Kim, L.&nbsp;Vandenberghe, and A.&nbsp;Hassibi.
+ A tutorial on geometric programming.
+ <em>Optimization and Engineering</em>, 8(1):67--127, 2007.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Whittle90">3</a>]
+</td>
+<td class="bibtexitem">
+Peter Whittle.
+ <em>Risk-sensitive optimal control</em>, volume&nbsp;20.
+ Wiley New York, 1990.
+
+</td>
+</tr>
+</table>
+</section><p/>
+</div>
 
 <table style="width:100%;"><tr style="width:100%">
   <td style="width:33%;text-align:left;"><a class="previous_chapter" href=policy_search.html>Previous Chapter</a></td>

@@ -34,6 +34,10 @@
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
     <p style="font-size: 14px; text-align: right;"> 
       &copy; Russ Tedrake, 2020<br/>
+      Last modified <span id="last_modified"></span>.</br>
+      <script>
+      var d = new Date(document.lastModified);
+      document.getElementById("last_modified").innerHTML = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();</script>
       <a href="tocite.html">How to cite these notes</a> &nbsp; | &nbsp;
       <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSesAhROfLRfexrRFebHWLtRpjhqtb8k_iEagWMkvc7xau08iQ/viewform?usp=sf_link">Send me your feedback</a><br/>
     </p>
@@ -145,6 +149,41 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+
+<div id="references"><section><h1>References</h1>
+
+<table>
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Fazel18">1</a>]
+</td>
+<td class="bibtexitem">
+Maryam Fazel, Rong Ge, Sham&nbsp;M. Kakade, and Mehran Mesbahi.
+ Global convergence of policy gradient methods for the linear
+  quadratic regulator.
+ arXiv:1801.05039 [cs.LG], 2018.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Roberts11">2</a>]
+</td>
+<td class="bibtexitem">
+John Roberts, Ian Manchester, and Russ Tedrake.
+ Feedback controller parameterizations for reinforcement learning.
+ In <em>Proceedings of the 2011 IEEE Symposium on Adaptive Dynamic
+  Programming and Reinforcement Learning (ADPRL)</em>, 2011.
+[&nbsp;<a href=" http://groups.csail.mit.edu/robotics-center/public_papers/Roberts11.pdf ">www:</a>&nbsp;]
+
+</td>
+</tr>
+</table>
+</section><p/>
+</div>
 
 <table style="width:100%;"><tr style="width:100%">
   <td style="width:33%;text-align:left;"><a class="previous_chapter" href=feedback_motion_planning.html>Previous Chapter</a></td>

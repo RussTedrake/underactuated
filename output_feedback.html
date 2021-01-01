@@ -34,6 +34,10 @@ Output Feedback (aka Pixels-to-Torques)" content="text/html; charset=utf-8;" />
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
     <p style="font-size: 14px; text-align: right;"> 
       &copy; Russ Tedrake, 2020<br/>
+      Last modified <span id="last_modified"></span>.</br>
+      <script>
+      var d = new Date(document.lastModified);
+      document.getElementById("last_modified").innerHTML = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();</script>
       <a href="tocite.html">How to cite these notes</a> &nbsp; | &nbsp;
       <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSesAhROfLRfexrRFebHWLtRpjhqtb8k_iEagWMkvc7xau08iQ/viewform?usp=sf_link">Send me your feedback</a><br/>
     </p>
@@ -154,6 +158,38 @@ Output Feedback (aka Pixels-to-Torques)</h1>
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+
+<div id="references"><section><h1>References</h1>
+
+<table>
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Hespanha09">1</a>]
+</td>
+<td class="bibtexitem">
+Joao&nbsp;P. Hespanha.
+ <em>Linear Systems Theory</em>.
+ Princeton Press, 2009.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Astrom10">2</a>]
+</td>
+<td class="bibtexitem">
+Karl&nbsp;Johan &Aring;str&ouml;m and Richard&nbsp;M Murray.
+ <em>Feedback systems: an introduction for scientists and engineers</em>.
+ Princeton university press, 2010.
+
+</td>
+</tr>
+</table>
+</section><p/>
+</div>
 
 <table style="width:100%;"><tr style="width:100%">
   <td style="width:33%;text-align:left;"><a class="previous_chapter" href=robust.html>Previous Chapter</a></td>

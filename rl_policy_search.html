@@ -32,6 +32,10 @@
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
     <p style="font-size: 14px; text-align: right;"> 
       &copy; Russ Tedrake, 2020<br/>
+      Last modified <span id="last_modified"></span>.</br>
+      <script>
+      var d = new Date(document.lastModified);
+      document.getElementById("last_modified").innerHTML = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();</script>
       <a href="tocite.html">How to cite these notes</a> &nbsp; | &nbsp;
       <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSesAhROfLRfexrRFebHWLtRpjhqtb8k_iEagWMkvc7xau08iQ/viewform?usp=sf_link">Send me your feedback</a><br/>
     </p>
@@ -596,6 +600,81 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+
+<div id="references"><section><h1>References</h1>
+
+<table>
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Roberts09a">1</a>]
+</td>
+<td class="bibtexitem">
+John&nbsp;W. Roberts.
+ Motor learning on a heaving plate via improved-SNR algorithms.
+ Master's thesis, Massachusetts Institute of Technology, February
+  2009.
+[&nbsp;<a href=" http://groups.csail.mit.edu/robotics-center/public_papers/Roberts09a.pdf ">www:</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Glynn90">2</a>]
+</td>
+<td class="bibtexitem">
+Peter&nbsp;W. Glynn.
+ Likelihood ratio gradient estimation for stochastic systems.
+ <em>Communications of the ACM</em>, 33(10):75--84, oct 1990.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Williams92">3</a>]
+</td>
+<td class="bibtexitem">
+R.J. Williams.
+ Simple statistical gradient-following algorithms for connectionist
+  reinforcement learning.
+ <em>Machine Learning</em>, 8:229--256, 1992.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Press92">4</a>]
+</td>
+<td class="bibtexitem">
+William&nbsp;H. Press, Saul&nbsp;A. Teukolsky, William&nbsp;T. Vetterling, and Brian&nbsp;P.
+  Flannery.
+ <em>Numerical Recipes in C: The Art of Scientific Computing</em>.
+ Cambridge University Press, second edition, 1992.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Bertsekas99">5</a>]
+</td>
+<td class="bibtexitem">
+Dimitri&nbsp;P Bertsekas.
+ <em>Nonlinear programming</em>.
+ Athena scientific Belmont, 1999.
+
+</td>
+</tr>
+</table>
+</section><p/>
+</div>
 
 <table style="width:100%;"><tr style="width:100%">
   <td style="width:33%;text-align:left;"><a class="previous_chapter" href=state_estimation.html>Previous Chapter</a></td>

@@ -34,6 +34,10 @@ Robots" content="text/html; charset=utf-8;" />
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
     <p style="font-size: 14px; text-align: right;"> 
       &copy; Russ Tedrake, 2020<br/>
+      Last modified <span id="last_modified"></span>.</br>
+      <script>
+      var d = new Date(document.lastModified);
+      document.getElementById("last_modified").innerHTML = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();</script>
       <a href="tocite.html">How to cite these notes</a> &nbsp; | &nbsp;
       <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSesAhROfLRfexrRFebHWLtRpjhqtb8k_iEagWMkvc7xau08iQ/viewform?usp=sf_link">Send me your feedback</a><br/>
     </p>
@@ -363,6 +367,117 @@ Robots</h1>
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+
+<div id="references"><section><h1>References</h1>
+
+<table>
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Orin13">1</a>]
+</td>
+<td class="bibtexitem">
+David&nbsp;E. Orin, Ambarish Goswami, and Sung-Hee Lee.
+ Centroidal dynamics of a humanoid robot.
+ <em>Autonomous Robots</em>, (September 2012):1--16, jun 2013.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Goswami99">2</a>]
+</td>
+<td class="bibtexitem">
+A.&nbsp;Goswami.
+ Postural stability of biped robots and the foot rotation indicator
+  (FRI) point.
+ <em>International Journal of Robotics Research</em>, 18(6), 1999.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Kuindersma13">3</a>]
+</td>
+<td class="bibtexitem">
+Scott Kuindersma, Frank Permenter, and Russ Tedrake.
+ An efficiently solvable quadratic program for stabilizing dynamic
+  locomotion.
+ In <em>Proceedings of the International Conference on Robotics and
+  Automation</em>, Hong Kong, China, May 2014. IEEE.
+[&nbsp;<a href=" http://groups.csail.mit.edu/robotics-center/public_papers/Kuindersma13.pdf ">www:</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Kuindersma14">4</a>]
+</td>
+<td class="bibtexitem">
+Scott Kuindersma, Robin Deits, Maurice Fallon, Andr&eacute;s Valenzuela, Hongkai
+  Dai, Frank Permenter, Twan Koolen, Pat Marion, and Russ Tedrake.
+ Optimization-based locomotion planning, estimation, and control
+  design for the Atlas humanoid robot.
+ <em>Autonomous Robots</em>, 40(3):429--455, 2016.
+[&nbsp;<a href=" http://groups.csail.mit.edu/robotics-center/public_papers/Kuindersma14.pdf ">www:</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Deits14a">5</a>]
+</td>
+<td class="bibtexitem">
+Robin Deits and Russ Tedrake.
+ Footstep planning on uneven terrain with mixed-integer convex
+  optimization.
+ In <em>Proceedings of the 2014 IEEE/RAS International Conference on
+  Humanoid Robots (Humanoids 2014)</em>, Madrid, Spain, 2014.
+[&nbsp;<a href=" http://groups.csail.mit.edu/robotics-center/public_papers/Deits14a.pdf ">www:</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Koolen12">6</a>]
+</td>
+<td class="bibtexitem">
+Twan Koolen, Tomas de&nbsp;Boer, John Rebula, Ambarish Goswami, and Jerry Pratt.
+ Capturability-based analysis and control of legged locomotion, part
+  1: Theory and application to three simple gait models.
+ <em>The International Journal of Robotics Research</em>,
+  31(9):1094--1113, 2012.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Dai14">7</a>]
+</td>
+<td class="bibtexitem">
+Hongkai Dai, Andr&eacute;s Valenzuela, and Russ Tedrake.
+ Whole-body motion planning with centroidal dynamics and full
+  kinematics.
+ <em>IEEE-RAS International Conference on Humanoid Robots</em>, 2014.
+[&nbsp;<a href=" http://groups.csail.mit.edu/robotics-center/public_papers/Dai14.pdf ">www:</a>&nbsp;]
+
+</td>
+</tr>
+</table>
+</section><p/>
+</div>
 
 <table style="width:100%;"><tr style="width:100%">
   <td style="width:33%;text-align:left;"><a class="previous_chapter" href=simple_legs.html>Previous Chapter</a></td>

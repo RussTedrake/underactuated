@@ -32,6 +32,10 @@
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
     <p style="font-size: 14px; text-align: right;"> 
       &copy; Russ Tedrake, 2020<br/>
+      Last modified <span id="last_modified"></span>.</br>
+      <script>
+      var d = new Date(document.lastModified);
+      document.getElementById("last_modified").innerHTML = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();</script>
       <a href="tocite.html">How to cite these notes</a> &nbsp; | &nbsp;
       <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSesAhROfLRfexrRFebHWLtRpjhqtb8k_iEagWMkvc7xau08iQ/viewform?usp=sf_link">Send me your feedback</a><br/>
     </p>
@@ -699,6 +703,40 @@ complete trajectory.</p>
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+
+<div id="references"><section><h1>References</h1>
+
+<table>
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Strogatz94">1</a>]
+</td>
+<td class="bibtexitem">
+Steven&nbsp;H. Strogatz.
+ <em>Nonlinear Dynamics and Chaos: With Applications to Physics,
+  Biology, Chemistry, and Engineering</em>.
+ Perseus Books, 1994.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Seung00">2</a>]
+</td>
+<td class="bibtexitem">
+H.&nbsp;Sebastian Seung, Daniel&nbsp;D. Lee, Ben&nbsp;Y. Reis, and David&nbsp;W. Tank.
+ The autapse: a simple illustration of short-term analog memory
+  storage by tuned synaptic feedback.
+ <em>Journal of Computational Neuroscience</em>, 9:171--85, 2000.
+
+</td>
+</tr>
+</table>
+</section><p/>
+</div>
 
 <table style="width:100%;"><tr style="width:100%">
   <td style="width:33%;text-align:left;"><a class="previous_chapter" href=intro.html>Previous Chapter</a></td>

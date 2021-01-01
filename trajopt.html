@@ -34,6 +34,10 @@
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
     <p style="font-size: 14px; text-align: right;"> 
       &copy; Russ Tedrake, 2020<br/>
+      Last modified <span id="last_modified"></span>.</br>
+      <script>
+      var d = new Date(document.lastModified);
+      document.getElementById("last_modified").innerHTML = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();</script>
       <a href="tocite.html">How to cite these notes</a> &nbsp; | &nbsp;
       <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSesAhROfLRfexrRFebHWLtRpjhqtb8k_iEagWMkvc7xau08iQ/viewform?usp=sf_link">Send me your feedback</a><br/>
     </p>
@@ -1075,6 +1079,328 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+
+<div id="references"><section><h1>References</h1>
+
+<table>
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Betts98">1</a>]
+</td>
+<td class="bibtexitem">
+John&nbsp;T. Betts.
+ Survey of numerical methods for trajectory optimization.
+ <em>Journal of Guidance, Control, and Dynamics</em>, 21(2):193--207,
+  1998.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Betts01">2</a>]
+</td>
+<td class="bibtexitem">
+John&nbsp;T. Betts.
+ <em>Practical Methods for Optimal Control Using Nonlinear
+  Programming</em>.
+ SIAM Advances in Design and Control. Society for Industrial and
+  Applied Mathematics, 2001.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Wang09a">3</a>]
+</td>
+<td class="bibtexitem">
+Yang Wang and Stephen Boyd.
+ Fast model predictive control using online optimization.
+ <em>IEEE Transactions on control systems technology</em>,
+  18(2):267--278, 2009.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Hargraves87">4</a>]
+</td>
+<td class="bibtexitem">
+C.&nbsp;R. Hargraves and S.&nbsp;W. Paris.
+ Direct trajectory optimization using nonlinear programming and
+  collocation.
+ <em>J Guidance</em>, 10(4):338--342, July-August 1987.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Garg11">5</a>]
+</td>
+<td class="bibtexitem">
+Garg, Divya, Patterson, Michael, Francolin, Camila, Darby, Christopher,
+  Huntington, Geoffrey, Hager, William, Rao, and Anil.
+ Direct trajectory optimization and costate estimation
+  of finite-horizon and infinite-horizon optimal control problems using a
+  radau pseudospectral method.
+ <em>Computational Optimization and Applications</em>, 49:335--358, 2011.
+ 10.1007/s10589-009-9291-0.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Ross12a">6</a>]
+</td>
+<td class="bibtexitem">
+I.&nbsp;Michael Ross and Mark Karpenko.
+ A review of pseudospectral optimal control: From theory to flight.
+ <em>Annual Reviews in Control</em>, 36(2):182--197, dec 2012.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Lin91">7</a>]
+</td>
+<td class="bibtexitem">
+TC&nbsp;Lin and JS&nbsp;Arora.
+ Differential dynamic programming technique for constrained optimal
+  control.
+ <em>Computational Mechanics</em>, 9(1):27--40, 1991.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Toussaint14">8</a>]
+</td>
+<td class="bibtexitem">
+Marc Toussaint.
+ A novel augmented lagrangian approach for inequalities and convergent
+  any-time non-central updates.
+ arXiv:1412.4329 [math.OC], 2014.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Garcia89">9</a>]
+</td>
+<td class="bibtexitem">
+Carlos&nbsp;E Garcia, David&nbsp;M Prett, and Manfred Morari.
+ Model predictive control: theory and practice—a survey.
+ <em>Automatica</em>, 25(3):335--348, 1989.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Camacho13">10</a>]
+</td>
+<td class="bibtexitem">
+Eduardo&nbsp;F Camacho and Carlos&nbsp;Bordons Alba.
+ <em>Model predictive control</em>.
+ Springer Science &amp; Business Media, 2013.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Bemporad99">11</a>]
+</td>
+<td class="bibtexitem">
+Alberto Bemporad and Manfred Morari.
+ Robust model predictive control: A survey.
+ In A.&nbsp;Garulli and A.&nbsp;Tesi, editors, <em>Robustness in identification
+  and control</em>, volume 245 of <em>Lecture Notes in Control and Information
+  Sciences</em>, pages 207--226. Springer Berlin / Heidelberg, 1999.
+ 10.1007/BFb0109870.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Cory08">12</a>]
+</td>
+<td class="bibtexitem">
+Rick Cory and Russ Tedrake.
+ Experiments in fixed-wing UAV perching.
+ In <em>Proceedings of the AIAA Guidance, Navigation, and Control
+  Conference</em>, pages 1--12. AIAA, 2008.
+[&nbsp;<a href=" http://groups.csail.mit.edu/robotics-center/public_papers/Cory08.pdf ">www:</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Roberts09">13</a>]
+</td>
+<td class="bibtexitem">
+John&nbsp;W. Roberts, Rick Cory, and Russ Tedrake.
+ On the controllability of fixed-wing perching.
+ In <em>Proceedings of the American Control Conference (ACC)</em>, 2009.
+[&nbsp;<a href=" http://groups.csail.mit.edu/robotics-center/public_papers/Roberts09.pdf ">www:</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Cory10a">14</a>]
+</td>
+<td class="bibtexitem">
+Rick Cory.
+ <em>Supermaneuverable Perching</em>.
+ PhD thesis, Massachusetts Institute of Technology, June 2010.
+[&nbsp;<a href=" http://groups.csail.mit.edu/robotics-center/public_papers/Cory10a.pdf ">www:</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Moore11a">15</a>]
+</td>
+<td class="bibtexitem">
+Joseph Moore.
+ Powerline perching with a fixed-wing UAV.
+ Master's thesis, Massachusetts Institute of Technology, May 2011.
+[&nbsp;<a href=" http://groups.csail.mit.edu/robotics-center/public_papers/Moore11a.pdf ">www:</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Moore12">16</a>]
+</td>
+<td class="bibtexitem">
+Joseph Moore and Russ Tedrake.
+ Control synthesis and verification for a perching UAV using
+  LQR-trees.
+ In <em>Proceedings of the IEEE Conference on Decision and Control</em>,
+  page&nbsp;8, Maui, Hawaii, December 2012.
+[&nbsp;<a href=" http://groups.csail.mit.edu/robotics-center/public_papers/Moore12.pdf ">www:</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Moore14b">17</a>]
+</td>
+<td class="bibtexitem">
+Joseph Moore.
+ <em>Robust Post-Stall Perching with a Fixed-Wing UAV</em>.
+ PhD thesis, Massachusetts Institute of Technology, September 2014.
+[&nbsp;<a href=" http://groups.csail.mit.edu/robotics-center/public_papers/Moore14b.pdf ">www:</a>&nbsp;]
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Bertsekas00a">18</a>]
+</td>
+<td class="bibtexitem">
+Dimitri&nbsp;P. Bertsekas.
+ <em>Dynamic Programming and Optimal Control</em>.
+ Athena Scientific, 2nd edition, 2000.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Li04">19</a>]
+</td>
+<td class="bibtexitem">
+Weiwei Li and Emanuel Todorov.
+ Iterative linear quadratic regulator design for nonlinear biological
+  movement systems.
+ In <em>International Conference on Informatics in Control,
+  Automation and Robotics</em>, pages 222--229, 2004.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Sideris05">20</a>]
+</td>
+<td class="bibtexitem">
+Athanasios Sideris and James&nbsp;E. Bobrow.
+ A fast sequential linear quadratic algorithm for solving
+  unconstrained nonlinear optimal control problems, February 2005.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Farshidian17">21</a>]
+</td>
+<td class="bibtexitem">
+Farbod Farshidian, Edo Jelavic, Asutosh Satapathy, Markus Giftthaler, and Jonas
+  Buchli.
+ Real-time motion planning of legged robots: A model predictive
+  control approach.
+ In <em>2017 IEEE-RAS 17th International Conference on Humanoid
+  Robotics (Humanoids)</em>, pages 577--584. IEEE, 2017.
+
+</td>
+</tr>
+
+
+<tr valign="top">
+<td align="right" class="bibtexnumber">
+[<a id="Tassa12">22</a>]
+</td>
+<td class="bibtexitem">
+Y.&nbsp;Tassa, T.&nbsp;Erez, and E.&nbsp;Todorov.
+ Synthesis and stabilization of complex behaviors through online
+  trajectory optimization.
+ In <em>Intelligent Robots and Systems (IROS), 2012 IEEE/RSJ
+  International Conference on</em>, pages 4906--4913. IEEE, 2012.
+
+</td>
+</tr>
+</table>
+</section><p/>
+</div>
 
 <table style="width:100%;"><tr style="width:100%">
   <td style="width:33%;text-align:left;"><a class="previous_chapter" href=lyapunov.html>Previous Chapter</a></td>

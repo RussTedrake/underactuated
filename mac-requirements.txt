@@ -11,7 +11,9 @@ dataclasses==0.6          # via torch
 future==0.18.2            # via torch
 gradescope-utils==0.4.0   # via -r mac-requirements.in
 idna==2.10                # via requests
+mysql-connector-python==8.0.22  # via -r mac-requirements.in
 numpy==1.19.4             # via scipy, torch
+protobuf==3.14.0          # via mysql-connector-python
 pycodestyle==2.6.0        # via -r mac-requirements.in
 pydocstyle==5.1.1         # via -r mac-requirements.in
 pydot==1.4.1              # via -r mac-requirements.in
@@ -19,6 +21,7 @@ pyparsing==2.4.7          # via pydot
 pyyaml==5.3.1             # via -r mac-requirements.in
 requests==2.25.0          # via -r mac-requirements.in
 scipy==1.5.4              # via -r mac-requirements.in
+six==1.15.0               # via protobuf
 snowballstemmer==2.0.0    # via pydocstyle
 soupsieve==2.0.1          # via beautifulsoup4
 timeout-decorator==0.5.0  # via -r mac-requirements.in
