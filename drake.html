@@ -174,7 +174,7 @@ export PYTHONPATH=`pwd`:${PYTHONPATH}</code></pre></div>
 
       <div class="mac"><pre class="highlight"><code>cd underactuated
 scripts/setup/mac/install_prereqs.sh
-pip3 install --requirement requirements.txt /opt/drake/share/drake/setup/requirements.txt
+pip3 install --requirement /opt/drake/share/drake/setup/requirements.txt --requirement requirements.txt 
 export PYTHONPATH=`pwd`:${PYTHONPATH}</code></pre></div>
 
 <p>Note that, as always, I would strongly recommend running
