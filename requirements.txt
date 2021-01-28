@@ -1,5 +1,5 @@
 beautifulsoup4==4.9.3      ; sys_platform == "darwin"
-certifi==2020.11.8         ; sys_platform == "darwin"
+certifi==2021.11.8         ; sys_platform == "darwin"
 chardet==3.0.4             ; sys_platform == "darwin"
 dataclasses==0.6           ; sys_platform == "darwin"
 future==0.18.2             ; sys_platform == "darwin"

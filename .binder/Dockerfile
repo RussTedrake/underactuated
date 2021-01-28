@@ -1,7 +1,7 @@
 # -*- mode: dockerfile -*-
 # vi: set ft=dockerfile :
 
-# Copyright 2020 Massachusetts Institute of Technology.
+# Copyright 2021 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
 FROM russtedrake/underactuated:latest

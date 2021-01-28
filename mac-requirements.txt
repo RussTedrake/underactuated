@@ -5,7 +5,7 @@
 #    pip-compile mac-requirements.in
 #
 beautifulsoup4==4.9.3     # via -r mac-requirements.in
-certifi==2020.11.8        # via requests
+certifi==2021.11.8        # via requests
 chardet==3.0.4            # via requests
 dataclasses==0.6          # via torch
 future==0.18.2            # via torch
