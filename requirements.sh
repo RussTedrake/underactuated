@@ -10,5 +10,5 @@ else
     pip-compile ubuntu-requirements.in
 fi
 
-grep == mac-requirements.txt | sed -e 's/#.*$/ ; sys_platform == "darwin"/' > requirements.txt
+grep == mac-requirements.txt | sed -e 's/$/; sys_platform == "darwin"/' > requirements.txt
 grep == ubuntu-requirements.txt | sed -e 's/#.*$/; sys_platform == "linux"/' >> requirements.txt
