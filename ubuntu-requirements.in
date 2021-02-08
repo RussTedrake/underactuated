@@ -1,4 +1,3 @@
-bibtexparser
 gradescope-utils>=0.4.0
 mysql-connector-python
 pycodestyle>=2.6.0
