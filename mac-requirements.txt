@@ -6,8 +6,6 @@
 #
 beautifulsoup4==4.9.3
     # via -r mac-requirements.in
-bibtexparser==1.2.0
-    # via -r mac-requirements.in
 certifi==2020.12.5
     # via
     #   -r mac-requirements.in
@@ -17,9 +15,7 @@ chardet==3.0.4
 dataclasses==0.6
     # via torch
 future==0.18.2
-    # via
-    #   bibtexparser
-    #   torch
+    # via torch
 gradescope-utils==0.4.0
     # via -r mac-requirements.in
 idna==2.10
@@ -39,9 +35,7 @@ pydocstyle==5.1.1
 pydot==1.4.1
     # via -r mac-requirements.in
 pyparsing==2.4.7
-    # via
-    #   bibtexparser
-    #   pydot
+    # via pydot
 pyyaml==5.3.1
     # via -r mac-requirements.in
 requests==2.25.0
