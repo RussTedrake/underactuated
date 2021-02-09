@@ -502,20 +502,40 @@ Control through Contact</a></li>
 
 <section id="preface"><h1>Preface</h1>
 
-  <p>This book is about building robots that move with speed, efficiency, and
-  grace.  I believe that this can only be achieve through a tight coupling
-  between mechanical design, passive dynamics, and nonlinear control synthesis.
-  Therefore, these notes contain selected material from dynamical systems
-  theory, as well as linear and nonlinear control.<p>
+  <p>This book is about nonlinear dynamics and control, with a focus on
+  mechanical systems.  I've spent my career thinking about how to make robots
+  move robustly, but also with speed, efficiency, and grace.  I believe that
+  this is best achieved through a tight coupling between mechanical design,
+  passive dynamics, and nonlinear control synthesis.  These notes contain
+  selected material from dynamical systems theory, as well as linear and
+  nonlinear control. But the dynamics of our robots quickly get too complex for
+  us to handle with a pencil-and-paper approach.  As a result, the primary
+  focus of these notes is on computational approaches to control design,
+  especially using optimization.<p>
 
-  <p>These notes also reflect a deep belief in computational algorithms playing
-  an essential role in finding and optimizing solutions to complex dynamics and
-  control problems.  Algorithms play an increasingly central role in modern
-  control theory; these days even rigorous mathematicians consider finding
-  convexity in a problem (therefore making it amenable to an efficient
-  computational solution) almost tantamount to an analytical result.  Therefore,
-  the notes necessarily also cover selected material from optimization theory,
-  motion planning, and machine learning.</p>
+  <p>When I started teaching this class, and writing these notes, the
+  computational approach to control was far from mainstream in robotics.  I had
+  just finished my Ph.D. focused on reinforcement learning (applied to a
+  bipedal robot), and was working on optimization-based motion planning. I
+  remember sitting at a robotics conference dinner as a young faculty,
+  surrounded by people I admired, talking about optimization.  One of the
+  senior faculty said "Russ: the people that talk like you aren't the people
+  that get real robots to work."  Wow, have things changed.  Now almost every
+  advanced robot is using optimization or learning in the planning/control
+  system.</p>
+  
+  <p>Today, the conversations about reinforcement learning (RL) are loud and
+  passionate enough to drown out almost every other voice in the room.
+  Ironically, now I am the older professor and I find myself still believing in
+  RL, but not with the complete faith of my youth.  There is so much one can
+  understand about the structure of the equations that govern our mechanical
+  systems; algorithms which don't make use of that structure are missing
+  obvious opportunities for data efficiency and robustness.  The dream is to
+  understand how we can make the learning algorithms discover this structure on
+  their own.  My goal for this course, however, is to help <b>you</b> discover
+  this structure, and to learn how to use this structure to develop stronger
+  algorithms and to guide your scientific endeavors into learning-based
+  control.</p>
 
   <p> Although the material in the book comes from many sources, the
   presentation is targeted very specifically at a handful of robotics problems.
