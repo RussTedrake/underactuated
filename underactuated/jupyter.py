@@ -5,12 +5,10 @@ from IPython.display import HTML, display
 from ipywidgets.widgets import FloatSlider
 from warnings import warn
 
-from pydrake.systems.framework import VectorSystem
-
 # Use a global variable here because some calls to IPython will actually case an
 # interpreter to be created.  This file needs to be imported BEFORE that
 # happens.
-running_as_notebook = (get_ipython() is not None)
+running_as_notebook = get_ipython() and hasattr(get_ipython(), 'kernel')
 
 
 def pyplot_is_interactive():
@@ -23,7 +21,7 @@ def pyplot_is_interactive():
 def AdvanceToAndVisualize(simulator,
                           visualizer,
                           time,
-                          time_if_running_headless=None):
+                          time_if_running_headless=0.1):
     """
     Helper to support visualizing a simulation with pyplot visualizer.
     Will simply simulate (with target_realtime_rate = 1) if visualizer.show =
@@ -43,7 +41,7 @@ def AdvanceToAndVisualize(simulator,
     if visualizer._show:
         simulator.set_target_realtime_rate(target_rate)
     else:
-        print("generating animation...")
+        print("done.\ngenerating animation...")
         ani = visualizer.get_recording_as_animation()
         display(HTML(ani.to_jshtml()))
 
@@ -65,6 +63,7 @@ def SetupMatplotlibBackend(wishlist=["notebook"]):
         if 'google.colab' in sys.modules:
             ipython.run_line_magic("matplotlib", "inline")
             return False
+        # TODO: Find a way to detect vscode, and use inline instead of notebook
         for backend in wishlist:
             try:
                 ipython.run_line_magic("matplotlib", backend)
@@ -75,7 +74,12 @@ def SetupMatplotlibBackend(wishlist=["notebook"]):
     return False
 
 
-# Deprecate this:
+# Deprecate everything below this line:
+
+from pydrake.systems.framework import VectorSystem
+
+
+
 def setup_matplotlib_backend(**kwargs):
     SetupMatplotlibBackend(**kwargs)
 
