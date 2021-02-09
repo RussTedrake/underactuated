@@ -5,6 +5,8 @@ from IPython.display import HTML, display
 from ipywidgets.widgets import FloatSlider
 from warnings import warn
 
+from pydrake.systems.framework import VectorSystem
+
 # Use a global variable here because some calls to IPython will actually case an
 # interpreter to be created.  This file needs to be imported BEFORE that
 # happens.
@@ -75,9 +77,6 @@ def SetupMatplotlibBackend(wishlist=["notebook"]):
 
 
 # Deprecate everything below this line:
-
-from pydrake.systems.framework import VectorSystem
-
 
 
 def setup_matplotlib_backend(**kwargs):
