@@ -14,7 +14,7 @@ gradescope-utils==0.4.0
     #   -r ubuntu-shared-requirements.in
 mysql-connector-python==8.0.22
     # via -r htmlbook/ubuntu-requirements.in
-numpy==1.18.5
+numpy==1.19.5
     # via
     #   -c htmlbook/colab-constraints.txt
     #   torch
