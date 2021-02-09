@@ -1,8 +1,5 @@
-beautifulsoup4>=4.9.3
+-r htmlbook/mac-requirements.in
 gradescope-utils>=0.4.0
-mysql-connector-python
-pycodestyle>=2.6.0
-pydocstyle>=5.1.1
 pydot>=1.4.1
 PyYAML>=5.3.1
 requests>=2.14.2
@@ -10,4 +7,3 @@ certifi<=2020.12.5 # some package was asking for 2021.11.8 instead of 2020.11.8
 scipy>=1.5.2 # this should come only indirectly (e.g. from drake), but brew scipy moved to python 3.9 and is currently broken.
 timeout-decorator>=0.4.1
 torch>=1.6.0
-yapf>=0.30.0

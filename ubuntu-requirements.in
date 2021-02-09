@@ -1,7 +1,6 @@
+-r ubuntu-shared-requirements.in
+-r htmlbook/ubuntu-requirements.in
+-c htmlbook/colab-constraints.txt
 gradescope-utils>=0.4.0
-mysql-connector-python
-pycodestyle>=2.6.0
-pydocstyle>=5.1.1
 timeout-decorator>=0.4.1
 torch>=1.6.0
-yapf>=0.30.0
