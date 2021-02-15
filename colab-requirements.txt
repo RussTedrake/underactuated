@@ -16,10 +16,14 @@ numpy==1.19.5
     # via
     #   -c htmlbook/colab-constraints.txt
     #   matplotlib
+pyngrok==5.0.2
+    # via -r colab-requirements.in
 pyparsing==2.4.7
     # via matplotlib
 python-dateutil==2.8.1
     # via matplotlib
+pyyaml==5.4.1
+    # via pyngrok
 six==1.15.0
     # via
     #   cycler
