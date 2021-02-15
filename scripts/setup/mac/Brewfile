@@ -2,8 +2,6 @@
 # vi: set ft=ruby :
 
 brew "bazel"
-brew "bibtex2html"
-brew "ffmpeg"
 brew "numpy"
 brew "python@3.8"
 brew "scipy"
