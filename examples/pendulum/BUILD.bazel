@@ -13,22 +13,6 @@ rt_ipynb_test(
     deps = ["//underactuated"],
 )
 
-rt_py_test(
-    name = "torque_slider_demo",
-    srcs = ["torque_slider_demo.py"],
-    args = ["--duration 0.1"],
-    deps = [
-        "//underactuated",
-        "//underactuated:pendulum",
-    ],
-)
-
-rt_ipynb_test(
-    name = "torque_slider_demo_nb",
-    srcs = ["torque_slider_demo.ipynb"],
-    deps = ["//underactuated"],
-)
-
 rt_ipynb_test(
     name = "value_iteration",
     srcs = ["value_iteration.ipynb"],

@@ -48,6 +48,12 @@ rt_html_test(
     srcs = ["pend.html"],
 )
 
+rt_ipynb_test(
+    name = "pend",
+    srcs = ["pend.ipynb"],
+    deps = ["//underactuated"],
+)
+
 rt_html_test(
     srcs = ["acrobot.html"],
 )
