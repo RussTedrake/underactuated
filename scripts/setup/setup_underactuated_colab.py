@@ -38,7 +38,7 @@ def setup_underactuated(*, underactuated_sha, drake_version, drake_build):
     run(['git', 'checkout', '--detach', underactuated_sha], cwd=path)
 
     # Run install_prereqs.sh
-    run([f"{path}/scripts/setup/ubuntu/18.04/install_prereqs.sh"])
+    # run([f"{path}/scripts/setup/ubuntu/18.04/install_prereqs.sh"])
 
     # Run pip install
     if os.path.isfile("/opt/underactuated/colab-requirements.txt"):
