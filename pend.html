@@ -36,8 +36,7 @@
       <script>
       var d = new Date(document.lastModified);
       document.getElementById("last_modified").innerHTML = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();</script>
-      <a href="tocite.html">How to cite these notes</a> &nbsp; | &nbsp;
-      <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSesAhROfLRfexrRFebHWLtRpjhqtb8k_iEagWMkvc7xau08iQ/viewform?usp=sf_link">Send me your feedback</a><br/>
+      <a href="misc.html">How to cite these notes, use annotations, and give feedback.</a><br/>
     </p>
   </header>
 </div>
@@ -57,6 +56,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 1">
 <h1>The Simple Pendulum</h1>
+<a style="float:right; margin-top:-80px;" target="pend" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/pend.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open Corresponding Notebook In Colab"/></a>
+<div style="clear:right;"></div>
 
   <section><h1>Introduction</h1>
 
@@ -96,7 +97,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <p>You can experiment with this system in <drake></drake> using</p>
 
-      <jupyter no_colab>examples/pendulum/torque_slider_demo.ipynb</jupyter>
+      <p><a target="pend"
+        href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/pend.ipynb#scrollTo=C1sdq2R88C16"><img
+        src="https://colab.research.google.com/assets/colab-badge.svg"
+        alt="Open In Colab"/></a>
+          </p>
 
     </example>
 
@@ -268,9 +273,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         itself.  $\tanh$ is the activation (sigmoidal) function of the neuron,
         and $w$ is the weight of the synaptic feedback.</p>
 
-        <p>Experiment with it for yourself:
-          <jupyter no_colab>examples/autapse_and_lstm.ipynb</jupyter>
-        As a bonus, you'll also find a the equations of an <a href="https://en.wikipedia.org/wiki/Long_short-term_memory">LSTM</a> unit that you can also experiment with.  See if you can figure it out!
+        <p>Experiment with it for yourself:</p>
+        <p><a target="pend"
+        href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/pend.ipynb#scrollTo=_BvA4JX8F-q-"><img
+        src="https://colab.research.google.com/assets/colab-badge.svg"
+        alt="Open In Colab"/></a>
+        </p>
+
+        <p>As a bonus, you'll also find a the equations of an <a
+        href="https://en.wikipedia.org/wiki/Long_short-term_memory">LSTM</a>
+        unit that you can also experiment with.  See if you can figure it out!
         </p>
 
       </example>
@@ -301,6 +313,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       will turn forever whenever $|u_0| > mgl$, but now you understand
       that this is not an oscillation, but an instability with $\theta
       \rightarrow \pm \infty$. </p>
+
+      <p>You can find another beautiful example of these concepts (fixed points, basins of attraction, bifurcations) from recurrent neural networks in the exercise below on <a href="#hopfield">Hopfield networks</a>.</p>
 
     </subsection> <!-- end of overdamped pend -->
 
@@ -697,6 +711,12 @@ complete trajectory.</p>
 
       </ol>
 
+    </exercise>
+
+    <exercise id="hopfield"><h1>Hopfield Networks</h1>
+    
+      <p>Coming soon...</p>
+    
     </exercise>
 
   </section>

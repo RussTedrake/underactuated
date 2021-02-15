@@ -36,8 +36,7 @@
       <script>
       var d = new Date(document.lastModified);
       document.getElementById("last_modified").innerHTML = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();</script>
-      <a href="tocite.html">How to cite these notes</a> &nbsp; | &nbsp;
-      <a target="_blank" href="https://docs.google.com/forms/d/e/1FAIpQLSesAhROfLRfexrRFebHWLtRpjhqtb8k_iEagWMkvc7xau08iQ/viewform?usp=sf_link">Send me your feedback</a><br/>
+      <a href="misc.html">How to cite these notes, use annotations, and give feedback.</a><br/>
     </p>
   </header>
 </div>
@@ -106,7 +105,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
   <section><h1>Running on your own machine</h1>
 
-    <p>As you get more advanced, you will want to run (and extend) these examples on your own machine.  The <drake></drake> website has a number of <a href="https://drake.mit.edu/installation.html">installation options</a>, including precompiled binaries and Docker instances.  Here I provide an example workflow of setting up drake from the precompiled binaries and running the textbook examples.</p>
+    <p>As you get more advanced, you will likely want to run (and extend) these examples on your own machine.  The <drake></drake> website has a number of <a href="https://drake.mit.edu/installation.html">installation options</a>, including precompiled binaries and Docker instances.  Here I provide an example workflow of setting up drake from the precompiled binaries and running the textbook examples.</p>
 
     <p>First, pick your platform (click on your OS):</p>
 
@@ -174,10 +173,13 @@ export PYTHONPATH=`pwd`:${PYTHONPATH}</code></pre></div>
 
     <subsection><h1>Run Jupyter Notebook</h1>
 
-      <div><pre class="highlight"><code>cd underactuated
-jupyter notebook</code></pre></div>
+      <p>You'll likely want to start from the underactuated root directory.  Then launch your notebook with:</p>
 
-      <p>You will find the examples in the <code>examples</code> subdirectory, and the notebook exercises in the <code>exercises</code> subdirectory.  You might try opening <code>examples/double_pendulum/dynamics.ipynb</code> to get started.  Have fun!</p>
+      <div><pre class="highlight"><code>jupyter notebook</code></pre></div>
+
+      <p>The examples for each chapter that has them will be in a .ipynb file
+      right alongside the chapter's html file, and the notebook exercises are
+      all located in the <code>exercises</code> subdirectory.  
 
     </subsection>
 

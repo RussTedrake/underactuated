@@ -133,6 +133,10 @@ rt_html_test(
     srcs = ["playbook.html"],
 )
 
+rt_html_test(
+    srcs = ["misc.html"],
+)
+
 filegroup(
     name = "chapters",
     srcs = ["chapters.json"],

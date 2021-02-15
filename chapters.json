@@ -23,7 +23,8 @@
     "drake",
     "multibody",
     "optimization",
-    "playbook"
+    "playbook",
+    "misc"
   ],
   "parts_format": "dict(first chapter id, name of the part)",
   "parts" : {
