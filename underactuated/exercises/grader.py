@@ -1,7 +1,7 @@
 import unittest
 from gradescope_utils.autograder_utils.json_test_runner import JSONTestRunner
 import json
-from runpy import run_module
+from runpy import run_path
 import nbformat
 from nbconvert import PythonExporter
 import os
@@ -74,7 +74,7 @@ class Grader:
         with open('./cleaned_notebook.py', 'w') as fh:
             fh.write(source)
 
-        notebook_locals = run_module('cleaned_notebook')
+        notebook_locals = run_path('cleaned_notebook.py')
         os.system('rm cleaned_notebook.py')
         return notebook_locals
 
