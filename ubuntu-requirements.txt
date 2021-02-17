@@ -18,6 +18,9 @@ numpy==1.19.5
     # via
     #   -c htmlbook/colab-constraints.txt
     #   torch
+    #   torchvision
+pillow==8.1.0
+    # via torchvision
 protobuf==3.14.0
     # via mysql-connector-python
 pycodestyle==2.6.0
@@ -36,6 +39,11 @@ torch==1.7.0
     # via
     #   -c htmlbook/colab-constraints.txt
     #   -r ubuntu-requirements.in
+    #   torchvision
+torchvision==0.8.1
+    # via
+    #   -c htmlbook/colab-constraints.txt
+    #   -r ubuntu-shared-requirements.in
 typing-extensions==3.7.4.3
     # via torch
 yapf==0.30.0
