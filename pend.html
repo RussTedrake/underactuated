@@ -715,7 +715,19 @@ complete trajectory.</p>
 
     <exercise id="hopfield"><h1>Hopfield Networks</h1>
     
-      <p>Coming soon...</p>
+      Consider the following dynamical system
+
+      \begin{equation}
+      \dot{x} = A^T\,\text{softmax}(\beta\, A\, x) - x
+      \end{equation}
+      where $A\in\mathbb{R}^{m\times n}$ and $\beta\in\mathbb{R}$ are a constant matrix and a scalar, respectively, and the softmax function is given by $\text{softmax}(z)_i = \frac{e^{z_i}}{\sum_k e^{z_k}}$. 
+      
+      <ol type="a">
+        <li> Draw the phase portrait of the system with constants $\beta=5$ and $A=\begin{bmatrix}1&0 \\ 0&1 \\ -1&-1\end{bmatrix}$. </li>
+        <li> Identify (approximately by looking at the phase portrait) equilibriums of the above system. What are the stable and unstable equilibriums? </li>
+        <li> How are the stable equilibriums related to the matrix $A$? </li>
+        <li> Using <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/pend/hopfield_network/hopfield_network.ipynb" target="_blank">this python notebook</a>, implement an image recovery algorithm using Hopfield network. Modify the dynamical system above to momorize a subset of MNIST data set. Using a corrupted image as the initial condition, simulate the dynamical system to restore images. </li>
+      </ol>
     
     </exercise>
 
