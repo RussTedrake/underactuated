@@ -12,7 +12,7 @@ gradescope-utils==0.4.0
     # via
     #   -r ubuntu-requirements.in
     #   -r ubuntu-shared-requirements.in
-mysql-connector-python==8.0.22
+mysql-connector-python==8.0.23
     # via -r htmlbook/ubuntu-requirements.in
 numpy==1.19.5
     # via
@@ -29,7 +29,7 @@ pydocstyle==5.1.1
     # via -r htmlbook/ubuntu-requirements.in
 six==1.15.0
     # via protobuf
-snowballstemmer==2.0.0
+snowballstemmer==2.1.0
     # via pydocstyle
 timeout-decorator==0.5.0
     # via
