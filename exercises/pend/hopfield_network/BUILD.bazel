@@ -4,11 +4,14 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-load("//htmlbook/tools/python:defs.bzl", "rt_py_library")
 load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 
-rt_py_library(
-    name = "learning_dynamics",
-    srcs = ["test_learning_dynamics.py"],
-    visibility = ["//visibility:public"],
+rt_ipynb_test(
+    name = "hopfield_network",
+    srcs = ["hopfield_network.ipynb"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/pend/hopfield_network",
+    ],
 )
