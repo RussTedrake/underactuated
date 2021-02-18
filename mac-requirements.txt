@@ -5,33 +5,32 @@
 #    pip-compile mac-requirements.in
 #
 beautifulsoup4==4.9.3
-    # via -r mac-requirements.in
+    # via -r htmlbook/mac-requirements.in
 certifi==2020.12.5
     # via
     #   -r mac-requirements.in
     #   requests
 chardet==3.0.4
     # via requests
-dataclasses==0.6
-    # via torch
-future==0.18.2
-    # via torch
 gradescope-utils==0.4.0
     # via -r mac-requirements.in
 idna==2.10
     # via requests
 mysql-connector-python==8.0.22
-    # via -r mac-requirements.in
+    # via -r htmlbook/mac-requirements.in
 numpy==1.19.4
     # via
     #   scipy
     #   torch
+    #   torchvision
+pillow==8.1.0
+    # via torchvision
 protobuf==3.14.0
     # via mysql-connector-python
 pycodestyle==2.6.0
-    # via -r mac-requirements.in
+    # via -r htmlbook/mac-requirements.in
 pydocstyle==5.1.1
-    # via -r mac-requirements.in
+    # via -r htmlbook/mac-requirements.in
 pydot==1.4.1
     # via -r mac-requirements.in
 pyparsing==2.4.7
@@ -50,11 +49,15 @@ soupsieve==2.0.1
     # via beautifulsoup4
 timeout-decorator==0.5.0
     # via -r mac-requirements.in
-torch==1.7.0
+torch==1.7.1
+    # via
+    #   -r mac-requirements.in
+    #   torchvision
+torchvision==0.8.2
     # via -r mac-requirements.in
 typing-extensions==3.7.4.3
     # via torch
 urllib3==1.26.2
     # via requests
 yapf==0.30.0
-    # via -r mac-requirements.in
+    # via -r htmlbook/mac-requirements.in

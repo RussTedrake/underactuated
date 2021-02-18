@@ -16,12 +16,12 @@ class TestLearningDynamics(unittest.TestCase):
         # note: all prints here go to the output item in the json file
 
         # the loss must be close to the correct value
-        final_loss = self.notebook_locals['final_loss'].data()
+        final_loss = self.notebook_locals['final_loss']
         self.assertLessEqual(
             final_loss,
-            0.33,
+            0.58,
             msg='Final loss is less then upper bound for the correct value')
         self.assertGreaterEqual(
             final_loss,
-            0.32,
+            0.55,
             msg='Final loss is greater then upper bound for the correct value')
