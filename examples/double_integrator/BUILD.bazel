@@ -19,6 +19,7 @@ rt_ipynb_test(
 rt_ipynb_test(
     name = "neural_value_iteration",
     srcs = ["neural_value_iteration.ipynb"],
+    target_compatible_with = ["@platforms//os:linux"],
     deps = ["//underactuated"],
 )
 
