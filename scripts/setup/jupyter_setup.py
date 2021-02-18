@@ -18,11 +18,11 @@ def setup_drake():
     except ImportError:
         if platform.system() == "Darwin":
             get_ipython().system(
-                u"if [ ! -d '/opt/drake' ]; then curl -o drake.tar.gz https://drake-packages.csail.mit.edu/drake/continuous/drake-latest-mac.tar.gz && tar -xzf drake.tar.gz -C /opt && export HOMEBREW_CURL_RETRIES=4 && brew update && brew bundle --file=/opt/drake/share/drake/setup/Brewfile --no-lock; fi"  # noqa
+                u"if [ ! -d '/opt/drake' ]; then curl -o drake.tar.gz https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-mac.tar.gz && tar -xzf drake.tar.gz -C /opt && export HOMEBREW_CURL_RETRIES=4 && brew update && brew bundle --file=/opt/drake/share/drake/setup/Brewfile --no-lock; fi"  # noqa
             )
         elif platform.linux_distribution() == ("Ubuntu", "18.04", "bionic"):
             get_ipython().system(
-                u"if [ ! -d '/opt/drake' ]; then curl -o drake.tar.gz https://drake-packages.csail.mit.edu/drake/continuous/drake-latest-bionic.tar.gz && tar -xzf drake.tar.gz -C /opt &&apt-get update -o APT::Acquire::Retries=4 -qq && apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends $(cat /opt/drake/share/drake/setup/packages-bionic.txt); fi"  # noqa
+                u"if [ ! -d '/opt/drake' ]; then curl -o drake.tar.gz https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-bionic.tar.gz && tar -xzf drake.tar.gz -C /opt && apt-get update -o APT::Acquire::Retries=4 -qq && apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends $(cat /opt/drake/share/drake/setup/packages-bionic.txt); fi"  # noqa
             )
         else:
             assert False, "Unsupported platform"
