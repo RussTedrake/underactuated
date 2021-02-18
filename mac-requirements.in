@@ -7,3 +7,4 @@ certifi<=2020.12.5 # some package was asking for 2021.11.8 instead of 2020.11.8
 scipy>=1.5.2 # this should come only indirectly (e.g. from drake), but brew scipy moved to python 3.9 and is currently broken.
 timeout-decorator>=0.4.1
 torch>=1.6.0
+torchvision
