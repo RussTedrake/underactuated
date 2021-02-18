@@ -715,7 +715,34 @@ complete trajectory.</p>
 
     <exercise id="hopfield"><h1>Hopfield Networks</h1>
     
-      <p>Coming soon...</p>
+      Consider the following dynamical system
+
+      \begin{equation}
+      \dot{x} = A^T\,\text{softmax}(\beta\, A\, x) - x
+      \end{equation}
+      where $A\in\mathbb{R}^{m\times n}$ and $\beta\in\mathbb{R}$ are a constant matrix and a scalar, respectively, and the softmax function is given by $\text{softmax}(z)_i = \frac{e^{z_i}}{\sum_k e^{z_k}}$. 
+      
+      <ol type="a">
+        <li> Draw the phase portrait of the system with constants $\beta=5$ and $A=\begin{bmatrix}1&0 \\ 0&1 \\ -1&-1\end{bmatrix}$. </li>
+        <li> Identify (approximately by looking at the phase portrait) equilibriums of the above system. What are the stable and unstable equilibriums? </li>
+        <li> How are the stable equilibriums related to the matrix $A$? </li>
+        <li> Using <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/pend/hopfield_network/hopfield_network.ipynb" target="_blank">this python notebook</a>, implement an image recovery algorithm using Hopfield network. Modify the dynamical system above to memorize a subset of MNIST data set. Using a corrupted image as the initial condition, simulate the dynamical system to restore images. </li>
+      </ol>
+    
+    </exercise>
+
+    <exercise id="learning_dynamics"><h1>Graphical Analysis of a Neural ODE</h1>
+      
+      We've recently seen a trend in using neural networks to describe our dynamics function. The differential equation represented by the network can be very complex, and hard to analyze rigorously. However, in the special case of one-dimensional systems we can use graphical analysis to analyze our system.
+
+      For this exercise, you'll take a look at trying to learn the dynamics of the damped pendulum from data. This exercise has a coding component where you'll learn the basics of training a neural network in pytorch. There is then a written component where you'll perform a graphical analysis of the dynamics function represented by your trained network.
+      
+      <ol type="a">
+        <li> In <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/pend/learning_dynamics/learning_dynamics.ipynb" target="_blank">this python notebook</a>, learn the dynamics of the damped pendulum from data.
+        <li> Within the range $\theta \in [-5.0, 5.0]$, which values of $(\theta, \dot \theta)$ represent fixed points? Which fixed points are stable and which are unstable? </li>
+        <li> What is one reason why our model might not fit the ground truth data exactly? </li>
+        <li> Does our model give us a reasonable approximation of the dynamics for all $(\theta, \dot \theta)$ pairs? Why or why not? </li>
+      </ol>
     
     </exercise>
 
