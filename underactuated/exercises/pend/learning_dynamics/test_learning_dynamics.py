@@ -19,9 +19,9 @@ class TestLearningDynamics(unittest.TestCase):
         final_loss = self.notebook_locals['final_loss']
         self.assertLessEqual(
             final_loss,
-            0.58,
-            msg='Final loss is less then upper bound for the correct value')
+            0.38,
+            msg='Final loss is less than upper bound for the correct value')
         self.assertGreaterEqual(
             final_loss,
-            0.55,
-            msg='Final loss is greater then upper bound for the correct value')
+            0.35,
+            msg='Final loss is greater than lower bound for the correct value')
