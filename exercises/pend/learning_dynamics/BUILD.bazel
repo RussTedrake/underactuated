@@ -9,6 +9,8 @@ load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 rt_ipynb_test(
     name = "learning_dynamics",
     srcs = ["learning_dynamics.ipynb"],
+    # PyTorch is unavailable on macOS with Python 3.9.
+    target_compatible_with = ["@platforms//os:linux"],
     deps = [
         "//underactuated",
         "//underactuated/exercises",
