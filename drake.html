@@ -89,7 +89,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       our primary platform. Most of the chapters have a corresponding notebook
       that you can run on the cloud without installing anything on your
       machine!</p>
-  
+
       <p>Colab is a fantastic resource, with generous computational resources and
       a very convenient interface that allows you to save/load/share your work on
       Google Drive.  Although we cannot provision the machines ahead of time, we
@@ -134,17 +134,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <h4>Unpack and set your PYTHONPATH and Test</h4>
 
       <div class="bionic"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
-sudo /opt/drake/share/drake/setup/install_prereqs.sh
+sudo /opt/drake/share/drake/setup/install_prereqs
 export PYTHONPATH=/opt/drake/lib/python3.6/site-packages:${PYTHONPATH}
 
 python3 -c 'import pydrake; print(pydrake.__file__)</code></pre></div>
 
       <div class="mac"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
-/opt/drake/share/drake/setup/install_prereqs.sh
-export PYTHONPATH=/opt/drake/lib/python3.8/site-packages:${PYTHONPATH}
-export PATH=/usr/local/opt/python@3.8/bin:${PATH}
+/opt/drake/share/drake/setup/install_prereqs
+export PYTHONPATH=/opt/drake/lib/python3.9/site-packages:${PYTHONPATH}
 
-python3 -c 'import pydrake; print(pydrake.__file__)</code></pre></div>
+python3.9 -c 'import pydrake; print(pydrake.__file__)</code></pre></div>
 
     </section>
 
@@ -161,7 +160,7 @@ export PYTHONPATH=`pwd`:${PYTHONPATH}</code></pre></div>
 
       <div class="mac"><pre class="highlight"><code>cd underactuated
 scripts/setup/mac/install_prereqs.sh
-pip3 install --requirement /opt/drake/share/drake/setup/requirements.txt --requirement requirements.txt 
+pip3.9 install --requirement /opt/drake/share/drake/setup/requirements.txt --requirement requirements.txt
 export PYTHONPATH=`pwd`:${PYTHONPATH}</code></pre></div>
 
 <p>Note that, as always, I would strongly recommend running
@@ -179,7 +178,7 @@ export PYTHONPATH=`pwd`:${PYTHONPATH}</code></pre></div>
 
       <p>The examples for each chapter that has them will be in a .ipynb file
       right alongside the chapter's html file, and the notebook exercises are
-      all located in the <code>exercises</code> subdirectory.  
+      all located in the <code>exercises</code> subdirectory.
 
     </subsection>
 
