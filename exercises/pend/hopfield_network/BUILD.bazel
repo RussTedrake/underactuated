@@ -9,6 +9,8 @@ load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 rt_ipynb_test(
     name = "hopfield_network",
     srcs = ["hopfield_network.ipynb"],
+    # Downloads data from upload.wikimedia.org and yann.lecun.com.
+    tags = ["requires-network"],
     deps = [
         "//underactuated",
         "//underactuated/exercises",
