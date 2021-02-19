@@ -23,8 +23,8 @@ versions.check("2.0.0")
 load("@rules_python//python:pip.bzl", "pip_install")
 
 pip_install(
-    requirements = "//:requirements.txt",
     name = "pip",
+    requirements = "//:requirements.txt",
 )
 
 load("//htmlbook/tools/buildifier:repositories.bzl", "buildifier_dependencies")

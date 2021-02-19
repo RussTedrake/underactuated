@@ -62,11 +62,9 @@ rt_html_test(
     srcs = ["simple_legs.html"],
 )
 
-
 rt_html_test(
     srcs = ["humanoids.html"],
 )
-
 
 rt_html_test(
     srcs = ["stochastic.html"],
@@ -95,21 +93,27 @@ rt_html_test(
 rt_html_test(
     srcs = ["feedback_motion_planning.html"],
 )
+
 rt_html_test(
     srcs = ["policy_search.html"],
 )
+
 rt_html_test(
     srcs = ["robust.html"],
 )
+
 rt_html_test(
     srcs = ["output_feedback.html"],
 )
+
 rt_html_test(
     srcs = ["limit_cycles.html"],
 )
+
 rt_html_test(
     srcs = ["contact.html"],
 )
+
 rt_html_test(
     srcs = ["sysid.html"],
 )
@@ -117,18 +121,23 @@ rt_html_test(
 rt_html_test(
     srcs = ["state_estimation.html"],
 )
+
 rt_html_test(
     srcs = ["rl_policy_search.html"],
 )
+
 rt_html_test(
     srcs = ["drake.html"],
 )
+
 rt_html_test(
     srcs = ["multibody.html"],
 )
+
 rt_html_test(
     srcs = ["optimization.html"],
 )
+
 rt_html_test(
     srcs = ["playbook.html"],
 )

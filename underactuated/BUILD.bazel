@@ -11,8 +11,8 @@ rt_py_library(
     srcs = [
         "__init__.py",
         "jupyter.py",
-        "multibody.py",
         "meshcat_utils.py",
+        "multibody.py",
         "plot_utils.py",
         "pyplot_visualizer.py",
         "utils.py",
