@@ -22,8 +22,10 @@ numpy==1.19.5
     #   matplotlib
     #   torch
     #   torchvision
-pillow==8.1.0
-    # via torchvision
+pillow==7.0.0
+    # via
+    #   -c htmlbook/colab-constraints.txt
+    #   torchvision
 pyngrok==5.0.2
     # via -r colab-requirements.in
 pyparsing==2.4.7

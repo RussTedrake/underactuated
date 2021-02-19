@@ -19,8 +19,10 @@ numpy==1.19.5
     #   -c htmlbook/colab-constraints.txt
     #   torch
     #   torchvision
-pillow==8.1.0
-    # via torchvision
+pillow==7.0.0
+    # via
+    #   -c htmlbook/colab-constraints.txt
+    #   torchvision
 protobuf==3.14.0
     # via mysql-connector-python
 pycodestyle==2.6.0
