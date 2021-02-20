@@ -55,6 +55,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 6"><h1>Dynamic Programming</h1>
+  <a style="float:right; margin-top:-80px;" target="dp" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/dp.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open Corresponding Notebook In Colab"/></a>
+  <div style="clear:right;"></div>
 
   <p>In chapter 2, we spent some time thinking about the phase portrait of the
   simple pendulum, and concluded with a challenge: can we design a nonlinear
@@ -350,16 +352,18 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <elib>Sutton98</elib></p>
 
       <figure>
-        <a href="figures/gridworld_mintime.swf">
-          <img width="80%" src="figures/gridworld_mintime.svg" />
-        </a>
+        <iframe style="border:0;height:460px;width:550px;" src="data/grid_world.html?height=350px" pdf="no"></iframe>
+        <p pdf="only"><a href="data/grid_world.html">Click here for the animation.</a></p>
         <figcaption>The one-step cost for the grid-world minimum-time problem.
         The goal state has a cost of zero, the obstacles have a cost of 10, and
-        every other state has a cost of 1. <em>Click the image to watch the
-        value iteration algorithm in action.</em></figcaption>
+        every other state has a cost of 1.</figcaption>
       </figure>
 
-      <jupyter>examples/grid_world.ipynb</jupyter>
+      <p><a target="dp"
+        href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/dp.ipynb#scrollTo=C1sdq2R88C16"><img
+        src="https://colab.research.google.com/assets/colab-badge.svg"
+        alt="Open In Colab"/></a>
+          </p>
 
     </example> <!-- end grid world -->
 
@@ -372,7 +376,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       barycentric interpolation to interpolate between nodes) in <drake></drake>
       using: </p>
 
-      <jupyter no_colab>examples/double_integrator/value_iteration.ipynb</jupyter>
+      <p><a target="dp"
+        href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/dp.ipynb#scrollTo=C1sdq2R88C16"><img
+        src="https://colab.research.google.com/assets/colab-badge.svg"
+        alt="Open In Colab"/></a>
+          </p>
 
       <p>Please do take some time to try different cost functions by
       editing the code yourself.</p>
