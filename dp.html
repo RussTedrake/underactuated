@@ -443,34 +443,91 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \ell(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu) \right], \label{eq:HJB} \\
       \pi^*(\bx) = \argmin_\bu \left[ \ell(\bx,\bu) + \pd{J^*}{\bx}f(\bx,\bu)
       \right]. \end{gather} Equation \ref{eq:HJB} is known as the
-      <em>Hamilton-Jacobi-Bellman</em> (HJB) equation. <elib>Bertsekas05</elib>
+      <em>Hamilton-Jacobi-Bellman</em> (HJB) equation. 
       <sidenote>Technically, a Hamilton-Jacobi equation is a PDE whose <em>time
       derivative</em> depends on the first-order partial derivatives over
       state, which we get in the finite-time deriviation; Eq \ref{eq:HJB} is
       the steady-state solution of the Hamilton-Jacobi equation.</sidenote>
-      <!-- chapter 3 --> gives an informal derivation of these equations as the
-      limit of a discrete-time approximation of the dynamics, and also gives
-      the following sufficiency theorem:</p>
+      <elib>Bertsekas05</elib><!-- chapter 3 --> gives an informal derivation
+      of these equations as the limit of a discrete-time approximation of the
+      dynamics, and also gives the famous "sufficiency theorem".  The treatment
+      in <elib>Bertsekas05</elib> is for the finite-horizon case; I have
+      modified it to one particular form of an infinite-horizon case here.</p>
 
-      <theorem><h1>HJB Sufficiency Theorem</h1>
+      <theorem><h1>HJB Sufficiency Theorem <i>(stated informally)</i></h1>
 
-        <p>The following statement is adapted from Proposition 3.2.1 of
-        <elib>Bertsekas05</elib>.  Consider a system $\dot{\bx}=f(\bx,\bu)$ and
-        an infinite-horizon additive cost $\int_0^\infty \ell(\bx,\bu)dt$.  Suppose
-        $J(\bx)$ is a solution to the HJB equation; that is $J$ is continuously
-        differentiable in $\bx$ and is such that \[ 0 = \min_{\bu \in U} \left[
-        \ell(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx. \]
-        Suppose also that $\pi^*(\bx)$ attains the minimum in the equation for
-        all $\bx$.  Further assume that the differential equation described by
-        $f$ has a unique solution starting from any state $\bx$, that the
-        control input trajectory, $\bu^*(t)$, obtained by evaluating $\pi^*$
-        along any solution is piecewise continuous as a function of $t$, and
-        that there exists at least one fixed point, $\bx_{fp}$, with
-        $f(\bx_{fp}, \pi^*(\bx_{fp})) = 0$ and $J^*(\bx_{fp}) = 0$. Then $J$ is
-        equal to the optimal cost-to-go function, $J(\bx)=J^*(\bx)$ for all
-        $\bx$, and the control trajectories $\bu^*(t)$ are optimal.</p>
+        <p>Consider a system $\dot{\bx}=f(\bx,\bu)$ and an infinite-horizon
+        additive cost $\int_0^\infty \ell(\bx,\bu)dt$, with $f$ and $\ell$
+        continuous functions, and $\ell$ a strictly-positive-definite function that obtains zero only at a unique point $\bx^*$. Suppose $J(\bx)$ is a positive-definite solution to the HJB
+        equation; that is $J$ is continuously differentiable in $\bx$ and is
+        such that \[ 0 = \min_{\bu \in U} \left[\ell(\bx,\bu) +
+        \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx, \] and that
+        $\pi(\bx)$ is the minimizer for all $\bx$.  Then, under some technical conditions on the existence and boundedness of solutions, we have that $J(\bx) - J(\bx^*)$ is the optimal cost-to-go and $\pi$ is an optimal policy.</p>
 
+        <p style="font-size:smaller;"><details><summary>Here is a more formal version from a personal communication with <a href="http://www.mit.edu/~ameg/">Sasha Megretski</a>.</summary> 
+          
+        <p>Given an open subset $\Omega\subset\mathbb R^n$, with a selected
+        element $x^*$, a subset $U\subset\mathbb R^m$, continuous functions
+        $f:~\Omega\times U\to\mathbb R^n$, $g:~\Omega\times U\to[0,\infty)$,
+        continuously differentiable function $V:~\Omega\to[0,\infty)$, and a
+        function $\mu:~\Omega\to U$, such that <ol type="a"> <li>
+        $g(x,u)$ is strictly positive definite, in the sense that
+        $\lim_{k\to\infty}x_k=x^*$ for every sequence of vectors
+        $x_k\in\Omega$, $u_k\in U$ ($k=1,2,\dots$) such that
+        $\lim_{k\to\infty}g(x_k,u_k)=0$; </li><li> the function
+        $g_V:~\Omega\times U\to\mathbb R$, defined by
+        \begin{equation}\label{e0}
+        g_V(x,u)=g(x,u)+\frac{dV(x)}{dx}f(x,u),\end{equation} is non-negative,
+        and achieves zero value whenever $u=\mu(x)$; </li><li> for every
+        $x_0\in\Omega$, the system of equations \begin{equation}\label{e1} \dot
+        x(t)=f(x(t),u(t)),~x(0)=x_0~\left(\text{i.e.,}~
+        x(t)=x_0+\int_0^tf(x(\tau),u(\tau)d\tau\right)\end{equation}
+        \begin{equation}\label{e2}   u(t)=\mu(x(t)),\end{equation} has at least
+        one piecewise continuous solution $x:~[0,\infty)\to\Omega$,
+        $u:~[0,\infty)\to U$. </ol>Then, for every $x_0\in\Omega$, the
+        functional \[   J(x,u)=\int_0^\infty g(x(t),u(t))dt,\] defined on the
+        set of all piecewise continuous pairs $(x,u)$ satisfying (\ref{e1}),
+        achieves its minimal value of $V(x_0)-V(x^*)$ at every piecewise
+        continuous solution of (\ref{e1}), (\ref{e2}).
+        </p>
+          
+        <p><b>Proof.</b>
+          First, observe that, for all piecewise continuous $(x,u)$ satisfying (\ref{e1}),
+          <ol type="I">
+          <li> due to (\ref{e0}), 
+          \begin{equation}\label{e3}     
+          \int_0^Tg(x(t),u(t))dt=V(x_0)-V(x(T))+\int_0^Tg_V(x(t),u(t))dt;
+          \end{equation}
+          </li>
+          <li> whenever $J(x,u)<\infty$, there exists a sequece  
+          of positive numbers $T_k$, $k=1,2,\dots$, $T_k\to+\infty$,
+          such that $g(x(T_k),u(T_k))\to0$, which, according to assumption (a), implies 
+          $x(T_k)\to x^*$ as $k\to\infty$.</li>
+          </ol>
+          In particular, for a piecewise continuous 
+          solution $(x,u)$ of (\ref{e1}), satisfying, in addition, equation (\ref{e2}), condition
+          (I) means
+          \[ \int_0^Tg(x(t),u(t))dt=V(x_0)-V(x(T))\le V(x_0).\]
+          Since the upper bound $V(x_0)$ does not depend on $T$, and $g(x(t),u(t))\ge0$ is
+          non-negative, we conclude that 
+          \[ \int_0^\infty g(x(t),u(t))dt<\infty.\]
+          Therefore observation (**) applies, and, for the corresponding $T_k$, 
+          \begin{align*} J(x,u)&=\int_0^\infty g(x(t),u(t))dt=\lim_{k\to\infty}\int_0^{T_k}g(x(t),u(t))dt \\&= 
+          \lim_{k\to\infty}V(x_0)-V(x(T_k))=V(x_0)-V(x^*).\end{align*}
+          Moreover, since $g$ is non-negative, the inequality $V(x_0)\ge V(x^*)$ 
+          must hold for
+          every $x_0\in\Omega$.</p> 
+          
+          <p>To finish the proof, for an arbitrary piecewise continuous solution of (\ref{e1}),
+          equation (\ref{e3}), together with non-negativity of $g_V$, implies
+          \[  J(x,u)=\int_0^Tg(x(t),u(t))dt\ge V(x_0)-V(x(T)).\]
+          When $J(x,u)<\infty$, applying this to $T=T_k$, 
+          where $T_k$ are described in observation (II), and taking the limit as $k\to\infty$
+          (and $x(T_k)\to x^*$) yields $J(x,u)\ge V(x_0)-V(x^*)$. $\Box$
+          </details></p>
       </theorem>
+
+      <p>It is possible to prove sufficiency under different assumptions, too.  The particular assumptions here were chosen to ensure that $J(x(0)) < \infty$ implies that $x(t) \rightarrow x^*$.  As Sasha says, "without something like this, all sorts of counter-examples emerge."</p>
 
       <p>As a tool for verifying optimality, the HJB equations are actually
       surprisingly easy to work with: we can verify optimality for an
@@ -509,7 +566,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       satisfied wherever that gradient is well-defined.  This is certainly
       mounting evidence in support of our bang-bang policy being optimal, but
       since $\pd{J}{\bx}$ is not defined everywhere, it does not actually
-      satisfy the requirements of the sufficiency theorem as stated above.</p>
+      satisfy the requirements of the sufficiency theorem as stated above.  In some sense, the assumption in the sufficiency theorem that $\pd{J}{\bx}$ is defined everywhere makes it very weak.</p>
 
     </subsection> <!-- end HJB -->
 
