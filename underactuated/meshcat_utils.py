@@ -1,5 +1,6 @@
 import numpy as np
 import pydrake.all
+from matplotlib.colors import Colormap
 
 import meshcat.geometry as g
 import meshcat.transformations as tf
@@ -67,14 +68,19 @@ def plot_surface(meshcat, X, Y, Z, color=0xdd9999, wireframe=False):
     vertices[:, 2] = Z.reshape((-1))
 
     # Vectorized faces code from https://stackoverflow.com/questions/44934631/making-grid-triangular-mesh-quickly-with-numpy  # noqa
-    faces = np.empty((cols - 1, rows - 1, 2, 3), dtype=np.uint32)
-    r = np.arange(rows * cols).reshape(cols, rows)
+    faces = np.empty((rows - 1, cols - 1, 2, 3), dtype=np.uint32)
+    r = np.arange(rows * cols).reshape(rows, cols)
     faces[:, :, 0, 0] = r[:-1, :-1]
     faces[:, :, 1, 0] = r[:-1, 1:]
     faces[:, :, 0, 1] = r[:-1, 1:]
     faces[:, :, 1, 1] = r[1:, 1:]
     faces[:, :, :, 2] = r[1:, :-1, None]
     faces.shape = (-1, 3)
+
+    if isinstance(color, Colormap):
+        z = vertices[:, 2]
+        rgba = color((vertices[:, 2] - np.min(z)) / np.ptp(z))
+        color = rgba[:, :3].T
 
     if isinstance(color, int):
         meshcat.set_object(
