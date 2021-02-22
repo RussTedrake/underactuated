@@ -11,8 +11,6 @@ rt_ipynb_test(
     srcs = ["hopfield_network.ipynb"],
     # Downloads data from upload.wikimedia.org and yann.lecun.com.
     tags = ["requires-network"],
-    # PyTorch is unavailable on macOS with Python 3.9.
-    target_compatible_with = ["@platforms//os:linux"],
     deps = [
         "//underactuated",
         "//underactuated/exercises",
