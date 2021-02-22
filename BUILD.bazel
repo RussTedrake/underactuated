@@ -77,7 +77,11 @@ rt_html_test(
 rt_ipynb_test(
     name = "dp",
     srcs = ["dp.ipynb"],
-    deps = ["//underactuated"],
+    deps = [
+        "//underactuated",
+        "//underactuated:double_integrator",
+        "//underactuated:pendulum",
+    ],
 )
 
 rt_html_test(

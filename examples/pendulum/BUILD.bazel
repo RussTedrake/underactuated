@@ -12,11 +12,3 @@ rt_ipynb_test(
     deps = ["//underactuated"],
 )
 
-rt_ipynb_test(
-    name = "value_iteration",
-    srcs = ["value_iteration.ipynb"],
-    deps = [
-        "//underactuated",
-        "//underactuated:pendulum",
-    ],
-)
