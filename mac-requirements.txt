@@ -18,6 +18,8 @@ idna==2.10
     # via requests
 mysql-connector-python==8.0.23
     # via -r htmlbook/mac-requirements.in
+pillow==8.1.0
+    # via torchvision
 protobuf==3.14.0
     # via mysql-connector-python
 pycodestyle==2.6.0
@@ -40,6 +42,14 @@ soupsieve==2.2
     # via beautifulsoup4
 timeout-decorator==0.5.0
     # via -r mac-requirements.in
+https://download.pytorch.org/whl/nightly/cpu/torch-1.9.0.dev20210218-cp39-none-macosx_10_9_x86_64.whl
+    # via
+    #   -r mac-requirements.in
+    #   torchvision
+https://download.pytorch.org/whl/nightly/torchvision-0.9.0.dev20210218-cp39-cp39-macosx_10_9_x86_64.whl
+    # via -r mac-requirements.in
+typing-extensions==3.7.4.3
+    # via torch
 urllib3==1.26.3
     # via requests
 yapf==0.30.0

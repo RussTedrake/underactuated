@@ -10,8 +10,6 @@ load("//htmlbook/tools/python:defs.bzl", "rt_py_test")
 rt_ipynb_test(
     name = "neural_value_iteration",
     srcs = ["neural_value_iteration.ipynb"],
-    # PyTorch is unavailable on macOS with Python 3.9.
-    target_compatible_with = ["@platforms//os:linux"],
     deps = ["//underactuated"],
 )
 
