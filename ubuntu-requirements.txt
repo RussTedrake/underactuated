@@ -4,15 +4,17 @@
 #
 #    pip-compile ubuntu-requirements.in
 #
-dataclasses==0.8
-    # via torch
+dataclasses==0.6
+    # via
+    #   -c htmlbook/colab-constraints.txt
+    #   torch
 future==0.18.2
     # via torch
 gradescope-utils==0.4.0
     # via
     #   -r ubuntu-requirements.in
     #   -r ubuntu-shared-requirements.in
-mysql-connector-python==8.0.22
+mysql-connector-python==8.0.23
     # via -r htmlbook/ubuntu-requirements.in
 numpy==1.19.5
     # via
@@ -23,7 +25,7 @@ pillow==7.0.0
     # via
     #   -c htmlbook/colab-constraints.txt
     #   torchvision
-protobuf==3.14.0
+protobuf==3.15.2
     # via mysql-connector-python
 pycodestyle==2.6.0
     # via -r htmlbook/ubuntu-requirements.in

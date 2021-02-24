@@ -6,8 +6,10 @@
 #
 cycler==0.10.0
     # via matplotlib
-dataclasses==0.8
-    # via torch
+dataclasses==0.6
+    # via
+    #   -c htmlbook/colab-constraints.txt
+    #   torch
 future==0.18.2
     # via torch
 gradescope-utils==0.4.0
