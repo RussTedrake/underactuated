@@ -1,58 +1,25 @@
 import sys
-import platform
-from IPython import get_ipython
+from urllib.request import urlretrieve
+import warnings
+
+assert 'google.colab' in sys.modules, (
+    "This script is intended for use on Google Colab only.")
+
+urlretrieve(
+    "http://underactuated.csail.mit.edu/scripts/setup/setup_underactuated_colab.py",  # noqa
+    "setup_underactuated_colab.py")
+
+import setup_underactuated_colab as new_setup  # noqa
+warnings.warn("jupyter_setup.py is deprecated.  Please use"
+              " setup_underactuated_colab.py instead.")
 
 
 def setup_drake():
-    """
-    Install drake (if necessary) and set up the path.
-
-    On Google Colab:
-
-    This will take a minute, but should only need to reinstall once every 12
-    hours. Colab will ask you to "Reset all runtimes", say no to save yourself
-    the reinstall.
-    """
-    try:
-        import pydrake
-    except ImportError:
-        if platform.system() == "Darwin":
-            get_ipython().system(
-                u"if [ ! -d '/opt/drake' ]; then curl -o drake.tar.gz https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-mac.tar.gz && tar -xzf drake.tar.gz -C /opt && export HOMEBREW_CURL_RETRIES=4 && brew update && brew bundle --file=/opt/drake/share/drake/setup/Brewfile --no-lock; fi"  # noqa
-            )
-        elif platform.linux_distribution() == ("Ubuntu", "18.04", "bionic"):
-            get_ipython().system(
-                u"if [ ! -d '/opt/drake' ]; then curl -o drake.tar.gz https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-bionic.tar.gz && tar -xzf drake.tar.gz -C /opt && apt-get update -o APT::Acquire::Retries=4 -qq && apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends $(cat /opt/drake/share/drake/setup/packages-bionic.txt); fi"  # noqa
-            )
-        else:
-            assert False, "Unsupported platform"
-        v = sys.version_info
-        sys.path.append("/opt/drake/lib/python{}.{}/site-packages".format(
-            v.major, v.minor))
+    new_setup.setup_drake(version='0.27.0', build='release')
 
 
 def setup_underactuated():
-    """
-    Install underactuated (if necessary) and set up the path.
-
-    On Google Colab:
-
-    This will take a minute, but should only need to reinstall once every 12
-    hours. Colab will ask you to "Reset all runtimes", say no to save yourself
-    the reinstall.
-    """
-    setup_drake()
-    try:
-        import underactuated
-    except ImportError:
-        if platform.system() == "Darwin":
-            get_ipython().system(
-                u"if [ ! -d '/opt/underactuated' ]; then git clone https://github.com/RussTedrake/underactuated.git /opt/underactuated && /opt/underactuated/scripts/setup/mac/install_prereqs.sh; fi"  # noqa
-            )
-        elif platform.linux_distribution() == ("Ubuntu", "18.04", "bionic"):
-            get_ipython().system(
-                u"if [ ! -d '/opt/underactuated' ]; then git clone https://github.com/RussTedrake/underactuated.git /opt/underactuated && /opt/underactuated/scripts/setup/ubuntu/18.04/install_prereqs.sh; fi"  # noqa
-            )
-        else:
-            assert False, "Unsupported platform"
-        sys.path.append("/opt/underactuated")
+    new_setup.setup_underactuated(
+        underactuated_sha='1dca1b915977aeec9f327d61aaeac4cfb9c6b408',
+        drake_version='0.27.0',
+        drake_build='release')
