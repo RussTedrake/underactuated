@@ -5,50 +5,53 @@
 #    pip-compile ubuntu-requirements.in
 #
 dataclasses==0.6
-    # via
-    #   -c htmlbook/colab-constraints.txt
-    #   torch
-future==0.18.2
     # via torch
 gradescope-utils==0.4.0
-    # via
-    #   -r ubuntu-requirements.in
-    #   -r ubuntu-shared-requirements.in
+    # via -r ubuntu-shared-requirements.in
 mysql-connector-python==8.0.23
     # via -r htmlbook/ubuntu-requirements.in
 numpy==1.19.5
     # via
-    #   -c htmlbook/colab-constraints.txt
+    #   -c htmlbook/colab-constraints-ubuntu.txt
     #   torch
     #   torchvision
 pillow==7.0.0
     # via
-    #   -c htmlbook/colab-constraints.txt
+    #   -c htmlbook/colab-constraints-ubuntu.txt
     #   torchvision
-protobuf==3.15.2
-    # via mysql-connector-python
+protobuf==3.12.4
+    # via
+    #   -c htmlbook/colab-constraints-ubuntu.txt
+    #   mysql-connector-python
 pycodestyle==2.6.0
     # via -r htmlbook/ubuntu-requirements.in
 pydocstyle==5.1.1
     # via -r htmlbook/ubuntu-requirements.in
 six==1.15.0
-    # via protobuf
-snowballstemmer==2.0.0
-    # via pydocstyle
+    # via
+    #   -c htmlbook/colab-constraints-ubuntu.txt
+    #   protobuf
+snowballstemmer==2.1.0
+    # via
+    #   -c htmlbook/colab-constraints-ubuntu.txt
+    #   pydocstyle
 timeout-decorator==0.5.0
+    # via -r ubuntu-shared-requirements.in
+torch==1.7.1
     # via
-    #   -r ubuntu-requirements.in
+    #   -c htmlbook/colab-constraints-ubuntu.txt
     #   -r ubuntu-shared-requirements.in
-torch==1.7.0
-    # via
-    #   -c htmlbook/colab-constraints.txt
-    #   -r ubuntu-requirements.in
     #   torchvision
-torchvision==0.8.1
+torchvision==0.8.2
     # via
-    #   -c htmlbook/colab-constraints.txt
+    #   -c htmlbook/colab-constraints-ubuntu.txt
     #   -r ubuntu-shared-requirements.in
 typing-extensions==3.7.4.3
-    # via torch
+    # via
+    #   -c htmlbook/colab-constraints-ubuntu.txt
+    #   torch
 yapf==0.30.0
     # via -r htmlbook/ubuntu-requirements.in
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools
