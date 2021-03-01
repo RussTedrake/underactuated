@@ -11,7 +11,8 @@ from pydrake.systems.framework import VectorSystem
 # Use a global variable here because some calls to IPython will actually case an
 # interpreter to be created.  This file needs to be imported BEFORE that
 # happens.
-running_as_notebook = "COLAB_TESTING" not in os.environ and get_ipython() and hasattr(get_ipython(), 'kernel')
+running_as_notebook = "COLAB_TESTING" not in os.environ and get_ipython(
+) and hasattr(get_ipython(), 'kernel')
 
 
 def pyplot_is_interactive():
