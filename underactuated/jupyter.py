@@ -11,6 +11,8 @@ from pydrake.systems.framework import VectorSystem
 # interpreter to be created.  This file needs to be imported BEFORE that
 # happens.
 running_as_notebook = get_ipython() and hasattr(get_ipython(), 'kernel')
+if 'TESTING_COLAB' in globals():
+    running_as_notebook = False
 
 
 def pyplot_is_interactive():
