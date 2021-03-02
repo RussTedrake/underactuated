@@ -56,7 +56,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 2">
   <h1>Acrobots, Cart-Poles, and Quadrotors</h1>
-
+  <a style="float:right; margin-top:-80px;" target="acrobot" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/acrobot.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open Corresponding Notebook In Colab"/></a>
+  <div style="clear:right;"></div>
+  
   <p> A great deal of work in the control of underactuated systems has been
   done in the context of low-dimensional model systems.  These model   systems
   capture the essence of the problem without introducing all of   the complexity
@@ -149,6 +151,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         \right]
       \end{gather} -->
 
+      <!--  
       <example><h1>The Acrobot in Python</h1>
 
         <p>You can experiment with the Acrobot dynamics in <drake></drake>
@@ -156,7 +159,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
         <jupyter>examples/acrobot/constant_torque.ipynb</jupyter>
 
-      </example>
+      </example>-->
 
     </subsection> <!-- acrobot eqs of motion -->
 
@@ -227,6 +230,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \end{gather}
       </p>
 
+      <!--
       <example><h1>The Cart-Pole System in
       Python</h1>
 
@@ -235,7 +239,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
         <jupyter>examples/cartpole/constant_force.ipynb</jupyter>
 
-      </example>
+      </example>-->
 
     </subsection> <!-- end eq of motion -->
 
@@ -565,7 +569,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         <p>Take a minute to play around with the LQR controller for the
         Acrobot and the Cart-Pole</p>
 
-        <jupyter>examples/lqr.ipynb</jupyter>
+        <p><a target="acrobot"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/acrobot.ipynb#scrollTo=C1sdq2R88C16"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
 
         <p>Make sure that you take a minute to look at the code which runs
         during these examples.  Can you set the ${\bf Q}$ and ${\bf R}$ matrices
@@ -587,7 +595,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         around a nominal fixed point (where the non-zero thrust from the
         propellers is balancing gravity).</p>
 
-        <jupyter>examples/lqr.ipynb</jupyter>
+        <p><a target="acrobot"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/acrobot.ipynb#scrollTo=C1sdq2R88C16"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
         <p>or <a target="_blank" href="data/quadrotor2d_lqr.html">Click here for
         the animation</a>.</p>
 

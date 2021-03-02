@@ -25,17 +25,6 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
-    name = "lqr",
-    srcs = ["lqr.ipynb"],
-    data = ["//underactuated/models:cartpole.urdf"],
-    tags = ["flaky"],
-    deps = [
-        "//underactuated",
-        "//underactuated:quadrotor2d",
-    ],
-)
-
-rt_ipynb_test(
     name = "lqr_ct_vs_dt",
     srcs = ["lqr_ct_vs_dt.ipynb"],
 )
