@@ -20,25 +20,21 @@ class TestFittedDoubleIntegrator(unittest.TestCase):
         self.assertLessEqual(
             final_loss_min_time,
             0.0003,
-            msg=
-            'Minimum time loss is less than upper bound for the correct value')
+            msg='Min time loss is < than upper bound for the correct value')
         self.assertGreaterEqual(
             final_loss_min_time,
             0.0001,
-            msg=
-            'Minimum time loss is greater than lower bound for the correct value'
-        )
+            msg='Min time loss is > than lower bound for the correct value')
 
         final_loss_quadratic = self.notebook_locals['final_loss_quadratic']
         self.assertLessEqual(
             final_loss_quadratic,
             0.009,
-            msg='Quadratic loss is less than upper bound for the correct value')
+            msg='Quadratic loss is < than upper bound for the correct value')
         self.assertGreaterEqual(
             final_loss_quadratic,
             0.002,
-            msg=
-            'Quadratic loss is greater than lower bound for the correct value')
+            msg='Quadratic loss is > than lower bound for the correct value')
 
     @weight(4)
     @timeout_decorator.timeout(20.)
