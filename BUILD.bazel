@@ -58,6 +58,17 @@ rt_html_test(
     srcs = ["acrobot.html"],
 )
 
+rt_ipynb_test(
+    name = "acrobot",
+    srcs = ["acrobot.ipynb"],
+    data = ["//underactuated/models:cartpole.urdf"],
+    tags = ["flaky"],
+    deps = [
+        "//underactuated",
+        "//underactuated:quadrotor2d",
+    ],
+)
+
 rt_html_test(
     srcs = ["simple_legs.html"],
 )
