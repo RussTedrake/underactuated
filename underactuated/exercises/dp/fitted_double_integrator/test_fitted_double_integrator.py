@@ -53,11 +53,11 @@ class TestFittedDoubleIntegrator(unittest.TestCase):
             msg='Minimum time policy final position is too small')
         self.assertLessEqual(
             min_time_velocity,
-            0.01,
+            0.03,
             msg='Minimum time policy final velocity is too large')
         self.assertGreaterEqual(
             min_time_velocity,
-            -0.01,
+            -0.03,
             msg='Minimum time policy final velocity is too small')
 
         final_state_quadratic = self.notebook_locals['final_state_quadratic']
@@ -70,9 +70,9 @@ class TestFittedDoubleIntegrator(unittest.TestCase):
             0.0,
             msg='Quadratic policy final position is too small')
         self.assertLessEqual(quadratic_velocity,
-                             0.01,
+                             0.03,
                              msg='Quadratic policy final velocity is too large')
         self.assertGreaterEqual(
             quadratic_velocity,
-            -0.01,
+            -0.03,
             msg='Quadratic policy final velocity is too small')
