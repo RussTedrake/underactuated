@@ -8,10 +8,8 @@ _MIT_RED = "#A31F34"
 
 
 class Brick(object):
-
-    WIDTH = 5.
+    WIDTH = 3.
     HEIGHT = 1.
-
     def __init__(self):
         self.patch = plt.Rectangle((0.0, 0.0),
                                    self.WIDTH,
@@ -33,12 +31,12 @@ class Brick(object):
 class DoubleIntegratorVisualizer(PyPlotVisualizer):
 
     # Limits of view port
-    XLIM = (-20., 20.)
+    XLIM = (-15., 15.)
     YLIM = (-6., 6.)
     TICK_DIMS = (0.2, 0.8)
 
-    def __init__(self):
-        PyPlotVisualizer.__init__(self)
+    def __init__(self, ax=None, show=None):
+        PyPlotVisualizer.__init__(self, ax=ax, show=show)
         self.DeclareInputPort(PortDataType.kVectorValued, 2)
 
         self.ax.set_xlim(*self.XLIM)
@@ -50,7 +48,7 @@ class DoubleIntegratorVisualizer(PyPlotVisualizer):
 
     def _make_background(self):
         # x-axis
-        plt.plot(self.XLIM, np.zeros_like(self.XLIM), "k")
+        self.ax.plot(self.XLIM, np.zeros_like(self.XLIM), "k")
         # tick mark centered at the origin
         tick_pos = -0.5 * np.asarray(self.TICK_DIMS)
         self.ax.add_patch(plt.Rectangle(tick_pos, *self.TICK_DIMS, fc="k"))

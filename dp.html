@@ -1007,7 +1007,19 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
         <li>Although it gets close, in the notebook why does our implementation not succeed in stabilizing the system exactly at the origin?</li>
 
-        <li>In the notebook we implemented "fitted value iteration".  What is the difference between the "graph search" version of value iteration we saw at the start of chapter 7, and fitted value iteration in terms of the state space they can perform on?</li>
+        <li>
+
+          In the notebook we implemented "fitted value iteration".  In the questions below, you'll be asked to think about the differences between the "graph search" version of value iteration we saw at the start of chapter 7, and fitted value iteration. Answer the questions below with a brief explanation:
+
+          <ol ol type="i">
+
+            <li>Can graph search value iteration perform in a continuous state space? Can fitted value iteration?</li>
+
+            <li>Can graph search value iteration perform with very large discrete action spaces, or continuous action spaces? Can fitted value iteration?</li>
+
+          </ol>
+
+        </li>
 
         <li>For our implementation, we assume deterministic transitions between states.  This means that given a particular state $x_t$ and action $u_t$, we will always end up in the same unique $x_{t+1}$.  Mathematically: $$x_{t+1} = f(x_t, u_t)$$  In real world scenarios we often have to deal with disturbances or dynamics not captured by our model, which can cause our state transitions to be stochastic.  Mathematically: $$P(x_{t+1} | x_t, u_t) = f(x_t, u_t)$$  If we had stochastic transitions, which step of the algorithm would need to change, and how would it change?</li>
 
