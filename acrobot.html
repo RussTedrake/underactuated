@@ -201,12 +201,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       U =& -m_p g l \cos\theta. \end{align}
       The Lagrangian yields the equations of motion:
       \begin{gather}
-      (m_c + m_p)\ddot{x} + m_p l \ddot\theta \cos\theta - m_p l \dot\theta^2 \sin\theta = f \\
+      (m_c + m_p)\ddot{x} + m_p l \ddot\theta \cos\theta - m_p l \dot\theta^2 \sin\theta = f_x \\
       m_p l \ddot{x} \cos\theta + m_p l^2 \ddot\theta + m_p g l \sin\theta = 0
       \end{gather}
       In standard, manipulator equation form:
       $$\bM(\bq)\ddot\bq + \bC(\bq,\dot\bq)\dot\bq = \btau_g(\bq) +
-      \bB\bu,$$ using $\bq = [x,\theta]^T$, $\bu = f$, we have:
+      \bB\bu,$$ using $\bq = [x,\theta]^T$, $\bu = f_x$, we have:
       \begin{gather*}
       \bM(\bq) = \begin{bmatrix} m_c + m_p & m_p l \cos\theta \\ m_p l
         \cos\theta & m_p l^2 \end{bmatrix}, \quad \bC(\bq,\dot{\bq}) =
@@ -217,15 +217,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \end{gather*}
       In this case, it is particularly easy to solve directly for the accelerations:
       \begin{align}
-      \ddot{x} =& \frac{1}{m_c + m_p \sin^2\theta}\left[ f+m_p \sin\theta (l \dot\theta^2 + g\cos\theta)\right] \label{eq:ddot_x}\\
-      \ddot{\theta} =& \frac{1}{l(m_c + m_p \sin^2\theta)} \left[ -f
+      \ddot{x} =& \frac{1}{m_c + m_p \sin^2\theta}\left[ f_x + m_p \sin\theta (l \dot\theta^2 + g\cos\theta)\right] \label{eq:ddot_x}\\
+      \ddot{\theta} =& \frac{1}{l(m_c + m_p \sin^2\theta)} \left[ -f_x
        \cos\theta - m_p l \dot\theta^2 \cos\theta \sin\theta - (m_c + m_p) g \sin\theta \right] \label{eq:ddot_theta}
       \end{align}
       In some of the analysis that follows, we will study the form of
       the equations of motion, ignoring the details, by arbitrarily setting
       all constants to 1:
       \begin{gather}
-      2\ddot{x} + \ddot\theta \cos\theta - \dot\theta^2 \sin\theta = f \label{eq:simple}\\
+      2\ddot{x} + \ddot\theta \cos\theta - \dot\theta^2 \sin\theta = f_x \label{eq:simple}\\
       \ddot{x}\cos\theta + \ddot\theta + \sin\theta = 0. \label{eq:simple2}
       \end{gather}
       </p>
@@ -651,11 +651,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           \begin{gather*}
           \ddot\theta = -\ddot{x}c - s \\
           % \ddot\theta = -\frac{1}{l} (\ddot{x} c + g s)
-          \ddot{x}(2-c^2) - sc - \dot\theta^2 s = f
+          \ddot{x}(2-c^2) - sc - \dot\theta^2 s = f_x
           \end{gather*}
           Therefore, applying the feedback control
           \begin{equation}
-          f = (2 - c^2) \ddot{x}^d - sc - \dot\theta^2 s
+          f_x = (2 - c^2) \ddot{x}^d - sc - \dot\theta^2 s
           % f = (m_c + m_p) u + m_p (u c + g s) c - m_p l \dot\theta^2 s
           \end{equation}
           results in
@@ -676,13 +676,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
         \begin{gather*}
         \ddot{x} = -\frac{\ddot\theta + s}{c} \\
-        \ddot\theta(c - \frac{2}{c}) - 2 \tan\theta - \dot\theta^2 s = f
+        \ddot\theta(c - \frac{2}{c}) - 2 \tan\theta - \dot\theta^2 s = f_x
         \end{gather*}
 
         Applying the feedback control
 
         \begin{equation}
-          f = (c - \frac{2}{c}) \ddot\theta^d - 2 \tan\theta - \dot\theta^2 s
+          f_x = (c - \frac{2}{c}) \ddot\theta^d - 2 \tan\theta - \dot\theta^2 s
         \end{equation} results in
         \begin{align*}
           \ddot\theta =& \ddot\theta^d \\ \ddot{x} =&
