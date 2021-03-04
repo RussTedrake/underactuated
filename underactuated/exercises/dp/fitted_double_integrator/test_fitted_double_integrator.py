@@ -9,7 +9,7 @@ class TestFittedDoubleIntegrator(unittest.TestCase):
         super().__init__(test_name)
         self.notebook_locals = notebook_locals
 
-    @weight(4)
+    @weight(2)
     @timeout_decorator.timeout(20.)
     def test_final_losses(self):
         """Test model training"""
@@ -36,7 +36,7 @@ class TestFittedDoubleIntegrator(unittest.TestCase):
             0.002,
             msg='Quadratic loss is > than lower bound for the correct value')
 
-    @weight(4)
+    @weight(2)
     @timeout_decorator.timeout(20.)
     def test_policy(self):
         """Test closed form policy"""
