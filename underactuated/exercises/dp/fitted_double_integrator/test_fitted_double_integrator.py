@@ -42,37 +42,35 @@ class TestFittedDoubleIntegrator(unittest.TestCase):
         """Test closed form policy"""
         # note: all prints here go to the output item in the json file
         final_state_min_time = self.notebook_locals['final_state_min_time']
-        min_time_position, min_time_velocity = final_state_min_time
         self.assertLessEqual(
-            min_time_position,
+            final_state_min_time[0],
             0.6,
             msg='Minimum time policy final position is too large')
         self.assertGreaterEqual(
-            min_time_position,
+            final_state_min_time[0],
             0.0,
             msg='Minimum time policy final position is too small')
         self.assertLessEqual(
-            min_time_velocity,
+            final_state_min_time[1],
             0.03,
             msg='Minimum time policy final velocity is too large')
         self.assertGreaterEqual(
-            min_time_velocity,
+            final_state_min_time[1],
             -0.03,
             msg='Minimum time policy final velocity is too small')
 
         final_state_quadratic = self.notebook_locals['final_state_quadratic']
-        quadratic_position, quadratic_velocity = final_state_quadratic
-        self.assertLessEqual(quadratic_position,
+        self.assertLessEqual(final_state_quadratic[0],
                              0.6,
                              msg='Quadratic policy final position is too large')
         self.assertGreaterEqual(
-            quadratic_position,
+            final_state_quadratic[0],
             0.0,
             msg='Quadratic policy final position is too small')
-        self.assertLessEqual(quadratic_velocity,
+        self.assertLessEqual(final_state_quadratic[1],
                              0.03,
                              msg='Quadratic policy final velocity is too large')
         self.assertGreaterEqual(
-            quadratic_velocity,
+            final_state_quadratic[1],
             -0.03,
             msg='Quadratic policy final velocity is too small')
