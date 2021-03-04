@@ -10,7 +10,7 @@ _MIT_RED = "#A31F34"
 class Brick(object):
     WIDTH = 3.
     HEIGHT = 1.
-    
+
     def __init__(self):
         self.patch = plt.Rectangle((0.0, 0.0),
                                    self.WIDTH,
