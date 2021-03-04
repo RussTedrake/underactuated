@@ -12,6 +12,7 @@ rt_ipynb_test(
     srcs = ["fitted_double_integrator.ipynb"],
     deps = [
         "//underactuated",
+        "//underactuated:double_integrator",
         "//underactuated/exercises",
         "//underactuated/exercises/dp/fitted_double_integrator",
     ],
