@@ -55,7 +55,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 7"><h1>Linear Quadratic Regulators</h1>
-
+  <a style="float:right; margin-top:-80px;" target="lqr" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lqr.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open Corresponding Notebook In Colab"/></a>
+  <div style="clear:right;"></div>
+  
   <p>While solving the dynamic programming problem for continuous systems is
   very hard in general, there are a few very important special cases where the
   solutions are very accessible. Most of these involve variants on the case of
@@ -402,8 +404,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       evaluate the <code>LinearQuadraticRegulator</code> method on a system that
       has only discrete state and a single periodic timestep.</p> 
 
-      <todo>Example where the discrete-time solutions converge to the continuous
-      time solutions as dt-> 0.</todo>
+      <example><h1>Discrete-time vs Continuous-time LQR</h1>
+
+        <p>You can explore the relationship between the discrete-time and continuous-time formulations in this notebook:</p>
+  
+        <p><a target="lqr"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lqr.ipynb#scrollTo=C1sdq2R88C16"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
+  
+      </example>
     </subsection>
 
     <subsection><h1>LQR with input and state constraints</h1>
