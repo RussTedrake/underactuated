@@ -58,7 +58,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 8"><h1>Lyapunov
   Analysis</h1>
-
+  <a style="float:right; margin-top:-80px;" target="lyapunov" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open Corresponding Notebook In Colab"/></a>
+  <div style="clear:right;"></div>
+  
   <p>Optimal control provides a powerful framework for formulating control
   problems using the language of optimization.  But solving optimal control
   problems for nonlinear systems is hard!  In many cases, we don't really care
@@ -436,8 +438,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
         <p> You can try this example for yourself in <drake></drake>.</p>
 
-        <jupyter>examples/lyapunov.ipynb</jupyter>
-
+        <p><a target="lyapunov"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=C1sdq2R88C16"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
+  
         <p>As always, make sure that you open up the code and take a look.</p>
 
         <p>There are many small variants of this result that are potentially of interest.  For instance, a very similar set of conditions can certify "mean-square stability" for linear systems with multiplicative noise (see e.g. <elib>Boyd94</elib>, &sect; 9.1.1).</p>
@@ -486,7 +492,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         <p>The numerical solution can be written in a few lines of code, and
         is a convex optimization.</p>
 
-        <jupyter>examples/lyapunov.ipynb</jupyter>
+        <p><a target="lyapunov"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=C1sdq2R88C16"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
 
       </example>
 
@@ -502,7 +512,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         = 1$.  Then we write: \begin{align*} \find_{\bc} \ \ \subjto \ \ &
         V\text{ is sos, } \\ & -\dot{V} \text{ is sos.}\end{align*}</p>
 
-        <jupyter>examples/lyapunov.ipynb</jupyter>
+        <p><a target="lyapunov"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=C1sdq2R88C16"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
 
         <p>Up to numerical convergence tolerance, it discovers the same
         coefficients that we chose above (zeroing out the unnecessary
@@ -741,8 +755,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
           <p>You can try this example for yourself in <drake></drake>.</p>
 
-          <jupyter>examples/lyapunov.ipynb</jupyter>
-
+          <p><a target="lyapunov"
+            href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=C1sdq2R88C16"><img
+            src="https://colab.research.google.com/assets/colab-badge.svg"
+            alt="Open In Colab"/></a>
+              </p>
+  
         </example>
 
         <p>While the example above only verifies that the one-sub-level set of
@@ -769,8 +787,12 @@ context = sys.CreateDefaultContext()
 V = RegionOfAttraction(sys, context)           
           </code></pre>  
 
-          <jupyter>examples/lyapunov.ipynb</jupyter>
-
+          <p><a target="lyapunov"
+            href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=C1sdq2R88C16"><img
+            src="https://colab.research.google.com/assets/colab-badge.svg"
+            alt="Open In Colab"/></a>
+              </p>
+  
           <p>Remember that although we have tried to make it convenient to call
           these functions, they are not a black box.  I highly recommend opening
           up the <code>RegionOfAttraction</code> method and understanding how it
@@ -872,7 +894,11 @@ V = RegionOfAttraction(sys, context)
       for style points, in the code example in <drake></drake> we ask for
       exponential stability:</p>
 
-      <jupyter>examples/lyapunov.ipynb</jupyter>
+      <p><a target="lyapunov"
+        href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=C1sdq2R88C16"><img
+        src="https://colab.research.google.com/assets/colab-badge.svg"
+        alt="Open In Colab"/></a>
+          </p>
 
       <p>As always, make sure that you open up the code and take a look.  The
         result is a Lyapunov function that looks familiar (visualized as a
