@@ -154,6 +154,13 @@ def setup_underactuated(*, underactuated_sha, drake_version, drake_build):
             path
         ])
 
+    # TODO(russt): Remove this once drake #14742 makes its way to the binaries.
+    v = sys.version_info
+    drake_path = f"/opt/drake/lib/python{v.major}.{v.minor}/site-packages"
+    run(["patch", os.path.join(drake_path,'pydrake/common/jupyter.py'), 
+        os.path.join(path, "widgets_runall.patch")])
+    # END TODO
+
     # Checkout the sha.
     run(['git', 'checkout', '--detach', underactuated_sha], cwd=path)
 
