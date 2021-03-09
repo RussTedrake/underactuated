@@ -92,15 +92,13 @@ def setup_drake(*, version, build='nightly'):
         #urlretrieve(f"{base_url}{build}/drake-{version}-bionic.tar.gz",
         #            'drake.tar.gz')
 
-        # THESE ARE NEW
-        urlretrieve("https://drake-packages.csail.mit.edu/tmp/drake-0.27.0-pip-bionic.tar.gz", 'drake.tar.gz')
-        subprocess.run(['mkdir', '/opt/drake'])
-        subprocess.run(['tar', '-xzf', 'drake.tar.gz', '-C', '/opt/drake'],
-                       check=True)
+        # THESE ARE A WORKAROUND FOR COLAB WITH PYTHON3.7
+        urlretrieve("https://drake-packages.csail.mit.edu/tmp/drake-0.27.0-pip-snopt-bionic.tar.gz", 'drake.tar.gz')
         subprocess.run(["pip3", "install", "meshcat"])
+        # END PYTHON3.7 WORKAROUND
 
-        #subprocess.run(['tar', '-xzf', 'drake.tar.gz', '-C', '/opt'],
-        #               check=True)
+        subprocess.run(['tar', '-xzf', 'drake.tar.gz', '-C', '/opt'],
+                       check=True)
         subprocess.run(['apt-get', 'update', '-o',
                         'APT::Acquire::Retries=4', '-qq'], check=True)
         with open("/opt/drake/share/drake/setup/packages-bionic.txt",
@@ -155,10 +153,10 @@ def setup_underactuated(*, underactuated_sha, drake_version, drake_build):
         ])
 
         # TODO(russt): Remove this once drake #14742 makes its way to the binaries.
-        v = sys.version_info
-        drake_path = f"/opt/drake/lib/python{v.major}.{v.minor}/site-packages"
-        run(["patch", os.path.join(drake_path,'pydrake/common/jupyter.py'), 
-            os.path.join(path, "widgets_runall.patch")])
+        #v = sys.version_info
+        #drake_path = f"/opt/drake/lib/python{v.major}.{v.minor}/site-packages"
+        #run(["patch", os.path.join(drake_path,'pydrake/common/jupyter.py'), 
+        #    os.path.join(path, "widgets_runall.patch")])
         # END TODO
 
     # Checkout the sha.
