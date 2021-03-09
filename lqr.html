@@ -201,11 +201,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <subsection><h1>Finite-horizon LQR</h1>
 
       <p> Consider systems governed by an LTI state-space equation of the form
-      $$\dot{\bx} = {\bf A}\bx + \bB\bu,$$ and a finite-horizon cost function
+      $$\dot{\bx} = {\bf A}\bx + \bB\bu,$$ and a finite-horizon cost function, $J = h(\bx(t_f)) + \int_0^{t_f} \ell(\bx(t), \bu(t)) dt,$
       with
-
       \begin{gather*} h(\bx) = \bx^T {\bf Q}_f \bx,\quad {\bf Q}_f = {\bf Q}_f^T
-      \succeq {\bf 0} \\ \ell(\bx,\bu,t) = \bx^T {\bf Q} \bx + \bu^T {\bf R}
+      \succeq {\bf 0} \\ \ell(\bx,\bu) = \bx^T {\bf Q} \bx + \bu^T {\bf R}
       \bu, \quad {\bf Q} = {\bf Q}^T \succeq 0, {\bf R}={\bf R}^T \succ 0
       \end{gather*}
 
@@ -233,7 +232,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       Therefore, ${\bf S}(t)$ must satisfy the condition (known as the
       continuous-time <em>differential Riccati equation</em>): $$-\dot{\bf S}(t)
       = {\bf S}(t) {\bf A} + {\bf A}^T {\bf S}(t) - {\bf S}(t) \bB {\bf R}^{-1}
-      \bB^T {\bf S}(t) + {\bf Q},$$ and the terminal condition $${\bf S}(T) =
+      \bB^T {\bf S}(t) + {\bf Q},$$ and the terminal condition $${\bf S}(t_f) =
       {\bf Q}_f.$$ Since we were able to satisfy the HJB with the minimizing
       policy, we have met the sufficiency condition, and have found the optimal
       policy and optimal cost-to-go function.</p>
@@ -344,7 +343,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       relation $\frac{d {\bf S}^{-1}}{dt} = - {\bf S}^{-1} \frac{d {\bf S}}{dt}
       {\bf S}^{-1}$, we have: $$-\dot{\bf P}(t) = - {\bf P}(t){\bf Q P}(t) +
       {\bf B R}^{-1} \bB - {\bf A P}(t) - {\bf P}(t){\bf A}^T,$$ with the final
-      conditions $${\bf P}(T) = 0.$$ This Riccati equation can be integrated
+      conditions $${\bf P}(t_f) = 0.$$ This Riccati equation can be integrated
       backwards in time for a solution.</p>
 
       <p> It is very interesting, and powerful, to note that, if one chooses
