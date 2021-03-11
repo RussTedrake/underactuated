@@ -269,6 +269,27 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       $\dot{E}=0$, but only the fixed points are in the largest invariant
       set.</p>
 
+      <example id="cartpole_swingup"><h1>Swing-up for the Cart-Pole System</h1>
+
+        <p>Recall the <a href="acrobot.html#cartpole_swingup">example of using partial-feedback linearization to generate a swing-up controller for the cart-pole system</a>.  We first examined the dynamics of the pole (pendulum) only, by writing it's energy: $$E(\bx) = \frac{1}{2}\dot\theta^2 - \cos\theta,$$ desired energy, $E^d = 1$, and the difference $\tilde{E}(\bx) = E(\bx) - E^d.$  We were able to show that our proposed controller produced $$\dot{\tilde{E}} = -k \dot\theta^2 \cos^2\theta \tilde{E},$$ where $k$ is a positive gain that we get to choose.  And we said that was good!</p>
+
+        <p>Now we have the tools to understand that really we have a Lyapunov function $$V(\bx) = \frac{1}{2}\tilde{E}^2(\bx),$$, and what we have shown is that $\dot{V} \le 0$.  By LaSalle, we can only argue that the closed-loop system will converge to the largest invariant set, which here is the entire homoclinic orbit: $\tilde{E}(\bx) = 0$.  We have to switch to the LQR controller in order to stabilize the upright.</p>
+      
+        <figure>
+          <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="data/cartpole_swingup_V.html" height="350" width="100%"></iframe>
+        <figcaption>Lyapunov function: $V(\bx) = \frac{1}{2}\tilde{E}^2(\bx).$</figcaption>
+        </figure>
+
+        <figure>
+          <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="data/cartpole_swingup_Vdot.html" height="350" width="100%"></iframe>
+        <figcaption>Time-derivative of the Lyapunov function: $\dot{V}(\bx).$</figcaption>
+
+      </figure>
+
+        <p>As you can see from the plots, $\dot{V}(\bx)$ ends up being a quite non-trivial function!  We'll develop the computational tools for verifying the Lyapunov/LaSalle conditions for systems of this complexity in the upcoming sections.</p>
+        
+      </example>
+
     </subsection> <!-- lasalle -->
 
     <subsection><h1>Relationship to the Hamilton-Jacobi-Bellman
@@ -498,6 +519,18 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           alt="Open In Colab"/></a>
             </p>
 
+      </example>
+
+      <example><h1>Cart-pole swingup (again)</h1>
+      
+        <p>In the <a href="#cartpole_swingup">cart-pole swingup example</a>, we
+        took $$V(\bx) = \frac{1}{2} \tilde{E}^2(\bx) = \frac{1}{2}
+        (\frac{1}{2}\dot\theta^2 - \cos\theta - 1)^2.$$ This is clearly a sum
+        of squares.  Furthermore, we showed that $$\dot{V}(\bx) = -
+        \dot\theta^2 \cos^2\theta \tilde{E}^2(\bx),$$ which is also a sum of
+        squares.  So the proposal of using sums-of-squares optimization is not so different, actually, than the recipes that nonlinear control theorists have been using (on pen and paper) for years.  In this case, I would need a basis vector that includes many more monomials: $[1, \dot\theta, \cos\theta, ..., \dot\theta^3, ... ]^T,$ and setting up the equality constraints in an optimization requires more complicated term matching when trigonometric functions are involved, but the recipe still works.
+        </p>
+      
       </example>
 
       <example><h1>Searching for a Lyapunov function via SOS</h1>
@@ -993,7 +1026,10 @@ V = RegionOfAttraction(sys, context)
 
   <todo>convex ROA w/ outer approx.</todo>
   <todo>control design w/ alternations.</todo>
-
+  <todo>lower-bounds on the HJB</todo>
+  <todo>neural lyapunov functions</todo>
+  <todo>control lyapunov functions</todo>
+  <todo>other topics/ideas: verifying neural network control relation to adversarial examples.  make the point that sampling doesn't scale (even with polynomials).  "almost lyapunov functions" will happen when we talk about robust control.  hopfield enegy function.  scaling (e.g. quadratic in high dimensions with just one strictly negative eigenvalue); would be very hard to verify with samples.</todo>
 
   <section><h1>Exercises</h1>
 
