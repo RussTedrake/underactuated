@@ -58,7 +58,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 8"><h1>Lyapunov
   Analysis</h1>
-
+  <a style="float:right; margin-top:-80px;" target="lyapunov" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open Corresponding Notebook In Colab"/></a>
+  <div style="clear:right;"></div>
+  
   <p>Optimal control provides a powerful framework for formulating control
   problems using the language of optimization.  But solving optimal control
   problems for nonlinear systems is hard!  In many cases, we don't really care
@@ -231,14 +233,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <p>Perhaps you noticed the disconnect between the statement above and the
       argument that we made for the stability of the pendulum.  In the pendulum
-      example, using the mechanical energy resulted in a Lyapunov function that
-      was only negative semi-definite, but we eventually argued that the fixed
-      points were asymptotically stable.  That took a little extra work,
-      involving an argument about the fact that the fixed points were the only
-      place that the system could stay with $\dot{E}=0$; every other state with
-      $\dot{E}=0$ was only transient. We can formalize this idea for the more
-      general Lyapunov function statements--it is known as LaSalle's
-      Theorem.</p>
+      example, using the mechanical energy resulted in a Lyapunov function time
+      derivative that was only negative semi-definite, but we eventually argued
+      that the fixed points were asymptotically stable.  That took a little
+      extra work, involving an argument about the fact that the fixed points
+      were the only place that the system could stay with $\dot{E}=0$; every
+      other state with $\dot{E}=0$ was only transient. We can formalize this
+      idea for the more general Lyapunov function statements--it is known as
+      LaSalle's Theorem.</p>
 
       <theorem><h1>LaSalle's Theorem</h1>
 
@@ -266,6 +268,27 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       this case.  In the pendulum example, every state with $\dot\theta=0$ had
       $\dot{E}=0$, but only the fixed points are in the largest invariant
       set.</p>
+
+      <example id="cartpole_swingup"><h1>Swing-up for the Cart-Pole System</h1>
+
+        <p>Recall the <a href="acrobot.html#cartpole_swingup">example of using partial-feedback linearization to generate a swing-up controller for the cart-pole system</a>.  We first examined the dynamics of the pole (pendulum) only, by writing it's energy: $$E(\bx) = \frac{1}{2}\dot\theta^2 - \cos\theta,$$ desired energy, $E^d = 1$, and the difference $\tilde{E}(\bx) = E(\bx) - E^d.$  We were able to show that our proposed controller produced $$\dot{\tilde{E}} = -k \dot\theta^2 \cos^2\theta \tilde{E},$$ where $k$ is a positive gain that we get to choose.  And we said that was good!</p>
+
+        <p>Now we have the tools to understand that really we have a Lyapunov function $$V(\bx) = \frac{1}{2}\tilde{E}^2(\bx),$$, and what we have shown is that $\dot{V} \le 0$.  By LaSalle, we can only argue that the closed-loop system will converge to the largest invariant set, which here is the entire homoclinic orbit: $\tilde{E}(\bx) = 0$.  We have to switch to the LQR controller in order to stabilize the upright.</p>
+      
+        <figure>
+          <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="data/cartpole_swingup_V.html" height="350" width="100%"></iframe>
+        <figcaption>Lyapunov function: $V(\bx) = \frac{1}{2}\tilde{E}^2(\bx).$</figcaption>
+        </figure>
+
+        <figure>
+          <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="data/cartpole_swingup_Vdot.html" height="350" width="100%"></iframe>
+        <figcaption>Time-derivative of the Lyapunov function: $\dot{V}(\bx).$</figcaption>
+
+      </figure>
+
+        <p>As you can see from the plots, $\dot{V}(\bx)$ ends up being a quite non-trivial function!  We'll develop the computational tools for verifying the Lyapunov/LaSalle conditions for systems of this complexity in the upcoming sections.</p>
+        
+      </example>
 
     </subsection> <!-- lasalle -->
 
@@ -436,8 +459,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
         <p> You can try this example for yourself in <drake></drake>.</p>
 
-        <jupyter>examples/lyapunov.ipynb</jupyter>
-
+        <p><a target="lyapunov"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=fhc5mrE9_V81"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
+  
         <p>As always, make sure that you open up the code and take a look.</p>
 
         <p>There are many small variants of this result that are potentially of interest.  For instance, a very similar set of conditions can certify "mean-square stability" for linear systems with multiplicative noise (see e.g. <elib>Boyd94</elib>, &sect; 9.1.1).</p>
@@ -486,8 +513,24 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         <p>The numerical solution can be written in a few lines of code, and
         is a convex optimization.</p>
 
-        <jupyter>examples/lyapunov.ipynb</jupyter>
+        <p><a target="lyapunov"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=_N_SAyCo_V82"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
 
+      </example>
+
+      <example><h1>Cart-pole swingup (again)</h1>
+      
+        <p>In the <a href="#cartpole_swingup">cart-pole swingup example</a>, we
+        took $$V(\bx) = \frac{1}{2} \tilde{E}^2(\bx) = \frac{1}{2}
+        (\frac{1}{2}\dot\theta^2 - \cos\theta - 1)^2.$$ This is clearly a sum
+        of squares.  Furthermore, we showed that $$\dot{V}(\bx) = -
+        \dot\theta^2 \cos^2\theta \tilde{E}^2(\bx),$$ which is also a sum of
+        squares.  So the proposal of using sums-of-squares optimization is not so different, actually, than the recipes that nonlinear control theorists have been using (on pen and paper) for years.  In this case, I would need a basis vector that includes many more monomials: $[1, \dot\theta, \cos\theta, ..., \dot\theta^3, ... ]^T,$ and setting up the equality constraints in an optimization requires more complicated term matching when trigonometric functions are involved, but the recipe still works.
+        </p>
+      
       </example>
 
       <example><h1>Searching for a Lyapunov function via SOS</h1>
@@ -502,7 +545,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         = 1$.  Then we write: \begin{align*} \find_{\bc} \ \ \subjto \ \ &
         V\text{ is sos, } \\ & -\dot{V} \text{ is sos.}\end{align*}</p>
 
-        <jupyter>examples/lyapunov.ipynb</jupyter>
+        <p><a target="lyapunov"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=uR7wMCqy_V83"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
 
         <p>Up to numerical convergence tolerance, it discovers the same
         coefficients that we chose above (zeroing out the unnecessary
@@ -741,8 +788,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
           <p>You can try this example for yourself in <drake></drake>.</p>
 
-          <jupyter>examples/lyapunov.ipynb</jupyter>
-
+          <p><a target="lyapunov"
+            href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=ZsqBAg1W_V84"><img
+            src="https://colab.research.google.com/assets/colab-badge.svg"
+            alt="Open In Colab"/></a>
+              </p>
+  
         </example>
 
         <p>While the example above only verifies that the one-sub-level set of
@@ -769,8 +820,12 @@ context = sys.CreateDefaultContext()
 V = RegionOfAttraction(sys, context)           
           </code></pre>  
 
-          <jupyter>examples/lyapunov.ipynb</jupyter>
-
+          <p><a target="lyapunov"
+            href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=UQkTT7Zk_V87"><img
+            src="https://colab.research.google.com/assets/colab-badge.svg"
+            alt="Open In Colab"/></a>
+              </p>
+  
           <p>Remember that although we have tried to make it convenient to call
           these functions, they are not a black box.  I highly recommend opening
           up the <code>RegionOfAttraction</code> method and understanding how it
@@ -872,7 +927,11 @@ V = RegionOfAttraction(sys, context)
       for style points, in the code example in <drake></drake> we ask for
       exponential stability:</p>
 
-      <jupyter>examples/lyapunov.ipynb</jupyter>
+      <p><a target="lyapunov"
+        href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=npevRo8v_V8"><img
+        src="https://colab.research.google.com/assets/colab-badge.svg"
+        alt="Open In Colab"/></a>
+          </p>
 
       <p>As always, make sure that you open up the code and take a look.  The
         result is a Lyapunov function that looks familiar (visualized as a
@@ -967,7 +1026,10 @@ V = RegionOfAttraction(sys, context)
 
   <todo>convex ROA w/ outer approx.</todo>
   <todo>control design w/ alternations.</todo>
-
+  <todo>lower-bounds on the HJB</todo>
+  <todo>neural lyapunov functions</todo>
+  <todo>control lyapunov functions</todo>
+  <todo>other topics/ideas: verifying neural network control relation to adversarial examples.  make the point that sampling doesn't scale (even with polynomials).  "almost lyapunov functions" will happen when we talk about robust control.  hopfield enegy function.  scaling (e.g. quadratic in high dimensions with just one strictly negative eigenvalue); would be very hard to verify with samples.</todo>
 
   <section><h1>Exercises</h1>
 

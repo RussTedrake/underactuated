@@ -9,7 +9,7 @@ class TestFittedDoubleIntegrator(unittest.TestCase):
         super().__init__(test_name)
         self.notebook_locals = notebook_locals
 
-    @weight(4)
+    @weight(2)
     @timeout_decorator.timeout(20.)
     def test_final_losses(self):
         """Test model training"""
@@ -36,43 +36,41 @@ class TestFittedDoubleIntegrator(unittest.TestCase):
             0.002,
             msg='Quadratic loss is > than lower bound for the correct value')
 
-    @weight(4)
+    @weight(2)
     @timeout_decorator.timeout(20.)
     def test_policy(self):
         """Test closed form policy"""
         # note: all prints here go to the output item in the json file
         final_state_min_time = self.notebook_locals['final_state_min_time']
-        min_time_position, min_time_velocity = final_state_min_time
         self.assertLessEqual(
-            min_time_position,
+            final_state_min_time[0],
             0.6,
             msg='Minimum time policy final position is too large')
         self.assertGreaterEqual(
-            min_time_position,
-            0.0,
+            final_state_min_time[0],
+            -0.6,
             msg='Minimum time policy final position is too small')
         self.assertLessEqual(
-            min_time_velocity,
-            0.03,
+            final_state_min_time[1],
+            0.5,
             msg='Minimum time policy final velocity is too large')
         self.assertGreaterEqual(
-            min_time_velocity,
-            -0.03,
+            final_state_min_time[1],
+            -0.5,
             msg='Minimum time policy final velocity is too small')
 
         final_state_quadratic = self.notebook_locals['final_state_quadratic']
-        quadratic_position, quadratic_velocity = final_state_quadratic
-        self.assertLessEqual(quadratic_position,
+        self.assertLessEqual(final_state_quadratic[0],
                              0.6,
                              msg='Quadratic policy final position is too large')
         self.assertGreaterEqual(
-            quadratic_position,
-            0.0,
+            final_state_quadratic[0],
+            -0.6,
             msg='Quadratic policy final position is too small')
-        self.assertLessEqual(quadratic_velocity,
-                             0.03,
+        self.assertLessEqual(final_state_quadratic[1],
+                             0.5,
                              msg='Quadratic policy final velocity is too large')
         self.assertGreaterEqual(
-            quadratic_velocity,
-            -0.03,
+            final_state_quadratic[1],
+            -0.5,
             msg='Quadratic policy final velocity is too small')

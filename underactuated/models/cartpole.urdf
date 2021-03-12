@@ -18,7 +18,7 @@
 
   <link name="cart">
     <inertial>
-      <origin xyz="0 0 -.5" rpy="0 0 0" />
+      <origin xyz="0 0 .25" rpy="0 0 0" />
       <mass value="10" />
       <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
     </inertial>

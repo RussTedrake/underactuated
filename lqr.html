@@ -55,7 +55,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 7"><h1>Linear Quadratic Regulators</h1>
-
+  <a style="float:right; margin-top:-80px;" target="lqr" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lqr.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open Corresponding Notebook In Colab"/></a>
+  <div style="clear:right;"></div>
+  
   <p>While solving the dynamic programming problem for continuous systems is
   very hard in general, there are a few very important special cases where the
   solutions are very accessible. Most of these involve variants on the case of
@@ -199,11 +201,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <subsection><h1>Finite-horizon LQR</h1>
 
       <p> Consider systems governed by an LTI state-space equation of the form
-      $$\dot{\bx} = {\bf A}\bx + \bB\bu,$$ and a finite-horizon cost function
+      $$\dot{\bx} = {\bf A}\bx + \bB\bu,$$ and a finite-horizon cost function, $J = h(\bx(t_f)) + \int_0^{t_f} \ell(\bx(t), \bu(t)) dt,$
       with
-
       \begin{gather*} h(\bx) = \bx^T {\bf Q}_f \bx,\quad {\bf Q}_f = {\bf Q}_f^T
-      \succeq {\bf 0} \\ \ell(\bx,\bu,t) = \bx^T {\bf Q} \bx + \bu^T {\bf R}
+      \succeq {\bf 0} \\ \ell(\bx,\bu) = \bx^T {\bf Q} \bx + \bu^T {\bf R}
       \bu, \quad {\bf Q} = {\bf Q}^T \succeq 0, {\bf R}={\bf R}^T \succ 0
       \end{gather*}
 
@@ -231,7 +232,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       Therefore, ${\bf S}(t)$ must satisfy the condition (known as the
       continuous-time <em>differential Riccati equation</em>): $$-\dot{\bf S}(t)
       = {\bf S}(t) {\bf A} + {\bf A}^T {\bf S}(t) - {\bf S}(t) \bB {\bf R}^{-1}
-      \bB^T {\bf S}(t) + {\bf Q},$$ and the terminal condition $${\bf S}(T) =
+      \bB^T {\bf S}(t) + {\bf Q},$$ and the terminal condition $${\bf S}(t_f) =
       {\bf Q}_f.$$ Since we were able to satisfy the HJB with the minimizing
       policy, we have met the sufficiency condition, and have found the optimal
       policy and optimal cost-to-go function.</p>
@@ -342,7 +343,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       relation $\frac{d {\bf S}^{-1}}{dt} = - {\bf S}^{-1} \frac{d {\bf S}}{dt}
       {\bf S}^{-1}$, we have: $$-\dot{\bf P}(t) = - {\bf P}(t){\bf Q P}(t) +
       {\bf B R}^{-1} \bB - {\bf A P}(t) - {\bf P}(t){\bf A}^T,$$ with the final
-      conditions $${\bf P}(T) = 0.$$ This Riccati equation can be integrated
+      conditions $${\bf P}(t_f) = 0.$$ This Riccati equation can be integrated
       backwards in time for a solution.</p>
 
       <p> It is very interesting, and powerful, to note that, if one chooses
@@ -402,8 +403,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       evaluate the <code>LinearQuadraticRegulator</code> method on a system that
       has only discrete state and a single periodic timestep.</p> 
 
-      <todo>Example where the discrete-time solutions converge to the continuous
-      time solutions as dt-> 0.</todo>
+      <example><h1>Discrete-time vs Continuous-time LQR</h1>
+
+        <p>You can explore the relationship between the discrete-time and continuous-time formulations in this notebook:</p>
+  
+        <p><a target="lqr"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lqr.ipynb#scrollTo=N28UdR08ADaK"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
+  
+      </example>
     </subsection>
 
     <subsection><h1>LQR with input and state constraints</h1>

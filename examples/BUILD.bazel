@@ -24,17 +24,6 @@ rt_ipynb_test(
     deps = ["//underactuated"],
 )
 
-rt_ipynb_test(
-    name = "lqr_ct_vs_dt",
-    srcs = ["lqr_ct_vs_dt.ipynb"],
-)
-
-rt_ipynb_test(
-    name = "lyapunov",
-    srcs = ["lyapunov.ipynb"],
-    deps = ["//underactuated"],
-)
-
 # TODO(russt): Change from binary to test pending resolution of drake #13299.
 rt_ipynb_binary(
     name = "miqp_planning",
