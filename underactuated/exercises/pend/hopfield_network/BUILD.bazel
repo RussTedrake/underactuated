@@ -4,10 +4,15 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-load("//htmlbook/tools/python:defs.bzl", "rt_py_library")
+# loading MNIST dataset with torch outputs HTTP Error 503. 
+# Bazel test is temporarily disabled, but it needs to be fixed 
+# and reenabled when the fix is released from torch/vision.
+# https://github.com/RussTedrake/underactuated/issues/432
 
-rt_py_library(
-    name = "hopfield_network",
-    srcs = ["test_hopfield_network.py"],
-    visibility = ["//visibility:public"],
-)
+#load("//htmlbook/tools/python:defs.bzl", "rt_py_library")
+
+#rt_py_library(
+#    name = "hopfield_network",
+#    srcs = ["test_hopfield_network.py"],
+#    visibility = ["//visibility:public"],
+#)
