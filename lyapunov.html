@@ -223,9 +223,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       </theorem>
 
       <p>The new condition, on the behavior as $||\bx|| \rightarrow \infty$ is
-      known as "radially unbounded", and is required to make sure that
-      trajectories cannot diverge to infinity even as $V$ decreases; it is only
-      required for global stability analysis.</p>
+      known as "<a
+      href="https://en.wikipedia.org/wiki/Radially_unbounded_function">radially
+      unbounded</a>", and is required to make sure that trajectories cannot
+      diverge to infinity even as $V$ decreases; it is only required for global
+      stability analysis.</p>  <!-- note: the first exercise below has an example -->
 
     </subsection> <!-- global stability -->
 
@@ -1037,12 +1039,14 @@ V = RegionOfAttraction(sys, context)
 
       <p>For the system \begin{align*} \dot x_1
       &=-\frac{6x_1}{(1+x_1^2)^2}+2x_2, \\ \dot x_2
-      &=-\frac{2(x_1+x_2)}{(1+x_1^2)^2}, \end{align*} you are given the positive
-      definite function $V(\bx) =\frac{x_1^2}{1 + x_1^2}+ x_2^2$ and told that,
-      for this system, $\dot V(\bx)$ is negative definite over the entire space.
-      Is $V(\bx)$ a valid Lyapunov function to prove global asymptotic stability
-      of the origin for the system described by the equations above? Motivate
-      your answer.</p>
+      &=-\frac{2(x_1+x_2)}{(1+x_1^2)^2}, \end{align*} you are given the
+      positive definite function $V(\bx) =\frac{x_1^2}{1 + x_1^2}+ x_2^2$
+      (plotted here <a
+      href="https://www.geogebra.org/calculator/ynqgesf9">here</a>) and
+      told that, for this system, $\dot V(\bx)$ is negative definite over the
+      entire space. Is $V(\bx)$ a valid Lyapunov function to prove global
+      asymptotic stability of the origin for the system described by the
+      equations above? Motivate your answer.</p>
       
     </exercise>
 
