@@ -996,26 +996,46 @@ V = RegionOfAttraction(sys, context)
         write convex formulations for controller design.  These methods have
         been explored in a very nice line of work by Henrion and Korda (e.g.
         <elib>Henrion14</elib>), using the method of moments from
-        <elib>Lasserre10</elib>.  Their treatment emphasizes
-        infinite-dimensional linear programs and heirarchies of LMI
-        relaxations; these are just dual formulations to the SOS
-        optimizations that we've been writing here.  I find the SOS form more
-        clear, so will stick to it here.</p>
+        <elib>Lasserre10</elib> also called "occupation measures".  Their
+        treatment emphasizes infinite-dimensional linear programs and
+        heirarchies of LMI relaxations; these are just dual formulations to the
+        SOS optimizations that we've been writing here.  I find the SOS form
+        more clear, so will stick to it here.  Some of the occupation measure
+        papers include the dual formulation of the infinite-dimension linear
+        program which will look quite similar; my coauthors and I typically
+        call out the sums-of-squares version in our papers on the topic (e.g.
+        <elib>Posa17</elib>).</p>
 
-        <p>Todo: Need to finish this...</p>
+        <p>To find an outer approximation, instead of solving for a Lyapunov
+        function that certifies convergence to the origin, we use a very
+        related set of conditions to search for a Lyapunov-like "barrier
+        certificate", $\mathcal{B}(\bx).$  Like a Lyapunov function, we'd like
+        $\dot{\mathcal{B}}(\bx) \leq 0$; this time we'll ask for this to be
+        true everywhere (or at least in some set that is sufficiently larger
+        than the ROA of interest).  Then we will set $\mathcal{B}(0) > 0$.  If
+        we can find such a function, then certainly any state for which
+        $\mathcal{B}(\bx) < 0$ is outside of the region of attraction of the
+        fixed point -- since $\mathcal{B}$ cannot increase it can never reach
+        the origin which has $\mathcal{B} = 0$.  The <i>super-</i>level set
+        $\{ \bx | \mathcal{B}(\bx) \ge 0\}$ is an outer approximation of the
+        true region of attraction: $$-\dot{\mathcal{B}}(\bx) \text{ is SOS}
+        \quad \text{and} \quad \mathcal{B}(0) > 0.$$</p>
 
-        <todo>
-        https://groups.csail.mit.edu/robotics-center/public_papers/Posa17.pdf
-        https://groups.csail.mit.edu/robotics-center/elib/papers/Majumdar13e.pdf
-        https://hal.archives-ouvertes.fr/hal-00871051v2/document
-        http://www.optimization-online.org/DB_FILE/2012/08/3560.pdf
-        Korda inner approx: https://www.sciencedirect.com/science/article/pii/S1474667016317153
-        </todo>
+        <p>In order to find the smallest such outer approximation (given a
+        fixed degree polynomial), we choose an objective that tries to
+        "push-down" on the value of $\mathcal{B}(\bx)$.  We typically
+        accomplish this by introducing another polynomial function $W(\bx)$
+        with the requirements that $$W(\bx) \ge 0  \quad \text{and} \quad
+        W(\bx) \ge \mathcal{B}(\bx) +1,$$ implemented as SOS constraints.  Then
+        we minimize the integral $\int_\bx W(\bx)d\bx$, which can be readily
+        computed over a compact set like a ball in $\Re^n$
+        <elib>Folland01</elib> and is linear in the coefficients.  More
+        sophisticated alternatives also exist<elib>Henrion09</elib>.</p>
 
-        <p>Even if your goal is to certify a region of attraction, these outer
-        approximations can be combined with the tools for inner approximations
-        to certify the system using the resulting Lyapunov function (and
-        controller)<elib>Korda13</elib>.</p>
+        <example><h1>Outer approximation for the cubic polynomial</h1>
+
+
+        </example>
       
       </subsubsection>
 
@@ -1195,6 +1215,7 @@ V = RegionOfAttraction(sys, context)
     <todo>lower-bounds on the HJB</todo>
     <todo>control lyapunov functions</todo>
     <todo>Henrion outer approximation Henrion14, Korda13 (Start from Posa17).</todo>
+    <todo>Control contraction metrics</todo>
   
   </section>
 
@@ -1417,10 +1438,23 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 , vol. 1, <span class="year">2010</span>.
 
 </li><br>
-<li id=Korda13>
-<span class="author">Korda, Milan and Henrion, Didier and Jones, Colin N</span>,
-<span class="title">"Controller design and region of attraction estimation for nonlinear dynamical systems"</span>,
-<span class="publisher">The 19th World Congress of the International Federation of Automatic Control (IFAC)</span>, <span class="year">2014</span>.
+<li id=Posa17>
+<span class="author">Michael Posa and  Twan Koolen and  Russ Tedrake</span>,
+<span class="title">"Balancing and Step Recovery Capturability via Sums-of-Squares Optimization"</span>,
+<span class="publisher">Robotics: Science and Systems</span>, <span class="year">2017</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Posa17.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Folland01>
+<span class="author">Folland, Gerald B</span>,
+<span class="title">"How to integrate a polynomial over a sphere"</span>,
+<span class="publisher">The American Mathematical Monthly</span>, vol. 108, no. 5, pp. 446--448, <span class="year">2001</span>.
+
+</li><br>
+<li id=Henrion09>
+<span class="author">D. Henrion and  J.B. Lasserre and C. Savorgnan</span>,
+<span class="title">"Approximate volume and integration for basic semialgebraic sets"</span>,
+<span class="publisher">SIAM Review</span>, vol. 51, no. 4, pp. 722--743, <span class="year">2009</span>.
 
 </li><br>
 <li id=Wampler11>
