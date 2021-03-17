@@ -1034,7 +1034,28 @@ V = RegionOfAttraction(sys, context)
 
         <example><h1>Outer approximation for the cubic polynomial</h1>
 
+          <p>Let's revisit my favorite simple dynamical system, $\dot{x} = -x +
+          x^3,$ which has a region of attraction for the fixed point at zero of
+          $\{x \| |x|< 1 \}.$  This time, we'll estimate the ROA using the
+          outer approximation.  We can accomplish this with the following
+          program: \begin{align*} \min_{\mathcal{B}(x), W(x)} \quad &
+          \int_{-2}^2 W(x)dx, \\ \subjto \quad & -\dot{\mathcal{B}}(x) & \text{
+          is SOS}, \\ & W(x) &\text{ is SOS}, \\ & W(x) - \mathcal{B}(x) - 1.0 & \text{ is
+          SOS}, \\ & \mathcal{B}(0) \ge 0.1.\end{align*}</p>
 
+          <p>To make the problem a little numerically better, you'll see in the code that I've asked for $\dot{\mathcal{B}}(x)$ to be strictly negative definite, and I've chosen to only include even-degree monomials in $\mathcal{B}(x)$ and $W(x)$.  Plotting the solution reveals:</p>
+
+          <div  style="text-align:center"><img
+            src="data/cubic_polynomial_outer_approx.svg" width="500px"/></div>
+
+          <p>As you can see, the superlevel-set, $\mathcal{B}(x) \ge 0$ is a tight outer-approximation of the true region of attraction.</p>
+
+          <p><a target="lyapunov"
+            href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=PO6lzZw9yPNF"><img
+            src="https://colab.research.google.com/assets/colab-badge.svg"
+            alt="Open In Colab"/></a>
+              </p>
+    
         </example>
       
       </subsubsection>
