@@ -14,3 +14,6 @@ Example matplotlib figure export
 ```
 plt.savefig('data/cubic_polynomial_outer_approx.svg', transparent=True, pad_inches=0.0)
 ```
+
+svg figures using omnigraffle, with latexit for equations via pdf.  export to pdf.  pdf2svg.
+(direct to svg would presumably work if I didn't have the latex pdf equations)

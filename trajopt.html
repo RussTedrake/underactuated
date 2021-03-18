@@ -58,6 +58,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 9"><h1>Trajectory
   Optimization</h1>
+  <a style="float:right; margin-top:-80px;" target="trajopt" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/trajopt.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open Corresponding Notebook In Colab"/></a>
+  <div style="clear:right;"></div>
 
   <p>I've argued that optimal control is a powerful framework for specifying
   complex behaviors with simple objective functions, letting the dynamics and
@@ -143,8 +145,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       resulting trajectory optimization is a convex optimization (specifically a
       linear program or quadratic program depending on the objective).  As a
       result, we can reliably solve these problems to global optimality at quite
-      large scale, potentially even online -- consider the case where the
-      constraints, like staying in a lane, are not known until runtime.</p>
+      large scale; these days it is common to solve these optimization online inside a high-rate feedback controller.</p>
 
       <example><h1>Trajectory optimization for the Double Integrator</h1>
 
@@ -164,7 +165,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         evaluate them using convex optimization!  The limitation, of course, is
         that we are only solving them for one initial condition at a time.</p>
 
-        <jupyter>examples/trajectory_optimization.ipynb</jupyter>
+        <p><a target="trajopt"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/trajopt.ipynb#scrollTo=fhc5mrE9_V81"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
 
       </example>
 
@@ -358,7 +363,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       coefficients).</p>
 
       <figure>
-        <img width="80%" src="figures/dircol.svg">
+        <img width="80%" src="data/collocation.svg">
         <figcaption>Cubic spline parameters used in the direct collocation method.</figcaption>
       </figure>
 
@@ -413,7 +418,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         transcription, but the convergence is visibly different.  Try it for
         yourself:</p>
 
-        <jupyter>examples/trajectory_optimization.ipynb</jupyter>
+        <p><a target="trajopt"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/trajopt.ipynb#scrollTo=fhc5mrE9_V81"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
 
         As always, make sure you take a look at the code!
       </example>

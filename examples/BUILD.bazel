@@ -56,15 +56,3 @@ rt_ipynb_test(
     srcs = ["stochastic.ipynb"],
     deps = ["//underactuated"],
 )
-
-rt_ipynb_test(
-    name = "trajectory_optimization",
-    timeout = "moderate",
-    srcs = ["trajectory_optimization.ipynb"],
-    data = ["//underactuated/models:cartpole.urdf"],
-    tags = ["requires-network"],  # For gurobi license.
-    deps = [
-        "//underactuated",
-        "//underactuated:pendulum",
-    ],
-)
