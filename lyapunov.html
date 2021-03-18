@@ -1039,16 +1039,26 @@ V = RegionOfAttraction(sys, context)
           $\{x \| |x|< 1 \}.$  This time, we'll estimate the ROA using the
           outer approximation.  We can accomplish this with the following
           program: \begin{align*} \min_{\mathcal{B}(x), W(x)} \quad &
-          \int_{-2}^2 W(x)dx, \\ \subjto \quad & -\dot{\mathcal{B}}(x) & \text{
-          is SOS}, \\ & W(x) &\text{ is SOS}, \\ & W(x) - \mathcal{B}(x) - 1.0 & \text{ is
-          SOS}, \\ & \mathcal{B}(0) \ge 0.1.\end{align*}</p>
+          \int_{-2}^2 W(x)dx, \\ \subjto \quad & -\dot{\mathcal{B}}(x) &
+          \text{is SOS}, \\ & W(x) &\text{ is SOS}, \\ & W(x) - \mathcal{B}(x)
+          - 1.0 & \text{ is SOS}, \\ & \mathcal{B}(0) \ge 0.\end{align*}</p>
 
-          <p>To make the problem a little numerically better, you'll see in the code that I've asked for $\dot{\mathcal{B}}(x)$ to be strictly negative definite, and I've chosen to only include even-degree monomials in $\mathcal{B}(x)$ and $W(x)$.  Plotting the solution reveals:</p>
+          <p>To make the problem a little numerically better, you'll see in the
+          code that I've asked for $\dot{\mathcal{B}}(x)$ to be strictly
+          negative definite, for $\mathcal{B}(0) \ge 0.1$, and I've chosen to
+          only include even-degree monomials in $\mathcal{B}(x)$ and $W(x)$.
+          Plotting the solution reveals:</p>
 
           <div  style="text-align:center"><img
             src="data/cubic_polynomial_outer_approx.svg" width="500px"/></div>
 
-          <p>As you can see, the superlevel-set, $\mathcal{B}(x) \ge 0$ is a tight outer-approximation of the true region of attraction.</p>
+          <p>As you can see, the superlevel-set, $\mathcal{B}(x) \ge 0$ is a
+          tight outer-approximation of the true region of attraction.  In the
+          limit of increasing the degrees of the polynomials to infinity, we
+          would expect that $W(\bx)$ would converge to the indicator function
+          that is one inside the region of attraction, and zero outside (we are
+          quite far from that here, but nevertheless have a tight approximation
+          from $\mathcal{B}(\bx) \ge 0$).</p>
 
           <p><a target="lyapunov"
             href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=PO6lzZw9yPNF"><img
@@ -1232,15 +1242,136 @@ V = RegionOfAttraction(sys, context)
 
   <section><h1>Control design</h1>
 
-    <todo>control design w/ alternations.</todo>
-    <todo>lower-bounds on the HJB</todo>
-    <todo>control lyapunov functions</todo>
-    <todo>Henrion outer approximation Henrion14, Korda13 (Start from Posa17).</todo>
-    <todo>Control contraction metrics</todo>
-  
+    <p>Throughout this chapter, we've developed some very powerful tools for
+    reasoning about stability of a closed-loop system (with the
+    controller already specified).  I hope you've been asking yourself -- can I
+    use these tools to design better controllers?  Of course the answer is
+    "yes!".  In this section, I'll discuss the control approaches that are the
+    most direct consequences of the convex optimization approaches to Lyapunov
+    functions.  Another very natural idea is to use these tools in the content
+    of a feedback motion planning algorithm, which is the subject of an <a
+    href="feedback_motion_planning.html">upcoming chapter</a>.</p>
+
+    <p>For control design using convex optimization, we will lean heavily on
+    the assumption of the dynamics being control-affine.  Let me write it this
+    time as: $$\dot{\bx} = {\bf f}(\bx) + \sum_{i=0}^{m-1} u_i {\bf f}_i(x).$$
+    As we have discussed, for mechanical systems this assumption is perfectly
+    reasonable.</p>
+
+    <subsection><h1>Control Design via Alternations</h1>
+    
+      <p>For linear optimal control, we found controllers of the form, $\bu =
+      -\bK \bx.$  The natural generalization of this to polynomial analysis
+      will be to look for controllers of the form $\bu = {\bf k}(\bx)$, where
+      ${\bf k}(\bx)$ is a polynomial.  (For mechanical systems like the pendulum
+      above, we might make ${\bf k}$ a polynomial in $s$ and $c$.)</p>
+
+      <p>If we apply this control to the Lyapunov conditions (for global
+      analysis), we quickly see the problem.  We have $$\dot{V}(\bx) =
+      \pd{V}{\bx}\left[ {\bf f}(x) + \sum_{i=0}^{m-1} {\bf f}_i(\bx) {\bf
+      k_i}(\bx)\right],$$ and as a result if we are trying to search for the
+      parameters of $V$ and ${\bf k}$ simultaneously, the decision variables
+      multiply and the problem will be non-convex.</p>
+
+      <p>One very natural strategy is to use alternations.  The idea is simple,
+      we will fix ${\bf k}$ and optimize $V$, then fix $V$ and optimize ${\bf
+      k}$ and repeat until convergence.  This approach has roots in the famous
+      "DK iterations" for robust control (e.g. <elib>Lind94</elib>).  It takes
+      advantage of the structured convex optimization at each step.</p>
+      
+      <p>For this approach, it is important to start with an initial feasible
+      $V$ or ${\bf k}$.  For example, one can think of locally stabilizing a
+      nonlinear system with LQR, and then searching for a linear control law
+      (or even a higher-order polynomial control law) that achieves a larger
+      basin of attraction.  But note that once we move from global stability to
+      region of attraction optimization, we now need to alternate between three
+      sets of variables: $V(\bx), {\bf k}(\bx), \lambda(\bx),$ where
+      $\lambda(]bx)$ was the multiplier polynomial for the S-procedure.  We
+      took exactly this approach in <elib>Majumdar13</elib>.  In that paper, we showed that alternations could increase the certified region of attraction for the Acrobot.</p>
+
+      <p>The alternation approach takes advantage of convex optimization in the
+      inner loop, but it is still only a local approach to solving the
+      nonconvex joint optimization.  It is subject to local minima.  The primary
+      advantage is that, barring numerical issues, we expect recursive
+      feasibility (once we have a controller and Lyapunov function that
+      achieves stability, even with a small region of attraction, we will not
+      lose it) and monotonic improvement on the objective.  It is also possible
+      to attempt to optimize these objectives more directly with other
+      non-convex optimization procedures (like stochastic gradient descent, or
+      sequential quadratic programming) (e.g. <elib>Shen20</elib>), but strict
+      feasibility is harder to guarantee.  Often times the Lyapunov conditions
+      are just evaluated at samples, or along sample trajectories; we can still
+      certify the performance using just a single SOS verification step the
+      with controller fixed before deplying. </p>
+
+    </subsection>
+
+    <subsection><h1>Control-Lyapunov Functions</h1>
+
+      <p>Another core idea connecting Lyapunov analysis with control design is
+      the "<a
+      href="https://en.wikipedia.org/wiki/Control-Lyapunov_function">control-Lyapunov
+      function</a>".  Given a system $\dot{\bx} = f(\bx, \bu)$, a
+      control-Lyapunov function $V$ is a positive-definite function for which
+      $$\forall \bx \neq 0, \exists \bu \quad \dot{V}(\bx,\bu) = \pd{V}{\bx}
+      f(\bx, \bu) < 0 \quad \text{and} \quad \exists \bu \quad \dot{V}(0, \bu)
+      = 0.$$  In words, for all $\bx$, there exists a control that would allow
+      the $V$ to decrease.  Once again, we adorn this basic property with extra
+      conditions (e.g. radially unbounded, or satisfied over a control-
+      invariant set) in order to construct global or regional stability
+      statements.  What is important about to understand is that we can design
+      control-Lyapunov functions without explicitly parameterizing the
+      controller; often the control action is not even determined until
+      execution time by finding a particular $\bu$ that goes downhill.</p>
+
+      <p>Our sums-of-squares toolkit is well-suited for addressing questions
+      with the $\forall$ quantifier over indeterminates.  Working with the
+      $\exists$ quantifier is much more difficult; we don't have an
+      S-procedure-like solution for it.  Interestingly, there is one approach
+      that we've discussed above that effectively turns the $\exists$ into a
+      $\forall$ -- that is the outer approximation approach to region of
+      attraction analysis.</p>
+
+      <p>In the outer-approximation, we produce a barrier certificate to find
+      the set of states where the controller cannot go (for any $\bu$).  Our
+      barrier certificate now has the form $$\forall x, \forall u, \quad
+      \dot{\mathcal{B}}(\bx, \bu) \le 0.$$  Certainly, $\mathcal{B}(\bx) \ge 0$
+      is now an outer-approximation of the true "backward-reachable set" (BRS)
+      of the fixed point <elib>Henrion14+Korda13</elib>.  Again
+      <elib>Posa17</elib>
+      has some nice examples of this written directly in sums-of-squares
+      form.</p>
+      
+      <p>Now here is where it gets a little frustrating.  Certainly,
+      sublevel-sets of $\mathcal{B}(\bx)$ are control-invariant (via the proper
+      choice of $\bu$).  But we do not (cannot) expect that the entire
+      estimated region (the 0-superlevel set) can be rendered invariant.  The
+      estimated region is an <i>outer</i> approximation of the backward
+      reachable set.
+      <todo>it's more than that... \dot{B}=0 happens somewhere in the interior,
+      and it's conservative due to the forall u.</todo>  
+      <elib>Majumdar13b</elib> gave a recipe for extracting a polynomial
+      control law from the BRS; an inner approximation of this control law can
+      be obtained via the original SOS region of attraction tools.  This is
+      unfortunatley suboptimal/conservative.  Although we would like to
+      certify the control-Lyapunov conditions directly in an inner
+      approximation, the $\exists$ quantifier remains as an obstacle.</p>
+    
+    </subsection>
+
+    <subsection><h1>Approximate Dynamic Programming with SOS</h1>
+    
+    </subsection>
+
   </section>
 
   <section><h1>Neural Lyapunov functions</h1></section>
+
+  <section><h1>Contraction Metrics</h1>
+  
+    <todo>Control contraction metrics</todo>
+
+  </section>
 
   <todo>other topics/ideas: verifying neural network control relation to adversarial examples.  make the point that sampling doesn't scale (even with polynomials).  "almost lyapunov functions" will happen when we talk about robust control.  hopfield enegy function.  scaling (e.g. quadratic in high dimensions with just one strictly negative eigenvalue); would be very hard to verify with samples.</todo>
 
@@ -1488,6 +1619,32 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 <span class="author">Sommese and  A.J. and Wampler and  C.W.</span>,
 <span class="title">"The Numerical solution of systems of polynomials arising in engineering and science"</span>,World Scientific Pub Co Inc
 , <span class="year">2005</span>.
+
+</li><br>
+<li id=Lind94>
+<span class="author">R. Lind and G.J. Balas and  A. Packard</span>,
+<span class="title">"Evaluating {D-K} iteration for control design"</span>,
+<span class="publisher">American Control Conference, 1994</span>, vol. 3, pp. 2792 - 2797 vol.3, 29 June-1 July, <span class="year">1994</span>.
+
+</li><br>
+<li id=Majumdar13>
+<span class="author">Anirudha Majumdar and  Amir Ali Ahmadi and Russ Tedrake</span>,
+<span class="title">"Control Design along Trajectories with Sums of Squares Programming"</span>,
+<span class="publisher">Proceedings of the 2013 IEEE International Conference on Robotics and Automation (ICRA)</span>, pp. 4054-4061, <span class="year">2013</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/majumdar13.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Korda13>
+<span class="author">Korda, Milan and Henrion, Didier and Jones, Colin N</span>,
+<span class="title">"Controller design and region of attraction estimation for nonlinear dynamical systems"</span>,
+<span class="publisher">The 19th World Congress of the International Federation of Automatic Control (IFAC)</span>, <span class="year">2014</span>.
+
+</li><br>
+<li id=Majumdar13b>
+<span class="author">Anirudha Majumdar and Ram Vasudevan and Mark M. Tobenkin and Russ Tedrake</span>,
+<span class="title">"Convex Optimization of Nonlinear Feedback Controllers via Occupation Measures"</span>,
+<span class="publisher">Proceedings of Robotics: Science and Systems (RSS)</span>, <span class="year">2013</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar13b.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Aicardi95>
