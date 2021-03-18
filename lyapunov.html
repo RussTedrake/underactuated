@@ -223,9 +223,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       </theorem>
 
       <p>The new condition, on the behavior as $||\bx|| \rightarrow \infty$ is
-      known as "radially unbounded", and is required to make sure that
-      trajectories cannot diverge to infinity even as $V$ decreases; it is only
-      required for global stability analysis.</p>
+      known as "<a
+      href="https://en.wikipedia.org/wiki/Radially_unbounded_function">radially
+      unbounded</a>", and is required to make sure that trajectories cannot
+      diverge to infinity even as $V$ decreases; it is only required for global
+      stability analysis.</p>  <!-- note: the first exercise below has an example -->
 
     </subsection> <!-- global stability -->
 
@@ -439,7 +441,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         vertices in the polygon.</p>
 
         <figure> <img width="50%"
-        src="figures/affine_combination_of_matrices.svg"/> </figure>
+        src="data/affine_combination_of_matrices.svg"/> </figure>
 
         <p>Now we can formulate the search for a common Lyapunov function using
         \[ \find_{\bf p} \quad  \subjto \quad {\bf P} \succeq 0,  \quad
@@ -751,20 +753,22 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <subsubsection><h1>The S-procedure</h1>
 
         <p>Consider a scalar polynomial, $p(\bx)$, and a semi-algebraic set
-        $g(\bx) \preceq 0$, where $g$ is a vector of polynomials.  If I can find
-        a polynomial "multiplier", $\lambda(\bx)$, such that \[ p(\bx) +
-        \lambda^T(\bx) g(\bx) \sos, \quad \text{and} \quad \lambda(\bx) \sos, \]
-        then this is sufficient to demonstrate that $$p(\bx)\ge 0 \quad \forall
-        \bx \in \{ g(\bx) \le 0 \}.$$  To convince yourself, observe that when
-        $g(\bx) \le 0$, it is only harder to be positive, but when $g(\bx) > 0$,
-        it is possible for the combined function to be SOS even if $p(\bx)$ is
-        negative.</p>
+        $g(\bx) \preceq 0$, where $g$ is a vector of polynomials.  If I can
+        find a polynomial "multiplier", $\lambda(\bx)$, such that \[ p(\bx) +
+        \lambda^T(\bx) g(\bx) \sos, \quad \text{and} \quad \lambda(\bx) \sos,
+        \] then this is sufficient to demonstrate that $$p(\bx)\ge 0 \quad
+        \forall \bx \in \{ \bx | g(\bx) \le 0 \}.$$  To convince yourself,
+        observe that when $g(\bx) \le 0$, it is only harder to be positive, but
+        when $g(\bx) > 0$, it is possible for the combined function to be SOS
+        even if $p(\bx)$ is negative.  We will sometimes find it convenient to
+        use the short-hand: $$g(\bx) \le 0 \Rightarrow p(\bx) \ge 0$$ to denote
+        the implication certified by the S-procedure (e.g. "whenever $g(\bx) \le 0$, we have $p(\bx) \ge 0$"). </p>
 
         <p>We can also handle equality constraints with only a minor
         modification -- we no longer require the multiplier to be positive. If
-        I can find a polynomial "multiplier", $\lambda(\bx)$, such that \[
-        p(\bx) + \lambda^T(\bx) g(\bx) \sos \] then this is sufficient to
-        demonstrate that $$p(\bx)\ge 0 \quad \forall \bx \in \{ g(\bx) = 0
+        I can find a polynomial "multiplier", $\lambda(\bx)$, such that
+        \[p(\bx) + \lambda^T(\bx) g(\bx) \sos \] then this is sufficient to
+        demonstrate that $$p(\bx)\ge 0 \quad \forall \bx \in \{ \bx | g(\bx) = 0
         \}.$$  Here the intuition is that $\lambda(x)$ can add arbitrary
         positive terms to help me be SOS, but those terms contribute nothing
         precisely when $g(x)=0$.</p>
@@ -772,6 +776,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       </subsubsection>
 
       <subsubsection><h1>Basic region of attraction formulation</h1>
+
+        <p>The S-procedure gives us the tool we need to evaluate positivity
+        only over a region of state space, which is precisely what we need to
+        certify the Lyapunov conditions for a region-of-attraction analysis.
+        Let us start with a positive-definite Lyapunov candidate, $V(\bx) \succ
+        0$, then we can write the Lyapunov conditions: $$\dot{V}(\bx) \prec 0
+        \quad \forall \bx \in \{ \bx | V(\bx) \le \rho \},$$ using
+        sums-of-squares and the S-procedure: $$-\dot{V}(\bx) +
+        \lambda(\bx)(V(\bx) - \rho) \text{ is SOS,} \quad \text{and} \quad
+        \lambda(\bx) \text{ is SOS},$$ where $\lambda(\bx)$ is a multiplier
+        polynomial with free coefficients that are to be solved for in the
+        optimization.</p>
+
+        <p>I think it's easiest to see the details in an example.</p>
 
         <example id="roa_cubic_system"><h1>Region of attraction for the
         one-dimensional cubic system</h1>
@@ -783,8 +801,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
           <p>First, define the multiplier polynomial, \[ \lambda(x) = c_0 + c_1
           x + c_2 x^2. \]  Then define the optimization
-          \begin{align*} \find_{\bf c} \quad & \\  \subjto \quad& - \dot{V}(x) -
-          \lambda(x) (1-V(x)) \sos \\ & \lambda(x) \sos \end{align*} </p>
+          \begin{align*} \find_{\bf c} \quad & \\  \subjto \quad& - \dot{V}(x) +
+          \lambda(x) (V(x)-1) \sos \\ & \lambda(x) \sos \end{align*} </p>
 
           <p>You can try this example for yourself in <drake></drake>.</p>
 
@@ -796,17 +814,29 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   
         </example>
 
-        <p>While the example above only verifies that the one-sub-level set of
-        the pre-specified Lyapunov candidate is negative (certifying the ROA
-        that we already understood), we can generalize the optimization to allow
-        us to search for the largest sub-level set (with the objective using a
-        convex approximation for volume).  We can even search for the
-        coefficients of the Lyapunov function using an iteration of convex
-        optimizations.  There are a number of variations and nuances in the
-        various formulations, and some basic rescaling tricks that can help make
-        the numerics of the problem better for the solvers.</p>
+        <p>In this example, we only verified that the one-sub-level set of the
+        pre-specified Lyapunov candidate is negative (certifying the ROA that
+        we already understood).  Even more useful is if you are able to search
+        for the largest $\rho$ that can satisfy these conditions.
+        Unfortunately, in this first formulation, optimizing $\rho$ directly
+        would make the optimization problem non-convex because we would have
+        terms like $\rho c_0$, $\rho c_1 x$, ... which are bilinear in the
+        decision variables; we need the sums-of-squares constraints to be only
+        linear in the decision variables.</p>
 
-
+        <p>Fortunately, because the problem is convex with $\rho$ fixed (and
+        therefore can be solved reliably), and $\rho$ is just a scalar, we can
+        perform a simple line search on $\rho$ to find the largest value for
+        which the convex optimization returns a feasible solution.  This will
+        be our estimate for the region of attraction.</p>
+        
+        <p>There are a number of variations to this basic formulation; I will
+        describe a few of them below.  There are also important ideas like
+        rescaling and degree-matching that can have a dramatic effect on the
+        numerics of the problem, and potentially make them much better for the
+        solvers.  But you do not need to master them all in order to use the
+        tools effectively.</p>
+  
         <example><h1>Region of Attraction codes in Drake</h1>
 
           <p>In <drake></drake>, we have packaged most of the work in setting up
@@ -827,31 +857,217 @@ V = RegionOfAttraction(sys, context)
               </p>
   
           <p>Remember that although we have tried to make it convenient to call
-          these functions, they are not a black box.  I highly recommend opening
-          up the <code>RegionOfAttraction</code> method and understanding how it
-          works.  There are lots of different options / formulations, and numerous numerical recipes to improve the numerics of the optimization problem.</p>
+          these functions, they are not a black box.  I highly recommend
+          opening up the <code>RegionOfAttraction</code> method and
+          understanding how it works.  There are lots of different options /
+          formulations, and numerous numerical recipes to improve the numerics
+          of the optimization problem.</p>
         </example>
 
         <!--
         <example><h1>Region of attraction for the time-reversed Van der Pol oscillator</h1>
 
           <pre><code class="matlab" testfile="testVanDerPol">
-           cd(fullfile(getDrakePath,'examples'));
-           VanDerPol.run();
+            cd(fullfile(getDrakePath,'examples'));
+            VanDerPol.run();
           </code></pre>
 
         </example>
--->
+  -->      
       </subsubsection>
 
-      <subsubsection><h1>Seeding the optimization with linear analysis</h1>
+      <subsubsection><h1>The equality-constrained formulation</h1>
+      
+        <p>Here is one important variation for finding the level set of a
+        candidate region of attraction, which turns in inequality in the
+        S-procedure into an equality.  This formulation <i>is</i> jointly
+        convex in $\lambda(\bx)$ and $\rho$, so one can optimize them in a
+        single convex optimization.  It appeared informally in an example in
+        <elib>Parrilo00</elib>, and was discussed a bit more in
+        <elib>Shen20</elib>.</p>
 
-        <p>LQR gives the cost-to-go which can be used as the Lyapunov candidate.
-        Otherwise, use a Lyapunov equation.  You may not even need to search for
-        a better Lyapunov function, but rather just ask the question: what is
-        the largest region of attraction that can be demonstrated for the
-        nonlinear system using the Lyapunov function from linear analysis?</p>
+        <p>Under the assumption that the Hessian of $\dot{V}(\bx)$ is
+        negative-definite at the origin (which is easily checked), we can write
+        \begin{align*} \max_{\rho, \lambda(\bx)} & \quad \rho \\ \subjto &
+        \quad (\bx^T\bx)^d (V(\bx) - \rho) + \lambda(\bx) \dot{V}(\bx) \text{
+        is SOS},\end{align*} with $d$ a fixed positive integer.  As you can
+        see, $\rho$ no longer multiplies the coefficient of $\lambda(\bx)$.
+        But why does this certify a region of attraction?</p>
 
+        <p>You can read the sums-of-squares constraint as certifying the
+        implication that whenever $\dot{V}(x) = 0$, we have that either $V(\bx)
+        \ge \rho$ OR $\bx = 0$.  Multiplying by some multiple of $\bx^T\bx$ is
+        just a clever way to handle the "or $\bx=0$" case, which is necessary
+        since we expect $\dot{V}(0) = 0$.  I hope you can convince yourself
+        that this implication is sufficient to prove that $\dot{V}(\bx) \le 0$
+        whenever $V(\bx) \le \rho$, since $V$ and $\dot{V}$ are smooth
+        polynomials.</p>
+
+        <p>Using the S-procedure with equalities instead inequalities also has
+        the potential advantage of removing the SOS constraint on
+        $\lambda(\bx).$  But perhaps the biggest advantage of this formulation
+        is the possibility of dramatically simplifying the problem using the
+        quotient ring of this algebraic variety, and in particular some recent
+        results for exact certification using sampling
+        varieties<elib>Shen20</elib>.</p>
+
+      </subsubsection>
+        
+      <subsubsection><h1>Searching for $V(\bx)$</h1>
+
+        <p>The machinery so far has used optimization to find the largest
+        region of attraction that can be certified <i>given a candidate
+        Lyapunov function</i>.  This is not necessarily a bad assumption.  For
+        most stable fixed points, we can certify the local stability with a
+        linear analysis, and this linear analysis gives us a candidate
+        quadratic Lyapunov function that can be used for nonlinear analysis
+        over a region.  Practically speaking, when we solve an LQR problem, the
+        cost-to-go from LQR is a good candidate Lyapunov function for the
+        nonlinear system.  If we are simply analyzing an existing system, then
+        we can obtain this candidate by solving a Lyapunov equation (Eq
+        \ref{eq:algebraic_lyapunov}).</p>
+
+        <p>But what if we believe the system is regionally stable, despite
+        having an indefinite linearization?  Or perhaps we can certify a larger
+        volume of state space by using a Lyapunov candidate with degree greater
+        than two.  Can we use sums-of-squares optimization to find that in the
+        region of attraction case, too?</p>
+      
+        <p>To accomplish this, we will now make $V(x)$ a polynomial (of some
+        fixed degree) with the coefficients as decision variables.  First we
+        will need to add constraints to ensure that $$V(0) = 0 \quad {and}
+        \quad V(\bx) - \epsilon \bx^T\bx \text{ is SOS},$$ where $\epsilon$ is
+        some small positive constant.  This $\epsilon$ term simply ensures that
+        $V$ is strictly positive definite.  Now let's consider our basic
+        formulation:  $$-\dot{V}(\bx) + \lambda(\bx)(V(\bx) - 1) \text{ is
+        SOS,} \quad \text{and} \quad \lambda(\bx) \text{ is SOS}.$$  Notice
+        that I've replaced $\rho=1$; now that we are searching for $V$ the
+        scale of the level-set can be set aribtrarily to 1.  In fact, it's
+        better to do so -- if we did not set $V(0)=0$ and $V(\bx) \le 1$ as the
+        sub-level set, then the optimization problem would be underconstrained,
+        and might cause problems for the solver.</p>
+
+        <p>Unfortunately, the derivative constraint is now nonconvex (bilinear)
+        in the decision variables, since we are searching for both the
+        coefficients of $\lambda$ and $V$, and they are multiplied together.
+        Our equality-constrained formulation doesn't get us around this one,
+        either (since the coefficients of $V$ also appear in $\dot{V}$).  Here
+        we have to resort to some weaker form of optimization.  In practice, we
+        have had good practical success using bilinear alternations: start with
+        an initial $V$ (e.g. from LQR), and search for $\lambda$; then fix
+        $\lambda$ and search for $V$ and repeat until convergence (see, for
+        instance <elib>Tedrake10+Majumdar16a</elib>).  A typical choice for the
+        objective is to maximize some convex surrogate for the volume of the
+        certified region of attraction in state space; typically we use the
+        determinant of the quadratic form describing a contained ellipse.</p>
+        
+        <p>Barring numerical issues, this algorithm is guaranteed to have
+        recursive feasibility and tends to converge in just a few alternations,
+        but there is no guarantee that it finds the optimal solution.</p>
+
+        <example><h1>Searching for Lyapunov functions</h1>
+          
+          <p>(Details coming soon...)</p>
+
+          <p><a target="lyapunov"
+            href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=dKr_21YxDHJe"><img
+            src="https://colab.research.google.com/assets/colab-badge.svg"
+            alt="Open In Colab"/></a>
+              </p>
+  
+        </h1></example>
+
+      </subsubsection>
+
+      <subsubsection><h1>Convex outer approximations of the ROA</h1>
+
+        <p>All of our region of attraction approximations so far have been
+        "inner approximations" -- the certified region is guaranteed to be
+        contained within the true region of attraction for the system.  This is
+        what we want if we are to give some guarantee of stability.  As we
+        increase the degree of our polynomial and multipliers, we expect that
+        the estimated regions of attraction will converge on the true
+        regions.</p>
+
+        <p>It turns out that if we instead consider outer approximations, which
+        converge on the true ROA from the other side, we can write formulations
+        that enable searching for the Lyapunov function directly as a convex
+        optimization.  As we will see below, this approach also allows one to
+        write convex formulations for controller design.  These methods have
+        been explored in a very nice line of work by Henrion and Korda (e.g.
+        <elib>Henrion14</elib>), using the method of moments from
+        <elib>Lasserre10</elib> also called "occupation measures".  Their
+        treatment emphasizes infinite-dimensional linear programs and
+        heirarchies of LMI relaxations; these are just dual formulations to the
+        SOS optimizations that we've been writing here.  I find the SOS form
+        more clear, so will stick to it here.  Some of the occupation measure
+        papers include the dual formulation of the infinite-dimension linear
+        program which will look quite similar; my coauthors and I typically
+        call out the sums-of-squares version in our papers on the topic (e.g.
+        <elib>Posa17</elib>).</p>
+
+        <p>To find an outer approximation, instead of solving for a Lyapunov
+        function that certifies convergence to the origin, we use a very
+        related set of conditions to search for a Lyapunov-like "barrier
+        certificate", $\mathcal{B}(\bx).$  Like a Lyapunov function, we'd like
+        $\dot{\mathcal{B}}(\bx) \leq 0$; this time we'll ask for this to be
+        true everywhere (or at least in some set that is sufficiently larger
+        than the ROA of interest).  Then we will set $\mathcal{B}(0) > 0$.  If
+        we can find such a function, then certainly any state for which
+        $\mathcal{B}(\bx) < 0$ is outside of the region of attraction of the
+        fixed point -- since $\mathcal{B}$ cannot increase it can never reach
+        the origin which has $\mathcal{B} = 0$.  The <i>super-</i>level set
+        $\{ \bx | \mathcal{B}(\bx) \ge 0\}$ is an outer approximation of the
+        true region of attraction: $$-\dot{\mathcal{B}}(\bx) \text{ is SOS}
+        \quad \text{and} \quad \mathcal{B}(0) > 0.$$</p>
+
+        <p>In order to find the smallest such outer approximation (given a
+        fixed degree polynomial), we choose an objective that tries to
+        "push-down" on the value of $\mathcal{B}(\bx)$.  We typically
+        accomplish this by introducing another polynomial function $W(\bx)$
+        with the requirements that $$W(\bx) \ge 0  \quad \text{and} \quad
+        W(\bx) \ge \mathcal{B}(\bx) +1,$$ implemented as SOS constraints.  Then
+        we minimize the integral $\int_\bx W(\bx)d\bx$, which can be readily
+        computed over a compact set like a ball in $\Re^n$
+        <elib>Folland01</elib> and is linear in the coefficients.  More
+        sophisticated alternatives also exist<elib>Henrion09</elib>.</p>
+
+        <example><h1>Outer approximation for the cubic polynomial</h1>
+
+          <p>Let's revisit my favorite simple dynamical system, $\dot{x} = -x +
+          x^3,$ which has a region of attraction for the fixed point at zero of
+          $\{x \| |x|< 1 \}.$  This time, we'll estimate the ROA using the
+          outer approximation.  We can accomplish this with the following
+          program: \begin{align*} \min_{\mathcal{B}(x), W(x)} \quad &
+          \int_{-2}^2 W(x)dx, \\ \subjto \quad & -\dot{\mathcal{B}}(x) &
+          \text{is SOS}, \\ & W(x) &\text{ is SOS}, \\ & W(x) - \mathcal{B}(x)
+          - 1.0 & \text{ is SOS}, \\ & \mathcal{B}(0) \ge 0.\end{align*}</p>
+
+          <p>To make the problem a little numerically better, you'll see in the
+          code that I've asked for $\dot{\mathcal{B}}(x)$ to be strictly
+          negative definite, for $\mathcal{B}(0) \ge 0.1$, and I've chosen to
+          only include even-degree monomials in $\mathcal{B}(x)$ and $W(x)$.
+          Plotting the solution reveals:</p>
+
+          <div  style="text-align:center"><img
+            src="data/cubic_polynomial_outer_approx.svg" width="500px"/></div>
+
+          <p>As you can see, the superlevel-set, $\mathcal{B}(x) \ge 0$ is a
+          tight outer-approximation of the true region of attraction.  In the
+          limit of increasing the degrees of the polynomials to infinity, we
+          would expect that $W(\bx)$ would converge to the indicator function
+          that is one inside the region of attraction, and zero outside (we are
+          quite far from that here, but nevertheless have a tight approximation
+          from $\mathcal{B}(\bx) \ge 0$).</p>
+
+          <p><a target="lyapunov"
+            href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=PO6lzZw9yPNF"><img
+            src="https://colab.research.google.com/assets/colab-badge.svg"
+            alt="Open In Colab"/></a>
+              </p>
+    
+        </example>
+      
       </subsubsection>
 
     </subsection> <!-- ROA for polynomial -->
@@ -1024,11 +1240,139 @@ V = RegionOfAttraction(sys, context)
 
   </section> <!-- end rigid bodies are polynomial -->
 
-  <todo>convex ROA w/ outer approx.</todo>
-  <todo>control design w/ alternations.</todo>
-  <todo>lower-bounds on the HJB</todo>
-  <todo>neural lyapunov functions</todo>
-  <todo>control lyapunov functions</todo>
+  <section><h1>Control design</h1>
+
+    <p>Throughout this chapter, we've developed some very powerful tools for
+    reasoning about stability of a closed-loop system (with the
+    controller already specified).  I hope you've been asking yourself -- can I
+    use these tools to design better controllers?  Of course the answer is
+    "yes!".  In this section, I'll discuss the control approaches that are the
+    most direct consequences of the convex optimization approaches to Lyapunov
+    functions.  Another very natural idea is to use these tools in the content
+    of a feedback motion planning algorithm, which is the subject of an <a
+    href="feedback_motion_planning.html">upcoming chapter</a>.</p>
+
+    <p>For control design using convex optimization, we will lean heavily on
+    the assumption of the dynamics being control-affine.  Let me write it this
+    time as: $$\dot{\bx} = {\bf f}(\bx) + \sum_{i=0}^{m-1} u_i {\bf f}_i(x).$$
+    As we have discussed, for mechanical systems this assumption is perfectly
+    reasonable.</p>
+
+    <subsection><h1>Control Design via Alternations</h1>
+    
+      <p>For linear optimal control, we found controllers of the form, $\bu =
+      -\bK \bx.$  The natural generalization of this to polynomial analysis
+      will be to look for controllers of the form $\bu = {\bf k}(\bx)$, where
+      ${\bf k}(\bx)$ is a polynomial.  (For mechanical systems like the pendulum
+      above, we might make ${\bf k}$ a polynomial in $s$ and $c$.)</p>
+
+      <p>If we apply this control to the Lyapunov conditions (for global
+      analysis), we quickly see the problem.  We have $$\dot{V}(\bx) =
+      \pd{V}{\bx}\left[ {\bf f}(x) + \sum_{i=0}^{m-1} {\bf f}_i(\bx) {\bf
+      k_i}(\bx)\right],$$ and as a result if we are trying to search for the
+      parameters of $V$ and ${\bf k}$ simultaneously, the decision variables
+      multiply and the problem will be non-convex.</p>
+
+      <p>One very natural strategy is to use alternations.  The idea is simple,
+      we will fix ${\bf k}$ and optimize $V$, then fix $V$ and optimize ${\bf
+      k}$ and repeat until convergence.  This approach has roots in the famous
+      "DK iterations" for robust control (e.g. <elib>Lind94</elib>).  It takes
+      advantage of the structured convex optimization at each step.</p>
+      
+      <p>For this approach, it is important to start with an initial feasible
+      $V$ or ${\bf k}$.  For example, one can think of locally stabilizing a
+      nonlinear system with LQR, and then searching for a linear control law
+      (or even a higher-order polynomial control law) that achieves a larger
+      basin of attraction.  But note that once we move from global stability to
+      region of attraction optimization, we now need to alternate between three
+      sets of variables: $V(\bx), {\bf k}(\bx), \lambda(\bx),$ where
+      $\lambda(]bx)$ was the multiplier polynomial for the S-procedure.  We
+      took exactly this approach in <elib>Majumdar13</elib>.  In that paper, we showed that alternations could increase the certified region of attraction for the Acrobot.</p>
+
+      <p>The alternation approach takes advantage of convex optimization in the
+      inner loop, but it is still only a local approach to solving the
+      nonconvex joint optimization.  It is subject to local minima.  The primary
+      advantage is that, barring numerical issues, we expect recursive
+      feasibility (once we have a controller and Lyapunov function that
+      achieves stability, even with a small region of attraction, we will not
+      lose it) and monotonic improvement on the objective.  It is also possible
+      to attempt to optimize these objectives more directly with other
+      non-convex optimization procedures (like stochastic gradient descent, or
+      sequential quadratic programming) (e.g. <elib>Shen20</elib>), but strict
+      feasibility is harder to guarantee.  Often times the Lyapunov conditions
+      are just evaluated at samples, or along sample trajectories; we can still
+      certify the performance using just a single SOS verification step the
+      with controller fixed before deplying. </p>
+
+    </subsection>
+
+    <subsection><h1>Control-Lyapunov Functions</h1>
+
+      <p>Another core idea connecting Lyapunov analysis with control design is
+      the "<a
+      href="https://en.wikipedia.org/wiki/Control-Lyapunov_function">control-Lyapunov
+      function</a>".  Given a system $\dot{\bx} = f(\bx, \bu)$, a
+      control-Lyapunov function $V$ is a positive-definite function for which
+      $$\forall \bx \neq 0, \exists \bu \quad \dot{V}(\bx,\bu) = \pd{V}{\bx}
+      f(\bx, \bu) < 0 \quad \text{and} \quad \exists \bu \quad \dot{V}(0, \bu)
+      = 0.$$  In words, for all $\bx$, there exists a control that would allow
+      the $V$ to decrease.  Once again, we adorn this basic property with extra
+      conditions (e.g. radially unbounded, or satisfied over a control-
+      invariant set) in order to construct global or regional stability
+      statements.  What is important about to understand is that we can design
+      control-Lyapunov functions without explicitly parameterizing the
+      controller; often the control action is not even determined until
+      execution time by finding a particular $\bu$ that goes downhill.</p>
+
+      <p>Our sums-of-squares toolkit is well-suited for addressing questions
+      with the $\forall$ quantifier over indeterminates.  Working with the
+      $\exists$ quantifier is much more difficult; we don't have an
+      S-procedure-like solution for it.  Interestingly, there is one approach
+      that we've discussed above that effectively turns the $\exists$ into a
+      $\forall$ -- that is the outer approximation approach to region of
+      attraction analysis.</p>
+
+      <p>In the outer-approximation, we produce a barrier certificate to find
+      the set of states where the controller cannot go (for any $\bu$).  Our
+      barrier certificate now has the form $$\forall x, \forall u, \quad
+      \dot{\mathcal{B}}(\bx, \bu) \le 0.$$  Certainly, $\mathcal{B}(\bx) \ge 0$
+      is now an outer-approximation of the true "backward-reachable set" (BRS)
+      of the fixed point <elib>Henrion14+Korda13</elib>.  Again
+      <elib>Posa17</elib>
+      has some nice examples of this written directly in sums-of-squares
+      form.</p>
+      
+      <p>Now here is where it gets a little frustrating.  Certainly,
+      sublevel-sets of $\mathcal{B}(\bx)$ are control-invariant (via the proper
+      choice of $\bu$).  But we do not (cannot) expect that the entire
+      estimated region (the 0-superlevel set) can be rendered invariant.  The
+      estimated region is an <i>outer</i> approximation of the backward
+      reachable set.
+      <todo>it's more than that... \dot{B}=0 happens somewhere in the interior,
+      and it's conservative due to the forall u.</todo>  
+      <elib>Majumdar13b</elib> gave a recipe for extracting a polynomial
+      control law from the BRS; an inner approximation of this control law can
+      be obtained via the original SOS region of attraction tools.  This is
+      unfortunatley suboptimal/conservative.  Although we would like to
+      certify the control-Lyapunov conditions directly in an inner
+      approximation, the $\exists$ quantifier remains as an obstacle.</p>
+    
+    </subsection>
+
+    <subsection><h1>Approximate Dynamic Programming with SOS</h1>
+    
+    </subsection>
+
+  </section>
+
+  <section><h1>Neural Lyapunov functions</h1></section>
+
+  <section><h1>Contraction Metrics</h1>
+  
+    <todo>Control contraction metrics</todo>
+
+  </section>
+
   <todo>other topics/ideas: verifying neural network control relation to adversarial examples.  make the point that sampling doesn't scale (even with polynomials).  "almost lyapunov functions" will happen when we talk about robust control.  hopfield enegy function.  scaling (e.g. quadratic in high dimensions with just one strictly negative eigenvalue); would be very hard to verify with samples.</todo>
 
   <section><h1>Exercises</h1>
@@ -1037,12 +1381,14 @@ V = RegionOfAttraction(sys, context)
 
       <p>For the system \begin{align*} \dot x_1
       &=-\frac{6x_1}{(1+x_1^2)^2}+2x_2, \\ \dot x_2
-      &=-\frac{2(x_1+x_2)}{(1+x_1^2)^2}, \end{align*} you are given the positive
-      definite function $V(\bx) =\frac{x_1^2}{1 + x_1^2}+ x_2^2$ and told that,
-      for this system, $\dot V(\bx)$ is negative definite over the entire space.
-      Is $V(\bx)$ a valid Lyapunov function to prove global asymptotic stability
-      of the origin for the system described by the equations above? Motivate
-      your answer.</p>
+      &=-\frac{2(x_1+x_2)}{(1+x_1^2)^2}, \end{align*} you are given the
+      positive definite function $V(\bx) =\frac{x_1^2}{1 + x_1^2}+ x_2^2$
+      (plotted here <a
+      href="https://www.geogebra.org/calculator/ynqgesf9">here</a>) and
+      told that, for this system, $\dot V(\bx)$ is negative definite over the
+      entire space. Is $V(\bx)$ a valid Lyapunov function to prove global
+      asymptotic stability of the origin for the system described by the
+      equations above? Motivate your answer.</p>
       
     </exercise>
 
@@ -1211,6 +1557,58 @@ PhD thesis, California Institute of Technology, May 18, <span class="year">2000<
 <span class="publisher">Proceedings of the Conference on Decision and Control</span>, <span class="year">2011</span>.
 
 </li><br>
+<li id=Shen20>
+<span class="author">Shen Shen and Russ Tedrake</span>,
+<span class="title">"Sampling Quotient-Ring Sum-of-Squares Programs for Scalable Verification of Nonlinear Systems"</span>,
+<span class="publisher">Proceedings of the 2020 59th IEEE Conference on Decision and Control (CDC)</span>, <span class="year">2020</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Shen20.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Tedrake10>
+<span class="author">Russ Tedrake and  Ian R. Manchester and  Mark M. Tobenkin and  John W. Roberts</span>,
+<span class="title">"{LQR-Trees}: Feedback Motion Planning via Sums of Squares Verification"</span>,
+<span class="publisher">International Journal of Robotics Research</span>, vol. 29, pp. 1038--1052, July, <span class="year">2010</span>.
+[&nbsp;<a href="http://dx.doi.org/10.1177/0278364910369189">link</a>&nbsp;]
+
+</li><br>
+<li id=Majumdar16a>
+<span class="author">Anirudha Majumdar</span>,
+<span class="title">"Funnel Libraries for Real-Time Robust Feedback Motion Planning"</span>,
+PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar16a.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Henrion14>
+<span class="author">Didier Henrion and Milan Korda</span>,
+<span class="title">"Convex computation of the region of attraction of polynomial control systems"</span>,
+<span class="publisher">IEEE Transactions on Automatic Control</span>, vol. 59, no. 2, pp. 297-312, <span class="year">2014</span>.
+
+</li><br>
+<li id=Lasserre10>
+<span class="author">Jean Bernard Lasserre</span>,
+<span class="title">"Moments, Positive Polynomials and Their Applications"</span>,World Scientific
+, vol. 1, <span class="year">2010</span>.
+
+</li><br>
+<li id=Posa17>
+<span class="author">Michael Posa and  Twan Koolen and  Russ Tedrake</span>,
+<span class="title">"Balancing and Step Recovery Capturability via Sums-of-Squares Optimization"</span>,
+<span class="publisher">Robotics: Science and Systems</span>, <span class="year">2017</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Posa17.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Folland01>
+<span class="author">Folland, Gerald B</span>,
+<span class="title">"How to integrate a polynomial over a sphere"</span>,
+<span class="publisher">The American Mathematical Monthly</span>, vol. 108, no. 5, pp. 446--448, <span class="year">2001</span>.
+
+</li><br>
+<li id=Henrion09>
+<span class="author">D. Henrion and  J.B. Lasserre and C. Savorgnan</span>,
+<span class="title">"Approximate volume and integration for basic semialgebraic sets"</span>,
+<span class="publisher">SIAM Review</span>, vol. 51, no. 4, pp. 722--743, <span class="year">2009</span>.
+
+</li><br>
 <li id=Wampler11>
 <span class="author">Charles W. Wampler and Andrew J. Sommese</span>,
 <span class="title">"Numerical algebraic geometry and algebraic kinematics"</span>,
@@ -1221,6 +1619,32 @@ PhD thesis, California Institute of Technology, May 18, <span class="year">2000<
 <span class="author">Sommese and  A.J. and Wampler and  C.W.</span>,
 <span class="title">"The Numerical solution of systems of polynomials arising in engineering and science"</span>,World Scientific Pub Co Inc
 , <span class="year">2005</span>.
+
+</li><br>
+<li id=Lind94>
+<span class="author">R. Lind and G.J. Balas and  A. Packard</span>,
+<span class="title">"Evaluating {D-K} iteration for control design"</span>,
+<span class="publisher">American Control Conference, 1994</span>, vol. 3, pp. 2792 - 2797 vol.3, 29 June-1 July, <span class="year">1994</span>.
+
+</li><br>
+<li id=Majumdar13>
+<span class="author">Anirudha Majumdar and  Amir Ali Ahmadi and Russ Tedrake</span>,
+<span class="title">"Control Design along Trajectories with Sums of Squares Programming"</span>,
+<span class="publisher">Proceedings of the 2013 IEEE International Conference on Robotics and Automation (ICRA)</span>, pp. 4054-4061, <span class="year">2013</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/majumdar13.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Korda13>
+<span class="author">Korda, Milan and Henrion, Didier and Jones, Colin N</span>,
+<span class="title">"Controller design and region of attraction estimation for nonlinear dynamical systems"</span>,
+<span class="publisher">The 19th World Congress of the International Federation of Automatic Control (IFAC)</span>, <span class="year">2014</span>.
+
+</li><br>
+<li id=Majumdar13b>
+<span class="author">Anirudha Majumdar and Ram Vasudevan and Mark M. Tobenkin and Russ Tedrake</span>,
+<span class="title">"Convex Optimization of Nonlinear Feedback Controllers via Occupation Measures"</span>,
+<span class="publisher">Proceedings of Robotics: Science and Systems (RSS)</span>, <span class="year">2013</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar13b.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Aicardi95>

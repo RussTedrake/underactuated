@@ -58,6 +58,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 9"><h1>Trajectory
   Optimization</h1>
+  <a style="float:right; margin-top:-80px;" target="trajopt" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/trajopt.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open Corresponding Notebook In Colab"/></a>
+  <div style="clear:right;"></div>
 
   <p>I've argued that optimal control is a powerful framework for specifying
   complex behaviors with simple objective functions, letting the dynamics and
@@ -77,13 +79,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   high-dimensional systems beyond the linearization around a goal. That is
   precisely the goal for this chapter.</p>
 
-  <p>The big change that is going to allow us to scale to high-dimensional
-  systems is that we are going to give up the goal of solving for the optimal
-  feedback controller for the entire state space, and instead attempt to find
-  an optimal control solution that is valid from only a single initial
-  condition. Instead of representing this as a feedback control function, we
-  can represent this solution as a <em>trajectory</em>, $\bx(t), \bu(t)$,
-  typically defined over a finite interval.</p>
+  <p>In order to scale to high-dimensional systems, we are going to formulate a
+  simpler version of the optimization problem.  Rather than trying to solve for
+  the optimal feedback controller for the entire state space, in this chapter
+  we will instead attempt to find an optimal control solution that is valid
+  from only a single initial condition. Instead of representing this as a
+  feedback control function, we can represent this solution as a
+  <em>trajectory</em>, $\bx(t), \bu(t)$, typically defined over a finite
+  interval.</p>
 
   <section><h1>Problem Formulation</h1>
 
@@ -109,12 +112,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     parameterization, with a variety of different properties in terms of speed,
     robustness, and accuracy of the results. We will outline just a few of the
     most popular below; I would recommend <elib>Betts98+Betts01</elib> for
-    additional details.  In our graph-search dynamic programming algorithms, we
-    discretized the dynamics of the system on a mesh spread across the state
-    space; in addition to not scaling well, we also found it difficult to bound
-    the errors due to the discretization.  Now we are in the space of
-    discretizing/parameterizing over time; conveniently we know relatively much
-    more about the numerics of integration along a trajectory.</p>
+    additional details.</p>
+    
+    <p>It is worth contrasting this parameterization problem with the one that
+    we faced in our continuous-dynamic programming algorithms.  For trajectory
+    optimization, we need a finite-dimensional parameterization in only one
+    dimension (time), whereas in the mesh-based value iteration algorithms we
+    had to work in the dimension of the state space.  Our mesh-based
+    discretizations scaled badly with this state dimension, and led to
+    numerical errors that were difficult to deal with.  There is relatively
+    much more known about discretizing solutions to differential equations over
+    time, including work on error-controlled integration.  And the number of
+    parameters required for trajectory parameterizations scales linearly with
+    the state dimension, instead of exponentially in mesh-based value
+    iteration.</p>
 
   </section>
 
@@ -143,18 +154,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       resulting trajectory optimization is a convex optimization (specifically a
       linear program or quadratic program depending on the objective).  As a
       result, we can reliably solve these problems to global optimality at quite
-      large scale, potentially even online -- consider the case where the
-      constraints, like staying in a lane, are not known until runtime.</p>
+      large scale; these days it is common to solve these optimization online inside a high-rate feedback controller.</p>
 
       <example><h1>Trajectory optimization for the Double Integrator</h1>
 
         <p>We've looked at a few optimal control problems for the double
         integrator using value iteration.  For one of them -- the quadratic
         objective with no constraints on $\bu$ -- we know now that we could have
-        solved the problem "exactly" using LQR.  But the minimum-time problem
-        and even the LQR problem with constraints do not yet have more
-        satisyfing solutions than discretizing state space, which causes
-        potentially large numerical artifacts.</p>
+        solved the problem "exactly" using LQR.  But we have not yet given satisfying numerical solutions for the minimum-time problem, nor for the constrained LQR problem.</p>
 
         <p>In the trajectory formulation, we can solve these problems exactly
         for the discrete-time double integrator, and with better accuracy for
@@ -164,84 +171,92 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         evaluate them using convex optimization!  The limitation, of course, is
         that we are only solving them for one initial condition at a time.</p>
 
-        <jupyter>examples/trajectory_optimization.ipynb</jupyter>
+        <p><a target="trajopt"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/trajopt.ipynb#scrollTo=fhc5mrE9_V81"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
 
       </example>
 
-      <p>If you have not studied linear programming before, you might be
-      surprised by the modeling power of even linear objectives within this
-      framework.  Consider, for instance, that we want to drive a system to the
-      origin.  It turns out that taking $$\ell(\bx,\bu) = |\bx| + |\bu|,$$ the
-      direct transcription can still be formulated as a linear program.  To do
-      it, add additional decision variables ${\bf s}_x[\cdot]$ and ${\bf
-      s}_u[\cdot]$ -- these are commonly referred to as <i>slack variables</i>
+      <p>If you have not studied convex optimization before, you might be
+      surprised by the modeling power of even of this framework.  Consider, for
+      instance, an objective of the form $$\ell(\bx,\bu) = |\bx| + |\bu|.$$
+      This can be formulated as a linear program.  To do it, add additional
+      decision variables ${\bf s}_x[\cdot]$ and ${\bf s}_u[\cdot]$ -- these are
+      commonly referred to as <i>slack variables</i>
       -- and write $$\min_{\bx,\bu,{\bf s}_x,{\bf s}_u} \sum_n^{N-1} {\bf
       s}_x[n] + {\bf s}_u[n], \quad \text{s.t.} \quad {\bf s}_x[n] \ge x[n],
       \quad {\bf s}_x[n] \ge -x[n], \quad ...$$  The field of convex
       optimization is replete with tricks like this.  Knowing and recognizing
-      them are skills of the (optimization) trade.  But there are many relevant
-      constraints which cannot be recast into convex constraints with any amount
-      of skill -- going either left or right around an obstacle is one of the
-      most important examples.  These represent a fundamentally non-convex
-      constraints in $\bx$; we'll discuss the implications of using non-convex
-      optimization for trajectory optimization below.</p>
+      them are skills of the (optimization) trade.  But there are also many
+      relevant constraints which cannot be recast into convex constraints (in
+      the original coordinates) with any amount of skill.  An important example
+      is obstacle avoidance.  Imagine a vehicle that must decide if it should
+      go left or right around an obstacle.  This represents a fundamentally
+      non-convex constraint in $\bx$; we'll discuss the implications of using
+      non-convex optimization for trajectory optimization below.</p>
 
     </subsection>
 
     <subsection id="direct_shooting"><h1>Direct Shooting</h1>
 
       <p>The savvy reader might have noticed that adding $\bx[\cdot]$ as
-      decision variables was not strictly necessary.  If we know $\bx[0]$ and we
-      know $\bu[\cdot]$, then we should be able to solve for $\bx[n]$ -- that's
-      just forward simulation.  Indeed, by satisfying the constraints in direct
-      transcription, the solver is effectively solving the difference equation
-      (acausally).  For our discrete-time linear systems, this is particularly
-      easy and nice: \begin{align*}\bx[1] =& {\bf A}\bx[0] + {\bf B}\bu[0] \\
-      \bx[2] =& {\bf A}({\bf A}\bx[0] + {\bf B}\bu[0]) + {\bf B}\bu[1] \\ \bx[n]
-      =& {\bf A}^n\bx[0] + \sum_{k=0}^{n-1} {\bf A}^{n-1-k}{\bf
+      decision variables was not strictly necessary.  If we know $\bx[0]$ and
+      we know $\bu[\cdot]$, then we should be able to solve for $\bx[n]$ using
+      forward simulation.  For our discrete-time linear systems, this is
+      particularly nice: \begin{align*}\bx[1] =& {\bf A}\bx[0] + {\bf B}\bu[0]
+      \\ \bx[2] =& {\bf A}({\bf A}\bx[0] + {\bf B}\bu[0]) + {\bf B}\bu[1] \\
+      \bx[n] =& {\bf A}^n\bx[0] + \sum_{k=0}^{n-1} {\bf A}^{n-1-k}{\bf
       B}u[k].\end{align*}  What's more, the solution is still linear in
       $\bu[\cdot]$.  This is amazing... we can get rid of a bunch of decision
       variables, and turn a constrained optimization problem into an
       unconstrained optimization problem (assuming we don't have any other
       constraints).  This approach -- using $\bu[\cdot]$ but <i>not</i>
-      $\bx[\cdot]$ as decision variables and evaluating $\ell(\bx[n],\bu[n])$ by
-      effectively forward simulating to obtain $\bx[n]$ -- is called the
-      <i>direct shooting</i> transcription.  For linear systems with
-      linear/quadratic objectives in $\bx$, and $\bu$, it is still a convex
-      optimization, and has less decision variables and constraints than the
-      direct transcription.</p>
+      $\bx[\cdot]$ as decision variables and using forward simulation to obtain
+      $\bx[n]$ -- is called the <i>direct shooting</i> transcription.  For
+      linear systems with linear/quadratic objectives in $\bx$, and $\bu$, it
+      is still a convex optimization, and has less decision variables and
+      constraints than the direct transcription.</p>
 
     </subsection>
 
-    <subsection id="computational_considerations"><h1>Computational Considerations</h1></subsection>
+    <subsection id="computational_considerations"><h1>Computational
+    Considerations</h1></subsection>
 
       <p>So is direct shooting uniformly better than the direct transcription
       approach?  I think it is not.  There are a few potential reason that one
       might prefer the direct transcription: <ul><li>Numerical conditioning.
-      While it is fundamental to the trajectory optimization problem that
-      control input $\bu[0]$ has more opportunity to have a large impact on the
-      total cost than control input $\bu[N-1]$, the direct transcription
-      approach spreads this out over a large number of well-balanced
-      constraints.  Shooting involves calculating ${\bf A}^n$ for potentially
-      large $n$.</li><li>Adding state constraints.  Having $\bx[n]$ as explicit
-      decision variables makes it very easy/natural to add additional state
-      constraints; and the solver effectively reuses the computation of ${\bf
-      A}^n$ for each constraint.  In shooting, one has to unroll those terms for
-      each new constraint.</li><li>Parallelization.  For larger problems,
-      evaluating the constraints can be a substantial cost.  In direct
-      transcription, one can evaluate the dynamics/constraints in parallel
-      (because each iteration begins with $\bx[n]$ already given), whereas
-      shooting is more fundamentally a serial operation.</li></ul></p>
+      Shooting involves calculating ${\bf A}^n$ for potentially large $n$,
+      which can lead to a large range of coefficient values in the constraints.
+      This problem (sometimes referred to as the "tail wagging the dog") is
+      somewhat fundamental in trajectory optimization: the control input
+      $\bu[0]$ really does have more opportunity to have a large impact on the
+      total cost than control input $\bu[N-1]$.  But the direct transcription
+      approach combats the numerical issue by spreading this effect out over a
+      large number of well-balanced constraints.</li><li>Adding state
+      constraints.  Having $\bx[n]$ as explicit decision variables makes it
+      very easy/natural to add additional state constraints; and the solver
+      effectively reuses the computation of ${\bf A}^n$ for each constraint.
+      In shooting, one has to unroll those terms for each new
+      constraint.</li><li>Parallelization.  For larger problems, evaluating the
+      constraints can be a substantial cost.  In direct transcription, one can
+      evaluate the dynamics/constraints in parallel (because each iteration
+      begins with $\bx[n]$ already given), whereas shooting is more
+      fundamentally a serial operation.</li></ul></p>
 
       <p>For linear convex problems, the solvers are mature enough that these
       differences often don't amount to much.  For nonlinear optimization
-      problems, the differences can be substantial.  And both approaches have
-      their loyal camps.</p>
+      problems, the differences can be substantial.  If you look at trajectory
+      optimization papers in mainstream robotics, you will see that both direct
+      transcription and direct shooting approaches are used. (It's possible you
+      could guess which research lab wrote the paper simply by the
+      transcription they use!)</p>
 
       <p>It is also worth noting that the problems generated by the direct
       transcription have an important and exploitable "banded" sparsity pattern
-      -- most of the constraints touch only a small number of variables -- it's
-      actually the same pattern that we exploit in the Riccati equations.
+      -- most of the constraints touch only a small number of variables.  This
+      is actually the same pattern that we exploit in the Riccati equations.
       Thanks to the importance of these methods in real applications, numerous
       specialized solvers have been written to explicitly exploit this sparsity
       (e.g. <elib>Wang09a</elib>).</p>
@@ -270,14 +285,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
   <section><h1>Nonconvex Trajectory Optimization</h1>
 
-    <p>I humbly recommend that you study the convex trajectory optimization case
-    for clarity and sense of purpose, in practice trajectory optimization is
-    often used to solve nonconvex problems.  Our formulation can become
-    non-convex for a number of reasons -- if the dynamics are nonlinear then the
-    dynamic constraints are non-convex.  You may also wish to have a nonconvex
-    objective or nonconvex additional constraint (e.g. non-collision), even if
-    your dynamics are linear.  Typically we formulate these problems using tools
-    from <a href="optimization.html#nonlinear">nonlinear programming</a>.</p>
+    <p>I strongly recommend that you study the convex trajectory optimization
+    case; it can lead you to mental clarity and sense of purpose.  But in
+    practice trajectory optimization is often used to solve nonconvex problems.
+    Our formulation can become nonconvex for a number of reasons.  For example,
+    if the dynamics are nonlinear, then the dynamic constraints become
+    nonconvex.  You may also wish to have a nonconvex objective or nonconvex
+    additional constraint (e.g. collision avoidance). Typically we formulate
+    these problems using tools from <a
+    href="optimization.html#nonlinear">nonlinear programming</a>.</p>
 
     <subsection><h1>Direct Transcription and Direct Shooting</h1>
 
@@ -293,33 +309,35 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       given $\bx[0]$ and $\bu[\cdot]$ by forward simulation.  But things get a
       bit more interesting when we consider continuous-time systems.</p>
 
-      <p>For nonlinear dynamics, there is no one obvious choice for how realize
-      the discrete dynamics $$\bx[n+1] = \bx[n] + \int_{t[n]}^{t[n+1]} f(\bx(t),
-      \bu(t)) dt, \quad \bx(t[n]) = \bx[n].$$  For instance, in <drake></drake>
+      <p>For nonlinear dynamics, we have many choices for how to approximate
+      the discrete dynamics $$\bx[n+1] = \bx[n] + \int_{t[n]}^{t[n+1]}
+      f(\bx(t), \bu(t)) dt, \quad \bx(t[n]) = \bx[n].$$  For instance, in
+      <drake></drake>
       we have an entire <a
       href="https://drake.mit.edu/doxygen_cxx/group__integrators.html">suite of
       numerical integrators</a> that achieve different levels of simulation
       speed and/or accuracy, both of which can be highly dependent on the
-      details of ${\bf f}(\bx,\bu)$.  Choosing a different integrator can also
-      have subtle effects on the resulting optimization problem -- for instance
-      in optimization we typically avoid variable-step integration because
-      gradients can be discontinuous based on the integrators decision to take a
-      step (or not).</p>
+      details of ${\bf f}(\bx,\bu)$.</p>
 
       <todo>Finish supporting IntegratorBase in DirectTranscription and write an
       example showing how to use it here.</todo>
 
-      <p>But once we have opened the door to nonlinear optimization approaches,
-      then a new trick becomes available.  In the convex formulation, we chose
-      the time discretization apriori, and left it fixed for the duration of the
-      optimization.  That is because time enters in a nonlinear way into the
-      constraints.  But, as I've hinted with my notation above, we can now
-      imagine adding $t[\cdot]$ to the problem as decision variables, allowing
-      the optimizer to stretch or shrink the time intervals in order to solve
-      the problem.  Adding some constraints to these time variables is essential
-      in order to avoid trivial solutions (like collapsing to a trajectory of
-      zero duration); one could potentially even add more advanced constraints
-      to control the integration error.</p>
+      <p>One very important idea in numerical integration of differential
+      equations is the use of variable-step integration as a means for
+      controlling integration error.  <a
+      href="https://en.wikipedia.org/wiki/Runge%E2%80%93Kutta_methods#Adaptive_Runge%E2%80%93Kutta_methods">Runge-Kutta-Fehlberg</a>,
+      also known as "RK45", is one of the most famous variable-step
+      integrators.  We typically avoid using variable steps inside a constraint
+      (it can lead to discontinuous gradients), but it is possible to
+      accomplish something similar in trajectory optimization by allowing the
+      sample times, $t[\cdot]$, themselves to be decision variables.  This
+      allows the optimizer to stretch or shrink the time intervals in order to
+      solve the problem, and is particularly useful if you do not know apriori
+      what the total duration of the trajectory should be.  Adding some
+      constraints to these time variables is essential in order to avoid
+      trivial solutions (like collapsing to a trajectory of zero duration). One
+      could potentially even add constraints to bound the integration
+      error.</p>
 
     </subsection> <!-- end dirtran -->
 
@@ -342,10 +360,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       to be a cubic polynomial.</p>
 
       <p>It turns out that in this sweet spot, the only decision variables we
-      need in our optimization are the values $\bu(t)$ and $\bx(t)$ at the
-      break points of the spline.  You might think that you would need the
-      coefficients of the cubic spline parameters, but you do not.  For the
-      first order interpolation on $\bu(t)$, given $\bu(t_k)$ and
+      need in our optimization are the sample values $\bu(t)$ and $\bx(t)$ at
+      the so called "break" points of the spline.  You might think that you
+      would need the coefficients of the cubic spline parameters, but you do
+      not.  For the first-order interpolation on $\bu(t)$, given $\bu(t_k)$ and
       $\bu(t_{k+1})$, we can solve for every value $\bu(t)$ over the interval
       $t \in [k, k+1]$.  But we also have everything that we need for the cubic
       spline: given $\bx(t_k)$ and $\bu(t_k)$, we can compute $\dot\bx(t_k) = f
@@ -353,44 +371,40 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \dot\bx (t_k), \dot\bx(t_{k+1})$ completely define all of the parameters
       of the cubic spline over the interval $t\in[t_k, t_{k+1}]$.  This is very
       convenient, because it is easy for us to add additional constraints to
-      $\bu$ and $\bx$ at the knot points (and would have been relatively harder
-      to have to convert every constraint into constraints on the spline
+      $\bu$ and $\bx$ at the sample points (and would have been relatively
+      harder to have to convert every constraint into constraints on the spline
       coefficients).</p>
 
       <figure>
-        <img width="80%" src="figures/dircol.svg">
+        <img width="80%" src="data/collocation.svg">
         <figcaption>Cubic spline parameters used in the direct collocation method.</figcaption>
       </figure>
 
-      <p>So far, given $\dot{\bx} = f(\bx,\bu)$, a list of break points $t_0, .
-      t_N$, and arbitrary values $\bx(t_k), \bu(t_k)$, we can extract the
-      spline representation of $\bu(t)$ and $\bx(t)$.  So far we haven't added
-      any actual constraints to our mathematical program.  Now, just like in
-      direct transcription, we need a constraint that will tell the optimizer
-      how $\bx(t_{k+1})$ is related to $\bx(t_k)$, etc.  In direct collocation,
-      the constraint that we add is that the derivative of the spline at the
-      <i>collocation points</i> matches the dynamics.  In particular, for our
-      sweet spot, if we choose the collocation points to be the midpoints of the
-      spline, then we have that \begin{gather*} t_{c,k} = \frac{1}{2}\left(t_k +
-      t_{k+1}\right), \qquad h_k = t_{k+1} - t_k, \\ \bu(t_{c,k}) =
-      \frac{1}{2}\left(\bu(t_k) + \bu(t_{k+1})\right), \\ \bx(t_{c,k}) =
-      \frac{1}{2}\left(\bx(t_k) + \bx(t_{k+1})\right) + \frac{h}{8}
-      \left(\dot\bx(t_k) - \dot\bx(t_{k+1})\right), \\ \dot\bx(t_{c,k}) =
+      <p>It turns out that we need one more constraint per time segment to
+      enforce the dynamics and to fully specify the trajectory.  In direct
+      collocation, we add a derivative constraint at the so-called 
+      <i>collocation points</i>.  In particular, if we choose the collocation
+      points to be the midpoints of the spline, then we have that
+      \begin{gather*} t_{c,k} = \frac{1}{2}\left(t_k + t_{k+1}\right), \qquad
+      h_k = t_{k+1} - t_k, \\ \bu(t_{c,k}) = \frac{1}{2}\left(\bu(t_k) +
+      \bu(t_{k+1})\right), \\ \bx(t_{c,k}) = \frac{1}{2}\left(\bx(t_k) +
+      \bx(t_{k+1})\right) + \frac{h}{8} \left(\dot\bx(t_k) -
+      \dot\bx(t_{k+1})\right), \\ \dot\bx(t_{c,k}) =
       -\frac{3}{2h}\left(\bx(t_k) - \bx(t_{k+1})\right) - \frac{1}{4}
       \left(\dot\bx(t_k) + \dot\bx(t_{k+1})\right). \end{gather*} These
       equations come directly from the equations that fit the cubic spline to
       the end points/derivatives then interpolate them at the midpoint.  They
       give us precisely what we need to add the dynamics constraint to our
       optimization at the collocation points:\begin{align*}
-      \min_{\bx[\cdot],\bu[\cdot]} \quad & \ell_f(\bx[N]) + \sum_{n_0}^{N-1} h_n
-      \ell(\bx[n],\bu[n]) \\ \subjto \quad & \dot\bx(t_{c,n}) = f(\bx(t_{c,n}),
-      \bu(t_{c,n})), & \forall n \in [0,N-1]  \\ & \bx[0] = \bx_0 \\ & +
-      \text{additional constraints}. \end{align*}  I hope this notation is clear
-      -- I'm using $\bx[k] = \bx(t_k)$ as the decision variables, and the
-      collocation constraint at $t_{c,k}$ depends on the decision variables:
-      $\bx[k], \bx[k+1], \bu[k], \bu[k+1]$. The actual equations of motion get
-      evaluated at both the break points, $t_k$, and the collocation points,
-      $t_{c,k}$.</p>
+      \min_{\bx[\cdot],\bu[\cdot]} \quad & \ell_f(\bx[N]) + \sum_{n_0}^{N-1}
+      h_n \ell(\bx[n],\bu[n]) \\ \subjto \quad & \dot\bx(t_{c,n}) =
+      f(\bx(t_{c,n}), \bu(t_{c,n})), & \forall n \in [0,N-1]  \\ & \bx[0] =
+      \bx_0 \\ & + \text{additional constraints}. \end{align*}  I hope this
+      notation is clear -- I'm using $\bx[k] = \bx(t_k)$ as the decision
+      variables, and the collocation constraint at $t_{c,k}$ depends on the
+      decision variables: $\bx[k], \bx[k+1], \bu[k], \bu[k+1]$. The actual
+      equations of motion get evaluated at both the break points, $t_k$, and
+      the collocation points, $t_{c,k}$.</p>
 
       <p>Once again, direct collocation effectively integrates the equations of
       motion by satisfying the constraints of the optimization -- this time
@@ -413,7 +427,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         transcription, but the convergence is visibly different.  Try it for
         yourself:</p>
 
-        <jupyter>examples/trajectory_optimization.ipynb</jupyter>
+        <p><a target="trajopt"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/trajopt.ipynb#scrollTo=fhc5mrE9_V81"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
 
         As always, make sure you take a look at the code!
       </example>
@@ -430,8 +448,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       spines, and the spline coefficients were the decision variables.  A
       closely related approach, often called "pseudo-spectral" optimal control,
       uses the same collocation idea, but represents the trajectories instead
-      using a linear combination of <i>global polynomial</i> basis functions.
-      These methods use typically much higher degree polynomials, but can
+      using a linear combination of <i>global, polynomial</i> basis functions.
+      These methods use typically much higher-degree polynomials, but can
       leverage clever parameterizations to write sparse collocation objectives
       and to select the collocation points <elib>Garg11+Ross12a</elib>.
       Interestingly, The continuously-differentiable nature of the the
@@ -941,7 +959,136 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <todo>Multiple Shooting: Direct transcription is the limit of multiple shooting where every timestep is a different "shot".</todo>
 
-    <a href="acrobot.html#differential_flatness">Differential flatness</a>.
+    <subsection id="differential_flatness"><h1>Differential Flatness</h1>
+
+      <p>There are some very important cases where nonconvex trajectory
+      optimization can be turned back into convex trajectory optimization based
+      on a clever change of variables.  One of the key ideas in this space is
+      the notion of "differential flatness", which is philosophically quite
+      close to the idea of <a
+      href="acrobot.html#partial_feedback_linearization">partial feedback
+      linearization</a> that we discussed for acrobots and cart-pole systems.
+      But perhaps the most famous applciation of differential flatness, which
+      we will explore here, is actually for quadrotors.</p>
+  
+      <p>One of the most important lessons from partial feedback linearization,
+      is the idea that if you have $m$ actuators, then you basically get to
+      control exactly $m$ quantities of your system.  Differential flatness
+      exploits this same idea (choosing $m$ outputs), but in the opposite
+      direction.  The idea is that, for some systems, if you give me a
+      trajectory in those $m$ coordinates, it may in fact dictate what all of
+      the states/actuators must have been doing.  The fact that you can only
+      execute a subset of possible trajectories can, in this case, make
+      trajectory planning much easier!</p>
+  
+      <p>Let's start with an example...</p>
+  
+      <example><h1>Differential flatness for the Planar Quadrotor</h1>
+  
+        <p>The planar quadrotor model <a
+        href="acrobot.html#planar_quadrotor">described earlier</a> has 3
+        degrees of freedom ($x,y,\theta$) but only two actuators (one for each
+        propellor).  My claim is that, if you give me a trajectory for just the
+        location of the center of mass: $x(t), y(t), \forall t \in [t_0, t_f],$
+        then I will be able to infer what $\theta(t)$ must be over that same
+        interval in order to be feasible.  Furthermore, I can even infer
+        $\bu(t)$. There is one technical condition required: the trajectory you
+        give me for $x(t)$ and $y(t)$ needs to be continuously differentiable
+        (four times).</p>
+  
+        <p>To see this, first observe that from ($\ref{eq:quad_x}$) and
+        ($\ref{eq:quad_y}$) we have $$\frac{-m \ddot{x}}{ m \ddot{y} + mg} =
+        \frac{(u_1 + u_2)\sin\theta}{(u_1+u_2)\cos\theta} = \tan\theta.$$ In
+        words, given $\ddot{x}(t)$ and $\ddot{y}(t)$, I can solve for
+        $\theta$(t).  I can differentiate this relationship (in time) twice more
+        to obtain $\ddot\theta$.  Using ($\ref{eq:quad_theta}$) with
+        ($\ref{eq:quad_x}$) or ($\ref{eq:quad_y}$) give us two linear equations
+        for $u_1$ and $u_2$ which are easily solved.</p>
+  
+        <p>Now you can see why we need the original trajectories to be smooth --
+        the solution to $\bu(t)$ depends on $\ddot\theta(t)$ which depends on
+        $\frac{d^4 x(t)}{dt^4}$ and $\frac{d^4 y(t)}{dt^4}$; we need those
+        derivatives to exist along the entire trajectory.</p>
+  
+        <p>What's more -- if we ignore input limits for a moment -- <i>any</i>
+        sufficiently smooth trajectory of $x(t), y(t)$ is feasible, so if I can
+        simply find one that avoids the obstacles, then I have designed my state
+        trajectory.  As we will see, optimizing even high-degree
+        piecewise-polynomials is actually an easy problem (it works out to be a
+        quadratic program), assuming the constraints are convex.  In practice,
+        this means that once you have determined whether to go left or right
+        around the obstacles, trajectory design is easy and fast.</p>
+  
+        <p>I've coded up a simple example of that for you here:</p>
+  
+          <p><a target="acrobot"
+            href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/acrobot.ipynb#scrollTo=ZO_bsG2pA8bY"><img
+            src="https://colab.research.google.com/assets/colab-badge.svg"
+            alt="Open In Colab"/></a>
+              </p>
+  
+        <figure> <img width="100%" src="figures/differential_flatness.svg"/>
+        <figcaption>Differential flatness for the planar quadrotor -- by solving
+        a simple optimization to find a smooth trajectory for $x(t)$ and $y(t)$,
+        I can back out $\theta(t)$ and even $\bu(t)$. </figcaption> </figure>
+  
+      </example>
+  
+      <p>The example above demonstrates that the planar quadrotor system is
+      differentially flat in the outputs $x(t)$, $y(t)$.  More generally, if we
+      have a dynamical system $$\dot{\bx} = f(\bx, \bu),$$ and we design some
+      output coordinates (essentially "task-space"): $$\bz(t) = h\left(\bx, \bu,
+      \frac{d\bu}{dt}, ..., \frac{d^k\bu}{dt^k}\right),$$ such that we can write
+      the $\bx$ and $\bu$ purely as a function of the output and it's time
+      derivatives, \begin{gather*} \bx (t) = \bx\left(\bz, \frac{d\bz}{dt}, ...,
+      \frac{d^k\bz}{dt^k}\right), \\ \bu (t) = \bu\left(\bz, \frac{d\bz}{dt}, ..,
+      \frac{d^k\bz}{dt^k}\right),\end{gather*} then we say that the system $f$ is
+      differentially flat in the outputs $\bz$ <elib>Murray95</elib>.  And the
+      requirement for showing that a system is differentially flat in those
+      outputs is to write the function which solves for $\bx(t)$ and $\bu(t)$ as a
+      function of only $\bz(t)$ and its time derivatives.</p>
+  
+      <p>I'm not aware of any numerical recipes for showing that a system is
+      differentially flat nor for finding potential flat outputs, but I admit I
+      haven't worked on it nor looked for those recipes.  That would be
+      interesting!  I think of differential flatness as a property that one must
+      find for your system -- typically via a little mechanical intuition and a
+      lot of algebra.  Once found, it can be very useful.</p>
+  
+      <example><h1>Differential flatness for the 3D Quadrotor</h1>
+  
+        <p>Probably the most famous example of differential flatness is on the
+        full 3D quadrotors. <elib>Mellinger11</elib> showed that the 3D quadrotor
+        is differentially flat in the outputs $\{x,y,z,\theta_{yaw}\}$.  They used
+        this, to dramatic effect, to perform all sorts of acrobatics.  The
+        resulting videos are awesome (and probably deserve a lot of credit for the
+        widespread popularity of quadrotors in academia and industry over the next
+        few years).
+        </p>
+  
+        <figure>
+          <iframe width="560" height="315"
+                  src="https://www.youtube.com/embed/MvRTALJp8DM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <iframe width="560" height="315"
+                  src="https://www.youtube.com/embed/geqip_0Vjec" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+          <figcaption>Aggressive quadrotor trajectories using differential
+            flatness from <elib>Mellinger11</elib>.</figcaption>
+        </figure>
+  
+        <p>A few things to note about these examples, just so we also understand
+        the limitations.  First, the technique above is great for designing
+        trajectories, but additional work is required to stabilizing those
+        trajectories (we'll cover that topic in more detail later in the notes).
+        Trajectory stabilization benefits greatly from good state estimation, and
+        the examples above were all performed in a motion capture arena. Also,
+        the "simple" version of the trajectory design that is fast enough to be
+        used for flying through moving hoops is restricted to convex optimization
+        formulations -- which means one has to hard-code apriori the decisions
+        about whether to go left or right / up or down around each obstacle.</p>
+  
+      </example>
+  
+    </subsection>
 
     <subsection><h1>Iterative LQR and Differential Dynamic
       Programming</h1>
@@ -1194,6 +1341,18 @@ PhD thesis, Massachusetts Institute of Technology, September, <span class="year"
 <span class="author">Dimitri P. Bertsekas</span>,
 <span class="title">"Dynamic Programming and Optimal Control"</span>,Athena Scientific
 , <span class="year">2000</span>.
+
+</li><br>
+<li id=Murray95>
+<span class="author">Richard M. Murray and  Muruhan Rathinam and Willem Sluis</span>,
+<span class="title">"Differential flatness of mechanical control systems: A catalog of prototype systems"</span>,
+<span class="publisher">ASME international mechanical engineering congress and exposition</span>, <span class="year">1995</span>.
+
+</li><br>
+<li id=Mellinger11>
+<span class="author">D. Mellinger and V. Kumar</span>,
+<span class="title">"Minimum snap trajectory generation and control for quadrotors"</span>,
+<span class="publisher">Proceedings of the 2011 IEEE International Conference on Robotics and Automation (ICRA)</span>, pp. 2520--2525, <span class="year">2011</span>.
 
 </li><br>
 <li id=Li04>

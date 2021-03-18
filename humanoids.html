@@ -102,17 +102,17 @@ Robots</h1>
       would be considerably harder if my control input or input constraints
       depend on the orientation, $\theta$, but we don't need that here yet).</p>
 
-      <p>Now imagine that you just a small number of thrusters (let's say two)
-      each with severe input constraints.  To make things more interesting, let
-      us say that you're allowed to move the thrusters, so $\dot{r}_i$ becomes
-      an additional control input, but with some important limitations:  you
-      have to turn the thrusters off when they are moving (e.g.
-      $|F_i||\dot{r}_i| = 0$) and there is a limit to how quickly you can move
-      the thrusters $|\dot{r}|_i \le v_{max}$.  This problem is now a lot more
-      difficult, due especially to the fact that constraints of the form $u_1
-      u_2 = 0$ are non-convex.</p> <center><img width="25%"
-      src="figures/complementarityConstraint.svg"/></center> <p>I find this
-      a very useful thought exercise; somehow our controller needs to make an
+      <p>Now imagine that you have just a small number of thrusters (let's say
+      two) each with severe input constraints.  To make things more
+      interesting, let us say that you're allowed to move the thrusters, so
+      $\dot{r}_i$ becomes an additional control input, but with some important
+      limitations:  you have to turn the thrusters off when they are moving
+      (e.g. $|F_i||\dot{r}_i| = 0$) and there is a limit to how quickly you can
+      move the thrusters $|\dot{r}|_i \le v_{max}$.  This problem is now a lot
+      more difficult, due especially to the fact that constraints of the form
+      $u_1 u_2 = 0$ are non-convex.</p> <center><img width="25%"
+      src="figures/complementarityConstraint.svg"/></center> <p>I find this a
+      very useful thought exercise; somehow our controller needs to make an
       effectively discrete decision to turn off a thruster and move it.  The
       framework of optimal control should support this - you are sacrificing a
       short-term loss of control authority for the long-term benefit of having
