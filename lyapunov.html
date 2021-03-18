@@ -1423,6 +1423,30 @@ V = RegionOfAttraction(sys, context)
 
     </exercise>
 
+
+    <exercise><h1>Gradient Flow in Euclidean Space</h1>
+
+      <p>We can use Lyapunov analysis to analyze the behavior of optimization algorithms like gradient descent.
+        Consider an objective function $\ell:\mathbf{R}^n\rightarrow \mathbf{R}$ with $\ell(x)\geq 0$ for all $x$, and we want to find $x$ that minimize $\ell(x)$. 
+        The gradient flow is a coninuous-time analog of gradient descent and is defined as $\dot{x} = -\frac{\partial \ell}{\partial x}$.
+        
+        <ol type="a">
+          <li>Show that the objective function $\ell(x)$ is a Lyapunov function of the gradient flow.</li>
+  
+          <li>We can use Lyapunov to argue that an optimization problem will converge to a global optimum, even if it is non-convex.
+            Suppose that the Lyapunov function $\ell$, has negative definite $\dot{\ell}$. Show that the objective function $\ell$ has a unique minimizer at the origin.</li>
+
+            <li>Consider the objective function in the figure below. Could this be a valid Lyapunov function for showing globally asymptotic stability?</li>
+
+          <figure>
+            <img width="60%" src="figures/exercises/gradient_flow.png"/>
+            <figcaption>Lyapunov function candidate for asymptotic stability.</figcaption>
+          </figure>
+          
+          <li>Consider the objective function $\ell(x) = x_1^4-8x_1^3+18x_1^2+x_2^2$ with $x\in\mathbf{R}^2$. Find the largest $\rho$ such that $\{x\mid \ell(x)<\rho \}$ is a valid region of attraction for the origin.</li>
+        </ol>
+    </exercise>
+
     <exercise><h1>Control-Lyapunov Function</h1>
 
       <p>Consider the problem of synthesizing a stabilizing feedback law $\bu =
