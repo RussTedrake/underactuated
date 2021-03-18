@@ -79,13 +79,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   high-dimensional systems beyond the linearization around a goal. That is
   precisely the goal for this chapter.</p>
 
-  <p>The big change that is going to allow us to scale to high-dimensional
-  systems is that we are going to give up the goal of solving for the optimal
-  feedback controller for the entire state space, and instead attempt to find
-  an optimal control solution that is valid from only a single initial
-  condition. Instead of representing this as a feedback control function, we
-  can represent this solution as a <em>trajectory</em>, $\bx(t), \bu(t)$,
-  typically defined over a finite interval.</p>
+  <p>In order to scale to high-dimensional systems, we are going to formulate a
+  simpler version of the optimization problem.  Rather than trying to solve for
+  the optimal feedback controller for the entire state space, in this chapter
+  we will instead attempt to find an optimal control solution that is valid
+  from only a single initial condition. Instead of representing this as a
+  feedback control function, we can represent this solution as a
+  <em>trajectory</em>, $\bx(t), \bu(t)$, typically defined over a finite
+  interval.</p>
 
   <section><h1>Problem Formulation</h1>
 
@@ -111,12 +112,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     parameterization, with a variety of different properties in terms of speed,
     robustness, and accuracy of the results. We will outline just a few of the
     most popular below; I would recommend <elib>Betts98+Betts01</elib> for
-    additional details.  In our graph-search dynamic programming algorithms, we
-    discretized the dynamics of the system on a mesh spread across the state
-    space; in addition to not scaling well, we also found it difficult to bound
-    the errors due to the discretization.  Now we are in the space of
-    discretizing/parameterizing over time; conveniently we know relatively much
-    more about the numerics of integration along a trajectory.</p>
+    additional details.</p>
+    
+    <p>It is worth contrasting this parameterization problem with the one that
+    we faced in our continuous-dynamic programming algorithms.  For trajectory
+    optimization, we need a finite-dimensional parameterization in only one
+    dimension (time), whereas in the mesh-based value iteration algorithms we
+    had to work in the dimension of the state space.  Our mesh-based
+    discretizations scaled badly with this state dimension, and led to
+    numerical errors that were difficult to deal with.  There is relatively
+    much more known about discretizing solutions to differential equations over
+    time, including work on error-controlled integration.  And the number of
+    parameters required for trajectory parameterizations scales linearly with
+    the state dimension, instead of exponentially in mesh-based value
+    iteration.</p>
 
   </section>
 
@@ -152,10 +161,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         <p>We've looked at a few optimal control problems for the double
         integrator using value iteration.  For one of them -- the quadratic
         objective with no constraints on $\bu$ -- we know now that we could have
-        solved the problem "exactly" using LQR.  But the minimum-time problem
-        and even the LQR problem with constraints do not yet have more
-        satisyfing solutions than discretizing state space, which causes
-        potentially large numerical artifacts.</p>
+        solved the problem "exactly" using LQR.  But we have not yet given satisfying numerical solutions for the minimum-time problem, nor for the constrained LQR problem.</p>
 
         <p>In the trajectory formulation, we can solve these problems exactly
         for the discrete-time double integrator, and with better accuracy for
@@ -173,80 +179,84 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       </example>
 
-      <p>If you have not studied linear programming before, you might be
-      surprised by the modeling power of even linear objectives within this
-      framework.  Consider, for instance, that we want to drive a system to the
-      origin.  It turns out that taking $$\ell(\bx,\bu) = |\bx| + |\bu|,$$ the
-      direct transcription can still be formulated as a linear program.  To do
-      it, add additional decision variables ${\bf s}_x[\cdot]$ and ${\bf
-      s}_u[\cdot]$ -- these are commonly referred to as <i>slack variables</i>
+      <p>If you have not studied convex optimization before, you might be
+      surprised by the modeling power of even of this framework.  Consider, for
+      instance, an objective of the form $$\ell(\bx,\bu) = |\bx| + |\bu|.$$
+      This can be formulated as a linear program.  To do it, add additional
+      decision variables ${\bf s}_x[\cdot]$ and ${\bf s}_u[\cdot]$ -- these are
+      commonly referred to as <i>slack variables</i>
       -- and write $$\min_{\bx,\bu,{\bf s}_x,{\bf s}_u} \sum_n^{N-1} {\bf
       s}_x[n] + {\bf s}_u[n], \quad \text{s.t.} \quad {\bf s}_x[n] \ge x[n],
       \quad {\bf s}_x[n] \ge -x[n], \quad ...$$  The field of convex
       optimization is replete with tricks like this.  Knowing and recognizing
-      them are skills of the (optimization) trade.  But there are many relevant
-      constraints which cannot be recast into convex constraints with any amount
-      of skill -- going either left or right around an obstacle is one of the
-      most important examples.  These represent a fundamentally non-convex
-      constraints in $\bx$; we'll discuss the implications of using non-convex
-      optimization for trajectory optimization below.</p>
+      them are skills of the (optimization) trade.  But there are also many
+      relevant constraints which cannot be recast into convex constraints (in
+      the original coordinates) with any amount of skill.  An important example
+      is obstacle avoidance.  Imagine a vehicle that must decide if it should
+      go left or right around an obstacle.  This represents a fundamentally
+      non-convex constraint in $\bx$; we'll discuss the implications of using
+      non-convex optimization for trajectory optimization below.</p>
 
     </subsection>
 
     <subsection id="direct_shooting"><h1>Direct Shooting</h1>
 
       <p>The savvy reader might have noticed that adding $\bx[\cdot]$ as
-      decision variables was not strictly necessary.  If we know $\bx[0]$ and we
-      know $\bu[\cdot]$, then we should be able to solve for $\bx[n]$ -- that's
-      just forward simulation.  Indeed, by satisfying the constraints in direct
-      transcription, the solver is effectively solving the difference equation
-      (acausally).  For our discrete-time linear systems, this is particularly
-      easy and nice: \begin{align*}\bx[1] =& {\bf A}\bx[0] + {\bf B}\bu[0] \\
-      \bx[2] =& {\bf A}({\bf A}\bx[0] + {\bf B}\bu[0]) + {\bf B}\bu[1] \\ \bx[n]
-      =& {\bf A}^n\bx[0] + \sum_{k=0}^{n-1} {\bf A}^{n-1-k}{\bf
+      decision variables was not strictly necessary.  If we know $\bx[0]$ and
+      we know $\bu[\cdot]$, then we should be able to solve for $\bx[n]$ using
+      forward simulation.  For our discrete-time linear systems, this is
+      particularly nice: \begin{align*}\bx[1] =& {\bf A}\bx[0] + {\bf B}\bu[0]
+      \\ \bx[2] =& {\bf A}({\bf A}\bx[0] + {\bf B}\bu[0]) + {\bf B}\bu[1] \\
+      \bx[n] =& {\bf A}^n\bx[0] + \sum_{k=0}^{n-1} {\bf A}^{n-1-k}{\bf
       B}u[k].\end{align*}  What's more, the solution is still linear in
       $\bu[\cdot]$.  This is amazing... we can get rid of a bunch of decision
       variables, and turn a constrained optimization problem into an
       unconstrained optimization problem (assuming we don't have any other
       constraints).  This approach -- using $\bu[\cdot]$ but <i>not</i>
-      $\bx[\cdot]$ as decision variables and evaluating $\ell(\bx[n],\bu[n])$ by
-      effectively forward simulating to obtain $\bx[n]$ -- is called the
-      <i>direct shooting</i> transcription.  For linear systems with
-      linear/quadratic objectives in $\bx$, and $\bu$, it is still a convex
-      optimization, and has less decision variables and constraints than the
-      direct transcription.</p>
+      $\bx[\cdot]$ as decision variables and using forward simulation to obtain
+      $\bx[n]$ -- is called the <i>direct shooting</i> transcription.  For
+      linear systems with linear/quadratic objectives in $\bx$, and $\bu$, it
+      is still a convex optimization, and has less decision variables and
+      constraints than the direct transcription.</p>
 
     </subsection>
 
-    <subsection id="computational_considerations"><h1>Computational Considerations</h1></subsection>
+    <subsection id="computational_considerations"><h1>Computational
+    Considerations</h1></subsection>
 
       <p>So is direct shooting uniformly better than the direct transcription
       approach?  I think it is not.  There are a few potential reason that one
       might prefer the direct transcription: <ul><li>Numerical conditioning.
-      While it is fundamental to the trajectory optimization problem that
-      control input $\bu[0]$ has more opportunity to have a large impact on the
-      total cost than control input $\bu[N-1]$, the direct transcription
-      approach spreads this out over a large number of well-balanced
-      constraints.  Shooting involves calculating ${\bf A}^n$ for potentially
-      large $n$.</li><li>Adding state constraints.  Having $\bx[n]$ as explicit
-      decision variables makes it very easy/natural to add additional state
-      constraints; and the solver effectively reuses the computation of ${\bf
-      A}^n$ for each constraint.  In shooting, one has to unroll those terms for
-      each new constraint.</li><li>Parallelization.  For larger problems,
-      evaluating the constraints can be a substantial cost.  In direct
-      transcription, one can evaluate the dynamics/constraints in parallel
-      (because each iteration begins with $\bx[n]$ already given), whereas
-      shooting is more fundamentally a serial operation.</li></ul></p>
+      Shooting involves calculating ${\bf A}^n$ for potentially large $n$,
+      which can lead to a large range of coefficient values in the constraints.
+      This problem (sometimes referred to as the "tail wagging the dog") is
+      somewhat fundamental in trajectory optimization: the control input
+      $\bu[0]$ really does have more opportunity to have a large impact on the
+      total cost than control input $\bu[N-1]$.  But the direct transcription
+      approach combats the numerical issue by spreading this effect out over a
+      large number of well-balanced constraints.</li><li>Adding state
+      constraints.  Having $\bx[n]$ as explicit decision variables makes it
+      very easy/natural to add additional state constraints; and the solver
+      effectively reuses the computation of ${\bf A}^n$ for each constraint.
+      In shooting, one has to unroll those terms for each new
+      constraint.</li><li>Parallelization.  For larger problems, evaluating the
+      constraints can be a substantial cost.  In direct transcription, one can
+      evaluate the dynamics/constraints in parallel (because each iteration
+      begins with $\bx[n]$ already given), whereas shooting is more
+      fundamentally a serial operation.</li></ul></p>
 
       <p>For linear convex problems, the solvers are mature enough that these
       differences often don't amount to much.  For nonlinear optimization
-      problems, the differences can be substantial.  And both approaches have
-      their loyal camps.</p>
+      problems, the differences can be substantial.  If you look at trajectory
+      optimization papers in mainstream robotics, you will see that both direct
+      transcription and direct shooting approaches are used. (It's possible you
+      could guess which research lab wrote the paper simply by the
+      transcription they use!)</p>
 
       <p>It is also worth noting that the problems generated by the direct
       transcription have an important and exploitable "banded" sparsity pattern
-      -- most of the constraints touch only a small number of variables -- it's
-      actually the same pattern that we exploit in the Riccati equations.
+      -- most of the constraints touch only a small number of variables.  This
+      is actually the same pattern that we exploit in the Riccati equations.
       Thanks to the importance of these methods in real applications, numerous
       specialized solvers have been written to explicitly exploit this sparsity
       (e.g. <elib>Wang09a</elib>).</p>
