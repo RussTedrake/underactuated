@@ -1262,32 +1262,34 @@ V = RegionOfAttraction(sys, context)
     
       <p>For linear optimal control, we found controllers of the form, $\bu =
       -\bK \bx.$  The natural generalization of this to polynomial analysis
-      will be to look for controllers of the form $\bu = {\bf k}(\bx)$, where
-      ${\bf k}(\bx)$ is a polynomial.  (For mechanical systems like the pendulum
-      above, we might make ${\bf k}$ a polynomial in $s$ and $c$.)</p>
+      will be to look for controllers of the form $\bu = \pi(\bx)$, where
+      $\pi(\bx)$ is a polynomial.  (For mechanical systems like the pendulum
+      above, we might make $\pi$ a polynomial in $s$ and $c$.)</p>
 
       <p>If we apply this control to the Lyapunov conditions (for global
       analysis), we quickly see the problem.  We have $$\dot{V}(\bx) =
-      \pd{V}{\bx}\left[ {\bf f}(x) + \sum_{i=0}^{m-1} {\bf f}_i(\bx) {\bf
-      k_i}(\bx)\right],$$ and as a result if we are trying to search for the
-      parameters of $V$ and ${\bf k}$ simultaneously, the decision variables
+      \pd{V}{\bx}\left[ {\bf f}(x) + \sum_{i=0}^{m-1} {\bf f}_i(\bx)
+      \pi_i(\bx)\right],$$ and as a result if we are trying to search for the
+      parameters of $V$ and $\pi$ simultaneously, the decision variables
       multiply and the problem will be non-convex.</p>
 
       <p>One very natural strategy is to use alternations.  The idea is simple,
-      we will fix ${\bf k}$ and optimize $V$, then fix $V$ and optimize ${\bf
-      k}$ and repeat until convergence.  This approach has roots in the famous
-      "DK iterations" for robust control (e.g. <elib>Lind94</elib>).  It takes
+      we will fix $\pi$ and optimize $V$, then fix $V$ and optimize $\pi$ and
+      repeat until convergence.  This approach has roots in the famous "DK
+      iterations" for robust control (e.g. <elib>Lind94</elib>).  It takes
       advantage of the structured convex optimization at each step.</p>
       
       <p>For this approach, it is important to start with an initial feasible
-      $V$ or ${\bf k}$.  For example, one can think of locally stabilizing a
+      $V$ or $\pi$.  For example, one can think of locally stabilizing a
       nonlinear system with LQR, and then searching for a linear control law
       (or even a higher-order polynomial control law) that achieves a larger
       basin of attraction.  But note that once we move from global stability to
       region of attraction optimization, we now need to alternate between three
-      sets of variables: $V(\bx), {\bf k}(\bx), \lambda(\bx),$ where
-      $\lambda(]bx)$ was the multiplier polynomial for the S-procedure.  We
-      took exactly this approach in <elib>Majumdar13</elib>.  In that paper, we showed that alternations could increase the certified region of attraction for the Acrobot.</p>
+      sets of variables: $V(\bx), \pi(\bx), \lambda(\bx),$ where $\lambda(]bx)$
+      was the multiplier polynomial for the S-procedure.  We took exactly this
+      approach in <elib>Majumdar13</elib>.  In that paper, we showed that
+      alternations could increase the certified region of attraction for the
+      Acrobot.</p>
 
       <p>The alternation approach takes advantage of convex optimization in the
       inner loop, but it is still only a local approach to solving the
@@ -1309,8 +1311,7 @@ V = RegionOfAttraction(sys, context)
     <subsection><h1>Control-Lyapunov Functions</h1>
 
       <p>Another core idea connecting Lyapunov analysis with control design is
-      the "<a
-      href="https://en.wikipedia.org/wiki/Control-Lyapunov_function">control-Lyapunov
+      the "<a href="https://en.wikipedia.org/wiki/Control-Lyapunov_function">control-Lyapunov
       function</a>".  Given a system $\dot{\bx} = f(\bx, \bu)$, a
       control-Lyapunov function $V$ is a positive-definite function for which
       $$\forall \bx \neq 0, \exists \bu \quad \dot{V}(\bx,\bu) = \pd{V}{\bx}
