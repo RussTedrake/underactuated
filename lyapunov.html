@@ -294,7 +294,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </subsection> <!-- lasalle -->
 
-    <subsection><h1>Relationship to the Hamilton-Jacobi-Bellman
+    <subsection id="HJB"><h1>Relationship to the Hamilton-Jacobi-Bellman
     equations</h1>
 
       <p> At this point, you might be wondering if there is any relationship
@@ -1360,15 +1360,116 @@ V = RegionOfAttraction(sys, context)
     
     </subsection>
 
-    <subsection><h1>Approximate Dynamic Programming with SOS</h1>
+    <subsection id="adp"><h1>Approximate dynamic programming with SOS</h1>
+
+      <p>We have <a href="#HJB">already established</a> the most important
+      connection between the HJB conditions and the Lyapunov conditions:
+      $$\dot{J}^*(\bx)  = -\ell(\bx,\bu^*) \qquad \text{vs} \qquad \dot{V}(\bx)
+      \preceq 0.$$  The HJB involves solving a complex PDE; by changing this to
+      an inequality, we relax the problem and make it amenable to convex
+      optimization.</p>
+
+      <subsubsection><h1>Upper and lower bounds on cost-to-go</h1>
+
+        <p>Asking for $\dot{V}(\bx) \preceq 0$ is sufficient for proving
+        stability.  But we can also use this idea to provide rigorous
+        certificates as upper or lower bounds of the cost-to-go.  Given a
+        control-dynamical system $\dot{\bx} = f(\bx, \bu)$, and a fixed
+        controller $\pi(\bx)$ we can find a function $V(\bx)$: <ul><li>$\forall
+        \bx, \dot{V}^\pi(\bx) \le -\ell(\bx,\pi(\bx))$ to provide an <b>upper
+        bound</b>, or </li><li>$\forall \bx, \dot{V}^\pi(\bx) \ge
+        -\ell(\bx,\pi(\bx))$ to provide an <b>lower bound</b>.</li></ul>To see
+        this, take the integral of both sides along any <i>solution</i>
+        trajectory, $\bx(t), \bu(t)$.  For the upper-bound we get
+        \begin{gather*} \int_0^\infty \dot{V}^\pi(\bx) dt = V^\pi(\bx(\infty))
+        - V^\pi(\bx(0)) \le \int_0^\infty -\ell(\bx(t),\pi(\bx(t)))
+        dt.\end{gather*}  Assuming $V^\pi(\bx(\infty)) = 0$, we have
+        $$V^\pi(\bx(0)) \ge \int_0^\infty \ell(\bx(t),\pi(\bx(t))) dt.$$</p>
+
+        <p>The upper bound is the one that we would want to use in a
+        certification procedure -- it provides a <i>guarantee</i> that the
+        total cost achieved by the system started in $\bx$ is less than
+        $V(\bx)$.  But it turns out that the lower bound is much better for
+        control design. This is because we can write $$\forall \bx, \min_\bu [
+        \ell(\bx,\bu) + \pd{V}{\bx}f(\bx,\bu) ] \ge 0 \quad \equiv \quad
+        \forall \bx, \forall \bu, \ell(\bx,\bu) + \pd{V}{\bx}f(\bx,\bu) \ge
+        0.$$  Therefore, without having to specify apriori a controller, if we
+        can find a function $V(\bx)$ such that $\forall \bx, \forall \bu,
+        \dot{V}(\bx, \bu) \ge -\ell(\bx,\bu)$, then we have a lower-bound on
+        the <i>optimal</i> cost-to-go.</p>
+        
+        <p>You should take a minute to convince yourself that, unfortunately,
+        the same trick does not work for the upper-bound.  Again, we would need
+        $\exists$ as the quantifier on $\bu$ instead of $\forall$.</p>
+
+      </subsubsection>
+
+      <subsubsection><h1>Sums-of-squares formulation</h1>
+
+        <p>Combining a number of ideas we've seen already, this leads to a
+        natural sums-of-squares formulation for optimal control: \begin{align*}
+        \max_{{V}(\bx)} \quad & \int_{\bf X} V(\bx)d\bx, \\ \subjto \quad &
+        \ell(\bx,\bu) + \pd{V}{\bx}f(\bx,\bu) & \text{ is SOS}, \\ & V(0) =
+        0.\end{align*}  The SOS constraint enforces the lower bound, and the
+        objective "pushes up" on the lower-bound by maximizing the integral
+        over some compact region.  Once again, we can then try to extract a
+        control law by either using this lower bound as a control-Lyapunov
+        function, or by extracting (and certifying) a polynomial
+        controller.</p>
+        
+        <p>Perhaps you noticed that this is a natural extension of the <a
+        href="dp.html#LP">linear programming approach to dynamic
+        programming</a>.  For systems with continuous state, the LP approach
+        verified the inequality conditions only at sample points; here we
+        verify them for all $\bx, \bu$.  This is an important generalization:
+        not so much because it can certify better (the lower bound is not a
+        particularly valuable thing to certify), but because it can scale to
+        dimensions were dense sampling is not viable.  This provides something
+        of a spectrum between the mesh-based value iteration and the very
+        scalable LQR.</p>
+        
+        <p>The biggest challenge to this approach, however, is not the number
+        of dimensions, but the degree of the polynomial required to achieve a
+        meaningful approximation.  Remember that the optimal cost-to-go for
+        even the min-time double integrator problem is non-smooth.  Like in the
+        <a href="trajopt.html#pseudo-spectral">pseudo-spectral methods</a> that
+        we will see in the context of trajectory optimization; choosing the
+        right polynomial basis can make a huge difference for the numerical
+        robustness of this approach.
+        </p>
+
+        <example><h1>SOS ADP for the cubic polynomial</h1></example>
+
+        <example><h1>SOS ADP for the pendulum swing-up problem</h1></example>
+
+      </subsubsection>
     
     </subsection>
 
   </section>
 
+  <section><h1>Alternative computational approaches</h1>
+  
+    <subsection><h1>"Satisfiability modulo theories" (SMT)
+      </h1>
+    
+        <p><a
+        href="https://en.wikipedia.org/wiki/Satisfiability_modulo_theories">Satisiability
+        modulo theories (SMT)</a>. <a
+        href="https://dreal.github.io/">dReal</a> is available in <drake></drake>.</p>
+    
+    </subsection>
+    
+    <subsection><h1>Mixed-integer programming (MIP) formulations</h1>
+    </subsection>
+
+    <subsection><h1>Continuation methods</h1></subsection>
+    
+  </section>
+
   <section><h1>Neural Lyapunov functions</h1></section>
 
-  <section><h1>Contraction Metrics</h1>
+  <section><h1>Contraction metrics</h1>
   
     <todo>Control contraction metrics</todo>
 
