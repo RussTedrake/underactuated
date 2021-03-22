@@ -898,10 +898,9 @@ V = RegionOfAttraction(sys, context)
         implication that whenever $\dot{V}(x) = 0$, we have that either $V(\bx)
         \ge \rho$ OR $\bx = 0$.  Multiplying by some multiple of $\bx^T\bx$ is
         just a clever way to handle the "or $\bx=0$" case, which is necessary
-        since we expect $\dot{V}(0) = 0$.  I hope you can convince yourself
-        that this implication is sufficient to prove that $\dot{V}(\bx) \le 0$
-        whenever $V(\bx) \le \rho$, since $V$ and $\dot{V}$ are smooth
-        polynomials.</p>
+        since we expect $\dot{V}(0) = 0$.  This implication is sufficient to
+        prove that $\dot{V}(\bx) \le 0$ whenever $V(\bx) \le \rho$, since $V$
+        and $\dot{V}$ are smooth polynomials; we examine this claim in full detail in <a href="#van_der_pol_roa">one of the exercises</a>.</p>
 
         <p>Using the S-procedure with equalities instead inequalities also has
         the potential advantage of removing the SOS constraint on
@@ -1308,7 +1307,7 @@ V = RegionOfAttraction(sys, context)
 
     </subsection>
 
-    <subsection><h1>Control-Lyapunov Functions</h1>
+    <subsection id="control-lyapunov"><h1>Control-Lyapunov Functions</h1>
 
       <p>Another core idea connecting Lyapunov analysis with control design is
       the "<a href="https://en.wikipedia.org/wiki/Control-Lyapunov_function">control-Lyapunov
@@ -1549,17 +1548,11 @@ V = RegionOfAttraction(sys, context)
         </ol>
     </exercise>
 
-    <exercise><h1>Control-Lyapunov Function</h1>
+    <exercise><h1>Control-Lyapunov Function for a Wheeled Robot</h1>
 
-      <p>Consider the problem of synthesizing a stabilizing feedback law $\bu =
-      \pi (\bx)$ for the dynamical system $\dot \bx = f(\bx, \bu)$.  Lyapunov
-      analysis suggests us a very simple approach to this problem: choose a
-      candidate Lyapunov function $V(\bx)$, and design a control law $\pi (\bx)$
-      such that $V(\bx)$ always decreases along the trajectories of the
-      closed-loop system $\dot \bx = f(\bx, \pi (\bx))$.  A function $V(\bx)$
-      for which such a control law exists is called a <i>control-Lyapunov
-      function</i>.  In this exercise, we use this idea to drive a wheeled
-      robot, implementing the controller proposed in <elib>Aicardi95</elib>.</p>
+      <p>In this exercise, we examine the idea of a <a href="#control-lyapunov">control-Lyapunov function</a>
+      to drive a wheeled robot, implementing the controller proposed in
+      <elib>Aicardi95</elib>.</p>
       
       <p>Similar to <a href="intro.html#wheeled_robot">this previous
       example</a>, we use a kinematic model of the robot.  We represent with
@@ -1629,7 +1622,7 @@ V = RegionOfAttraction(sys, context)
 
     </exercise>
 
-    <exercise><h1>ROA Estimation for the Time-Reversed Van der Pol Oscillator</h1>
+    <exercise id="van_der_pol_roa"><h1>ROA Estimation for the Time-Reversed Van der Pol Oscillator</h1>
 
       <p>In this exercise you will use SOS optimization to approximate the ROA of the time-reversed Van der Pol oscillator (a variation of the <a href="https://en.wikipedia.org/wiki/Van_der_Pol_oscillator">classical Van der Pol oscillator</a> which evolves backwards in time).  In <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/lyapunov/van_der_pol/van_der_pol.ipynb" target="_blank">this python notebook</a>, you are asked to test the following SOS formulations.</p>
 
