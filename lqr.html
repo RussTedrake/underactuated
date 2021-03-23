@@ -260,13 +260,61 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       general class of systems. It requires essentially no assumptions on how
       the time-dependence enters, except perhaps that if ${\bf A}$ or $\bB$ is
       discontinuous in time then one would have to use the proper techniques to
-      accurately integrate the differential equation. As we will see in the <a
-      href="trajopt.html">chapter on trajectory
-      optimization</a>, one of the most powerful applications involves
-      linearizing around a nominal trajectory of a nonlinear system and using
-      LQR to provide a trajectory controller.</p>
+      accurately integrate the differential equation.</p>
 
     </subsection>
+
+    <subsection><h1>Local trajectory stabilization for nonlinear systems</h1>
+
+      <p> One of the most powerful applications of time-varying LQR involves
+      linearizing around a nominal trajectory of a nonlinear system and using
+      LQR to provide a trajectory controller.  This will tie in very nicely
+      with the algorithms we develop in the <a href="trajopt.html">chapter on
+      trajectory optimization</a>.</p>
+        
+      <p>Let us assume that we have a nominal trajectory, $\bx_0(t), \bu_0(t)$
+      defined for $t \in [t_1, t_2]$.  Similar to the time-invariant analysis,
+      we begin by defining a local coordinate system relative to the
+      trajectory: $$\bar\bx(t) = \bx(t) - \bx_0(t), \quad \bar\bu(t) = \bu(t) -
+      \bu_0(t).$$  Now we hav $$\dot{\bar\bx} = \dot{\bx} - \dot{\bx}_0 =
+      f(\bx,\bu) - f(\bx_0, \bu_0),$$ which we can again approximate with a
+      first-order Taylor expansion to $$\dot{\bar\bx} \approx f(\bx_0,\bu_0) +
+      \pd{f(\bx_0,\bu_0)}{\bx} (\bx - \bx_0) + \pd{f(\bx_0,\bu_0)}{\bu} (\bu -
+      \bu_0) - f(\bx_0,\bu_0) = {\bf A}(t)\bar{\bx} + \bB(t)\bar\bu.$$  This
+      very similar to using LQR to stablize a fixed-point, but with some
+      important differences.  First, the linearization is time-varying.
+      Second, our linearization is valid for any state along a feasible
+      trajectory (not just fixed-points), because the coordinate system is
+      moving along with the trajectory.</p>
+
+      <p>Similarly, we can define a quadratic cost function in the error
+      coordinates, or take a (positive-definite) second-order approximation of a
+      nonlinear cost function along the trajectory (linear and constant
+      terms in the cost function can be easily incorporated into the derivation
+      by parameterizing a full quadratic form for $J^*$, as seen in the Linear
+      Quadratic Tracking derivation below).</p>
+
+      <p>The resulting controller takes the form $\bar\bu^* = -{\bf
+      K}(t)\bar\bx$ or $$\bu^* = \bu_0(t) - {\bf K}(t) (\bx - \bx_0(t)).$$
+      <drake></drake> provides a <a
+      href="https://drake.mit.edu/doxygen_cxx/group__control__systems.html#ga58307d2135757a498c434e96d7b99853"><code>
+        FiniteHorizonLinearQuadraticRegulator</code></a>
+      method; if you pass it a nonlinear systems it will perform the
+      linearization in the proper coordinates for you using automatic
+      differentiation.</p>
+
+      <p>Remember that stability is a statement about what happens as time goes
+      to infinity.  In order to talk about stabilizing a trajectory, the
+      trajectory must be defined for all $t \in [t_1, \infty)$.  This can be
+      accomplished by considering a finite-time trajectory which terminates at
+      a stabilizable fixed-point at a time $t_2 \ge t_1$, and remains at the
+      fixed point for $t \ge t_2$.  In this case, the finite-horizon Riccati
+      equation is initialized with the infinite-horizon LQR solution: $S(t_2) =
+      S_\infty$, and solved backwards in time from $t_2$ to $t_1$ for the
+      remainder of the trajectory.  And <i>now</i> we can say that we have
+      <i>stabilized</i> the trajectory!</p>
+
+    </subsection>    
 
     <subsection><h1>Linear Quadratic Optimal Tracking</h1>
 
