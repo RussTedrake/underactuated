@@ -1073,6 +1073,146 @@ V = RegionOfAttraction(sys, context)
 
   </section>
 
+  <section id="finite-time"><h1>Finite-time Reachability</h1>
+  
+    <p>So far we have used Lyapunov analysis to analyze <i>stability</i>, which
+    is fundamentally a description of the system's behavior as time goes to
+    infinity.  But Lyapunov analysis can also be used to analyze the
+    finite-time behavior of nonlinear systems.  We will see a number of
+    applications of this finite-time analysis over the next few chapters.  It
+    can be applied even to unstable systems, or systems that are stable to a
+    limit cycle instead of a fixed-point.  It can also be applied to systems
+    that are only defined over a finite interval of time, as might be the case
+    if we are executing a planned trajectory with a bounded duration.</p>
+
+    <subsection><h1>Time-varying dynamics and Lyapunov functions</h1>
+    
+      <p>Before focusing on the finite time, let us first realize that the
+      basic (infinite-time) Lyapunov analysis can also be applied to
+      time-varying systems: $\dot{\bx} = f(t, \bx).$  We can analyze the
+      stability (local, regional, or global) of this system with very little
+      change.  If we find \begin{gather*}V(\bx) \succ 0, \\
+      \forall t,\forall \bx \ne 0, \quad \dot{V}(t, \bx) = \pd{V}{\bx}f(t,\bx) < 0, \quad
+      \dot{V}(t, 0) = 0, \end{gather*} then all of our previous
+      statement still hold.  In our SOS formulations, $t$ is simply one more
+      indeterminate.</p>
+
+      <p>Similarly, even for a time-invariant system, it is also possible to
+      define a time-varying Lyapunov function, $V(t, \bx)$ and establish local,
+      regional, or global stability using the almost the same conditions:
+      \begin{gather*}\forall t, \forall \bx \ne 0, \quad V(t, \bx) > 0, \quad V(t, 0) = 0, \\
+      \forall t, \forall \bx \ne 0, \quad \dot{V}(t, \bx) = \pd{V}{\bx}f(\bx) + \pd{V}{t} < 0,
+      \quad \dot{V}(t, 0) = 0. \end{gather*} </p>
+
+      <p>These two ideas each stand on their own, but they very often go
+      together, as time-varying dynamics are perhaps the best motivator for
+      studying a time-varying Lyapunov function.  Afterall, we do know that a
+      stable time-invariant system must have a time-invariant Lyapunov function
+      that demonstrates this stability (from the "converse Lyapunov function"
+      theorems).  But we do not know apriori how to represent this function; as
+      an example, remember we know that there are stable polynomial systems
+      that cannot be verified with a polynomial Lyapunov function.  For global
+      stability analysis, the time-varying Lyapunov analysis does not add
+      modeling power: since the conditions must be satisfied for all $t$, we
+      could have just set $t$ to a constant and used the time-invariant
+      function.  But there may be cases where a time-varying analysis could
+      afford a different analysis for the regional or local stability cases. We
+      will see a good example of this when we study limit cycles.</p>
+    
+    </subsection>
+
+    <subsection><h1>Finite-time reachability</h1>
+    
+      <p>Finite-time reachability analysis is an important concept for control
+      design and verification, where we seek to understand the behavior of a
+      system over only a finite time interval, $[t_1, t_2]$.  It is almost
+      always a region-based analysis, and attempts to make a statement of the
+      form: $$\bx(t_1) \in \mathcal{X}_1 \Rightarrow \bx(t_2) \in
+      \mathcal{X}_2,$$  where $\mathcal{X}_1, \mathcal{X}_2 \subset \Re^n$ are
+      regions of state space.  More generally, we might like to understand the
+      time-varying reachable set $\forall t\in [t_1, t_2], \mathcal{X}(t).$
+      </p>
+
+      <p><i>Reachability analysis</i> can be done forward in time: we choose
+      $\mathcal{X}_1$ and try to find the <i>smallest</i> region
+      $\mathcal{X}_2$ for which we can make the statement hold.
+      $\mathcal{X}(t)$ would be called the <i>forward-reachable set</i> (FRS),
+      and can be very useful for certifying e.g. a motion plan.  For instance,
+      you might like to prove that your UAV does not crash into a tree in the
+      next 5 seconds.  In this case $\mathcal{X}_1$ might be take to be a point
+      representing the current state of the vehicle, or a region representing
+      an outer-approximation of the current state if the state in uncertain. In
+      this context, we would call $\mathcal{X}_2$ a forward-reachable set. In
+      this use case, we would typically choose any approximations in our
+      Lyapunov analysis to certify that an estimate of the reachable region is
+      also an outer-approximation: $\mathcal{X}_2 \subseteq
+      \hat{\mathcal{X}}_2.$</p>
+
+      <p>Reachability analysis can also be done backward in time: we choose
+      $\mathcal{X}_2$ and try to <i>maximize</i> the region $\mathcal{X}_1$ for
+      which the statement can be shown to hold.  Now $\mathcal{X}(t)$ is called
+      the <i>backward-reachable set</i> (BRS), and for robustness we typically
+      try to certify that our estimates are an inner-approximation,
+      $\hat{\mathcal{X}}_1 \subseteq \mathcal{X}_1.$  The region-of-attraction
+      analysis we studied above can be viewed as a special case of this, with
+      $\mathcal{X}_2$ taken to be the fixed-point, $t_2 = 0$ and $t_1 =
+      -\infty$.  But finite-time BRS also have an important role to play, for
+      instance when we are composing multiple controllers in order to achieve a
+      more complicated task, which <a
+      href="feedback_motion_planning.html"></a>we will study soon</a>.</p>
+
+    </subsection>
+
+    <subsection><h1>Reachability via Lyapunov functions</h1>
+    
+      <p>Lyapunov functions can be used to certify finite-time reachability,
+      even for continuous-time systems.  The basic recipe is to certify the
+      Lyapunov conditions over a (potentially time-varying) invariant set. Once
+      again, we typically represent this as a (time-varying) level set of the
+      Lyapunov function containing the origin, $V(\bx) \le \rho(t),$ where
+      $\rho(t)$ is now a positive scalar function of time. Since we already
+      have time as a decision variable, we can easily accommodate time-varying
+      dynamics and Lyapunov functions, as well, so: \begin{align*} \forall
+      t\in[t_1, t_2], \quad \forall \bx, \qquad& V(t,\bx) > 0, \quad& V(t, 0) =
+      0 \\ \forall t \in [t_1, t_2], \quad \forall \bx \in \{\bx | V(t,\bx) =
+      \rho(t)\}, \qquad& \dot{V}(t, x) < \dot\rho(t).\end{align*}  Note that
+      finite-time reachability is about proving invariance of the set, not
+      stability, and the $\dot{V}$ condition need only be certified at the
+      boundary of the level set.  If $V$ is decreasing at the boundary, then
+      trajectories can never leave.  One can certainly ask for more -- we may
+      want to show that the system is converging towards $V(t,\bx) = 0$,
+      perhaps even at some rate -- but only invariance is required to certify
+      reachability.
+      </p>
+
+      <p>Again, for polynomial systems and dynamics, sums-of-squares
+      optimization is a powerful tool for certifying these properties
+      numerically, and optimizing the volume of the estimated regions.  Having
+      taken $t$ as an indeterminate, we can use the S-procedure again to
+      certify the conditions $\forall t \in [t_1, t_2].$</p>
+
+      <p>Like in the case for region of attraction, we have many formulations.
+      We can certify an existing Lyapunov candidate, $V(t,\bx)$, and just try
+      to maximize/minimize $\rho(t)$.  Or we can search for the parameters of
+      $V(t,\bx)$, too.  Again, we can initialize that search using the
+      time-varying version of the Lyapunov equation, or the solutions to a
+      time-varying LQR Riccati equation.</p>
+
+      <p>In practice, we often certify the Lyapunov conditions over $\bx$ at
+      only a finite set of samples $t_i \in [t_1, t_2]$.  I don't actually have
+      anything against sampling in one dimension; there are no issues with
+      scaling to higher dimensions, and one can make practical rigorous
+      statement about bounding the sampling error.  And in these systems,
+      adding $t$ into all of the equation otherwise can dramatically increase
+      the degree of the polynomials required for the SOS certificates.  All of
+      this was written up nicely in <elib>Tobenkin10b</elib>, and robust
+      variants of it were developed in
+      <elib>Majumdar13f+Majumdar16a</elib>.</p>
+    
+    </subsection>
+
+  </section>
+
   <section><h1>Rigid-body dynamics are (rational) polynomial</h1>
 
     <p>We've been talking a lot in this chapter about numerical methods for
@@ -1727,6 +1867,20 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 <span class="author">D. Henrion and  J.B. Lasserre and C. Savorgnan</span>,
 <span class="title">"Approximate volume and integration for basic semialgebraic sets"</span>,
 <span class="publisher">SIAM Review</span>, vol. 51, no. 4, pp. 722--743, <span class="year">2009</span>.
+
+</li><br>
+<li id=Tobenkin10b>
+<span class="author">Mark M. Tobenkin and Ian R. Manchester and Russ Tedrake</span>,
+<span class="title">"Invariant Funnels around Trajectories using Sum-of-Squares Programming"</span>,
+<span class="publisher">Proceedings of the 18th IFAC World Congress, extended version available online: arXiv:1010.3013 [math.DS]</span>, <span class="year">2011</span>.
+[&nbsp;<a href="http://arxiv.org/abs/1010.3013">link</a>&nbsp;]
+
+</li><br>
+<li id=Majumdar13f>
+<span class="author">Anirudha Majumdar</span>,
+<span class="title">"Robust Online Motion Planning with Reachable Sets"</span>,
+, May, <span class="year">2013</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar13f.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Wampler11>
