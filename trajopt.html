@@ -51,7 +51,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <table style="width:100%;"><tr style="width:100%">
   <td style="width:33%;text-align:left;"><a class="previous_chapter" href=lyapunov.html>Previous Chapter</a></td>
   <td style="width:33%;text-align:center;"><a href=index.html>Table of contents</a></td>
-  <td style="width:33%;text-align:right;"><a class="next_chapter" href=planning.html>Next Chapter</a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter" href=policy_search.html>Next Chapter</a></td>
 </tr></table>
 
 
@@ -740,7 +740,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     exceeds the typical flight envelope.  Airplanes traditionally work hard to
     avoid this regime because it leads to aerodynamic "stall" -- a sudden loss
     of lift after the airflow separates from the wing.  But this loss of lift is
-    also accompanied by a signficant increase in drag, and birds exploit this
+    also accompanied by a significant increase in drag, and birds exploit this
     when they rapidly decelerate to land on a perch.  Post-stall aerodynamics
     are a challenge for control because (1) the aerodynamics are time-varying
     (characterized by periodic vortex shedding) and nonlinear, (2) it is much
@@ -750,17 +750,18 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     control authority.</p>
 
     <p>We picked the project initially thinking that it would be a nice example
-    for model-free control (like reinforcement learning -- since the models were
-    unknown).  In the end, however, it turned out to be the project that really
-    taught me about the power of model-based trajectory optimization and linear
-    optimal control.  By conducting dynamic system identification experimetns in
-    motion captured, we were able to fit both surprisingly simple models (based
-    on flat-plate theory) to the dynamics<elib>Cory08</elib>, and also more
-    accurate models using "neural-network-like" terms to capture the residuals
-    between the model and the data <elib>Moore14b</elib>.  This made model-based
-    control viable, but the dynamics were still complex -- while trajectory
-    optimization should work, I was quite dubious about the potential for
-    regulating to those trajectories with only linear feedback.</p>
+    for model-free control (like reinforcement learning -- since the models
+    were unknown).  In the end, however, it turned out to be the project that
+    really taught me about the power of model-based trajectory optimization and
+    linear optimal control.  By conducting dynamic system identification
+    experiments in a motion capture environment, we were able to fit both
+    surprisingly simple models (based on flat-plate theory) to the
+    dynamics<elib>Cory08</elib>, and also more accurate models using
+    "neural-network-like" terms to capture the residuals between the model and
+    the data <elib>Moore14b</elib>.  This made model-based control viable, but
+    the dynamics were still complex -- while trajectory optimization should
+    work, I was quite dubious about the potential for regulating to those
+    trajectories with only linear feedback.</p>
 
     <p>I was wrong. Over and over again, I watched time-varying linear quadratic
     regulators take highly nontrivial corrective actions -- for instance,
@@ -798,12 +799,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <figure>
         <img width="50%" src="figures/glider.svg">
         <figcaption>The flat-plate glider model.  Note that traditionally
-        aircraft coordinates are choosen so that positive pitch brings the nose
+        aircraft coordinates are chosen so that positive pitch brings the nose
         up; but this means that positive z is down (to have a right-handed
         system).  For consistency, I've chosen to stick with the vehicle
         coordinate system that we use throughout the text -- positive z is up,
         but positive pitch is down. </figcaption>
-        <todo>better aircraft outline.</todo>
       </figure>
     
       <p>In our experiments, we found the the dynamics of our aircraft were
@@ -847,6 +847,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   
     <subsection><h1>Trajectory stabilization</h1></subsection>
 
+    <subsection><h1>Trajectory funnels</h1></subsection>
+
     <subsection><h1>Beyond a single trajectory</h1>
     
     <p>The linear controller around a nominal trajectory was surprisingly
@@ -855,6 +857,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     controller that can work for many more initial conditions -- ideally all of
     the initial conditions of interest for which the aircraft is capable of
     getting to the goal.</p>
+
+    <todo>Add Joe's perching funnels.</todo>
 
     </subsection>  
 
@@ -1386,7 +1390,7 @@ PhD thesis, Massachusetts Institute of Technology, September, <span class="year"
 <table style="width:100%;"><tr style="width:100%">
   <td style="width:33%;text-align:left;"><a class="previous_chapter" href=lyapunov.html>Previous Chapter</a></td>
   <td style="width:33%;text-align:center;"><a href=index.html>Table of contents</a></td>
-  <td style="width:33%;text-align:right;"><a class="next_chapter" href=planning.html>Next Chapter</a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter" href=policy_search.html>Next Chapter</a></td>
 </tr></table>
 
 <div id="footer">
