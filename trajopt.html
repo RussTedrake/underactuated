@@ -693,6 +693,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       href="lqr.html#finite_horizon_nonlinear">LQR chapter</a>
       for the details).</p>
 
+      <p>A major virtue of this approach is that we can proceed immediately to
+      verifying the performance of the closed-loop system under the LQR policy.
+      Specifically, we can apply the finite-time reachability analysis to
+      obtain "funnels" that certify a desired notion of invariance --
+      guaranteeing that trajectories which start near the planned trajectory
+      will stay near the planned trajectory.  Please the <a
+      href="lyapunov.html#finite-time">finite-time reachability analysis</a>
+      section for those details.  We will put all of these ideas together in
+      the perching case-study below.</p>
+
     </subsection>
 
     <subsection><h1>Model-Predictive Control</h1>
