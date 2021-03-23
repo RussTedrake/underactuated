@@ -649,12 +649,49 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   <section><h1>Local Trajectory Feedback Design</h1>
 
     <p>Once we have obtained a locally optimal trajectory from trajectory
-    optimization, there is still work to do...</p>
+    optimization, we have found an open-loop trajectory that (a least locally)
+    minimizes our optimal control cost.  Up to numerical tolernaces, this pair
+    $\bu_0(t), \bx_0(t)$ represents a feasible solution trajectory of the
+    system.  But we haven't done anything, yet, to ensure that this trajectory
+    is locally stable.</p>
+    
+    <p>In fact, there are a few notable approximations that we've already made
+    to get to this point: the integration accuracy of our trajectory
+    optimization tends to be much less than the accuracy used during forward
+    simulation (we tend to take bigger timesteps during optimization to avoid
+    adding too many decision variables), and the default convergence tolerance
+    from the optimization toolboxes tend to satisfy the dynamic constraints
+    only to around $10^{-6}$.  As a result, if you were to simulate the
+    optimized control trajectory directly <i>even from the exact initial
+    conditions</i> used in / obtained from trajectory optimization, you might
+    find that the state trajectory diverges from your planned trajectory.</p>
+    
+    <p>There are a number of things we can do about this.  It is possible to
+    evaluate the local stability of the trajectory during the trajectory
+    optimization, and add a cost or constraint that rewards open-loop stability
+    (e.g. <elib>Mombaur05+Johnson16</elib>).  This can be very effective
+    (though it does tend to be expensive).  But open-loop stability is a quite
+    restrictive notion.  A potentially more generally useful approach is to
+    design a feedback controller to regulate the system back to the planned
+    trajectory.</p>
 
-    <subsection><h1>Time-varying LQR</h1>
+    <subsection><h1>Finite-horizon LQR</h1>
 
-      <p>Take $\bar\bx(t) = \bx(t) - \bx_0(t)$, and $\bar\bu(t) =
-      \bu(t)-\bu_0(t)$, then apply finite-horizon LQR (see the LQR chapter).</p>
+      <p>We have already developed on approach for <a
+      href="lqr.html#finite_horizon_nonlinear">trajectory stabilization in the
+      LQR chapter</a>.  This is one of my favorite approaches to trajectory
+      feedback, because it provides a (numerically) closed-form solution for
+      the controller, $\bK(t),$ and even comes with a time-varying quadratic
+      cost-to-go function, $S(t),$ that can be used for Lyapunov analysis.</p>
+
+      <p>The basic procedure is to create a time-varying linearization along
+      the trajectory in the error coordinates:  $\bar\bx(t) = \bx(t) -
+      \bx_0(t)$, $\bar\bu(t) = \bu(t)-\bu_0(t)$, and $\dot{\bar{\bx}}(t) = {\bf A}(t)\bar\bx(t) + {\bf B}(t)\bar\bu(t).$  This linearization uses
+      all of the same gradients of the dynamics that we have been using in our
+      trajectory optimization algorithms.  Once we have the time-varying
+      linearization, then we can apply finite-horizon LQR (see the <a
+      href="lqr.html#finite_horizon_nonlinear">LQR chapter</a>
+      for the details).</p>
 
     </subsection>
 
@@ -1279,6 +1316,18 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <span class="author">Marc Toussaint</span>,
 <span class="title">"A Novel Augmented Lagrangian Approach for Inequalities and Convergent Any-Time Non-Central Updates"</span>,
 , <span class="year">2014</span>.
+
+</li><br>
+<li id=Mombaur05>
+<span class="author">Katja D. Mombaur and Hans Georg Bock and Johannes P. Schloder  and Richard W. Longman</span>,
+<span class="title">"Open-loop stable solutions of periodic optimal control problems in robotics"</span>,
+<span class="publisher">Z. Angew. Math. Mech. (ZAMM)</span>, vol. 85, no. 7, pp. 499 â€“ 515, <span class="year">2005</span>.
+
+</li><br>
+<li id=Johnson16>
+<span class="author">Johnson, Aaron M and King, Jennifer E and Srinivasa, Siddhartha</span>,
+<span class="title">"Convergent planning"</span>,
+<span class="publisher">IEEE Robotics and Automation Letters</span>, vol. 1, no. 2, pp. 1044--1051, <span class="year">2016</span>.
 
 </li><br>
 <li id=Garcia89>
