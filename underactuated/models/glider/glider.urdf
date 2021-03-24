@@ -146,8 +146,7 @@
       </geometry>
       <material
         name="">
-        <color
-          rgba=".7 .7 .7 1" />
+        <color rgba="0 .34 .9 1" />
       </material>
     </visual>
     <collision>
@@ -169,8 +168,7 @@
       </geometry>
       <material
         name="">
-        <color
-          rgba=".7 .7 .7 1" />
+        <color rgba="0 .34 .9 1" />
       </material>
     </visual>
     <collision>
@@ -207,10 +205,8 @@
         <mesh
           filename="meshes/elevator.obj" />
       </geometry>
-      <material
-        name="">
-        <color
-          rgba=".7 .7 .7 1" />
+      <material name="">
+        <color rgba="0 .34 .9 1" />
       </material>
     </visual>
     <collision>
