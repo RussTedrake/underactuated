@@ -24,14 +24,6 @@ rt_ipynb_test(
     deps = ["//underactuated"],
 )
 
-# TODO(russt): Change from binary to test pending resolution of drake #13299.
-rt_ipynb_binary(
-    name = "miqp_planning",
-    srcs = ["miqp_planning.ipynb"],
-    tags = ["requires-network"],  # For gurobi license.
-    deps = ["//underactuated"],
-)
-
 rt_ipynb_test(
     name = "optimization",
     srcs = ["optimization.ipynb"],
