@@ -59,24 +59,43 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <chapter style="counter-reset: chapter 10"><h1>Policy
   Search</h1>
 
-  <p>So far, most of our recommendations for control design have been
-  relatively "local" -- leveraging trajectory planning/optimization as a tool
-  and our ability to locally stabilize trajectories for even very complex
-  systems using linear optimal control.  This is in stark contrast to the
-  dynamic programming / value iteration methods that we started with, which
-  attempt to solve for a control policy for every possible state;
-  unfortunately, the dynamic programming methods as presented are restricted to
-  relatively low dimensional state spaces.  What is missing so far is
-  algorithms for synthesizing feedback controllers that scale to large state
-  spaces and produce controllers that are, hopefully, less "local" than
-  trajectory stabilization.</p>
+  <p>In our case study on <a href="trajopt.html#perching">perching
+  aircraft</a>, we solved a challenging control problem, but our approach to
+  control design based on only linear optimal control (around an optimized
+  trajectory).  We've also discussed some approaches to nonlinear optimal
+  control that could scale beyond small discretized state spaces.  These were
+  based on estimating the cost-to-go function, including
+  <a href="dp.html#function_approximation">value iteration using function
+  approximation</a>, and lower bounds based on approximate dynamic programming
+  as a <a href="dp.html#LP">linear program</a>
+  or as a <a href="lyapunov.html#adp">sums-of-squares program</a>.  </p>
+
+  <p>There are a lot of things to like about methods that estimate the
+  cost-to-go function (aka value function).  The cost-to-go function reduces
+  the long-term planning problem into a one-step planning problem; it encodes
+  all relevant information about the future (and nothing more).  The HJB gives
+  us optimality conditions for the cost-to-go that give us a strong algorithmic
+  handle to work with.  <!--But there is, I think, one very reasonable concern
+  about value-based methods: we have seen many examples where the optimal
+  cost-to-go function can be a very complicated function (by most measures of
+  complexity; e.g. it would require a very fine discretization or high-degree
+  polynomial to approximate accurately), even when the dynamics are smooth (or
+  low-degree).  The swing-up problem for the pendulum is a nice example: the
+  dynamics are smooth and simple, and even with a quadratic cost, the optimal
+  policy is discontinuous (there are neighboring states that will take one
+  "pump" or two pumps to reach the goal).--></p>
 
   <p>In this chapter, we will explore another very natural idea: let us
   parameterize a controller with some decision variables, and then search over
   those decision variables directly in order to achieve a task and/or optimize
   a performance objective.  We'll refer to this broad class of methods as
   "policy search" or, when optimization methods are used, "policy
-  optimization". </p>
+  optimization".  This idea has become very popular again lately due to the
+  empirical success of "policy gradient" algorithms in reinforcement learning
+  (RL).  This chapter includes a discussion of the "model-based" version of
+  these RL policy-gradient algorithms; we'll describe their "model-free"
+  versions in <a href="rl_policy_search.html">a future chapter</a>.
+  </p>
 
   <section><h1>Problem formulation</h1>
 
@@ -86,24 +105,109 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     control might take time as an input, or might even have it's own internal
     state, but let's start with this simple form.  </p>
 
-    <p>How should we write an objective function for optimizing $\balpha$?  The
-    approach that we used for trajectory optimization is quite reasonable --
-    the objective was typically to minimize an integral cost over some time
-    horizon (be it finite or infinite).  But in trajectory optimization, the
-    cost is only ever defined based on forward simulation from a single initial
-    condition.  We used the same additive cost structures in dynamic
-    programming, where the Hamilton-Bellman-Jacobi equation provided optimality
-    conditions for optimizing an additive cost from <i>every</i> initial
-    condition; at least in the idealized equations, we were able to get away
-    with saying $\forall \bx, \minimize_\bu ...$. </p>
+    <p>Using our prescription for optimal control using additive costs, we can
+    evaluate the performance of this controller from any initial condition
+    using, e.g.: \begin{align*} J_\balpha(\bx) =& \int_0^\infty \ell(\bx(t),
+    \bu(t)) dt, \\ \subjto \quad & \dot\bx = f(\bx, \bu), \quad \bu =
+    \bpi_\balpha(\bx), \quad  \bx(0) = \bx.\end{align*}  In order to provide a
+    scalar cost for each set of policy parameters, $\balpha$, we need one more
+    piece: a relative importance for the different initial conditions.</p>
 
-    <p>But now we are playing a different game.  If we are searching over the
-    some finitely parameterized policy, $\bpi_{\balpha}$, we can almost never
-    expect to be optimal for every state -- and we need to somehow define the
-    relevant importance of different states.  For finite-time, a distribution
-    over initial conditions.  For infinite horizon, what really matters is the
-    stationary distribution (which depends on the policy).  Let's start with
-    the distribution over initial conditions.</p>
+    <p>As we will further elaborate when we discuss <a
+    href="robust.html">stochastic optimal control</a>, a very natural choice --
+    one that preserves the recursive structure of the HJB -- is to optimize the
+    expected value of the cost, given some distribution over initial
+    conditions: $$\min_\balpha E_{\bx \sim {\mathcal X}_0} \left[J_\balpha(\bx)
+    \right],$$ where ${\mathcal X}_0$ is a probability distribution over
+    initial conditions, $\bx(0).$</p>
+
+  </section>
+
+  <section><h1>Linear Quadratic Regulator</h1>
+  
+    <p>To start thinking about the problem of searching directly in the policy
+    parameters, it's very helpful to start with a problem we know and can
+    understand well.  In LQR problems for linear, time-invariant systems, we
+    know that the optimal policy is a linear function: $\bu = -{\bf K}(\bx).$
+    So far, we have always obtained ${\bf K}$ indirectly -- by solving a
+    Riccati equation to find the cost-to-go and then backing out the optimizing
+    policy.  Here, let us study the case where we parameterize the elements of
+    ${\bf K}$ as decision variables, and attempt to optimize the expected
+    cost-to-go directly.</p>
+  
+    <subsection><h1>Policy Evaluation</h1>
+
+      <p>First, let's evaluate our objective for a given ${\bf K}$.  This step
+      is known as "<i>policy evaluation</i>".  If we use a Gaussian with mean
+      zero and covariance ${\bf \Omega}$ as our distribution over initial
+      conditions, then for LQR we have \begin{align*} & E\left[ \int_0^\infty
+      [\bx^T{\bf Q}\bx + \bu^T\bR\bu] dt \right], \\ \subjto \quad & \dot\bx =
+      {\bf A}\bx + {\bf B}\bu, \quad \bu = - {\bf K}\bx, \quad \bx(0) \sim
+      \mathcal{N}(0, {\bf \Omega}).\end{align*}  First, let us re-arrange the
+      cost function slightly, using the properties of the matrix trace:
+      \begin{gather*} \bx^T\bQ\bx + \bx^T\bK^T\bR\bK\bx = \bx^T(\bQ +
+      \bK^T\bR\bK)\bx^T = \trace\left((\bQ + \bK^T\bR\bK)\bx\bx^T\right),
+      \end{gather*} and the linearity of the integral and expected value:
+      $$E\left[ \int_0^\infty \trace((\bQ + \bK^T\bR\bK)\bx\bx^T) dt \right] =
+      \trace\left((\bQ + \bK^T\bR\bK) E \left[\int_0^\infty \bx\bx^T dt
+      \right]\right),$$ For any given initial condition, the solution of the
+      closed-loop dynamics is given by the matrix exponential: $$\bx(t) =
+      e^{(\bA - \bB\bK)t}\bx(0).$$  For the distribution of initial conditions,
+      we have \begin{gather*}  \\ E\left[\bx(t)\bx(t)^T\right] = e^{(\bA -
+      \bB\bK)t} E\left[\bx(0)\bx(0)^T\right] e^{(\bA - \bB\bK)^Tt} = e^{(\bA -
+      \bB\bK)t} {\bf \Omega} e^{(\bA - \bB\bK)^Tt}, \end{gather*} which is just
+      a (symmetric) matrix function of $t$.  The integral of this function,
+      call it ${\bf X}$, represents the expected 'energy' of the closed-loop
+      response: $${\bf X} = E\left[ \int_0^\infty \bx \bx^T dt \right].$$
+      Assuming $\bK$ is stabilizing, ${\bf X}$ can be computed as the (unique)
+      solution to the Lyapunov equation: $$(\bA - \bB\bK){\bf X} + {\bf X}(\bA
+      - \bB\bK)^T + {\bf \Omega} = 0.$$  Finally, the total policy evaluation
+      is given by $$E_{\bx \sim \mathcal{N}(0,{\bf \Omega})} [J_\bK(\bx)] =
+      \trace\left((\bQ + \bK^T\bR\bK){\bf X}\right).$$</p>
+
+    </subsection>
+
+    <subsection><h1>A nonconvex objective in $\bK$</h1>
+
+      <p>Unfortunately, the Lyapunov equation represents a nonlinear constraint
+      (on the pair $\bK$, ${\bf X}$).  Indeed, it is well known that even the
+      set of controllers that stabilizing a linear systems can be non-convex in
+      the parameters $\bK$ when there are 3 or more state
+      variables<elib>Fazel18</elib>.</p>
+
+      <example><h1>The set of stabilizing $\bK$ can be non-convex</h1>
+
+        <p>The following example was given in <elib>Fazel18</elib>.  Consider a
+        discrete-time linear system with $\bA = {\bf I}_{3 \times 3}, \bB =
+        {\bf I}_{3 \times 3}$. The controllers given by $${\bf K}_1 =
+        \begin{bmatrix} 1 & 0 & -10 \\ -1 & 1 & 0 \\ 0 & 0 & 1 \end{bmatrix}
+        \quad \text{and} \quad \bK_2 = \begin{bmatrix} 1 & -10 & 0 \\ 0 & 1 & 0
+        \\ -1 & 0 & 1 \end{bmatrix},$$ are both stabilizing controllers for
+        this system (all eigenvalues of $\bA - \bB\bK$ are inside the unit
+        circle of the complex plane).  However the controller $\hat{\bK} =
+        (\bK_1 + \bK_2)/2$ has two eigenvalues outside the unit circle.
+           </p>
+      
+      </example>
+
+      <p>Since the set of controllers that achieve finite total cost is
+      non-convex, clearly the cost function we consider here is also
+      non-convex.  For this problem we do know a <a href="lqr.html#lmi">change of variables that make the problem convex</a>, but what implications does this non-convexity result have for searching directly in the policy parameters $\bK$?</p>
+  
+    </subsection>
+
+    <subsection><h1>No local minima</h1>
+    
+      <p>Although convexity is sufficient to guarantee that an optimization
+      landscape does not have any local minima, it is not actually necessary.
+      <elib>Fazel18</elib> showed that for this LQR objective, all local optima
+      are in fact global optima.  In a series of papers... </p>
+
+      <p>Gradient dominance / PL-inequality</p>
+    
+    </subsection>
+
+    <subsection><h1>Gradient descent</h1></subsection>
 
   </section>
 
