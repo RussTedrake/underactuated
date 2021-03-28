@@ -522,10 +522,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   
       <p>We can also obtain the solution to the discrete-time finite-horizon
       (including the time-varying or tracking variants) LQR problem using
-      optimization -- in this case it actually reduces to a simple least-squares
-      problem.  This idea plays an important role in the minimax variants of LQR
-      (which optimize a worst-case performance), which we will discuss in the
-      robust control chapter (e.g. <elib>Lofberg03+Sadraddini20</elib>).</p>
+      optimization -- in this case it actually reduces to a simple
+      least-squares problem.  The presentation in this section can be viewed as
+      a simple implementation of the <a
+      href="https://en.wikipedia.org/wiki/Youla%E2%80%93Kucera_parametrization">Youla
+      parameterization</a> (sometimes called "Q-parameterization") from
+      controls.  Small variations on the formulation here play an important
+      role in the minimax variants of LQR (which optimize a worst-case
+      performance), which we will discuss in the robust control chapter (e.g.
+      <elib>Lofberg03+Sadraddini20</elib>).</p>
 
       <p>First, let us appreciate that the default parameterization is not
       convex.  Given \begin{gather*} \min \sum_{n=0}^{N-1} \bx^T[n] {\bf Q}

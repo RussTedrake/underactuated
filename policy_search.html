@@ -143,27 +143,35 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       conditions, then for LQR we have \begin{align*} & E\left[ \int_0^\infty
       [\bx^T{\bf Q}\bx + \bu^T\bR\bu] dt \right], \\ \subjto \quad & \dot\bx =
       {\bf A}\bx + {\bf B}\bu, \quad \bu = - {\bf K}\bx, \quad \bx(0) \sim
-      \mathcal{N}(0, {\bf \Omega}).\end{align*}  First, let us re-arrange the
-      cost function slightly, using the properties of the matrix trace:
-      \begin{gather*} \bx^T\bQ\bx + \bx^T\bK^T\bR\bK\bx = \bx^T(\bQ +
-      \bK^T\bR\bK)\bx^T = \trace\left((\bQ + \bK^T\bR\bK)\bx\bx^T\right),
-      \end{gather*} and the linearity of the integral and expected value:
-      $$E\left[ \int_0^\infty \trace((\bQ + \bK^T\bR\bK)\bx\bx^T) dt \right] =
-      \trace\left((\bQ + \bK^T\bR\bK) E \left[\int_0^\infty \bx\bx^T dt
-      \right]\right),$$ For any given initial condition, the solution of the
-      closed-loop dynamics is given by the matrix exponential: $$\bx(t) =
-      e^{(\bA - \bB\bK)t}\bx(0).$$  For the distribution of initial conditions,
-      we have \begin{gather*}  \\ E\left[\bx(t)\bx(t)^T\right] = e^{(\bA -
-      \bB\bK)t} E\left[\bx(0)\bx(0)^T\right] e^{(\bA - \bB\bK)^Tt} = e^{(\bA -
-      \bB\bK)t} {\bf \Omega} e^{(\bA - \bB\bK)^Tt}, \end{gather*} which is just
-      a (symmetric) matrix function of $t$.  The integral of this function,
-      call it ${\bf X}$, represents the expected 'energy' of the closed-loop
+      \mathcal{N}(0, {\bf \Omega}).\end{align*}   This problem is also known as
+      the $\mathcal{H}_2$ optimal control problem<elib>Chen15a</elib>, since the
+      expected-cost-to-go here is the $\mathcal{H}_2$-norm of the linear system
+      from disturbance input (here only an impulse that generates our initial
+      conditions) to performance output (which here would be e.g. $\bz =
+      \begin{bmatrix} \bQ^{\frac{1}{2}}\bx \\ \bR^{\frac{1}{2}}\bu
+      \end{bmatrix}).$</p>
+
+      <p>To evaluate a policy $\bK$, let us first re-arrange the cost function
+      slightly, using the properties of the matrix trace: \begin{gather*}
+      \bx^T\bQ\bx + \bx^T\bK^T\bR\bK\bx = \bx^T(\bQ + \bK^T\bR\bK)\bx^T =
+      \trace\left((\bQ + \bK^T\bR\bK)\bx\bx^T\right), \end{gather*} and the
+      linearity of the integral and expected value: $$E\left[ \int_0^\infty
+      \trace((\bQ + \bK^T\bR\bK)\bx\bx^T) dt \right] = \trace\left((\bQ +
+      \bK^T\bR\bK) E \left[\int_0^\infty \bx\bx^T dt \right]\right),$$ For any
+      given initial condition, the solution of the closed-loop dynamics is
+      given by the matrix exponential: $$\bx(t) = e^{(\bA - \bB\bK)t}\bx(0).$$
+      For the distribution of initial conditions, we have \begin{gather*}  \\
+      E\left[\bx(t)\bx(t)^T\right] = e^{(\bA - \bB\bK)t}
+      E\left[\bx(0)\bx(0)^T\right] e^{(\bA - \bB\bK)^Tt} = e^{(\bA - \bB\bK)t}
+      {\bf \Omega} e^{(\bA - \bB\bK)^Tt}, \end{gather*} which is just a
+      (symmetric) matrix function of $t$.  The integral of this function, call
+      it ${\bf X}$, represents the expected 'energy' of the closed-loop
       response: $${\bf X} = E\left[ \int_0^\infty \bx \bx^T dt \right].$$
       Assuming $\bK$ is stabilizing, ${\bf X}$ can be computed as the (unique)
       solution to the Lyapunov equation: $$(\bA - \bB\bK){\bf X} + {\bf X}(\bA
       - \bB\bK)^T + {\bf \Omega} = 0.$$  Finally, the total policy evaluation
-      is given by \begin{equation}E_{\bx \sim \mathcal{N}(0,{\bf \Omega})} [J_\bK(\bx)] =
-      \trace\left((\bQ + \bK^T\bR\bK){\bf
+      is given by \begin{equation}E_{\bx \sim \mathcal{N}(0,{\bf \Omega})}
+      [J_\bK(\bx)] = \trace\left((\bQ + \bK^T\bR\bK){\bf
       X}\right)\label{eq:lqr_evaluation}.\end{equation}</p>
 
     </subsection>
@@ -250,8 +258,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         = 2x + 6 \sin(x) \cos(x).$$  We can establish that this function is
         $L$-smooth with $L=8$ by $$\| \nabla f(b) - \nabla f(a) \|_2 = |2b - 2a
         + 6\sin(b-a)| \le 8|b - a|,$$ because $\sin(x) \le x.$  Finally, we
-        have gradient-dominance from the PL-inequality: $$\frac{1}{2}(2x+6sc)^2
-        \ge \mu(x^2 + 3s^2),$$ with $\mu=0.175$. (I confirmed this with a small
+        have gradient-dominance from the PL-inequality:
+        $$\frac{1}{2}(2x+6\sin(x)\cos(x))^2 \ge \mu(x^2 + 3\sin^2(x)),$$ with
+        $\mu=0.175$. (I confirmed this with a small
         <a href="https://dreal.github.io/">dReal</a> <a
         href="examples/pl_inequality.py">program</a>).
           
@@ -312,24 +321,50 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
   <section><h1>More convergence results and counter-examples</h1>
 
-    <todo>Some related results: LQG, mixed-LQR/H-inf, ...</todo>
+    <p>LQR / $\mathcal{H}_2$ control is one of the good cases, where we know
+    that for the objective parameterized directly in $\bK$, all local optima
+    are global optima.  <elib>Zhang20</elib> extended this result for mixed
+    $\mathcal{H}_2/\mathcal{H}_\infty$ control.  <elib>Agarwal20</elib> gives a
+    recent treatment of the tabular (finite) MDP case. </p>
 
-    <p><i>more coming soon...</i></p>
+    <p>For LQR, we also know <a href="lqr.html#lmi"> alternative
+    parameterizations of the controller</a>
+    which make the objective actually convex.  In particular, the <a
+    href="lqr.html#sls">Youla parameters</a> (and disturbance-based feedback
+    more generally) extend readily to nonlinear systems and may give some
+    benefits there, too.  Their utility in a policy search setting was studied
+    initially in <elib>Roberts11</elib>.</p>
 
-    <p>Youla parameters also convexify the LQR objective and may extend more readily to nonlinear systems.  Their utility in RL was studied initially in <elib>Roberts11</elib>.</p>
-
-    <p>The case of output feedback is not as nice.  Searching directly over static output feedback controllers, $\bu = -{\bf K}\by$, is known to be hard -- even the set of stabilizing ${\bf K}$ matrices can be disconnected.  We can see that with a simple example (given to me once during a conversation with Alex Megretski). 
+    <p>Unfortunately, we do not expect these nice properties to hold in
+    general.  There are a number of nearby problems which are known to be
+    nonconvex in the original parameters.  The case of <i>static output
+    feedback</i> is an important one.  If we extend our plant model to include
+    (potentially limited) observations: $\dot\bx = \bA\bx + \bB\bu, \by =
+    \bC\bx,$ then searching directly over controllers, $\bu = -{\bf K}\by$, is
+    known to be NP-hard<elib>Blondel97</elib>.  This time, the set of stabilizing ${\bf K}$ matrices may be not only nonconvex, but actually disconnected.  We can see that with a simple example (given to me once
+    during a conversation with Alex Megretski). 
     </p>
 
     <example><h1>Parameterizations of Static Output Feedback</h1>
 
-    <p>Consider the single-input, single-output LTI system $$\dot{\bx} = {\bf A}\bx + {\bf B} u, \quad y = {\bf C}\bx,$$ with $${\bf A} = \begin{bmatrix} 0 & 0 & 2 \\ 1 & 0 & 0 \\ 0 & 1 & 0\end{bmatrix}, \quad {\bf B} = \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}, \quad {\bf C} = \begin{bmatrix} 1 & 1 & 3 \end{bmatrix}.$$  Here the linear static-output-feedback policy can be written as $u = -ky$, with a single scalar parameter $k$. </p>
+    <p>Consider the single-input, single-output LTI system $$\dot{\bx} = {\bf
+    A}\bx + {\bf B} u, \quad y = {\bf C}\bx,$$ with $${\bf A} = \begin{bmatrix}
+    0 & 0 & 2 \\ 1 & 0 & 0 \\ 0 & 1 & 0\end{bmatrix}, \quad {\bf B} =
+    \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}, \quad {\bf C} = \begin{bmatrix}
+    1 & 1 & 3 \end{bmatrix}.$$  Here the linear static-output-feedback policy
+    can be written as $u = -ky$, with a single scalar parameter $k$. </p>
 
-    <p>Go ahead and make a plot of the maximum eigenvalue of the closed-loop system, as a function of $k$.  The system is only stable when this maximum eigenvalue is less than zero.  You'll find the set of stabilizing $k$'s is a disconnected set.</p>
+    <p>Go ahead and make a plot of the maximum eigenvalue of the closed-loop
+    system, as a function of $k$.  The system is only stable when this maximum
+    eigenvalue is less than zero.  You'll find the set of stabilizing $k$'s is
+    a disconnected set.</p>
 
     </example>
 
-    <todo>Counter-example from Russo</todo>
+    <p>There are many other known counter-examples.  <elib>Bhandari20</elib>
+    gives a particularly simple one with a two state MDP.  One of the big open
+    questions is whether deep network parameterizations are an example of a
+    good case.</p>
 
   </section>
 
@@ -359,6 +394,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <div id="references"><section><h1>References</h1>
 <ol>
 
+<li id=Chen15a>
+<span class="author">Chen, Ben M.</span>,
+<span class="title">"H2 {Optimal} {Control}"</span>,
+<span class="publisher">Encyclopedia of {Systems} and {Control}</span>, pp. 515--520, <span class="year">2015</span>.
+
+</li><br>
 <li id=Fazel18>
 <span class="author">Maryam Fazel and Rong Ge and Sham M. Kakade and Mehran Mesbahi</span>,
 <span class="title">"Global Convergence of Policy Gradient Methods for the Linear Quadratic Regulator"</span>,
@@ -377,11 +418,35 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <span class="publisher">Joint European Conference on Machine Learning and Knowledge Discovery in Databases</span>, pp. 795--811, <span class="year">2016</span>.
 
 </li><br>
+<li id=Zhang20>
+<span class="author">Zhang, Kaiqing and Hu, Bin and Basar, Tamer</span>,
+<span class="title">"Policy Optimization for &#8459;&#8322; Linear Control with &#8459;&#8734; Robustness Guarantee: Implicit Regularization and Global Convergence"</span>,
+<span class="publisher">Proceedings of the 2nd Conference on Learning for Dynamics and Control</span>, vol. 120, pp. 179--190, 10--11 Jun, <span class="year">2020</span>.
+
+</li><br>
+<li id=Agarwal20>
+<span class="author">Agarwal, Alekh and Kakade, Sham M and Lee, Jason D and Mahajan, Gaurav</span>,
+<span class="title">"Optimality and Approximation with Policy Gradient Methods in Markov Decision Processes"</span>,
+<span class="publisher">Proceedings of Thirty Third Conference on Learning Theory</span>, vol. 125, pp. 64--66, 09--12 Jul, <span class="year">2020</span>.
+
+</li><br>
 <li id=Roberts11>
 <span class="author">John Roberts and Ian Manchester and Russ Tedrake</span>,
 <span class="title">"Feedback Controller Parameterizations for Reinforcement Learning"</span>,
 <span class="publisher">Proceedings of the 2011 IEEE Symposium on Adaptive Dynamic Programming and Reinforcement Learning (ADPRL)</span>, <span class="year">2011</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Roberts11.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Blondel97>
+<span class="author">Blondel, Vincent and Tsitsiklis, John N</span>,
+<span class="title">"NP-hardness of some linear control design problems"</span>,
+<span class="publisher">SIAM journal on control and optimization</span>, vol. 35, no. 6, pp. 2118--2127, <span class="year">1997</span>.
+
+</li><br>
+<li id=Bhandari20>
+<span class="author">Bhandari, Jalaj and Russo, Daniel</span>,
+<span class="title">"Global {Optimality} {Guarantees} {For} {Policy} {Gradient} {Methods}"</span>,
+<span class="publisher">arXiv:1906.01786 [cs, stat]</span>, oct, <span class="year">2020</span>.
 
 </li><br>
 </ol>
