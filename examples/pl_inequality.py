@@ -7,7 +7,7 @@ x = Variable("x")
 # that can verify satisfiability.
 mu = .175
 result = CheckSatisfiability(And(
-    0.0001 <= x, x <= 1e6,
+    Or(And(-1e6 <= x, x <= -1e-6), And(1e-6 <= x, x <= 1e6)),
     0.5*(2*x + 6*sin(x)*cos(x))**2 <= mu*(x**2 + 3*sin(x)**2)
 ), 1e-6)
 print(result)
