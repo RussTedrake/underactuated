@@ -284,7 +284,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     
       <p>The results described above suggest that one can use gradient descent
       to obtain the optimal controller, $\bK^*$ for LQR.  For the variations
-      we've seen so far (were we know the model), I would absolutely recommend
+      we've seen so far (where we know the model), I would absolutely recommend
       that solving the Riccati equations is a much better algorithm; it is
       faster and more robust, with no parameters like step-size to tune.  But
       gradient descent becomes more interesting / viable when we think of it as
@@ -306,12 +306,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <p>Note that the term <i>policy gradient</i> used in reinforcement
       learning typically refers to the slightly different class of algorithms I
       hinted at above. In those algorithms, we use the true gradients of the
-      policy, but we do not assume that we have access to the gradients of the
-      plant.  They typically require many more roll-outs to estimate the
-      gradients we compute here, and should only be weaker (less efficient)
-      than the algorithms in this chapter.  The papers investigating the
-      convergence of gradient descent for LQR have also started exploring these
-      cases.  We will study these so-called <a
+      policy (only), but estimate the remainder of the terms in the gradient
+      through sampling.  These methods typically require many samples to
+      estimate the gradients we compute here, and should only be weaker (less
+      efficient) than the algorithms in this chapter.  The papers investigating
+      the convergence of gradient descent for LQR have also started exploring
+      these cases.  We will study these so-called <a
       href="rl_policy_search.html">model-free" policy search</a>
       algorithms soon.</p>
       
@@ -324,16 +324,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <p>LQR / $\mathcal{H}_2$ control is one of the good cases, where we know
     that for the objective parameterized directly in $\bK$, all local optima
     are global optima.  <elib>Zhang20</elib> extended this result for mixed
-    $\mathcal{H}_2/\mathcal{H}_\infty$ control.  <elib>Agarwal20</elib> gives a
+    $\mathcal{H}_2/\mathcal{H}_\infty$ control.  <elib>Agarwal20a</elib> gives a
     recent treatment of the tabular (finite) MDP case. </p>
 
-    <p>For LQR, we also know <a href="lqr.html#lmi"> alternative
-    parameterizations of the controller</a>
-    which make the objective actually convex.  In particular, the <a
-    href="lqr.html#sls">Youla parameters</a> (and disturbance-based feedback
-    more generally) extend readily to nonlinear systems and may give some
-    benefits there, too.  Their utility in a policy search setting was studied
-    initially in <elib>Roberts11</elib>.</p>
+    <p>For LQR, we also know alternative parameterizations of the controller
+    which make the objective actually convex, including the <a
+    href="lqr.html#lmi">LMI formulation</a> and the <a
+    href="lqr.html#sls">Youla parameterization</a>.  Their utility in a policy
+    search setting was studied initially in <elib>Roberts11</elib>.</p>
 
     <p>Unfortunately, we do not expect these nice properties to hold in
     general.  There are a number of nearby problems which are known to be
@@ -424,10 +422,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <span class="publisher">Proceedings of the 2nd Conference on Learning for Dynamics and Control</span>, vol. 120, pp. 179--190, 10--11 Jun, <span class="year">2020</span>.
 
 </li><br>
-<li id=Agarwal20>
-<span class="author">Agarwal, Alekh and Kakade, Sham M and Lee, Jason D and Mahajan, Gaurav</span>,
-<span class="title">"Optimality and Approximation with Policy Gradient Methods in Markov Decision Processes"</span>,
-<span class="publisher">Proceedings of Thirty Third Conference on Learning Theory</span>, vol. 125, pp. 64--66, 09--12 Jul, <span class="year">2020</span>.
+<li id=Agarwal20a>
+<span class="author">Alekh Agarwal and Sham M. Kakade and Jason D. Lee and Gaurav Mahajan</span>,
+<span class="title">"On the Theory of Policy Gradient Methods: Optimality, Approximation, and Distribution Shift"</span>,
+, <span class="year">2020</span>.
 
 </li><br>
 <li id=Roberts11>
