@@ -162,12 +162,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       Assuming $\bK$ is stabilizing, ${\bf X}$ can be computed as the (unique)
       solution to the Lyapunov equation: $$(\bA - \bB\bK){\bf X} + {\bf X}(\bA
       - \bB\bK)^T + {\bf \Omega} = 0.$$  Finally, the total policy evaluation
-      is given by $$E_{\bx \sim \mathcal{N}(0,{\bf \Omega})} [J_\bK(\bx)] =
-      \trace\left((\bQ + \bK^T\bR\bK){\bf X}\right).$$</p>
+      is given by \begin{equation}E_{\bx \sim \mathcal{N}(0,{\bf \Omega})} [J_\bK(\bx)] =
+      \trace\left((\bQ + \bK^T\bR\bK){\bf
+      X}\right)\label{eq:lqr_evaluation}.\end{equation}</p>
 
     </subsection>
 
-    <subsection><h1>A nonconvex objective in $\bK$</h1>
+    <subsection><h1>A nonconvex objective in ${\bf K}$</h1>
 
       <p>Unfortunately, the Lyapunov equation represents a nonlinear constraint
       (on the pair $\bK$, ${\bf X}$).  Indeed, it is well known that even the
@@ -192,7 +193,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <p>Since the set of controllers that achieve finite total cost is
       non-convex, clearly the cost function we consider here is also
-      non-convex.  For this problem we do know a <a href="lqr.html#lmi">change of variables that make the problem convex</a>, but what implications does this non-convexity result have for searching directly in the policy parameters $\bK$?</p>
+      non-convex.  For this problem we do know a <a href="lqr.html#lmi">change
+      of variables that make the problem convex</a>, but what implications does
+      this non-convexity result have for searching directly in the policy
+      parameters $\bK$?</p>
   
     </subsection>
 
@@ -201,17 +205,78 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <p>Although convexity is sufficient to guarantee that an optimization
       landscape does not have any local minima, it is not actually necessary.
       <elib>Fazel18</elib> showed that for this LQR objective, all local optima
-      are in fact global optima.  In a series of papers... </p>
+      are in fact global optima.  This analysis was extended in
+      <elib>Mohammadi19</elib> to give a simpler analysis and include
+      convergence rates.</p>
 
-      <p>Gradient dominance / PL-inequality</p>
+      <p>How does one show that an optimization landscape has no local minima
+      (even though it may be non-convex)?  One of the most popular tools is to
+      demonstrate <i>gradient dominance</i> with the famous
+      <i>Polyak-Lojasiewicz (PL) inequality</i> <elib>Karimi16</elib>.  For an
+      optimization problem $$\min_{\bx \in \Re^d} f(\bx)$$ we first assume the
+      function $f$ is $L$-smooth (<a
+      href="https://en.wikipedia.org/wiki/Lipschitz_continuity">Lipschitz</a>
+      gradients): $$\forall \bx,\bx', \quad \| \nabla f(\bx') - \nabla f(\bx)
+      \|_2 \le L \| \bx' - \bx \|_2.$$ Then we say that the function satisfies
+      the PL-inequality if the following holds for some $\mu > 0$: $$\forall
+      \bx, \quad \frac{1}{2} \| \nabla f(\bx) \|_F^2 \ge \mu (f(\bx) - f^*),$$
+      where $f^*$ is a value obtained at the optima.  In words, the gradient of
+      the objective must grow faster than some quadratic function.  Note,
+      however, that the distance here is measured in $f(\bx)$, not $\bx$; we do
+      not require (nor imply) that the optimal solution is unique.</p>
     
+      <example><h1>A nonconvex function with no local minima</h1>
+      
+      </example>
+
+      <p><elib>Karimi16</elib> gives a convergence rate for convergence to an
+      optima for gradient descent given the PL-inequality.
+      <elib>Mohammadi19</elib> showed that the gradients of the LQR cost we
+      examine here with respect to $\bK$ satisfy the PL conditions.</p>
+
+      <todo>Some related results: LQG, mixed-LQR/H-inf, ...</todo>
+
     </subsection>
 
-    <subsection><h1>Gradient descent</h1></subsection>
+    <subsection><h1>True gradient descent</h1>
+    
+      <p>The results described above suggest that one can use gradient descent
+      to obtain the optimal controller, $\bK^*$ for LQR.  For the variations
+      we've seen so far (were we know the model), I would absolutely recommend
+      that solving the Riccati equations is a much better algorithm; it is
+      faster and more robust, with no parameters like step-size to tune.  But
+      gradient descent becomes more interesting / viable when we think of it as
+      a model for a less perfect algorithm, e.g. where the plant model is not
+      given and the gradients are estimated from noisy samples.</p>
+
+      <p>It is a rare luxury, associated here with linear plants/controllers,
+      quadratic costs, and Gaussian initial conditions, that we could compute
+      the value function in closed form in (\ref{eq:lqr_evaluation}).  We can
+      also compute the true gradient -- this is a pinnacle of exactness we
+      should strive for in our methods but will rarely achieve again.  The
+      gradient is given by $$\pd{E[J_\bK(\bx)]}{\bK} = 2(\bR\bK - \bB^T{\bf
+      P}){\bf X},$$ where ${\bf P}$ satisfies another Lyapunov equation: $$(\bA
+      - \bB\bK)^T{\bf P} + {\bf P}(\bA - \bB\bK) + \bQ + \bK^T\bR\bK = 0.$$
+      </p>
+      <todo>cite Jack if/when we publish our draft</todo>
+
+      <p>Note that the term <i>policy gradient</i> used in reinforcement
+      learning typically refers to the slightly different class of algorithms I
+      hinted at above. In those algorithms, we use the true gradients of the
+      policy, but we do not assume that we have access to the gradients of the
+      plant.  They typically require many more roll-outs to estimate the
+      gradients we compute here, and should only be weaker (less efficient)
+      than the algorithms in this chapter.  The papers investigating the
+      convergence of gradient descent for LQR have also started exploring these
+      cases.  We will study these so-called <a
+      href="rl_policy_search.html">model-free" policy search</a>
+      algorithms soon.</p>
+      
+    </subsection>
 
   </section>
 
-  <section><h1>Controller parameterizations</h1>
+  <section><h1>More convergence results and counter-examples</h1>
 
     <p><i>more coming soon...</i></p>
 
@@ -259,7 +324,19 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <li id=Fazel18>
 <span class="author">Maryam Fazel and Rong Ge and Sham M. Kakade and Mehran Mesbahi</span>,
 <span class="title">"Global Convergence of Policy Gradient Methods for the Linear Quadratic Regulator"</span>,
-, <span class="year">2018</span>.
+<span class="publisher">International Conference on Machine Learning</span>, <span class="year">2018</span>.
+
+</li><br>
+<li id=Mohammadi19>
+<span class="author">Mohammadi, Hesameddin and Zare, Armin and Soltanolkotabi, Mahdi and Jovanovi{\'c}, Mihailo R</span>,
+<span class="title">"Global exponential convergence of gradient methods over the nonconvex landscape of the linear quadratic regulator"</span>,
+<span class="publisher">2019 IEEE 58th Conference on Decision and Control (CDC)</span>, pp. 7474--7479, <span class="year">2019</span>.
+
+</li><br>
+<li id=Karimi16>
+<span class="author">Karimi, Hamed and Nutini, Julie and Schmidt, Mark</span>,
+<span class="title">"Linear convergence of gradient and proximal-gradient methods under the polyak-{\l}ojasiewicz condition"</span>,
+<span class="publisher">Joint European Conference on Machine Learning and Knowledge Discovery in Databases</span>, pp. 795--811, <span class="year">2016</span>.
 
 </li><br>
 <li id=Roberts11>
