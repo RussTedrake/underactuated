@@ -212,7 +212,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <p>How does one show that an optimization landscape has no local minima
       (even though it may be non-convex)?  One of the most popular tools is to
       demonstrate <i>gradient dominance</i> with the famous
-      <i>Polyak-Lojasiewicz (PL) inequality</i> <elib>Karimi16</elib>.  For an
+      <i>Polyak-Łojasiewicz (PL) inequality</i> <elib>Karimi16</elib>.  For an
       optimization problem $$\min_{\bx \in \Re^d} f(\bx)$$ we first assume the
       function $f$ is $L$-smooth (<a
       href="https://en.wikipedia.org/wiki/Lipschitz_continuity">Lipschitz</a>
@@ -223,18 +223,53 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       where $f^*$ is a value obtained at the optima.  In words, the gradient of
       the objective must grow faster than some quadratic function.  Note,
       however, that the distance here is measured in $f(\bx)$, not $\bx$; we do
-      not require (nor imply) that the optimal solution is unique.</p>
-    
-      <example><h1>A nonconvex function with no local minima</h1>
+      not require (nor imply) that the optimal solution is unique.  It clearly
+      implies that for any minima, $\bx'$ with $\nabla f(x') = 0$, since the
+      left-hand side is zero, we must have the right-hand side also be zero, so
+      $x'$ is also a global optima: $f(x') = f^*$. </p>
+
+      <!-- another way is to establish quasi-convexity ... etc -->
       
+      <example><h1>A nonconvex function with no local minima</h1>
+        
+        <p>Consider the function $$f(x) = x^2 + 3 \sin^2(x).$$</p>
+
+        <figure>
+          <iframe id="igraph" scrolling="no" style="border:none;"
+          seamless="seamless" src="data/pl_inequality.html" height="250"
+          width="100%"></iframe>
+        </figure>
+
+        <p>We can establish that this function is not convex by observing that
+        for $a=\frac{\pi}{4}$, $b=\frac{3\pi}{4}$, we have
+        $$f\left(\frac{a+b}{2}\right) = \frac{\pi^2}{4} + 3 \approx 5.47 >
+        \frac{f(a)+f(b)}{2} = \frac{5\pi^2}{16} + \frac{3}{2} \approx 4.58.$$
+        </p>
+
+        <p>We can establish the PL conditions using the gradient $$\nabla f(x)
+        = 2x + 6 \sin(x) \cos(x).$$  We can establish that this function is
+        $L$-smooth with $L=8$ by $$\| \nabla f(b) - \nabla f(a) \|_2 = |2b - 2a
+        + 6\sin(b-a)| \le 8|b - a|,$$ because $\sin(x) \le x.$  Finally, we
+        have gradient-dominance from the PL-inequality: $$\frac{1}{2}(2x+6sc)^2
+        \ge \mu(x^2 + 3s^2).$$  I haven't actually solved for the largest $\mu$
+        yet (let me know if you do!), but I've plotted the gradient-dominance
+        condition below.  Clearly there is a line of positive slope, $\mu$, for
+        which $\frac{1}{2}|\nabla f(x)|^2 \ge \mu (f(x) - f^*)$ at least over
+        the domain I've plotted.
+          
+        <figure>
+          <iframe id="igraph" scrolling="no" style="border:none;"
+          seamless="seamless" src="data/pl_inequality_grad.html" height="250"
+          width="100%"></iframe>
+        </figure>
+</p>
+
       </example>
 
       <p><elib>Karimi16</elib> gives a convergence rate for convergence to an
-      optima for gradient descent given the PL-inequality.
+      optima for gradient descent given the PL conditions.
       <elib>Mohammadi19</elib> showed that the gradients of the LQR cost we
       examine here with respect to $\bK$ satisfy the PL conditions.</p>
-
-      <todo>Some related results: LQG, mixed-LQR/H-inf, ...</todo>
 
     </subsection>
 
@@ -249,14 +284,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       a model for a less perfect algorithm, e.g. where the plant model is not
       given and the gradients are estimated from noisy samples.</p>
 
-      <p>It is a rare luxury, associated here with linear plants/controllers,
-      quadratic costs, and Gaussian initial conditions, that we could compute
-      the value function in closed form in (\ref{eq:lqr_evaluation}).  We can
-      also compute the true gradient -- this is a pinnacle of exactness we
-      should strive for in our methods but will rarely achieve again.  The
-      gradient is given by $$\pd{E[J_\bK(\bx)]}{\bK} = 2(\bR\bK - \bB^T{\bf
-      P}){\bf X},$$ where ${\bf P}$ satisfies another Lyapunov equation: $$(\bA
-      - \bB\bK)^T{\bf P} + {\bf P}(\bA - \bB\bK) + \bQ + \bK^T\bR\bK = 0.$$
+      <p>It is a rare luxury, due here to our ability to integrate the linear
+      plants/controllers, quadratic costs, and Gaussian initial conditions,
+      that we could compute the value function exactly in
+      (\ref{eq:lqr_evaluation}).  We can also compute the true gradient -- this
+      is a pinnacle of exactness we should strive for in our methods but will
+      rarely achieve again.  The gradient is given by $$\pd{E[J_\bK(\bx)]}{\bK}
+      = 2(\bR\bK - \bB^T{\bf P}){\bf X},$$ where ${\bf P}$ satisfies another
+      Lyapunov equation: $$(\bA - \bB\bK)^T{\bf P} + {\bf P}(\bA - \bB\bK) +
+      \bQ + \bK^T\bR\bK = 0.$$
       </p>
       <todo>cite Jack if/when we publish our draft</todo>
 
@@ -278,9 +314,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
   <section><h1>More convergence results and counter-examples</h1>
 
+    <todo>Some related results: LQG, mixed-LQR/H-inf, ...</todo>
+
     <p><i>more coming soon...</i></p>
 
-    <p>It might be tempting to optimize an LQR problem by searching directly over the feedback parameters, ${\bf K}$.  It was shown only quite recently that this can achieve the optimal ${\bf K}$ <elib>Fazel18</elib>.  But other, and likely more efficient parameterizations are also known<elib>Roberts11</elib>.</p>
+    <p>Youla parameters also convexify the LQR objective and may extend more readily to nonlinear systems.  Their utility in RL was studied initially in <elib>Roberts11</elib>.</p>
 
     <p>The case of output feedback is not as nice.  Searching directly over static output feedback controllers, $\bu = -{\bf K}\by$, is known to be hard -- even the set of stabilizing ${\bf K}$ matrices can be disconnected.  We can see that with a simple example (given to me once during a conversation with Alex Megretski). 
     </p>
@@ -292,6 +330,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <p>Go ahead and make a plot of the maximum eigenvalue of the closed-loop system, as a function of $k$.  The system is only stable when this maximum eigenvalue is less than zero.  You'll find the set of stabilizing $k$'s is a disconnected set.</p>
 
     </example>
+
+    <todo>Counter-example from Russo</todo>
 
   </section>
 
