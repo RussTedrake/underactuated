@@ -251,11 +251,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         $L$-smooth with $L=8$ by $$\| \nabla f(b) - \nabla f(a) \|_2 = |2b - 2a
         + 6\sin(b-a)| \le 8|b - a|,$$ because $\sin(x) \le x.$  Finally, we
         have gradient-dominance from the PL-inequality: $$\frac{1}{2}(2x+6sc)^2
-        \ge \mu(x^2 + 3s^2).$$  I haven't actually solved for the largest $\mu$
-        yet (let me know if you do!), but I've plotted the gradient-dominance
-        condition below.  Clearly there is a line of positive slope, $\mu$, for
-        which $\frac{1}{2}|\nabla f(x)|^2 \ge \mu (f(x) - f^*)$ at least over
-        the domain I've plotted.
+        \ge \mu(x^2 + 3s^2),$$ with $\mu=0.175$. (I confirmed this with a small
+        <a href="https://dreal.github.io/">dReal</a> <a
+        href="examples/pl_inequality.py">program</a>).
           
         <figure>
           <iframe id="igraph" scrolling="no" style="border:none;"
