@@ -1020,7 +1020,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
         <li>Work through the coding sections in the notebook.</li>
 
-        <li>Although it gets close, in the notebook why does our implementation not succeed in stabilizing the system exactly at the origin?</li>
+        <li>Although it gets close, in the notebook why might our implementation not succeed in stabilizing the system exactly at the origin?</li>
 
         <li>
 
@@ -1028,9 +1028,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
           <ol ol type="i">
 
-            <li>Can graph search value iteration perform in a continuous state space? Can fitted value iteration?</li>
+            <li>Practically, can graph search value iteration perform directly in a continuous state space? Can fitted value iteration?</li>
 
-            <li>Can graph search value iteration perform with very large discrete action spaces, or continuous action spaces? Can fitted value iteration?</li>
+            <li>Practically, can graph search value iteration perform directly with a continuous action space? Can fitted value iteration?</li>
 
           </ol>
 
@@ -1042,9 +1042,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
           <ol ol type="i">
 
-            <li>Sampling the set of points <code>X</code> before performing the fit.</li>
+            <li>Sampling the set of points <code>X</code> before performing the fit. Note that this does not include <code>Xnext</code>.</li>
 
-            <li>Generating the costs <code>G</code> before performing the fit.</li>
+            <li>Generating the costs <code>G</code> before performing the fit. Assume we are using the quadratic cost.</li>
 
             <li>Updating the cost function target in the training loop: <code>Jd, ind = torch.min(G + discount*Jnext, dim=1)</code>.</li>
 
