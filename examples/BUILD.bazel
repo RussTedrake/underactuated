@@ -32,6 +32,7 @@ rt_ipynb_test(
 
 rt_ipynb_test(
     name = "perching",
+    timeout = "moderate",
     srcs = ["perching.ipynb"],
     data = ["//underactuated/models/glider"],
     deps = ["//underactuated"],

@@ -88,13 +88,18 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   <p>In this chapter, we will explore another very natural idea: let us
   parameterize a controller with some decision variables, and then search over
   those decision variables directly in order to achieve a task and/or optimize
-  a performance objective.  We'll refer to this broad class of methods as
-  "policy search" or, when optimization methods are used, "policy
-  optimization".  This idea has become very popular again lately due to the
-  empirical success of "policy gradient" algorithms in reinforcement learning
-  (RL).  This chapter includes a discussion of the "model-based" version of
-  these RL policy-gradient algorithms; we'll describe their "model-free"
-  versions in <a href="rl_policy_search.html">a future chapter</a>.
+  a performance objective.  One specific motivation for this approach is the
+  (admittedly somewhat anecdotal) observation that often times simple policies
+  can perform very well on complicated robots and with potentially complicated
+  cost-to-go functions.</p>
+  
+  <p>We'll refer to this broad class of methods as "policy search" or, when
+  optimization methods are used, "policy optimization".  This idea has become
+  very popular again lately due to the empirical success of "policy gradient"
+  algorithms in reinforcement learning (RL).  This chapter includes a
+  discussion of the "model-based" version of these RL policy-gradient
+  algorithms; we'll describe their "model-free" versions in <a
+  href="rl_policy_search.html">a future chapter</a>.
   </p>
 
   <section><h1>Problem formulation</h1>
@@ -415,13 +420,32 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     PILCO and PIPPS (arxiv from Doya).
     </todo>
 
-    <todo>Infinite-horizon costs by adding an approximate cost-to-go.</todo>
+    <subsection><h1>Infinite-horizon objectives</h1>
 
+      <todo> by adding an approximate cost-to-go as the terminal cost.</todo>
+
+    </subsection>
+
+    <subsection><h1>Search strategies for global optimization</h1>
+    
+      <p>To combat local minima... Evolutionary strategies, ...</p>
+      <todo>Evolutionary strategies with gradients?</todo>
+      <todo>Bayesian optimization?  Others?</todo>
+
+    </subsection>
   </section>
 
-  <section><h1>Evolutionary strategies</h1></section>
+  <section><h1>Policy Iteration</h1>
 
-  <section><h1>Sums-of-squares policy search</h1>
+    <p>In the chapter on Lyapunov analysis we also explored a handful
+    techniques <a href="lyapunov.html#control">for control design</a>.  <a
+    href="lyapunov.html#control_alternations">One of these</a> even directly
+    parameterized the controller (as a polynomial feedback), and used
+    alternations to switch between policy evaluation and policy optimization.
+    <a href="lyapunov.html#adp">Another</a> generated lower-bounds to the
+    optimal cost-to-go.</p>
+
+    <p>Coming soon...</p>
 
   </section>
 
