@@ -274,9 +274,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       </example>
 
       <p><elib>Karimi16</elib> gives a convergence rate for convergence to an
-      optima for gradient descent given the PL conditions.
+      optima for <a href="https://en.wikipedia.org/wiki/Gradient_descent">gradient descent</a> given the PL conditions.
       <elib>Mohammadi19</elib> showed that the gradients of the LQR cost we
-      examine here with respect to $\bK$ satisfy the PL conditions.</p>
+      examine here with respect to $\bK$ satisfy the PL conditions on any
+      sub-level set of the cost-to-go function.</p>
 
     </subsection>
 
@@ -368,23 +369,61 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
   <section><h1>Trajectory-based policy search</h1>
 
+    <p>Although we cannot expect gradient descent to converge to a global
+    minima in general, it is still very reasonable to try using gradient
+    descent to find policies for more complicated nonlinear control problems.
+    In the general form, this means that the first step of optimizing
+    $$\min_\balpha E_{\bx \sim {\mathcal X}_0} \left[J_\balpha(\bx) \right],$$
+    is estimating $$\pd{}{\balpha} E_{\bx \sim {\mathcal X}_0}
+    \left[J_\balpha(\bx) \right].$$  In the LQR problem, we were able to
+    compute these terms exactly; with the biggest simplification coming from
+    the fact that <a href="stochastic.html#linear_gaussian">the response of a
+    linear system to Gaussian initial conditions stays Gaussian</a>. This is
+    not true for more general nonlinear systems.  So what are we to do?</p>
+
+    <p>The most common/general technique (despite it not being very efficient),
+    is to approximate the expected cost-to-go using a sampling (Monte-Carlo)
+    approximation using a large number, $N$, of samples: $$E_{\bx \sim
+    {\mathcal X}_0}[J_\balpha(\bx)] \approx \frac{1}{N} \sum_{i=0}^{N-1}
+    J_\balpha(\bx_i), \quad \bx_i \sim \mathcal{X}_0.$$  The gradients follow
+    easily: $$\pd{}{\balpha} E_{\bx \sim {\mathcal X}_0}[J_\balpha(\bx)]
+    \approx \frac{1}{N} \sum_{i=0}^{N-1} \pd{J_\balpha(\bx_i)}{\balpha}, \quad
+    \bx_i \sim \mathcal{X}_0.$$  Our confidence in the accuracy of this
+    estimate will improve as we increase $N$; see e.g. Section 4.2 of
+    <elib>Rubinstein16</elib> for details on the confidence intervals.  The
+    most optimistic among us will say that it's quite fine to have only a noisy
+    estimate of the gradient -- this leads to stochastic gradient descent which
+    can have some very desirable properties.  But it does make the algorithm
+    harder to analyze and debug.</p>
+
+    <p>Using the Monte-Carlo estimator, the total gradient update is just a sum
+    over gradients with respect to particular initial conditions,
+    $\pd{J_\balpha(\bx_i)}{\balpha}.$  But for finite-horizon objectives, these
+    are precisely the gradients that we have already studied in the context of
+    trajectory optimization; they can be computed efficiently using an adjoint
+    method.  The difference is that here we think of $\balpha$ as the
+    parameters of a feedback controller, whereas before we thought of them as
+    the parameters of a trajectory, but this makes no difference to the chain
+    rule.</p>
+
+    <example><h1>Pendulum Swing-Up And Balance</h1>
+    
+    </example>
+
+    <todo>
+    Guided Policy Search, etc (see Robert V's review);
+    PILCO and PIPPS (arxiv from Doya).
+    </todo>
+
+    <todo>Infinite-horizon costs by adding an approximate cost-to-go.</todo>
 
   </section>
 
-  <section><h1>Lyapunov-based approaches to policy
-    search.</h1>
+  <section><h1>Evolutionary strategies</h1></section>
 
-
-  </section>
-
-  <section><h1>Approximate Dynamic Programming</h1>
+  <section><h1>Sums-of-squares policy search</h1>
 
   </section>
-
-  <!-- TODO:
-  Guided Policy Search, etc (see Robert V's review);
-  PILCO and PIPPS (arxiv from Doya).
-  -->
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
@@ -445,6 +484,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <span class="author">Bhandari, Jalaj and Russo, Daniel</span>,
 <span class="title">"Global {Optimality} {Guarantees} {For} {Policy} {Gradient} {Methods}"</span>,
 <span class="publisher">arXiv:1906.01786 [cs, stat]</span>, oct, <span class="year">2020</span>.
+
+</li><br>
+<li id=Rubinstein16>
+<span class="author">Rubinstein, Reuven Y and Kroese, Dirk P</span>,
+<span class="title">"Simulation and the Monte Carlo method"</span>,John Wiley \& Sons
+, vol. 10, <span class="year">2016</span>.
 
 </li><br>
 </ol>
