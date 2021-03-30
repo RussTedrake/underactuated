@@ -61,13 +61,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
   <p>In our case study on <a href="trajopt.html#perching">perching
   aircraft</a>, we solved a challenging control problem, but our approach to
-  control design based on only linear optimal control (around an optimized
+  control design was based on only linear optimal control (around an optimized
   trajectory).  We've also discussed some approaches to nonlinear optimal
-  control that could scale beyond small discretized state spaces.  These were
+  control that could scale beyond small, discretized state spaces.  These were
   based on estimating the cost-to-go function, including
   <a href="dp.html#function_approximation">value iteration using function
-  approximation</a>, and lower bounds based on approximate dynamic programming
-  as a <a href="dp.html#LP">linear program</a>
+  approximation</a> and approximate dynamic programming as a <a
+  href="dp.html#LP">linear program</a>
   or as a <a href="lyapunov.html#adp">sums-of-squares program</a>.  </p>
 
   <p>There are a lot of things to like about methods that estimate the
@@ -94,12 +94,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   cost-to-go functions.</p>
   
   <p>We'll refer to this broad class of methods as "policy search" or, when
-  optimization methods are used, "policy optimization".  This idea has become
-  very popular again lately due to the empirical success of "policy gradient"
-  algorithms in reinforcement learning (RL).  This chapter includes a
-  discussion of the "model-based" version of these RL policy-gradient
-  algorithms; we'll describe their "model-free" versions in <a
-  href="rl_policy_search.html">a future chapter</a>.
+  optimization methods are used, we'll sometimes use "policy optimization".
+  This idea has not received quite as much attention from the controls
+  community, probably because we know many relatively simple cases where it
+  does not work well.  But it has become very popular again lately due to the
+  empirical success of "policy gradient" algorithms in reinforcement learning
+  (RL).  This chapter includes a discussion of the "model-based" version of
+  these RL policy-gradient algorithms; we'll describe their "model-free"
+  versions in <a href="rl_policy_search.html">a future chapter</a>.
   </p>
 
   <section><h1>Problem formulation</h1>
@@ -133,7 +135,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <p>To start thinking about the problem of searching directly in the policy
     parameters, it's very helpful to start with a problem we know and can
     understand well.  In LQR problems for linear, time-invariant systems, we
-    know that the optimal policy is a linear function: $\bu = -{\bf K}(\bx).$
+    know that the optimal policy is a linear function: $\bu = -{\bf K}\bx.$
     So far, we have always obtained ${\bf K}$ indirectly -- by solving a
     Riccati equation to find the cost-to-go and then backing out the optimizing
     policy.  Here, let us study the case where we parameterize the elements of
@@ -405,7 +407,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     over gradients with respect to particular initial conditions,
     $\pd{J_\balpha(\bx_i)}{\balpha}.$  But for finite-horizon objectives, these
     are precisely the gradients that we have already studied in the context of
-    trajectory optimization; they can be computed efficiently using an adjoint
+    trajectory optimization.  They can be computed efficiently using an adjoint
     method.  The difference is that here we think of $\balpha$ as the
     parameters of a feedback controller, whereas before we thought of them as
     the parameters of a trajectory, but this makes no difference to the chain
@@ -446,6 +448,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     optimal cost-to-go.</p>
 
     <p>Coming soon...</p>
+
+    <todo>DK iterations</todo>
+    <todo>LSPI (e.g. w/ linear function approximation), Zhouran, etc.</todo>
+    <todo>Shen's work?</todo>
 
   </section>
 
