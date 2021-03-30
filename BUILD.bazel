@@ -142,6 +142,14 @@ rt_html_test(
     srcs = ["policy_search.html"],
 )
 
+rt_ipynb_test(
+    name = "policy_search",
+    srcs = ["policy_search.ipynb"],
+    deps = [
+        "//underactuated",
+    ],
+)
+
 rt_html_test(
     srcs = ["robust.html"],
 )
