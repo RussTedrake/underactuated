@@ -58,6 +58,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 10"><h1>Policy
   Search</h1>
+  <a style="float:right; margin-top:-80px;" target="policy_search" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/policy_search.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open Corresponding Notebook In Colab"/></a>
+  <div style="clear:right;"></div>
 
   <p>In our case study on <a href="trajopt.html#perching">perching
   aircraft</a>, we solved a challenging control problem, but our approach to
@@ -176,7 +178,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       response: $${\bf X} = E\left[ \int_0^\infty \bx \bx^T dt \right].$$
       Assuming $\bK$ is stabilizing, ${\bf X}$ can be computed as the (unique)
       solution to the Lyapunov equation: $$(\bA - \bB\bK){\bf X} + {\bf X}(\bA
-      - \bB\bK)^T + {\bf \Omega} = 0.$$  Finally, the total policy evaluation
+      - \bB\bK)^T + {\bf \Omega} = 0.$$  (You can see a closely related derivation <a href="https://en.wikipedia.org/wiki/Controllability_Gramian">here</a>).  Finally, the total policy evaluation
       is given by \begin{equation}E_{\bx \sim \mathcal{N}(0,{\bf \Omega})}
       [J_\bK(\bx)] = \trace\left((\bQ + \bK^T\bR\bK){\bf
       X}\right)\label{eq:lqr_evaluation}.\end{equation}</p>
@@ -414,11 +416,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     rule.</p>
 
     <example><h1>Pendulum Swing-Up And Balance</h1>
+
+      <p><a target="policy_search"
+        href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/policy_search.ipynb#scrollTo=ASlp7CDoQL5t"><img
+        src="https://colab.research.google.com/assets/colab-badge.svg"
+        alt="Open In Colab"/></a>
+          </p>
     
     </example>
 
     <todo>
-    Guided Policy Search, etc (see Robert V's review);
+    Reference Guided Policy Search, etc (see Robert V's review);
     PILCO and PIPPS (arxiv from Doya).
     </todo>
 
