@@ -173,6 +173,7 @@ rt_html_test(
 rt_ipynb_test(
     name = "sysid",
     srcs = ["sysid.ipynb"],
+    data = ["//underactuated/models:cartpole.urdf"],
     deps = [
         "//underactuated",
     ],
