@@ -170,6 +170,14 @@ rt_html_test(
     srcs = ["sysid.html"],
 )
 
+rt_ipynb_test(
+    name = "sysid",
+    srcs = ["sysid.ipynb"],
+    deps = [
+        "//underactuated",
+    ],
+)
+
 rt_html_test(
     srcs = ["state_estimation.html"],
 )

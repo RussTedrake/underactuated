@@ -55,6 +55,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 17"><h1>System Identification</h1>
+  <a style="float:right; margin-top:-80px;" target="sysid" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/sysid.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open Corresponding Notebook In Colab"/></a>
+  <div style="clear:right;"></div>
 
   <p>My primary focus in these notes has been to build algorithms that design
   of analyze a control system <i>given a model</i> of the plant.  In fact, we
@@ -121,12 +123,83 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   </section>
 
   <section><h1>Parameter Identification for Mechanical Systems</h1>
-  
-    <subsection><h1>Kinematic Calibration</h1>
+
+    <p>My primary focus throughout these notes is on (underactuated) mechanical
+    systems, but when it comes to identification there is an important
+    distinction to make.  For some mechanical systems we know the structure of
+    the model, including number of state variables and the topology of the
+    kinematic tree.  Legged robots like Spot or Atlas are good examples here --
+    the dynamics are certainly nontrivial, but the general form of the
+    equations are known.  In this case, the task of identification is really
+    the task of estimating the parameters in a structured model.  That is the
+    subject of this section.</p>
+
+    <p>The examples of folding laundry or making a salad fall into a different
+    category.  In those examples, I might not even know a priori the number of
+    state variables needed to provide a reasonable description of the behavior.
+    That will force a more general examination of the the identification
+    problem, which we will explore in the remaining sections.</p>
+
+    <p>Let's start with the problem of identifying a canonical underactuated
+    mechanical system, like an Acrobot, Cart-Pole or Quadrotor, where we know
+    the structure of the equations, but just need to fit the parameters.  We
+    will further assume that we have the ability to directly observe all of the
+    state variables, albeit with noisy measurements (e.g. from joint sensors
+    and/or inertial measurement units).  The stronger state estimation
+    algorithms that we will discuss <a href="state_estimation.html">soon</a>
+    assume a model, so we typically do not use them directly here.</p>
+
+    <subsection><h1>Kinematic parameters and calibration</h1>
+
+      <p>We can separate the parameters in the multibody equations again into
+      kinematic parameters and dynamic parameters.  The kinematic parameters,
+      like link lengths, describe the coordinate transformation from one joint
+      to another joint in the kinematic tree.  It is certainly possible to
+      write an optimization procedure to calibrate these parameters; you can
+      find a fairly thorough discussion in e.g. Chapter 11 of
+      <elib>Khalil04</elib>. But I guess I'm generally of the opinion that if
+      you don't have accurate estimates of your link lengths, then you should
+      probably invest in a tape measure before you invest in nonlinear
+      optimization.</p>
+
+      <p>One notable exception to this is calibration with respect to joint
+      offsets.  This one can be a real nuisance in practice.  Joint sensors can
+      slip, and some robots even use relative rotary encoders, and rely on
+      driving the joint to some known hard joint limit each time the robot is
+      powered on in order to obtain the offset.  I've worked on one humanoid
+      robot that had a quite elaborate and painful kinematic calibration
+      procedure which involve fitting additional hardware over the joints to
+      ensure they were in a known location and then running a script.  Having a
+      an expensive and/or unreliable calibration procedure can put a damper on
+      any robotics project.  For underactuated systems, in particular, it can
+      have a dramatic effect on performance.</p>
     
       <example><h1>Acrobot balancing with calibration error</h1>
       
+        <p>Small kinematic calibration errors can be a real pain point when
+        attempting to stabilize a system like the Acrobot...</p>
+
+        <p><a target="sysid"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/sysid.ipynb#scrollTo=ASlp7CDoQL5t"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
+
       </example>
+
+      <p>The general approach to estimating joint offsets from data is to write
+      the equations with the joint offset as a parameter, e.g. for the <a
+      href="multibody.html#double_pendulum">double pendulum</a> we would write
+      the forward kinematics as:  $${\bf p}_1 =l_1\begin{bmatrix} \sin(\theta_1
+      + \bar\theta_1) \\ - \cos(\theta_1 + \bar\theta_1) \end{bmatrix},\quad
+      {\bf p}_2  =      {\bf p}_1 + l_2\begin{bmatrix} \sin(\theta_1 +
+      \bar\theta_1 + \theta_2 + \bar\theta_2) \\ - \cos(\theta_1 + \bar\theta_1
+      + \theta_2 + \bar\theta_2) \end{bmatrix}.$$  We try to obtain independent
+      measurements of the end-effector position (e.g. from motion capture, or
+      some mechanical fitting) with their corresponding joint measurements, to
+      obtain data points of the form $ \langle {\bf p}_2, \theta_1, \theta_2
+      \rangle$. Then we can solve a small nonlinear optimization problem to
+      estimate the joint offsets to minimize a least-squares residual.</p>
 
     </subsection>
 
@@ -137,6 +210,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <todo>Adaptive control (for underactuated; e.g. Joe Moore's paper)</todo>
 
     <todo>Patrick Wensing's inertia identification constraints</todo>
+
+    <subsection><h1>Identification with contact</h1></subsection>
 
   </section>
 
@@ -179,7 +254,18 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 
-<div id="references"></div>
+<div id="references"><section><h1>References</h1>
+<ol>
+
+<li id=Khalil04>
+<span class="author">W Khalil and E Dombre</span>,
+<span class="title">"Modeling, Identification and Control of Robots"</span>,Elsevier
+, <span class="year">2004</span>.
+
+</li><br>
+</ol>
+</section><p/>
+</div>
 
 <table style="width:100%;"><tr style="width:100%">
   <td style="width:33%;text-align:left;"><a class="previous_chapter" href=contact.html>Previous Chapter</a></td>
