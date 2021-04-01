@@ -56,10 +56,91 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 17"><h1>System Identification</h1>
 
+  <p>My primary focus in these notes has been to build algorithms that design
+  of analyze a control system <i>given a model</i> of the plant.  In fact, we
+  have in some places gone to great lengths to understand the structure in our
+  models (the structure of the manipulator equations in particular) and tried
+  to write algorithms which exploit that structure.</p>
 
-  <section><h1>Equation Error vs Simulation Error</h1></section>
+  <p>Our ambitions for our robots have grown over recent years to where it
+  makes sense to question this assumption.  If we want to program a robot to
+  fold laundry, spread peanut butter on toast, or make a salad, then we should
+  absolutely not assume that we are simply given a model (and the ability to
+  estimate the state of that model).  This has led many researchers to focus on
+  the "model-free" approaches to optimal control that are popular in
+  reinforcement learning.  But I worry that the purely model-free approach is
+  "throwing the baby out with the bathwater".  We have fantastic tools for
+  making long-term decisions given a model; the model-free approaches are
+  correspondingly much much weaker.</p>
 
-  <section><h1>Linear State-Space Models</h1>
+  <p>So in this chapter I would like to cover the problem of learning a model.
+  This is far from a new problem.  The field of "system identification" is as
+  old as controls itself, but new results from machine learning have added
+  significantly to our understanding (especially in the high-dimensional and
+  finite-sample regimes) and to our algorithmic capabilities.</p>
+
+  <section><h1>Problem formulation: equation error vs simulation error</h1>
+  
+    <figure><img width="80%"" src="data/sysid.svg"/></figure>
+
+    <p>Our problem formulation inevitably begins with the data.  In practice,
+    if we have access to a physical system, instrumented using digital
+    electronics, then we have a system in which we can apply input commands,
+    $\bu_n$, at some discrete rate, and measure the outputs, $\by_n$ of the
+    system at some discrete rate.  We normally assume these rates our fixed,
+    and often attempt to fit a state-space model of the form \begin{equation}
+    \bx[n+1] = f_\balpha(\bx[n], \bu[n]), \qquad \by[n] =
+    g_\balpha(\bx[n],\bu[n]), \label{eq:ss_model}\end{equation} where I have
+    used $\balpha$ again here to indicate a vector of parameters.  In this
+    setting, a natural formulation is to minimize a least-squares estimation
+    objective: $$\min_{\alpha,\bx[0]} \sum_{n=0}^{N-1} \| \by[n] - \by_n
+    \|^2_2, \qquad \subjto \, (\ref{eq:ss_model}).$$  I have written purely
+    deterministic models to start, but in general we expect both the state
+    evoluation and the measurements to be random variables.  Sometimes, as I
+    have written, we fit a deterministic model to the data and rely on our
+    least-squares objective to capture the errors; more generally we will look
+    at fitting stochastic models to the data.</p>
+    
+    <p>We often separate the identification procedure into two parts, were we
+    first estimate the state $\hat{\bx}_n$ given the input-output data $\bu_n,
+    \by_n$, and then focus on estimating the state-evolution dynamics in a
+    second step.  The dynamics estimation algorithms fall into two main
+    categories: <ul><li><i>Equation error</i> minimizes only the one-step
+    prediction error: $$\min_{\alpha} \sum_{n=0}^{N-2} \| f_\balpha(\hat\bx_n,
+    \bu_n) - \hat{\bx}_{n+1} \|^2_2.$$  </li><li><i>Simulation error</i>
+    captures the long-term prediction error: $$\min_{\alpha} \sum_{n=1}^{N-1}
+    \| \bx[n] - \hat{\bx}_n \|^2_2, \qquad \subjto \quad \bx[n+1] =
+    f_\balpha(\bx[n], \bu_n), \bx[0] = \hat\bx_0,$$ </li></ul>  The
+    equation-error formulations often result in much more tractable
+    optimization problems, but unfortunately we will see that optimizing the
+    one-step error can still result in arbitrarily large simulation errors.
+    Therefore, we generally consider the simulation error to be the true
+    objective we hope to optimize, and the equation error only as a potentially
+    useful surrogate.</p>
+  
+  </section>
+
+  <section><h1>Parameter Identification for Mechanical Systems</h1>
+  
+    <subsection><h1>Kinematic Calibration</h1>
+    
+      <example><h1>Acrobot balancing with calibration error</h1>
+      
+      </example>
+
+    </subsection>
+
+    <subsection><h1>Lumped parameters</h1>
+    
+    </subsection>
+
+    <todo>Adaptive control (for underactuated; e.g. Joe Moore's paper)</todo>
+
+    <todo>Patrick Wensing's inertia identification constraints</todo>
+
+  </section>
+
+  <section><h1>Linear state-space models</h1>
   
     <subsection><h1>From state observations</h1>
       
@@ -78,18 +159,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
   </section>
 
-  <section><h1>Linear ARMAX Models</h1></section>
+  <section><h1>Linear ARMAX models</h1></section>
 
-  <todo>PWA / Hybrid System ID</todo>
+  <section><h1>Piecewise-affine models / hybrid system i.d.</h1></section>
 
-  <section><h1>Nonlinear System Identification</h1>
+  <section><h1>Nonlinear system identification</h1>
   
     <todo>Neural Nets / Intuitive physics / etc.</todo>
     <todo>MMT / Jack's work</todo>
   
   </section>
 
-  <section><h1>Parameter Identification for Mechanical Systems</h1></section>
+
+
+  <section><h1>Task-relevant models</h1></section>
 
   <section><h1>Optimal Experiment Design</h1></section>
 
