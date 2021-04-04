@@ -79,7 +79,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   This is far from a new problem.  The field of "system identification" is as
   old as controls itself, but new results from machine learning have added
   significantly to our understanding (especially in the high-dimensional and
-  finite-sample regimes) and to our algorithmic capabilities.</p>
+  finite-sample regimes) and to our algorithmic capabilities.  Making a proper
+  contribution to the relatively mature field of system identification has
+  traditionally required a thorough statistical analysis of any new algorithm.
+  For instance, we might want to prove that the estimate will be unbiased and
+  have asymptotic convergence guarantees. I will provide some pointers but
+  won't try to provide the full statistical viewpoint here.</p>
 
   <section><h1>Problem formulation: equation error vs simulation error</h1>
   
@@ -149,6 +154,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     algorithms that we will discuss <a href="state_estimation.html">soon</a>
     assume a model, so we typically do not use them directly here.</p>
 
+    <p>Consider taking a minute to review the <a
+    href="multibody.html#double_pendulum">example of deriving the manipulator
+    equations for the double pendulum</a> before we continue.</p>
+
     <subsection><h1>Kinematic parameters and calibration</h1>
 
       <p>We can separate the parameters in the multibody equations again into
@@ -176,8 +185,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     
       <example><h1>Acrobot balancing with calibration error</h1>
       
-        <p>Small kinematic calibration errors can be a real pain point when
-        attempting to stabilize a system like the Acrobot...</p>
+        <p>Small kinematic calibration errors can lead to large steady-state
+        errors when attempting to stabilize a system like the Acrobot...</p>
 
         <p><a target="sysid"
           href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/sysid.ipynb#scrollTo=ASlp7CDoQL5t"><img
@@ -185,6 +194,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           alt="Open In Colab"/></a>
             </p>
 
+        <p>Our tools from robust / stochastic control are well-suited to
+        identifying (and bounding / minimizing) these sensitivities, at least
+        for the linearized model we use in LQR.</p>
       </example>
 
       <p>The general approach to estimating joint offsets from data is to write
@@ -195,19 +207,44 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       {\bf p}_2  =      {\bf p}_1 + l_2\begin{bmatrix} \sin(\theta_1 +
       \bar\theta_1 + \theta_2 + \bar\theta_2) \\ - \cos(\theta_1 + \bar\theta_1
       + \theta_2 + \bar\theta_2) \end{bmatrix}.$$  We try to obtain independent
-      measurements of the end-effector position (e.g. from motion capture, or
-      some mechanical fitting) with their corresponding joint measurements, to
-      obtain data points of the form $ \langle {\bf p}_2, \theta_1, \theta_2
-      \rangle$. Then we can solve a small nonlinear optimization problem to
-      estimate the joint offsets to minimize a least-squares residual.</p>
+      measurements of the end-effector position (e.g. from motion capture, from
+      perhaps some robot-mounted cameras, or from some mechanical calibration
+      rig) with their corresponding joint measurements, to obtain data points
+      of the form $ \langle {\bf p}_2, \theta_1, \theta_2 \rangle$. Then we can
+      solve a small nonlinear optimization problem to estimate the joint
+      offsets to minimize a least-squares residual.</p>
+
+      <p>If independent measurements of the kinematics are not available, it it
+      possible to estimate the offsets along with the dynamic parameters, using
+      the trigonometric identities, e.g. $s_{\theta + \bar\theta} = s_\theta
+      c_\bar\theta + c_\theta s_\bar\theta,$ and then including the
+      $s_\bar\theta, c_\bar\theta$ terms (separately) in the "lumped
+      parameters" we discuss below.</p>
 
     </subsection>
 
-    <subsection><h1>Lumped parameters</h1>
+    <subsection><h1>Least-squares formulation (of the inverse dynamics).</h1>
+
+      <example><h1>Multibody parameters in <drake></drake></h1>
+      
+      </example>
+
+      <p>Lumped parameters.</p>
+
+      <p>Identifiable lumped parameters.</p>
+
+    </subsection>
+
+    <subsection><h1>Power formulations.</h1>
     
+      <!-- Great question!  I should have been more careful with my words.  A more accurate statement would have been "rather than do finite differences in joint velocities, we can do finite differences in energy which is more numerically robust".  
+
+      I haven't gotten to writing this part of the notes yet, but hope to catch up soon.  The approach I was describing is from https://ieeexplore.ieee.org/abstract/document/619069 .
+      -->
+
     </subsection>
 
-    <todo>Adaptive control (for underactuated; e.g. Joe Moore's paper)</todo>
+    <todo>Adaptive control (for underactuated; e.g. Joe Moore's paper Moore14)</todo>
 
     <todo>Patrick Wensing's inertia identification constraints</todo>
 
