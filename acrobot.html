@@ -799,10 +799,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       </theorem>
 
         <p> In order to execute a task space trajectory one could command
-        $$\ddot\by^d = \ddot{\bar{\by}}^d + \bK_d (\dot{\bar{\by}}^d - \dot\by)
-        + \bK_p (\bar{\by}^d -\by).$$ Assuming the internal dynamics are stable,
-        this yields converging error dynamics, $(\bar{\by}^d - \by)$, when
-        $\bK_p,\bK_d > 0$<elib>Slotine90</elib>.  For a position control robot,
+        $$\ddot\by^d = \ddot{\by}^d + \bK_d (\dot{\by}^d - \dot\by)
+        + \bK_p (\by^d -\by).$$ Assuming the internal dynamics are stable,
+        this yields converging error dynamics when
+        $\bK_p,\bK_d > 0$<elib>Slotine90</elib>, which implies $y(t) \rightarrow y^d(t)$.  For a position control robot,
         the acceleration command of ($\ref{eq:q2cmd}$) suffices. Alternatively,
         a torque command follows by substituting ($\ref{eq:q2cmd}$) and
         ($\ref{eq:q1cmd}$) into ($\ref{eq:active_dyn}$).</p>
@@ -822,7 +822,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         \dot{y} = l \dot\theta \sin\theta
         \end{gather*}
         If we define a desired trajectory:
-        $$\bar{y}^d(t) = \frac{l}{2} + \frac{l}{4} \sin(t),$$
+        $$y^d(t) = \frac{l}{2} + \frac{l}{4} \sin(t),$$
         then the task-space controller is easily implemented using the
         derivation above.</p>
 
@@ -836,7 +836,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         \bI, \dot\bH = 0, \bar\bH = \bI, \bar\bH^+ = \bI.$$ From this, the
         command in ($\ref{eq:q2cmd}$) reduces to $\ddot\bq_2 = \ddot\bq_2^d$.
         The actuator command is then $$ \bu = \bM_{21} \bM_{11}^{-1} (\btau_1 -
-        \bM_{12} \ddot\bq_2^d) + \bM_{22} \ddot\bq_2^d + \btau_2,$$ and the rank
+        \bM_{12} \ddot\bq_2^d) + \bM_{22} \ddot\bq_2^d - \btau_2,$$ and the rank
         condition ($\ref{eq:rank_condition}$) is always met.</p>
 
         <p> If we choose ${\bf y} = \bq_1$ (non-collocated), we have $$\bH_1 =
