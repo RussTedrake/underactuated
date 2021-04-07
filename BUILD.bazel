@@ -170,14 +170,15 @@ rt_html_test(
     srcs = ["sysid.html"],
 )
 
-rt_ipynb_test(
-    name = "sysid",
-    srcs = ["sysid.ipynb"],
-    data = ["//underactuated/models:cartpole.urdf"],
-    deps = [
-        "//underactuated",
-    ],
-)
+# Disabled, waiting on https://github.com/RobotLocomotion/drake/pull/14863
+#rt_ipynb_test(
+#    name = "sysid",
+#    srcs = ["sysid.ipynb"],
+#    data = ["//underactuated/models:cartpole.urdf"],
+#    deps = [
+#        "//underactuated",
+#    ],
+#)
 
 rt_html_test(
     srcs = ["state_estimation.html"],
