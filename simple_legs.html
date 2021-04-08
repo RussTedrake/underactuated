@@ -59,34 +59,36 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <chapter style="counter-reset: chapter 3"><h1>Simple Models
 of Walking and Running</h1>
 
-  <p>Practical legged locomotion is one of the fundamental problems in robotics;
-  we've seen amazing progress over the last few years, but there are still some
-  fundamental problems.  Much of the recent progress is due to improvements in
-  hardware -- a legged robot must carry all of its sensors, actuators and power
-  and traditionally this meant underpowered motors that act as far-from-ideal
-  force/torque sources -- but Boston Dynamics and other companies have made
-  incredible progress here.  The control systems implemented on these systems,
-  though, are still surprisingly heuristic -- they require dramatically higher
-  bandwidth and lower latency that the human motor control system and still
-  perform worse in challenging environments.<p>  
+  <p>Practical legged locomotion is one of the fundamental problems in
+  robotics; we've seen amazing progress over the last few years, but there are
+  still some major unsolved problems.  Much of the recent progress is due to
+  improvements in hardware -- a legged robot must carry all of its sensors,
+  actuators and power and traditionally this meant underpowered motors that act
+  as far-from-ideal force/torque sources -- but Boston Dynamics and other
+  companies have made incredible progress here.  The control systems
+  implemented on these systems, though, are still more heuristic than you might
+  think.  They also require dramatically higher bandwidth and lower latency
+  that the human motor control system and still perform worse in challenging
+  environments.<p>
+  
     
-  <p>The control of walking robots is fundamentally underactuated -- assuming we
+  <p>The control of walking robots is definitely underactuated: assuming we
   cannot pull on the ground (and barring any aerodynamic effects!), then no
-  matter how powerful my actuators are, there is nothing that they can do to
+  matter how powerful my actuators are, there is nothing that we can do to
   accelerate the center of mass of the robot towards the ground faster than
   gravity.  But beyond the underactuated systems we have studied so far, the
   control of walking robots faces an additional complexity: <b>controlling
   through contact</b>.  The fact that we can get non-zero contact forces if and
   only if two bodies are in contact introduces a fundamentally
   discrete/combinatorial element into the problem&dagger;<sidenote>&dagger;I've
-  had some interesting arguments with folks on this point, because it's possible
-  to write contact models that smooth the discontinuity, and/or to model systems
-  that have neglible collision events.  But replacing a discontinuity in the
-  vector field with a stiff but smooth transition does not remove the need to
-  decide whether or not your robot should make contact to accomplish a
-  task.</sidenote>.</p>
+  had some interesting arguments with folks on this point, because it's
+  possible to write contact models that smooth the discontinuity, and/or to
+  model systems that have neglible collision events.  But replacing a
+  discontinuity in the vector field with a stiff but smooth transition does not
+  remove the need to decide whether or not your robot should make contact to
+  accomplish a task.</sidenote>.</p>
 
-  <p>Contact is fundamental for many aspects of robotics (manipulation is my
+  <p>Contact is essential for many aspects of robotics (manipulation is my
   other favorite example); it's sad to see so many robots going through life
   avoiding contact at any cost.  Controlling contact means that your robot is
   capable of performing physical work on the environment; isn't that the point
