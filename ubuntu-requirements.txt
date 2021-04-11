@@ -15,7 +15,7 @@ numpy==1.19.5
     #   -c htmlbook/colab-constraints-ubuntu.txt
     #   torch
     #   torchvision
-pillow==7.0.0
+pillow==7.1.2
     # via
     #   -c htmlbook/colab-constraints-ubuntu.txt
     #   torchvision
@@ -37,12 +37,12 @@ snowballstemmer==2.1.0
     #   pydocstyle
 timeout-decorator==0.5.0
     # via -r ubuntu-shared-requirements.in
-torch==1.7.1
+torch==1.8.1
     # via
     #   -c htmlbook/colab-constraints-ubuntu.txt
     #   -r ubuntu-shared-requirements.in
     #   torchvision
-torchvision==0.8.2
+torchvision==0.9.1
     # via
     #   -c htmlbook/colab-constraints-ubuntu.txt
     #   -r ubuntu-shared-requirements.in
