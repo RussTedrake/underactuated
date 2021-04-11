@@ -380,25 +380,136 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       the estimated identifiable lumped parameters.
       </p>
 
+      <p>There are still a few subtleties worth considering, such as how we
+      parameterize the inertial matrices.  Direct estimation of the naive
+      parameterization, the six entries of a symmetric 3x3 matrix, can lead to
+      non-physical inertial matrices.  <elib>Wensing17a</elib>
+      describes a parameter estimation formulation that includes a convex
+      formulation of the physicality constraints between these parameters.</p>
+
     </subsection>
 
-    <subsection><h1>Identification using energy instead of torque.</h1>
+    <subsection><h1>Identification using energy instead of inverse
+    dynamics.</h1>
     
-      <!-- Great question!  I should have been more careful with my words.  A more accurate statement would have been "rather than do finite differences in joint velocities, we can do finite differences in energy which is more numerically robust".  
+      <p>In addition to leveraging tools from linear algebra, there are a
+      number of other refinements to the basic recipe that leverage our
+      understanding of mechanics.  One important example is the "energy
+      formulations" of parameter estimation <elib>Gautier97</elib>.</p>
 
-      I haven't gotten to writing this part of the notes yet, but hope to catch up soon.  The approach I was describing is from https://ieeexplore.ieee.org/abstract/document/619069 .
-      -->
+      <p>We have already observed that evaluating the equation error in torque
+      space (inverse dynamics) is likely better than evaluating it in state
+      space space (forward dynamics), because we can factorized the inverse
+      dynamics.  But this property is not exclusive to inverse dynamics.  The
+      total energy of the system (kinetic + potential) is also affine in the
+      lumped parameters.  We can use the relation
+      $$\dot{E}(\bq,\dot\bq,\ddot\bq) = \dot\bq^T (\bB\bu + \text{ friction,
+      ...}).$$</p>
+      
+      <p>Why might we prefer to work in energy coordinates rather than torque?
+      The differences are apparent in the detailed numerics.  In the torque
+      formulation, we find ourselves using $\ddot\bq$ directly. Conventional
+      wisdom holds that joint sensors can reliably report joint positions and
+      velocities, but that joint accelerations, often obtained by numerically
+      differentiating <i>twice</i>, tend to be much more noisy. In some cases,
+      it might be numerically better to apply finite differences to the total
+      energy of the system rather than to the individual joints &dagger;.  <sidenote>&dagger; Sometimes
+      these methods are written as the numerical integration of the power
+      input, rather than the differentiation of the total energy, but the
+      numerics should be no different.</sidenote>  <elib>Gautier96</elib> provides a
+      study of various filtering formulations which leads to a recommendation
+      in <elib>Gautier97</elib>
+      that the energy formulation tends to be numerically superior.</p>
 
     </subsection>
 
-    <subsection><h1>Optimal Experiment Design</h1></subsection>
+    <subsection><h1>Residual physics models with linear function
+    approximators</h1>
 
+      <p>The term "residual physics" has become quite popular recently (e.g.
+      <elib>Zeng20</elib>) as people are looking for ways to combine the
+      modeling power of deep neural networks with our best tools from
+      mechanics.  But actually this idea is quite old, and there is a natural
+      class of residual models that fit very nicely into our least-squares
+      lumped-parameter estimation.  Specifically, we can consider models of the
+      form: \begin{equation}\bM({\bq})\ddot{\bq} + \bC(\bq,\dot{\bq})\dot\bq =
+      \btau_g(\bq) + \balpha_r {\bPhi}(\bq,\dot\bq) + \bB\bu + \text{friction,
+      etc.},\end{equation} with $\balpha_r$ the additional parameters of the
+      residual and $\bPhi$ a set of (fixed) nonlinear basis functions.  The
+      hope is that these residual models can capture any "slop terms" in the
+      dynamics that are predictable, but which we did not include in our
+      original parametric model.  Nonlinear friction and aerodynamic drag are
+      commonly cited examples.</p>
 
-    <todo>Residual models with linear function approximators.  E.g. Sanner and Slotine.  https://ieeexplore.ieee.org/abstract/document/4791778/?casa_token=2F5kRNSQvokAAAAA:QLmN69TxNQWr9AhL8KgV7wCFP-M1WhMZpk7NG-dThSr5VkwWu7Vmwn6ulYejaoZfGIaS7e4zzQ </todo>
+      <p>Common choices for these basis functions, $\bPhi(\bq,\dot\bq)$,
+      for use with the manipulator equations include radial basis
+      functions<elib>Sanner91</elib> or wavelets
+      <elib>Sanner98</elib>.  Although allowing the basis functions to depend
+      on $\ddot\bq$ or $\bu$ would be fine for the parameter estimation, we
+      tend to restrict them to $\bq$ and $\dot\bq$ to maintain some of the
+      other nice properties of the manipulator equations (e.g.
+      control-affine).</p>
 
-    <todo>Adaptive control (for underactuated; e.g. Joe Moore's paper Moore14)</todo>
+    </subsection>
 
-    <todo>Patrick Wensing's inertia identification constraints</todo>
+    <subsection><h1>Experiment design as a trajectory optimization</h1>
+    
+      <p>One key assumption for any claims about our parameter estimation
+      algorithms recovering the true identifiable lumped parameters is that the
+      data set was sufficiently rich; that the trajectories were
+      "parametrically exciting".  Basically we need to assume that the
+      trajectories produced motion so that the data matrix, ${\bf W}$ contains
+      information about all of the identifiable lumped parameters.  Thanks to
+      our linear parameterization, we can evaluate this via numerical linear
+      algebra on ${\bf W}$.
+      </p>
+
+      <p>Moreover, if we have an opportunity to change the trajectories that
+      the robot executes when collecting the data for parameter estimation,
+      then we can design trajectories which try to maximally excite the
+      parameters, and produce a numerically-well conditioned least squares
+      problem.  One natural choice is to minimize the <a
+      href="https://en.wikipedia.org/wiki/Condition_number">condition
+      number</a> of the data matrix, ${\bf W}$.  The condition number of a
+      matrix is the ratio of the largest to smallest singular values
+      $\frac{\sigma_{max}({\bf W})}{\sigma_{min}({\bf W})}$.  The condition
+      number is always greater than one, by definition, and the lower the value
+      the better the condition.  The condition number of the data matrix is a
+      nonlinear function of the data taken over the entire trajectory, but it
+      can still be optimized in a nonlinear trajectory optimization
+      (<elib>Khalil04</elib>, &sect; 12.3.4).</p>
+      
+    </subsection>
+
+    <subsection><h1>Online estimation and adaptive control</h1>
+    
+      <p>The field of adaptive control is a huge and rich literature; many
+      books have been written on the topic (e.g <elib>Åström13</elib>).  Allow
+      me to make a few quick references to that literature here.</p>
+
+      <p>I have mostly discussed parameter estimation so far as an offline
+      procedure, but one important approach to adaptive control is to perform
+      online estimation of the parameters as the controller executes.  Since
+      our estimation objective can be linear in the (lumped) parameters, this
+      often amounts to the recursive least-squares estimation.  To properly
+      analyze a system like this, we can think of the system as having an
+      augmented state space, $\bar\bx = \begin{bmatrix} \bx \\ \balpha
+      \end{bmatrix},$ and study the closed-loop dynamics of the state and
+      parameter evolution jointly.  Some of the strongest results in adaptive
+      control for robotic manipulators are confined to fully-actuated
+      manipulators, but for instance <elib>Moore14</elib> gives a nice example
+      of analyzing an adaptive controller for underactuated systems using many
+      of the tools that we have been developing in these notes.</p>
+    
+      <p>As I said, adaptive control is a rich subject.  One of the biggest
+      lessons from that field, however, is that one may not need to achieve
+      convergence to the true (lumped) parameters in order to achieve a task.
+      Many of the classic results in adaptive control make guarantees about
+      task execution but explicitly do <i>not</i> require/guarantee convergence
+      in the parameters.</p>
+
+    </subsection>
+
 
     <subsection><h1>Identification with contact</h1></subsection>
 
@@ -454,6 +565,55 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <span class="author">M. Kaess and A. Ranganathan and F. Dellaert</span>,
 <span class="title">"i{SAM}: Incremental Smoothing and Mapping"</span>,
 <span class="publisher">IEEE Transactions on Robotics</span>, vol. 24, no. 6, pp. 1365-1378, <span class="year">2008</span>.
+
+</li><br>
+<li id=Wensing17a>
+<span class="author">Wensing, Patrick M and Kim, Sangbae and Slotine, Jean-Jacques E</span>,
+<span class="title">"Linear matrix inequalities for physically consistent inertial parameter identification: A statistical perspective on the mass distribution"</span>,
+<span class="publisher">IEEE Robotics and Automation Letters</span>, vol. 3, no. 1, pp. 60--67, <span class="year">2017</span>.
+
+</li><br>
+<li id=Gautier97>
+<span class="author">Maxime Gautier</span>,
+<span class="title">"Dynamic identification of robots with power model"</span>,
+<span class="publisher">Proceedings of the {IEEE} International Conference on Robotics and Automation</span>, vol. 3, pp. 1922--1927 vol.3, <span class="year">1997</span>.
+
+</li><br>
+<li id=Gautier96>
+<span class="author">Maxime Gautier</span>,
+<span class="title">"A comparison of filtered models for dynamic identification of robots"</span>,
+<span class="publisher">Proceedings of the 35th {IEEE} Conference on Decision and Control</span>, vol. 1, pp. 875â€“880, <span class="year">1996</span>.
+
+</li><br>
+<li id=Zeng20>
+<span class="author">Zeng, Andy and Song, Shuran and Lee, Johnny and Rodriguez, Alberto and Funkhouser, Thomas</span>,
+<span class="title">"Tossingbot: Learning to throw arbitrary objects with residual physics"</span>,
+<span class="publisher">IEEE Transactions on Robotics</span>, vol. 36, no. 4, pp. 1307--1319, <span class="year">2020</span>.
+
+</li><br>
+<li id=Sanner91>
+<span class="author">R. M. Sanner and J. E. Slotine</span>,
+<span class="title">"Gaussian Networks for Direct Adaptive Control"</span>,
+<span class="publisher">1991 American Control Conference</span>, pp. 2153-2159, <span class="year">1991</span>.
+
+</li><br>
+<li id=Sanner98>
+<span class="author">Sanner, Robert M and Slotine, Jean-Jacques E</span>,
+<span class="title">"Structurally dynamic wavelet networks for adaptive control of robotic systems"</span>,
+<span class="publisher">International Journal of Control</span>, vol. 70, no. 3, pp. 405--421, <span class="year">1998</span>.
+
+</li><br>
+<li id=Åström13>
+<span class="author">Åström, Karl J. and Wittenmark, Björn</span>,
+<span class="title">"Adaptive {Control}: {Second} {Edition}"</span>,Courier Corporation
+, apr, <span class="year">2013</span>.
+
+</li><br>
+<li id=Moore14>
+<span class="author">Joseph Moore and Russ Tedrake</span>,
+<span class="title">"Adaptive Control Design for Underactuated Systems Using Sums-of-Squares Optimization"</span>,
+<span class="publisher">Proceedings of the 2014 American Control Conference (ACC)</span>, June, <span class="year">2014</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Moore14.pdf">link</a>&nbsp;]
 
 </li><br>
 </ol>
