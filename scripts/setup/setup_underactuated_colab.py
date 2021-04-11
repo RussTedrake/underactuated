@@ -93,7 +93,7 @@ def setup_drake(*, version, build='nightly'):
         #            'drake.tar.gz')
 
         # THESE ARE A WORKAROUND FOR COLAB WITH PYTHON3.7
-        urlretrieve("https://drake-packages.csail.mit.edu/tmp/drake-0.27.0-pip-snopt-bionic.tar.gz", 'drake.tar.gz')
+        urlretrieve("https://drake-packages.csail.mit.edu/tmp/drake-20210409-pip-snopt-bionic.tar.gz", 'drake.tar.gz')
         subprocess.run(["pip3", "install", "meshcat"])
         # END PYTHON3.7 WORKAROUND
 
