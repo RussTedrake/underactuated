@@ -66,7 +66,7 @@ of Walking and Running</h1>
   still some major unsolved problems.  Much of the recent progress is due to
   improvements in hardware -- a legged robot must carry all of its sensors,
   actuators and power and traditionally this meant underpowered motors that act
-  as far-from-ideal force/torque sources -- but Boston Dynamics and other
+  as far-from-ideal force/torque sources -- Boston Dynamics and other
   companies have made incredible progress here.  The control systems
   implemented on these systems, though, are still more heuristic than you might
   think.  They also require dramatically higher bandwidth and lower latency
@@ -520,7 +520,7 @@ of Walking and Running</h1>
         stability for a walking system is periodic stability, and I'll stand by
         it.  But we can also examine the stability of a fixed-point (of the
         original coordinates; no Poincar&eacute this time) for a system that has
-        contact mechanics.  For a legged robot, a fixed point means standing still.  It's a little subtle. [Coming soon.]</p>
+        contact mechanics.  For a legged robot, a fixed point means standing still.  This can actually be a little subtle in our hybrid models: in the rimless wheel, standing still is the limiting case where we have infinitely frequent collisions. [Details coming soon.]</p>
 
         <todo>call out to the fact that I left the origin OUT of the poincare map on the van der pol.</todo>
 
@@ -630,8 +630,8 @@ of Walking and Running</h1>
 
       <p>The basin of attraction of the stable limit cycle is a narrow band of
       states surrounding the steady state trajectory.  Although the simplicity
-      of this model makes it analytically attractive, this lack of stability
-      makes it difficult to implement on a physical device.</p>
+      of this model makes it attractive for conceptual explorations, this lack
+      of stability makes it difficult to implement on a physical device.</p>
 
     </subsection>
 
@@ -718,7 +718,7 @@ of Walking and Running</h1>
 
       <p>These results are very real.  Robin Deits (an exceptionally talented
       student who felt particularly inspired once on a long weekend) once
-      reproduced one of his most early creations in <drake></drake>.</p>
+      reproduced one of Theo's earliest creations in <drake></drake>.</p>
 
       <figure>
         <iframe width="560" height="315"
@@ -764,41 +764,194 @@ of Walking and Running</h1>
     models was the so-called "spring-loaded inverted pendulum" (or "SLIP", for
     short).</p>  
 
-    <subsection><h1>The Spring-Loaded Inverted Pendulum</h1>
+    <subsection><h1>The Spring-Loaded Inverted Pendulum (SLIP)</h1>
 
       <p>The model is a point mass, $m$, on top of a massless, springy leg with
-      rest length of $l_0$, and spring constant $k$.  The state of the system
-      is given by the $x,y$ position of the center of mass, and the length,
-      $l$, and angle $\theta$ of the leg.  Like the rimless wheel, the dynamics
-      are modeled piecewise - with one dynamics governing the flight phase, and
-      another governing the stance phase.</p>
+      rest length of $l_0$, and spring constant $k$.  The configuration of the
+      system is given by the $x,z$ position of the center of mass, and the
+      length, $l$, and angle $\theta$ of the leg.  The dynamics are modeled
+      piecewise - with one dynamics governing the flight phase, and another
+      governing the stance phase.</p>
 
-      <p>Flight Phase.  State variables: $\bx = [x,y,\dot{x},\dot{y}]^T.$
-      Dynamics are $$\dot{\bx} = \begin{bmatrix} \dot{x} \\ \dot{y} \\ 0 \\ - g
-      \end{bmatrix}.$$</p>
+      <figure>
+        <img width="40%" src="data/slip.svg"/>
+        <figcaption>The Spring-Loaded Inverted Pendulum (SLIP) model</figcaption>
+      </figure>
 
-      <p>Stance Phase. State variables: $\bx = [r, \theta, \dot{r},
-      \dot\theta]^T.$ Kinematics are $$x = \begin{bmatrix} - r \sin\theta \\ r
-      \cos\theta \end{bmatrix},$$ Energy is given by $$T = \frac{m}{2}
+      <p>In SLIP, we actually use different state variables for each phase of
+      the dynamics.  During the flight phase, we use the state variables: $\bx
+      = [x,z,\dot{x},\dot{z}]^T.$  The flight dynamics are simply $$\dot{\bx} =
+      \begin{bmatrix} \dot{x} \\ \dot{z} \\ 0 \\ - g \end{bmatrix}.$$  Since
+      the leg is massless, we assume that the leg can be controlled to any
+      position instantaneously, so it's reasonable to take the leg angle as the control input $\theta = u$.</p>
+
+      <p>During the "stance phase", we write the dynamics in polar coordinates,
+      with the foot anchored at the origin.  Using the state variables: $\bx =
+      [r, \theta, \dot{r}, \dot\theta]^T,$ the location of the mass is given by
+      $$\bx_m = \begin{bmatrix} - r \sin\theta \\ r \cos\theta \end{bmatrix}.$$
+      The total energy is given by the kinetic energy (of the mass) and the
+      potential energy from gravity and from the leg spring: $$T = \frac{m}{2}
       (\dot{r}^2 + r^2 \dot\theta^2 ), \quad U = mgr\cos\theta +
-      \frac{k}{2}(r_0 - r)^2.$$ Plugging these into Lagrange yields:
-      \begin{gather} m \ddot{r} - m r \dot\theta^2 + m g \cos\theta - k (r_0 -
-      r) = 0 \\ m r^2 \ddot{\theta} + 2mr\dot{r}\dot\theta - mgr \sin\theta = 0
-      \end{gather}</p>
+      \frac{k}{2}(r_0 - r)^2.$$ Plugging these into Lagrange yields the stance
+      dynamics: \begin{gather*} m \ddot{r} - m r \dot\theta^2 + m g \cos\theta
+      - k (r_0 - r) = 0, \\ m r^2 \ddot{\theta} + 2mr\dot{r}\dot\theta - mgr
+      \sin\theta = 0.\end{gather*}  We assume that the stance phase is entirely
+      ballistic; there are no control inputs during this phase.</p>
+
+      <p>Unlike the rimless wheel model, the idealization of a spring leg with
+      a massless toe means that no energy is lost during the collision with the
+      ground.  The collision event causes a transition to a different state
+      space, and to a different dynamics model, but no instantaneous change in
+      velocity.  The transition from flight to stance happens when $z -
+      l_0\cos\theta \le 0.$  The transition from stance to flight happens when
+      the stance leg reaches its rest length: $r \ge l_0$.
+      </p>
 
       <example><h1>Simulation of the SLIP model</h1>
 
         <p>You can simulate the spring-loaded inverted pendulum using:</p>
 
-        <jupyter>examples/spring_loaded_inverted_pendulum.ipynb</jupyter>
+        <todo>Update sha</todo>
+        <p><a target="simple_legs"
+        href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/simple_legs.ipynb#scrollTo=ASlp7CDoQL5t"><img
+        src="https://colab.research.google.com/assets/colab-badge.svg"
+        alt="Open In Colab"/></a>
+            </p>
 
-        <p>Make sure that you take time to interpret the apex-to-apex map that is plotted in the notebook.</p>
+        <p>Take a moment to read the code that defines the
+        <code>SpringLoadedInvertedPendulum</code> system.  You can see that we
+        carefully register the hybrid guards (witness functions) and reset
+        maps, which tells the numerical integrator to use zero-crossing event
+        detection to isolate precisely the time of the event and to apply the
+        reset update at this event.  It is quite elegant, and we've gone to
+        some length to make sure that the numerical integration routines in
+        <drake></drake> can support it.</p>
+
+        <p>We used the same witness functions and resets to simulate the
+        walking models, but those were implemented in C++.  This is a purely
+        Python implementation, making it a bit easier to see those details.</p>
 
       </example>
 
+      <subsubsection><h1>Analysis on the apex-to-apex map</h1>
+
+        <p>The rimless wheel had only two state variables ($\theta$, and
+        $\dot\theta$), and since the surface of section drops one variable, we
+        ended up with a one-dimensional Poincare map.  We have a lot more state
+        variables here.  Is there any hope for graphical analysis?</p>
+
+        <p>For this system, one can still make progress if we define the
+        Poincare section to be at the apex of the hop (when $\dot{z}=0$), and
+        analyze the dynamics from apex to apex.  We will ignore the absolute
+        horizontal position, $x$, and the leg angle, $\theta$, as they are
+        irrelevant to the flight dynamics.  This still leaves us with two state
+        variables at the apex: the horizontal velocity, $\dot{x},$ and the
+        hopping height, $z$.</p>
+
+        <p>Importantly, at the apex, these two variables are linked -- when you
+        know one, you know the other.  This is because no energy is ever added
+        or removed from the system.  If you know the (constant) total energy in
+        the system, and you know the height at the apex, then you know the
+        horizontal velocity (up to a sign): $$E_{apex}(z, \dot{x}) =
+        \frac{1}{2}m \dot{x}^2 + mgz = E_0.$$  To make our analysis less
+        dependent on our specific choice of parameters, we typically report
+        any analysis using a dimensionless total energy, $\tilde{E} =
+        \frac{E}{m g l_0},$ and a dimensionless spring constant, $\tilde{k} = \frac{k l_0}{mg}$ <elib>Geyer05</elib>.</p> 
+
+        <p>Putting all of these together, we can numerically evaluate the
+        apex-to-apex return map, given a known total energy of the system.</p>
+        
+        <example><h1>Numerical SLIP apex-to-apex map</h1>
+
+          <p>Numerically integrating the equations of motion from apex-to-apex,
+          using zero-crossing event detection, can give us the apex-to-apex
+          map.</p>
+
+          <figure>
+            <img width="80%" src="data/slip_apex_map.svg"/>
+            <figcaption>Apex-to-apex return map of the SLIP model given
+            $\tilde{k} = 10.7$, $\tilde{E} = 1.61$, and a fixed touchdown angle
+            of $\theta = 30$ deg (the parameters used in
+            <elib>Geyer05</elib>). </figcaption>
+          </figure>
+
+          <p>Using our graphical staircase analysis (for discrete-time
+          systems), we can see that there are two fixed points of this map: one
+          "stable" fixed point around 0.87 meters, and one unstable fixed point
+          around 0.92 meters.</p>
+
+          <p>As always, you should run this code yourself to make sure you
+          understand:</p>
+
+          <todo>Update sha</todo>
+          <p><a target="simple_legs"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/simple_legs.ipynb#scrollTo=ASlp7CDoQL5t"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+              </p>
+
+          <p>I'd also recommend running the simulation using initial conditions
+          at various points on this plot.  You should ask: why does the plot
+          cut off so abruptly just below the stable fixed point?  Well the
+          apex-to-apex map becomes undefined if the apex is smaller that
+          $l_0\cos\theta$ (the height at touchdown).  Furthemore, when $z$ is
+          too large (relative to $\tilde{E}$), then the system will not have
+          enough horizontal energy to transition through the stance phase and
+          continue forward motion: the center of mass will compress the spring
+          and then fall backwards in the direction from which it came.</p>
+
+        </example>
+
+        <p>The system's conservation of total energy is quite convenient for
+        our return map analysis, but it should give you pause.  The rimless
+        wheel actually <i>relied on the dissipation</i> due to collisions with
+        the ground to acquire its stability.  Is there any chance for a system
+        that is energy conserving to be stable?  The apex-to-apex return maps
+        visualized above reveal "stable" fixed-points, but you must understand
+        that the projection from $(z,\dot{x]})$ to just $z$ is using the
+        assumption that the energy is conserved.  As a result, our analysis on
+        the one-dimensional Poincare map can only make a statement about
+        <i>partial stability</i> (i.s.L., asymptotic, or exponential); our
+        analysis does not say anything about stability against disturbances
+        that change the total energy of the system.</p>
+          
+        <p>Despite this limitation, it is quite interesting that such a simple
+        system converges to particular hopping heights from various initial
+        conditions.  The observation that these "piecewise-Hamiltonian" systems
+        (Hamiltonian because they conserve total energy) can exhibit this
+        partial stability generated quite a bit of interest from the
+        theoretical physics community.  You can sense that enthusiasm when
+        reading <elib>Holmes06</elib>.</p>
+
+        <p><elib>Geyer05</elib> also gives a more thorough analysis of this
+        apex-to-apex map, including a closed-form approximation to the return
+        map dynamics based on a linear (small angle) approximation of the
+        stance dynamics.</p>
+        
+        <todo>include Harmut's return map analysis here?</todo>
+
+      </subsubsection>
+
+      <subsubsection><h1>SLIP extensions</h1>
+      
+        <p>The original SLIP model, perhaps inspired by the hopping robots
+        turned out to be quite effective in describing the vertical center of
+        mass dynamics of a wide range of animals <elib>Holmes06</elib>.
+        Remarkably, experiments showed that the dimensionless individual leg
+        stiffness was very close to 10 for a huge range of animals, ranging
+        from a $0.001~kg$ cockroach to a $135~kg$ horse
+        <elib>Koditschek04</elib>.  But the SLIP model, and modest extensions
+        to it, has also been used to understand lateral stability in
+        cockroaches, resulting in some of my favorite experimental videos of
+        all time <elib>Jindrich02</elib>.
+        </p>
+
+        <todo>insert cockroach gunpowder video?</todo>
+
+      </subsubsection>
     </subsection>
     
-    <subsection id="leglab"><h1>Hopping Robots from the MIT Leg Laboratory</h1>
+    <subsection id="leglab"><h1>Hopping robots from the MIT Leg Laboratory</h1>
 
       <figure>
         <iframe width="560" height="315"
@@ -825,7 +978,7 @@ of Walking and Running</h1>
 
   </section> <!-- end of running -->
 
-  <section><h1>A Simple Model That Can Walk and Run</h1>
+  <section><h1>A simple model that can walk and run</h1>
 
   </section> <!-- end of walk+run -->
 
@@ -962,6 +1115,24 @@ Tech. Report, RR-2996, October, <span class="year">1996</span>.
 <span class="author">Philip Holmes and Robert J. Full and Dan Koditschek and John Guckenheimer</span>,
 <span class="title">"The Dynamics of Legged Locomotion: Models, Analyses, and Challenges"</span>,
 <span class="publisher">Society for Industrial and Applied Mathematics (SIAM) Review</span>, vol. 48, no. 2, pp. 207--304, <span class="year">2006</span>.
+
+</li><br>
+<li id=Geyer05>
+<span class="author">Hartmut Geyer</span>,
+<span class="title">"Simple models of legged locomotion based on compliant limb behavior"</span>,
+PhD thesis, University of Jena, <span class="year">2005</span>.
+
+</li><br>
+<li id=Koditschek04>
+<span class="author">Koditschek, Daniel E and Full, Robert J and Buehler, Martin</span>,
+<span class="title">"Mechanical aspects of legged locomotion control"</span>,
+<span class="publisher">Arthropod structure \& development</span>, vol. 33, no. 3, pp. 251--272, <span class="year">2004</span>.
+
+</li><br>
+<li id=Jindrich02>
+<span class="author">DL Jindrich and RJ Full</span>,
+<span class="title">"Dynamic stabilization of rapid hexapedal locomotion"</span>,
+<span class="publisher">J Exp Biol</span>, vol. 205, no. Pt 18, pp. 2803-23, Sep, <span class="year">2002</span>.
 
 </li><br>
 <li id=Raibert86a>

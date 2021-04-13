@@ -33,12 +33,6 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
-    name = "spring_loaded_inverted_pendulum",
-    srcs = ["spring_loaded_inverted_pendulum.ipynb"],
-    deps = ["//underactuated"],
-)
-
-rt_ipynb_test(
     name = "stochastic",
     srcs = ["stochastic.ipynb"],
     deps = ["//underactuated"],
