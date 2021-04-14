@@ -173,9 +173,9 @@ of Walking and Running</h1>
     know that if we can find an <a href="lyapunov.html#lasalle">invariant
     set</a> in state space which does not contain any fixed points, then this
     set must contain a closed orbit (this is the Poincar&eacute-Bendixson
-    Theorem)<elib>Strogatz94</elib>.  It's also interesting to note that
+    Theorem) <elib>Strogatz94</elib>.  It's also interesting to note that
     gradient potential fields (and Lyapunov functions with $\dot{V}(\bx) \prec
-    0$) cannot have a closed orbit<elib>Strogatz94</elib>, and consequently we
+    0$) cannot have a closed orbit <elib>Strogatz94</elib>, and consequently we
     will also have to slightly modify the Lyapunov analysis we have introduced
     so far to handle limit cycles. We'll discuss this in some details in an <a
     href="limit_cycles.html#lyapunov">upcoming chapter</a>.</p>
@@ -236,14 +236,14 @@ of Walking and Running</h1>
       
       <p>In practice it is often difficult or impossible to find ${\bf P}$
       analytically, but it can be sampled quite reasonably numerically.  Once a
-      fixed point of ${\bf P}$ is obtained (by finding a solution to$\bx^*_p =
+      fixed point of ${\bf P}$ is obtained (by finding a solution to $\bx^*_p =
       {\bf P}(\bx^*_p)$), we can infer local limit cycle stability with an
       eigenvalue analysis.  If this eigen-analysis is performed in the original
-      coordinates (as opposed to the $n-1$ dimensional coordinates of $S$), then
-      there will always be a at least one zero eigenvalue - corresponding to
-      perturbations along the limit cycle which do not change the state of first
-      return. The limit cycle is considered locally exponentially stable if all
-      remaining eigenvalues, $\lambda_i$, have magnitude less than one,
+      coordinates (as opposed to the $n-1$ dimensional coordinates of $S$),
+      then there will always be a at least one zero eigenvalue - corresponding
+      to perturbations along the limit cycle which do not change the state of
+      first return. The limit cycle is considered locally exponentially stable
+      if all remaining eigenvalues, $\lambda_i$, have magnitude less than one,
       $|\lambda_i|<1$.</p>
 
       <p>It is sometimes possible to infer more global stability properties of
@@ -253,6 +253,7 @@ of Walking and Running</h1>
       properties known for <em>unimodal</em> maps which are useful for the
       simple systems we study in this chapter.</p>
 
+      <todo>the paragraph below treats x_p as living in the reduced space, whereas the text above kept it in the original space.</todo>
       <p>A particularly graphical method for understanding the dynamics of a
       one-dimensional iterated map is the "staircase method":  Sketch the
       Poincar&eacute map -- a plot of $x_p[n]$ vs $x_p[n+1]$ -- and also the
@@ -900,6 +901,9 @@ of Walking and Running</h1>
           continue forward motion: the center of mass will compress the spring
           and then fall backwards in the direction from which it came.</p>
 
+          <todo>more videos.  in particular a plot/video of the failure case of
+          falling backward would help a lot here.</todo>
+
         </example>
 
         <p>The system's conservation of total energy is quite convenient for
@@ -949,6 +953,12 @@ of Walking and Running</h1>
         <todo>insert cockroach gunpowder video?</todo>
 
       </subsubsection>
+
+      <subsubsection><h1>SLIP</h1>
+      
+        <todo>Hartmut's open-loop deadbeat, etc.</todo>
+      
+      </subsubsection>
     </subsection>
     
     <subsection id="leglab"><h1>Hopping robots from the MIT Leg Laboratory</h1>
@@ -973,6 +983,12 @@ of Walking and Running</h1>
       <p>bipeds, quadrupeds, and backflips...<elib>Raibert86</elib></p>
 
       </subsubsection>
+
+    </subsection>
+
+    <subsection><h1>Towards human-like running</h1>
+
+      <todo>Add videos of 3D running from Katja (Schultz10).</todo>
 
     </subsection>
 
