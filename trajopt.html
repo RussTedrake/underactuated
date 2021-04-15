@@ -419,12 +419,18 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       I personally find it very nice to explicitly account for the parametric
       encoding of the trajectory in the solution technique.</p>
 
-      <example><h1>Direct Collocation for the Pendulum, Acrobot, and
-      Cart-Pole</h1>
+      <example id="swingup"><h1>Direct Collocation for the Pendulum, Acrobot,
+      and Cart-Pole</h1>
 
-        <p>Direct collocation also easily solves the minimum-time problem for
-        the double integrator.  The performance is similar to direct
-        transcription, but the convergence is visibly different.  Try it for
+        <figure>
+          <img width="80%" src="data/pend_trajopt_swingup.svg">
+          <figcaption>A swing-up trajectory for the simple pendulum (with
+          severe torque limits) optimized using direct
+          collocation.</figcaption>
+        </figure>
+
+        <p>Direct collocation also easily solves the swing-up problem for
+        the pendulum, Acrobot, and cart-pole system.  Try it for
         yourself:</p>
 
         <p><a target="trajopt"
