@@ -152,20 +152,32 @@ for Limit Cycles</h1>
     time and   stability of a limit cycle was that the limit cycle does not
     converge in phase --   trajectories near the cycle converge to the cycle,
     but trajectories on the cycle   may not converge with each other.  This is
-    type of stability, also known as <em>orbital   stability</em> can be written
-    as stability to the manifold described by cycle   $\bx^*(t)$, \[ \min_\tau
-    || x(t) - x^*(\tau) || \rightarrow 0.\] In the case of limit cycles, this
-    manifold is a periodic solution with $\bx^*(t+t_{period}) = \bx^*(t)$.
-    Depending on exactly how that convergence happens, we can define orbital
-    stability in the sense of Lyapunov, asymptotic orbital stability,
+    type of stability, also known as <em>orbital   stability</em> can be
+    written as stability to the manifold described by a trajectory $\bx^*(t)$,
+    \[ \min_\tau || x(t) - x^*(\tau) || \rightarrow 0.\] In the case of limit
+    cycles, this manifold is a periodic solution with $\bx^*(t+t_{period}) =
+    \bx^*(t)$. Depending on exactly how that convergence happens, we can define
+    orbital stability in the sense of Lyapunov, asymptotic orbital stability,
     exponential orbital stability, or even finite-time orbital stability.</p>
 
     <p>In order to prove that a system is orbitally stable (locally, over a
     region, or globally), or to analyze the region of attraction of a limit
-    cycle, we can use a Lyapunov function. In particular, we would like to
-    consider Lyapunov functions which have the form cartooned below;  they
-    vanish to zero everywhere along the cycle, and are strictly positive
-    everywhere away from the cycle.</p>
+    cycle, we can use a Lyapunov function.  When we analyzed our <a
+    href="simple_legs.html">simple models of walking and running</a>, we
+    carried out the analysis on the Poincare map.  Indeed, if we can find a
+    Lyapunov function that proves (i.s.L., asympototic, or exponential)
+    stability of the discrete Poincare map, then this implies (i.s.L,
+    asymptotic, or exponential) <i>orbital</i> stability of the cycle.  But
+    Lyapunov functions of this form are difficult to verify for a pretty
+    fundamental reason: we rarely have an analytical expression for the
+    Poincare map, since it is the result of integrating a nonlinear dynamics
+    over the cycle.</p>
+    
+    <p>Instead, we will focus our attention on constructing Lyapunov functions
+    in the full state space, which use the continuous dynamics.  In particular,
+    we would like to consider Lyapunov functions which have the form cartooned
+    below;  they vanish to zero everywhere along the cycle, and are strictly
+    positive everywhere away from the cycle.</p>
 
     <figure><img
     src="figures/limitCycleLyapunovCartoon.svg"/><figcaption>Cartoon of a
@@ -181,26 +193,35 @@ for Limit Cycles</h1>
       More generally, we will define a new coordinate system relative to the
       orbit, with coordinates</p> <ul> <li>$\tau$ - the phase along the
       orbit</li> <li>$\bx_\perp(\tau)$ - the remaining coordinates, linearly
-      independent from $\tau$.</li> </ul> <p>Given a state $\bx$ in the original
-      coordinates, we must define a smooth mapping $\bx \rightarrow (\tau,
-      \bx_\perp)$ to this new coordinate system.  For example, for a simple ring
-      oscillator we might have:</p> <figure><img width="80%"
-      src="figures/transverseCoordinates.svg"/><figcaption>A moving
-      coordinate system along the limit cycle.</figcaption></figure> In general,
-      for an $n$-dimensional state space, $\tau$ will always be a scalar, and
+      independent from $\tau$.</li> </ul> <p>Given a state $\bx$ in the
+      original coordinates, we must define a smooth mapping $\bx \rightarrow
+      (\tau, \bx_\perp)$ to this new coordinate system.  For example, for a
+      simple ring oscillator we might have:</p> <figure><img width="80%"
+      src="figures/transverseCoordinates.svg"/><figcaption>A moving coordinate
+      system along the limit cycle.</figcaption></figure> In general, for an
+      $n$-dimensional state space, $\tau$ will always be a scalar, and
       $\bx_\perp$ will be an $(n-1)$-dimensional vector defining the remaining
       coordinates relative to $\bx^*(\tau)$. In fact, although we use the
-      notation $\bx_\perp$ the coordinate system need not be strictly orthogonal
-      to the orbit, but must simply be <em>transversal</em> (not parallel).
-      Having defined the smooth mapping $\bx \rightarrow (\tau,\bx_\perp)$, we
-      can always rewrite the dynamics in this new coordinate system:
-      \begin{gather*} \dot{\tau} = f_1(\bx_\perp,\tau) \\ \dot\bx_\perp =
-      f_2(\bx_\perp,\tau). \end{gather*} <p>The value of this construction for
-      Lyapunov analysis was proposed in <elib>Hauser94a</elib> and has been
-      extended nicely to control design in <elib>Shiriaev08</elib> and for
-      region of attraction estimation in <elib>Manchester10b</elib>.  A
-      particular numerical strategy for defining the transversal coordinates is
-      given in <elib>Manchester10a</elib>.</p>
+      notation $\bx_\perp$ the coordinate system need not be strictly
+      orthogonal to the orbit, but must simply be <em>transversal</em> (not
+      parallel). Having defined the smooth mapping $\bx \rightarrow
+      (\tau,\bx_\perp)$, we can always rewrite the dynamics in this new
+      coordinate system: \begin{gather*} \dot{\tau} = f_\tau(\bx_\perp,\tau) \\
+      \dot\bx_\perp = f_\perp(\bx_\perp,\tau). \end{gather*}  To keep our
+      notation simpler for the remainder of these notes, we will assume that
+      the origin of this new coordinate system is on the nominal trajectory
+      ($\min_\tau |\bx - \bx^*(\tau)| = 0 \Rightarrow \bx_\perp = 0$).
+      Similarly, by taking $\tau$ to be the phase variable, we will leverage
+      the fact that on the nominal trajectory, we have $\dot\tau = f_\tau(0,
+      \tau) = 1.$</p>
+      
+      <p>The value of
+      this construction for Lyapunov analysis was proposed in
+      <elib>Hauser94a</elib>
+      and has been extended nicely to control design in <elib>Shiriaev08</elib>
+      and for region of attraction estimation in <elib>Manchester10b</elib>.  A
+      quite general numerical strategy for defining the transversal coordinates
+      is given in <elib>Manchester10a</elib>.</p>
 
       <theorem><h1>A Lyapunov theorem for orbital stability</h1>
 
@@ -217,6 +238,10 @@ for Limit Cycles</h1>
         asymptotically stable</em>.</p>
 
       </theorem>
+
+      <p>Orbital stability in the sense of Lyapunov and exponential orbital
+      stability can also be verified (with $\dot{V}_\perp \le 0$ and
+      $\dot{V}_\perp \le \alpha V_\perp$, respectively).</p>
 
       <example><h1>Simple ring oscillator</h1>
 
@@ -238,7 +263,7 @@ for Limit Cycles</h1>
         transverse dynamics are revealed:   \begin{align*}     \dot\tau =& 1 \\
         \dot{x}_\perp =& -\alpha x_\perp.   \end{align*}   Taking a Lyapunov
         candidate $V(x_\perp,\tau) = x_\perp^2$, we can verify that $$\dot{V} =
-        -2 \alpha x_\perp^2 \prec 0, \quad \forall x_\perp > -1.$$ This
+        -2 \alpha x_\perp^2 < 0, \quad \forall x_\perp > -1.$$ This
         demonstrates that the limit cycle is locally asymptotically stable, and
         furthermore that the invariant open-set $V < 1$ is inside the region of
         attraction of that limit cycle. In fact, we know that all $x_\perp > -1$
@@ -247,21 +272,19 @@ for Limit Cycles</h1>
 
       </example>
 
-      <p>Let's compare this approach with the approach that we used in the
-      chapter on walking robots, where we used a Poincar&eacute map analysis to
-      investigate limit cycle stability. In transverse coordinates approach,
-      there is an additional burden to construct the coordinate system along the
-      entire trajectory, instead of only at a single surface of section.  In
-      fact, the transverse coordinates approach is sometimes referred to as a
-      "moving Poincar&eacute section". But the reward for this extra work is
-      that we can check a condition that only involves the instantaneous
-      dynamics, $f(\bx)$, as opposed to having to integrate the dynamics over an
-      entire cycle to generate the discrete Poincar&eacute map, $\bx_p[n+1] =
-      P(\bx_p[n])$. While computing $P$ in closed-form happened to be possible
-      for the simple rimless wheel model, it is rarely possible for more complex
-      models.  As we will see below, this approach will also be more compatible
-      with designing continuous feedback controller that stabilize the limit
-      cycle.</p>
+      <p>Let's compare this approach again with the approach that we used in
+      the chapter on walking robots, where we used a Poincar&eacute map
+      analysis to investigate limit cycle stability. In transverse coordinates
+      approach, there is an additional burden to construct the coordinate
+      system along the entire trajectory, instead of only at a single surface
+      of section.  In fact, the transverse coordinates approach is sometimes
+      referred to as a "moving Poincar&eacute section". Again, the reward for
+      this extra work is that we can check a condition that only involves the
+      instantaneous dynamics, $f(\bx)$, as opposed to having to integrate the
+      dynamics over an entire cycle to generate the discrete Poincar&eacute
+      map, $\bx_p[n+1] = P(\bx_p[n])$.  As we will see below, this approach
+      will also be more compatible with designing continuous feedback
+      controller that stabilize the limit cycle.</p>
 
     </subsection> <!-- end transverse -->
 
@@ -274,6 +297,33 @@ for Limit Cycles</h1>
       around the fixed point and using the Lyapunov candidate for the linear
       system as an initial guess.  That same approach can be extended to limit
       cycle analysis.</p>
+
+      <p>In particular, let us make a linear approximation of the transverse
+      dynamics: $$\dot{\bx}_\perp = f_\perp(\bx_\perp, \tau) \approx
+      \pd{f_\perp}{\bx_\perp} \bx_\perp = \bA_\perp(\tau)\bx_\perp.$$ Note that
+      I've assumed that $\bx_\perp$ is zero on the nominal trajectory, so don't
+      need the additional notation of working in the error coordinates here.
+      Although $\tau$ is the phase along the trajectory, <elib>Hauser94a</elib>
+      showed that (exponential) stability of the time-varying linear system
+      $\dot\bx_\perp = \bA_\perp(t) \bx_\perp$ implies local exponential
+      orbital stability of the original system.  In particular, if this
+      transverse linear system is periodic and orbitally stable, then for each
+      $\bQ=\bQ^T \succ 0$, there exists a unique positive definite solution to
+      the periodic Riccati equation: \begin{gather*} V(\bx_\perp, \tau) =
+      \bx_\perp^T {\bf P}(\tau) \bx_\perp, \qquad {\bf P}^T(\tau) = {\bf
+      P}(\tau), \quad {\bf P}(\tau + t_{period}) = {\bf P}(\tau), \\ -\dot{\bf
+      P}(\tau) = {\bf P}(\tau) \bA(\tau) + \bA(\tau){\bf P}^T(\tau) + \bQ,
+      \qquad \bQ=\bQ^T\succ 0. \end{gather*}  There is a surprisingly rich
+      literature on the numerical methods for finding the periodic solutions to
+      these Lyapunov (and corresponding Riccati) equations.  In practice, for
+      every problem I've ever tried, I've simply integrated the equations
+      backwards in time until the integration converges to a periodic solution
+      (this is not guaranteed to work, but almost always does).
+      </p>
+
+      <p>This is very powerful.  It gives us a general way to construct a
+      Lyapunov candidate that certifies local stability of the cycle, and which
+      can be used as a candidate for nonlinear Lyapunov analysis.</p>
 
     </subsection>
 
@@ -289,19 +339,19 @@ for Limit Cycles</h1>
 
     <subsection><h1>For underactuation degree one.</h1>
       
-      <p>It turns out many of our simple walking models -- particulary ones with
-      a point foot that are derived in the minimal coordinates -- are only short
-      one actuator (between the foot and the ground).  One can represent even
-      fairly complex robots this way; much of the theory that I'll elude to here
-      was originally developed by Jessy Grizzle and his group in the context of
-      the bipedal robot <a
+      <p>It turns out many of our simple walking models -- particularly ones
+      with a point foot that are derived in the minimal coordinates -- are only
+      short one actuator (between the foot and the ground).  One can represent
+      even fairly complex robots this way; much of the theory that I'll elude
+      to here was originally developed by Jessy Grizzle and his group in the
+      context of the bipedal robot <a
       href="https://web.eecs.umich.edu/~grizzle/papers/RABBITExperiments.html">RABBIT</a>.
       Jessy's key observation was that limit cycle stability is effectively
       stability in $n-1$ degrees of freedom, and you can often achieve it
-      easily with $n-1$ actuators -- he called this line of work "Hybrid
-      Zero Dynamics" (HZD).  We'll deal with the "hybrid" part of that in the
-      next chapter, but here is a simple example to illustrate the "zero
-      dynamics" concept.  [Coming sooon...] </p>
+      easily with $n-1$ actuators -- he called this line of work "Hybrid Zero
+      Dynamics" (HZD).  We'll deal with the "hybrid" part of that in the next
+      chapter, but here is a simple example to illustrate the "zero dynamics"
+      concept.  [Coming soon...] </p>
 
       <todo>Add a simple example here.</todo>
 
