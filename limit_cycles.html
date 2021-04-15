@@ -142,6 +142,8 @@ for Limit Cycles</h1>
 
     </example>
 
+    <todo>Show how to take the local linearization along the trajectory: adjoint + projection at the boundary conditions.</todo>
+
     <todo> example: simplest flapping robot </todo>
 
   </section> <!-- end trajectory optimization -->
@@ -172,7 +174,7 @@ for Limit Cycles</h1>
     fundamental reason: we rarely have an analytical expression for the
     Poincare map, since it is the result of integrating a nonlinear dynamics
     over the cycle.</p>
-    
+
     <p>Instead, we will focus our attention on constructing Lyapunov functions
     in the full state space, which use the continuous dynamics.  In particular,
     we would like to consider Lyapunov functions which have the form cartooned
@@ -303,22 +305,23 @@ for Limit Cycles</h1>
       \pd{f_\perp}{\bx_\perp} \bx_\perp = \bA_\perp(\tau)\bx_\perp.$$ Note that
       I've assumed that $\bx_\perp$ is zero on the nominal trajectory, so don't
       need the additional notation of working in the error coordinates here.
-      Although $\tau$ is the phase along the trajectory, <elib>Hauser94a</elib>
-      showed that (exponential) stability of the time-varying linear system
-      $\dot\bx_\perp = \bA_\perp(t) \bx_\perp$ implies local exponential
-      orbital stability of the original system.  In particular, if this
-      transverse linear system is periodic and orbitally stable, then for each
-      $\bQ=\bQ^T \succ 0$, there exists a unique positive definite solution to
-      the periodic Riccati equation: \begin{gather*} V(\bx_\perp, \tau) =
-      \bx_\perp^T {\bf P}(\tau) \bx_\perp, \qquad {\bf P}^T(\tau) = {\bf
-      P}(\tau), \quad {\bf P}(\tau + t_{period}) = {\bf P}(\tau), \\ -\dot{\bf
-      P}(\tau) = {\bf P}(\tau) \bA(\tau) + \bA(\tau){\bf P}^T(\tau) + \bQ,
-      \qquad \bQ=\bQ^T\succ 0. \end{gather*}  There is a surprisingly rich
-      literature on the numerical methods for finding the periodic solutions to
-      these Lyapunov (and corresponding Riccati) equations.  In practice, for
-      every problem I've ever tried, I've simply integrated the equations
-      backwards in time until the integration converges to a periodic solution
-      (this is not guaranteed to work, but almost always does).
+      Remember that $\tau$ is the phase along the trajectory, but 
+      <elib>Hauser94a</elib> showed that (exponential) stability of the
+      <i>time-varying</i> linear system $\dot\bx_\perp = \bA_\perp(t)
+      \bx_\perp$ implies local exponential orbital stability of the original
+      system.  In particular, if this transverse linear system is periodic and
+      orbitally stable, then for each $\bQ=\bQ^T \succ 0$, there exists a
+      unique positive definite solution to the periodic Riccati equation:
+      \begin{gather*} V(\bx_\perp, \tau) = \bx_\perp^T {\bf P}(\tau) \bx_\perp,
+      \qquad {\bf P}^T(\tau) = {\bf P}(\tau), \quad {\bf P}(\tau + t_{period})
+      = {\bf P}(\tau), \\ -\dot{\bf P}(\tau) = {\bf P}(\tau) \bA(\tau) +
+      \bA(\tau){\bf P}^T(\tau) + \bQ, \qquad \bQ=\bQ^T\succ 0. \end{gather*}
+      There is a surprisingly rich literature on the numerical methods for
+      finding the periodic solutions to these Lyapunov (and corresponding
+      Riccati) equations.  In practice, for every problem I've ever tried, I've
+      simply integrated the equations backwards in time until the integration
+      converges to a periodic solution (this is not guaranteed to work, but
+      almost always does).
       </p>
 
       <p>This is very powerful.  It gives us a general way to construct a
@@ -336,6 +339,31 @@ for Limit Cycles</h1>
   </section> <!-- end lyapunov -->
 
   <section><h1>Feedback design</h1>
+
+    <p>Many of the tools we've developed for stabilization of fixed points or
+    stabilization of trajectories can be adapted to this new setting.  When we
+    discussed <a href="simple_legs.html#slip_control">control for the
+    spring-loaded inverted pendulum model</a>, we considered discrete control
+    decisions, made once per cycle, which could stabilize the discrete Poincare
+    map, $\bx_p[n+1] = f_p(\bx_p[n], \bu[n]),$ with $\bu[n]$ the once-per-cycle
+    decisions.  While it's possible to get the local linear approximations of
+    this map using our adjoint methods, remember that we rarely have an
+    analytical expression for the nonlinear $f_p$.</p>
+
+    <p>How limiting is it to restrict ourselves to once-per-cycle decisions? Of
+    course we can improve performance in general with continuous feedback. But
+    there are also some cases where once-per-cycle decisions feel quite
+    reasonable.  Foot placement for legged robots is a good example -- once
+    we've chosen a foot placement we might make minor corrections just before
+    we place the foot, but rarely change that decision once the foot is on the
+    ground; once per footstep seems like a reasonable approximation.  Another
+    good example is flapping flight: here the wing beat cycle times can be much
+    faster than the dynamic timescales of the center of mass, and changing the
+    parameters of the wing stroke one per flap seems pretty reasonable.</p>
+
+    <p>But the tools we've developed above also give us the machinery we need
+    to consider continuous feedback throughout the trajectory.  Let's look at a
+    few important formulations.</p>
 
     <subsection><h1>For underactuation degree one.</h1>
       
@@ -381,9 +409,90 @@ for Limit Cycles</h1>
 
     <subsection><h1>Transverse LQR</h1>
 
+      <p>Another natural approach to stabilizing a cycle uses the transverse
+      linearization.  In particular, for a nominal (control) trajectory,
+      $[\bx_0(t), \bu_0(t)],$ with $\dot{\bx}_0 = f(\bx_0, \bu_0)$, we can
+      approximate the  transverse dynamics: $$\dot{\bx}_\perp =
+      f_\perp(\bx_\perp, \tau, \bu) \approx \pd{f_\perp}{\bx_\perp} \bx_\perp +
+      \pd{f_\perp}{\bu}(\bu - \bu_0(\tau)) = \bA_\perp(\tau)\bx_\perp +
+      \bB_\perp(\tau) \bar{\bu}.$$ <elib>Shiriaev08</elib> showed that the
+      (periodic) time-varying LQR controller that stabilized this system
+      achieves <i>orbital</i> stabilization of the original system.</p>
+
+      <p>Let's take a minute to appreciate the difference between this approach
+      and time-varying LQR in the full coordinates.  Of course, the behavior is
+      quite different: time-varying LQR in the full coordinates will try to
+      slow down or speed up to keep time with the nominal trajectory, where
+      this controller makes no attempt to stabilize the phase variable.  You
+      might think you could design the original time-varying controller,
+      $\bar\bu = \bK(t)\bar\bx,$ and just "project to the closest time" during
+      execution (e.g. find the time $t = \argmin_\tau |\bx - \bx_0(\tau)|)$ and
+      use the feedback corresponding to that time.  But this projection is not
+      guaranteed to be safe; you can find systems that are stabilizable by the
+      transverse linearization are unstable in closed-loop using a feedback
+      based on this projection.</p>
+
+      <example><h1>Time-varying LQR simply projected in time can lead to
+      instability.</h1>
+
+      <p>Coming soon...</p>
+
+      </example>
+
+      <p>But there is an even more important reason to like the transverse LQR
+      approach.  If orbital stability is all you need, then this is a better
+      formulation of the problem because you are asking for less.  As we've
+      just discussed with hybrid zero-dynamics, stabilizing $m$ degrees of
+      freedom with $m$ actuators is potentially very different than stabilizing
+      $m+1$ degrees of freedom.  In the transverse formulation, we are asking
+      LQR to minimize the cost only in the transverse coordinates (it is
+      mathematically equivalent to designing a cost function in the full
+      coordinates that is zero in the direction of the nominal trajectory). In
+      practice, this can result is much smaller cost-to-go matrices, ${\bf
+      S}(t)$, and smaller feedback gains, $\bK(t)$.  For underactuated systems,
+      this difference can be dramatic.</p>
+
     </subsection>
 
     <subsection><h1>Orbital stabilization for non-periodic trajectories</h1>
+
+      <p>The observation that orbital stabilization of a trajectory can ask
+      much less of your underactuated control system (and lead to smaller LQR
+      feedback gains), is quite powerful.  It is not limited to stabilizing
+      periodic motions.  If your aim is to stabilize a non-periodic path
+      through state-space, but do not actually care about the timing, then
+      formulating your stabilization can be a very good choice.  You can find
+      examples where a system is stabilizable in the transverse coordinates,
+      but not in the full coordinates.</p>  
+      
+      <example><h1>Stabilizable in the transverse coordinates, but not the full
+      coordinates.</h1>
+
+      <p>Coming soon...</p>
+      </example>
+        
+      <p>Take care, though, as the converse can also be true: it's possible
+      that a system could be stabilizable in the full coordinates but
+      <i>not</i> in some transverse coordinates; if you choose those
+      coordinates badly.</p>
+
+      <example><h1>Stabilizable in the full coordinates, but not the transverse
+      coordinates.</h1>
+      
+        <p>Consider a trajectory with $u(t) = 1$ (from any initial condition)
+        for <a href="dp.html#minimum_time_double_integrator"> 
+        the double integrator</a>. We can certainly stablize this trajectory in
+        the full coordinates using LQR.  Technically, one can choose transverse
+        coordinates $\tau = \dot{q},$ and $x_\perp = q.$  Clearly $x_\perp$ is
+        transverse to the nominal trajectory everywhere.  But this transverse
+        linearization is also clearly not stabilizable.  It's a bad choice!</p>
+
+      </example>
+
+      <p>The general approach to designing the transverse coordinates
+      <elib>Manchester10a</elib> could address this concern by including a
+      criteria for controllability when optimizing the transverse
+      coordinates.</p>
 
     </subsection>
 
