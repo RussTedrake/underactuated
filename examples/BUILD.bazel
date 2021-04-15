@@ -6,23 +6,6 @@
 
 load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_binary", "rt_ipynb_test")
 
-rt_ipynb_test(
-    name = "contact",
-    srcs = ["contact.ipynb"],
-    deps = ["//underactuated"],
-)
-
-rt_ipynb_test(
-    name = "limit_cycles",
-    srcs = ["limit_cycles.ipynb"],
-    deps = ["//underactuated"],
-)
-
-rt_ipynb_test(
-    name = "optimization",
-    srcs = ["optimization.ipynb"],
-    deps = ["//underactuated"],
-)
 
 rt_ipynb_test(
     name = "perching",
@@ -32,8 +15,3 @@ rt_ipynb_test(
     deps = ["//underactuated"],
 )
 
-rt_ipynb_test(
-    name = "stochastic",
-    srcs = ["stochastic.ipynb"],
-    deps = ["//underactuated"],
-)

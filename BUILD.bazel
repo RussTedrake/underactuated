@@ -88,6 +88,11 @@ rt_html_test(
 rt_html_test(
     srcs = ["stochastic.html"],
 )
+rt_ipynb_test(
+    name = "stochastic",
+    srcs = ["stochastic.ipynb"],
+    deps = ["//underactuated"],
+)
 
 rt_html_test(
     srcs = ["dp.html"],
@@ -169,9 +174,20 @@ rt_html_test(
 rt_html_test(
     srcs = ["limit_cycles.html"],
 )
+rt_ipynb_test(
+    name = "limit_cycles",
+    srcs = ["limit_cycles.ipynb"],
+    deps = ["//underactuated"],
+)
 
 rt_html_test(
     srcs = ["contact.html"],
+)
+
+rt_ipynb_test(
+    name = "contact",
+    srcs = ["contact.ipynb"],
+    deps = ["//underactuated"],
 )
 
 rt_html_test(
@@ -207,6 +223,12 @@ rt_html_test(
 rt_html_test(
     srcs = ["optimization.html"],
 )
+rt_ipynb_test(
+    name = "optimization",
+    srcs = ["optimization.ipynb"],
+    deps = ["//underactuated"],
+)
+
 
 rt_html_test(
     srcs = ["playbook.html"],
