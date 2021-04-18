@@ -7,5 +7,5 @@
 filegroup(
     name = "glider",
     srcs = ["glider.urdf"] + glob(["meshes/*.obj"]),
-    visibility = ["//:__subpackages__"],
+    visibility = ["//visibility:public"],
 )
