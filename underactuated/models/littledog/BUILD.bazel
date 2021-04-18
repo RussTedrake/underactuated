@@ -4,10 +4,8 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
-exports_files(
-    glob([
-        "*.sdf",
-        "*.urdf",
-    ]),
+filegroup(
+    name = "littledog",
+    srcs = ["LittleDog.urdf", "ground.urdf"] + glob(["meshes/*.obj*"]),
     visibility = ["//visibility:public"],
 )

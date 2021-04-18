@@ -15,3 +15,10 @@ rt_ipynb_test(
     deps = ["//underactuated"],
 )
 
+rt_ipynb_test(
+    name = "littledog",
+#    timeout = "moderate",
+    srcs = ["littledog.ipynb"],
+    data = ["//underactuated/models/littledog"],
+    deps = ["//underactuated"],
+)
