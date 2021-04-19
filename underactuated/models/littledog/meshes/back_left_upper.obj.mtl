@@ -10,7 +10,7 @@ Ks 1.000000 1.000000 1.000000
 Tr 1.000000
 illum 2
 Ns 0.000000
-map_Kd LEG.JPG
+map_Kd leg.jpg
 
 newmtl material_1
 Ka 0.200000 0.200000 0.200000
@@ -19,7 +19,7 @@ Ks 1.000000 1.000000 1.000000
 Tr 1.000000
 illum 2
 Ns 0.000000
-map_Kd BODY3.JPG
+map_Kd body3.jpg
 
 newmtl material_2
 Ka 0.200000 0.200000 0.200000

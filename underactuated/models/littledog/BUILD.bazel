@@ -6,6 +6,6 @@
 
 filegroup(
     name = "littledog",
-    srcs = ["LittleDog.urdf", "ground.urdf"] + glob(["meshes/*.obj*"]),
+    srcs = ["LittleDog.urdf", "ground.urdf"] + glob(["meshes/*"]),
     visibility = ["//visibility:public"],
 )
