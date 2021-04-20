@@ -413,12 +413,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       velocities, but that joint accelerations, often obtained by numerically
       differentiating <i>twice</i>, tend to be much more noisy. In some cases,
       it might be numerically better to apply finite differences to the total
-      energy of the system rather than to the individual joints &dagger;.  <sidenote>&dagger; Sometimes
-      these methods are written as the numerical integration of the power
-      input, rather than the differentiation of the total energy, but the
-      numerics should be no different.</sidenote>  <elib>Gautier96</elib> provides a
-      study of various filtering formulations which leads to a recommendation
-      in <elib>Gautier97</elib>
+      energy of the system rather than to the individual joints &dagger;.
+      <sidenote>&dagger; Sometimes these methods are written as the numerical
+      integration of the power input, rather than the differentiation of the
+      total energy, but the numerics should be no different.</sidenote>
+      <elib>Gautier96</elib> provides a study of various filtering formulations
+      which leads to a recommendation in <elib>Gautier97</elib>
       that the energy formulation tends to be numerically superior.</p>
 
     </subsection>
@@ -510,33 +510,100 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </subsection>
 
+    <subsection><h1>Identification with contact</h1>
 
-    <subsection><h1>Identification with contact</h1></subsection>
+      <p>Can we apply these same techniques to e.g. walking robots that are
+      making and breaking contact with the environment?</p>
 
-  </section>
-
-  <section><h1>Linear state-space models</h1>
-  
-    <subsection><h1>From state observations</h1>
+      <p>There is certainly a version of this problem that works immediately:
+      if we know the contact Jacobians and have measurements of the contact
+      forces, then we can add these terms directly into the manipulator
+      equations and continued with the least-squares estimation of the lumped
+      parameters, even including frictional parameters.</p>  
       
-      <todo>model-order reduction</todo>
+      <p>One can also study cases where the contact forces are not measured
+      directly.  For instance, <elib>Fazeli17a</elib> studies the extreme case
+      of identifiability of the inertial parameters of a passive object with
+      and without explicit contact force measurements.</p>
+
+      <todo>Flesh this out a bit more...</todo>
     
     </subsection>
 
-    <subsection><h1>From input-output data</h1>
+  </section>
+
+  <section><h1>Identifying (time-domain) linear dynamical systems</h1>
+
+    <p>If multibody parameter estimation forms the first pillar of established
+    work in system identification, then identification of linear systems forms
+    the second.  Linear models have been a primary focus of system
+    identification research since the field was established, and have witnessed
+    a resurgence in popularity during just the last few years as new results
+    from machine learning have contributed new bounds and convergence results,
+    especially in the finite-sample regime (e.g.
+    <elib>Hardt16+Hazan18+Simchowitz19</elib>).</p>
+
+    <p>A significant portion of the linear system identification literature
+    (e.g. <elib>Ljung99</elib>) is focused on identifying linear models in the
+    frequency domain.  Indeed, transfer-function realizations provide important
+    insights and avoid some of the foibles that we'll need to address with
+    state-space realizations.  However, I will focus my attention here on
+    time-domain descriptions of linear dynamical systems; lessons here are
+    perhaps more likely to generalize to nonlinear dynamics (plus we
+    unfortunately haven't built the foundations for the frequency domain
+    techniques yet in these notes).  My favorite references for identification
+    of time-domain linear models are probably 
+    <elib>VanOverschee96</elib> and <elib part="Ch 7 and
+    9">Brunton19</elib>.</p>
+  
+    <subsection><h1>From state observations</h1>
+      
+      <example><h1>Cart-Pole Balancing with an identified model</h1>
+      
+      </example>
+
+      <subsubsection><h1>Linear function approximation</h1>
+
+        <p>Multibody parameter estimation from above is a special case.</p>
+     
+        <todo>Sparse Least Squares to "learn" the model structure.  Hoburg09a.  SINdy</todo>
+      </subsubsection>
+
+      <subsubsection><h1>Model-based Iterative Learning Control (ILC)</h1>
+      
+        <todo>Local time-varying linear model along a trajectory + iLQR.  Bregmann ADMM</todo>
+
+        <example><h1>The Hydrodynamic Cart-Pole</h1></example>
+
+        <todo>How reasonable (locally) are LQG models through contact?</todo>
+
+      </subsubsection>
+
+    </subsection>
+
+    <subsection><h1>From input-output data (the state-realization problem)</h1>
     
       <todo>Ho-Kalman</todo>
       <todo>Subspace identification</todo>
     
     </subsection>
 
-    <subsection><h1>Adding stability constraints</h1></subsection>
+    <subsection><h1>Adding stability constraints</h1>
+    
+      <p>Details coming soon.  See, for instance <elib>Umenberger18</elib>.</p>
+      <todo>possibly: https://arxiv.org/abs/1204.0590</todo>
+    
+    </subsection>
+
+    <subsection><h1>Input/output (autoregressive) models</h1>
+
+      <todo>ARMAX</todo>
+    
+    </subsection>
 
   </section>
 
-  <section><h1>Linear ARMAX models</h1></section>
-
-  <section><h1>Piecewise-affine models / hybrid system i.d.</h1></section>
+  <section><h1>Identification of hybrid systems</h1></section>
 
   <section><h1>Nonlinear system identification</h1>
   
@@ -614,6 +681,49 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <span class="title">"Adaptive Control Design for Underactuated Systems Using Sums-of-Squares Optimization"</span>,
 <span class="publisher">Proceedings of the 2014 American Control Conference (ACC)</span>, June, <span class="year">2014</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Moore14.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Fazeli17a>
+<span class="author">Nima Fazeli and Roman Kolbert and Russ Tedrake and Alberto Rodriguez</span>,
+<span class="title">"Parameter and contact force estimation of planar rigid-bodies undergoing frictional contact"</span>,
+<span class="publisher">International Journal of Robotics Research</span>, vol. 36, no. 13-14, pp. 1437-1454, <span class="year">2017</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Fazeli17a.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Hardt16>
+<span class="author">Hardt, Moritz and Ma, Tengyu and Recht, Benjamin</span>,
+<span class="title">"Gradient descent learns linear dynamical systems"</span>,
+<span class="publisher">arXiv preprint arXiv:1609.05191</span>, <span class="year">2016</span>.
+
+</li><br>
+<li id=Hazan18>
+<span class="author">Hazan, Elad and Lee, Holden and Singh, Karan and Zhang, Cyril and Zhang, Yi</span>,
+<span class="title">"Spectral filtering for general linear dynamical systems"</span>,
+<span class="publisher">arXiv preprint arXiv:1802.03981</span>, <span class="year">2018</span>.
+
+</li><br>
+<li id=Simchowitz19>
+<span class="author">Simchowitz, Max and Boczar, Ross and Recht, Benjamin</span>,
+<span class="title">"Learning linear dynamical systems with semi-parametric least squares"</span>,
+<span class="publisher">Conference on Learning Theory</span>, pp. 2714--2802, <span class="year">2019</span>.
+
+</li><br>
+<li id=Ljung99>
+<span class="author">L. Ljung</span>,
+<span class="title">"System Identification: Theory for the User"</span>,Prentice Hall
+, <span class="year">1999</span>.
+
+</li><br>
+<li id=VanOverschee96>
+<span class="author">Van Overschee, Peter and De Moor, Bart</span>,
+<span class="title">"Subspace {Identification} for {Linear} {Systems}"</span>,Springer US
+, <span class="year">1996</span>.
+
+</li><br>
+<li id=Umenberger18>
+<span class="author">Umenberger, Jack and W{\aa}gberg, Johan and Manchester, Ian R and Sch{\"o}n, Thomas B</span>,
+<span class="title">"Maximum likelihood identification of stable linear dynamical systems"</span>,
+<span class="publisher">Automatica</span>, vol. 96, pp. 280--292, <span class="year">2018</span>.
 
 </li><br>
 </ol>
