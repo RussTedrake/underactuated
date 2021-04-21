@@ -572,29 +572,23 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <p>Let's start our treatment with the easy case: fitting a linear model
       from direct (potentially noisy) measurements of the state.  Fitting a
-      discrete-time model, $\dot{\bx} = \bA\bx + \bB\bu$, to sampled data
+      discrete-time model, $\bx[n+1] = \bA\bx[n] + \bB\bu[n]$, to sampled data
       $(\bu_n,\bx_n)$ using the <i>equation-error</i> objective is just another
-      least-squares problem.  Typically, we form some data matrices and write
-      our least-squares problem as: \begin{gather*} {\bf X}' \approx
-      \begin{bmatrix} \bA & \bB \end{bmatrix} \begin{bmatrix} {\bf X} \\ {\bf
-      U} \end{bmatrix}, \qquad \text{where} \\ {\bf X} = \begin{bmatrix} \mid &
-      \mid & & \mid \\ \bx_0 & \bx_1 &  ... & \bx_{N-2} \\ \mid & \mid & & \mid
-      \end{bmatrix}, \quad {\bf X}' = \begin{bmatrix} \mid & \mid & & \mid \\
-      \bx_1 & \bx_2 & ... & \bx_{N-1} \\ \mid & \mid & & \mid \end{bmatrix},
-      \quad {\bf U} = \begin{bmatrix} \mid & \mid & & \mid \\ \bu_0 & \bu_1 &
-      ... & \bu_{N-2} \\ \mid & \mid & & \mid \end{bmatrix}.\end{gather*}  For
-      high-dimensional state or input vectors, one can use singular value
-      decomposition (SVD) to solve this least-squares problem using only the
-      dominant eigenvalues (and corresponding eigenvectors) of $\bA$ <elib
-      part="Section 7.2">Brunton19</elib> using the so-called "Dynamic Mode
-      Decomposition" (DMD).  There have been many empirical success stories of
-      using a small number of dominant modes to produce an excellent fit to the
-      data (this is especially relevant in problems like fluid dynamics where
-      the state vector $\bx$ might be an entire image corresponding to a fluid
-      flow).  In DMD, we would write the linear dynamics in the coordinates of
-      these eigenmodes (which can always be projected back to the full
-      coordinates).</p>
-      
+      <i>linear</i> least-squares problem.  Typically, we form some data
+      matrices and write our least-squares problem as: \begin{gather*} {\bf X}'
+      \approx \begin{bmatrix} \bA & \bB \end{bmatrix} \begin{bmatrix} {\bf X}
+      \\ {\bf U} \end{bmatrix}, \qquad \text{where} \\ {\bf X} =
+      \begin{bmatrix} \mid & \mid & & \mid \\ \bx_0 & \bx_1 &  ... & \bx_{N-2}
+      \\ \mid & \mid & & \mid \end{bmatrix}, \quad {\bf X}' = \begin{bmatrix}
+      \mid & \mid & & \mid \\ \bx_1 & \bx_2 & ... & \bx_{N-1} \\ \mid & \mid &
+      & \mid \end{bmatrix}, \quad {\bf U} = \begin{bmatrix} \mid & \mid & &
+      \mid \\ \bu_0 & \bu_1 & ... & \bu_{N-2} \\ \mid & \mid & & \mid
+      \end{bmatrix}.\end{gather*}  By the virtues of linear least squares, this
+      estimator is unbiased with respect to uncorrelated (process and/or
+      measurement) noise.</p>
+
+      <todo>link to acrobot ch modal analysis</todo>
+
       <example><h1>Cart-Pole Balancing with an identified model</h1>
       
         <todo>design cart-pole LQR for a system with the wrong parameters.
@@ -603,31 +597,6 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         the true linearization (with the correct parameters).  then show the
         improved performance of the LQR controller.</todo>
       </example>
-
-      <subsubsection><h1>Linear dynamics in a nonlinear basis</h1>
-
-        <p>A potentially useful generalization  that we can consider here is
-        identifying dynamics that evolve linearly in some (potentially
-        high-dimensional) basis vectors $\phi(\bx).$  In particular, we might
-        consider dynamics of the form $\dot\bphi = \pd{\bphi}{\bx} \dot\bx =
-        \bA \bphi(x).$  Much ado has been made of this particular form, due to
-        the connection to Koopman operator theory that we will discuss briefly
-        below.  For our purposes, we also need a control input, so might
-        consider a form like $\dot\bphi = \bA \bphi(x) + \bB \bu.$</p>
-
-        <todo>example with the pendulum here?</todo>
-
-        <p>Once again, thanks to the maturity of least-squares, it can be
-        useful to include list many possible basis functions, then use sparse
-        least-squares and/or dynamic mode decomposition to effectively find the
-        important subset.</p>
-
-        <p>Note that multibody parameter estimation described above is not
-        this, although it is closely related.  The least-squares
-        lumped-parameter estimation for the manipulator equations uncovered
-        dynamics that were still <i>nonlinear</i> in the state variables.</p>
-     
-      </subsubsection>
 
       <subsubsection><h1>Model-based Iterative Learning Control (ILC)</h1>
       
@@ -639,10 +608,60 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       </subsubsection>
 
+      <subsubsection><h1>Compression using the dominant eigenmodes</h1>
+      
+        <p>For high-dimensional state or input vectors, one can use singular
+        value decomposition (SVD) to solve this least-squares problem using
+        only the dominant eigenvalues (and corresponding eigenvectors) of $\bA$
+        <elib part="Section 7.2">Brunton19</elib> using the so-called "Dynamic
+        Mode Decomposition" (DMD).  There have been many empirical success
+        stories of using a small number of dominant modes to produce an
+        excellent fit to the data (this is especially relevant in problems like
+        fluid dynamics where the state vector $\bx$ might be an entire image
+        corresponding to a fluid flow).  In DMD, we would write the linear
+        dynamics in the coordinates of these eigenmodes (which can always be
+        projected back to the full coordinates).</p>
+    
+      </subsubsection>
+
+      <subsubsection><h1>Linear dynamics in a nonlinear basis</h1>
+
+        <p>A potentially useful generalization  that we can consider here is
+        identifying dynamics that evolve linearly in a coordinate system
+        defined by some (potentially high-dimensional) basis vectors
+        $\phi(\bx).$  In particular, we might consider dynamics of the form
+        $\dot\bphi = \pd{\bphi}{\bx} \dot\bx = \bA \bphi(x).$  Much ado has
+        been made of this particular form, due to the connection to Koopman
+        operator theory that we will discuss briefly below.  For our purposes,
+        we also need a control input, so might consider a form like $\dot\bphi
+        = \bA \bphi(x) + \bB \bu.$</p>
+
+        <todo>example with the pendulum here?</todo>
+
+        <p>Once again, thanks to the maturity of least-squares, with this
+        approach it is possible to include list many possible basis functions,
+        then use sparse least-squares and/or the modal decomposition to
+        effectively find the important subset.</p>
+
+        <p>Note that multibody parameter estimation described above is not
+        this, although it is closely related.  The least-squares
+        lumped-parameter estimation for the manipulator equations uncovered
+        dynamics that were still <i>nonlinear</i> in the state variables.</p>
+     
+      </subsubsection>
+
     </subsection>
 
     <subsection><h1>From input-output data (the state-realization problem)</h1>
     
+      <p>In the more general form, we would like to estimate a model of the
+      form \begin{gather*} \bx[n+1] = \bA \bx[n] + \bB \bu[n] + \bw[n] \\
+      \by[n] = \bC \bx[n] + {\bf D} \bu[n] + \bv[n], \end{gather*} with
+      $\bw[n]$ and $\bv[n]$ zero mean, i.i.d. vectors with joint covariance
+      $$E\left[ \begin{bmatrix} \bw[n] \\ \bv[n] \end{bmatrix} \begin{bmatrix}
+      \bw[k] \\ \bv[k] \end{bmatrix}^T \right] = \begin{cases} \begin{bmatrix} \Sigma_{ww} &
+      \Sigma_{wv} \\ \Sigma_{wv}^T & \Sigma_{vv} \end{bmatrix}, & \text{ if } n==k \\ 0, & \text{ otherwise.} \end{cases}$$</p>
+
       <todo>Ho-Kalman</todo>
       <todo>Subspace identification</todo>
     
@@ -670,6 +689,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <todo>Neural Nets / Intuitive physics / etc.</todo>
     <todo>MMT / Jack's work</todo>
     <subsection><h1>Koopman operators</h1>
+
+      <todo>Move this to some other chapter?  it's as much about control as it
+      is about sysid?</todo>
 
       <todo>make connections to: Perron-Frobenious.  Occupation measures.
       Densities.  (Finite MDP representation).</todo>
