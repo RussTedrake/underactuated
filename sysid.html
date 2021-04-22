@@ -578,24 +578,55 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       matrices and write our least-squares problem as: \begin{gather*} {\bf X}'
       \approx \begin{bmatrix} \bA & \bB \end{bmatrix} \begin{bmatrix} {\bf X}
       \\ {\bf U} \end{bmatrix}, \qquad \text{where} \\ {\bf X} =
-      \begin{bmatrix} \mid & \mid & & \mid \\ \bx_0 & \bx_1 &  ... & \bx_{N-2}
-      \\ \mid & \mid & & \mid \end{bmatrix}, \quad {\bf X}' = \begin{bmatrix}
-      \mid & \mid & & \mid \\ \bx_1 & \bx_2 & ... & \bx_{N-1} \\ \mid & \mid &
-      & \mid \end{bmatrix}, \quad {\bf U} = \begin{bmatrix} \mid & \mid & &
-      \mid \\ \bu_0 & \bu_1 & ... & \bu_{N-2} \\ \mid & \mid & & \mid
-      \end{bmatrix}.\end{gather*}  By the virtues of linear least squares, this
-      estimator is unbiased with respect to uncorrelated (process and/or
-      measurement) noise.</p>
+      \begin{bmatrix} \mid & \mid & & \mid \\ \bx_0 & \bx_1 &  \cdots &
+      \bx_{N-2} \\ \mid & \mid & & \mid \end{bmatrix}, \quad {\bf X}' =
+      \begin{bmatrix} \mid & \mid & & \mid \\ \bx_1 & \bx_2 & \cdots &
+      \bx_{N-1} \\ \mid & \mid & & \mid \end{bmatrix}, \quad {\bf U} =
+      \begin{bmatrix} \mid & \mid & & \mid \\ \bu_0 & \bu_1 & \cdots &
+      \bu_{N-2} \\ \mid & \mid & & \mid \end{bmatrix}.\end{gather*}  By the
+      virtues of linear least squares, this estimator is unbiased with respect
+      to uncorrelated (process and/or measurement) noise.</p>
 
       <todo>link to acrobot ch modal analysis</todo>
 
-      <example><h1>Cart-Pole Balancing with an identified model</h1>
+      <example><h1>Cart-pole balancing with an identified model</h1>
       
-        <todo>design cart-pole LQR for a system with the wrong parameters.
-        want it to be stable, but not a great controller.  use that controller
-        to generate a lot of data.  fit the true linearization.  compare it to
-        the true linearization (with the correct parameters).  then show the
-        improved performance of the LQR controller.</todo>
+        <p>I've provide a notebook demonstrating what a practical application
+        of linear identification might look like for the cart-pole system, in a
+        series of steps.  First, I've designed an LQR balancing controller, but
+        using the <i>wrong</i> parameters for the cart-pole (I changed the
+        masses, etc).  This LQR controller is enough to keep the cart-pole from
+        falling down, but it doesn't converge nicely to the upright.  I wanted
+        to ask the question, can I use data generated from this experiment to
+        identify a better linear model around the fixed-point, and improve my
+        LQR controller?</p>
+
+        <p>Interestingly, the simple answer is "no".  If you only collect the
+        input and state data from running this controller, you will see that
+        the least-squares problem that we formulate above is rank-deficient.
+        The estimated $\bA$ and $\bB$ matrices, denoted $\hat{\bA}$ and
+        $\hat{\bB}$ describe the data, but do not reveal the true
+        linearization.  And if you design a controller based on these
+        estimates, you will be disappointed!</p>
+
+        <todo>insert some plots?</todo>
+
+        <p>Fortunately, we could have seen this problem by checking the rank of
+        the least-squares solution.  Generating more examples won't fix this
+        problem.  Instead, to generate a richer dataset, I've added a small
+        additional signal to the input: $\bu(t) = LQR(\bx(t)) + 0.1\sin(t).$
+        That makes all of the difference.</p>
+
+        <p><a target="sysid"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/sysid.ipynb#scrollTo=ASlp7CDoQL5t"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
+
+        <p>I hope you try the code. The basic algorithm for estimation is
+        disarmingly simple, but there are a lot of details to get right to
+        actually make it work.</p>
+
       </example>
 
       <subsubsection><h1>Model-based Iterative Learning Control (ILC)</h1>
@@ -655,16 +686,40 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <subsection><h1>From input-output data (the state-realization problem)</h1>
     
       <p>In the more general form, we would like to estimate a model of the
-      form \begin{gather*} \bx[n+1] = \bA \bx[n] + \bB \bu[n] + \bw[n] \\
-      \by[n] = \bC \bx[n] + {\bf D} \bu[n] + \bv[n], \end{gather*} with
-      $\bw[n]$ and $\bv[n]$ zero mean, i.i.d. vectors with joint covariance
-      $$E\left[ \begin{bmatrix} \bw[n] \\ \bv[n] \end{bmatrix} \begin{bmatrix}
-      \bw[k] \\ \bv[k] \end{bmatrix}^T \right] = \begin{cases} \begin{bmatrix} \Sigma_{ww} &
-      \Sigma_{wv} \\ \Sigma_{wv}^T & \Sigma_{vv} \end{bmatrix}, & \text{ if } n==k \\ 0, & \text{ otherwise.} \end{cases}$$</p>
+      form \begin{gather*} \bx[n+1] = \bA \bx[n] + \bB \bu[n] \\ \by[n] = \bC
+      \bx[n] + {\bf D} \bu[n]. \end{gather*}</p>
 
       <todo>Ho-Kalman</todo>
       <todo>Subspace identification</todo>
-    
+
+      <p>First, we will construct the block <a
+      href="https://en.wikipedia.org/wiki/Hankel_matrix">Hankel</a> data
+      matrices, e.g.: $${\bf Y} = \begin{bmatrix} \by_0 & \by_1 & \cdots &
+      \by_{M-1} \\ \by_1 & \by_2 & \cdots & \by_{M} \\ \vdots & \vdots & \ddots
+      & \vdots \\ \by_{N-M} & \by_{N - M + 1} & \cdots & \by_{N-1}
+      \end{bmatrix}, \qquad {\bf U} = \begin{bmatrix} \bu_0 & \bu_1 & \cdots &
+      \bu_{M-1} \\ \bu_1 & \bu_2 & \cdots & \bu_{M} \\ \vdots & \vdots & \ddots
+      & \vdots \\ \bu_{N-M} & \bu_{N-M+1} & \cdots & \bu_{N-1} \end{bmatrix}.$$
+      Now, observe that \begin{align*} \by[0] =& \bC\bx[0] + {\bf D}\bu[0], \\
+      \by[1] =& \bC\bA\bx[0] + \bC\bB\bu[0] + {\bf D}\bu[1], \\ \by[n] =&
+      \bC\bA^n\bx[0] + {\bf D}\bu[n] + \sum_{k=0}^{n-1}
+      \bC\bA^{n-k-1}\bB\bu[k]. \end{align*} More details coming soon... <!-- Let's ignore the $\bx[0]$ terms for
+      a moment (it's easy to add them back), and write $${\bf Y} = {\bf H} {\bf
+      U}, \qquad {\bf H} = \begin{bmatrix} {\bf D} & {\bf 0} & \cdots & {\bf 0}
+      \\ \bC \bB & {\bf D} & \cdots & {\bf 0} \\ \vdots & \vdots & \ddots &
+      \vdots \\ \bC \bA^{M-2} \bB & \bC \bA^{M-3} \bB & \cdots & {\bf D}
+      \end{bmatrix},$$ which is a lower-block triangular 
+      <a href="https://en.wikipedia.org/wiki/Toeplitz_matrix">Toeplitz</a>
+      matrix.-->
+      </p>
+
+      <!--
+      <p>... estimate a model of the form \begin{gather*} \bx[n+1] = \bA \bx[n]
+      + \bB \bu[n] + \bw[n] \\ \by[n] = \bC \bx[n] + {\bf D} \bu[n] + \bv[n],
+      \end{gather*} with $\bw[n]$ and $\bv[n]$ zero mean, i.i.d. Gaussian
+      vectors with covariance $\Sigma_w$ and $\Sigma_v$, respectively.</p>
+      -->
+
     </subsection>
 
     <subsection><h1>Adding stability constraints</h1>
