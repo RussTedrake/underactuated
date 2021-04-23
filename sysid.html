@@ -614,7 +614,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         <p>Fortunately, we could have seen this problem by checking the rank of
         the least-squares solution.  Generating more examples won't fix this
         problem.  Instead, to generate a richer dataset, I've added a small
-        additional signal to the input: $\bu(t) = LQR(\bx(t)) + 0.1\sin(t).$
+        additional signal to the input: $u(t) = \pi_{lqr}(\bx(t)) + 0.1\sin(t).$
         That makes all of the difference.</p>
 
         <p><a target="sysid"
@@ -633,7 +633,79 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       
         <todo>Local time-varying linear model along a trajectory + iLQR.  Bregmann ADMM</todo>
 
-        <example><h1>The Hydrodynamic Cart-Pole</h1></example>
+        <example><h1>The Hydrodynamic Cart-Pole</h1>
+        
+          <p>One of my favorite examples of model-based ILC was a series of
+          experiments in which we explored the dynamics of a "hydrodynamic
+          cart-pole" system.  Think of it as a cross between the classic
+          cart-pole system and a fighter jet (perhaps a little closer to the
+          cartpole)!</p>  
+          
+          <p>Here we've replaced the pole with an airfoil (hydrofoil),
+          turned the entire system on its side, and dropped it into a water
+          tunnel.  Rather than swing-up and balance the pole against gravity,
+          the task is to balance the foil in its unstable configuration
+          against the hydrodynamic forces.  These forces are the result of
+          unsteady fluid-body interactions; unlike the classic cart-pole
+          system, this time we do not have an simple ODE model for the system.
+          It's a perfect problem for system identification and ILC.</p>
+
+          <figure><img width="25%" src="data/hydro_cartpole_downright.png">
+          <img width="25%" src="data/hydro_cartpole_dynamic.png"> <img
+          width="25%" src="data/hydro_cartpole_upright.png"> 
+            <figcaption>A cartoon of the hydronamic cart-pole system.  The cart
+            is actuated horizontally, the foil pivots around a passive joint,
+            and the fluid is flowing in the direction of the arrows.  (The
+            entire system is horizontal, so there is no effect from gravity.)
+            The aerodynamic center of the airfoil is somewhere in the middle of
+            the foil; because the pin joint is at the tail, the passive system
+            will "weather vane" to the stable "downward" equilibrium (left).
+            Balancing corresponds to stabilizing the unstable "upward"
+            equilibrium (right).  The fluid-body dynamics during the transition
+            (center) are unsteady and very nonlinear.</figcaption>
+        
+          </figure>
+
+          <p>In a series of experiments, first we attempted to stabilize the
+          system using an LQR controller derived with an approximate model
+          (using <a href="trajopt.html#perching">flat-plate theory</a>).  This
+          controller didn't perform well, but was just good enough to collect
+          relevant data in the vicinity of the unstable fixed point.  Then we
+          fit a linear model, recomputed the LQR controller using the model,
+          and got notably better performance.</p>
+
+          <p>To investigate more aggressive maneuvers we considered making a
+          rapid step change in the desired position of the cart (like a fighter
+          jet rapidly changing altitude).  Using only the time-invariant LQR
+          balancing controller with a shifted set point, we naturally observed
+          a very slow step-response.  Using trajectory optimization on the
+          time-invariant linear model used in balancing, we could do much
+          better.  But we achieved considerably better performance by fitting a
+          time-varying linear model in the neighborhood of this trajectory and
+          performing model-based ILC.</p>
+
+          <figure><img width="60%"
+          src="data/hydro_cartpole_step_comparison.png"><figcaption>Comparison
+          of the step response using three different controllers: the balancing
+          LQR controller (blue), LQR with a feed-forward term obtained from
+          trajectory optimization with the LTI model (red), and a controller
+          obtained via ILC with a time-varying linear model and iLQR
+          (green).</figcaption></figure>
+
+          <p>These experiments were quite beautiful and very visual.  They went
+          on from here to consider the effect of stabilizing against incoming
+          vortex disturbances using real-time perception of the oncoming fluid.
+          If you're at all interested, I would encourage you to check out John
+          Robert's thesis<elib>Roberts12</elib> and/or even the <a
+          href="https://www.youtube.com/watch?v=8ISAIRIRiSs">video of his
+          thesis defense</a>.
+          </p>
+
+          <todo>Consider adding a video or two here?  John just shared his
+          thesis slides with me in dropbox, and I found some of the original
+          videos in movies/RobotLocomotion/WaterTunnel.  But the videos have
+          big black borders, so could really use some cleanup.</todo>
+        </example>
 
         <todo>How reasonable (locally) are LQG models through contact?</todo>
 
@@ -700,17 +772,24 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \end{bmatrix}, \qquad {\bf U} = \begin{bmatrix} \bu_0 & \bu_1 & \cdots &
       \bu_{M-1} \\ \bu_1 & \bu_2 & \cdots & \bu_{M} \\ \vdots & \vdots & \ddots
       & \vdots \\ \bu_{N-M} & \bu_{N-M+1} & \cdots & \bu_{N-1} \end{bmatrix}.$$
-      Now, observe that \begin{align*} \by[0] =& \bC\bx[0] + {\bf D}\bu[0], \\
+      We'll write the <i>to be identified</i> state sequence $${\bf X} =
+      \begin{bmatrix} \bx_0 & \bx_1 & \cdots & \bx_{M-1} \end{bmatrix}.$$ Now,
+      observe that \begin{align*} \by[0] =& \bC\bx[0] + {\bf D}\bu[0], \\
       \by[1] =& \bC\bA\bx[0] + \bC\bB\bu[0] + {\bf D}\bu[1], \\ \by[n] =&
       \bC\bA^n\bx[0] + {\bf D}\bu[n] + \sum_{k=0}^{n-1}
-      \bC\bA^{n-k-1}\bB\bu[k]. \end{align*} More details coming soon... <!-- Let's ignore the $\bx[0]$ terms for
-      a moment (it's easy to add them back), and write $${\bf Y} = {\bf H} {\bf
-      U}, \qquad {\bf H} = \begin{bmatrix} {\bf D} & {\bf 0} & \cdots & {\bf 0}
-      \\ \bC \bB & {\bf D} & \cdots & {\bf 0} \\ \vdots & \vdots & \ddots &
-      \vdots \\ \bC \bA^{M-2} \bB & \bC \bA^{M-3} \bB & \cdots & {\bf D}
-      \end{bmatrix},$$ which is a lower-block triangular 
+      \bC\bA^{n-k-1}\bB\bu[k]. \end{align*}</p>
+      
+      <p> This form is very structured: we can write the outputs $\by[n]$ as a
+      linear function of any initial state and the history of inputs from that
+      state forward.  Using our data matrices, we'll write $${\bf Y} = {\bf H}
+      {\bf U} + {\bf \Gamma} {\bf X}, \qquad {\bf H} = \begin{bmatrix} {\bf D}
+      & {\bf 0} & \cdots & {\bf 0} \\ \bC \bB & {\bf D} & \cdots & {\bf 0} \\
+      \vdots & \vdots & \ddots & \vdots \\ \bC \bA^{M-2} \bB & \bC \bA^{M-3}
+      \bB & \cdots & {\bf D} \end{bmatrix}, \quad {\bf \Gamma} =
+      \begin{bmatrix} \bC \\ \bC\bA \\ \vdots \\ \bC\bA^{N-M} \end{bmatrix},$$
+      where ${\bf H}$ is a lower-block triangular 
       <a href="https://en.wikipedia.org/wiki/Toeplitz_matrix">Toeplitz</a>
-      matrix.-->
+      matrix.
       </p>
 
       <!--
@@ -887,6 +966,19 @@ control (Proctor et al., 2016b).-->
 <span class="author">Van Overschee, Peter and De Moor, Bart</span>,
 <span class="title">"Subspace {Identification} for {Linear} {Systems}"</span>,Springer US
 , <span class="year">1996</span>.
+
+</li><br>
+<li id=Brunton19>
+<span class="author">Brunton, Steven L and Kutz, J Nathan</span>,
+<span class="title">"Data-driven science and engineering: Machine learning, dynamical systems, and control"</span>,Cambridge University Press
+, <span class="year">2019</span>.
+
+</li><br>
+<li id=Roberts12>
+<span class="author">John W. Roberts</span>,
+<span class="title">"Control of Underactuated Fluid-Body Systems with Real-Time Particle Image Velocimetry"</span>,
+PhD thesis, Massachusetts Institute of Technology, June, <span class="year">2012</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Roberts12.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Umenberger18>
