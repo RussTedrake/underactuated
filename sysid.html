@@ -641,14 +641,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           cart-pole system and a fighter jet (perhaps a little closer to the
           cartpole)!</p>  
           
-          <p>Here we've replaced the pole with an airfoil (hydrofoil),
-          turned the entire system on its side, and dropped it into a water
-          tunnel.  Rather than swing-up and balance the pole against gravity,
-          the task is to balance the foil in its unstable configuration
-          against the hydrodynamic forces.  These forces are the result of
-          unsteady fluid-body interactions; unlike the classic cart-pole
-          system, this time we do not have an simple ODE model for the system.
-          It's a perfect problem for system identification and ILC.</p>
+          <p>Here we've replaced the pole with an airfoil (hydrofoil), turned
+          the entire system on its side, and dropped it into a water tunnel.
+          Rather than swing-up and balance the pole against gravity, the task
+          is to balance the foil in its unstable configuration against the
+          hydrodynamic forces.  These forces are the result of unsteady
+          fluid-body interactions; unlike the classic cart-pole system, this
+          time we do not have an tractable parameterized ODE model for the
+          system. It's a perfect problem for system identification and ILC.</p>
 
           <figure><img width="25%" src="data/hydro_cartpole_downright.png">
           <img width="25%" src="data/hydro_cartpole_dynamic.png"> <img
@@ -680,9 +680,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           balancing controller with a shifted set point, we naturally observed
           a very slow step-response.  Using trajectory optimization on the
           time-invariant linear model used in balancing, we could do much
-          better.  But we achieved considerably better performance by fitting a
-          time-varying linear model in the neighborhood of this trajectory and
-          performing model-based ILC.</p>
+          better.  But we achieved considerably better performance by
+          iteratively fitting a time-varying linear model in the neighborhood
+          of this trajectory and performing model-based ILC.</p>
 
           <figure><img width="60%"
           src="data/hydro_cartpole_step_comparison.png"><figcaption>Comparison
