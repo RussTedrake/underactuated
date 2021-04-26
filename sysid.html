@@ -553,41 +553,37 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     witnessed a resurgence in popularity during just the last few years as new
     results from machine learning have contributed new bounds and convergence
     results, especially in the finite-sample regime (e.g.
-    <elib>Hardt16+Hazan18+Simchowitz19</elib>).</p>
+    <elib>Hardt16+Hazan18+Oymak19+Simchowitz19</elib>).</p>
 
     <p>A significant portion of the linear system identification literature
     (e.g. <elib>Ljung99</elib>) is focused on identifying linear models in the
     frequency domain.  Indeed, transfer-function realizations provide important
     insights and avoid some of the foibles that we'll need to address with
     state-space realizations.  However, I will focus my attention in this
-    chapter on time-domain descriptions of linear dynamical systems; lessons
-    here are perhaps more likely to generalize to nonlinear dynamics (plus we
+    chapter on time-domain descriptions of linear dynamical systems; some of
+    the lessons here are easier to generalize to nonlinear dynamics (plus we
     unfortunately haven't built the foundations for the frequency domain
-    techniques yet in these notes).  My favorite references for identification
-    of time-domain linear models are probably 
-    <elib>VanOverschee96</elib> and <elib part="Ch 7 and
-    9">Brunton19</elib>.</p>
+    techniques yet in these notes). </p>
   
     <subsection><h1>From state observations</h1>
 
       <p>Let's start our treatment with the easy case: fitting a linear model
       from direct (potentially noisy) measurements of the state.  Fitting a
-      discrete-time model, $\bx[n+1] = \bA\bx[n] + \bB\bu[n]$, to sampled data
-      $(\bu_n,\bx_n)$ using the <i>equation-error</i> objective is just another
-      <i>linear</i> least-squares problem.  Typically, we form some data
-      matrices and write our least-squares problem as: \begin{gather*} {\bf X}'
-      \approx \begin{bmatrix} \bA & \bB \end{bmatrix} \begin{bmatrix} {\bf X}
-      \\ {\bf U} \end{bmatrix}, \qquad \text{where} \\ {\bf X} =
-      \begin{bmatrix} \mid & \mid & & \mid \\ \bx_0 & \bx_1 &  \cdots &
-      \bx_{N-2} \\ \mid & \mid & & \mid \end{bmatrix}, \quad {\bf X}' =
-      \begin{bmatrix} \mid & \mid & & \mid \\ \bx_1 & \bx_2 & \cdots &
-      \bx_{N-1} \\ \mid & \mid & & \mid \end{bmatrix}, \quad {\bf U} =
-      \begin{bmatrix} \mid & \mid & & \mid \\ \bu_0 & \bu_1 & \cdots &
-      \bu_{N-2} \\ \mid & \mid & & \mid \end{bmatrix}.\end{gather*}  By the
-      virtues of linear least squares, this estimator is unbiased with respect
-      to uncorrelated (process and/or measurement) noise.</p>
-
-      <todo>link to acrobot ch modal analysis</todo>
+      discrete-time model, $\bx[n+1] = \bA\bx[n] + \bB\bu[n] + \bw[n]$, to
+      sampled data $(\bu_n,\bx_n = \bx[n]+\bv[n])$ using the
+      <i>equation-error</i> objective is just another <i>linear</i>
+      least-squares problem.  Typically, we form some data matrices and write
+      our least-squares problem as: \begin{gather*} {\bf X}' \approx
+      \begin{bmatrix} \bA & \bB \end{bmatrix} \begin{bmatrix} {\bf X} \\ {\bf
+      U} \end{bmatrix}, \qquad \text{where} \\ {\bf X} = \begin{bmatrix} \mid &
+      \mid & & \mid \\ \bx_0 & \bx_1 &  \cdots & \bx_{N-2} \\ \mid & \mid & &
+      \mid \end{bmatrix}, \quad {\bf X}' = \begin{bmatrix} \mid & \mid & & \mid
+      \\ \bx_1 & \bx_2 & \cdots & \bx_{N-1} \\ \mid & \mid & & \mid
+      \end{bmatrix}, \quad {\bf U} = \begin{bmatrix} \mid & \mid & & \mid \\
+      \bu_0 & \bu_1 & \cdots & \bu_{N-2} \\ \mid & \mid & & \mid
+      \end{bmatrix}.\end{gather*}  By the virtues of linear least squares, this
+      estimator is unbiased with respect to the uncorrelated process and/or
+      measurement noise, $\bw[n]$ and $\bv[n]$.</p>
 
       <example><h1>Cart-pole balancing with an identified model</h1>
       
@@ -713,6 +709,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <subsubsection><h1>Compression using the dominant eigenmodes</h1>
       
+        <todo>connect to acrobot ch modal analysis?</todo>
+
         <p>For high-dimensional state or input vectors, one can use singular
         value decomposition (SVD) to solve this least-squares problem using
         only the dominant eigenvalues (and corresponding eigenvectors) of $\bA$
@@ -758,47 +756,91 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <subsection><h1>From input-output data (the state-realization problem)</h1>
     
       <p>In the more general form, we would like to estimate a model of the
-      form \begin{gather*} \bx[n+1] = \bA \bx[n] + \bB \bu[n] \\ \by[n] = \bC
-      \bx[n] + {\bf D} \bu[n]. \end{gather*}</p>
+      form \begin{gather*} \bx[n+1] = \bA \bx[n] + \bB \bu[n] + \bw[n]\\ \by[n]
+      = \bC \bx[n] + {\bf D} \bu[n] + \bv[n]. \end{gather*}  Once again, we
+      will apply least-squares estimation, but combine this with the famous
+      "Ho-Kalman" algorithm (also known as the "Eigen System Realization" (ERA)
+      algorithm) <elib>Ho66</elib>.  My favorite presentation of this algorithm
+      is <elib>Oymak19</elib>.</p>
 
-      <todo>Ho-Kalman</todo>
-      <todo>Subspace identification</todo>
+      <todo>cite VanOverschee96?</todo>
 
-      <p>First, we will construct the block <a
-      href="https://en.wikipedia.org/wiki/Hankel_matrix">Hankel</a> data
-      matrices, e.g.: $${\bf Y} = \begin{bmatrix} \by_0 & \by_1 & \cdots &
-      \by_{M-1} \\ \by_1 & \by_2 & \cdots & \by_{M} \\ \vdots & \vdots & \ddots
-      & \vdots \\ \by_{N-M} & \by_{N - M + 1} & \cdots & \by_{N-1}
-      \end{bmatrix}, \qquad {\bf U} = \begin{bmatrix} \bu_0 & \bu_1 & \cdots &
-      \bu_{M-1} \\ \bu_1 & \bu_2 & \cdots & \bu_{M} \\ \vdots & \vdots & \ddots
-      & \vdots \\ \bu_{N-M} & \bu_{N-M+1} & \cdots & \bu_{N-1} \end{bmatrix}.$$
-      We'll write the <i>to be identified</i> state sequence $${\bf X} =
-      \begin{bmatrix} \bx_0 & \bx_1 & \cdots & \bx_{M-1} \end{bmatrix}.$$ Now,
-      observe that \begin{align*} \by[0] =& \bC\bx[0] + {\bf D}\bu[0], \\
-      \by[1] =& \bC\bA\bx[0] + \bC\bB\bu[0] + {\bf D}\bu[1], \\ \by[n] =&
-      \bC\bA^n\bx[0] + {\bf D}\bu[n] + \sum_{k=0}^{n-1}
-      \bC\bA^{n-k-1}\bB\bu[k]. \end{align*}</p>
+      <p>First, observe that \begin{align*} \by[0] =& \bC\bx[0] + {\bf D}\bu[0]
+      + \bv[0], \\ \by[1] =& \bC(\bA\bx[0] + \bB\bu[0] + \bw[0]) + {\bf
+      D}\bu[1] + \bv[1], \\ \by[k] =& \begin{bmatrix} \bC\bA^{k-1}\bB &
+      \bC\bA^{k-2}\bB & \cdots & \bC\bB & {\bf D}\end{bmatrix} \begin{bmatrix}
+      \bu[0] \\ \bu[1] \\ \vdots \\ \bu[k-1] \end{bmatrix} + {\bf \delta}[k] =
+      {\bf G}[k]\bar\bu[k] + {\bf \delta}[k], \end{align*} where ${\bf
+      \delta}[k]$ captures the remaining terms, ${\bf G}[k] = \begin{bmatrix}
+      \bC\bA^{k-1}\bB & \bC\bA^{k-2}\bB & \cdots & \bC\bB & {\bf
+      D}\end{bmatrix},$ and $\bar\bu[k]$ represents the concatenated $\bu[n]$'s
+      up to time $k-1$.  Importantly we have that ${\bf \delta}[k]$ is
+      uncorrelated with $\bar\bu[k]$: $E\left[\bu_j {\bf \delta}_k \right] = 0,
+      \forall j < k.$  This is sometimes known as Neyman orthogonality, and it
+      implies that we can estimate ${\bf G}$ using simple least-squares
+      $\hat{\bf G} = \argmin_{\bf G} \sum_k \| \by_k - {\bf G}\bar\bu_k \|^2.$
+      <elib>Oymak19</elib> gives bounds on the norm of the estimation error as
+      a function of the number of samples and the variance of the noise.</p>
       
-      <p> This form is very structured: we can write the outputs $\by[n]$ as a
+      <p>In fact, obtaining $\hat{\bf G}$ may even be enough for control
+      design, as it is closely-related to the parameterization used in
+      disturbance-based feedback for partially-observable systems
+      <elib>Sadraddini20+Simchowitz20</elib>.  But the Ho-Kalman algorithm can
+      be used to extract good estimates $\hat\bA, \hat\bB, \hat\bC, \hat{\bf
+      D}$ with state-dimension $\dim(\bx) = n_x$ from $\hat{\bf G},$  assuming
+      that the true system is observable and controllable with order at least
+      $n_x$ and the data matrices we form below are sufficiently
+      rich<elib>Oymak19</elib>.</p>
+
+      <p>It is important to realize that many system matrices, $\bA, \bB, \bC,$
+      can describe the same input-output data.  In particular, for any
+      invertible matrix (aka <a
+      href="https://en.wikipedia.org/wiki/Matrix_similarity">similarity
+      transform</a>), ${\bf T}$, the system matrices $\bA, \bB, \bC$ and $\bA',
+      \bB', \bC'$ with, $$\bA' =  {\bf T}^{-1} \bA {\bf T},\quad \bB' = {\bf
+      T}^{-1} \bB,\quad \bC' = \bC{\bf T},$$ describe the same input-output
+      behavior.  The Ho-Kalman algorithm returns a <i>balanced realization</i>.
+      A balanced realization is one in which we have effectively applied a
+      similarity transform, ${\bf T},$ which makes the controllability and
+      observability Grammians equal and diagonal<elib part="Ch.
+      9">Brunton19</elib> and which orders the states in terms of diminishing
+      effect on the input/output behavior. This ordering is relevant for
+      determining the system order and for model reduction.</p>
+        
+      <p>Note that $\hat{\bf D}$ is the last block in $\hat{\bf G}$ so is
+      extracted trivially. To extract, $\hat\bA, \hat\bB, \hat\bC$, we will
+      construct block <a
+      href="https://en.wikipedia.org/wiki/Hankel_matrix">Hankel</a> data
+      matrices with "Hankel dimensions" $N_1$ and $N_2$.</p>
+      
+      <p>Details (including examples) coming soon... see <elib
+      part="&sect;5.1">Oymak19</elib>.</p>
+
+<!--
+      e.g.: $${\bf Y} =
+      \begin{bmatrix} \by_0 & \by_1 & \cdots & \by_{M-1} \\ \by_1 & \by_2 &
+      \cdots & \by_{M} \\ \vdots & \vdots & \ddots & \vdots \\ \by_{N-M} &
+      \by_{N - M + 1} & \cdots & \by_{N-1} \end{bmatrix}, \qquad {\bf U} =
+      \begin{bmatrix} \bu_0 & \bu_1 & \cdots & \bu_{M-1} \\ \bu_1 & \bu_2 &
+      \cdots & \bu_{M} \\ \vdots & \vdots & \ddots & \vdots \\ \bu_{N-M} &
+      \bu_{N-M+1} & \cdots & \bu_{N-1} \end{bmatrix}.$$ We'll write the <i>to
+      be identified</i> state sequence $${\bf X} = \begin{bmatrix} \bx_0 &
+      \bx_1 & \cdots & \bx_{M-1} \end{bmatrix}.$$ Now,
+      </p>
+      
+      <p> This form is very structured: we can write the outputs $\by[k]$ as a
       linear function of any initial state and the history of inputs from that
-      state forward.  Using our data matrices, we'll write $${\bf Y} = {\bf H}
-      {\bf U} + {\bf \Gamma} {\bf X}, \qquad {\bf H} = \begin{bmatrix} {\bf D}
-      & {\bf 0} & \cdots & {\bf 0} \\ \bC \bB & {\bf D} & \cdots & {\bf 0} \\
-      \vdots & \vdots & \ddots & \vdots \\ \bC \bA^{M-2} \bB & \bC \bA^{M-3}
-      \bB & \cdots & {\bf D} \end{bmatrix}, \quad {\bf \Gamma} =
-      \begin{bmatrix} \bC \\ \bC\bA \\ \vdots \\ \bC\bA^{N-M} \end{bmatrix},$$
-      where ${\bf H}$ is a lower-block triangular 
+      state forward.  Using our data matrices, we'll write $${\bf Y} = {\bf
+      \Gamma} {\bf X} + {\bf H} {\bf U}, \qquad {\bf \Gamma} = \begin{bmatrix}
+      \bC \\ \bC\bA \\ \vdots \\ \bC\bA^{N-M} \end{bmatrix},, \quad {\bf H} =
+      \begin{bmatrix} {\bf D} & {\bf 0} & \cdots & {\bf 0} \\ \bC \bB & {\bf D}
+      & \cdots & {\bf 0} \\ \vdots & \vdots & \ddots & \vdots \\ \bC \bA^{M-2}
+      \bB & \bC \bA^{M-3} \bB & \cdots & {\bf D} \end{bmatrix},$$ where ${\bf
+      H}$ is a lower-block triangular 
       <a href="https://en.wikipedia.org/wiki/Toeplitz_matrix">Toeplitz</a>
       matrix.
-      </p>
-
-      <!--
-      <p>... estimate a model of the form \begin{gather*} \bx[n+1] = \bA \bx[n]
-      + \bB \bu[n] + \bw[n] \\ \by[n] = \bC \bx[n] + {\bf D} \bu[n] + \bv[n],
-      \end{gather*} with $\bw[n]$ and $\bv[n]$ zero mean, i.i.d. Gaussian
-      vectors with covariance $\Sigma_w$ and $\Sigma_v$, respectively.</p>
-      -->
-
+-->      
+   
     </subsection>
 
     <subsection><h1>Adding stability constraints</h1>
@@ -950,6 +992,12 @@ control (Proctor et al., 2016b).-->
 <span class="publisher">arXiv preprint arXiv:1802.03981</span>, <span class="year">2018</span>.
 
 </li><br>
+<li id=Oymak19>
+<span class="author">Oymak, Samet and Ozay, Necmiye</span>,
+<span class="title">"Non-asymptotic identification of lti systems from a single trajectory"</span>,
+<span class="publisher">2019 American control conference (ACC)</span>, pp. 5655--5661, <span class="year">2019</span>.
+
+</li><br>
 <li id=Simchowitz19>
 <span class="author">Simchowitz, Max and Boczar, Ross and Recht, Benjamin</span>,
 <span class="title">"Learning linear dynamical systems with semi-parametric least squares"</span>,
@@ -962,10 +1010,11 @@ control (Proctor et al., 2016b).-->
 , <span class="year">1999</span>.
 
 </li><br>
-<li id=VanOverschee96>
-<span class="author">Van Overschee, Peter and De Moor, Bart</span>,
-<span class="title">"Subspace {Identification} for {Linear} {Systems}"</span>,Springer US
-, <span class="year">1996</span>.
+<li id=Roberts12>
+<span class="author">John W. Roberts</span>,
+<span class="title">"Control of Underactuated Fluid-Body Systems with Real-Time Particle Image Velocimetry"</span>,
+PhD thesis, Massachusetts Institute of Technology, June, <span class="year">2012</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Roberts12.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Brunton19>
@@ -974,11 +1023,23 @@ control (Proctor et al., 2016b).-->
 , <span class="year">2019</span>.
 
 </li><br>
-<li id=Roberts12>
-<span class="author">John W. Roberts</span>,
-<span class="title">"Control of Underactuated Fluid-Body Systems with Real-Time Particle Image Velocimetry"</span>,
-PhD thesis, Massachusetts Institute of Technology, June, <span class="year">2012</span>.
-[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Roberts12.pdf">link</a>&nbsp;]
+<li id=Ho66>
+<span class="author">Ho, BL and K{\'a}lm{\'a}n, Rudolf E</span>,
+<span class="title">"Effective construction of linear state-variable models from input/output functions"</span>,
+<span class="publisher">at-Automatisierungstechnik</span>, vol. 14, no. 1-12, pp. 545--548, <span class="year">1966</span>.
+
+</li><br>
+<li id=Sadraddini20>
+<span class="author">Sadra Sadraddini and Russ Tedrake</span>,
+<span class="title">"Robust Output Feedback Control with Guaranteed Constraint Satisfaction"</span>,
+<span class="publisher">In the Proceedings of 23rd ACM International Conference on Hybrid Systems: Computation and Control</span>, pp. 12, April, <span class="year">2020</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Sadraddini20.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Simchowitz20>
+<span class="author">Simchowitz, Max and Singh, Karan and Hazan, Elad</span>,
+<span class="title">"Improper learning for non-stochastic control"</span>,
+<span class="publisher">Conference on Learning Theory</span>, pp. 3320--3436, <span class="year">2020</span>.
 
 </li><br>
 <li id=Umenberger18>
