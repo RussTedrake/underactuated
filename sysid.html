@@ -808,38 +808,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       determining the system order and for model reduction.</p>
         
       <p>Note that $\hat{\bf D}$ is the last block in $\hat{\bf G}$ so is
-      extracted trivially. To extract, $\hat\bA, \hat\bB, \hat\bC$, we will
-      construct block <a
-      href="https://en.wikipedia.org/wiki/Hankel_matrix">Hankel</a> data
-      matrices with "Hankel dimensions" $N_1$ and $N_2$.</p>
-      
-      <p>Details (including examples) coming soon... see <elib
-      part="&sect;5.1">Oymak19</elib>.</p>
+      extracted trivially. The Ho-Kalman algorithm tells us how to extract
+      $\hat\bA, \hat\bB, \hat\bC$, with another application of the SVD on
+      suitably constructed data matrices (see <elib
+      part="&sect;5.1">Oymak19</elib>).</p>
 
-<!--
-      e.g.: $${\bf Y} =
-      \begin{bmatrix} \by_0 & \by_1 & \cdots & \by_{M-1} \\ \by_1 & \by_2 &
-      \cdots & \by_{M} \\ \vdots & \vdots & \ddots & \vdots \\ \by_{N-M} &
-      \by_{N - M + 1} & \cdots & \by_{N-1} \end{bmatrix}, \qquad {\bf U} =
-      \begin{bmatrix} \bu_0 & \bu_1 & \cdots & \bu_{M-1} \\ \bu_1 & \bu_2 &
-      \cdots & \bu_{M} \\ \vdots & \vdots & \ddots & \vdots \\ \bu_{N-M} &
-      \bu_{N-M+1} & \cdots & \bu_{N-1} \end{bmatrix}.$$ We'll write the <i>to
-      be identified</i> state sequence $${\bf X} = \begin{bmatrix} \bx_0 &
-      \bx_1 & \cdots & \bx_{M-1} \end{bmatrix}.$$ Now,
-      </p>
+      <example><h1>Ho-Kalman identification</h1>
       
-      <p> This form is very structured: we can write the outputs $\by[k]$ as a
-      linear function of any initial state and the history of inputs from that
-      state forward.  Using our data matrices, we'll write $${\bf Y} = {\bf
-      \Gamma} {\bf X} + {\bf H} {\bf U}, \qquad {\bf \Gamma} = \begin{bmatrix}
-      \bC \\ \bC\bA \\ \vdots \\ \bC\bA^{N-M} \end{bmatrix},, \quad {\bf H} =
-      \begin{bmatrix} {\bf D} & {\bf 0} & \cdots & {\bf 0} \\ \bC \bB & {\bf D}
-      & \cdots & {\bf 0} \\ \vdots & \vdots & \ddots & \vdots \\ \bC \bA^{M-2}
-      \bB & \bC \bA^{M-3} \bB & \cdots & {\bf D} \end{bmatrix},$$ where ${\bf
-      H}$ is a lower-block triangular 
-      <a href="https://en.wikipedia.org/wiki/Toeplitz_matrix">Toeplitz</a>
-      matrix.
--->      
+        <p>Coming soon...</p>
+
+      </example>
    
     </subsection>
 
