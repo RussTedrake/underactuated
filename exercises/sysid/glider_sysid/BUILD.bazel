@@ -8,7 +8,6 @@ load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
     name = "glider_sysid",
-    timeout = "moderate",
     srcs = ["glider_sysid.ipynb"],
     deps = [
         "//underactuated",
