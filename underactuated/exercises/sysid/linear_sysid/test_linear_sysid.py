@@ -46,8 +46,7 @@ class TestLinearSysid(unittest.TestCase):
         residual = np.sum(np.max(np.abs(res), axis=0))
         self.assertLessEqual(
             np.abs(obj_infnorm_noisy - residual), 0.1,
-            'Objective from optimizer and empirical evaluations are different!'
-        )
+            'Objective from optimizer and empirical evaluations are different!')
 
     @weight(3)
     @timeout_decorator.timeout(20.)
@@ -71,6 +70,5 @@ class TestLinearSysid(unittest.TestCase):
             + Bhat_noisy_1norm @ U_noisy[:, :-1] - X_noisy[:, 1:]
         residual = np.sum(np.abs(res))
         self.assertLessEqual(
-            np.abs(obj_1norm_noisy - residual), 0.1, 'Objective \
-                from optimizer and empirical evaluations are different!'
-        )
+            np.abs(obj_1norm_noisy - residual), 0.1,
+            'Objective from optimizer and empirical evaluations are different!')
