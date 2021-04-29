@@ -37,10 +37,10 @@ class TestGliderSysid(unittest.TestCase):
                                 3.34,
                                 msg='Simulated trajectory x is incorrect')
         self.assertLessEqual(last_z,
-                             4.99,
+                             5.10,
                              msg='Simulated trajectory z is incorrect')
         self.assertGreaterEqual(last_z,
-                                5.10,
+                                4.99,
                                 msg='Simulated trajectory z is incorrect')
         self.assertLessEqual(last_th,
                              -0.52,
