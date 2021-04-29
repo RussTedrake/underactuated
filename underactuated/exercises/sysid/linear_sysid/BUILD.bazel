@@ -1,0 +1,13 @@
+# -*- mode: python -*-
+# vi: set ft=python :
+
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+load("//htmlbook/tools/python:defs.bzl", "rt_py_library")
+
+rt_py_library(
+    name = "linear_sysid",
+    srcs = ["test_linear_sysid.py"],
+    visibility = ["//visibility:public"],
+)

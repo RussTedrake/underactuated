@@ -873,6 +873,24 @@ control (Proctor et al., 2016b).-->
 
   <section><h1>Exercises</h1>
 
+    <exercise id="linear_sysid"><h1>Linear System Identification with different objective functions</h1>
+
+      <p>Consider a discrete-time linear system of the form
+        $$x[n+1] = Ax[n]+Bu[n]$$
+        where $x[n]\in\mathbf{R}^p$ and $u[n]\in\mathbf{R}^q$ are state and control at step $n$.
+        The system matrix $A\in\mathbf{R}^{p\times p}$ and $B\in\mathbf{R}^{p\times q}$ are unknown parameters of the model, and your task is to identify the parameters given a simulated trajectory. Using the trajectory simulation provided in <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/sysid/linear_sysid/linear_sysid.ipynb" target="_blank">this python notebook</a>, implement the solution for the following problems.</p>
+
+      <ol type="a">
+
+        <li>Identify the model parameters via linear least squares by solving $$\min_{A, B}\sum_{n=0}^{N-1}\lVert x[n+1] - Ax[n] -Bu[n] \rVert_2^2.$$</li>
+
+        <li>Identify the model parameters via linear optimization by solving $$\min_{A, B}\sum_{n=0}^{N-1}\lVert x[n+1] - Ax[n] -Bu[n] \rVert_{\infty}.$$</li>
+
+        <li>Identify the model parameters via linear optimization by solving $$\min_{A, B}\sum_{n=0}^{N-1}\lVert x[n+1] - Ax[n] -Bu[n] \rVert_1.$$</li>
+      </ol>
+    
+    </exercise>
+
     <exercise id="glider_sysid"><h1>System Identification for the Perching Glider</h1>
 
       <p>In this exercise we will use physically-inspired basis functions to fit the nonlinear dynamics of a perching glider.  <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/sysid/glider_sysid/glider_sysid.ipynb" target="_blank">In this python notebook</a>, you will need to implement least-squares fitting and find the best set of basis functions that describe the dynamics of the glider.  Take the time to go through the notebook and understand the code in it, and then answer the following questions.  The written question will also be listed in the notebook for your convenience.</p>
