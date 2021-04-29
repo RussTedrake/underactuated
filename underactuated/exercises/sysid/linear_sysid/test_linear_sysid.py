@@ -41,14 +41,12 @@ class TestLinearSysid(unittest.TestCase):
         X_noisy = self.notebook_locals['X_noisy']
         U_noisy = self.notebook_locals['U_noisy']
         obj_infnorm_noisy = self.notebook_locals['obj_infnorm_noisy']
-        res = Ahat_noisy_infnorm @ X_noisy[:, :
-                                           -1] + Bhat_noisy_infnorm @ U_noisy[:, :
-                                                                              -1] - X_noisy[:,
-                                                                                            1:]
+        res = Ahat_noisy_infnorm @ X_noisy[:, :-1] \
+            + Bhat_noisy_infnorm @ U_noisy[:, :-1] - X_noisy[:, 1:]
         residual = np.sum(np.max(np.abs(res), axis=0))
         self.assertLessEqual(
             np.abs(obj_infnorm_noisy - residual), 0.1,
-            'The objective evaluation from the optimizer is different from the empirical evaluation!'
+            'Objective from optimizer and empirical evaluations are different!'
         )
 
     @weight(3)
@@ -69,12 +67,10 @@ class TestLinearSysid(unittest.TestCase):
         X_noisy = self.notebook_locals['X_noisy']
         U_noisy = self.notebook_locals['U_noisy']
         obj_1norm_noisy = self.notebook_locals['obj_1norm_noisy']
-        res = Ahat_noisy_1norm @ X_noisy[:, :
-                                         -1] + Bhat_noisy_1norm @ U_noisy[:, :
-                                                                          -1] - X_noisy[:,
-                                                                                        1:]
+        res = Ahat_noisy_1norm @ X_noisy[:, :-1] \
+            + Bhat_noisy_1norm @ U_noisy[:, :-1] - X_noisy[:, 1:]
         residual = np.sum(np.abs(res))
         self.assertLessEqual(
-            np.abs(obj_1norm_noisy - residual), 0.1,
-            'The objective evaluation from the optimizer is different from the empirical evaluation!'
+            np.abs(obj_1norm_noisy - residual), 0.1, 'Objective \
+                from optimizer and empirical evaluations are different!'
         )
