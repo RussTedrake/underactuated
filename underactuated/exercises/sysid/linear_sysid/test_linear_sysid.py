@@ -53,8 +53,7 @@ class TestLinearSysid(unittest.TestCase):
         res = Ahat @ X[:, :-1] + Bhat @ U[:, :-1] - X[:, 1:]
         residual = np.sum(np.abs(res))
         self.assertLessEqual(
-            residual, 0.04,
-            'The residual for 1-norm minimization is too high!')
+            residual, 0.04, 'The residual for 1-norm minimization is too high!')
 
         obj_1norm = self.notebook_locals['obj_1norm']
         self.assertLessEqual(
