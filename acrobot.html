@@ -106,20 +106,23 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       task is to stabilize the unstable fixed point $\bx = [\pi,0,0,0]^T$.</p>
 
       <p>
-      We will derive the equations of motion for the Acrobot using the method of
-      Lagrange.  The locations of the center of mass of each link, $\bp_{c1},
-      \bp_{c2},$ are given by the kinematics: \begin{equation} \bp_{c1} =
-      \begin{bmatrix} l_{c1} s_1 \\ -l_{c1} c_1 \end{bmatrix}, \quad \bp_{c2} =
-      \begin{bmatrix} l_1 s_1 + l_{c2} s_{1+2} \\ -l_1 c_1 - l_{c2} c_{1+2}
-      \end{bmatrix} . \end{equation} The energy <!--\footnote{The complicated
-      expression for $T_2$ comes from $T_2 = \frac{1}{2} m_2 v_{c2}^2 +
-      \frac{1}{2}I_{c2} (\dot{q}_1 + \dot{q}_2)^2$, where $v_{c2}$ is the
-      velocity of the center of mass of the second link and $I_{c2} = I_2 - m_2
-      l_{c2}^2$ is the moment of inertia about that point.  Use $c_1 c_{1+2} +
-      s_1 s_{1+2} = c_2$ to simplify.}--> is given by: \begin{gather} T = T_1 +
-      T_2, \quad T_1 = \frac{1}{2} I_1 \dot{q}_1^2 \\ T_2 = \frac{1}{2} ( m_2
-      l_1^2 + I_2 + 2 m_2 l_1 l_{c2} c_2 ) \dot{q}_1^2 + \frac{1}{2} I_2
-      \dot{q}_2^2 + (I_2 + m_2 l_1 l_{c2} c_2) \dot{q}_1 \dot{q}_2 \\ 
+      We will derive the equations of motion for the Acrobot using the method
+      of Lagrange.  The locations of the center of mass of each link,
+      $\bp_{c1}, \bp_{c2},$ are given by the kinematics: \begin{equation}
+      \bp_{c1} = \begin{bmatrix} l_{c1} s_1 \\ -l_{c1} c_1 \end{bmatrix}, \quad
+      \bp_{c2} = \begin{bmatrix} l_1 s_1 + l_{c2} s_{1+2} \\ -l_1 c_1 - l_{c2}
+      c_{1+2} \end{bmatrix}, \end{equation} where $s_1$ is shorthand for
+      $\sin(\theta_1)$, $c_{1+2}$ is shorthand for $\cos(\theta_1+\theta_2)$,
+      etc. The energy
+      <!--\footnote{The complicated expression for $T_2$ comes from $T_2 =
+      \frac{1}{2} m_2 v_{c2}^2 + \frac{1}{2}I_{c2} (\dot{q}_1 + \dot{q}_2)^2$,
+      where $v_{c2}$ is the velocity of the center of mass of the second link
+      and $I_{c2} = I_2 - m_2 l_{c2}^2$ is the moment of inertia about that
+      point.  Use $c_1 c_{1+2} + s_1 s_{1+2} = c_2$ to simplify.}--> is given
+      by: \begin{gather} T = T_1 + T_2, \quad T_1 = \frac{1}{2} I_1 \dot{q}_1^2
+      \\ T_2 = \frac{1}{2} ( m_2 l_1^2 + I_2 + 2 m_2 l_1 l_{c2} c_2 )
+      \dot{q}_1^2 + \frac{1}{2} I_2 \dot{q}_2^2 + (I_2 + m_2 l_1 l_{c2} c_2)
+      \dot{q}_1 \dot{q}_2 \\ 
       <!-- from expanding sum of point masses --> U = -m_1 g l_{c1} c_1 - m_2 g (l_1 c_1 +
       l_{c2} c_{1+2}) \end{gather} Entering these quantities into the Lagrangian
       yields the equations of motion: \begin{gather} (I_1 + I_2 + m_2 l_1^2 +

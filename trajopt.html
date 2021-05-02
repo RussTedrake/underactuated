@@ -639,7 +639,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         other methods allow us to also specify an initial guess for $\bx(\cdot)$
         directly.  I find that this can help substantially, even with very
         simple initializations.  In the direct collocation examples for the
-        swing-up problem of the acrobot and cart-pole, simply providing the
+        swing-up problem of the Acrobot and cart-pole, simply providing the
         initial guess for $\bx(\cdot)$ as a straight line trajectory between the
         start and the goal was enough to help the solver find a good solution;
         in fact it was necessary.</p>
@@ -655,8 +655,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   <section><h1>Local Trajectory Feedback Design</h1>
 
     <p>Once we have obtained a locally optimal trajectory from trajectory
-    optimization, we have found an open-loop trajectory that (a least locally)
-    minimizes our optimal control cost.  Up to numerical tolernaces, this pair
+    optimization, we have found an open-loop trajectory that (at least locally)
+    minimizes our optimal control cost.  Up to numerical tolerances, this pair
     $\bu_0(t), \bx_0(t)$ represents a feasible solution trajectory of the
     system.  But we haven't done anything, yet, to ensure that this trajectory
     is locally stable.</p>
@@ -664,7 +664,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <p>In fact, there are a few notable approximations that we've already made
     to get to this point: the integration accuracy of our trajectory
     optimization tends to be much less than the accuracy used during forward
-    simulation (we tend to take bigger timesteps during optimization to avoid
+    simulation (we tend to take bigger time steps during optimization to avoid
     adding too many decision variables), and the default convergence tolerance
     from the optimization toolboxes tend to satisfy the dynamic constraints
     only to around $10^{-6}$.  As a result, if you were to simulate the
@@ -1169,7 +1169,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         approximation of the dynamics and a quadratic approximation of the cost
         function.  Then compute and simulate the time-varying LQR controller to
         find a new input and state trajectory.  Repeat until convergence.</p>
-    
+
         <p>The motivation behind iterative LQR is quite appealing -- it
         leverages the surprising structure of the Riccati equations to come up
         with a second-order update to the trajectory after a single backward
@@ -1177,16 +1177,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         Anecdotally, the convergence is fast and robust.  Numerous
         applications...<elib>Farshidian17+Tassa12</elib>.</p>
     
+
         <p>One key limitation of iLQR is that it only supports unconstrained
         trajectory optimization -- at least via the Riccati solution.  The
         natural extension for constrained optimization would be to replace the
-        Riccati solution with an iterative linear model-predictive control (MPC)
-        optimization; this would result in a quadratic program and is very close
-        to what is happening in SQP.  But a more common approach in the current
-        robotics literature is to add any constraints into the objective
-        function using <a
-        href="https://en.wikipedia.org/wiki/Penalty_method">penalty methods</a>,
-        especially using <a
+        Riccati solution with an iterative linear model-predictive control
+        (MPC) optimization; this would result in a quadratic program and is
+        very close to what is happening in SQP.  But a more common approach in
+        the current robotics literature is to add any constraints into the
+        objective function using <a
+        href="https://en.wikipedia.org/wiki/Penalty_method">penalty
+        methods</a>, especially using <a
         href="https://en.wikipedia.org/wiki/Augmented_Lagrangian_method">Augmented
         Lagrangian</a>.</p>
     
@@ -1199,6 +1200,19 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         \end{gather*}</p>
         -->
     
+        <p>Differential Dynamic Programming (DDP) <elib>Jacobson70</elib> is
+        inspired by the idea of solving locally <i>quadratic</i> approximations
+        of the HJB equations.  The resulting algorithm is almost identical to
+        iLQR; the only difference is that DDP uses a second-order approximation
+        of the plant dynamics instead of a first-order (linear) one.  The
+        conventional wisdom is that taking these extra plant derivatives is
+        probably not worth the extra cost of computing them; in most cases iLQR
+        converges just as quickly (though the details will be problem
+        dependent).  Unfortunately, despite the distinction between these
+        algorithms being unambiguous and uncontroversial, you will find many
+        papers that incorrectly write DDP when they are actually using
+        iLQR.</p>
+
       </subsection>
 
     <todo>DMOC</todo>
@@ -1467,6 +1481,12 @@ PhD thesis, Massachusetts Institute of Technology, September, <span class="year"
 <span class="author">Y. Tassa and  T. Erez and E. Todorov</span>,
 <span class="title">"Synthesis and stabilization of complex behaviors through online trajectory optimization"</span>,
 <span class="publisher">Intelligent Robots and Systems (IROS), 2012 IEEE/RSJ International Conference on</span>, pp. 4906--4913, <span class="year">2012</span>.
+
+</li><br>
+<li id=Jacobson70>
+<span class="author">David H. Jacobson and David Q. Mayne</span>,
+<span class="title">"Differential Dynamic Programming"</span>,American Elsevier Publishing Company, Inc.
+, <span class="year">1970</span>.
 
 </li><br>
 <li id=Richards02>
