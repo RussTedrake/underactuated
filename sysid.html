@@ -813,9 +813,55 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       suitably constructed data matrices (see <elib
       part="&sect;5.1">Oymak19</elib>).</p>
 
-      <example><h1>Ho-Kalman identification</h1>
+      <example><h1>Ho-Kalman identification of the cart-pole from keypoints</h1>
       
-        <p>Coming soon...</p>
+        <p>Let's repeat the cart-pole balancing example.  But this time,
+        instead of getting observations of the joint position and velocities
+        directly, we will consider the problem of identifying the dynamics from
+        a camera rendering the scene, but let us proceed thoughtfully.</p>
+
+        <p>The output of a standard camera is an RGB image, consisting of 3 x
+        width x height real values.  We could certainly columnate these into a
+        vector and use this as the outputs/observations, $y(t)$.  But I don't
+        recommend it.  This "pixel-space" is not a nice space.  For example,
+        you could easily find a pixel that has the color of the cart in one
+        frame, but after an incremental change in the position of the cart, now
+        (discontinuously) takes on the color of the background.  Deep learning
+        has given us fantastic new tools for transforming raw RGB images into
+        better "feature spaces", that will be robust enough to deploy on real
+        systems but can make our modeling efforts much more tractable.  My
+        group has made heavy use of "keypoint networks" <elib>Manuelli19</elib>
+        and self-supervised "dense correspondences"
+        <elib>Florence18a+Florence20+Manuelli20a</elib> to convert RGB outputs
+        into a more consumable form.</p>
+
+        <figure>
+          <iframe scrolling="no" style="border:none;" seamless="seamless" src="data/cartpole_balancing_keypoints.html" height="300" width="100%"></iframe>
+        </figure>
+
+        <p>The existence of these tools makes it reasonable to assume that we
+        have observations representing the 2D positions of some number of "key
+        points" that are rigidly fixed to the cart and to the pole.  The
+        location of any keypoint $K$ on a pole, for instance, is given by the <a
+        href="acrobot.html#cart_pole">cart-pole kinematics</a>: $${}^{W}{\bf
+        p}^{K} = \begin{bmatrix} x \\ 0 \end{bmatrix} + \begin{bmatrix}
+        \cos\theta & -\sin\theta \\ \sin\theta & \cos\theta \end{bmatrix}
+        {}^{P}{\bf p}^{K},$$ where $x$ is the position of the cart, and
+        $\theta$ is the angle of the pole.  I've used <a
+        href="http://manipulation.csail.mit.edu/pick.html#monogram">Monogram
+        notation</a> to denote that ${}^{P}{\bf p}^{K}$ is the Cartesian
+        position of a point $A$ in the pole's frame, $P$, and ${}^{W}{\bf
+        p}^{K}$ is that same position in the camera/world frame, $W$.  While it
+        is probably unreasonable to linearize the RGB outputs as a function of
+        the cart-pole positions, $x$ and $\theta$, it <i>is</i> reasonable to
+        approximate the keypoint positions by linearizing this equation for
+        small angles.</p>
+
+        <p>The big question is... does Ho-Kalman discover the 4-dimensional
+        state vector that we know and like for the cart-pole?  Does it find
+        something different?</p>
+
+        <p>More soon...</p>
 
       </example>
    
@@ -1054,6 +1100,34 @@ PhD thesis, Massachusetts Institute of Technology, June, <span class="year">2012
 <span class="author">Simchowitz, Max and Singh, Karan and Hazan, Elad</span>,
 <span class="title">"Improper learning for non-stochastic control"</span>,
 <span class="publisher">Conference on Learning Theory</span>, pp. 3320--3436, <span class="year">2020</span>.
+
+</li><br>
+<li id=Manuelli19>
+<span class="author">Lucas Manuelli* and Wei Gao* and Peter Florence and Russ Tedrake</span>,
+<span class="title">"{kPAM: KeyPoint Affordances for Category-Level Robotic Manipulation}"</span>,
+<span class="publisher">arXiv e-prints</span>, pp. arXiv:1903.06684, Mar, <span class="year">2019</span>.
+[&nbsp;<a href="https://sites.google.com/view/kpam">link</a>&nbsp;]
+
+</li><br>
+<li id=Florence18a>
+<span class="author">Peter R. Florence* and Lucas Manuelli* and Russ Tedrake</span>,
+<span class="title">"Dense Object Nets: Learning Dense Visual Object Descriptors By and For Robotic Manipulation"</span>,
+<span class="publisher">Conference on Robot Learning (CoRL)</span>, October, <span class="year">2018</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Florence18a.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Florence20>
+<span class="author">Peter Florence and  Lucas Manuelli and Russ Tedrake</span>,
+<span class="title">"Self-Supervised Correspondence in Visuomotor Policy Learning"</span>,
+<span class="publisher">IEEE Robotics and Automation Letters</span>, vol. 5, no. 2, pp. 492-499, April, <span class="year">2020</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Florence20.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Manuelli20a>
+<span class="author">Manuelli, Lucas and Li, Yunzhu and Florence, Pete and Tedrake, Russ</span>,
+<span class="title">"Keypoints into the Future: Self-Supervised Correspondence in Model-Based Reinforcement Learning"</span>,
+<span class="publisher">Conference on Robot Learning (CoRL)</span>, <span class="year">2020</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Manuelli20a.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Umenberger18>
