@@ -13,8 +13,13 @@ mysql-connector-python==8.0.23
 numpy==1.19.5
     # via
     #   -c htmlbook/colab-constraints-ubuntu.txt
+    #   pandas
     #   torch
     #   torchvision
+pandas==1.1.5
+    # via
+    #   -c htmlbook/colab-constraints-ubuntu.txt
+    #   -r ubuntu-shared-requirements.in
 pillow==7.1.2
     # via
     #   -c htmlbook/colab-constraints-ubuntu.txt
@@ -27,10 +32,19 @@ pycodestyle==2.6.0
     # via -r htmlbook/ubuntu-requirements.in
 pydocstyle==5.1.1
     # via -r htmlbook/ubuntu-requirements.in
+python-dateutil==2.8.1
+    # via
+    #   -c htmlbook/colab-constraints-ubuntu.txt
+    #   pandas
+pytz==2018.9
+    # via
+    #   -c htmlbook/colab-constraints-ubuntu.txt
+    #   pandas
 six==1.15.0
     # via
     #   -c htmlbook/colab-constraints-ubuntu.txt
     #   protobuf
+    #   python-dateutil
 snowballstemmer==2.1.0
     # via
     #   -c htmlbook/colab-constraints-ubuntu.txt
