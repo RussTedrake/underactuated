@@ -22,8 +22,13 @@ numpy==1.19.5
     # via
     #   -c htmlbook/colab-constraints-colab.txt
     #   matplotlib
+    #   pandas
     #   torch
     #   torchvision
+pandas==1.1.5
+    # via
+    #   -c htmlbook/colab-constraints-colab.txt
+    #   -r ubuntu-shared-requirements.in
 pillow==7.1.2
     # via
     #   -c htmlbook/colab-constraints-colab.txt
@@ -38,6 +43,11 @@ python-dateutil==2.8.1
     # via
     #   -c htmlbook/colab-constraints-colab.txt
     #   matplotlib
+    #   pandas
+pytz==2018.9
+    # via
+    #   -c htmlbook/colab-constraints-colab.txt
+    #   pandas
 pyyaml==3.13
     # via
     #   -c htmlbook/colab-constraints-colab.txt
