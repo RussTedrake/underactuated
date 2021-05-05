@@ -769,12 +769,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       + \bv[0], \\ \by[1] =& \bC(\bA\bx[0] + \bB\bu[0] + \bw[0]) + {\bf
       D}\bu[1] + \bv[1], \\ \by[k] =& \begin{bmatrix} \bC\bA^{k-1}\bB &
       \bC\bA^{k-2}\bB & \cdots & \bC\bB & {\bf D}\end{bmatrix} \begin{bmatrix}
-      \bu[0] \\ \bu[1] \\ \vdots \\ \bu[k-1] \end{bmatrix} + {\bf \delta}[k] =
+      \bu[0] \\ \bu[1] \\ \vdots \\ \bu[k] \end{bmatrix} + {\bf \delta}[k] =
       {\bf G}[k]\bar\bu[k] + {\bf \delta}[k], \end{align*} where ${\bf
       \delta}[k]$ captures the remaining terms, ${\bf G}[k] = \begin{bmatrix}
       \bC\bA^{k-1}\bB & \bC\bA^{k-2}\bB & \cdots & \bC\bB & {\bf
       D}\end{bmatrix},$ and $\bar\bu[k]$ represents the concatenated $\bu[n]$'s
-      up to time $k-1$.  Importantly we have that ${\bf \delta}[k]$ is
+      up to time $k$.  Importantly we have that ${\bf \delta}[k]$ is
       uncorrelated with $\bar\bu[k]$: $E\left[\bu_j {\bf \delta}_k \right] = 0,
       \forall j < k.$  This is sometimes known as Neyman orthogonality, and it
       implies that we can estimate ${\bf G}$ using simple least-squares
@@ -815,10 +815,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <example><h1>Ho-Kalman identification of the cart-pole from keypoints</h1>
       
-        <p>Let's repeat the cart-pole balancing example.  But this time,
-        instead of getting observations of the joint position and velocities
-        directly, we will consider the problem of identifying the dynamics from
-        a camera rendering the scene, but let us proceed thoughtfully.</p>
+        <p>Let's repeat the cart-pole example.  But this time, instead of
+        getting observations of the joint position and velocities directly, we
+        will consider the problem of identifying the dynamics from a camera
+        rendering the scene, but let us proceed thoughtfully.</p>
 
         <p>The output of a standard camera is an RGB image, consisting of 3 x
         width x height real values.  We could certainly columnate these into a
@@ -878,17 +878,111 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <todo>ARMAX</todo>
     
+      <todo>Cart-pole from keypoints example (again).  Use two most recent
+      keypoints as the "state".  But it's not a particular good choice for
+      state: not controllable.</todo>
+
+      <todo>More generally, a filter bank of recent observations?</todo>
     </subsection>
 
   </section>
 
-  <section><h1>Identification of hybrid systems</h1></section>
-
-  <section><h1>Nonlinear system identification</h1>
+  <section><h1>Identification of finite (PO)MDPs</h1>
   
-    <todo>Neural Nets / Intuitive physics / etc.</todo>
+    <p>There is one more case that we can understand well: when states,
+    actions, and observations (and time) are all discrete.  Recall that in the
+    very beginnings of our discussion about optimal control and <a
+    href="dp.html">dynamic programming</a>, we used graph search and
+    discretization of the state space to give a particularly nice version of
+    the value iteration algorithm.  In general, we can write the
+    <i>stochastic</i> dynamics using conditional probabilities: $$\Pr(s[n+1] |
+    s[n], a[n]), \qquad \Pr(o[n] | s[n], a[n]),$$ where I've (again) used $s$
+    for discrete states, $a$ for discrete actions, and $o$ for discrete
+    observations. With everything discrete, these conditional probabilities are
+    represented naturally with matrices/tensors.  We'll use the tensors
+    $T_{ijk} \equiv \Pr(s[n+1] = s_i | s[n] = s_j, a[n] = a_k)$ to denote the
+    transition matrix, and $O_{ijk} \equiv \Pr(o[n] = o_i | s[n] = s_j, a[n] =
+    a_k)$ for the observation matrix.</p>
+
+    <todo>Introduce the transition matrix better in the DP chapter, and make
+    the notation consistent (in the DP section, I have T transposed).</todo>
+  
+    <subsection><h1>From state observations</h1>
+
+      <p>Following analogously to our discussion on linear dynamical systems,
+      the first case to understand is when we have direct access to state and
+      action trajectories: $s[\cdot], a[\cdot]$.  This corresponds to
+      identifying a Markov chain or Markov decision process (MDP).  The
+      transition matrices can be extracted directly from the statistics of the
+      transitions: $$T_{ijk} = \frac{\text{number of transitions to }
+      s_i\text{ from }s_j, a_k}{\text{total number of transitions from }s_j,
+      a_k}.$$ Not surprisingly, for this estimate to converge to the true
+      transition probabilities asymptotically, we need the identification
+      (exploration) dynamics to be <a
+      href="https://en.wikipedia.org/wiki/Ergodicity">ergodic</a> (for every
+      state/action pair to be visited infinitely often).</p>  <todo>there must
+      be some finite-sample results to reference here, too.</todo>
+
+      <p>For large MDPs, analogous to the modal decomposition that we described
+      for linear dynamical systems, we can also consider factored
+      representations of the transition matrix. [Coming soon...]</p>
+
+    </subsection>
+
+    <subsection><h1>Identifying Hidden Markov Models (HMMs)</h1>
+    
+      <todo>include the standard HMM diagram here?</todo>
+
+      <todo>Baum-Welsch</todo>
+      <todo>MIP formulation for belief compression</todo>
+
+    </subsection>
+
+  </section>
+
+  <section><h1>Deep learning models</h1>
+  
+    <p>If multibody parameter estimation, linear system identification, and
+    finite state systems are the first pillars of system identification, then
+    (at least these days) deep learning is perhaps the last major pillar.  It's
+    no coincidence that I've put this section just after the section on linear
+    dynamical systems.  Neural networks are powerful tools, but they can be a
+    bit harder to think about carefully.  Thankfully, we'll see that many of
+    the basic lessons and insights from linear dynamical systems still apply
+    here. In particular, we can follow the same progression: learning the
+    dynamics function directly from state observations, learning state-space
+    models from input-output data (with recurrent networks), and learning
+    input-output (autoregressive) models with feedforward networks using a
+    history of outputs.</p>
+
+    <p>Deep learning tools allow us to quite reliably tune the neural networks
+    to fit our training data.  The major challenges are with respect to data
+    efficiency/generalization, and with respect to actually designing planners
+    / controllers based on these models that have such complex
+    descriptions.</p>
+
+    <subsection><h1>From state observations</h1>
+
+    </subsection>
+
+    <subsection><h1>State-space models from input-output data (recurrent networks)</h1>
+    
+    </subsection>
+
+    <subsection><h1>Input-output (autoregressive) models</h1>
+    </subsection>
+
+    <todo>Ensembled networks for uncertainty.</todo>
+  </section>
+
+
+  <section><h1>Alternatives for nonlinear system identification</h1>
+  
     <todo>MMT / Jack's work</todo>
-    <subsection><h1>Koopman operators</h1>
+
+    <todo>Gaussian Processes</todo>
+
+    <todo>Koopman operators</todo>
 
       <todo>Move this to some other chapter?  it's as much about control as it
       is about sysid?</todo>
@@ -913,6 +1007,12 @@ control (Proctor et al., 2016b).-->
   
   </section>
 
+  <section><h1>Identification of hybrid systems</h1>
+  
+    <todo>hybrid system survey papers</todo>
+    <todo>decision trees/CART</todo>
+  
+  </section>
 
 
   <section><h1>Task-relevant models</h1></section>
