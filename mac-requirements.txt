@@ -18,6 +18,8 @@ certifi==2020.12.5
     #   requests
 chardet==4.0.0
     # via requests
+cycler==0.10.0
+    # via matplotlib
 defusedxml==0.7.1
     # via nbconvert
 entrypoints==0.3
@@ -43,10 +45,14 @@ jupyter-core==4.7.1
     #   nbformat
 jupyterlab-pygments==0.1.2
     # via nbconvert
+kiwisolver==1.3.1
+    # via matplotlib
 lxml==4.6.3
     # via -r htmlbook/mac-requirements.in
 markupsafe==1.1.1
     # via jinja2
+matplotlib==3.4.1
+    # via -r htmlbook/mac-requirements.in
 mistune==0.8.4
     # via nbconvert
 mysql-connector-python==8.0.23
@@ -63,14 +69,20 @@ nest-asyncio==1.5.1
     # via nbclient
 numpy==1.20.2
     # via
+    #   matplotlib
+    #   pandas
     #   torch
     #   torchvision
 packaging==20.9
     # via bleach
+pandas==1.2.4
+    # via -r mac-requirements.in
 pandocfilters==1.4.3
     # via nbconvert
 pillow==8.1.0
-    # via torchvision
+    # via
+    #   matplotlib
+    #   torchvision
 protobuf==3.14.0
     # via mysql-connector-python
 pycodestyle==2.6.0
@@ -85,12 +97,18 @@ pygments==2.8.1
     #   nbconvert
 pyparsing==2.4.7
     # via
+    #   matplotlib
     #   packaging
     #   pydot
 pyrsistent==0.17.3
     # via jsonschema
 python-dateutil==2.8.1
-    # via jupyter-client
+    # via
+    #   jupyter-client
+    #   matplotlib
+    #   pandas
+pytz==2021.1
+    # via pandas
 pyyaml==5.4.1
     # via -r mac-requirements.in
 pyzmq==22.0.3
@@ -102,6 +120,7 @@ requests==2.25.1
 six==1.15.0
     # via
     #   bleach
+    #   cycler
     #   jsonschema
     #   protobuf
     #   python-dateutil
