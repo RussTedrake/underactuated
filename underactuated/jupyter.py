@@ -1,9 +1,11 @@
 import asyncio
 import os
 import sys
+
 from IPython import get_ipython
-from IPython.display import HTML, display
+from IPython.display import display, HTML
 from ipywidgets.widgets import FloatSlider
+import numpy as np
 from warnings import warn
 
 from pydrake.systems.framework import VectorSystem
@@ -20,6 +22,21 @@ def pyplot_is_interactive():
     import matplotlib.pyplot as plt
     from matplotlib.rcsetup import interactive_bk
     return plt.get_backend() in interactive_bk
+
+
+# TODO: move this into drake
+def ToLatex(M, precision=4):
+    M = np.atleast_2d(M)
+    md = '\\begin{bmatrix}'
+    for row in range(M.shape[0]):
+        for col in range(M.shape[1]):
+            md += f"{M[row, col]:.{precision}f}"
+            if col < M.shape[1] - 1:
+                md += " & "
+        if row < M.shape[0] - 1:
+            md += " \\\\"
+    md += '\\end{bmatrix}'
+    return md
 
 
 def AdvanceToAndVisualize(simulator,

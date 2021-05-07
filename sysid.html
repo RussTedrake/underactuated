@@ -125,7 +125,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     Therefore, we generally consider the simulation error to be the true
     objective we hope to optimize, and the equation error only as a potentially
     useful surrogate.</p>
-  
+
+    <!--
+    <subsection><h1>Preprocessing your data</h1>
+    
+      <p>Many of the techniques below can benefit from some basic data
+      preprocessing techniques.  The <a
+      href="https://www.mathworks.com/help/ident/ug/ways-to-prepare-data-for-system-identification.html">MATLAB
+      System Identification Toolbox documentation</a> has some useful advice
+      (with emphasis on the fitting of linear models).  </p>
+    </subsection>
+    -->  
   </section>
 
   <section><h1>Parameter Identification for Mechanical Systems</h1>
@@ -538,7 +548,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       of identifiability of the inertial parameters of a passive object with
       and without explicit contact force measurements.</p>
 
-      <todo>Flesh this out a bit more...</todo>
+      <todo>Flesh this out a bit more...  (maybe move it to the hybrid sysid subsection?)</todo>
     
     </subsection>
 
@@ -810,8 +820,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <p>Note that $\hat{\bf D}$ is the last block in $\hat{\bf G}$ so is
       extracted trivially. The Ho-Kalman algorithm tells us how to extract
       $\hat\bA, \hat\bB, \hat\bC$, with another application of the SVD on
-      suitably constructed data matrices (see <elib
-      part="&sect;5.1">Oymak19</elib>).</p>
+      suitably constructed data matrices (see e.g. <elib
+      part="&sect;5.1">Oymak19</elib>, <elib part="&sect;10.5">Juang01</elib>,
+      or <elib part="&sect;9.3">Brunton19</elib>).</p>
+
+      <todo>Does using the Kalman filter states allow me to use colored input excitation?</todo>
 
       <example><h1>Ho-Kalman identification of the cart-pole from keypoints</h1>
       
@@ -940,7 +953,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
   </section>
 
-  <section><h1>Deep learning models</h1>
+  <section><h1>Neural network models</h1>
   
     <p>If multibody parameter estimation, linear system identification, and
     finite state systems are the first pillars of system identification, then
@@ -1006,6 +1019,8 @@ control (Proctor et al., 2016b).-->
     </subsection>
   
   </section>
+
+  <todo>world models?</todo>
 
   <section><h1>Identification of hybrid systems</h1>
   
@@ -1200,6 +1215,12 @@ PhD thesis, Massachusetts Institute of Technology, June, <span class="year">2012
 <span class="author">Simchowitz, Max and Singh, Karan and Hazan, Elad</span>,
 <span class="title">"Improper learning for non-stochastic control"</span>,
 <span class="publisher">Conference on Learning Theory</span>, pp. 3320--3436, <span class="year">2020</span>.
+
+</li><br>
+<li id=Juang01>
+<span class="author">Juang, Jer-Nan and Phan, Minh Q.</span>,
+<span class="title">"Identification and {Control} of {Mechanical} {Systems}"</span>,Cambridge University Press
+, aug, <span class="year">2001</span>.
 
 </li><br>
 <li id=Manuelli19>
