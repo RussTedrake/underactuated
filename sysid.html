@@ -807,10 +807,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       data (roughly until the impulse response becomes sufficiently small).</p>
       
       <p>If you've studied linear systems, ${\bf G}$ will look familiar; it is
-      precisely this (multi-input, multi-output) impulse response.  In fact,
-      obtaining $\hat{\bf G}$ may even be enough for control design, as it is
-      closely-related to the parameterization used in disturbance-based
-      feedback for partially-observable systems
+      precisely this (multi-input, multi-output) matrix impulse response, also
+      known as the "Markov parameters".  In fact, estimating $\hat{\bf
+      G}$ may even be sufficient for control design, as it is closely-related to
+      the parameterization used in disturbance-based feedback for
+      partially-observable systems
       <elib>Sadraddini20+Simchowitz20</elib>.  But the Ho-Kalman algorithm can
       be used to extract good estimates $\hat\bA, \hat\bB, \hat\bC, \hat{\bf
       D}$ with state-dimension $\dim(\bx) = n_x$ from $\hat{\bf G},$  assuming
@@ -886,13 +887,25 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         approximate the keypoint positions by linearizing this equation for
         small angles.</p>
 
-        <p>You'll see in the example that we recover the impulse response quite nicely.</p>
+        <p>You'll see in the example that we recover the impulse response quite
+        nicely.</p>
 
-        <figure><img width="70%" src="data/keypoint_impulse_response.svg"></figure>
+        <figure><img width="70%"
+        src="data/keypoint_impulse_response.svg"></figure>
 
-        <p>The big question is... does Ho-Kalman discover the 4-dimensional
+        <p>The big question is: does Ho-Kalman discover the 4-dimensional
         state vector that we know and like for the cart-pole?  Does it find
-        something different?  You'll have to run the code to find out!</p>
+        something different?  We would typically choose the order by looking at
+        the magnitude of the singular values of the Hankel data matrix.  In
+        this example, in the case of no noise, you see clearly that 2 states
+        describe most of the behavior, and we have diminishing returns after 4 or 5:</p>
+
+        <figure><img width="70%"
+        src="data/keypoint_hankel_singular_values.svg"></figure>
+
+        <p>As an exercise, try adding process and/or measurement noise to the
+        system that generated the data, and see how they effect this
+        result.</p>
 
         <p><a target="sysid"
           href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/sysid.ipynb#scrollTo=ASlp7CDoQL5t"><img
@@ -902,6 +915,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       </example>
    
+      <todo>identify observer/Kalman filter markov parameters (aka OKID) from
+      Juang93, also in Juang95 section 10.7, Brunton19, VanOverschee96, etc.
+      Inspiration is similar to Simchowitz and Boczar; we'd expect the Kalman
+      rates to be faster than the generic fits if the Gaussian iid assumption
+      is valid.</todo>
+
     </subsection>
 
     <subsection><h1>Adding stability constraints</h1>
