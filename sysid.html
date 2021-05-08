@@ -777,24 +777,40 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <p>First, observe that \begin{align*} \by[0] =& \bC\bx[0] + {\bf D}\bu[0]
       + \bv[0], \\ \by[1] =& \bC(\bA\bx[0] + \bB\bu[0] + \bw[0]) + {\bf
-      D}\bu[1] + \bv[1], \\ \by[k] =& \begin{bmatrix} \bC\bA^{k-1}\bB &
-      \bC\bA^{k-2}\bB & \cdots & \bC\bB & {\bf D}\end{bmatrix} \begin{bmatrix}
-      \bu[0] \\ \bu[1] \\ \vdots \\ \bu[k] \end{bmatrix} + {\bf \delta}[k] =
-      {\bf G}[k]\bar\bu[k] + {\bf \delta}[k], \end{align*} where ${\bf
-      \delta}[k]$ captures the remaining terms, ${\bf G}[k] = \begin{bmatrix}
-      \bC\bA^{k-1}\bB & \bC\bA^{k-2}\bB & \cdots & \bC\bB & {\bf
-      D}\end{bmatrix},$ and $\bar\bu[k]$ represents the concatenated $\bu[n]$'s
-      up to time $k$.  Importantly we have that ${\bf \delta}[k]$ is
-      uncorrelated with $\bar\bu[k]$: $E\left[\bu_j {\bf \delta}_k \right] = 0,
-      \forall j < k.$  This is sometimes known as Neyman orthogonality, and it
+      D}\bu[1] + \bv[1], \\ \by[n] =& \bC\bA^n\bx[0] + {\bf D}\bu[n] + \bv[n] +
+      \sum_{k=0}^{n-1}\bC\bA^{n-k-1}(\bB\bu[k] + \bw[k]). \end{align*} For the
+      purposes of identification, let's write $y[n]$ as a function of the most
+      recent $N+1$ inputs (for $k \ge N$): \begin{align*}\by[n] =&
+      \begin{bmatrix} \bC\bA^{N-1}\bB & \bC\bA^{N-2}\bB & \cdots & \bC\bB &
+      {\bf D}\end{bmatrix} \begin{bmatrix} \bu[n-N] \\ \bu[n-N+1] \\ \vdots \\
+      \bu[n] \end{bmatrix} + {\bf \delta}[n] \\ =& {\bf G}[n]\bar\bu[n] + {\bf
+      \delta}[n] \end{align*} where ${\bf \delta}[n]$ captures the remaining
+      terms from initial conditions, noise and control inputs before the
+      (sliding) window. ${\bf G}[n] = \begin{bmatrix} \bC\bA^{N-1}\bB &
+      \bC\bA^{N-2}\bB & \cdots & \bC\bB & {\bf D}\end{bmatrix},$ and
+      $\bar\bu[n]$ represents the concatenated $\bu[n]$'s from time $n-N$ up to
+      $n$.  Importantly we have that ${\bf \delta}[n]$ is uncorrelated with
+      $\bar\bu[n]$: $\forall k > n$ we have $E\left[\bu_k {\bf \delta}_n
+      \right] = 0.$ This is sometimes known as Neyman orthogonality, and it
       implies that we can estimate ${\bf G}$ using simple least-squares
-      $\hat{\bf G} = \argmin_{\bf G} \sum_k \| \by_k - {\bf G}\bar\bu_k \|^2.$
+      $\hat{\bf G} = \argmin_{\bf G} \sum_{n \ge N} \| \by_n - {\bf G}\bar\bu_n
+      \|^2.$
       <elib>Oymak19</elib> gives bounds on the norm of the estimation error as
       a function of the number of samples and the variance of the noise.</p>
+
+      <p>How should we pick the window size $N$?  By Neyman orthogonality, we
+      know that our estimates will be unbiased for any choice of $N \ge 0$. But
+      if we choose $N$ too small, then the term $\delta[n]$ will be large,
+      leading to a potentially large variance in our estimate.  For stable
+      systems, the $\delta$ terms will get smaller as we increase $N$.  In
+      practice, we choose $N$ based on the characteristic settling time in the
+      data (roughly until the impulse response becomes sufficiently small).</p>
       
-      <p>In fact, obtaining $\hat{\bf G}$ may even be enough for control
-      design, as it is closely-related to the parameterization used in
-      disturbance-based feedback for partially-observable systems
+      <p>If you've studied linear systems, ${\bf G}$ will look familiar; it is
+      precisely this (multi-input, multi-output) impulse response.  In fact,
+      obtaining $\hat{\bf G}$ may even be enough for control design, as it is
+      closely-related to the parameterization used in disturbance-based
+      feedback for partially-observable systems
       <elib>Sadraddini20+Simchowitz20</elib>.  But the Ho-Kalman algorithm can
       be used to extract good estimates $\hat\bA, \hat\bB, \hat\bC, \hat{\bf
       D}$ with state-dimension $\dim(\bx) = n_x$ from $\hat{\bf G},$  assuming
@@ -870,11 +886,19 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         approximate the keypoint positions by linearizing this equation for
         small angles.</p>
 
+        <p>You'll see in the example that we recover the impulse response quite nicely.</p>
+
+        <figure><img width="70%" src="data/keypoint_impulse_response.svg"></figure>
+
         <p>The big question is... does Ho-Kalman discover the 4-dimensional
         state vector that we know and like for the cart-pole?  Does it find
-        something different?</p>
+        something different?  You'll have to run the code to find out!</p>
 
-        <p>More soon...</p>
+        <p><a target="sysid"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/sysid.ipynb#scrollTo=ASlp7CDoQL5t"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
 
       </example>
    
