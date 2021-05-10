@@ -63,16 +63,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <p>The equations of motion for a standard robot can be derived using the
     method of Lagrange.  Using $T$ as the total kinetic energy of the system,
-    and $U$ as the total potential energy of the system, $L = T-U$, and $Q_i$ as
-    the generalized force corresponding to $q_i$, the Lagrangian dynamic
+    and $U$ as the total potential energy of the system, $L = T-U$, and $Q_i$
+    as the generalized force corresponding to $q_i$, the Lagrangian dynamic
     equations are: \begin{equation} \frac{d}{dt}\pd{L}{\dot{q}_i} - \pd{L}{q_i}
-    = Q_i.\end{equation} If you are not comfortable with these equations, then
-    any good book chapter on rigid body mechanics can bring you up to speed --
-    try <elib>Craig89</elib> for a very practical guide to robot
-    kinematics/dynamics, <elib>Goldstein02</elib> for a more hard-core dynamics
-    text or <elib>Thornton03</elib> for a classical dynamics text which is a
-    nice read -- for now you can take them as a handle that you can crank to
-    generate equations of motion. </p>
+    = Q_i.\end{equation} You can think of this as a generalization of Newton's
+    equations.  For a particle, we have $T=\frac{1}{2}m \dot{x}^2,$ so
+    $\frac{d}{dt}\pd{L}{\dot{x}} = m\ddot{x},$ and $\pd{L}{x} = -\pd{U}{x} = f$
+    amounting to $f=ma$.  But the Lagrangian derivation works in generalized
+    coordinate systems and even for constrained motion.  If you are not
+    comfortable with these equations, then any good book chapter on rigid body
+    mechanics can bring you up to speed -- try <elib>Craig89</elib> for a very
+    practical guide to robot kinematics/dynamics, <elib>Goldstein02</elib> for
+    a more hard-core dynamics text or <elib>Thornton03</elib> for a classical
+    dynamics text which is a nice read -- for now you can take them as a handle
+    that you can crank to generate equations of motion. </p>
 
     <example id=double_pendulum><h1>Simple Double Pendulum</h1>
 
@@ -133,40 +137,49 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     \begin{equation} T = \frac{1}{2} \dot{\bq}^T \bM(\bq)
     \dot{\bq},\end{equation} where $\bM$ is the state-dependent inertia matrix
     (aka mass matrix). This observation affords some insight into general
-    manipulator dynamics - for example we know that ${\bf M}$ is always positive
-    definite, and symmetric<elib>Asada86</elib>(p.107) and has a beautiful
-    sparsity pattern<elib>Featherstone05</elib> that we'll attempt to take
+    manipulator dynamics - for example we know that ${\bf M}$ is always
+    positive definite, and symmetric<elib part="p.107">Asada86</elib> and has a
+    beautiful sparsity pattern<elib>Featherstone05</elib> that we should take
     advantage of in our algorithms.</p>
-
 
     <p>Continuing our abstractions, we find that the equations of motion of a
     general robotic manipulator (without kinematic loops) take the form
     \begin{equation}{\bf M}(\bq)\ddot{\bq} + \bC(\bq,\dot{\bq})\dot{\bq} =
     \btau_g(\bq) + {\bf B}\bu, \label{eq:manip} \end{equation} where $\bq$ is
     the joint position vector, ${\bf M}$ is the inertia matrix, $\bC$ captures
-    Coriolis forces, and $\btau_g$ is the gravity vector.  The matrix $\bB$ maps
-    control inputs $\bu$ into generalized forces.  Note that we pair
+    Coriolis forces, and $\btau_g$ is the gravity vector.  The matrix $\bB$
+    maps control inputs $\bu$ into generalized forces.  Note that we pair
     $\bM\ddot\bq + \bC\dot\bq$ on the left side because "... the equations of
     motion depend on the choice of coordinates $\bq$.  For this reason neither
     $\bM\ddot\bq$ nor $\bC\dot\bq$ individually should be thought of as a
     generalized force; only their sum is a force"<elib>Choset05</elib>(s.10.2).
-    Indeed, whenever I write Eq. (\ref{eq:manip}), I see $ma = F$. </p>
+    These terms represent the contribution from kinetic energy to the
+    Lagrangian: $$\frac{d}{dt}\pd{T}{\dot{\bq}}^T - \pd{T}{\bq}^T = \bM(\bq) \ddot{\bq} + \bC(\bq,\dot\bq)\dot\bq.$$ Whenever I write Eq. (\ref{eq:manip}), I see $ma = f$.
+    </p>
 
-    <example id="manipulator_equation_double_pendulum"><h1>Manipulator Equation form of the Simple Double
-    Pendulum</h1> The equations of motion from Example 1 can be written
-    compactly as: \begin{align*} \bM(\bq) =& \begin{bmatrix} (m_1 + m_2)l_1^2 +
-    m_2 l_2^2 + 2 m_2 l_1l_2 c_2 & m_2 l_2^2 + m_2 l_1 l_2 c_2 \\ m_2 l_2^2 +
-    m_2 l_1 l_2 c_2 & m_2 l_2^2 \end{bmatrix} \\ \bC(\bq,\dot\bq) =&
-    \begin{bmatrix} 0 & -m_2 l_1 l_2 (2\dot{q}_1 + \dot{q}_2)s_2 \\ m_2 l_1 l_2
-    \dot{q}_1 s_2 & 0 \end{bmatrix} \\ \btau_g(\bq) =& -g \begin{bmatrix} (m_1 +
-    m_2) l_1 s_1 + m_2 l_2 s_{1+2} \\ m_2 l_2 s_{1+2} \end{bmatrix} , \quad \bB
-    = \begin{bmatrix} 1 & 0 \\ 0 & 1 \end{bmatrix} \end{align*} Note that this
-    choice of the $\bC$ matrix was not unique. </example>
+    <example id="manipulator_equation_double_pendulum"><h1>Manipulator Equation
+    form of the Simple Double Pendulum</h1> The equations of motion from
+    Example 1 can be written compactly as: \begin{align*} \bM(\bq) =&
+    \begin{bmatrix} (m_1 + m_2)l_1^2 + m_2 l_2^2 + 2 m_2 l_1l_2 c_2 & m_2 l_2^2
+    + m_2 l_1 l_2 c_2 \\ m_2 l_2^2 + m_2 l_1 l_2 c_2 & m_2 l_2^2 \end{bmatrix}
+    \\ \bC(\bq,\dot\bq) =& \begin{bmatrix} 0 & -m_2 l_1 l_2 (2\dot{q}_1 +
+    \dot{q}_2)s_2 \\ m_2 l_1 l_2 \dot{q}_1 s_2 & 0 \end{bmatrix} \\
+    \btau_g(\bq) =& -g \begin{bmatrix} (m_1 + m_2) l_1 s_1 + m_2 l_2 s_{1+2} \\
+    m_2 l_2 s_{1+2} \end{bmatrix} , \quad \bB = \begin{bmatrix} 1 & 0 \\ 0 & 1
+    \end{bmatrix} \end{align*} Note that this choice of the $\bC$ matrix was
+    not unique. </example>
 
     <p> The manipulator equations are very general, but they do define some
     important characteristics.  For example, $\ddot{\bq}$ is (state-dependent)
     linearly related to the control input, $\bu$.   This observation justifies
-    the control-affine form of the dynamics assumed throughout the notes.</p>
+    the control-affine form of the dynamics assumed throughout the notes. There
+    are many other important properties that might prove useful.  For instance,
+    we know that the $i$ element of $\bC\dot{q}$ is given by <elib
+    part="&sect;5.2.3">Asada86</elib>: $$\left[\bC(\bq,\dot\bq)\dot\bq
+    \right]_i = \sum_{j,k} c_{ijk} \dot{q}_j \dot{q}_k, \qquad c_{ijk}(\bq) =
+    \pd{M_{ij}}{q_k} - \frac{1}{2}\pd{M_{jk}}{q_k},$$ (e.g. it also quadratic
+    in $\dot{\bq}$) and, for the appropriate choice of $\bC$, we have that
+    $\bM(q) - 2\bC(\bq,\dot{\bq})$ is skew-symmetric<elib>Slotine90</elib>.</p>
 
     <p>Note that we have chosen to use the notation of second-order systems
     (with $\dot{\bq}$ and $\ddot{\bq}$ appearing in the equations) throughout
@@ -935,6 +948,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <span class="author">H. Choset and  K. M. Lynch and  S. Hutchinson and  G. Kantor and  W. Burgard and  L. E. Kavraki and S. Thrun</span>,
 <span class="title">"Principles of Robot Motion-Theory, Algorithms, and Implementations"</span>,The MIT Press
 , <span class="year">2005</span>.
+
+</li><br>
+<li id=Slotine90>
+<span class="author">Jean-Jacques E. Slotine and Weiping Li</span>,
+<span class="title">"Applied Nonlinear Control"</span>,Prentice Hall
+, October, <span class="year">1990</span>.
 
 </li><br>
 <li id=Duindam06>

@@ -930,10 +930,31 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     
     </subsection>
 
-    <subsection><h1>Input/output (autoregressive) models</h1>
+    <subsection><h1>Autoregressive models</h1>
 
-      <todo>ARMAX</todo>
-    
+      <p>Another important class of linear models predict the output directly
+      from a history of recent inputs and outputs: \begin{align*} \by[n+1]
+      =&\bA_0 \by[n] + \bA_1 \by[n-1] + ... + \bA_k \by[n-k] \\ & + \bB_0\bu[n]
+      + \bB_1 \bu[n-1] + ... \bB_k \bu[n-k]\end{align*}  These are the
+      so-called "AutoRegressive models with eXogenous input (ARX)" models. The
+      coefficients of ARX models can be fit directly from input-output data
+      using linear least squares.</p>
+
+      <p>While it is certainly possible to think of these models as state-space
+      models, where we collect the finite history $\by$ and $\bu$ (except not
+      $\bu[n]$) into our state vector.  But this is not necessarily a very
+      efficient representation; the Ho-Kalman algorithm might be able to find a
+      much smaller state representation.  This is particularly important for
+      partially-observable systems that might require a very long history,
+      $k$.</p>
+
+      <todo>
+      <example><h1>A state-space model that would be inefficient in
+      ARX</h1></example>
+      </todo>
+
+      <example><h1>An ARX model of cart-pole keypoint dynamics</h1></example>
+
       <todo>Cart-pole from keypoints example (again).  Use two most recent
       keypoints as the "state".  But it's not a particular good choice for
       state: not controllable.</todo>

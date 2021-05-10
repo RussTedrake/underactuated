@@ -184,7 +184,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     value of $V(x)$ will only get smaller (or stay the same) as time progresses.
     Inside the subset ${\cal B}$, for every $\epsilon$-ball, I can choose a
     $\delta$ such that $|x(0)|^2 < \delta \Rightarrow |x(t)|^2 < \epsilon,
-    \forall t$ by choosing $\delta$ sufficiently small so that the sublevel-set
+    \forall t$ by choosing $\delta$ sufficiently small so that the sublevel set
     of $V(x)$ for the largest value that $V(x)$ takes in the $\delta$ ball is
     completely contained in the $\epsilon$ ball. Since the value of $V$ can only
     get smaller (or stay constant) in time, this gives stability i.s.L.. If
@@ -561,7 +561,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <p>It is important to remember that there are a handful of gaps which make
       the existence of this solution a sufficient condition (for proving that
-      every sub-level set of $V$ is an invariant set of $f$) instead of a
+      every sublevel set of $V$ is an invariant set of $f$) instead of a
       necessary one.  First, there is no guarantee that a stable polynomial
       system can be verified using a polynomial Lyapunov function (of any
       degree, and in fact there are known counter-examples
@@ -585,17 +585,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   attraction</h1>
 
     <p>There is another very important connection between Lyapunov functions and
-    the concept of an invariant set: <em>any sub-level set of a Lyapunov
+    the concept of an invariant set: <em>any sublevel set of a Lyapunov
     function is also an invariant set</em>.  This gives us the ability to use
-    sub-level sets of a Lyapunov function as approximations of the region of
+    sublevel sets of a Lyapunov function as approximations of the region of
     attraction for nonlinear systems.</p>
 
     <theorem><h1>Lyapunov invariant set and region of attraction
     theorem</h1>
 
       <p>Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous, if we can find
-      a scalar function $V(\bx) \succ 0$ and a sub-level set $${\cal G}: \{ \bx
-      | V(\bx) < \rho \}$$ on which $$\forall \bx \in {\cal G}, \dot{V}(\bx)
+      a scalar function $V(\bx) \succ 0$ and a sublevel set $${\cal G}: \{ \bx
+      | V(\bx) \le \rho \}$$ on which $$\forall \bx \in {\cal G}, \dot{V}(\bx)
       \preceq 0,$$ then ${\cal G}$ is an invariant set.  By LaSalle, $\bx$ will
       converge to the largest invariant subset of ${\cal G}$ on which
       $\dot{V}=0$.<p>
@@ -630,7 +630,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       Lyapunov equation (\ref{eq:algebraic_lyapunov}).  Proceeding with $$V(\bx)
       = \frac{1}{2} x^2,$$ we have $$\dot{V} = x (-x + x^3) = -x^2 + x^4.$$
       This function is zero at the origin, negative for $|x| < 1$, and positive
-      for $|x| > 1$.  Therefore we can conclude that the sub-level set $V <
+      for $|x| > 1$.  Therefore we can conclude that the sublevel set $V <
       \frac{1}{2}$ is invariant and the set $x \in (-1,1)$ is inside the region
       of attraction of the nonlinear system.  In fact, this estimate is
       tight.</p>
@@ -721,7 +721,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         that $$ V=\frac{1}{3} \quad \Rightarrow \quad x = \pm \sqrt{\frac{2}{3}}
         \quad \Rightarrow \quad \dot{V} = -\frac{2}{9} \pm \alpha
         \sqrt{\frac{2}{3}} < 0, \forall \alpha \in
-        \left[-\frac{1}{4},\frac{1}{4} \right]. $$  Note that not all sub-level
+        \left[-\frac{1}{4},\frac{1}{4} \right]. $$  Note that not all sublevel
         sets of this invariant set are invariant.  For instance $V <
         \frac{1}{32}$ does not satisfy this condition, and by visual inspection
         we can see that it is in fact not robustly invariant.</p>
@@ -780,10 +780,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         <p>The S-procedure gives us the tool we need to evaluate positivity
         only over a region of state space, which is precisely what we need to
         certify the Lyapunov conditions for a region-of-attraction analysis.
-        Let us start with a positive-definite Lyapunov candidate, $V(\bx) \succ
-        0$, then we can write the Lyapunov conditions: $$\dot{V}(\bx) \prec 0
-        \quad \forall \bx \in \{ \bx | V(\bx) \le \rho \},$$ using
-        sums-of-squares and the S-procedure: $$-\dot{V}(\bx) +
+        Let us start with a positive-definite polynomial Lyapunov candidate,
+        $V(\bx) \succ 0$, then we can write the Lyapunov conditions:
+        $$\dot{V}(\bx) \prec 0 \quad \forall \bx \in \{ \bx | V(\bx) \le \rho
+        \},$$ using sums-of-squares and the S-procedure: $$-\dot{V}(\bx) +
         \lambda(\bx)(V(\bx) - \rho) \text{ is SOS,} \quad \text{and} \quad
         \lambda(\bx) \text{ is SOS},$$ where $\lambda(\bx)$ is a multiplier
         polynomial with free coefficients that are to be solved for in the
@@ -814,7 +814,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   
         </example>
 
-        <p>In this example, we only verified that the one-sub-level set of the
+        <p>In this example, we only verified that the one-sublevel set of the
         pre-specified Lyapunov candidate is negative (certifying the ROA that
         we already understood).  Even more useful is if you are able to search
         for the largest $\rho$ that can satisfy these conditions.
@@ -879,7 +879,7 @@ V = RegionOfAttraction(sys, context)
       <subsubsection><h1>The equality-constrained formulation</h1>
       
         <p>Here is one important variation for finding the level set of a
-        candidate region of attraction, which turns in inequality in the
+        candidate region of attraction, which turns an inequality in the
         S-procedure into an equality.  This formulation <i>is</i> jointly
         convex in $\lambda(\bx)$ and $\rho$, so one can optimize them in a
         single convex optimization.  It appeared informally in an example in
@@ -902,8 +902,8 @@ V = RegionOfAttraction(sys, context)
         prove that $\dot{V}(\bx) \le 0$ whenever $V(\bx) \le \rho$, since $V$
         and $\dot{V}$ are smooth polynomials; we examine this claim in full detail in <a href="#van_der_pol_roa">one of the exercises</a>.</p>
 
-        <p>Using the S-procedure with equalities instead inequalities also has
-        the potential advantage of removing the SOS constraint on
+        <p>Using the S-procedure with equalities instead of inequalities also
+        has the potential advantage of removing the SOS constraint on
         $\lambda(\bx).$  But perhaps the biggest advantage of this formulation
         is the possibility of dramatically simplifying the problem using the
         quotient ring of this algebraic variety, and in particular some recent
@@ -943,7 +943,7 @@ V = RegionOfAttraction(sys, context)
         that I've replaced $\rho=1$; now that we are searching for $V$ the
         scale of the level-set can be set aribtrarily to 1.  In fact, it's
         better to do so -- if we did not set $V(0)=0$ and $V(\bx) \le 1$ as the
-        sub-level set, then the optimization problem would be underconstrained,
+        sublevel set, then the optimization problem would be underconstrained,
         and might cause problems for the solver.</p>
 
         <p>Unfortunately, the derivative constraint is now nonconvex (bilinear)
@@ -1015,7 +1015,7 @@ V = RegionOfAttraction(sys, context)
         we can find such a function, then certainly any state for which
         $\mathcal{B}(\bx) < 0$ is outside of the region of attraction of the
         fixed point -- since $\mathcal{B}$ cannot increase it can never reach
-        the origin which has $\mathcal{B} = 0$.  The <i>super-</i>level set
+        the origin which has $\mathcal{B} > 0$.  The <i>super</i>level set
         $\{ \bx | \mathcal{B}(\bx) \ge 0\}$ is an outer approximation of the
         true region of attraction: $$-\dot{\mathcal{B}}(\bx) \text{ is SOS}
         \quad \text{and} \quad \mathcal{B}(0) > 0.$$</p>
@@ -1051,7 +1051,7 @@ V = RegionOfAttraction(sys, context)
           <div  style="text-align:center"><img
             src="data/cubic_polynomial_outer_approx.svg" width="500px"/></div>
 
-          <p>As you can see, the superlevel-set, $\mathcal{B}(x) \ge 0$ is a
+          <p>As you can see, the superlevel set, $\mathcal{B}(x) \ge 0$ is a
           tight outer-approximation of the true region of attraction.  In the
           limit of increasing the degrees of the polynomials to infinity, we
           would expect that $W(\bx)$ would converge to the indicator function
@@ -1459,7 +1459,7 @@ V = RegionOfAttraction(sys, context)
       the $V$ to decrease.  Once again, we adorn this basic property with extra
       conditions (e.g. radially unbounded, or satisfied over a control-
       invariant set) in order to construct global or regional stability
-      statements.  What is important about to understand is that we can design
+      statements.  What is important to understand is that we can design
       control-Lyapunov functions without explicitly parameterizing the
       controller; often the control action is not even determined until
       execution time by finding a particular $\bu$ that goes downhill.</p>
@@ -1483,7 +1483,7 @@ V = RegionOfAttraction(sys, context)
       form.</p>
       
       <p>Now here is where it gets a little frustrating.  Certainly,
-      sublevel-sets of $\mathcal{B}(\bx)$ are control-invariant (via the proper
+      sublevel sets of $\mathcal{B}(\bx)$ are control-invariant (via the proper
       choice of $\bu$).  But we do not (cannot) expect that the entire
       estimated region (the 0-superlevel set) can be rendered invariant.  The
       estimated region is an <i>outer</i> approximation of the backward
