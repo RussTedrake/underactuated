@@ -426,7 +426,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       formulate the search for a <i>"common Lyapunov function"</i> for uncertain
       linear systems.</p>
 
-      <example><h1>Common Lyapunov analysis for
+      <example id="common-lyapunov-linear"><h1>Common Lyapunov analysis for
       linear systems</h1>
 
         <p>Suppose you have a system governed by the equations $\dot\bx = {\bf
@@ -637,20 +637,23 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </example>
 
-    <subsection><h1>Robustness analysis using "common Lyapunov functions"</h1>
+    <subsection id="common-lyapunov"><h1>Robustness analysis using "common Lyapunov functions"</h1>
 
-      <p>While we will defer most discussions on robustness analysis until later
-      in the notes, there is a simple and powerful idea that can be presented
-      now: the idea of a <em>common Lyapunov function</em>.  Imagine that you
-      have a model of a dynamical system but that you are uncertain about some
-      of the parameters.  For example, you have a model of a quadrotor, and are
-      fairly confident about the mass and lengths (both of which are easy to
-      measure), but are not confident about the moment of inertia.  One approach
-      to robustness analysis is to define a bounded uncertainty, which could
-      take the form of $$\dot{\bx} = f_\alpha(\bx), \quad \alpha_{min} \le
-      \alpha \le \alpha_{max},$$ with $\alpha$ a vector of uncertain parameters
-      in your model.  Richer specifications of the uncertainty bounds are also
-      possible, but this will serve for our examples.</p>
+      <p>While we will defer most discussions on robustness analysis until <a
+      href="robust.html">later in the notes</a>, the idea of a <em>common
+      Lyapunov function</em>, which we introduced briefly for linear systems in
+      the <a href="#common-lyapunov-linear">example above</a>, can be readily
+      extended to nonlinear systems and region of attraction analysis.  Imagine
+      that you have a model of a dynamical system but that you are uncertain
+      about some of the parameters.  For example, you have a model of a
+      quadrotor, and are fairly confident about the mass and lengths (both of
+      which are easy to measure), but are not confident about the moment of
+      inertia.  One approach to robustness analysis is to define a bounded
+      uncertainty, which could take the form of $$\dot{\bx} = f_\alpha(\bx),
+      \quad \alpha_{min} \le \alpha \le \alpha_{max},$$ with $\alpha$ a vector
+      of uncertain parameters in your model.  Richer specifications of the
+      uncertainty bounds are also possible, but this will serve for our
+      examples.</p>
 
       <p>In standard Lyapunov analysis, we are searching for a function that
       goes downhill for all $\bx$ to make statements about the long-term

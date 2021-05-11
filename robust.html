@@ -118,104 +118,272 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   of possible values that they can take.  This modeling is powerful, but can
   lead to conservative controllers and pessimistic estimates of performance.</p>
 
-  <section><h1>Discrete states and actions</h1>
+  <p>My goal of presenting a relatively consumable survey of a few of the main
+  ideas is perhaps more important in this chapter than any other.  It's been
+  said that "robust control is encrypted" (as in you need to know the secret
+  code to get in).  The culture in the robust control community has been to
+  leverage high-powered mathematics, sometimes at the cost of offering more
+  simple explanations.  This is unfortunate, I think, because robotics and
+  machine learning would benefit from a richer connection to these tools, and
+  are perhaps destined to reinvent many of them.</p>
+  
+  <p>The classic reference for robust control is <elib>Zhou97</elib>.
+  <elib>Petersen00</elib> has a treatment that does more of it's development in
+  the time-domain and via Riccati equations.</p>
 
-    <p> One of the most amazing features of the dynamic programming, additive
-    cost approach to optimal control is the relative ease with which it extends
-    to optimizing stochastic systems. </p>
+  <section><h1>Finite Markov Decision Processes</h1>
 
-    <subsection><h1>Graph search -- stochastic shortest path
-    problems</h1>
+    <p>We already had quick preview into stochastic optimal control in one of the cases where it is particularly easy: <a href="dp.html#mdp">finite Markov Decision Processes (MDPs)</a>.</p>
 
-      <p>For discrete systems, we can generalize our dynamics on a graph by
-      adding action-dependent transition probabilities to the edges.  This new
-      dynamical system is known as a Markov Decision Process (MDP), and we write
-      the dynamics completely in terms of the transition probabilities \[
-      \Pr(s[n+1] = s' | s[n] = s, a[n] = a). \] For discrete systems, this is
-      simply a big lookup table.  The cost that we incur for any execution of
-      system is now a random variable, and so we formulate the goal of control
-      as optimizing the expected cost, e.g. \begin{equation} J^*(s[0]) =
-      \min_{a[\cdot]} E \left[ \sum_{n=0}^\infty \ell(s[n],a[n]) \right].
-      \label{eq:stochastic_dp_optimality_cond} \end{equation}  Note that there
-      are many other potential objectives, such as minimizing the worst-case
-      error, but the expected cost is special because it preserves the dynamic
-      programming recursion: \[ J^*(s) = \min_a E \left[ \ell(s,a) + J^*(s')\right]
-      = \min_a \left[ \ell(s,a) + \sum_{s'} \Pr(s'|s,a) J^*(s') \right].\]
-      Remarkably, if we use these optimality conditions to construct our value
-      iteration algorithm \[ \hat{J}(s) \Leftarrow \min_a \left[ \ell(s,a) +
-      \sum_{s'} \Pr(s'|s,a) \hat{J}(s') \right],\] then this algorithm has the
-      same strong convergence guarantees of its counterpart for deterministic
-      systems.  And it is essentially no more expensive to compute!</p>
+    <todo>Perhaps a example of something other than expected-value cost (worst case, e.g. Katie's metastability?)</todo>
 
-    </subsection>
-
-    <subsection><h1>Stochastic interpretation of deterministic,
-    continuous-state value iteration</h1>
-
-      <p> There is a particularly cute observation to be made here. Let's assume
-      that we have discrete control inputs and discrete-time dynamics, but a
-      continuous state space.  Recall the fitted value iteration on a mesh
-      algorithm described above. In fact, the resulting update is exactly the
-      same as if we treated the system as a discrete state MDP with $\beta_i$
-      representing the probability of transitioning to state $x_i$! This sheds
-      some light on the impact of discretization on the solutions --
-      discretization error here will cause a sort of diffusion corresponding to
-      the probability of spreading across neighboring nodes.</p>
-
-    </subsection>
-
-  </section> <!-- end of stochastic optimal control -->
-
-  <section><h1>Linear Quadratic Gaussian (LQG)</h1></section>
-
-  <section><h1>Linear Exponential-Quadratic Gaussian (LEQG)</h1>
-
-    <p><elib>Jacobson73</elib> observed that it is also straight-forward to
-    minimize the objective: $$J = E\left[ \prod_{n=0}^\infty e^{\bx^T[n] {\bf Q}
-    \bx[n]} e^{\bu^T[n] {\bf R} \bu[n]} \right] = E\left[ e^{\sum_{n=0}^\infty
-    \bx^T[n] {\bf Q} \bx[n] + \bu^T[n] {\bf R} \bu[n]} \right],$$ with ${\bf Q}
-    = {\bf Q}^T \ge {\bf 0}, {\bf R} = {\bf R}^T > 0,$ by observing that the
-    cost is monotonically related to $\log{J}$, and therefore has the same
-    minima (this same trick forms the basis for "geometric programming"
-    <elib>Boyd07</elib>). This is known as the "Linear Exponential-Quadratic
-    Gaussian" (LEG or LEQG), and for the deterministic version of the problem
-    (no process nor measurement noise) the solution is identical to the LQR
-    problem; it adds no new modeling power.  But with noise, the LEQG optimal
-    controllers are different from the LQG controllers; they depend explicitly
-    on the covariance of the noise.  
-      
-    <todo>introduce the coefficient \sigma here, instead of just throwing it in
-    from the start. The coefficient $\sigma$ in the objective is referred to as
-    the "risk-sensitivity parameter" <elib>Whittle90</elib>.
-    </todo>
-    </p>
-
-    <todo>Insert simplest form of the derivation here, plus an example.</todo>
-
-    <p><elib>Whittle90</elib> provides an extensive treatment of this framework;
-    nearly all of the analysis from LQR/LQG (including Riccati equations,
-    Hamiltonian formulations, etc) have analogs for their versions with
-    exponential cost, and he argues that LQG and H-infinity control can
-    (should?) be understood as special cases of this approach.</p>
   </section>
 
-  <todo>
-  Stochastic optimal control.  Stochastic HJB.  Graph search.  LQR + Gaussian
-  noise.  Whitening filters. Stochastic trajectory optimization.  iLQG,
-  iLEQG/iLEG.
+  <section><h1>Linear optimal control</h1>
 
-  Stochastic verification. (Having bounds on expected value does yield bounds on
-  system state).
+    <subsection><h1>Analysis</h1>
+    
+      <subsubsection><h1>Common Lyapunov functions</h1>
+        <p>We've already seen one nice example of robustness analysis for
+        linear systems when we wrote a small optimization to find a <a
+        href="lyapunov.html#common-lyapunov-linear">common Lyapunov function
+        for uncertain linear systems</a>.  That example studied the dynamics
+        $\bx[n+1] = \bA \bx[n]$ where the coefficients of $\bA$ were unknown
+        but bounded.</p>  
+      
+        <p><a href="lyapunov.html#common-lyapunov">We also saw</a> that
+        essentially the same technique can be used to certify stability against
+        disturbances, e.g.: $$\bx[n+1] = \bA\bx[n] + \bw[n], \qquad \bw[n] \in
+        \mathcal{W},$$ where $\mathcal{W}$ describes some bounded set of
+        possible uncertainties.  In order to be compatible with convex
+        optimization, we often choose to describe $\mathcal{W}$ as either an
+        ellipsoid or as a convex polytope<elib>Boyd04a</elib>.  But let's
+        remember a very important point: in this situation with additive
+        disturbances, we can no-longer expect the system to converge stably to
+        the origin.  Our example before used the common Lyapunov function only
+        to certify the <i>invariance</i> of a region (if I start inside some region, then I'll never leave).</p>
 
-  Robust control.  Common Lyapunov functions.  Dissipation inequalities.
-  Guaranteed-cost control for linear systems (minimax). Loftberg 2003 for
-  constrained version (w/ disturbance feedback). H-infinity. Elad's regret
-  formulation? (or save this for adaptive control section?)
+      </subsubsection>
+ 
+      <subsubsection><h1>$L_2$ gain</h1>
 
-  LPV.  Pendulum example from Briat15 1.4.1 (and the references therein).
+        <p>In some sense, the common-Lyapunov analysis above is probably the
+        wrong analysis for linear systems (perhaps other systems as well).  It
+        might be unreasonable to assume that disturbances are bounded.
+        Moreover, we know that the response to an input (including the
+        disturbance input) is linear, so we expect the magnitude of the
+        deviation in $\bx$ compared to the undisturbed case to be proportional
+        to the magnitude of the disturbance, $\bw$.  In some sense the natural
+        bound for a linear system's response is to bound the magnitude of the
+        response relative to the magnitude of the disturbance. Typically, this
+        is done with the a scalar "$L_2$ gain", $\gamma$, defined as:
+        \begin{align*}\argmin_\gamma \quad \subjto& \quad \sup_{\bw(t) \in \int
+        \|\bw(t)\|^2 dt\le \infty} \frac{\int_0^T \| \bx(t) \|^2 dt}{\int_0^T
+        \| \bw(t) \|^2dt} \le \gamma^2, \qquad \text{or} \\ \argmin_\gamma
+        \quad \subjto& \sup_{\bw[n] \in \sum_n \|\bw[n]\|^2 \le \infty}
+        \frac{\sum_0^N \|\bx[n]\|^2}{\sum_0^N \| \bw[n] \|^2} \le
+        \gamma^2.\end{align*} The name "$L_2$ gain" comes from the use of the
+        $\ell_2$ norm on the signals $\bw(t)$ and $\bx(t)$, which is assumed
+        only to be finite.</p>
+      
+        <p>More often, these gains are written not in terms of $\bx[n]$
+        directly, but in terms of some "performance output", $\bz[n]$.  For
+        instance, if would would like to bound the cost of a quadratic
+        regulator objective as a function of the magnitude of the disturbance,
+        we can minimize $$ \min_\gamma \quad \subjto \quad \sup_{\bw[n]}
+        \frac{\sum_0^N \|\bz[n]\|^2}{\sum_0^N \| \bw[n] \|^2} \le \gamma^2,
+        \qquad \bz[n] = \begin{bmatrix}\sqrt{\bQ} \bx[n] \\ \sqrt{\bR}
+        \bu[n]\end{bmatrix}.$$  This is a simple but important idea, and
+        understanding it is the key to understanding the language around robust
+        control.  In particular the $H_2$ norm of a system (from input $\bw$ to
+        output $\bz$) is the energy of the impulse response; when $\bz$ is
+        chosen to represent the quadratic regulator cost as above, it
+        corresponds to the expected LQR cost.  The $H_\infty$ norm of a system
+        (from $\bw$ to $\bz$) is the largest singular value of the transfer
+        function; it corresponds to the $L_2$ gain.</p>
+        
+      </subsubsection>
 
-  elad / max's non-stochastic control.
-  </todo>
+      <subsubsection><h1>Small-gain theorem</h1>
+      
+        <todo>Robust control diagram</todo>
+        <p>Coming soon...</p>
+        
+      </subsubsection>
+
+      <subsubsection><h1>Dissipation inequalities</h1>
+      
+        <p>Coming soon...</p>
+      </subsubsection>
+
+      <todo>IQCs</todo>
+
+    </subsection>
+
+    <subsection><h1>$H_2$ design</h1>
+
+
+    </subsection>
+
+    <subsection><h1>$H_\infty$ design</h1>
+
+
+    </subsection>
+
+    <todo>  Loftberg 2003 for
+      constrained version (w/ disturbance feedback). 
+    </todo>
+
+    <subsection><h1>Linear Exponential-Quadratic Gaussian (LEQG)</h1>
+
+      <p><elib>Jacobson73</elib> observed that it is also straight-forward to
+      minimize the objective: $$J = E\left[ \prod_{n=0}^\infty e^{\bx^T[n] {\bf
+      Q} \bx[n]} e^{\bu^T[n] {\bf R} \bu[n]} \right] = E\left[
+      e^{\sum_{n=0}^\infty \bx^T[n] {\bf Q} \bx[n] + \bu^T[n] {\bf R} \bu[n]}
+      \right],$$ with ${\bf Q} = {\bf Q}^T \ge {\bf 0}, {\bf R} = {\bf R}^T >
+      0,$ by observing that the cost is monotonically related to $\log{J}$, and
+      therefore has the same minima (this same trick forms the basis for
+      "geometric programming" <elib>Boyd07</elib>). This is known as the
+      "Linear Exponential-Quadratic Gaussian" (LEG or LEQG), and for the
+      deterministic version of the problem (no process nor measurement noise)
+      the solution is identical to the LQR problem; it adds no new modeling
+      power.  But with noise, the LEQG optimal controllers are different from
+      the LQG controllers; they depend explicitly on the covariance of the
+      noise.  
+        
+      <todo>introduce the coefficient \sigma here, instead of just throwing it
+      in from the start. The coefficient $\sigma$ in the objective is referred
+      to as the "risk-sensitivity parameter" <elib>Whittle90</elib>.
+      </todo>
+      </p>
+
+      <todo>Insert simplest form of the derivation here, plus an example.</todo>
+
+      <p><elib>Whittle90</elib> provides an extensive treatment of this framework;
+      nearly all of the analysis from LQR/LQG (including Riccati equations,
+      Hamiltonian formulations, etc) have analogs for their versions with
+      exponential cost, and he argues that LQG and H-infinity control can
+      (should?) be understood as special cases of this approach.</p>
+    </subsection>
+
+    <subsection><h1>Adaptive control</h1>
+
+      <p>The standard criticism of $H_2$ optimal control is that minimizing the
+      expected value does not allow any guarantees on performance.  The
+      standard criticism of $H_\infty$ optimal control is that it concerns
+      itself with the worst case, and may therefore be conservative, especially
+      because distributions over possible disturbances chosen a priori may be
+      unnecessarily conservative.  One might hope that we could get some of
+      this performance back if we are able to update our models of uncertainty
+      online, adapting to the statistics of the disturbances we actually
+      receive.  This is one of the goals of adaptive control.</p> 
+
+      <p>One of the fundamental problems in online adaptive control is the
+      trade-off between exploration and exploitation.  Some inputs might drive
+      the system to build more accurate models of the dynamics / uncertainty
+      quickly, which could lead to better performance.  But how can we
+      formalize this trade-off?
+      </p>
+
+      <p>There has been some nice progress on this challenge in machine
+      learning in the setting of (contextual) <a
+      href="https://en.wikipedia.org/wiki/Multi-armed_bandit">multi-armed
+      bandit</a>  problems.  For our purposes, you can think of bandits as a
+      limiting case of an optimal control problem where there are no dynamics
+      (the effects of one control action do not effect the results of the next
+      control action).  In this simpler setting, the online optimization
+      community has developed exploration-exploitation strategies based on the
+      notion of minimizing <i>regret</i> -- typically the accumulated
+      difference in the performance achieved by my online algorithm vs the
+      performance that would have been achieved if I had been privy to the data
+      from my experiments before I started.  This has led to methods that make
+      use of concepts like upper-confidence bound (UCB) and more recently
+      bounds using a least-squares squares confidence bound
+      <elib>Foster20</elib> to provide bounds on the regret.</p>
+
+      <p>In the last few years, we've see these results translated into the setting of linear optimal control... </p>
+
+      <todo>finish this... cite Elad / Max</todo>
+    
+    </subsection>
+
+    <subsection><h1>Structured uncertainty</h1>
+    
+      <todo>$\mu$ synthesis. D-K iterations.</todo>
+
+    </subsection>
+
+    <subsection><h1>Linear parameter-varying (LPV) control</h1>
+
+      <todo>
+      Pendulum example from Briat15 1.4.1 (and the references therein).
+      </todo>
+    
+    </subsection>
+
+  </section>
+
+  <section><h1>Trajectory optimization</h1>
+  
+    <subsection><h1>Monte-carlo trajectory optimization</h1>
+      
+    </subsection>
+    <subsection><h1>Iterative $H_2$</h1>
+
+      <todo>cover iLQR and perhaps Scott's UKF version in the output-feedback chapter?</todo>
+    </subsection>
+
+    <subsection><h1>Finite-time (reachability) analysis</h1>
+
+      <p>Coming soon...</p>
+      <todo>Finite-time (reachability) analysis.  Sadra's polytopic
+        containment: Sadraddini19a</todo>
+  
+    </subsubsection>
+  
+    <subsection><h1>Robust MPC</h1>
+
+      <todo>Tube MPC, Sadra</todo>
+    
+    </subsection>
+
+    <todo>iLEQG/iLEG.</todo>
+
+  </section>
+
+  <section><h1>Nonlinear analysis and control</h1>
+  
+
+    <todo>Stochastic verification of nonlinear systems. (Having bounds on
+    expected value does yield bounds on system state).
+
+    Uncertainty quantification (e.g., linear guassian
+    approximation; discretize then closed form solutions using the transition
+    matrix....).  Monte-Carlo. Particle sim/filter. Rare event simulation </p>
+
+    <p>L2-gain with dissipation inequalities.  Finite-time verification with
+    sums of squares.</p>
+
+    <p>Occupation Measures</p>
+
+
+    SOS-based design
+    </todo>
+
+  </section>
+
+  <section><h1>Domain randomization</h1>
+    <todo>and empirical risk?</todo>
+  </section>
+
+  <section><h1>Extensions</h1>
+  
+    <subsection><h1>Alternative risk/robustness metrics</h1>
+    
+      <todo>e.g. Ani + Pavone</todo>
+    </subsection>
+
+  </section>
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
@@ -223,6 +391,24 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <div id="references"><section><h1>References</h1>
 <ol>
 
+<li id=Zhou97>
+<span class="author">Kemin Zhou and John C. Doyle</span>,
+<span class="title">"Essentials of Robust Control"</span>,Prentice Hall
+, <span class="year">1997</span>.
+
+</li><br>
+<li id=Petersen00>
+<span class="author">I. R. Petersen and V. A. Ugrinovskii and A. V. Savkin</span>,
+<span class="title">"Robust Control Design using H-infinity Methods"</span>,Springer-Verlag
+, <span class="year">2000</span>.
+
+</li><br>
+<li id=Boyd04a>
+<span class="author">Stephen Boyd and Lieven Vandenberghe</span>,
+<span class="title">"Convex Optimization"</span>,Cambridge University Press
+, <span class="year">2004</span>.
+
+</li><br>
 <li id=Jacobson73>
 <span class="author">D. Jacobson</span>,
 <span class="title">"Optimal stochastic linear systems with exponential performance criteria and their relation to deterministic differential games"</span>,
@@ -239,6 +425,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <span class="author">Peter Whittle</span>,
 <span class="title">"Risk-sensitive optimal control"</span>,Wiley New York
 , vol. 20, <span class="year">1990</span>.
+
+</li><br>
+<li id=Foster20>
+<span class="author">Foster, Dylan and Rakhlin, Alexander</span>,
+<span class="title">"Beyond {UCB}: Optimal and Efficient Contextual Bandits with Regression Oracles"</span>,
+<span class="publisher">Proceedings of the 37th International Conference on Machine Learning</span>, vol. 119, pp. 3199--3210, 13--18 Jul, <span class="year">2020</span>.
 
 </li><br>
 </ol>

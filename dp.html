@@ -850,9 +850,63 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
   <section><h1>Extensions</h1>
 
-    <todo> add section on extensions.  discounting.  finite-horizon / time-varying dynamics or cost.  call-out to the stochastic case in the future chapter.</todo>
+    <todo> discounting.  finite-horizon / time-varying dynamics or cost.</todo>
 
-    <p>There are many many nice extensions to the basic formulations that we've presented so far.  I'll try to list a few of the most important ones here.  I've also had a number of students in this course explore very interesting extensions; for example <elib>Yang20</elib> looked a imposing a low-rank structure on the (discrete-state) value function using ideas from matrix completion to obtain good estimates despite updating only a small fraction of the states.</p>
+    <p>There are many many nice extensions to the basic formulations that we've
+    presented so far.  I'll try to list a few of the most important ones here.
+    I've also had a number of students in this course explore very interesting
+    extensions; for example <elib>Yang20</elib> looked a imposing a low-rank
+    structure on the (discrete-state) value function using ideas from matrix
+    completion to obtain good estimates despite updating only a small fraction
+    of the states.</p>
+
+    <subsection id="mdp"><h1>Stochastic control for finite MDPs</h1>
+
+      <p> One of the most amazing features of the dynamic programming, additive
+      cost approach to optimal control is the relative ease with which it
+      extends to optimizing stochastic systems. </p>
+
+      <p>For discrete systems, we can generalize our dynamics on a graph by
+      adding action-dependent transition probabilities to the edges. This new
+      dynamical system is known as a Markov Decision Process (MDP), and we
+      write the dynamics completely in terms of the transition probabilities
+      \[\Pr(s[n+1] = s' | s[n] = s, a[n] = a). \] For discrete systems, this is
+      simply a big lookup table.  The cost that we incur for any execution of
+      system is now a random variable, and so we formulate the goal of control
+      as optimizing the expected cost, e.g. \begin{equation} J^*(s[0]) =
+      \min_{a[\cdot]} E \left[ \sum_{n=0}^\infty \ell(s[n],a[n]) \right].
+      \label{eq:stochastic_dp_optimality_cond} \end{equation}  Note that there
+      are many other potential objectives, such as minimizing the worst-case
+      error, but the expected cost is special because it preserves the dynamic
+      programming recursion: \[ J^*(s) = \min_a E \left[\ell(s,a) +
+      J^*(s')\right] = \min_a \left[ \ell(s,a) + \sum_{s'} \Pr(s'|s,a) J^*(s')
+      \right].\] Remarkably, if we use these optimality conditions to construct
+      our value iteration algorithm \[ \hat{J}(s) \Leftarrow \min_a \left[
+      \ell(s,a) + \sum_{s'} \Pr(s'|s,a) \hat{J}(s') \right],\] then this
+      algorithm has the same strong convergence guarantees of its counterpart
+      for deterministic systems.  And it is essentially no more expensive to
+      compute!</p>
+
+      <subsubsection><h1>Stochastic interpretation of deterministic,
+      continuous-state value iteration</h1>
+    
+          <p> There is a particularly nice observation to be made here. Let's
+          assume that we have discrete control inputs and discrete-time
+          dynamics, but a continuous state space.  Recall the fitted value
+          iteration on a mesh algorithm described above. In fact, the resulting
+          update is exactly the same as if we treated the system as a discrete
+          state MDP with $\beta_i$ representing the probability of
+          transitioning to state $x_i$! This sheds some light on the impact of
+          discretization on the solutions -- discretization error here will
+          cause a sort of diffusion corresponding to the probability of
+          spreading across neighboring nodes.</p>
+    
+      </subsubsection> 
+
+      <p>This is a preview of a much more general toolkit that we develop later
+      for <a href="robust.html">stochastic and robust control</a>.</p>
+
+    </subsection>
 
     <subsection id="LP"><h1>Linear Programming Approach</h1>
 
