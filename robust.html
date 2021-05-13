@@ -173,18 +173,28 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         Moreover, we know that the response to an input (including the
         disturbance input) is linear, so we expect the magnitude of the
         deviation in $\bx$ compared to the undisturbed case to be proportional
-        to the magnitude of the disturbance, $\bw$.  In some sense the natural
-        bound for a linear system's response is to bound the magnitude of the
-        response relative to the magnitude of the disturbance. Typically, this
-        is done with the a scalar "$L_2$ gain", $\gamma$, defined as:
-        \begin{align*}\argmin_\gamma \quad \subjto& \quad \sup_{\bw(t) \in \int
-        \|\bw(t)\|^2 dt\le \infty} \frac{\int_0^T \| \bx(t) \|^2 dt}{\int_0^T
-        \| \bw(t) \|^2dt} \le \gamma^2, \qquad \text{or} \\ \argmin_\gamma
-        \quad \subjto& \sup_{\bw[n] \in \sum_n \|\bw[n]\|^2 \le \infty}
-        \frac{\sum_0^N \|\bx[n]\|^2}{\sum_0^N \| \bw[n] \|^2} \le
-        \gamma^2.\end{align*} The name "$L_2$ gain" comes from the use of the
-        $\ell_2$ norm on the signals $\bw(t)$ and $\bx(t)$, which is assumed
-        only to be finite.</p>
+        to the magnitude of the disturbance, $\bw$.  A more natural bound for a
+        linear system's response is to bound the magnitude of the response
+        (from zero initial conditions) relative to the magnitude of the
+        disturbance.  
+        </p>
+        
+        <!--
+        <example><h1>Gain bounds for linear maps</h1>
+          <p>Allow me to make the point with a much simpler problem.  Imagine I
+          have just a affine function (not even a system): $x = aw$.  One could certainly make the statement: if $|w|\le 1$, then $|x| \le |a|$</p>
+        </example>
+        -->
+        <p>
+        Typically, this is done with the a scalar "$L_2$
+        gain", $\gamma$, defined as: \begin{align*}\argmin_\gamma \quad
+        \subjto& \quad \sup_{\bw(\cdot) \in \int \|\bw(t)\|^2 dt\le \infty}
+        \frac{\int_0^T \| \bx(t) \|^2 dt}{\int_0^T \| \bw(t) \|^2dt} \le
+        \gamma^2, \qquad \text{or} \\ \argmin_\gamma \quad \subjto&
+        \sup_{\bw[\cdot] \in \sum_n \|\bw[n]\|^2 \le \infty} \frac{\sum_0^N
+        \|\bx[n]\|^2}{\sum_0^N \| \bw[n] \|^2} \le \gamma^2.\end{align*} The
+        name "$L_2$ gain" comes from the use of the $\ell_2$ norm on the
+        signals $\bw(t)$ and $\bx(t)$, which is assumed only to be finite.</p>
       
         <p>More often, these gains are written not in terms of $\bx[n]$
         directly, but in terms of some "performance output", $\bz[n]$.  For

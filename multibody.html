@@ -179,7 +179,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     \right]_i = \sum_{j,k} c_{ijk} \dot{q}_j \dot{q}_k, \qquad c_{ijk}(\bq) =
     \pd{M_{ij}}{q_k} - \frac{1}{2}\pd{M_{jk}}{q_k},$$ (e.g. it also quadratic
     in $\dot{\bq}$) and, for the appropriate choice of $\bC$, we have that
-    $\bM(q) - 2\bC(\bq,\dot{\bq})$ is skew-symmetric<elib>Slotine90</elib>.</p>
+    $\bM(\bq) - 2\bC(\bq,\dot{\bq})$ is skew-symmetric<elib>Slotine90</elib>.</p>
+
+    <!-- Khalil and Dombre have c_{ijk} = \frac{1}{2}[\pd{H_{ij}}{q_k} + \pd{H_{ik}}{q_j} - \pd{H_{jk}}{q_i}], which is slightly different... -->
 
     <p>Note that we have chosen to use the notation of second-order systems
     (with $\dot{\bq}$ and $\ddot{\bq}$ appearing in the equations) throughout
@@ -210,6 +212,19 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <drake></drake> uses a related formulation from <elib>Jain11</elib>.</p>
   
     </subsection> <!-- end recursive algorithms -->
+
+    <subsection><h1>Hamiltonian Mechanics</h1>
+
+      <p>In some cases, it might be preferable to use the <a
+      href="https://en.wikipedia.org/wiki/Hamiltonian_mechanics">Hamiltonian
+      formulation of the dynamics</a>, with state variables $\bq$ and $\bp$
+      (instead of $\dot{\bq}$), where $\bp = \pd{L}{\dot{\bq}}^T = \bM \dot\bq$ results in
+      the dynamics: \begin{align*}\bM(\bq) \dot{\bq} =& \bp \\ \dot{\bp} =&
+      {\bf c}_H(\bq,\bp) + \tau_g(\bq) + \bB\bu, \qquad \text{where}\quad
+      {\bf c}_H(\bq,\bp) = \frac{1}{2} \left(\pd{ \left[ \dot{\bq}^T \bM(\bq)
+      \dot{\bq}\right]}{\bq}\right)^T.\end{align*}</p>
+
+    </subsection> 
 
     <subsection id="bilateral"><h1>Bilateral Position Constraints</h1>
 
