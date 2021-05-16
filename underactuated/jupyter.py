@@ -78,6 +78,10 @@ def SetupMatplotlibBackend(wishlist=["notebook"]):
     otherwise falls back to inline mode.
     Returns True iff the final backend is interactive.
     """
+    # To find available backends, one can access the lists:
+    # matplotlib.rcsetup.interactive_bk
+    # matplotlib.rcsetup.non_interactive_bk
+    # matplotlib.rcsetup.all_backends
     if running_as_notebook:
         ipython = get_ipython()
         # Short-circuit for google colab.

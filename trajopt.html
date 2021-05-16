@@ -1241,6 +1241,43 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <subsection><h1>Explicit model-predictive control</h1></subsection>
 
   </section>
+
+  <section><h1>Open Questions / Project Ideas</h1>
+  
+    <p>Here are some open questions that I have about the algorithms presented
+    here.  I won't go so far as to say that the answers are not known, only
+    that I don't know them, or at least that I would like to understand /
+    implement them.  They could be great topics for a final project and/or great contributions to <drake></drake>.</p>
+
+    <ul>
+      <li>Direct collocation for second-order systems.  The cubic spline for
+      state and first-order hold for inputs is a sweet spot for parameterizing
+      the <a href="#direct_collocation">direct collocation</a> method for
+      first-order systems.  We apply this to second-order systems by
+      parameterizing the trajectories for $\bq(t)$ and $\dot{\bq}(t)$ as if
+      they were independent, and only link them together through the dynamic
+      constraints (<elib>Junge05</elib>, for instance, discusses how
+      inefficient this can be).  Is there a sweet spot parameterization for
+      second-order systems that still gives the third-order integration
+      accuracy?  How much of a practical difference does this make for
+      optimization on our model systems?</li>
+
+      <li>Direct collocation with implicit dynamics.  The manipulation
+      equations are naturally described in an <a
+      href="lyapunov.html#ex:implicit">implicit form</a> that avoids
+      unnecessary inversion of the mass matrix.  It's often possible, and
+      substantially better, to write the dynamics constraints in trajectory
+      optimization using this implicit form, ${\bf g}(\bq,\dot\bq,\ddot\bq,\bu)
+      = 0$, instead of ${\bf f}(\bq,\dot\bq, \dot\bu) - \ddot\bq = 0.$  Can we
+      use this for all three dynamic evaluations in the <a
+      href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1trajectory__optimization_1_1_direct_collocation_constraint.html">direct
+      collocation constraint</a>, which in explicit form evaluates ${\bf f}$ at
+      the sample points in order to compute the expected derivative at the
+      collocation point?</li>
+    </ul>
+
+
+  </section>
   
   <section><h1>Exercises</h1>
 
