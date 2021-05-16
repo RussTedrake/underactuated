@@ -474,7 +474,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </subsection>
 
-    <subsection><h1>Experiment design as a trajectory optimization</h1>
+    <subsection id="mbp_experiment_design"><h1>Experiment design as a trajectory optimization</h1>
     
       <p>One key assumption for any claims about our parameter estimation
       algorithms recovering the true identifiable lumped parameters is that the
@@ -919,7 +919,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       Juang93, also in Juang95 section 10.7, Brunton19, VanOverschee96, etc.
       Inspiration is similar to Simchowitz and Boczar; we'd expect the Kalman
       rates to be faster than the generic fits if the Gaussian iid assumption
-      is valid.</todo>
+      is valid.  Looks like there are more papers/tutorials at https://www.dartmouth.edu/~mqphan/sidhlights.html</todo>
 
     </subsection>
 
@@ -1037,6 +1037,42 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     efficiency/generalization, and with respect to actually designing planners
     / controllers based on these models that have such complex
     descriptions.</p>
+
+    <subsection><h1>Generating training data</h1>
+    
+      <p>One extremely interesting question that arises when fitting rich
+      nonlinear models like neural networks is the question of how to generate
+      the training data.  You might have the general sense that we would like
+      data that provides some amount of "coverage" of the state space; this is
+      particularly challenging for underactuated systems since we have dynamic
+      constraints restricting our trajectories in state space.</p>  
+      
+      <p>For multibody parameter estimation <a href="#mbp_experiment_design">we
+      discussed</a> using the condition number of the data matrix as an
+      explicit objective for experiment design.  This was a luxury of using
+      <i>linear</i> least-squares optimization for the regression and it takes
+      advantage of the specialized knowledge we have from the manipulator
+      equations about the model structure.  Unfortunately, we don't have an
+      analogous concept in the more general case of nonlinear least squares
+      with general function approximators.  This approach also works for
+      identifying linear dynamical systems.  The challenge is here perhaps
+      considered less severe since for linear models in the noise-free case
+      even data generated from the impulse response is sufficient for
+      identification.</p> 
+      
+      <p>This topic has received considerable attention lately in the context
+      of <i>model-based reinforcement learning</i> (e.g.
+      <elib>Agarwal20b</elib>).  Broadly speaking, in the ideal case we would
+      like the training data we use for system identification to match the
+      distribution of data that we will encounter when executing the optimal
+      policy.  But one cannot know this distribution until we've designed our
+      controller, which (in our current discussion) requires us to have a
+      model.  It is a classic "chicken and the egg" problem.  In most cases, it
+      speaks to the importance to interleaving system identification and
+      control design instead of the simpler notion of performing identification
+      once and then using the model forevermore.</p>
+    
+    </subsection>
 
     <subsection><h1>From state observations</h1>
 
@@ -1319,6 +1355,12 @@ PhD thesis, Massachusetts Institute of Technology, June, <span class="year">2012
 <span class="author">Umenberger, Jack and W{\aa}gberg, Johan and Manchester, Ian R and Sch{\"o}n, Thomas B</span>,
 <span class="title">"Maximum likelihood identification of stable linear dynamical systems"</span>,
 <span class="publisher">Automatica</span>, vol. 96, pp. 280--292, <span class="year">2018</span>.
+
+</li><br>
+<li id=Agarwal20b>
+<span class="author">Alekh Agarwal and Nan Jiang and Sham M. Kakade and Wen Sun</span>,
+<span class="title">"Reinforcement Learning: Theory and Algorithms"</span>,Online Draft
+, <span class="year">2020</span>.
 
 </li><br>
 </ol>
