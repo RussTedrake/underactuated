@@ -414,17 +414,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \\ 0 & 1 \end{bmatrix} \succeq 0,$$ returns $a = 0$ (up to numerical
       tolerances).</p>
 
-      <p>The value in this is immediate for linear systems.  For example, we can
-      formulate the search for a Lyapunov function for the linear system
+      <p>The value in this is immediate for linear systems.  For example, we
+      can formulate the search for a Lyapunov function for the linear system
       $\dot\bx = {\bf A} \bx$ by using the parameters ${\bf p}$ to populate a
-      symmetric matrix ${\bf P}$ and then write the SDP: \[ \find_{\bf p} \quad
-      \subjto \quad {\bf P} \succeq 0, \quad {\bf PA} + {\bf A}^T {\bf P}
-      \preceq 0.\]  Note that you would probably never use that particular
-      formulation, since there specialized algorithms for solving the simple
-      Lyapunov equation which are more efficient and more numerically stable.
-      But the SDP formulation does provide something new -- we can now easily
-      formulate the search for a <i>"common Lyapunov function"</i> for uncertain
-      linear systems.</p>
+      symmetric matrix ${\bf P}$ and then write the SDP: \begin{equation}
+      \find_{\bf p} \quad \subjto \quad {\bf P} \succeq 0, \quad {\bf PA} +
+      {\bf A}^T {\bf P} \preceq 0.\label{eq:lyap} \end{equation}  Note that you
+      would probably never use that particular formulation, since there
+      specialized algorithms for solving the simple Lyapunov equation which are
+      more efficient and more numerically stable. But the SDP formulation does
+      provide something new -- we can now easily formulate the search for a
+      <i>"common Lyapunov function"</i> for uncertain linear systems.</p>
 
       <example id="common-lyapunov-linear"><h1>Common Lyapunov analysis for
       linear systems</h1>
@@ -1397,14 +1397,38 @@ V = RegionOfAttraction(sys, context)
     of a feedback motion planning algorithm, which is the subject of an <a
     href="feedback_motion_planning.html">upcoming chapter</a>.</p>
 
-    <p>For control design using convex optimization, we will lean heavily on
-    the assumption of the dynamics being control-affine.  Let me write it this
-    time as: $$\dot{\bx} = {\bf f}(\bx) + \sum_{i=0}^{m-1} u_i {\bf f}_i(x).$$
-    As we have discussed, for mechanical systems this assumption is perfectly
-    reasonable.</p>
+    <subsection id="PQ"><h1>State feedback for linear systems</h1>
 
-    <subsection id="control_alternations"><h1>Control Design via Alternations</h1>
+      <p>Let's re-examine the Lyapunov conditions for linear systems from Eq.
+      \ref{eq:lyap}, but now add in a linear state feedback $\bu = \bK\bx$,
+      resulting in the closed-loop dynamics $\dot{\bx} = (\bA + \bB\bK)\bx.$
+      One can show that the set of all stabilizing $\bK$ can be characterized
+      by the following two matrix inequalities <elib>Boyd94</elib>: \[{\bf P} =
+      {\bf P}^T \succ 0, \qquad {\bf P}(\bA + \bB\bK) + (\bA + \bB\bK)^T{\bf P}
+      \prec 0. \]  Unfortunately, these inequalities are <i>bilinear</i> in the
+      decision variables, ${\bf P}$ and $\bK$, and therefore non-convex.  It
+      turns out that we can turn these into <i>linear</i> matrix inequalities
+      (LMIs) through a simple change of coordinates, $\bQ = {\bf P}^{-1}, {\bf
+      Y} = \bK{\bf P}^{-1}$, resulting in \[ \bQ = \bQ^T \succ 0, \qquad \bA\bQ
+      + \bQ\bA^T + \bB{\bf Y} + {\bf Y}^T \bB^T \prec 0. \]  Furthermore, given
+      matrices $\bA$ and $\bB$, there exists a matrix $\bK$ such that $(\bA +
+      \bB\bK)$ is stable if and only if there exist matrices $\bQ$ and ${\bf
+      Y}$ which satisfy this (strict) linear matrix inequality.</p>
+
+      <todo>The robust state-feedback design for polytopic uncertainty example
+      from LMIsinSYSTEMSCONTROL.pdf (in Zotero) by Denis ARZELIER essentially
+      combines this with the linear common-lyapunov function example. </todo>
     
+    </subsection>
+
+    <subsection id="control_alternations"><h1>Control design via alternations</h1>
+    
+      <p>For control design using convex optimization, we will lean heavily on
+      the assumption of the dynamics being control-affine.  Let me write it
+      this time as: $$\dot{\bx} = {\bf f}(\bx) + \sum_{i=0}^{m-1} u_i {\bf
+      f}_i(x).$$ As we have discussed, for mechanical systems this assumption
+      is perfectly reasonable.</p>
+
       <p>For linear optimal control, we found controllers of the form, $\bu =
       -\bK \bx.$  The natural generalization of this to polynomial analysis
       will be to look for controllers of the form $\bu = \pi(\bx)$, where

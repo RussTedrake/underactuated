@@ -505,15 +505,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     </subsection>
 
     <subsection id="lmi"><h1>LQR as a convex optimization</h1>
-      <p>Solving the algebraic Riccati equation is the preferred way of
-      computing thse LQR solution.  But it is helpful to know that one <i>could
-      </i> also compute it with convex optimization, specifically by formulating
-      the optimality conditions as a Linear Matrix Inequality (LMI).  In
-      addition to deepening our understanding, this can be useful if we want to
-      extend the LQR solution or solve for the LQR gains jointly as part of a
+
+      <p>One can also design the LQR gains using linear matrix inequalities
+      (LMIs). I will defer the derivation til we cover the policy gradient view
+      of LQR, because the LMI formulation is based on a change of variables
+      from the basic policy evaluation criterion.  If you want to look ahead,
+      you can find that formulation <a
+      href="policy_search.html#lqr_lmi">here</a>.</p>
+
+      <p>Solving the algebraic Riccati equation is still the preferred way of
+      computing the LQR solution.  But it is helpful to know that one could
+      also compute it with convex optimization.  In addition to deepening our
+      understanding, this can be useful for generalizing the basic LQR solution
+      (e.g. for <a href="lyapunov.html#common-lyapunov-linear">robust
+      stabilization</a>) or to solve for the LQR gains jointly as part of a
       bigger optimization.</p>
-      
-      <p>Derivation coming soon...</p>
 
     </subsection>
 

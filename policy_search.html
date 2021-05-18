@@ -185,11 +185,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     </subsection>
 
-    <subsection><h1>A nonconvex objective in ${\bf K}$</h1>
+    <subsection id="lqr_lmi"><h1>A nonconvex objective in ${\bf K}$</h1>
 
       <p>Unfortunately, the Lyapunov equation represents a nonlinear constraint
       (on the pair $\bK$, ${\bf X}$).  Indeed, it is well known that even the
-      set of controllers that stabilizing a linear systems can be non-convex in
+      set of controllers that stabilizing a linear systems can be nonconvex in
       the parameters $\bK$ when there are 3 or more state
       variables<elib>Fazel18</elib>.</p>
 
@@ -210,10 +210,28 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <p>Since the set of controllers that achieve finite total cost is
       non-convex, clearly the cost function we consider here is also
-      non-convex.  For this problem we do know a <a href="lqr.html#lmi">change
-      of variables that make the problem convex</a>, but what implications does
-      this non-convexity result have for searching directly in the policy
-      parameters $\bK$?</p>
+      non-convex.</p>  
+      
+      <p>As an aside, for this problem we do actually know a change of
+      variables that make the problem convex.  Let's introduce a new variable
+      ${\bf Y} = {\bf KX}.$  Since ${\bf X}$ is PSD, we can back out $\bK =
+      {\bf YX}^{-1}.$  Now we can rewrite the optimization: \begin{align*}
+      \min_{{\bf X}, {\bf Y}} & \quad \trace{\bQ^\frac{1}{2} {\bf X}
+      \bQ^\frac{1}{2}} + \trace{\bR^\frac{1}{2} {\bf Y} {\bf X}^{-1} {\bf Y}^T
+      \bR^\frac{1}{2}} \\ \subjto & \quad \bA{\bf X} - \bB{\bf Y} + {\bf
+      X}\bA^T - {\bf Y}^T\bB^T + {\bf \Omega} = 0, \\ & \quad {\bf X} \succ
+      0.\end{align*}  The second term in the objective is still nonconvex, but
+      we can replace it exactly <elib>Johnson07</elib> with one more slack
+      variable, ${\bf Z}$, and a Schur complement: \begin{align*} \min_{{\bf
+      X}, {\bf Y}, {\bf Z}} & \quad \trace{\bQ^\frac{1}{2} {\bf X}
+      \bQ^\frac{1}{2}} + \trace{\bf Z} \\ \subjto & \quad \bA{\bf X} - \bB{\bf
+      Y} + {\bf X}\bA^T - {\bf Y}^T\bB^T + {\bf \Omega} = 0, \\ & \quad
+      \begin{bmatrix} {\bf Z} & \bR^\frac{1}{2} {\bf Y} \\ {\bf Y}^T
+      \bR^\frac{1}{2} & {\bf X} \end{bmatrix} \succ 0, \qquad {\bf X} \succ
+      0.\end{align*}</p>
+      
+      <p>Nevertheless, our original question is asking about searching directly
+      in the original parameterization, $\bK$.  If the objective in nonconvex in those parameters, then how should we perform the search?</p>
   
     </subsection>
 
@@ -483,6 +501,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 <span class="author">Maryam Fazel and Rong Ge and Sham M. Kakade and Mehran Mesbahi</span>,
 <span class="title">"Global Convergence of Policy Gradient Methods for the Linear Quadratic Regulator"</span>,
 <span class="publisher">International Conference on Machine Learning</span>, <span class="year">2018</span>.
+
+</li><br>
+<li id=Johnson07>
+<span class="author">Johnson, Erik A and Erkus, Baris</span>,
+<span class="title">"Dissipativity and performance analysis of smart dampers via LMI synthesis"</span>,
+<span class="publisher">Structural Control and Health Monitoring: The Official Journal of the International Association for Structural Control and Monitoring and of the European Association for the Control of Structures</span>, vol. 14, no. 3, pp. 471--496, <span class="year">2007</span>.
 
 </li><br>
 <li id=Mohammadi19>
