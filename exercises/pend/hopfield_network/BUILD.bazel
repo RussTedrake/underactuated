@@ -6,17 +6,14 @@
 
 load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 
-# Currently disabled pending resolution of
-# https://github.com/RussTedrake/underactuated/issues/432
-
-#rt_ipynb_test(
-#    name = "hopfield_network",
-#    srcs = ["hopfield_network.ipynb"],
-#    # Downloads data from upload.wikimedia.org and yann.lecun.com.
-#    tags = ["requires-network"],
-#    deps = [
-#        "//underactuated",
-#        "//underactuated/exercises",
-#        "//underactuated/exercises/pend/hopfield_network",
-#    ],
-#)
+rt_ipynb_test(
+    name = "hopfield_network",
+    srcs = ["hopfield_network.ipynb"],
+    # Downloads data from upload.wikimedia.org and yann.lecun.com.
+    tags = ["requires-network"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/pend/hopfield_network",
+    ],
+)
