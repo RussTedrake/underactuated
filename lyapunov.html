@@ -1675,11 +1675,11 @@ V = RegionOfAttraction(sys, context)
     <exercise><h1>Gradient Flow in Euclidean Space</h1>
 
       <p>We can use Lyapunov analysis to analyze the behavior of optimization algorithms like gradient descent.
-        Consider an objective function $\ell:\mathbf{R}^n\rightarrow \mathbf{R}$ with positive-definite $\ell(x)$, and we want to minimize $\ell(x)$. 
+        Consider an objective function $\ell:\mathbf{R}^n\rightarrow \mathbf{R}$, and we want to minimize $\ell(x)$. 
         The gradient flow is a continuous-time analog of gradient descent and is defined as $\dot{x} = -\frac{\partial \ell}{\partial x}$.
         
         <ol type="a">
-          <li>Show that the objective function $\ell(x)$ is a Lyapunov function of the gradient flow.</li>
+          <li>Show that the objective function $\ell(x)-\ell(x^*)$ is a Lyapunov function of the gradient flow where $x^*$ is a unique minizer.</li>
   
           <li>We can use Lyapunov to argue that an optimization problem will converge to a global optimum, even if it is non-convex.
             Suppose that the Lyapunov function $\ell$, has negative definite $\dot{\ell}$. Show that the objective function $\ell$ has a unique minimizer at the origin.</li>
