@@ -136,6 +136,24 @@ Output Feedback (aka Pixels-to-Torques)</h1>
 
   </section>
 
+  <todo>
+    Russ Tedrake  11:28 AM
+so we have three broad approaches to searching for linear dynamical controllers (for linear dynamical plants): 1) gradient descent in the original parameters.  you have asymptotic convergence, but not a guaranteed rate.
+2) convex reparameterizations (e.g. from scherer).  in here there is a rank condition is trivially satisfied, and therefore disappears, when dim(xc) >= dim(x)
+3) Youla/SLS, which in the time-domain is a finite-time synthesis but can be used to recover the LDC to arbitrary precision (e.g. via Ho-Kalman).
+is that a reasonable summary? 
+
+jack  11:36 AM
+I think this is reasonable :slightly_smiling_face: I would probably add the Riccati solutions of the famous DGKF paper https://authors.library.caltech.edu/3087/1/DOYieeetac89.pdf (if you wanted “completeness”)
+gradient descent in original parameters; no suboptimal stationary points for minimal controllers
+finite dimensional convex reparametrizations from Scherer, as you wrote
+DGKF solution: solve two Riccati equations
+Disturbance feedback: Youla/Q/SLS, etc. Synthesis problem is convex, but the decision variable(s) are infinite dimensional, but stable, transfer functions. Various approximations can be used (most common these days, for academic examples and learning theorists, is FIR).
+11:37
+I would be a bit cautious about recovering the LDC with Ho-Kalman. Nik Matni and James Anderson had a paper https://ieeexplore.ieee.org/abstract/document/8262844 about recovering state-space controllers from FIRs, in the SLS setting. According to James, I don’t think they meant it as a serious paper (i.e. something that you would ever actually implement), just an investigation.
+I suppose I should re-read that paper, but there was no dimensionality reduction going on, when recovering a state-space representation of the FIR
+  </todo>
+
   <section><h1>Static Output Feedback</h1>
   
     <subsection><h1>For Linear Systems</h1></subsection>

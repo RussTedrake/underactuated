@@ -220,14 +220,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       \bQ^\frac{1}{2}} + \trace{\bR^\frac{1}{2} {\bf Y} {\bf X}^{-1} {\bf Y}^T
       \bR^\frac{1}{2}} \\ \subjto & \quad \bA{\bf X} - \bB{\bf Y} + {\bf
       X}\bA^T - {\bf Y}^T\bB^T + {\bf \Omega} = 0, \\ & \quad {\bf X} \succ
-      0.\end{align*}  The second term in the objective is still nonconvex, but
-      we can replace it exactly <elib>Johnson07</elib> with one more slack
-      variable, ${\bf Z}$, and a Schur complement: \begin{align*} \min_{{\bf
-      X}, {\bf Y}, {\bf Z}} & \quad \trace{\bQ^\frac{1}{2} {\bf X}
-      \bQ^\frac{1}{2}} + \trace{\bf Z} \\ \subjto & \quad \bA{\bf X} - \bB{\bf
-      Y} + {\bf X}\bA^T - {\bf Y}^T\bB^T + {\bf \Omega} = 0, \\ & \quad
-      \begin{bmatrix} {\bf Z} & \bR^\frac{1}{2} {\bf Y} \\ {\bf Y}^T
-      \bR^\frac{1}{2} & {\bf X} \end{bmatrix} \succ 0, \qquad {\bf X} \succ
+      0.\end{align*}  The second term in the objective appears to be nonconvex,
+      but is actually convex and we can replace it exactly
+      <elib>Johnson07</elib> with one more slack variable, ${\bf Z}$, and a
+      Schur complement: \begin{align*} \min_{{\bf X}, {\bf Y}, {\bf Z}} & \quad
+      \trace{\bQ^\frac{1}{2} {\bf X} \bQ^\frac{1}{2}} + \trace{\bf Z} \\
+      \subjto & \quad \bA{\bf X} - \bB{\bf Y} + {\bf X}\bA^T - {\bf Y}^T\bB^T +
+      {\bf \Omega} = 0, \\ & \quad \begin{bmatrix} {\bf Z} & \bR^\frac{1}{2}
+      {\bf Y} \\ {\bf Y}^T \bR^\frac{1}{2} & {\bf X} \end{bmatrix} \succeq
       0.\end{align*}</p>
       
       <p>Nevertheless, our original question is asking about searching directly
@@ -380,10 +380,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     1 & 1 & 3 \end{bmatrix}.$$  Here the linear static-output-feedback policy
     can be written as $u = -ky$, with a single scalar parameter $k$. </p>
 
-    <p>Go ahead and make a plot of the maximum eigenvalue of the closed-loop
+    <p>Here is a plot of the maximum eigenvalue (real-part) of the closed-loop
     system, as a function of $k$.  The system is only stable when this maximum
-    eigenvalue is less than zero.  You'll find the set of stabilizing $k$'s is
-    a disconnected set.</p>
+    value is less than zero.  You'll find the set of stabilizing $k$'s is a
+    disconnected set.</p>
+
+    <figure><img width="80%" src="data/static_feedback_disconnected.svg"/></figure>
 
     </example>
 
