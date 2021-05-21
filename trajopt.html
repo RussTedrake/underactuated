@@ -1063,13 +1063,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         $\bu(t)$. There is one technical condition required: the trajectory you
         give me for $x(t)$ and $y(t)$ needs to be continuously differentiable
         (four times).</p>
-  
-        <p>To see this, first observe that from ($\ref{eq:quad_x}$) and
+
+        <p>To see this, recall the equations of motion for this system were
+        given by: \begin{gather} m \ddot{x} = -(u_1 + u_2)\sin\theta,
+        \label{eq:quad_x}\\ m \ddot{y} = (u_1 + u_2)\cos\theta - mg,
+        \label{eq:quad_y}\\ I \ddot\theta = r (u_1 - u_2) \label{eq:quad_theta}
+        \end{gather} Observe that from ($\ref{eq:quad_x}$) and
         ($\ref{eq:quad_y}$) we have $$\frac{-m \ddot{x}}{ m \ddot{y} + mg} =
         \frac{(u_1 + u_2)\sin\theta}{(u_1+u_2)\cos\theta} = \tan\theta.$$ In
         words, given $\ddot{x}(t)$ and $\ddot{y}(t)$, I can solve for
-        $\theta$(t).  I can differentiate this relationship (in time) twice more
-        to obtain $\ddot\theta$.  Using ($\ref{eq:quad_theta}$) with
+        $\theta$(t).  I can differentiate this relationship (in time) twice
+        more to obtain $\ddot\theta$.  Using ($\ref{eq:quad_theta}$) with
         ($\ref{eq:quad_x}$) or ($\ref{eq:quad_y}$) give us two linear equations
         for $u_1$ and $u_2$ which are easily solved.</p>
   
