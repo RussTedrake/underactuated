@@ -14,9 +14,9 @@
 
     <script src="htmlbook/mathjax-config.js" defer></script> 
     <script type="text/javascript" id="MathJax-script" defer
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+      src="htmlbook/MathJax/es5/tex-chtml.js">
     </script>
-    <script>window.MathJax || document.write('<script type="text/javascript" src="htmlbook/MathJax/es5/tex-chtml.js" defer><\/script>')</script>
+    <script>window.MathJax || document.write('<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" defer><\/script>')</script>
 
     <link rel="stylesheet" href="htmlbook/highlight/styles/default.css">
     <script src="htmlbook/highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
@@ -66,17 +66,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     and $U$ as the total potential energy of the system, $L = T-U$, and $Q_i$
     as the generalized force corresponding to $q_i$, the Lagrangian dynamic
     equations are: \begin{equation} \frac{d}{dt}\pd{L}{\dot{q}_i} - \pd{L}{q_i}
-    = Q_i.\end{equation} You can think of this as a generalization of Newton's
+    = Q_i.\end{equation}  You can think of them as a generalization of Newton's
     equations.  For a particle, we have $T=\frac{1}{2}m \dot{x}^2,$ so
     $\frac{d}{dt}\pd{L}{\dot{x}} = m\ddot{x},$ and $\pd{L}{x} = -\pd{U}{x} = f$
     amounting to $f=ma$.  But the Lagrangian derivation works in generalized
-    coordinate systems and even for constrained motion.  If you are not
-    comfortable with these equations, then any good book chapter on rigid body
-    mechanics can bring you up to speed -- try <elib>Craig89</elib> for a very
-    practical guide to robot kinematics/dynamics, <elib>Goldstein02</elib> for
-    a more hard-core dynamics text or <elib>Thornton03</elib> for a classical
-    dynamics text which is a nice read -- for now you can take them as a handle
-    that you can crank to generate equations of motion. </p>
+    coordinate systems and even for constrained motion.</p>
+    
+    <p>If you are not comfortable with these equations, then any good book
+    chapter on rigid body mechanics can bring you up to speed -- try
+    <elib>Craig89</elib> for a very practical guide to robot
+    kinematics/dynamics, <elib>Goldstein02</elib> for a more hard-core dynamics
+    text or <elib>Thornton03</elib> for a classical dynamics text which is a
+    nice read.  For now you can take them as a handle that you can crank to
+    generate equations of motion.</p>
+
+    <p>For completeness, I've included a derivation of the Lagrangian from the principle of stationary action <a href="#action">below</a>.</p>
 
     <example id=double_pendulum><h1>Simple Double Pendulum</h1>
 
@@ -918,10 +922,43 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   http://web.mit.edu/10.001/Web/Course_Notes/Differential_Equations_Notes/node3.html)
   </todo>
 
-  <section><h1>Parameter Estimation</h1></section>
+  <section id="action"><h1>Principle of Stationary Action</h1>
+  
+    <p><elib>Susskind14</elib> says <blockquote>The principle of least action -- really the principle of stationary action -- is the most compact form of the classical laws of physics.  This simple rule (it can be written in a single line) summarizes everything!  Not only the principles of classical mechanics, but electromagnetism, general relativity, quantum mechanics, everything known about chemistry -- right down to the ultimate known constituents of matter, elementary particles.</blockquote>  Sounds important!</p>
 
-  <todo> lumped parameters.  identifiable lumped parameters.  least-squares
-  estimation.  power formulations.  trajectory design.</todo>
+    <p>I find a lot of presentations of the principle of stationary action
+    derivation of the Lagrangian unnecessarily confusing.  Here's my version,
+    in case it helps.</p>
+
+    <p>Consider a trajectory $\bq(t)$ defined over $t \in [t_0, t_1]$.  The
+    principle of stationary action states that this trajectory is a valid
+    solution to the differential equation governing our system if it represents
+    a stationary point of the "action", defined as $$A = \int_{t_0}^{t_1}
+    L(\bq,\dot{\bq})dt.$$  What does it mean for a trajectory to be a
+    stationary point?  Using the calculus of variations, we think of an
+    infinitesimal variation of this trajectory: $\bq(t) + \delta \bq(t),$ where
+    $\delta \bq(t)$ in an arbitrary differentiable function that is zero
+    at $t_0$ and $t_1$.  That this variation should not change the action means
+    $\delta A = 0$ for any small $\delta \bq(t)$: \begin{align*} \delta A =&
+    A(\bq(t) + \delta \bq(t)) - A(\bq(t)) \\ =& \int_{t_0}^{t_1}
+    L\left(\bq(t)+\delta\bq(t),\, \dot\bq(t) + \frac{d}{dt}\delta \bq(t)\right)
+    dt - \int_{t_0}^{t_1} L\left(\bq(t),\,\dot\bq(t)\right)dt.\end{align*}  We
+    can expand the term in the first integral: $$L\left(\bq(t)+\delta\bq(t),\,
+    \dot\bq(t) + \frac{d}{dt}\delta \bq(t)\right) =
+    L\left(\bq(t),\,\dot\bq(t)\right) + \pd{L}{\bq(t)}\delta\bq(t) +
+    \pd{L}{\dot\bq(t)}\frac{d}{dt}\delta \bq(t).$$  Substituting this back in
+    and simplifying leaves: $$\delta A = \int_{t_0}^{t_1}
+    \left[\pd{L}{\bq(t)}\delta\bq(t) + \pd{L}{\dot\bq(t)}\frac{d}{dt}\delta
+    \bq(t)\right]dt.$$  Now use integration by parts on the second term:
+    $$\int_{t_0}^{t_1} \pd{L}{\dot\bq(t)}\frac{d}{dt}\delta \bq(t)dt =
+    \left[\pd{L}{\dot\bq(t)} \delta \bq(t) \right]_{t_0}^{t_1} -
+    \int_{t_0}^{t_1} \frac{d}{dt} \pd{L}{\dot\bq(t)} \delta \bq(t) dt,$$ and
+    observe that the first term in the right-hand side is zero since $\delta
+    \bq(t_0) = \delta \bq(t_1) = 0$.  This leaves $$\delta A = \int_{t_0}^{t_1}
+    \left[\pd{L}{\bq} - \frac{d}{dt}\pd{L}{\dot\bq}\right]\delta\bq(t) dt =
+    0,$$ which reveals the Lagrangian equations of motion.</p>
+  
+  </section>
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
@@ -1047,6 +1084,12 @@ PhD thesis, University of California at Berkeley, <span class="year">1996</span>
 <span class="author">Elandt, Ryan and Drumwright, Evan and Sherman, Michael and Ruina, Andy</span>,
 <span class="title">"A pressure field model for fast, robust approximation of net contact force and moment between nominally rigid objects"</span>,
 , pp. 8238-8245, 11, <span class="year">2019</span>.
+
+</li><br>
+<li id=Susskind14>
+<span class="author">Susskind, Leonard and Hrabovsky, George</span>,
+<span class="title">"The theoretical minimum: what you need to know to start doing physics"</span>,Basic Books
+, <span class="year">2014</span>.
 
 </li><br>
 </ol>
