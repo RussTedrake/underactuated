@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <script type="text/javascript" src="htmlbook/book.js"></script>
+    <script src="htmlbook/mathjax-config.js"></script> 
+    <script type="text/javascript" src="htmlbook/MathJax/es5/tex-chtml.js"></script>
+
+    <link rel="stylesheet" href="htmlbook/highlight/styles/default.css">
+    <script src="htmlbook/highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <link rel="stylesheet" type="text/css" href="htmlbook/book.css" />
+  </head>
+
+<body onload="loadChapter('underactuated');">
+
+<p>This is a minimal doc so that I can write text/equations with a fast preview using all of the textbook style/latex symbols, etc.</p>
+
+<chapter><h1>Scratchpad</h1>
+
+
+
+  <p>
+  \begin{align*} \min_{\bx[\cdot]}
+      \quad & \sum_{n=0}^{N-1} \| \bx[n+1] - \bx[n] \|^2, \\ \subjto \quad & \| \bx[n] -
+      \bp_i \|^2 \ge 1, \quad & \forall i,n  \\ & \bx[0]
+      = \bx_0, \quad \bx[N] = \bx_g. \end{align*}
+    </p>
+
+  <p>
+    \begin{align*} \min_{\bx[\cdot], {\bf Y}} \quad & \sum_{n=0}^{N-1} \tr({\bf
+    Y}_{n+1,n+1}) - 2\tr({\bf Y}_{n,n+1}) + \tr({\bf Y}_{n,n}) \\ \subjto \quad
+    & {\bf Y} \succeq \bx\bx^T \\ &  \tr({\bf Y}_{n,n}) - 2 \bp_i^T\bx[n] +
+    \bp_i^T\bp_i \ge 1, \quad & \forall i,n  \\ & \bx[0] = \bx_0, \quad \bx[N]
+    = \bx_g. \end{align*} where ${\bf Y}_{i,j}$ is the block submatrix of ${\bf
+    Y}$ corresponding to $\bx[i]\bx^T[j]$.  We can write ${\bf Y} \succeq
+    \bx\bx^T$ as a semidefinite constraint using the Schur complement:
+    $\begin{bmatrix} {\bf Y} & \bx \\ \bx^T & 1 \end{bmatrix} \succeq 0.$  It
+    is quite natural to extend this to general ellipsoidal obstacles.  Also,
+    very few terms in ${\bf Y}$ are actually needed for the optimization; one
+    could write many small SDP constraints instead for efficiency.
+    </p>
+
+    <p>
+    Perhaps even more interesting, with some care we can use the same
+    relaxation to formulate an LQR problem (or most any of our variants) with
+    these non-convex quadratic constraints.  
+    \begin{align*} \min_{\bx[\cdot], \bu[\cdot]} \quad & \sum_{n=0}^{N-1}
+    \bx^T[n]\bQ \bx[n] + \bu^T[n] \bR \bu[n], \\ \subjto \quad & \| \bx[n] -
+    \bp_i \|^2 \ge 1, \quad & \forall i,n  \\ & \bx[n+1] = \bA \bx[n] + \bB
+    \bu[n], \quad & \forall n \\ & \bx[0] = \bx_0, \quad \bx[N] = \bx_g.
+    \end{align*}  Another interesting application of this is LQR with binary
+    inputs, $\bu[n] \in \{-1, +1\}$ <elib>Parrilo??</elib>.</p>  
+
+    <p>\begin{align*} \min_{\bx[\cdot], \bu[\cdot], {\bf X}[\cdot], {\bf
+    U}[\cdot]} \quad & \sum_{n=0}^{N-1} \tr(\bR {\bf U}[n]), \\ \subjto \quad &
+    \tr({\bf X}[n]) - 2 \bp_i^T\bx[n] + {\bf p}_i^T{\bf p}_i \ge 1, \quad &
+    \forall i, \forall n \in [1,N-1], \\ & \bx[n+1] = \bA \bx[n] + \bB \bu[n],
+    \quad & \forall n, \\ & \begin{bmatrix} {\bf U}[n] & \bu[n] \\ \bu^T[n] & 1
+    \end{bmatrix} \succeq 0, & \forall n \in [0, N-1], \\& \begin{bmatrix} {\bf
+    X}[n] & \bx[n] \\ \bx^T[n] & 1 \end{bmatrix} \succeq 0, & \forall
+    n\in[1,N-1], \\ & \bx[0] = \bx_0, \quad \bx[N] = \bx_g. \end{align*}  It's
+    easy enough to extend this to the case of ellipsoidal obstacles, or to add
+    the quadratic state penalty to the cost.</p>
+
+</chapter>
+
+</body>
+</html>

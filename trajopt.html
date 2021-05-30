@@ -1224,6 +1224,51 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <todo>DMOC</todo>
 
+    <subsection id="sdp_relaxation"><h1>Semidefinite programming relaxations
+    for obstacle avoidance</h1>
+    
+      <p>I've used planning obstacles as a canonical example of non-convexity
+      in the trajectory optimization.  If I am considering trajectories that go
+      left around the tree and right around the tree, then affine combinations
+      of those trajectories will go right through the center of the tree (and
+      violate the collision-avoidance constraint)!  But really this is only a
+      statement about the non-convexity of the problem in the original
+      coordinate system. It's possible to lift the problem (or a slightly
+      relaxed version of the problem) to a higher dimension and make the
+      problem convex again.  In some cases, it's even practical.</p>
+
+      <p>One very special case of this is the SDP relaxation for non-convex
+      quadratic constraints (e.g. <elib part="&sect; 3.3">Park17</elib>).
+      Consider the problem of planning the shortest path around ellipsoidal
+      obstacles, with obstacle $i$ defined by $\{ \bx | (\bx - \bp_i)^T{\bf
+      P}_i (\bx - \bp_i) \le 1 \}$.  We can formulate the collision avoidance
+      trajectory optimization problem as e.g. \begin{align*} \min_{\bx[\cdot]}
+      \quad & \sum_k \| \bx[k+1] - \bx[k] \|^2, \\ \subjto \quad & (\bx[k] -
+      \bp_i)^T{\bf P}_i (\bx[k] - \bp_i) \ge 1, \quad \forall i,k \\ & \bx[0]
+      = \bx_0, \quad \bx[N] = \bx_g. \end{align*}  We can add (affine) dynamics
+      constraints, too, but let's understand this simpler case first.</p>
+
+      <p>The standard SDP relaxation proceeds by constructing additional matrix
+      decision variables ${\bf Y}[k]$, and imposing the constraint that, for
+      each $k$, ${\bf Y} \succeq \bx \bx^T.$  Using the Schur complement, we
+      can write this as the SDP constraint $\begin{bmatrix} {\bf Y} & \bx \\
+      \bx^T & 1 \end{bmatrix} \succeq 0.$  In particular we have $\tr({\bf Y})
+      \ge \bx^T \bx$, a term which appears in both our objective and our
+      constraints.  Therefore, we can write the SDP relaxation of our original problem as \begin{align*} \min_{\bx[\cdot], {\bf Y}[\cdot]}
+      \quad & \sum_k \| \bx[k+1] - \bx[k] \|^2, \\ \subjto \quad & (\bx[k] -
+      \bp_i)^T{\bf P}_i (\bx[k] - \bp_i) \ge 1, \quad \forall i,k \\ & \bx[0]
+      = \bx_0, \quad \bx[N] = \bx_g. \end{align*} </p>
+    
+    </subsection>
+
+<!--
+    <subsection><h1>Quadratically-constrained LQR</h1>
+    
+      This follows naturally from the discussion above.  Can even work for the case of e.g. u[k]^2 = 1 (binary actions).
+      
+    </subsection>
+-->
+
     <subsection><h1>Mixed-integer convex optimization for non-convex
     constraints</h1>
 
@@ -1534,6 +1579,12 @@ PhD thesis, Massachusetts Institute of Technology, September, <span class="year"
 <span class="author">David H. Jacobson and David Q. Mayne</span>,
 <span class="title">"Differential Dynamic Programming"</span>,American Elsevier Publishing Company, Inc.
 , <span class="year">1970</span>.
+
+</li><br>
+<li id=Park17>
+<span class="author">Jaehyun Park and Stephen Boyd</span>,
+<span class="title">"General heuristics for nonconvex quadratically constrained quadratic programming"</span>,
+<span class="publisher">arXiv preprint arXiv:1703.07870</span>, <span class="year">2017</span>.
 
 </li><br>
 <li id=Richards02>
