@@ -25,13 +25,11 @@ git submodule update --init --recursive
 The textbook should then be viewable by opening `underactuated.html` in your
 browser.
 
-You'll need to run a local webserver for the code includes (via ajax) to work. I
-used the instructions at 
+There was a time when I used some ajax to include source code. If you see
+missing source code, you'll need to run a local webserver for the code includes
+to work. I used the instructions at
 https://websitebeaver.com/set-up-localhost-on-macos-high-sierra-apache-mysql-and-php-7-with-sslhttps
 and just pointed by root doc directory directly at my underactuated checkout.
-
-
-*Boilerplate on hypothes.is etiquette*:  For typos and small corrections, please remove your comment once it has been addressed.
 
 
 To run the linters and unit tests
@@ -42,38 +40,52 @@ bazel test //...
 ```
 
 If you would like to `bazel` to use a local installation of drake, you can set
-the `DRAKE_INSTALL_DIR` environment variable.  Otherwise it will look in
+the `DRAKE_INSTALL_DIR` environment variable. Otherwise it will look in
 `/opt/drake`.
 
 To get experimental Drake binaries
 ----------------------------------
 
-Please see the [relevant Drake documentation](https://drake.mit.edu/jenkins#building-binary-packages-on-demand).
+Please see
+the [relevant Drake documentation](https://drake.mit.edu/jenkins#building-binary-packages-on-demand)
+.
+
+
+Setting up PyCharm
+------------------
+
+In `Settings > Python Interpreter`, I set up a new "system interpreter". Then in
+the Python Interpreter window, in the dropdown, use "show all" to see the
+interpreters, then use "show paths for the selected interpreter" to add the path
+to your drake installation (e.g. `/opt/drake/lib/python3.6/site-packages`).
+
+PyCharm will eat up all of your memory trying to index everything, if you don't
+also exclude the irrelevant directories from indexing (e.g. `.binder`, `data`,
+`bazel-*`, `htmlbook/MathJax`). Do this by right-clicking on the directory in
+the project view and selecting `Mark directory as > Excluded`.
+
+I use selection and then Ctrl+alt+P for manual wrapping. I updated the HTML
+style to use 2 for tabs/indent/continuation, and added `p`
+to `Other > Do not indent children of`.
 
 Additional information for Docker Hub users
 -------------------------------------------
 
 ### Supported tags and respective `Dockerfile` links
 
--	[`latest`](https://github.com/RussTedrake/underactuated/blob/master/scripts/docker/Dockerfile)
+- [`latest`](https://github.com/RussTedrake/underactuated/blob/master/scripts/docker/Dockerfile)
 
 ### Quick reference
-
-* **Where to get help**:
-  [Stack Overflow](https://stackoverflow.com/questions/tagged/underactuated)
 
 * **Where to file issues**:
   [GitHub Issues](https://github.com/RussTedrake/underactuated/issues)
 
--	**Maintained by**:
-	[Russ Tedrake](https://github.com/RussTedrake)
+- **Maintained by**:
+  [Russ Tedrake](https://github.com/RussTedrake)
 
--	**Supported architectures**:
-  `amd64`
-
--	**Source of this description**:
-	[`README.md`](https://github.com/RussTedrake/underactuated/blob/master/README.md)
-	([history](https://github.com/RussTedrake/underactuated/commits/master/README.md))
+- **Source of this description**:
+  [`README.md`](https://github.com/RussTedrake/underactuated/blob/master/README.md)
+  ([history](https://github.com/RussTedrake/underactuated/commits/master/README.md))
 
 ### License
 
