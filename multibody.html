@@ -936,31 +936,32 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     a stationary point of the "action", defined as $$A = \int_{t_0}^{t_1}
     L(\bq,\dot{\bq})dt.$$  What does it mean for a trajectory to be a
     stationary point?  Using the calculus of variations, we think of an
-    infinitesimal variation of this trajectory: $\bq(t) + \delta \bq(t),$ where
-    $\delta \bq(t)$ in an arbitrary differentiable function that is zero at
-    $t_0$ and $t_1$.  The velocity of this variation is $\dot\bq(t) +
-    \frac{d}{dt} \delta \bq(t).$  That this variation should not change the
-    action means $\delta A = 0$ for any small $\delta \bq(t)$: \begin{align*}
-    \delta A =& A(\bq(t) + \delta \bq(t)) - A(\bq(t)) \\ =& \int_{t_0}^{t_1}
-    L\left(\bq(t)+\delta\bq(t),\, \dot\bq(t) + \frac{d}{dt}\delta \bq(t)\right)
-    dt - \int_{t_0}^{t_1} L\left(\bq(t),\,\dot\bq(t)\right)dt.\end{align*}  We
-    can expand the term in the first integral: $$L\left(\bq(t)+\delta\bq(t),\,
-    \dot\bq(t) + \frac{d}{dt}\delta \bq(t)\right) =
-    L\left(\bq(t),\,\dot\bq(t)\right) + \pd{L}{\bq(t)}\delta\bq(t) +
-    \pd{L}{\dot\bq(t)}\frac{d}{dt}\delta \bq(t).$$  Substituting this back in
-    and simplifying leaves: $$\delta A = \int_{t_0}^{t_1}
-    \left[\pd{L}{\bq(t)}\delta\bq(t) + \pd{L}{\dot\bq(t)}\frac{d}{dt}\delta
-    \bq(t)\right]dt.$$  Now use integration by parts on the second term:
-    $$\int_{t_0}^{t_1} \pd{L}{\dot\bq(t)}\frac{d}{dt}\delta \bq(t)dt =
-    \left[\pd{L}{\dot\bq(t)} \delta \bq(t) \right]_{t_0}^{t_1} -
-    \int_{t_0}^{t_1} \frac{d}{dt} \pd{L}{\dot\bq(t)} \delta \bq(t) dt,$$ and
-    observe that the first term in the right-hand side is zero since $\delta
-    \bq(t_0) = \delta \bq(t_1) = 0$.  This leaves $$\delta A = \int_{t_0}^{t_1}
-    \left[\pd{L}{\bq} - \frac{d}{dt}\pd{L}{\dot\bq}\right]\delta\bq(t) dt =
-    0.$$  Since this must integrate to zero for any $\delta\bq(t)$, we must
-    have $$\pd{L}{\bq} - \frac{d}{dt}\pd{L}{\dot\bq} = 0,$$ which can be
-    multiplied by negative one to obtain the familiar form of the (unforced)
-    Lagrangian equations of motion.  The forced version follows from the variation $$\delta A = \int_{t_0}^{t_1} L(\bq(t),\dot\bq(t))dt + \int_{t_0}^{t_1} \bQ^T(t)\delta\bq(t) dt = 0.$$ </p>
+    infinitesimal variation of this trajectory: $\bq(t) + {\bf \epsilon}(t),$
+    where ${\bf \epsilon}(t)$ is an arbitrary differentiable function that is zero at
+    $t_0$ and $t_1$.  That this variation should not change the action means
+    $\delta A = 0$ for any small ${\bf \epsilon}(t)$: \begin{align*} \delta A =&
+    A(\bq(t) + {\bf \epsilon}(t)) - A(\bq(t)) \\ =& \int_{t_0}^{t_1}
+    L\left(\bq(t)+{\bf \epsilon}(t),\, \dot\bq(t) + \dot{\bf \epsilon}(t)\right) dt -
+    \int_{t_0}^{t_1} L\left(\bq(t),\,\dot\bq(t)\right)dt.\end{align*}  We can
+    expand the term in the first integral: $$L\left(\bq(t)+{\bf \epsilon}(t),\,
+    \dot\bq(t) + \dot{\bf \epsilon}(t)\right) = L\left(\bq(t),\,\dot\bq(t)\right) +
+    \pd{L}{\bq(t)}{\bf \epsilon}(t) + \pd{L}{\dot\bq(t)}\dot{\bf \epsilon}(t).$$
+    Substituting this back in and simplifying leaves: $$\delta A =
+    \int_{t_0}^{t_1} \left[\pd{L}{\bq(t)}{\bf \epsilon}(t) +
+    \pd{L}{\dot\bq(t)}\dot{\bf \epsilon}(t)\right]dt.$$  Now use integration by parts
+    on the second term: $$\int_{t_0}^{t_1} \pd{L}{\dot\bq(t)}\dot{\bf \epsilon}(t)dt
+    = \left[\pd{L}{\dot\bq(t)} {\bf \epsilon}(t) \right]_{t_0}^{t_1} -
+    \int_{t_0}^{t_1} \frac{d}{dt} \pd{L}{\dot\bq(t)} {\bf \epsilon}(t) dt,$$ and
+    observe that the first term in the right-hand side is zero since
+    ${\bf \epsilon}(t_0) = {\bf \epsilon}(t_1) = 0$.  This leaves $$\delta A =
+    \int_{t_0}^{t_1} \left[\pd{L}{\bq} -
+    \frac{d}{dt}\pd{L}{\dot\bq}\right]{\bf \epsilon}(t) dt = 0.$$  Since this must
+    integrate to zero for any ${\bf \epsilon}(t)$, we must have $$\pd{L}{\bq} -
+    \frac{d}{dt}\pd{L}{\dot\bq} = 0,$$ which can be multiplied by negative one
+    to obtain the familiar form of the (unforced) Lagrangian equations of
+    motion.  The forced version follows from the variation $$\delta A =
+    \int_{t_0}^{t_1} L(\bq(t),\dot\bq(t))dt + \int_{t_0}^{t_1}
+    \bQ^T(t){\bf \epsilon}(t) dt = 0.$$ </p>
   
   </section>
 
