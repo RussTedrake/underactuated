@@ -11,3 +11,9 @@ rt_py_library(
     srcs = ["test_hopfield_network.py"],
     visibility = ["//visibility:public"],
 )
+
+filegroup(
+    name = "mnist",
+    srcs = ["mnist.npz"],
+    visibility = ["//visibility:public"],
+)

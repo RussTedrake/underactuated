@@ -15,15 +15,10 @@ numpy==1.19.5
     #   -c htmlbook/colab-constraints-ubuntu.txt
     #   pandas
     #   torch
-    #   torchvision
 pandas==1.1.5
     # via
     #   -c htmlbook/colab-constraints-ubuntu.txt
     #   -r ubuntu-shared-requirements.in
-pillow==7.1.2
-    # via
-    #   -c htmlbook/colab-constraints-ubuntu.txt
-    #   torchvision
 protobuf==3.12.4
     # via
     #   -c htmlbook/colab-constraints-ubuntu.txt
@@ -52,11 +47,6 @@ snowballstemmer==2.1.0
 timeout-decorator==0.5.0
     # via -r ubuntu-shared-requirements.in
 torch==1.8.1
-    # via
-    #   -c htmlbook/colab-constraints-ubuntu.txt
-    #   -r ubuntu-shared-requirements.in
-    #   torchvision
-torchvision==0.9.1
     # via
     #   -c htmlbook/colab-constraints-ubuntu.txt
     #   -r ubuntu-shared-requirements.in

@@ -8,8 +8,8 @@ load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
     name = "minimum_time",
-    timeout = "moderate",
     srcs = ["minimum_time.ipynb"],
+    timeout = "moderate",
     deps = [
         "//underactuated",
         "//underactuated/exercises",

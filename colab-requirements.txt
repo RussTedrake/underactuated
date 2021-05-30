@@ -24,15 +24,10 @@ numpy==1.19.5
     #   matplotlib
     #   pandas
     #   torch
-    #   torchvision
 pandas==1.1.5
     # via
     #   -c htmlbook/colab-constraints-colab.txt
     #   -r ubuntu-shared-requirements.in
-pillow==7.1.2
-    # via
-    #   -c htmlbook/colab-constraints-colab.txt
-    #   torchvision
 pyngrok==5.0.2
     # via -r colab-requirements.in
 pyparsing==2.4.7
@@ -60,11 +55,6 @@ six==1.15.0
 timeout-decorator==0.5.0
     # via -r ubuntu-shared-requirements.in
 torch==1.8.1
-    # via
-    #   -c htmlbook/colab-constraints-colab.txt
-    #   -r ubuntu-shared-requirements.in
-    #   torchvision
-torchvision==0.9.1
     # via
     #   -c htmlbook/colab-constraints-colab.txt
     #   -r ubuntu-shared-requirements.in

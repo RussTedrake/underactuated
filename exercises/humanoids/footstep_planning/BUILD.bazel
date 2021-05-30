@@ -8,11 +8,11 @@ load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
     name = "footstep_planning",
-    timeout = "moderate",
     srcs = ["footstep_planning.ipynb"],
     deps = [
         "//underactuated",
         "//underactuated/exercises",
         "//underactuated/exercises/humanoids/footstep_planning",
     ],
+    timeout = "moderate",
 )

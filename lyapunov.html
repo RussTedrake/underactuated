@@ -60,7 +60,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   Analysis</h1>
   <a style="float:right; margin-top:-80px;" target="lyapunov" href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb"><img src="https://colab.research.google.com/assets/colab-badge.svg" alt="Open Corresponding Notebook In Colab"/></a>
   <div style="clear:right;"></div>
-  
+
   <p>Optimal control provides a powerful framework for formulating control
   problems using the language of optimization.  But solving optimal control
   problems for nonlinear systems is hard!  In many cases, we don't really care
@@ -276,7 +276,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         <p>Recall the <a href="acrobot.html#cartpole_swingup">example of using partial-feedback linearization to generate a swing-up controller for the cart-pole system</a>.  We first examined the dynamics of the pole (pendulum) only, by writing it's energy: $$E(\bx) = \frac{1}{2}\dot\theta^2 - \cos\theta,$$ desired energy, $E^d = 1$, and the difference $\tilde{E}(\bx) = E(\bx) - E^d.$  We were able to show that our proposed controller produced $$\dot{\tilde{E}} = -k \dot\theta^2 \cos^2\theta \tilde{E},$$ where $k$ is a positive gain that we get to choose.  And we said that was good!</p>
 
         <p>Now we have the tools to understand that really we have a Lyapunov function $$V(\bx) = \frac{1}{2}\tilde{E}^2(\bx),$$, and what we have shown is that $\dot{V} \le 0$.  By LaSalle, we can only argue that the closed-loop system will converge to the largest invariant set, which here is the entire homoclinic orbit: $\tilde{E}(\bx) = 0$.  We have to switch to the LQR controller in order to stabilize the upright.</p>
-      
+
         <figure>
           <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="data/cartpole_swingup_V.html" height="350" width="100%"></iframe>
         <figcaption>Lyapunov function: $V(\bx) = \frac{1}{2}\tilde{E}^2(\bx).$</figcaption>
@@ -289,7 +289,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       </figure>
 
         <p>As you can see from the plots, $\dot{V}(\bx)$ ends up being a quite non-trivial function!  We'll develop the computational tools for verifying the Lyapunov/LaSalle conditions for systems of this complexity in the upcoming sections.</p>
-        
+
       </example>
 
     </subsection> <!-- lasalle -->
@@ -466,7 +466,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           src="https://colab.research.google.com/assets/colab-badge.svg"
           alt="Open In Colab"/></a>
             </p>
-  
+
         <p>As always, make sure that you open up the code and take a look.</p>
 
         <p>There are many small variants of this result that are potentially of interest.  For instance, a very similar set of conditions can certify "mean-square stability" for linear systems with multiplicative noise (see e.g. <elib>Boyd94</elib>, &sect; 9.1.1).</p>
@@ -524,7 +524,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       </example>
 
       <example><h1>Cart-pole swingup (again)</h1>
-      
+
         <p>In the <a href="#cartpole_swingup">cart-pole swingup example</a>, we
         took $$V(\bx) = \frac{1}{2} \tilde{E}^2(\bx) = \frac{1}{2}
         (\frac{1}{2}\dot\theta^2 - \cos\theta - 1)^2.$$ This is clearly a sum
@@ -532,7 +532,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         \dot\theta^2 \cos^2\theta \tilde{E}^2(\bx),$$ which is also a sum of
         squares.  So the proposal of using sums-of-squares optimization is not so different, actually, than the recipes that nonlinear control theorists have been using (on pen and paper) for years.  In this case, I would need a basis vector that includes many more monomials: $[1, \dot\theta, \cos\theta, ..., \dot\theta^3, ... ]^T,$ and setting up the equality constraints in an optimization requires more complicated term matching when trigonometric functions are involved, but the recipe still works.
         </p>
-      
+
       </example>
 
       <example><h1>Searching for a Lyapunov function via SOS</h1>
@@ -814,7 +814,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
             src="https://colab.research.google.com/assets/colab-badge.svg"
             alt="Open In Colab"/></a>
               </p>
-  
+
         </example>
 
         <p>In this example, we only verified that the one-sublevel set of the
@@ -832,33 +832,33 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         perform a simple line search on $\rho$ to find the largest value for
         which the convex optimization returns a feasible solution.  This will
         be our estimate for the region of attraction.</p>
-        
+
         <p>There are a number of variations to this basic formulation; I will
         describe a few of them below.  There are also important ideas like
         rescaling and degree-matching that can have a dramatic effect on the
         numerics of the problem, and potentially make them much better for the
         solvers.  But you do not need to master them all in order to use the
         tools effectively.</p>
-  
+
         <example><h1>Region of Attraction codes in Drake</h1>
 
           <p>In <drake></drake>, we have packaged most of the work in setting up
           and solving the sums-of-squares optimization for regions of attraction
           into a single method <code>RegionOfAttraction(system, context,
           options)</code>. This makes it as simple as, for instance:</p>
-  
+
           <pre><code class="python">x = Variable("x")
 sys = SymbolicVectorSystem(state=[x], dynamics=[-x+x**3])
 context = sys.CreateDefaultContext()
-V = RegionOfAttraction(sys, context)           
-          </code></pre>  
+V = RegionOfAttraction(sys, context)
+          </code></pre>
 
           <p><a target="lyapunov"
             href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/lyapunov.ipynb#scrollTo=UQkTT7Zk_V87"><img
             src="https://colab.research.google.com/assets/colab-badge.svg"
             alt="Open In Colab"/></a>
               </p>
-  
+
           <p>Remember that although we have tried to make it convenient to call
           these functions, they are not a black box.  I highly recommend
           opening up the <code>RegionOfAttraction</code> method and
@@ -876,11 +876,11 @@ V = RegionOfAttraction(sys, context)
           </code></pre>
 
         </example>
-  -->      
+  -->
       </subsubsection>
 
       <subsubsection><h1>The equality-constrained formulation</h1>
-      
+
         <p>Here is one important variation for finding the level set of a
         candidate region of attraction, which turns an inequality in the
         S-procedure into an equality.  This formulation <i>is</i> jointly
@@ -914,7 +914,7 @@ V = RegionOfAttraction(sys, context)
         varieties<elib>Shen20</elib>.</p>
 
       </subsubsection>
-        
+
       <subsubsection><h1>Searching for $V(\bx)$</h1>
 
         <p>The machinery so far has used optimization to find the largest
@@ -934,7 +934,7 @@ V = RegionOfAttraction(sys, context)
         volume of state space by using a Lyapunov candidate with degree greater
         than two.  Can we use sums-of-squares optimization to find that in the
         region of attraction case, too?</p>
-      
+
         <p>To accomplish this, we will now make $V(x)$ a polynomial (of some
         fixed degree) with the coefficients as decision variables.  First we
         will need to add constraints to ensure that $$V(0) = 0 \quad {and}
@@ -962,13 +962,13 @@ V = RegionOfAttraction(sys, context)
         objective is to maximize some convex surrogate for the volume of the
         certified region of attraction in state space; typically we use the
         determinant of the quadratic form describing a contained ellipse.</p>
-        
+
         <p>Barring numerical issues, this algorithm is guaranteed to have
         recursive feasibility and tends to converge in just a few alternations,
         but there is no guarantee that it finds the optimal solution.</p>
 
         <example><h1>Searching for Lyapunov functions</h1>
-          
+
           <p>(Details coming soon...)</p>
 
           <p><a target="lyapunov"
@@ -976,7 +976,7 @@ V = RegionOfAttraction(sys, context)
             src="https://colab.research.google.com/assets/colab-badge.svg"
             alt="Open In Colab"/></a>
               </p>
-  
+
         </h1></example>
 
       </subsubsection>
@@ -1067,9 +1067,9 @@ V = RegionOfAttraction(sys, context)
             src="https://colab.research.google.com/assets/colab-badge.svg"
             alt="Open In Colab"/></a>
               </p>
-    
+
         </example>
-      
+
       </subsubsection>
 
     </subsection> <!-- ROA for polynomial -->
@@ -1077,7 +1077,7 @@ V = RegionOfAttraction(sys, context)
   </section>
 
   <section id="finite-time"><h1>Finite-time Reachability</h1>
-  
+
     <p>So far we have used Lyapunov analysis to analyze <i>stability</i>, which
     is fundamentally a description of the system's behavior as time goes to
     infinity.  But Lyapunov analysis can also be used to analyze the
@@ -1089,7 +1089,7 @@ V = RegionOfAttraction(sys, context)
     if we are executing a planned trajectory with a bounded duration.</p>
 
     <subsection><h1>Time-varying dynamics and Lyapunov functions</h1>
-    
+
       <p>Before focusing on the finite time, let us first realize that the
       basic (infinite-time) Lyapunov analysis can also be applied to
       time-varying systems: $\dot{\bx} = f(t, \bx).$  We can analyze the
@@ -1121,11 +1121,11 @@ V = RegionOfAttraction(sys, context)
       function.  But there may be cases where a time-varying analysis could
       afford a different analysis for the regional or local stability cases. We
       will see a good example of this when we study limit cycles.</p>
-    
+
     </subsection>
 
     <subsection><h1>Finite-time reachability</h1>
-    
+
       <p>Finite-time reachability analysis is an important concept for control
       design and verification, where we seek to understand the behavior of a
       system over only a finite time interval, $[t_1, t_2]$.  It is almost
@@ -1167,7 +1167,7 @@ V = RegionOfAttraction(sys, context)
     </subsection>
 
     <subsection><h1>Reachability via Lyapunov functions</h1>
-    
+
       <p>Lyapunov functions can be used to certify finite-time reachability,
       even for continuous-time systems.  The basic recipe is to certify the
       Lyapunov conditions over a (potentially time-varying) invariant set. Once
@@ -1211,7 +1211,7 @@ V = RegionOfAttraction(sys, context)
       this was written up nicely in <elib>Tobenkin10b</elib>, and robust
       variants of it were developed in
       <elib>Majumdar13f+Majumdar16a</elib>.</p>
-    
+
     </subsection>
 
   </section>
@@ -1344,7 +1344,7 @@ V = RegionOfAttraction(sys, context)
       0, \forall \bx,\bz \in \{ \bx, \bz | \bg(\bx,\bz) = 0 \}$ using SOS, then
       we have verified that $\dot{V}(\bx) \le 0$, albeit at the non-trivial cost
       of adding indeterminates $\bz$ and an additional S-procedure.</p>
-    </example>  
+    </example>
 
     <p>There are a few things that <i>do</i> break this clean polynomial view
     of the world.  Rotary springs, for instance, if modeled as $\tau = k
@@ -1418,11 +1418,11 @@ V = RegionOfAttraction(sys, context)
       <todo>The robust state-feedback design for polytopic uncertainty example
       from LMIsinSYSTEMSCONTROL.pdf (in Zotero) by Denis ARZELIER essentially
       combines this with the linear common-lyapunov function example. </todo>
-    
+
     </subsection>
 
     <subsection id="control_alternations"><h1>Control design via alternations</h1>
-    
+
       <p>For control design using convex optimization, we will lean heavily on
       the assumption of the dynamics being control-affine.  Let me write it
       this time as: $$\dot{\bx} = {\bf f}(\bx) + \sum_{i=0}^{m-1} u_i {\bf
@@ -1447,7 +1447,7 @@ V = RegionOfAttraction(sys, context)
       repeat until convergence.  This approach has roots in the famous "DK
       iterations" for robust control (e.g. <elib>Lind94</elib>).  It takes
       advantage of the structured convex optimization at each step.</p>
-      
+
       <p>For this approach, it is important to start with an initial feasible
       $V$ or $\pi$.  For example, one can think of locally stabilizing a
       nonlinear system with LQR, and then searching for a linear control law
@@ -1511,7 +1511,7 @@ V = RegionOfAttraction(sys, context)
       <elib>Posa17</elib>
       has some nice examples of this written directly in sums-of-squares
       form.</p>
-      
+
       <p>Now here is where it gets a little frustrating.  Certainly,
       sublevel sets of $\mathcal{B}(\bx)$ are control-invariant (via the proper
       choice of $\bu$).  But we do not (cannot) expect that the entire
@@ -1519,14 +1519,14 @@ V = RegionOfAttraction(sys, context)
       estimated region is an <i>outer</i> approximation of the backward
       reachable set.
       <todo>it's more than that... \dot{B}=0 happens somewhere in the interior,
-      and it's conservative due to the forall u.</todo>  
+      and it's conservative due to the forall u.</todo>
       <elib>Majumdar13b</elib> gave a recipe for extracting a polynomial
       control law from the BRS; an inner approximation of this control law can
       be obtained via the original SOS region of attraction tools.  This is
       unfortunatley suboptimal/conservative.  Although we would like to
       certify the control-Lyapunov conditions directly in an inner
       approximation, the $\exists$ quantifier remains as an obstacle.</p>
-    
+
     </subsection>
 
     <subsection id="adp"><h1>Approximate dynamic programming with SOS</h1>
@@ -1566,7 +1566,7 @@ V = RegionOfAttraction(sys, context)
         can find a function $V(\bx)$ such that $\forall \bx, \forall \bu,
         \dot{V}(\bx, \bu) \ge -\ell(\bx,\bu)$, then we have a lower-bound on
         the <i>optimal</i> cost-to-go.</p>
-        
+
         <p>You should take a minute to convince yourself that, unfortunately,
         the same trick does not work for the upper-bound.  Again, we would need
         $\exists$ as the quantifier on $\bu$ instead of $\forall$.</p>
@@ -1585,7 +1585,7 @@ V = RegionOfAttraction(sys, context)
         control law by either using this lower bound as a control-Lyapunov
         function, or by extracting (and certifying) a polynomial
         controller.</p>
-        
+
         <p>Perhaps you noticed that this is a natural extension of the <a
         href="dp.html#LP">linear programming approach to dynamic
         programming</a>.  For systems with continuous state, the LP approach
@@ -1596,7 +1596,7 @@ V = RegionOfAttraction(sys, context)
         dimensions were dense sampling is not viable.  This provides something
         of a spectrum between the mesh-based value iteration and the very
         scalable LQR.</p>
-        
+
         <p>The biggest challenge to this approach, however, is not the number
         of dimensions, but the degree of the polynomial required to achieve a
         meaningful approximation.  Remember that the optimal cost-to-go for
@@ -1613,34 +1613,34 @@ V = RegionOfAttraction(sys, context)
         <example><h1>SOS ADP for the pendulum swing-up problem</h1></example>
 
       </subsubsection>
-    
+
     </subsection>
 
   </section>
 
   <section><h1>Alternative computational approaches</h1>
-  
+
     <subsection><h1>"Satisfiability modulo theories" (SMT)
       </h1>
-    
+
         <p><a
         href="https://en.wikipedia.org/wiki/Satisfiability_modulo_theories">Satisiability
         modulo theories (SMT)</a>. <a
         href="https://dreal.github.io/">dReal</a> is available in <drake></drake>.</p>
-    
+
     </subsection>
-    
+
     <subsection><h1>Mixed-integer programming (MIP) formulations</h1>
     </subsection>
 
     <subsection><h1>Continuation methods</h1></subsection>
-    
+
   </section>
 
   <section><h1>Neural Lyapunov functions</h1></section>
 
   <section><h1>Contraction metrics</h1>
-  
+
     <todo>Control contraction metrics</todo>
 
   </section>
@@ -1661,7 +1661,7 @@ V = RegionOfAttraction(sys, context)
       entire space. Is $V(\bx)$ a valid Lyapunov function to prove global
       asymptotic stability of the origin for the system described by the
       equations above? Motivate your answer.</p>
-      
+
     </exercise>
 
     <exercise><h1>Invariant Sets and Regions of Attraction</h1>
@@ -1671,7 +1671,7 @@ V = RegionOfAttraction(sys, context)
       <ol type="a">
 
         <li>$B_r$ is an invariant set for the given system, i.e.: if the initial state $\bx(0)$ lies in $B_r$, then $\bx(t)$ will belong to $B_r$ for all $t \geq 0$.</li>
-        
+
         <li>$B_r$ is a subset of the ROA of the fixed point $\bx = 0$, i.e.: if $\bx(0)$ lies in $B_r$, then $\lim_{t \rightarrow \infty} \bx(t) = 0$.</li>
 
       </ol>
@@ -1699,12 +1699,12 @@ V = RegionOfAttraction(sys, context)
     <exercise><h1>Gradient Flow in Euclidean Space</h1>
 
       <p>We can use Lyapunov analysis to analyze the behavior of optimization algorithms like gradient descent.
-        Consider an objective function $\ell:\mathbf{R}^n\rightarrow \mathbf{R}$ with positive-definite $\ell(x)$, and we want to minimize $\ell(x)$. 
+        Consider an objective function $\ell:\mathbf{R}^n\rightarrow \mathbf{R}$, and we want to minimize $\ell(x)$.
         The gradient flow is a continuous-time analog of gradient descent and is defined as $\dot{x} = -\frac{\partial \ell}{\partial x}$.
-        
+
         <ol type="a">
-          <li>Show that the objective function $\ell(x)$ is a Lyapunov function of the gradient flow.</li>
-  
+          <li>Show that the objective function $\ell(x)-\ell(x^*)$ is a Lyapunov function of the gradient flow where $x^*$ is a unique minimizer.</li>
+
           <li>We can use Lyapunov to argue that an optimization problem will converge to a global optimum, even if it is non-convex.
             Suppose that the Lyapunov function $\ell$, has negative definite $\dot{\ell}$. Show that the objective function $\ell$ has a unique minimizer at the origin.</li>
 
@@ -1714,7 +1714,7 @@ V = RegionOfAttraction(sys, context)
             <img width="60%" src="figures/exercises/gradient_flow.png"/>
             <figcaption>Lyapunov function candidate for asymptotic stability.</figcaption>
           </figure>
-          
+
           <li>Consider the objective function $\ell(x) = x_1^4-8x_1^3+18x_1^2+x_2^2$ with $x\in\mathbf{R}^2$. Find the largest $\rho$ such that $\{x\mid \ell(x)<\rho \}$ is a valid region of attraction for the origin.</li>
         </ol>
     </exercise>
@@ -1724,7 +1724,7 @@ V = RegionOfAttraction(sys, context)
       <p>In this exercise, we examine the idea of a <a href="#control-lyapunov">control-Lyapunov function</a>
       to drive a wheeled robot, implementing the controller proposed in
       <elib>Aicardi95</elib>.</p>
-      
+
       <p>Similar to <a href="intro.html#wheeled_robot">this previous
       example</a>, we use a kinematic model of the robot.  We represent with
       $z_1$ and $z_2$ its Cartesian position and with $z_3$ its orientation.
