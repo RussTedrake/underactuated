@@ -91,7 +91,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   <section><h1>Problem Formulation</h1>
 
     <p>Given an initial condition, $\bx_0$, and an input trajectory $\bu(t)$
-    defined over a finite interval, $t\in[t_0,t_f]$,   we can compute the
+    defined over a finite interval, $t\in[t_0,t_f],$   we can compute the
     long-term (finite-horizon) cost of executing that trajectory   using the
     standard additive-cost optimal control objective, \[ J_{\bu(\cdot)}(\bx_0) =
     \ell_f (\bx(t_f)) + \int_{t_0}^{t_f} \ell(\bx(t),\bu(t)) dt. \]  We will
@@ -113,7 +113,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     robustness, and accuracy of the results. We will outline just a few of the
     most popular below; I would recommend <elib>Betts98+Betts01</elib> for
     additional details.</p>
-    
+
     <p>It is worth contrasting this parameterization problem with the one that
     we faced in our continuous-dynamic programming algorithms.  For trajectory
     optimization, we need a finite-dimensional parameterization in only one
@@ -130,7 +130,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   </section>
 
   <section><h1>Convex Formulations for Linear Systems</h1>
-  
+
     <p>Let us first consider the case of linear systems.  In fact, if we start
     in discrete time, we can even defer the question of how to best discretize
     the continuous-time problem.  There are a few different ways that we might
@@ -138,7 +138,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     program.</p>
 
     <subsection><h1>Direct Transcription</h1>
-    
+
       <p>For instance, let us start by writing both $\bu[\cdot]$ and
       $\bx[\cdot]$ as decision variables. Then we can write: \begin{align*}
       \min_{\bx[\cdot],\bu[\cdot]} \quad & \ell_f(\bx[N]) + \sum_{n_0}^{N-1}
@@ -154,7 +154,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       resulting trajectory optimization is a convex optimization (specifically a
       linear program or quadratic program depending on the objective).  As a
       result, we can reliably solve these problems to global optimality at quite
-      large scale; these days it is common to solve these optimization online inside a high-rate feedback controller.</p>
+      large scale; these days it is common to solve these optimization online
+      inside a high-rate feedback controller.</p>
 
       <example><h1>Trajectory optimization for the Double Integrator</h1>
 
@@ -382,7 +383,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
       <p>It turns out that we need one more constraint per time segment to
       enforce the dynamics and to fully specify the trajectory.  In direct
-      collocation, we add a derivative constraint at the so-called 
+      collocation, we add a derivative constraint at the so-called
       <i>collocation points</i>.  In particular, if we choose the collocation
       points to be the midpoints of the spline, then we have that
       \begin{gather*} t_{c,k} = \frac{1}{2}\left(t_k + t_{k+1}\right), \qquad
@@ -467,8 +468,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       collocation method above might be expected to converge to the true optimal
       solution by adding more segments to the piecewise polynomial (and having
       each segment represent a smaller interval of time), here we expect
-      convergence to happen as we increase the degree of the polynomials.</p>  
-      
+      convergence to happen as we increase the degree of the polynomials.</p>
+
       <p>The pseudo-spectral methods are also sometimes knowns as "orthogonal
       collocation" because the $N$ basis polynomials, $\phi_j(t)$, are chosen so
       that at the $N$th collocation point $t_j$, we have $$\phi_i(t_j) =
@@ -489,7 +490,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <todo>Add an example.  Acrobot swingup?</todo>
 
       <subsubsection><h1>Dynamic constraints in implicit form</h1>
-        
+
         <p>There is another, seemingly subtle but potentially important,
         opportunity that can be exploited in a few of these transcriptions, if
         our main interest is in optimizing systems with significant multibody
@@ -519,7 +520,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         the dynamics only on the second derivatives (the first derivatives are
         consistent by construction).  This is one of the main talking points in
         DMOC, even though the emphasis is on the discrete mechanics.</todo>
-        
+
       </subsubsection>
 
     </subsection>
@@ -542,7 +543,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       trajectory optimization formulation of optimal control, and customized
       solvers can often (and sometimes dramatically) outperform general purpose
       solvers.</p>
-      
+
       <p>This trajectory-optimization structure is easiest to discuss, and
       implement, in unconstrained formulations, so we will start there. In fact,
       in recent years we have seen a surge in popularity in robotics for doing
@@ -566,7 +567,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         objectives and constraints in terms of $\bx$, it would become very
         inefficient to compute the gradients of each objective/constraint
         independently.  We need to leverage the chain rule.</p>
-        
+
         <p>To be concise (and slightly more general),   let us define
         $\bx[n+1]=f_d(\bx[n],\bu[n])$ as the discrete-time approximation of the
         continuous dynamics; for example, the forward Euler integration scheme
@@ -623,9 +624,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <subsubsection><h1>Getting good solutions... in practice.</h1>
 
         <p>As you begin to play with these algorithms on your own problems, you might feel like you're on an emotional roller-coaster.  You will have moments of incredible happiness -- the solver may find very impressive solutions to highly nontrivial problems.  But you will also have moments of frustration, where the solver returns an awful solution, or simply refuses to return a solution (saying "infeasible").  The frustrating thing is, you cannot distinguish between a problem that is actually infeasible, vs. the case where the solver was simply stuck in a local minima.</p>
-        
+
         <p>So the next phase of your journey is to start trying to "help" the solver along.  There are two common approaches.</p>
-        
+
         <p>The first is tuning your cost function -- some people spend a lot of time adding new elements to the objective or adjusting the relative weight of the different components of the objective.  This is a slippery slope, and I tend to try to avoid it (possibly to a fault; other groups tend to put out more compelling videos!).</p>
 
         <p>The second approach is to give a better initial guess to your solver
@@ -660,7 +661,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     $\bu_0(t), \bx_0(t)$ represents a feasible solution trajectory of the
     system.  But we haven't done anything, yet, to ensure that this trajectory
     is locally stable.</p>
-    
+
     <p>In fact, there are a few notable approximations that we've already made
     to get to this point: the integration accuracy of our trajectory
     optimization tends to be much less than the accuracy used during forward
@@ -671,7 +672,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     optimized control trajectory directly <i>even from the exact initial
     conditions</i> used in / obtained from trajectory optimization, you might
     find that the state trajectory diverges from your planned trajectory.</p>
-    
+
     <p>There are a number of things we can do about this.  It is possible to
     evaluate the local stability of the trajectory during the trajectory
     optimization, and add a cost or constraint that rewards open-loop stability
@@ -736,8 +737,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       than $N$ (e.g. over the infinite horizon), then it is standard to continue
       solving for an $N$ step horizon on each evaluation of the controller.  In
       this sense, the total horizon under consideration continues to move
-      forward in time (e.g. to recede).</p>  
-      
+      forward in time (e.g. to recede).</p>
+
       <p>Some care must be taken in receding-horizon formulations because on
       each new step we are introducing new costs and constraints into the
       problem (the ones that would have been associated with time $N+1$ on the
@@ -747,7 +748,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       guarantee <i>recursive feasibility</i> -- e.g. guarantee that if a
       feasible solution is found at time $n$, then the solver will also find a
       feasible solution at time $n+1$.</p>
-      
+
       <p>Perhaps the simplest mechanism for guaranteeing recursive feasibility
       in an optimization for stabilizing a fixed point, $(\bx^*, \bu^*)$, is to
       add a final-value constraint to the receding horizon, $\bx[N] = \bx^*$.
@@ -858,7 +859,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         coordinate system that we use throughout the text -- positive z is up,
         but positive pitch is down. </figcaption>
       </figure>
-    
+
       <p>In our experiments, we found the dynamics of our aircraft were
       captured very well by the so-called "flat plate model"
       <elib>Cory08</elib>. In flat plate theory lift and drag forces of a wing
@@ -896,25 +897,25 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       f_w + (l_h c_\phi + l_e) f_e \right). \end{gather*}
       <!-- Note: the inertia term looks suspicious, but is the result of a lot of cancellations in the cross product.  See, for instance, eq. 3.9 in Moore14b -->
       </p>
-    
+
     </subsection>
 
     <subsection><h1>Trajectory optimization</h1>
-      
+
       <p><a target="perching"
         href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/examples/perching.ipynb#scrollTo=ZO_bsG2pA8bY"><img
         src="https://colab.research.google.com/assets/colab-badge.svg"
         alt="Open In Colab"/></a>
           </p>
-    
+
     </subsection>
-  
+
     <subsection><h1>Trajectory stabilization</h1></subsection>
 
     <subsection><h1>Trajectory funnels</h1></subsection>
 
     <subsection><h1>Beyond a single trajectory</h1>
-    
+
     <p>The linear controller around a nominal trajectory was surprisingly
     effective, but it's not enough.  We'll return to this example again when we
     talk about "feedback motion planning", in order to discuss how to find a
@@ -924,10 +925,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <todo>Add Joe's perching funnels.</todo>
 
-    </subsection>  
+    </subsection>
 
   </section>
-  
+
   <section id="pontryagin"><h1>Pontryagin's Minimum Principle</h1>
 
     <p>The tools that we've been developing for numerical trajectory
@@ -1038,7 +1039,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       linearization</a> that we discussed for acrobots and cart-pole systems.
       But perhaps the most famous applciation of differential flatness, which
       we will explore here, is actually for quadrotors.</p>
-  
+
       <p>One of the most important lessons from partial feedback linearization,
       is the idea that if you have $m$ actuators, then you basically get to
       control exactly $m$ quantities of your system.  Differential flatness
@@ -1048,11 +1049,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       the states/actuators must have been doing.  The fact that you can only
       execute a subset of possible trajectories can, in this case, make
       trajectory planning much easier!</p>
-  
+
       <p>Let's start with an example...</p>
-  
+
       <example><h1>Differential flatness for the Planar Quadrotor</h1>
-  
+
         <p>The planar quadrotor model <a
         href="acrobot.html#planar_quadrotor">described earlier</a> has 3
         degrees of freedom ($x,y,\theta$) but only two actuators (one for each
@@ -1076,12 +1077,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         more to obtain $\ddot\theta$.  Using ($\ref{eq:quad_theta}$) with
         ($\ref{eq:quad_x}$) or ($\ref{eq:quad_y}$) give us two linear equations
         for $u_1$ and $u_2$ which are easily solved.</p>
-  
+
         <p>Now you can see why we need the original trajectories to be smooth --
         the solution to $\bu(t)$ depends on $\ddot\theta(t)$ which depends on
         $\frac{d^4 x(t)}{dt^4}$ and $\frac{d^4 y(t)}{dt^4}$; we need those
         derivatives to exist along the entire trajectory.</p>
-  
+
         <p>What's more -- if we ignore input limits for a moment -- <i>any</i>
         sufficiently smooth trajectory of $x(t), y(t)$ is feasible, so if I can
         simply find one that avoids the obstacles, then I have designed my state
@@ -1090,22 +1091,22 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         quadratic program), assuming the constraints are convex.  In practice,
         this means that once you have determined whether to go left or right
         around the obstacles, trajectory design is easy and fast.</p>
-  
+
         <p>I've coded up a simple example of that for you here:</p>
-  
+
           <p><a target="acrobot"
             href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/acrobot.ipynb#scrollTo=ZO_bsG2pA8bY"><img
             src="https://colab.research.google.com/assets/colab-badge.svg"
             alt="Open In Colab"/></a>
               </p>
-  
+
         <figure> <img width="100%" src="figures/differential_flatness.svg"/>
         <figcaption>Differential flatness for the planar quadrotor -- by solving
         a simple optimization to find a smooth trajectory for $x(t)$ and $y(t)$,
         I can back out $\theta(t)$ and even $\bu(t)$. </figcaption> </figure>
-  
+
       </example>
-  
+
       <p>The example above demonstrates that the planar quadrotor system is
       differentially flat in the outputs $x(t)$, $y(t)$.  More generally, if we
       have a dynamical system $$\dot{\bx} = f(\bx, \bu),$$ and we design some
@@ -1119,16 +1120,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       requirement for showing that a system is differentially flat in those
       outputs is to write the function which solves for $\bx(t)$ and $\bu(t)$ as a
       function of only $\bz(t)$ and its time derivatives.</p>
-  
+
       <p>I'm not aware of any numerical recipes for showing that a system is
       differentially flat nor for finding potential flat outputs, but I admit I
       haven't worked on it nor looked for those recipes.  That would be
       interesting!  I think of differential flatness as a property that one must
       find for your system -- typically via a little mechanical intuition and a
       lot of algebra.  Once found, it can be very useful.</p>
-  
+
       <example><h1>Differential flatness for the 3D Quadrotor</h1>
-  
+
         <p>Probably the most famous example of differential flatness is on the
         full 3D quadrotors. <elib>Mellinger11</elib> showed that the 3D quadrotor
         is differentially flat in the outputs $\{x,y,z,\theta_{yaw}\}$.  They used
@@ -1137,7 +1138,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         widespread popularity of quadrotors in academia and industry over the next
         few years).
         </p>
-  
+
         <figure>
           <iframe width="560" height="315"
                   src="https://www.youtube.com/embed/MvRTALJp8DM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
@@ -1146,7 +1147,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           <figcaption>Aggressive quadrotor trajectories using differential
             flatness from <elib>Mellinger11</elib>.</figcaption>
         </figure>
-  
+
         <p>A few things to note about these examples, just so we also understand
         the limitations.  First, the technique above is great for designing
         trajectories, but additional work is required to stabilizing those
@@ -1157,14 +1158,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         used for flying through moving hoops is restricted to convex optimization
         formulations -- which means one has to hard-code apriori the decisions
         about whether to go left or right / up or down around each obstacle.</p>
-  
+
       </example>
-  
+
     </subsection>
 
     <subsection><h1>Iterative LQR and Differential Dynamic
       Programming</h1>
-    
+
         <p>There is another approach to trajectory optimization (at least for
         initial-value problems) that has gotten quite popular lately. Iterative
         LQR (iLQR)<elib>Li04</elib> also known as Sequential Linear Quadratic
@@ -1180,7 +1181,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         pass of the Riccati equation followed by a forward simulation.
         Anecdotally, the convergence is fast and robust.  Numerous
         applications...<elib>Farshidian17+Tassa12</elib>.</p>
-    
+
 
         <p>One key limitation of iLQR is that it only supports unconstrained
         trajectory optimization -- at least via the Riccati solution.  The
@@ -1194,7 +1195,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         methods</a>, especially using <a
         href="https://en.wikipedia.org/wiki/Augmented_Lagrangian_method">Augmented
         Lagrangian</a>.</p>
-    
+
         <!--
         <p>Thinking about the MPC version of iLQR leads to a curious observation.  I
         think everyone using iLQR by solving Riccati equations is doing more work
@@ -1203,7 +1204,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         problem: \begin{gather*} \min \sum_{n=0}^N  \bx[n]^T \bQ \bx[n] + ...
         \end{gather*}</p>
         -->
-    
+
         <p>Differential Dynamic Programming (DDP) <elib>Jacobson70</elib> is
         inspired by the idea of solving locally <i>quadratic</i> approximations
         of the HJB equations.  The resulting algorithm is almost identical to
@@ -1248,7 +1249,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
   <!--
   <section><h1>Open Questions / Project Ideas</h1>
-  
+
     <p>Here are some open questions that I have about the algorithms presented
     here.  I won't go so far as to say that the answers are not known, only
     that I don't know them, or at least that I would like to understand /
@@ -1284,7 +1285,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <todo>Update: I've resolved both of those; notes in headspace doc in goodnotes from May 29, 2021</todo>
 
   </section>
-  --> 
+  -->
 
   <section><h1>Exercises</h1>
 
@@ -1328,10 +1329,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
     <exercise><h1>Iterative Linear Quadratic Regulator</h1>
 
-      <p>The exercise is self-contained in 
-        <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/trajopt/ilqr_driving/ilqr_driving.ipynb" 
-        target="_blank">this notebook</a>.  
-        In this exercise you will derive and implement the iterative Linear Quadratic Regulator (iLQR). 
+      <p>The exercise is self-contained in
+        <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/trajopt/ilqr_driving/ilqr_driving.ipynb"
+        target="_blank">this notebook</a>.
+        In this exercise you will derive and implement the iterative Linear Quadratic Regulator (iLQR).
         You will evaluate it's functionality by planning trajectories for an autonomous vehicle.
         You will need to:</p>
 
