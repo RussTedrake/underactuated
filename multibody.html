@@ -71,7 +71,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     $\frac{d}{dt}\pd{L}{\dot{x}} = m\ddot{x},$ and $\pd{L}{x} = -\pd{U}{x} = f$
     amounting to $f=ma$.  But the Lagrangian derivation works in generalized
     coordinate systems and even for constrained motion.</p>
-    
+
     <p>If you are not comfortable with these equations, then any good book
     chapter on rigid body mechanics can bring you up to speed -- try
     <elib>Craig89</elib> for a very practical guide to robot
@@ -214,21 +214,24 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       <elib>Featherstone07</elib>; some people prefer reading about the
       Articulated Body Method in <elib>Mirtich96</elib>.  The implementation in
       <drake></drake> uses a related formulation from <elib>Jain11</elib>.</p>
-  
+
     </subsection> <!-- end recursive algorithms -->
 
     <subsection><h1>Hamiltonian Mechanics</h1>
 
       <p>In some cases, it might be preferable to use the <a
-      href="https://en.wikipedia.org/wiki/Hamiltonian_mechanics">Hamiltonian
-      formulation of the dynamics</a>, with state variables $\bq$ and $\bp$
-      (instead of $\dot{\bq}$), where $\bp = \pd{L}{\dot{\bq}}^T = \bM \dot\bq$ results in
-      the dynamics: \begin{align*}\bM(\bq) \dot{\bq} =& \bp \\ \dot{\bp} =&
+        href="https://en.wikipedia.org/wiki/Hamiltonian_mechanics">Hamiltonian
+        formulation of the dynamics</a>, with state variables $\bq$ and $\bp$
+      (instead of $\dot{\bq}$), where $\bp = \pd{L}{\dot{\bq}}^T = \bM
+      \dot\bq$ results in the dynamics: \begin{align*}\bM(\bq) \dot{\bq} =& \bp
+      \\ \dot{\bp} =&
       {\bf c}_H(\bq,\bp) + \tau_g(\bq) + \bB\bu, \qquad \text{where}\quad
       {\bf c}_H(\bq,\bp) = \frac{1}{2} \left(\pd{ \left[ \dot{\bq}^T \bM(\bq)
-      \dot{\bq}\right]}{\bq}\right)^T.\end{align*}</p>
+      \dot{\bq}\right]}{\bq}\right)^T.\end{align*} Recall that the Hamiltonian
+      is $H = {\bf p}^T\dot\bq - L$; these equations of motion are the
+      familiar $\dot\bq = \pd{H}{\bf p}^T, \dot{\bf p} = -\pd{H}{\bq}^T.$</p>
 
-    </subsection> 
+    </subsection>
 
     <subsection id="bilateral"><h1>Bilateral Position Constraints</h1>
 
@@ -357,7 +360,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     ${\bf n} = \pd{\phi}{\bq}$ to denote the "contact normal", as well as ${\bf
     t}_1$ and ${\bf t}_2$ as a basis for the tangents at the contact
     (orthonormal vectors in the Cartesian space, projected into joint space),
-    all represented as row vectors in joint coordinates.  
+    all represented as row vectors in joint coordinates.
     </p>
 
     <figure><img width="100%" src="figures/contact_coordinates_2d.jpg"
@@ -523,7 +526,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 
         <example id="spinning_ball_bouncing"><h1>A spinning ball bouncing on the
         ground.</h1>
-        
+
           <p>Imagine a ball (a hollow-sphere) in the plane with mass $m$, radius
           $r$.  The configuration is given by $q = \begin{bmatrix} x, z, \theta
           \end{bmatrix}^T.$  The equations of motion are $$\bM(\bq)\ddot\bq =
@@ -540,7 +543,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         </p>
 
         <!-- Derivation is here: https://www.wolframcloud.com/obj/russt/Published/BouncingBallWithSpin.nb-->
-        
+
         </example>
 
       </subsubsection>
@@ -615,7 +618,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           constraint is implemented by a normal (horizontal) force, $f$,
           yielding the equations of motion: $$m\ddot{q} = u + f.$$</p>
 
-          <figure><img width=40% src="figures/lcp_brick_normal_force.jpg"> 
+          <figure><img width=40% src="figures/lcp_brick_normal_force.jpg">
           </figure>
 
           <p>$f$ is defined as the force required to enforce the non-penetration
@@ -697,11 +700,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           friction, but it requires some gymnastics with slack variables to make
           it work.  For this case in particular, I believe a very simple
           example is best.  Let's take our brick and remove the wall and the
-          wheels (so we now have friction with the ground).</p>  
-    
-          <figure><img width=40% src="figures/lcp_brick_friction.jpg"> 
+          wheels (so we now have friction with the ground).</p>
+
+          <figure><img width=40% src="figures/lcp_brick_friction.jpg">
           </figure>
-    
+
           <p>The dynamics are the same as our previous example, $$m\ddot{q} = u
           + f,$$ but this time I'm using $f$ for the friction force which is
           inside the friction cone if $\dot{q} = 0$ and on the boundary of the
@@ -726,7 +729,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           must have $f^+=0$, $v_{abs} = v[n+1]$, and $f^- = \mu mg$.  When
           $v[n+1] = 0$, we can have $v_{abs} = 0$, $f^+ - f^- \le \mu mg$, and
           those forces must add up to make $v[n+1] = 0$.</p>
-        
+
         </example>
 
         <p>We can put it all together and write an LCP with both normal forces
@@ -761,8 +764,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         the direction ${\bf n} - \mu {\bf d}_i,$ where ${\bf n} =
         \pd{\phi}{\bq}$ is the contact normal; the sum of the forces is an
         affine combination of these extreme rays of the polyhedral friction
-        cone.  As written, the optimization is a QP.</p>  
-        
+        cone.  As written, the optimization is a QP.</p>
+
         <p>But be careful!  Although the primal solution was convex, and the
         dual problems are always convex, the objective here can be positive
         semi-definite.  This isn't a mistake -- <elib>Anitescu06</elib>
@@ -788,7 +791,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         point; <elib>Anitescu06</elib> studies the typical case of only
         including potential contact pairs with $\phi(\bq) \le \epsilon$, for
         small $\epsilon \ge 0$.  </p>
-  
+
       </subsubsection>
 
       <subsubsection><h1>Todorov's convex formulation</h1>
@@ -830,7 +833,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         f_{t1}, f_{t2}]^T \middle| f_n \ge 0, \sqrt{f^2_{t1}+f^2_{t2}} \le \mu
         f_n \right\}.$$  The resulting dual optimization is has a quadratic
         objective and second-order cone constraints (SOCP).</p>
-        
+
         <p>There are a number of other important relaxations that happen in
         MuJoCo.  To address the positive indefiniteness in the objective,
         <elib>Todorov14</elib> relaxes the dual objective by adding a small term
@@ -858,7 +861,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
           <p>What equations do we get if we simulate the simple cart colliding
           with a wall example that we used above?</p>
 
-          <figure><img width=40% src="figures/lcp_brick_normal_force.jpg"> 
+          <figure><img width=40% src="figures/lcp_brick_normal_force.jpg">
           </figure>
 
           <p>Following <elib>Todorov14</elib>, the first relaxation we find is
@@ -887,9 +890,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
       </todo>
 
       <subsubsection><h1>Beyond Point Contact</h1>
-    
+
         <p>Coming soon... Box-on-plane example.  Multi-contact.</p>
-    
+
         <p>Also a single point force cannot capture effects like torsional
         friction, and performs badly in some very simple cases (imaging a box
         sitting on a table).  As a result, many of the most effective algorithms
@@ -899,18 +902,18 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
         exactly those four points as they penetrate some other body/mesh can
         give more consistent contact force locations/directions. A surprising
         number of simulators, especially for legged robots, do this.</p>
-    
+
         <p>In practice, most collision detection algorithms will return a list
         of "collision point pairs" given the list of bodies (with one point pair
         per pair of bodies in collision, or more if they are using the
         aforementioned "multi-contact" heuristics), and our contact force model
         simply attaches springs between these pairs. Given a point-pair, $p_A$
         and $p_B$, both in world coordinates, ...</p>
-        
+
         <p>Hydroelastic model in drake<elib>Elandt19</elib>. </p>
-  
+
       </subsubsection>
-  
+
     </subsection>
 
 
@@ -923,7 +926,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
   </todo>
 
   <section id="action"><h1>Principle of Stationary Action</h1>
-  
+
     <p><elib>Susskind14</elib> says <blockquote>The principle of least action -- really the principle of stationary action -- is the most compact form of the classical laws of physics.  This simple rule (it can be written in a single line) summarizes everything!  Not only the principles of classical mechanics, but electromagnetism, general relativity, quantum mechanics, everything known about chemistry -- right down to the ultimate known constituents of matter, elementary particles.</blockquote>  Sounds important!</p>
 
     <p>I find a lot of presentations of the principle of stationary action
@@ -962,7 +965,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     motion.  The forced version follows from the variation $$\delta A =
     \int_{t_0}^{t_1} L(\bq(t),\dot\bq(t))dt + \int_{t_0}^{t_1}
     \bQ^T(t){\bf \epsilon}(t) dt = 0.$$ </p>
-  
+
   </section>
 
 </chapter>
