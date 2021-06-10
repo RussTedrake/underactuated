@@ -8,7 +8,8 @@ import meshcat.transformations as tf
 from pydrake.all import RigidTransform
 
 
-# TODO: push this back to meshcat-python
+# TODO: Remove this once https://github.com/rdeits/meshcat-python/pull/91 makes
+# its way through to drake.
 class TriangularMeshGeometry(g.Geometry):
     """
     A mesh consisting of an arbitrary collection of triangular faces. To
@@ -31,6 +32,10 @@ class TriangularMeshGeometry(g.Geometry):
     ])
 
     mesh = TriangularMeshGeometry(vertices, faces)
+
+    To set the color of the mesh by vertex, pass an Nx3 array containing the
+    RGB values (in range [0,1]) of the vertices to the optional `color`
+    argument, and set `vertexColors=True` in the Material.
     """
     __slots__ = ["vertices", "faces"]
 
@@ -43,12 +48,16 @@ class TriangularMeshGeometry(g.Geometry):
         assert faces.shape[1] == 3, "`faces` must be an Mx3 array"
         self.vertices = vertices
         self.faces = faces
+        if color is not None:
+            color = np.asarray(color, dtype=np.float32)
+            assert np.array_equal(vertices.shape, color.shape),\
+                "`color` must be the same shape as vertices"
         self.color = color
 
     def lower(self, object_data):
         attrs = {u"position": g.pack_numpy_array(self.vertices.T)}
         if self.color is not None:
-            attrs[u"color"] = g.pack_numpy_array(self.color)
+            attrs[u"color"] = g.pack_numpy_array(self.color.T)
         return {
             u"uuid": self.uuid,
             u"type": u"BufferGeometry",
@@ -80,7 +89,7 @@ def plot_surface(meshcat, X, Y, Z, color=0xdd9999, wireframe=False):
     if isinstance(color, Colormap):
         z = vertices[:, 2]
         rgba = color((vertices[:, 2] - np.min(z)) / np.ptp(z))
-        color = rgba[:, :3].T
+        color = rgba[:, :3]
 
     if isinstance(color, int):
         meshcat.set_object(
@@ -145,11 +154,11 @@ def plot_mathematical_program(meshcat,
             up = evaluator.upper_bound()
             cvb = cv[type(evaluator).__name__]
             for index in range(Zc.shape[0]):
-                color = np.repeat([[0.3], [0.3], [1.0]], N, axis=1)
+                color = np.repeat([[0.3, 0.3, 1.0]], N, axis=0)
                 infeasible = np.logical_or(Zc[index, :] < low[index],
                                            Zc[index, :] > up[index])
-                color[0, infeasible] = 1.0
-                color[2, infeasible] = 0.3
+                color[infeasible, 0] = 1.0
+                color[infeasible, 2] = 0.3
                 plot_surface(cvb[str(index)],
                              X,
                              Y,
