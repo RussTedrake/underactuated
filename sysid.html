@@ -88,7 +88,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   statistical viewpoint here.</p>
 
   <section><h1>Problem formulation: equation error vs simulation error</h1>
-  
+
     <figure><img width="80%"" src="data/sysid.svg"/></figure>
 
     <p>Our problem formulation inevitably begins with the data.  In practice,
@@ -108,7 +108,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     have written, we fit a deterministic model to the data and rely on our
     least-squares objective to capture the errors; more generally we will look
     at fitting stochastic models to the data.</p>
-    
+
     <p>We often separate the identification procedure into two parts, were we
     first estimate the state $\hat{\bx}_n$ given the input-output data $\bu_n,
     \by_n$, and then focus on estimating the state-evolution dynamics in a
@@ -128,14 +128,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <!--
     <subsection><h1>Preprocessing your data</h1>
-    
+
       <p>Many of the techniques below can benefit from some basic data
       preprocessing techniques.  The <a
       href="https://www.mathworks.com/help/ident/ug/ways-to-prepare-data-for-system-identification.html">MATLAB
       System Identification Toolbox documentation</a> has some useful advice
       (with emphasis on the fitting of linear models).  </p>
     </subsection>
-    -->  
+    -->
   </section>
 
   <section><h1>Parameter Identification for Mechanical Systems</h1>
@@ -194,9 +194,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       an expensive and/or unreliable calibration procedure can put a damper on
       any robotics project.  For underactuated systems, in particular, it can
       have a dramatic effect on performance.</p>
-    
+
       <example><h1>Acrobot balancing with calibration error</h1>
-      
+
         <p>Small kinematic calibration errors can lead to large steady-state
         errors when attempting to stabilize a system like the Acrobot.  I've put together a simple notebook to show the effect here:</p>
 
@@ -253,14 +253,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       "lumped parameters".  We sometimes refer to ${\bf W}$ as the "data matrix".</p>
 
       <example><h1>Lumped parameters for the simple pendulum</h1>
-        
+
         <p>The now familiar equations of motion for the simple pendulum are
         $$ml^2 \ddot\theta + b \dot\theta + mgl\sin\theta = \tau.$$  For
         parameter estimation, we will factor this into $$\begin{bmatrix}
         \ddot\theta & \dot\theta & \sin\theta \end{bmatrix} \begin{bmatrix}
         ml^2 \\ b \\ mgl \end{bmatrix} - \tau = 0.$$  The terms $ml^2$, $b$,
         and $mgl$ together form the "lumped parameters".</p>
-      
+
       </example>
 
       <p>It is worth taking a moment to reflect on this factorization.  First
@@ -274,7 +274,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       written here.  If you were to write the forward dynamics, multiplying by
       $\bM^{-1}$ in order to solve for $\ddot{\bq}$, then once again you would
       destroy this affine structure.</p>
-      
+
       <p>This is super interesting!  It is tempting to thing about parameter
       estimation for general dynamical systems in our standard state-space
       form: $\bx[n+1] = f_\balpha(\bx[n], \bu[n]).$  But for multibody systems,
@@ -282,14 +282,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       beautiful affine structure.</p>
 
       <example><h1>Multibody parameters in <drake></drake></h1>
-      
+
         <p>Very few robotics simulators have any way for you to access the
         parameters of the dynamics.  In Drake, we explicitly declare all of the
         parameters of a multibody system in a separate data structure to make
         them available, and we can leverage Drake's symbolic engine to extract
         and manipulate the equations with respect to those variables.
         </p>
-        
+
         <p>As a simple example, I've loaded the cart-pole system model from
         URDF, created a symbolic version of the <code>MultibodyPlant</code>,
         and populated the <code>Context</code> with symbolic variables for the
@@ -303,7 +303,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
             </p>
 
         <p>The output looks like: <pre><code>Symbolic dynamics:
-(0.10000000000000001 * v(0) - u(0) + (pow(v(1), 2) * mp * l * sin(q(1))) + (vd(0) * mc) + (vd(0) * mp) - (vd(1) * mp * l * cos(q(1)))) 
+(0.10000000000000001 * v(0) - u(0) + (pow(v(1), 2) * mp * l * sin(q(1))) + (vd(0) * mc) + (vd(0) * mp) - (vd(1) * mp * l * cos(q(1))))
 (0.10000000000000001 * v(1) - (vd(0) * mp * l * cos(q(1))) + (vd(1) * mp * pow(l, 2)) + 9.8100000000000005 * (mp * l * sin(q(1))))
         </code></pre></p>
 
@@ -364,7 +364,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 (mp * l).  URDF: 0.5,  Estimated: 0.5945797067753813
 (mp * pow(l, 2)).  URDF: 0.25,  Estimated: 0.302915745122919</code></pre>
           Note that we could have easily made the fit more accurate with more
-          data (or more carefully selected data).</p>            
+          data (or more carefully selected data).</p>
 
       </example>
 
@@ -401,7 +401,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <subsection><h1>Identification using energy instead of inverse
     dynamics.</h1>
-    
+
       <p>In addition to leveraging tools from linear algebra, there are a
       number of other refinements to the basic recipe that leverage our
       understanding of mechanics.  One important example is the "energy
@@ -415,7 +415,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       lumped parameters.  We can use the relation
       $$\dot{E}(\bq,\dot\bq,\ddot\bq) = \dot\bq^T (\bB\bu + \text{ friction,
       ...}).$$</p>
-      
+
       <p>Why might we prefer to work in energy coordinates rather than torque?
       The differences are apparent in the detailed numerics.  In the torque
       formulation, we find ourselves using $\ddot\bq$ directly. Conventional
@@ -469,13 +469,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       ultimately discarded all but the small number of basis functions that
       best described the data.  Nowadays, we could apply algorithms like <a href="https://en.wikipedia.org/wiki/Lasso_(statistics)">LASSO</a>
       for least-squares regression with an $\ell_1$-regularization, or
-      <elib>Brunton16a</elib> use an alternative based on
+      <elib>Brunton16a</elib> uses an alternative based on
        sequential thresholded least-squares.</p>
 
     </subsection>
 
     <subsection id="mbp_experiment_design"><h1>Experiment design as a trajectory optimization</h1>
-    
+
       <p>One key assumption for any claims about our parameter estimation
       algorithms recovering the true identifiable lumped parameters is that the
       data set was sufficiently rich; that the trajectories were
@@ -500,11 +500,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       nonlinear function of the data taken over the entire trajectory, but it
       can still be optimized in a nonlinear trajectory optimization
       (<elib>Khalil04</elib>, &sect; 12.3.4).</p>
-      
+
     </subsection>
 
     <subsection><h1>Online estimation and adaptive control</h1>
-    
+
       <p>The field of adaptive control is a huge and rich literature; many
       books have been written on the topic (e.g <elib>Åström13</elib>).  Allow
       me to make a few quick references to that literature here.</p>
@@ -522,7 +522,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       manipulators, but for instance <elib>Moore14</elib> gives a nice example
       of analyzing an adaptive controller for underactuated systems using many
       of the tools that we have been developing in these notes.</p>
-    
+
       <p>As I said, adaptive control is a rich subject.  One of the biggest
       lessons from that field, however, is that one may not need to achieve
       convergence to the true (lumped) parameters in order to achieve a task.
@@ -541,15 +541,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       if we know the contact Jacobians and have measurements of the contact
       forces, then we can add these terms directly into the manipulator
       equations and continued with the least-squares estimation of the lumped
-      parameters, even including frictional parameters.</p>  
-      
+      parameters, even including frictional parameters.</p>
+
       <p>One can also study cases where the contact forces are not measured
       directly.  For instance, <elib>Fazeli17a</elib> studies the extreme case
       of identifiability of the inertial parameters of a passive object with
       and without explicit contact force measurements.</p>
 
       <todo>Flesh this out a bit more...  (maybe move it to the hybrid sysid subsection?)</todo>
-    
+
     </subsection>
 
   </section>
@@ -574,7 +574,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     the lessons here are easier to generalize to nonlinear dynamics (plus we
     unfortunately haven't built the foundations for the frequency domain
     techniques yet in these notes). </p>
-  
+
     <subsection><h1>From state observations</h1>
 
       <p>Let's start our treatment with the easy case: fitting a linear model
@@ -596,7 +596,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       measurement noise, $\bw[n]$ and $\bv[n]$.</p>
 
       <example><h1>Cart-pole balancing with an identified model</h1>
-      
+
         <p>I've provide a notebook demonstrating what a practical application
         of linear identification might look like for the cart-pole system, in a
         series of steps.  First, I've designed an LQR balancing controller, but
@@ -636,17 +636,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       </example>
 
       <subsubsection><h1>Model-based Iterative Learning Control (ILC)</h1>
-      
+
         <todo>Local time-varying linear model along a trajectory + iLQR.  Bregmann ADMM</todo>
 
         <example><h1>The Hydrodynamic Cart-Pole</h1>
-        
+
           <p>One of my favorite examples of model-based ILC was a series of
           experiments in which we explored the dynamics of a "hydrodynamic
           cart-pole" system.  Think of it as a cross between the classic
           cart-pole system and a fighter jet (perhaps a little closer to the
-          cartpole)!</p>  
-          
+          cartpole)!</p>
+
           <p>Here we've replaced the pole with an airfoil (hydrofoil), turned
           the entire system on its side, and dropped it into a water tunnel.
           Rather than swing-up and balance the pole against gravity, the task
@@ -658,7 +658,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
           <figure><img width="25%" src="data/hydro_cartpole_downright.png">
           <img width="25%" src="data/hydro_cartpole_dynamic.png"> <img
-          width="25%" src="data/hydro_cartpole_upright.png"> 
+          width="25%" src="data/hydro_cartpole_upright.png">
             <figcaption>A cartoon of the hydronamic cart-pole system.  The cart
             is actuated horizontally, the foil pivots around a passive joint,
             and the fluid is flowing in the direction of the arrows.  (The
@@ -669,7 +669,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
             Balancing corresponds to stabilizing the unstable "upward"
             equilibrium (right).  The fluid-body dynamics during the transition
             (center) are unsteady and very nonlinear.</figcaption>
-        
+
           </figure>
 
           <p>In a series of experiments, first we attempted to stabilize the
@@ -718,7 +718,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       </subsubsection>
 
       <subsubsection><h1>Compression using the dominant eigenmodes</h1>
-      
+
         <todo>connect to acrobot ch modal analysis?</todo>
 
         <p>For high-dimensional state or input vectors, one can use singular
@@ -732,7 +732,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         corresponding to a fluid flow).  In DMD, we would write the linear
         dynamics in the coordinates of these eigenmodes (which can always be
         projected back to the full coordinates).</p>
-    
+
       </subsubsection>
 
       <subsubsection><h1>Linear dynamics in a nonlinear basis</h1>
@@ -758,13 +758,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         this, although it is closely related.  The least-squares
         lumped-parameter estimation for the manipulator equations uncovered
         dynamics that were still <i>nonlinear</i> in the state variables.</p>
-     
+
       </subsubsection>
 
     </subsection>
 
     <subsection><h1>From input-output data (the state-realization problem)</h1>
-    
+
       <p>In the more general form, we would like to estimate a model of the
       form \begin{gather*} \bx[n+1] = \bA \bx[n] + \bB \bu[n] + \bw[n]\\ \by[n]
       = \bC \bx[n] + {\bf D} \bu[n] + \bv[n]. \end{gather*}  Once again, we
@@ -805,7 +805,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       systems, the $\delta$ terms will get smaller as we increase $N$.  In
       practice, we choose $N$ based on the characteristic settling time in the
       data (roughly until the impulse response becomes sufficiently small).</p>
-      
+
       <p>If you've studied linear systems, ${\bf G}$ will look familiar; it is
       precisely this (multi-input, multi-output) matrix impulse response, also
       known as the "Markov parameters".  In fact, estimating $\hat{\bf
@@ -833,7 +833,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       9">Brunton19</elib> and which orders the states in terms of diminishing
       effect on the input/output behavior. This ordering is relevant for
       determining the system order and for model reduction.</p>
-        
+
       <p>Note that $\hat{\bf D}$ is the last block in $\hat{\bf G}$ so is
       extracted trivially. The Ho-Kalman algorithm tells us how to extract
       $\hat\bA, \hat\bB, \hat\bC$, with another application of the SVD on
@@ -844,7 +844,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <todo>Does using the Kalman filter states allow me to use colored input excitation?</todo>
 
       <example><h1>Ho-Kalman identification of the cart-pole from keypoints</h1>
-      
+
         <p>Let's repeat the cart-pole example.  But this time, instead of
         getting observations of the joint position and velocities directly, we
         will consider the problem of identifying the dynamics from a camera
@@ -914,7 +914,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
             </p>
 
       </example>
-   
+
       <todo>identify observer/Kalman filter markov parameters (aka OKID) from
       Juang93, also in Juang95 section 10.7, Brunton19, VanOverschee96, etc.
       Inspiration is similar to Simchowitz and Boczar; we'd expect the Kalman
@@ -924,10 +924,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     </subsection>
 
     <subsection><h1>Adding stability constraints</h1>
-    
+
       <p>Details coming soon.  See, for instance <elib>Umenberger18</elib>.</p>
       <todo>possibly: https://arxiv.org/abs/1204.0590</todo>
-    
+
     </subsection>
 
     <subsection><h1>Autoregressive models</h1>
@@ -965,7 +965,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   </section>
 
   <section><h1>Identification of finite (PO)MDPs</h1>
-  
+
     <p>There is one more case that we can understand well: when states,
     actions, and observations (and time) are all discrete.  Recall that in the
     very beginnings of our discussion about optimal control and <a
@@ -983,7 +983,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <todo>Introduce the transition matrix better in the DP chapter, and make
     the notation consistent (in the DP section, I have T transposed).</todo>
-  
+
     <subsection><h1>From state observations</h1>
 
       <p>Following analogously to our discussion on linear dynamical systems,
@@ -1007,7 +1007,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     </subsection>
 
     <subsection><h1>Identifying Hidden Markov Models (HMMs)</h1>
-    
+
       <todo>include the standard HMM diagram here?</todo>
 
       <todo>Baum-Welsch</todo>
@@ -1018,7 +1018,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   </section>
 
   <section><h1>Neural network models</h1>
-  
+
     <p>If multibody parameter estimation, linear system identification, and
     finite state systems are the first pillars of system identification, then
     (at least these days) deep learning is perhaps the last major pillar.  It's
@@ -1039,14 +1039,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     descriptions.</p>
 
     <subsection><h1>Generating training data</h1>
-    
+
       <p>One extremely interesting question that arises when fitting rich
       nonlinear models like neural networks is the question of how to generate
       the training data.  You might have the general sense that we would like
       data that provides some amount of "coverage" of the state space; this is
       particularly challenging for underactuated systems since we have dynamic
-      constraints restricting our trajectories in state space.</p>  
-      
+      constraints restricting our trajectories in state space.</p>
+
       <p>For multibody parameter estimation <a href="#mbp_experiment_design">we
       discussed</a> using the condition number of the data matrix as an
       explicit objective for experiment design.  This was a luxury of using
@@ -1058,8 +1058,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       identifying linear dynamical systems.  The challenge is here perhaps
       considered less severe since for linear models in the noise-free case
       even data generated from the impulse response is sufficient for
-      identification.</p> 
-      
+      identification.</p>
+
       <p>This topic has received considerable attention lately in the context
       of <i>model-based reinforcement learning</i> (e.g.
       <elib>Agarwal20b</elib>).  Broadly speaking, in the ideal case we would
@@ -1071,7 +1071,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       speaks to the importance to interleaving system identification and
       control design instead of the simpler notion of performing identification
       once and then using the model forevermore.</p>
-    
+
     </subsection>
 
     <subsection><h1>From state observations</h1>
@@ -1079,7 +1079,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     </subsection>
 
     <subsection><h1>State-space models from input-output data (recurrent networks)</h1>
-    
+
     </subsection>
 
     <subsection><h1>Input-output (autoregressive) models</h1>
@@ -1090,7 +1090,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
 
   <section><h1>Alternatives for nonlinear system identification</h1>
-  
+
     <todo>MMT / Jack's work</todo>
 
     <todo>Gaussian Processes</todo>
@@ -1117,16 +1117,16 @@ control (Proctor et al., 2016b).-->
 
 
     </subsection>
-  
+
   </section>
 
   <todo>world models?</todo>
 
   <section><h1>Identification of hybrid systems</h1>
-  
+
     <todo>hybrid system survey papers</todo>
     <todo>decision trees/CART</todo>
-  
+
   </section>
 
 
@@ -1151,7 +1151,7 @@ control (Proctor et al., 2016b).-->
       </ol>
 
     </exercise>
-    
+
     <exercise id="glider_sysid"><h1>System Identification for the Perching Glider</h1>
 
       <p>In this exercise we will use physically-inspired basis functions to fit the nonlinear dynamics of a perching glider.  <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/sysid/glider_sysid/glider_sysid.ipynb" target="_blank">In this python notebook</a>, you will need to implement least-squares fitting and find the best set of basis functions that describe the dynamics of the glider.  Take the time to go through the notebook and understand the code in it, and then answer the following questions.  The written question will also be listed in the notebook for your convenience.</p>
@@ -1163,7 +1163,7 @@ control (Proctor et al., 2016b).-->
         <li>All of the basis configurations we tested used at most 3 basis functions to compute a single acceleration. If we increase the number of basis functions used to compute a single acceleration to 4, the least-squares residual goes down. Why would we limit ourselves to 3 basis functions if by using more we can generate a better fit?</li>
 
       </ol>
-    
+
     </exercise>
 
   </section>

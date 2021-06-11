@@ -59,7 +59,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <chapter class="appendix" style="counter-reset: chapter 1"><h1>Multi-Body
   Dynamics</h1>
 
-  <section><h1>Deriving the equations of motion (an example)</h1>
+  <section><h1>Deriving the equations of motion</h1>
 
     <p>The equations of motion for a standard robot can be derived using the
     method of Lagrange.  Using $T$ as the total kinetic energy of the system,
@@ -70,15 +70,33 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     equations.  For a particle, we have $T=\frac{1}{2}m \dot{x}^2,$ so
     $\frac{d}{dt}\pd{L}{\dot{x}} = m\ddot{x},$ and $\pd{L}{x} = -\pd{U}{x} = f$
     amounting to $f=ma$.  But the Lagrangian derivation works in generalized
-    coordinate systems and even for constrained motion.</p>
+    coordinate systems and for constrained motion.</p>
+
+    <p>Without going into the full details, the key idea for handling
+    constraints is the "principle of virtual work" (and the associated
+    D'Almbert's principle). To describe even a pendulum at equilibrium in the
+    Newtonian approach, we would have to compute both external forces (like
+    gravity) and internal forces (like the forces keeping the pendulum arm
+    attached to the table), and have their sum equal zero. Computing internal
+    forces is slightly annoying for a pendulum; it becomes untenable for more
+    complex mechanisms. If the sum of the forces equals zero, then the work done
+    by those forces in some (infinitesmal) virtual displacement is certainly
+    also equal to zero. Now here is the trick: if we consider only virtual
+    displacements that are consistent with the kinematic constraints (e.g.
+    rotations around the pin joint of the pendulum), then we can compute that
+    virtual work and set it equal to zero without ever computing the internal
+    forces! Extending this idea to the dynamics case (via D'Almbert's and
+    Hamilton's principles) results eventually in the Lagrangian equations
+    above.</p>
 
     <p>If you are not comfortable with these equations, then any good book
-    chapter on rigid body mechanics can bring you up to speed -- try <elib>Craig89</elib>
-    for an excellent practical guide to robot kinematics/dynamics. <elib>Lanczos70</elib>
-    is my favorite exposition, by far, of variational mechanics; I highly
-    recommend it if you want something more. But it's also ok to continue on
-    for now thinking of Lagrangian mechanics simply as a recipe than you can
-    apply in a great many situations to generate the equations of motion.
+    chapter on rigid body mechanics can bring you up to speed.
+    <elib>Craig89 </elib> is an excellent practical guide to robot
+    kinematics/dynamics. But <elib>Lanczos70</elib> is my favorite mechanics
+    book, by far; I highly recommend it if you want something more. It's also ok
+    to continue on for now thinking of Lagrangian mechanics simply as a recipe
+    than you can apply in a great many situations to generate the equations of
+    motion.
     </p>
 
     <p>For completeness, I've included a derivation of the Lagrangian from the
