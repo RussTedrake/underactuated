@@ -12,7 +12,7 @@
     <script src="https://hypothes.is/embed.js" async></script>
     <script type="text/javascript" src="htmlbook/book.js"></script>
 
-    <script src="htmlbook/mathjax-config.js" defer></script> 
+    <script src="htmlbook/mathjax-config.js" defer></script>
     <script type="text/javascript" id="MathJax-script" defer
       src="htmlbook/MathJax/es5/tex-chtml.js">
     </script>
@@ -30,9 +30,9 @@
 <div data-type="titlepage">
   <header>
     <h1><a href="index.html" style="text-decoration:none;">Underactuated Robotics</a></h1>
-    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p> 
+    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p>
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
-    <p style="font-size: 14px; text-align: right;"> 
+    <p style="font-size: 14px; text-align: right;">
       &copy; Russ Tedrake, 2021<br/>
       Last modified <span id="last_modified"></span>.</br>
       <script>
@@ -45,8 +45,8 @@
 
 <p><b>Note:</b> These are working notes used for <a
 href="http://underactuated.csail.mit.edu/Spring2021/">a course being taught
-at MIT</a>. They will be updated throughout the Spring 2021 semester.  <a 
-href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos are available on YouTube</a>.</p> 
+at MIT</a>. They will be updated throughout the Spring 2021 semester.  <a
+href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos are available on YouTube</a>.</p>
 
 <table style="width:100%;"><tr style="width:100%">
   <td style="width:33%;text-align:left;"><a class="previous_chapter" href=drake.html>Previous Chapter</a></td>
@@ -73,14 +73,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     coordinate systems and even for constrained motion.</p>
 
     <p>If you are not comfortable with these equations, then any good book
-    chapter on rigid body mechanics can bring you up to speed -- try
-    <elib>Craig89</elib> for a very practical guide to robot
-    kinematics/dynamics, <elib>Goldstein02</elib> for a more hard-core dynamics
-    text or <elib>Thornton03</elib> for a classical dynamics text which is a
-    nice read.  For now you can take them as a handle that you can crank to
-    generate equations of motion.</p>
+    chapter on rigid body mechanics can bring you up to speed -- try <elib>Craig89</elib>
+    for an excellent practical guide to robot kinematics/dynamics. <elib>Lanczos70</elib>
+    is my favorite exposition, by far, of variational mechanics; I highly
+    recommend it if you want something more. But it's also ok to continue on
+    for now thinking of Lagrangian mechanics simply as a recipe than you can
+    apply in a great many situations to generate the equations of motion.
+    </p>
 
-    <p>For completeness, I've included a derivation of the Lagrangian from the principle of stationary action <a href="#action">below</a>.</p>
+    <p>For completeness, I've included a derivation of the Lagrangian from the
+    principle of stationary action <a href="#action">below</a>.</p>
 
     <example id=double_pendulum><h1>Simple Double Pendulum</h1>
 
@@ -966,6 +968,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     \int_{t_0}^{t_1} L(\bq(t),\dot\bq(t))dt + \int_{t_0}^{t_1}
     \bQ^T(t){\bf \epsilon}(t) dt = 0.$$ </p>
 
+    <p>For a much richer treatment, see <elib>Lanczos70</elib>.</p>
+
   </section>
 
 </chapter>
@@ -980,16 +984,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
 , January, <span class="year">1989</span>.
 
 </li><br>
-<li id=Goldstein02>
-<span class="author">Herbert Goldstein</span>,
-<span class="title">"Classical Mechanics"</span>,Addison Wesley
-, <span class="year">2002</span>.
-
-</li><br>
-<li id=Thornton03>
-<span class="author">Stephen T. Thornton and Jerry B. Marion</span>,
-<span class="title">"Classical Dynamics of Particles and Systems"</span>,Brooks Cole
-, <span class="year">2003</span>.
+<li id=Lanczos70>
+<span class="author">Cornelius Lanczos</span>,
+<span class="title">"The variational principles of mechanics"</span>,University of Toronto Press
+, no. no. 4, <span class="year">1970</span>.
 
 </li><br>
 <li id=Asada86>
