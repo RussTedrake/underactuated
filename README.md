@@ -66,7 +66,8 @@ the project view and selecting `Mark directory as > Excluded`.
 
 I use selection and then Ctrl+alt+P for manual wrapping. I updated the HTML
 style to use 2 for tabs/indent/continuation, and added `p`
-to `Other > Do not indent children of`.
+to `Other > Do not indent children of`. I removed `h1` from the "indent before",
+and unchecked "keep line breaks in text".
 
 Additional information for Docker Hub users
 -------------------------------------------

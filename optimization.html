@@ -12,7 +12,7 @@
     <script src="https://hypothes.is/embed.js" async></script>
     <script type="text/javascript" src="htmlbook/book.js"></script>
 
-    <script src="htmlbook/mathjax-config.js" defer></script>
+    <script src="htmlbook/mathjax-config.js" defer></script> 
     <script type="text/javascript" id="MathJax-script" defer
       src="htmlbook/MathJax/es5/tex-chtml.js">
     </script>
@@ -30,9 +30,9 @@
 <div data-type="titlepage">
   <header>
     <h1><a href="index.html" style="text-decoration:none;">Underactuated Robotics</a></h1>
-    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p>
+    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p> 
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
-    <p style="font-size: 14px; text-align: right;">
+    <p style="font-size: 14px; text-align: right;"> 
       &copy; Russ Tedrake, 2021<br/>
       Last modified <span id="last_modified"></span>.</br>
       <script>
@@ -45,8 +45,8 @@
 
 <p><b>Note:</b> These are working notes used for <a
 href="http://underactuated.csail.mit.edu/Spring2021/">a course being taught
-at MIT</a>. They will be updated throughout the Spring 2021 semester.  <a
-href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos are available on YouTube</a>.</p>
+at MIT</a>. They will be updated throughout the Spring 2021 semester.  <a 
+href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos are available on YouTube</a>.</p> 
 
 <table style="width:100%;"><tr style="width:100%">
   <td style="width:33%;text-align:left;"><a class="previous_chapter" href=multibody.html>Previous Chapter</a></td>
@@ -198,6 +198,46 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       Example: Balancing force control on Atlas
     </subsection>
     <subsection><h1>Semidefinite Programming and Linear Matrix Inequalities</h1>
+
+      <example>
+        <h1>Semidefinite programming relaxation of non-convex quadratic
+          constraints</h1>
+
+        <p>Consider the problem: \begin{align*} \min_x \quad & \| x - a \|^2 \\
+        \text{subject to} \quad & \| x - b \| \ge 1 \end{align*} We can write
+        this as \begin{align*} \min_{x,y} \quad & y - 2ax + a^2 \\ \text{subject
+        to} \quad & y - 2bx + b^2 \ge 1 \\ & y \ge x^2 \end{align*} where we
+        write $y \ge x^2$ as the semidefinite constraint $\begin{bmatrix} y & x
+        \\ x & 1 \end{bmatrix}.$</p>
+
+        <figure><img width="80%" src="data/sdp_relaxation_quadratic.svg"/>
+        <figcaption>Optimization landscape for $a=.8, b=.5.$</figcaption>
+        </figure>
+
+        <p>I've plotted the feasible region and the objective with an arrow. As
+        you can see, the feasible region is the epigraph of $y=x^2$ intersected
+        with the linear constraint. Now here is the key point: for linear
+        objectives, the optimal solution will lie on the boundary only if the
+        cost is directly orthogonal to the objective; otherwise it will lie at a
+        vertex. So in this case, the solution will only lie on the interior if
+        $a = b;$ for every other value, this relaxation will give the optimal
+        solution. Note that we could have equally well written a quadratic
+        equality constraint.</p>
+
+        <p>I find this incredibly clever, and only frustrating that it is
+        somewhat particular to quadratics. (The fact that the entire exterior of
+        the quadratic region could be an optimal solution does not hold if we
+        try to use the same approach for e.g. being outside of a polytope).</p>
+
+        <todo>Update SHA</todo>
+        <p><a target="optimization"
+          href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/optimization.ipynb#scrollTo=fhc5mrE9_V81"><img
+          src="https://colab.research.google.com/assets/colab-badge.svg"
+          alt="Open In Colab"/></a>
+            </p>
+
+      </example>
+
     </subsection>
 
     <subsection id=sums_of_squares><h1>Sums-of-squares optimization</h1>
