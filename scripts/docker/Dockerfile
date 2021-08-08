@@ -6,13 +6,13 @@
 
 # cd $(git rev-parse --show-toplevel)
 # docker build -f scripts/docker/Dockerfile \
-#   -t robotlocomotion/underactuated:latest .
+#   -t russtedrake/underactuated:latest .
 #
 # docker run -i -p 7000:7000 -p 8888:8888 -t -v $(pwd):/root/underactuated \
-#   -w /root/underactuated robotlocomotion/underactuated:latest
+#   -w /root/underactuated russtedrake/underactuated:latest
 #
 # docker login
-# docker push robotlocomotion/underactuated:latest
+# docker push russtedrake/underactuated:latest
 
 FROM robotlocomotion/drake:latest
 ARG DEBIAN_FRONTEND=noninteractive
@@ -39,3 +39,8 @@ RUN /tmp/install_prereqs.sh \
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
+# Make python and pip available to meet the requirements for deepnote.com:
+# https://docs.deepnote.com/environment/custom-environments#custom-image-requirements
+# TODO: Move these up to drake's Dockerfile (and remove them here)
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
+RUN update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
