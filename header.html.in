@@ -3,8 +3,8 @@
 <html>
 
   <head>
-    <title>Underactuated Robotics: $CHAPTER-NAME$</title>
-    <meta name="Underactuated Robotics: $CHAPTER-NAME$" content="text/html; charset=utf-8;" />
+    <title>Ch. $CHAPTER-NUM$ - $CHAPTER-NAME$</title>
+    <meta name="Ch. $CHAPTER-NUM$ - $CHAPTER-NAME$" content="text/html; charset=utf-8;" />
     <link rel="canonical" href="http://underactuated.mit.edu/$CHAPTER-ID$.html" />
 
     <script src="https://hypothes.is/embed.js" async></script>
