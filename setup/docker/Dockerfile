@@ -5,7 +5,7 @@
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
 # cd $(git rev-parse --show-toplevel)
-# docker build -f scripts/docker/Dockerfile \
+# docker build -f setup/docker/Dockerfile \
 #   -t russtedrake/underactuated:latest .
 #
 # docker run -i -p 7000:7000 -p 8888:8888 -t -v $(pwd):/root/underactuated \
@@ -26,7 +26,7 @@ LABEL org.opencontainers.image.source="https://github.com/RussTedrake/underactua
 LABEL org.opencontainers.image.title="Underactuated Robotics"
 LABEL org.opencontainers.image.url="http://underactuated.mit.edu/"
 LABEL org.opencontainers.image.vendor="Massachusetts Institute of Technology"
-COPY scripts/docker/pip.conf /root/.config/pip/pip.conf
+COPY setup/docker/pip.conf /root/.config/pip/pip.conf
 COPY setup/ubuntu/18.04/install_prereqs.sh /tmp/
 RUN /tmp/install_prereqs.sh \
  && rm -rf /root/.cache \

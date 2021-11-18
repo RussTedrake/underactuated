@@ -60,7 +60,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v2
       - name: submodule checkout
-        run:  ./scripts/submodule_checkout
+        run:  ./setup/submodule_checkout
         shell: bash
       - name: post-checkout setup
         run: ./htmlbook/workflows/ci/bionic/setup

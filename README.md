@@ -74,7 +74,7 @@ Additional information for Docker Hub users
 
 ### Supported tags and respective `Dockerfile` links
 
-- [`latest`](https://github.com/RussTedrake/underactuated/blob/master/scripts/docker/Dockerfile)
+- [`latest`](https://github.com/RussTedrake/underactuated/blob/master/setup/docker/Dockerfile)
 
 ### Quick reference
 
