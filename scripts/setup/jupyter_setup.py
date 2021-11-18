@@ -10,6 +10,7 @@ urlretrieve(
     "setup_underactuated_colab.py")
 
 import setup_underactuated_colab as new_setup  # noqa
+
 warnings.warn("jupyter_setup.py is deprecated.  Please use"
               " setup_underactuated_colab.py instead.")
 

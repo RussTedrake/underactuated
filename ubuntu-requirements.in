@@ -1,3 +1,0 @@
--r ubuntu-shared-requirements.in
--r htmlbook/ubuntu-requirements.in
--c htmlbook/colab-constraints-ubuntu.txt

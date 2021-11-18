@@ -9,7 +9,7 @@ cycler==0.10.0
     #   -c htmlbook/colab-constraints-colab.txt
     #   matplotlib
 gradescope-utils==0.4.0
-    # via -r ubuntu-shared-requirements.in
+    # via -r bionic-shared-requirements.in
 kiwisolver==1.3.1
     # via
     #   -c htmlbook/colab-constraints-colab.txt
@@ -27,7 +27,7 @@ numpy==1.19.5
 pandas==1.1.5
     # via
     #   -c htmlbook/colab-constraints-colab.txt
-    #   -r ubuntu-shared-requirements.in
+    #   -r bionic-shared-requirements.in
 pyngrok==5.0.2
     # via -r colab-requirements.in
 pyparsing==2.4.7
@@ -53,11 +53,11 @@ six==1.15.0
     #   cycler
     #   python-dateutil
 timeout-decorator==0.5.0
-    # via -r ubuntu-shared-requirements.in
+    # via -r bionic-shared-requirements.in
 torch==1.8.1
     # via
     #   -c htmlbook/colab-constraints-colab.txt
-    #   -r ubuntu-shared-requirements.in
+    #   -r bionic-shared-requirements.in
 typing-extensions==3.7.4.3
     # via
     #   -c htmlbook/colab-constraints-colab.txt
