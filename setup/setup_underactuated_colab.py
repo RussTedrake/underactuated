@@ -22,6 +22,16 @@ import warnings
 from urllib.request import urlretrieve
 
 
+def run(cmd, **kwargs):
+    cp = subprocess.run(cmd,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE,
+                        universal_newlines=True, **kwargs)
+    if cp.stderr:
+        print(cp.stderr)
+    assert cp.returncode == 0, cp
+
+
 def setup_drake(*, version, build='nightly'):
     """Installs drake on Google's Colaboratory and (if necessary) adds the
     installation location to `sys.path`.  This will take approximately two
@@ -65,70 +75,10 @@ def setup_drake(*, version, build='nightly'):
         "You have already imported a version of pydrake.  Please choose "
         "'Restart runtime' from the menu to restart with a clean environment.")
 
-    # Check for conflicting pydrake installations.
-    v = sys.version_info
-    path = f"/opt/drake/lib/python{v.major}.{v.minor}/site-packages"
-    spec = importlib.util.find_spec('pydrake')
-    if spec is not None and path not in spec.origin:
-        raise Exception("Found a conflicting version of pydrake on your "
-                        f"sys.path at {spec.origin}.  Please remove it from "
-                        "the path to avoid ambiguity.")
+    print(f"The drake version {version} that you've specified will be ignored.  We've switched to a `pip install` workflow for colab, and are transitioning to that.")
 
-    # Check to see if this build/version is already installed.
-    setup_version_info = {"version": version, "build": build}
-    setup_version_file = "/opt/drake/.setup_drake_colab_token.json"
-    already_installed = False
-    if os.path.isfile(setup_version_file):
-        with open(setup_version_file, "r") as file:
-            if json.load(file) == setup_version_info:
-                already_installed = True
-
-    # Download the binaries and install.
-    if not already_installed:
-        if os.path.isdir('/opt/drake'):
-            shutil.rmtree('/opt/drake')
-
-        #base_url = 'https://drake-packages.csail.mit.edu/drake/'
-        #urlretrieve(f"{base_url}{build}/drake-{version}-bionic.tar.gz",
-        #            'drake.tar.gz')
-
-        # THESE ARE A WORKAROUND FOR COLAB WITH PYTHON3.7
-        urlretrieve("https://drake-packages.csail.mit.edu/tmp/drake-20210409-pip-snopt-bionic.tar.gz", 'drake.tar.gz')
-        subprocess.run(["pip3", "install", "meshcat"])
-        # END PYTHON3.7 WORKAROUND
-
-        subprocess.run(['tar', '-xzf', 'drake.tar.gz', '-C', '/opt'],
-                       check=True)
-        subprocess.run(['apt-get', 'update', '-o',
-                        'APT::Acquire::Retries=4', '-qq'], check=True)
-        with open("/opt/drake/share/drake/setup/packages-bionic.txt",
-                  "r") as f:
-            packages = f.read().splitlines()
-        subprocess.run(['apt-get', 'install', '-o',
-                        'APT::Acquire::Retries=4', '-o', 'Dpkg::Use-Pty=0',
-                        '-qy', '--no-install-recommends'] + packages,
-                       check=True)
-
-        # Write setup information to disk (so that we can avoid re-running it
-        # if the machine is already provisioned).
-        with open(setup_version_file, "w") as file:
-            json.dump(setup_version_info, file)
-
-    # Check if our new installation is already in the path.
-    spec = importlib.util.find_spec('pydrake')
-    if spec is None:
-        sys.path.append(path)
-        spec = importlib.util.find_spec('pydrake')
-
-    # Confirm that we now have pydrake on the path.
-    assert spec is not None, (
-        "Installation failed.  find_spec('pydrake') returned None.")
-    assert path in spec.origin, (
-        "Installation failed.  find_spec is locating pydrake, but not in the "
-        "expected path.")
-
-    
-
+    # TODO(russt): Deprecate this entire workflow, but I'll put this here now for compatibilty.
+    run(['pip3', 'install', 'drake'])
 
 
 def setup_underactuated(*, underactuated_sha, drake_version, drake_build):
