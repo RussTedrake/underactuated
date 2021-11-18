@@ -62,7 +62,7 @@ class Quadrotor2DVisualizer(PyPlotVisualizer):
 
     def __init__(self, ax=None, show=None):
         PyPlotVisualizer.__init__(self, ax=ax, show=show)
-        self.DeclareInputPort(PortDataType.kVectorValued, 6)
+        self.DeclareInputPort("state", PortDataType.kVectorValued, 6)
         self.ax.set_aspect("equal")
         self.ax.set_xlim(-2, 2)
         self.ax.set_ylim(-1, 1)

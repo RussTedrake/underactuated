@@ -22,7 +22,7 @@ class PendulumVisualizer(PyPlotVisualizer):
     def __init__(self, ax=None, show=None):
         PyPlotVisualizer.__init__(self, ax=ax, show=show)
         self.set_name("pendulum_visualizer")
-        self.DeclareInputPort(PortDataType.kVectorValued, 2)
+        self.DeclareInputPort("state", PortDataType.kVectorValued, 2)
 
         self.ax.set_xlim([-1.2, 1.2])
         self.ax.set_ylim([-1.2, 1.2])

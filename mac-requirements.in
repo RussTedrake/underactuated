@@ -1,4 +1,5 @@
 -r htmlbook/mac-requirements.in
+-c htmlbook/mac-constraints.txt
 gradescope-utils>=0.4.0
 pandas
 pydot>=1.4.1

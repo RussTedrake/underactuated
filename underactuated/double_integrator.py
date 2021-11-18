@@ -38,7 +38,7 @@ class DoubleIntegratorVisualizer(PyPlotVisualizer):
 
     def __init__(self, ax=None, show=None):
         PyPlotVisualizer.__init__(self, ax=ax, show=show)
-        self.DeclareInputPort(PortDataType.kVectorValued, 2)
+        self.DeclareInputPort("state", PortDataType.kVectorValued, 2)
 
         self.ax.set_xlim(*self.XLIM)
         self.ax.set_ylim(*self.YLIM)
