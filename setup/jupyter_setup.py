@@ -6,7 +6,7 @@ assert 'google.colab' in sys.modules, (
     "This script is intended for use on Google Colab only.")
 
 urlretrieve(
-    "http://underactuated.csail.mit.edu/scripts/setup/setup_underactuated_colab.py",  # noqa
+    "http://underactuated.csail.mit.edu/setup/setup_underactuated_colab.py",  # noqa
     "setup_underactuated_colab.py")
 
 import setup_underactuated_colab as new_setup  # noqa

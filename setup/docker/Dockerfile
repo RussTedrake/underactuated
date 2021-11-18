@@ -27,7 +27,7 @@ LABEL org.opencontainers.image.title="Underactuated Robotics"
 LABEL org.opencontainers.image.url="http://underactuated.mit.edu/"
 LABEL org.opencontainers.image.vendor="Massachusetts Institute of Technology"
 COPY scripts/docker/pip.conf /root/.config/pip/pip.conf
-COPY scripts/setup/ubuntu/18.04/install_prereqs.sh /tmp/
+COPY setup/ubuntu/18.04/install_prereqs.sh /tmp/
 RUN /tmp/install_prereqs.sh \
  && rm -rf /root/.cache \
  && rm -rf /root/.config \

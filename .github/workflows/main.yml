@@ -68,19 +68,19 @@ jobs:
       - name: test
         run: ./htmlbook/workflows/ci/bionic/test
         shell: bash
-  catalina:
-    name: macos catalina 10.15
-    runs-on: macos-10.15
+  bigsur:
+    name: macos big sur 11
+    runs-on: macos-11
     steps:
       - name: checkout
         uses: actions/checkout@v2
       - name: submodule checkout
-        run:  ./scripts/submodule_checkout
+        run:  ./setup/submodule_checkout
         shell: zsh -efuo pipefail {0}
       - name: setup
-        run: ./htmlbook/workflows/ci/catalina/setup
+        run: ./htmlbook/workflows/ci/bigsur/setup
         shell: zsh -efuo pipefail {0}
       - name: test
-        run: ./htmlbook/workflows/ci/catalina/test
+        run: ./htmlbook/workflows/ci/bigsur/test
         shell: zsh -efuo pipefail {0}
 ...
