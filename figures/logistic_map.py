@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import StrMethodFormatter
 
-from pydrake.all import (DiagramBuilder, LogOutput, Simulator,
+from pydrake.all import (DiagramBuilder, LogVectorOutput, Simulator,
                          SymbolicVectorSystem, Variable)
 
 builder = DiagramBuilder()
@@ -16,7 +16,7 @@ plant = builder.AddSystem(
                          dynamics=[4 * x * (1 - x)],
                          output=[x],
                          time_period=1))
-log = LogOutput(plant.get_output_port(0), builder)
+log = LogVectorOutput(plant.get_output_port(0), builder)
 
 diagram = builder.Build()
 simulator = Simulator(diagram)
