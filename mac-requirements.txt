@@ -24,6 +24,8 @@ defusedxml==0.7.1
     # via nbconvert
 entrypoints==0.3
     # via nbconvert
+fonttools==4.28.2
+    # via matplotlib
 gradescope-utils==0.4.0
     # via -r mac-requirements.in
 idna==2.10
@@ -51,7 +53,7 @@ lxml==4.6.3
     # via -r htmlbook/mac-requirements.in
 markupsafe==1.1.1
     # via jinja2
-matplotlib==3.4.3
+matplotlib==3.5.0
     # via -r htmlbook/mac-requirements.in
 mistune==0.8.4
     # via nbconvert
@@ -74,7 +76,10 @@ numpy==1.21.1
     #   pandas
     #   torch
 packaging==20.9
-    # via bleach
+    # via
+    #   bleach
+    #   matplotlib
+    #   setuptools-scm
 pandas==1.2.4
     # via -r mac-requirements.in
 pandocfilters==1.4.3
@@ -115,6 +120,8 @@ requests==2.25.1
     # via
     #   -r htmlbook/mac-requirements.in
     #   -r mac-requirements.in
+setuptools-scm==6.3.2
+    # via matplotlib
 six==1.15.0
     # via
     #   bleach
@@ -130,6 +137,8 @@ testpath==0.4.4
     # via nbconvert
 timeout-decorator==0.5.0
     # via -r mac-requirements.in
+tomli==1.2.2
+    # via setuptools-scm
 https://download.pytorch.org/whl/nightly/cpu/torch-1.9.0.dev20210218-cp39-none-macosx_10_9_x86_64.whl
     # via -r mac-requirements.in
 tornado==6.1
