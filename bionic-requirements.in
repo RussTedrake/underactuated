@@ -1,3 +1,4 @@
 -r bionic-shared-requirements.in
 -r htmlbook/bionic-requirements.in
+-c htmlbook/bionic-constraints.txt
 -c htmlbook/colab-constraints-ubuntu.txt

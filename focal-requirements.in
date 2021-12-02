@@ -1,0 +1,7 @@
+-r htmlbook/focal-requirements.in
+-c htmlbook/focal-constraints.txt
+gradescope-utils>=0.4.0
+pandas
+timeout-decorator>=0.4.1
+torch>=1.7.0
+
