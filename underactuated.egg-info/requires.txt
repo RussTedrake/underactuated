@@ -1,0 +1,6 @@
+drake>=0.37.0
+pandas
+gradescope-utils>=0.4.0
+pydot>=1.3.0
+timeout-decorator>=0.4.1
+torch>=1.6.0
