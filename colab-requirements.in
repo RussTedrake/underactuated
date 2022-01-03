@@ -4,7 +4,6 @@
 # https://colab.research.google.com/drive/19mv-nL0Klga__lu_DD0njq9QktvfyKBh#scrollTo=OoLUyF5rZFHm
 #
 
--r bionic-shared-requirements.in
 -c htmlbook/colab-constraints-colab.txt
 matplotlib==3.2.2  # To match colab install
 pyngrok
