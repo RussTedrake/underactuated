@@ -4,6 +4,10 @@
 #
 #    pip-compile --output-file=bionic-requirements.txt bionic-requirements.in setup.cfg
 #
+beautifulsoup4==4.6.3
+    # via
+    #   -c htmlbook/colab-constraints-ubuntu.txt
+    #   -r htmlbook/bionic-requirements.in
 cycler==0.11.0
     # via
     #   -c htmlbook/colab-constraints-ubuntu.txt

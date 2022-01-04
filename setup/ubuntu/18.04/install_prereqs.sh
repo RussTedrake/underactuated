@@ -43,16 +43,8 @@ jupyter-nbconvert
 jupyter-notebook
 locales
 python3
-python3-bs4
-python3-future
 python3-ipywidgets
-python3-matplotlib
-python3-numpy
 python3-pip
-python3-requests
-python3-scipy
-python3-setuptools
-python3-wheel
 python3-widgetsnbextension
 tidy
 wget
