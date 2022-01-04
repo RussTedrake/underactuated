@@ -14,33 +14,36 @@
 # docker login
 # docker push russtedrake/underactuated:latest
 
-FROM robotlocomotion/drake:latest
+FROM robotlocomotion/drake:focal
 ARG DEBIAN_FRONTEND=noninteractive
 ENV SHELL /bin/bash
-EXPOSE 7000/tcp
+# Open ports for meshcat:
+EXPOSE 7000-7099/tcp
 EXPOSE 8888/tcp
 LABEL org.opencontainers.image.authors="Russ Tedrake"
-LABEL org.opencontainers.image.description="Algorithms for walking, running, swimming, flying, and manipulation"
+LABEL org.opencontainers.image.description="Algorithms for walking, running, swimming, flying, and underactuated"
 LABEL org.opencontainers.image.licenses="BSD-3-Clause"
 LABEL org.opencontainers.image.source="https://github.com/RussTedrake/underactuated.git"
 LABEL org.opencontainers.image.title="Underactuated Robotics"
 LABEL org.opencontainers.image.url="http://underactuated.mit.edu/"
 LABEL org.opencontainers.image.vendor="Massachusetts Institute of Technology"
-COPY setup/docker/pip.conf /root/.config/pip/pip.conf
-COPY setup/ubuntu/18.04/install_prereqs.sh /tmp/
-RUN /tmp/install_prereqs.sh \
- && rm -rf /root/.cache \
- && rm -rf /root/.config \
- && rm -f /tmp/install_prereqs.sh \
- && rm -f /var/cache/debconf/*-old \
- && rm -rf /var/lib/apt/lists/* \
- && rm -f /var/log/*.log \
- && rm -f /var/log/apt/*
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
-# Make python and pip available to meet the requirements for deepnote.com:
-# https://docs.deepnote.com/environment/custom-environments#custom-image-requirements
-# TODO: Move these up to drake's Dockerfile (and remove them here)
-RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 1
-RUN update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 1
+COPY *.ipynb /root/underactuated/
+COPY underactuated/ /opt/underactuated/underactuated/
+COPY exercises/ /root/underactuated/exercises/
+COPY requirements.txt /tmp/requirements.txt
+COPY setup/docker/pip.conf /root/.config/pip/pip.conf
+COPY setup/ubuntu/20.04/install_prereqs.sh /tmp/
+RUN /tmp/install_prereqs.sh
+RUN apt -y install xvfb git
+RUN pip3 install -r /tmp/requirements.txt pyngrok pyvirtualdisplay
+RUN rm -rf /root/.cache /root/.config
+RUN rm -f /tmp/install_prereqs.sh
+RUN rm -f /tmp/requirements.txt
+RUN rm -f /var/cache/debconf/*-old
+RUN rm -rf /var/lib/apt/lists/*
+RUN rm -f /var/log/*.log
+RUN rm -f /var/log/apt/*
+ENV PYTHONPATH="/opt/underactuated:${PYTHONPATH}"
