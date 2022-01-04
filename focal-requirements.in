@@ -1,6 +1,7 @@
 -r htmlbook/focal-requirements.in
 -c htmlbook/focal-constraints.txt
 gradescope-utils>=0.4.0
+mpld3>=0.5.1
 pandas
 timeout-decorator>=0.4.1
 # Take the nightlies of torch/torchvision until 1.11 comes out, because we need
@@ -8,6 +9,5 @@ timeout-decorator>=0.4.1
 # https://stackoverflow.com/questions/70520120/attributeerror-module-setuptools-distutils-has-no-attribute-version
 #-f https://download.pytorch.org/whl/nightly/cu102/torch_nightly.html
 https://download.pytorch.org/whl/nightly/cu102/torch-1.11.0.dev20220103%2Bcu102-cp38-cp38-linux_x86_64.whl
-https://download.pytorch.org/whl/nightly/cu102/torchvision-0.12.0.dev20220103%2Bcu102-cp38-cp38-linux_x86_64.whl
 #torch>=1.11.0
 
