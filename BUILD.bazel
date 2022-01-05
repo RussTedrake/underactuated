@@ -51,7 +51,10 @@ rt_html_test(
 rt_ipynb_test(
     name = "pend",
     srcs = ["pend.ipynb"],
-    deps = ["//underactuated"],
+    deps = [
+      "//underactuated",
+      "//underactuated:meshcat_cpp_utils",
+    ],
 )
 
 rt_html_test(

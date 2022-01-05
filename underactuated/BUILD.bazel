@@ -30,6 +30,14 @@ rt_py_library(
 )
 
 rt_py_library(
+    name = "meshcat_cpp_utils",
+    srcs = ["meshcat_cpp_utils.py"],
+    imports = [".."],
+    visibility = ["//visibility:public"],
+    deps = ["underactuated"],
+)
+
+rt_py_library(
     name = "pendulum",
     srcs = ["pendulum.py"],
     imports = [".."],
