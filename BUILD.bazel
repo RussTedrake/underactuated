@@ -108,6 +108,7 @@ rt_ipynb_test(
     deps = [
         "//underactuated",
         "//underactuated:double_integrator",
+        "//underactuated:meshcat_cpp_utils",
         "//underactuated:pendulum",
     ],
 )
