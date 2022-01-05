@@ -25,6 +25,10 @@ sys.path.append('/home/russt/drake-install/lib/python3.6/site-packages')
 sys.path.append('/home/russt/manipulation')
 ```
 
+## Sorting imports in VS Code
+
+First `pip install isort`.  Then in the command pallet, run `Python Refactor:Sort Imports`.
+
 ## Setting up PyCharm
 
 In `Settings > Python Interpreter`, I set up a new "system interpreter". Then in

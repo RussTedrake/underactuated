@@ -68,6 +68,7 @@ rt_ipynb_test(
     tags = ["flaky"],
     deps = [
         "//underactuated",
+        "//underactuated:meshcat_cpp_utils",
         "//underactuated:quadrotor2d",
     ],
 )
