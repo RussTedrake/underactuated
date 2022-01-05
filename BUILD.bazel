@@ -120,6 +120,9 @@ rt_html_test(
 rt_ipynb_test(
     name = "lqr",
     srcs = ["lqr.ipynb"],
+    deps = [
+      "//underactuated",
+    ],
 )
 
 rt_html_test(
@@ -224,13 +227,17 @@ rt_html_test(
     srcs = ["multibody.html"],
 )
 
+rt_ipynb_test(
+    name = "multibody",
+    srcs = ["multibody.ipynb"],
+)
+
 rt_html_test(
     srcs = ["optimization.html"],
 )
 rt_ipynb_test(
     name = "optimization",
     srcs = ["optimization.ipynb"],
-    deps = ["//underactuated"],
 )
 
 
