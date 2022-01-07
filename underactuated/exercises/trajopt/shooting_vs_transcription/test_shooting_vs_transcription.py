@@ -121,7 +121,7 @@ class TestShootingVsTranscription(unittest.TestCase):
 
         # check list length and types
         self.assertEqual(
-            len(J_star_N), 100,
+            len(J_star_N), 45,
             'The list J_star_N_transcription must have length'
             + 'equal to 100.')
         J_star_type = [isinstance(J, (float, int)) for J in J_star_N]
@@ -142,7 +142,7 @@ class TestShootingVsTranscription(unittest.TestCase):
 
         # check list length and types
         self.assertEqual(
-            len(lost_bits), 100,
+            len(lost_bits), 45,
             'The list lost_bits_transcription must have length'
             + 'equl to 100.')
         bits_type = [isinstance(bits, (float, int)) for bits in lost_bits]
@@ -178,7 +178,7 @@ class TestShootingVsTranscription(unittest.TestCase):
 
         # check list length and types
         self.assertEqual(
-            len(J_star_N), 1000,
+            len(J_star_N), 500,
             'The list J_star_N_riccati must have length equal' + 'to 1000.')
         J_star_type = [isinstance(J, (float, int)) for J in J_star_N]
         self.assertTrue(
