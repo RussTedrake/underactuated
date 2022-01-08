@@ -24,21 +24,6 @@ def pyplot_is_interactive():
     return plt.get_backend() in interactive_bk
 
 
-# TODO: move this into drake
-def ToLatex(M, precision=4):
-    M = np.atleast_2d(M)
-    md = '\\begin{bmatrix}'
-    for row in range(M.shape[0]):
-        for col in range(M.shape[1]):
-            md += f"{M[row, col]:.{precision}f}"
-            if col < M.shape[1] - 1:
-                md += " & "
-        if row < M.shape[0] - 1:
-            md += " \\\\"
-    md += '\\end{bmatrix}'
-    return md
-
-
 def AdvanceToAndVisualize(simulator,
                           visualizer,
                           time,
