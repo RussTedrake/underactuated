@@ -450,7 +450,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <p>Consider a system $\dot{\bx}=f(\bx,\bu)$ and an infinite-horizon
         additive cost $\int_0^\infty \ell(\bx,\bu)dt$, with $f$ and $\ell$
-        continuous functions, and $\ell$ a strictly-positive-definite function that obtains zero only when $x=\bx^*$. Suppose $J(\bx)$ is a positive-definite solution to the HJB
+        continuous functions, and $\ell$ a strictly-positive-definite function that obtains zero only when $\bx=\bx^*$. Suppose $J(\bx)$ is a positive-definite solution to the HJB
         equation; that is $J$ is continuously differentiable in $\bx$ and is
         such that \[ 0 = \min_{\bu \in U} \left[\ell(\bx,\bu) +
         \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx, \] and that
@@ -519,7 +519,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
           </details></p>
       </theorem>
 
-      <p>It is possible to prove sufficiency under different assumptions, too.  The particular assumptions here were chosen to ensure that $J(x(0)) < \infty$ implies that $x(t) \rightarrow x^*$.  As Sasha says, "without something like this, all sorts of counter-examples emerge."</p>
+      <p>It is possible to prove sufficiency under different assumptions, too.  The particular assumptions here were chosen to ensure that $J(\bx(0)) < \infty$ implies that $\bx(t) \rightarrow \bx^*$.  As Sasha says, "without something like this, all sorts of counter-examples emerge."</p>
 
       <p>As a tool for verifying optimality, the HJB equations are actually
       surprisingly easy to work with: we can verify optimality for an
@@ -640,17 +640,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       href="https://en.wikipedia.org/wiki/Deep_learning">
       neural network</a> to represent the cost-to-go also falls under the
       domain of function approximation, perhaps representing the other extreme
-      in terms of complexity; using deep networks in approximate dynamic
+      in terms of complexity; using neural networks in approximate dynamic
       programming is common in <a
-      href="http://rail.eecs.berkeley.edu/deeprlcourse/">deep reinforcement
+      href="http://rail.eecs.berkeley.edu/deeprlcourse/">reinforcement
       learning</a>, which we will discuss more later in the book.</p>
 
       <todo>  (see Appendix C for a brief background on function approximation)
       </todo>
 
-      <subsubsection id="function_approximation"><h1>Value iteration with
-      function
-      approximation</h1>
+      <subsubsection id="function_approximation">
+        <h1>Value iteration with function approximation</h1>
 
         <p>If we approximate $J^*$ with a finitely-parameterized function
         $\hat{J}_\balpha^*$, with parameter vector $\balpha$, then   this
