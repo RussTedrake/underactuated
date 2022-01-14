@@ -31,9 +31,7 @@ gradescope-utils==0.4.0
 idna==2.10
     # via requests
 ipython-genutils==0.2.0
-    # via
-    #   nbformat
-    #   traitlets
+    # via nbformat
 jinja2==2.11.3
     # via
     #   mpld3
@@ -146,8 +144,9 @@ torch @ https://download.pytorch.org/whl/nightly/cpu/torch-1.11.0.dev20220110-cp
     # via -r mac-requirements.in
 tornado==6.1
     # via jupyter-client
-traitlets==5.0.5
+traitlets==5.1.1
     # via
+    #   -r mac-requirements.in
     #   jupyter-client
     #   jupyter-core
     #   nbclient
