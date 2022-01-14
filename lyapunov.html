@@ -10,6 +10,7 @@
     <link rel="canonical" href="http://underactuated.mit.edu/lyapunov.html" />
 
     <script src="https://hypothes.is/embed.js" async></script>
+    <script type="text/javascript" src="chapters.js"></script>
     <script type="text/javascript" src="htmlbook/book.js"></script>
 
     <script src="htmlbook/mathjax-config.js" defer></script>
@@ -54,13 +55,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   <td style="width:33%;text-align:right;"><a class="next_chapter" href=trajopt.html>Next Chapter</a></td>
 </tr></table>
 
-
+<script type="text/javascript">document.write(notebook_header('lyapunov'))
+</script>
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 8"><h1>Lyapunov
   Analysis</h1>
-  <a href="https://deepnote.com/project/Ch-9-Lyapunov-Analysis-5ewK69AGRomgCRgJI-djGA/%2Flyapunov.ipynb" style="float:right; margin-top:-80px;background:white;border:0;" target="lyapunov">
-    <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a>
-    <div style="clear:right;"></div>
 
   <p>Optimal control provides a powerful framework for formulating control
   problems using the language of optimization.  But solving optimal control
@@ -462,7 +461,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <p> You can try this example for yourself in <drake></drake>.</p>
 
-        <p><a href="https://deepnote.com/project/Ch-9-Lyapunov-Analysis-5ewK69AGRomgCRgJI-djGA/%2Flyapunov.ipynb" style="background:none; border:none;" target="lyapunov">  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a></p>
+        <script>document.write(notebook_link('lyapunov'))</script>
 
         <p>As always, make sure that you open up the code and take a look.</p>
 
@@ -512,7 +511,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         <p>The numerical solution can be written in a few lines of code, and
         is a convex optimization.</p>
 
-        <p><a href="https://deepnote.com/project/Ch-9-Lyapunov-Analysis-5ewK69AGRomgCRgJI-djGA/%2Flyapunov.ipynb" style="background:none; border:none;" target="lyapunov">  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a></p>
+        <script>document.write(notebook_link('lyapunov'))</script>
 
       </example>
 
@@ -540,7 +539,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         = 1$.  Then we write: \begin{align*} \find_{\bc} \ \ \subjto \ \ &
         V\text{ is sos, } \\ & -\dot{V} \text{ is sos.}\end{align*}</p>
 
-        <p><a href="https://deepnote.com/project/Ch-9-Lyapunov-Analysis-5ewK69AGRomgCRgJI-djGA/%2Flyapunov.ipynb" style="background:none; border:none;" target="lyapunov">  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a></p>
+        <script>document.write(notebook_link('lyapunov'))</script>
 
         <p>Up to numerical convergence tolerance, it discovers the same
         coefficients that we chose above (zeroing out the unnecessary
@@ -798,7 +797,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
           <p>You can try this example for yourself in <drake></drake>.</p>
 
-          <p><a href="https://deepnote.com/project/Ch-9-Lyapunov-Analysis-5ewK69AGRomgCRgJI-djGA/%2Flyapunov.ipynb" style="background:none; border:none;" target="lyapunov">  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a></p>
+          <script>document.write(notebook_link('lyapunov'))</script>
 
         </example>
 
@@ -838,7 +837,7 @@ context = sys.CreateDefaultContext()
 V = RegionOfAttraction(sys, context)
           </code></pre>
 
-          <p><a href="https://deepnote.com/project/Ch-9-Lyapunov-Analysis-5ewK69AGRomgCRgJI-djGA/%2Flyapunov.ipynb" style="background:none; border:none;" target="lyapunov">  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a></p>
+          <script>document.write(notebook_link('lyapunov'))</script>
 
           <p>Remember that although we have tried to make it convenient to call
           these functions, they are not a black box.  I highly recommend
@@ -952,7 +951,7 @@ V = RegionOfAttraction(sys, context)
 
           <p>(Details coming soon...)</p>
 
-          <p><a href="https://deepnote.com/project/Ch-9-Lyapunov-Analysis-5ewK69AGRomgCRgJI-djGA/%2Flyapunov.ipynb" style="background:none; border:none;" target="lyapunov">  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a></p>
+          <script>document.write(notebook_link('lyapunov'))</script>
 
         </h1></example>
 
@@ -1039,7 +1038,7 @@ V = RegionOfAttraction(sys, context)
           quite far from that here, but nevertheless have a tight approximation
           from $\mathcal{B}(\bx) \ge 0$).</p>
 
-          <p><a href="https://deepnote.com/project/Ch-9-Lyapunov-Analysis-5ewK69AGRomgCRgJI-djGA/%2Flyapunov.ipynb" style="background:none; border:none;" target="lyapunov">  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a></p>
+          <script>document.write(notebook_link('lyapunov'))</script>
 
         </example>
 
@@ -1259,7 +1258,7 @@ V = RegionOfAttraction(sys, context)
       for style points, in the code example in <drake></drake> we ask for
       exponential stability:</p>
 
-      <p><a href="https://deepnote.com/project/Ch-9-Lyapunov-Analysis-5ewK69AGRomgCRgJI-djGA/%2Flyapunov.ipynb" style="background:none; border:none;" target="lyapunov">  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a></p>
+      <script>document.write(notebook_link('lyapunov'))</script>
 
       <p>As always, make sure that you open up the code and take a look.  The
         result is a Lyapunov function that looks familiar (visualized as a

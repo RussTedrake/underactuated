@@ -8,6 +8,7 @@
     <link rel="canonical" href="http://underactuated.mit.edu/sysid.html" />
 
     <script src="https://hypothes.is/embed.js" async></script>
+    <script type="text/javascript" src="chapters.js"></script>
     <script type="text/javascript" src="htmlbook/book.js"></script>
 
     <script src="htmlbook/mathjax-config.js" defer></script>
@@ -52,12 +53,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   <td style="width:33%;text-align:right;"><a class="next_chapter" href=state_estimation.html>Next Chapter</a></td>
 </tr></table>
 
-
+<script type="text/javascript">document.write(notebook_header('sysid'))
+</script>
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 17"><h1>System Identification</h1>
-  <a href="https://deepnote.com/project/Ch-18-System-Identification-j40_1fKbQ7mg1EzuHIskTg/%2Fsysid.ipynb" style="float:right; margin-top:-80px;background:white;border:0;" target="sysid">
-    <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a>
-    <div style="clear:right;"></div>
 
   <p>My primary focus in these notes has been to build algorithms that design
   of analyze a control system <i>given a model</i> of the plant.  In fact, we
@@ -201,7 +200,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         <p>Small kinematic calibration errors can lead to large steady-state
         errors when attempting to stabilize a system like the Acrobot.  I've put together a simple notebook to show the effect here:</p>
 
-        <p><a href="https://deepnote.com/project/Ch-18-System-Identification-j40_1fKbQ7mg1EzuHIskTg/%2Fsysid.ipynb" style="background:none; border:none;" target="sysid">  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a></p>
+        <script>document.write(notebook_link('sysid'))</script>
 
         <todo>Make a plot of steady-state error as a function of offset error.</todo>
 
@@ -293,7 +292,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         quantities of interest.  Then I can evaluate the (inverse) dynamics in
         order to obtain my equations.</p>
 
-        <p><a href="https://deepnote.com/project/Ch-18-System-Identification-j40_1fKbQ7mg1EzuHIskTg/%2Fsysid.ipynb" style="background:none; border:none;" target="sysid">  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a></p>
+        <script>document.write(notebook_link('sysid'))</script>
 
         <p>The output looks like: <pre><code>Symbolic dynamics:
 (0.10000000000000001 * v(0) - u(0) + (pow(v(1), 2) * mp * l * sin(q(1))) + (vd(0) * mc) + (vd(0) * mp) - (vd(1) * mp * l * cos(q(1))))
@@ -346,7 +345,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         trajectories at the input, then constructed the data matrix and
         performed the least squares fit.</p>
 
-        <p><a href="https://deepnote.com/project/Ch-18-System-Identification-j40_1fKbQ7mg1EzuHIskTg/%2Fsysid.ipynb" style="background:none; border:none;" target="sysid">  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a></p>
+        <script>document.write(notebook_link('sysid'))</script>
 
         <p>The output looks like this: <pre><code>Estimated Lumped Parameters:
 (mc + mp).  URDF: 11.0,  Estimated: 10.905425349337081
@@ -612,7 +611,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         additional signal to the input: $u(t) = \pi_{lqr}(\bx(t)) + 0.1\sin(t).$
         That makes all of the difference.</p>
 
-        <p><a href="https://deepnote.com/project/Ch-18-System-Identification-j40_1fKbQ7mg1EzuHIskTg/%2Fsysid.ipynb" style="background:none; border:none;" target="sysid">  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a></p>
+        <script>document.write(notebook_link('sysid'))</script>
 
         <p>I hope you try the code. The basic algorithm for estimation is
         disarmingly simple, but there are a lot of details to get right to
@@ -892,7 +891,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         system that generated the data, and see how they effect this
         result.</p>
 
-        <p><a href="https://deepnote.com/project/Ch-18-System-Identification-j40_1fKbQ7mg1EzuHIskTg/%2Fsysid.ipynb" style="background:none; border:none;" target="sysid">  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a></p>
+        <script>document.write(notebook_link('sysid'))</script>
 
       </example>
 

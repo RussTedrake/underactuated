@@ -8,6 +8,7 @@
     <link rel="canonical" href="http://underactuated.mit.edu/intro.html" />
 
     <script src="https://hypothes.is/embed.js" async></script>
+    <script type="text/javascript" src="chapters.js"></script>
     <script type="text/javascript" src="htmlbook/book.js"></script>
 
     <script src="htmlbook/mathjax-config.js" defer></script>
@@ -52,13 +53,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   <td style="width:33%;text-align:right;"><a class="next_chapter" href=pend.html>Next Chapter</a></td>
 </tr></table>
 
-
+<script type="text/javascript">document.write(notebook_header('intro'))
+</script>
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 0">
 <h1>Fully-actuated vs Underactuated Systems</h1>
-<a href="https://deepnote.com/project/Ch-1-Fully-actuated-vs-Underactuated-Systems-UufhAUKfSu-jc-TMp5gM_g/%2Fintro.ipynb" style="float:right; margin-top:-80px;background:white;border:0;" target="intro">
-  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a>
-  <div style="clear:right;"></div>
 
   <p>Robots today move far too conservatively, and accomplish only a fraction of
   the tasks and achieve a fraction of the performance that they are mechanically
@@ -280,11 +279,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     <subsection><h1>The common theme</h1>
 
       <p> Classical control techniques for robotics are based on the idea that
-      feedback can be used to override the dynamics of our machines.  These
-      examples suggest that to achieve outstanding dynamic performance
-      (efficiency, agility, and robustness) from our robots, we need to
-      understand how to design control systems which take advantage of the
-      dynamics, not cancel them out.  That is the topic of this course. </p>
+      feedback control can be used to override the dynamics of our machines. In
+      contrast, the examples I've given above suggest that to achieve
+      outstanding dynamic performance (efficiency, agility, and robustness)
+      from our robots, we need to understand how to design control systems
+      which take advantage of the dynamics, not cancel them out.  That is the
+      topic of this course. </p>
 
       <p> Surprisingly, many formal control ideas do not support the idea of
       "exploiting" the dynamics.  Optimal control formulations (which we will
@@ -380,8 +380,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         <p> I personally learn best when I can experiment and get some physical
         intuition.  Most chapters in these notes have an associated Jupyter notebook that can run on Deepnote or Google Colab; this chapter's notebook makes it easy for you to see this system in action.</p>
 
-       <p><a href="https://deepnote.com/project/Ch-1-Fully-actuated-vs-Underactuated-Systems-UufhAUKfSu-jc-TMp5gM_g/%2Fintro.ipynb" style="background:none; border:none;" target="intro">  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a>
-       </p>
+       <script>document.write(notebook_link('intro'))</script>
    
         <p>Try it out!  You'll see how to simulate the double pendulum, and even
         how to inspect the dynamics symbolically.</p>
@@ -481,9 +480,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <p>You can run these examples in the notebook:</p>
 
-    <p><a href="https://deepnote.com/project/Ch-1-Fully-actuated-vs-Underactuated-Systems-UufhAUKfSu-jc-TMp5gM_g/%2Fintro.ipynb" style="background:none; border:none;" target="intro">  <img src="https://deepnote.com/buttons/launch-in-deepnote-white.svg"></a>
-    </a>
-    </p>
+    <script>document.write(notebook_link('intro'))</script>
 
     <p>As always, I highly recommend that you take a few minutes to read through
     the source code.</p>
