@@ -135,7 +135,18 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       href="dp.html#hjb_double_integrator">HJB example</a> from the previous
       chapter:</p>
 
-      <pysrcinclude>examples/double_integrator/lqr.py</pysrcinclude>
+      <div><pre><code class="python">import numpy as np
+from pydrake.all import LinearQuadraticRegulator
+
+# Define the double integrator's state space matrices.
+A = np.array([[0, 1], [0, 0]])
+B = np.array([[0], [1]])
+Q = np.eye(2)
+R = np.eye(1)
+
+(K, S) = LinearQuadraticRegulator(A, B, Q, R)
+print("K = " + str(K))
+print("S = " + str(S))</code></pre></div>
 
       <p>As in the hand-derived example, our numerical solution returns $${\bf
       K} = [ 1, \sqrt{3} ], \qquad{\bf S} = \begin{bmatrix} \sqrt{3} & 1 \\ 1 &
@@ -447,6 +458,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       evaluate the <code>LinearQuadraticRegulator</code> method on a system that
       has only discrete state and a single periodic timestep.</p> 
 
+      <p>In reinforcement learning, it is popular to consider the
+      infinite-horizon "discounted" cost: $\min \sum_{n=0}^\infty \gamma^n
+      (\bx^T[n]{\bf Q}\bx[n] + \bu^T[n]{\bf R}\bu[n]).$  The corresponding
+      Riccati equation is $${\bf S} = {\bf Q} + \gamma {\bf A}^T{\bf S}{\bf A} -
+      \gamma^2({\bf A}^T{\bf S}{\bf B})({\bf R} + \gamma {\bf B}^T {\bf S} {\bf
+      B})^{-1} ({\bf B}^T {\bf S}{\bf A}),$$ whose solution can be found using
+        <code>DiscreteAlgebraicRiccatiEquation</code>$(\sqrt{\gamma} {\bf A},
+        {\bf B}, {\bf Q}, \frac{1}{\gamma} {\bf R}).$</p>
+  
       <example><h1>Discrete-time vs Continuous-time LQR</h1>
 
         <p>You can explore the relationship between the discrete-time and continuous-time formulations in this notebook:</p>
