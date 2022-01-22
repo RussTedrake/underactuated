@@ -11,7 +11,7 @@ build --enable_platform_specific_config=yes
 
 build --incompatible_disable_target_provider_fields=yes
 build --incompatible_load_python_rules_from_bzl=yes
-build --incompatible_no_rule_outputs_param=yes
+#build --incompatible_no_rule_outputs_param=yes
 build --incompatible_run_shell_command_string=yes
 build --incompatible_strict_action_env=yes
 build --incompatible_use_platforms_repo_for_constraints=yes
