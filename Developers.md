@@ -14,6 +14,15 @@ If you would like to `bazel` to use a local installation of drake, you can set
 the `DRAKE_INSTALL_DIR` environment variable. Otherwise it will look in
 `/opt/drake`.
 
+## To update the pip wheels
+
+Update the version number in `setup.py`, then from the root directory, run:
+```
+python3 -m pip install --upgrade build twine
+python3 -m build
+python3 -m twine upload dist/*
+``` 
+
 ## Tips for developers
 
 These are things that I often add to my preamble of the notebook (ever since vs code broke my pythonpath importing)
