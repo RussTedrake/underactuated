@@ -456,17 +456,8 @@ print("S = " + str(S))</code></pre></div>
       solving this discrete-time algebraic Riccati equation (DARE).  <drake>
       </drake> delegates to these numerical methods automatically when you
       evaluate the <code>LinearQuadraticRegulator</code> method on a system that
-      has only discrete state and a single periodic timestep.</p> 
+      has only discrete state and a single periodic time step.</p> 
 
-      <p>In reinforcement learning, it is popular to consider the
-      infinite-horizon "discounted" cost: $\min \sum_{n=0}^\infty \gamma^n
-      (\bx^T[n]{\bf Q}\bx[n] + \bu^T[n]{\bf R}\bu[n]).$  The corresponding
-      Riccati equation is $${\bf S} = {\bf Q} + \gamma {\bf A}^T{\bf S}{\bf A} -
-      \gamma^2({\bf A}^T{\bf S}{\bf B})({\bf R} + \gamma {\bf B}^T {\bf S} {\bf
-      B})^{-1} ({\bf B}^T {\bf S}{\bf A}),$$ whose solution can be found using
-        <code>DiscreteAlgebraicRiccatiEquation</code>$(\sqrt{\gamma} {\bf A},
-        {\bf B}, {\bf Q}, \frac{1}{\gamma} {\bf R}).$</p>
-  
       <example><h1>Discrete-time vs Continuous-time LQR</h1>
 
         <p>You can explore the relationship between the discrete-time and continuous-time formulations in this notebook:</p>
@@ -474,6 +465,50 @@ print("S = " + str(S))</code></pre></div>
         <script>document.write(notebook_link('lqr'))</script>
   
       </example>
+
+      <p>In reinforcement learning, it is popular to consider the
+      infinite-horizon "discounted" cost: $\min \sum_{n=0}^\infty \gamma^n
+      (\bx^T[n]{\bf Q}\bx[n] + \bu^T[n]{\bf R}\bu[n]).$  The optimal controller
+      is $$\bu^* = -\gamma(\bR + \gamma \bB^T {\bf S} \bB)^{-1} \bB^T {\bf S}
+      \bA \bx.$$ and the corresponding Riccati equation is $${\bf S} = {\bf Q} +
+      \gamma {\bf A}^T{\bf S}{\bf A} - \gamma^2({\bf A}^T{\bf S}{\bf B})({\bf
+      R} + \gamma {\bf B}^T {\bf S} {\bf B})^{-1} ({\bf B}^T {\bf S}{\bf A}),$$
+      whose solution can be found using
+        <code>DiscreteAlgebraicRiccatiEquation</code>$(\sqrt{\gamma} {\bf A},
+        {\bf B}, {\bf Q}, \frac{1}{\gamma} {\bf R}).$</p>
+
+      <example id="fvi"><h1>LQR via Fitted Value Iteration</h1>
+
+        <p>In the dynamic programming chapter, we developed general purpose
+        tools for <a href="dp.html#function_approximation">approximating value
+        functions with function approximators</a>.  I think it is particularly
+        illustrative to see how these work out for LQR.  Let's consider the
+        discrete-time, infinite-horizon, discounted case.</p>
+
+        <p>For LQR, we know that the optimal value function will take a
+        quadratic form, $\bx^T {\bf S}\bx.$ Although it is quadratic in $\bx$,
+        this form is linear in the parameters, ${\bf S}$. We can
+        leverage some of the special tools for fitted value iteration with a
+        <i>linear function approximator</i>.</p>
+        
+        <script>document.write(notebook_link('lqr'))</script>
+        
+        <p>I've included two versions of the value iteration update in the
+        notebook -- one that samples over both $\bx$ and $\bu$, and one that
+        samples only over $\bx$ and uses the LQR policy (given the current
+        estimated cost-to-go) to determine $\bu$.  The difference is not
+        subtle when $\gamma \rightarrow 1$. Take a look!</p>
+
+        <p>We must remember that there are multiple solutions to the Riccati
+        equation -- the solution to the LQR problem is the (unique) positive
+        definite solution.  But there are non-positive definite solutions, too,
+        which lead to unstable controllers -- these solutions do achieve zero
+        Bellman residual. It is actually quite subtle to understand why value
+        iteration will almost surely converge on the stabilizing controller. Go
+        ahead and try many different initial $S$ in the code to verify it for
+        yourself.</p>
+      </example>
+
     </subsection>
 
     <subsection><h1>LQR with input and state constraints</h1>
