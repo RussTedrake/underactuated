@@ -1,0 +1,48 @@
+# -*- mode: python -*-
+# vi: set ft=python :
+
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
+
+rt_ipynb_test(
+    name = "attractivity_vs_stability",
+    srcs = ["attractivity_vs_stability.ipynb"],
+    deps = ["//underactuated"],
+)
+
+rt_ipynb_test(
+    name = "hopfield_network",
+    srcs = ["hopfield_network.ipynb"],
+    data = ["//underactuated/exercises/pend/hopfield_network:mnist"],
+    # Downloads data from upload.wikimedia.org
+    tags = ["requires-network"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/pend/hopfield_network",
+    ],
+)
+
+rt_ipynb_test(
+    name = "learning_dynamics",
+    srcs = ["learning_dynamics.ipynb"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/pend/learning_dynamics",
+    ],
+)
+
+rt_ipynb_test(
+    name = "vibrating_pendulum",
+    timeout = "moderate",
+    srcs = ["vibrating_pendulum.ipynb"],
+    data = ["//underactuated/models:vibrating_pendulum.urdf"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/pend/vibrating_pendulum",
+    ],
+)
