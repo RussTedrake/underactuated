@@ -8,7 +8,6 @@ load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
     name = "fitted_double_integrator",
-    timeout = "moderate",
     srcs = ["fitted_double_integrator.ipynb"],
     deps = [
         "//underactuated",
