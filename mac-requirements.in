@@ -8,7 +8,3 @@ PyYAML>=5.3.1
 certifi<=2020.12.5 # some package was asking for 2021.11.8 instead of 2020.11.8
 timeout-decorator>=0.4.1
 traitlets>=5.1.1  # for ipykernel on arm64
-# https://download.pytorch.org/whl/nightly/cpu/torch_nightly.html
-https://download.pytorch.org/whl/nightly/cpu/torch-1.11.0.dev20220110-cp39-none-macosx_10_9_x86_64.whl; platform_machine=="x86"
-https://download.pytorch.org/whl/nightly/cpu/torch-1.11.0.dev20220110-cp39-none-macosx_11_0_arm64.whl; platform_machine=="arm64"
-#https://download.pytorch.org/whl/nightly/torchvision-0.9.0.dev20210218-cp39-cp39-macosx_10_9_x86_64.whl
