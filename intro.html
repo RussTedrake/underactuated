@@ -381,13 +381,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         intuition.  Most chapters in these notes have an associated Jupyter notebook that can run on Deepnote or Google Colab; this chapter's notebook makes it easy for you to see this system in action.</p>
 
        <script>document.write(notebook_link('intro'))</script>
-   
+
         <p>Try it out!  You'll see how to simulate the double pendulum, and even
         how to inspect the dynamics symbolically.</p>
-        
+
         <p>Note: You can also run the code on your own machines (see the <a
         href="drake.html">Appendix</a> for details).</p>
-        
+
       </div>
     </example>
 
@@ -410,7 +410,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     of my center of mass (barring aerodynamic effects).  My control system is
     underactuated.</p>
 
-    <!-- note: I've removed this nth-order version because I still strongly dislike the fact that a fully-actuated 4th order system could be written as a 2nd order underactuated system. 
+    <!-- note: I've removed this nth-order version because I still strongly dislike the fact that a fully-actuated 4th order system could be written as a 2nd order underactuated system.
 
     <definition> <h1>Underactuated Control Differential
     Equations</h1> An $n$th-order control differential equation (with $n\ge2$)
@@ -420,8 +420,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     if the resulting map ${\bf f}$ is surjective: for every $\frac{d^n\bq}{dt^n}
     $ there exists a ${\bf u}$ which produces the desired response.  Otherwise
     it is underactuated. </definition>
-    -->  
-  
+    -->
+
     <p>A quick note about notation.  When describing the dynamics of rigid-body
     systems in this class, I will use $\bq$ for configurations (positions),
     $\dot{\bq}$ for velocities, and use $\bx$ for the full state ($\bx =
@@ -663,7 +663,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   </section>
 
   <section><h1>Exercises</h1>
-  
+
     <exercise><h1>Atlas Backflip</h1>
 
       <figure>
@@ -707,6 +707,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     </exercise>
 
+    <exercise><h1>Underactuated vs Controllable</h1>
+
+      <a href="acrobot.html#controllability">Controllability</a> plays an important role of controlling automated systems. A linear time-invariant system $\dot x(t) = Ax(t) + Bu(t)$ is controllable if the controllability matrix $R$ has full row rank. $$R = [B AB A^2B \ldots A^{n-1}B]$$. Please decide if the following statements are True or False and briefly explain why.
+
+      <ol type="a">
+
+        <li> An underactuated system is uncontrollable.
+
+        <li> If a linear time-invariant system is fully-actuated, then it's controllable.
+
+      </ol>
+
+    </exercise>
+
     <exercise><h1>Task-Space Control of the Double Pendulum</h1>
 
       In <a href="#robot_manipulators">the example above</a>, we have seen that the double pendulum with one motor per joint is a fully-actuated system.  Here we consider a variation of it: instead of controlling the robot with the actuators at the shoulder and the elbow, we directly apply a force on the mass $m_2$ (tip of the second link).  Let $\bu = [u_1, u_2]^T$ be this force, with $u_1$ horizontal component (positive to the right) and $u_2$ vertical component (positive upwards).  This modification leaves the equations of motion derived in the <a href="multibody.html#manipulator_equation_double_pendulum">appendix example</a> almost unchanged; the only difference is that the matrix $\bB$ is now a function of $\bq$.  Namely, using the notation from the appendix, $$\bB (\bq) = \begin{bmatrix} l_1 c_1 + l_2 c_{1+2} & l_1 s_1 + l_2 s_{1+2} \\ l_2  c_{1+2} & l_2 s_{1+2} \end{bmatrix}.$$  Is the double pendulum with the new control input still fully-actuated in all states?  If not, identify the states in which it is underactuated.
@@ -737,68 +751,68 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <ol>
 
 <li id=Collins05>
-<span class="author">Steven H. Collins and Andy Ruina and Russ Tedrake and Martijn Wisse</span>, 
-<span class="title">"Efficient bipedal robots based on passive-dynamic walkers"</span>, 
+<span class="author">Steven H. Collins and Andy Ruina and Russ Tedrake and Martijn Wisse</span>,
+<span class="title">"Efficient bipedal robots based on passive-dynamic walkers"</span>,
 <span class="publisher">Science</span>, vol. 307, pp. 1082-1085, February 18, <span class="year">2005</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Collins05.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Collins01>
-<span class="author">Steven H. Collins and Martijn Wisse and Andy Ruina</span>, 
-<span class="title">"A Three-Dimensional Passive-Dynamic Walking Robot with Two Legs and Knees"</span>, 
+<span class="author">Steven H. Collins and Martijn Wisse and Andy Ruina</span>,
+<span class="title">"A Three-Dimensional Passive-Dynamic Walking Robot with Two Legs and Knees"</span>,
 <span class="publisher">International Journal of Robotics Research</span>, vol. 20, no. 7, pp. 607-615, July, <span class="year">2001</span>.
 
 </li><br>
 <li id=Arnould96>
-<span class="author">J.P.Y. Arnould and D.R. Briggs and J.P. Croxall and P.A. Prince and A.G. Wood</span>, 
-<span class="title">"The foraging behaviour and energetics of wandering albatrosses brooding chicks"</span>, 
+<span class="author">J.P.Y. Arnould and D.R. Briggs and J.P. Croxall and P.A. Prince and A.G. Wood</span>,
+<span class="title">"The foraging behaviour and energetics of wandering albatrosses brooding chicks"</span>,
 <span class="publisher">Antarctic Science</span>, vol. 8, no. 3, pp. 229-236, <span class="year">1996</span>.
 
 </li><br>
 <li id=Shyy08>
-<span class="author">Wei Shyy and Yongsheng Lian and Jian Teng and Dragos Viieru and Hao Liu</span>, 
+<span class="author">Wei Shyy and Yongsheng Lian and Jian Teng and Dragos Viieru and Hao Liu</span>,
 <span class="title">"Aerodynamics of Low Reynolds Number Flyers"</span>, Cambridge University Press
 , <span class="year">2008</span>.
 
 </li><br>
 <li id=Tian06>
-<span class="author">Xiaodong Tian and Jose Iriarte-Diaz and Kevin Middleton and Ricardo Galvao and Emily Israeli and Abigail Roemer and Allyce Sullivan and Arnold Song and Sharon Swartz and Kenneth Breuer</span>, 
-<span class="title">"Direct measurements of the kinematics and dynamics of bat flight"</span>, 
+<span class="author">Xiaodong Tian and Jose Iriarte-Diaz and Kevin Middleton and Ricardo Galvao and Emily Israeli and Abigail Roemer and Allyce Sullivan and Arnold Song and Sharon Swartz and Kenneth Breuer</span>,
+<span class="title">"Direct measurements of the kinematics and dynamics of bat flight"</span>,
 <span class="publisher">Bioinspiration \& Biomimetics</span>, vol. 1, pp. S10-S18, <span class="year">2006</span>.
 
 </li><br>
 <li id=Triantafyllou95>
-<span class="author">Michael S. Triantafyllou and George S. Triantafyllou</span>, 
-<span class="title">"An efficient swimming machine"</span>, 
+<span class="author">Michael S. Triantafyllou and George S. Triantafyllou</span>,
+<span class="title">"An efficient swimming machine"</span>,
 <span class="publisher">Scientific American</span>, vol. 272, no. 3, pp. 64, March, <span class="year">1995</span>.
 
 </li><br>
 <li id=Tucker98>
-<span class="author">Vance A. Tucker</span>, 
-<span class="title">"Gliding Flight: Speed and Acceleration of Ideal Falcons During Diving and Pull Out"</span>, 
+<span class="author">Vance A. Tucker</span>,
+<span class="title">"Gliding Flight: Speed and Acceleration of Ideal Falcons During Diving and Pull Out"</span>,
 <span class="publisher">Journal of Experimental Biology</span>, vol. 201, pp. 403-414, Nov, <span class="year">1998</span>.
 
 </li><br>
 <li id=Tytell08>
-<span class="author">Eric D. Tytell and George V. Lauder</span>, 
-<span class="title">"Hydrodynamics of the escape response in bluegill sunfish, Lepomis macrochirus"</span>, 
+<span class="author">Eric D. Tytell and George V. Lauder</span>,
+<span class="title">"Hydrodynamics of the escape response in bluegill sunfish, Lepomis macrochirus"</span>,
 <span class="publisher">The Journal of Experimental Biology</span>, vol. 211, pp. 3359-3369, <span class="year">2008</span>.
 
 </li><br>
 <li id=Beal06>
-<span class="author">D.N. Beal and F.S. Hover and M.S. Triantafyllou and J.C. Liao and G. V. Lauder</span>, 
-<span class="title">"Passive propulsion in vortex wakes"</span>, 
+<span class="author">D.N. Beal and F.S. Hover and M.S. Triantafyllou and J.C. Liao and G. V. Lauder</span>,
+<span class="title">"Passive propulsion in vortex wakes"</span>,
 <span class="publisher">Journal of Fluid Mechanics</span>, vol. 549, pp. 385â€“402, <span class="year">2006</span>.
 
 </li><br>
 <li id=Slotine90>
-<span class="author">Jean-Jacques E. Slotine and Weiping Li</span>, 
+<span class="author">Jean-Jacques E. Slotine and Weiping Li</span>,
 <span class="title">"Applied Nonlinear Control"</span>, Prentice Hall
 , October, <span class="year">1990</span>.
 
 </li><br>
 <li id=Bloch03>
-<span class="author">Anthony Bloch and P. Crouch and J. Baillieul and J. Marsden</span>, 
+<span class="author">Anthony Bloch and P. Crouch and J. Baillieul and J. Marsden</span>,
 <span class="title">"Nonholonomic Mechanics and Control"</span>, Springer
 , April 8, <span class="year">2003</span>.
 
