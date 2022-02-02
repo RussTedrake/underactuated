@@ -723,21 +723,6 @@ complete trajectory.</p>
     
     </exercise>
 
-    <exercise id="learning_dynamics"><h1>Graphical Analysis of a Neural ODE</h1>
-      
-      We've recently seen a trend in using neural networks to describe our dynamics function. The differential equation represented by the network can be very complex, and hard to analyze rigorously. However, in the special case of one-dimensional systems we can use graphical analysis to analyze our system.
-
-      For this exercise, you'll take a look at trying to learn the dynamics of the damped pendulum from data. This exercise has a coding component where you'll learn the basics of training a neural network in pytorch. There is then a written component where you'll perform a graphical analysis of the dynamics function represented by your trained network.
-      
-      <ol type="a">
-        <li> In <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/pend/learning_dynamics.ipynb" target="_blank">this python notebook</a>, learn the dynamics of the damped pendulum from data.
-        <li> Within the range $\theta \in [-5.0, 5.0]$, which values of $(\theta, \dot \theta)$ represent fixed points? Which fixed points are stable and which are unstable? </li>
-        <li> What is one reason why our model might not fit the ground truth data exactly? </li>
-        <li> Does our model give us a reasonable approximation of the dynamics for all $(\theta, \dot \theta)$ pairs? Why or why not? </li>
-      </ol>
-    
-    </exercise>
-
   </section>
 
 </chapter>

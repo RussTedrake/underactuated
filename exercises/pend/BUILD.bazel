@@ -26,16 +26,6 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
-    name = "learning_dynamics",
-    srcs = ["learning_dynamics.ipynb"],
-    deps = [
-        "//underactuated",
-        "//underactuated/exercises",
-        "//underactuated/exercises/pend/learning_dynamics",
-    ],
-)
-
-rt_ipynb_test(
     name = "vibrating_pendulum",
     srcs = ["vibrating_pendulum.ipynb"],
     data = ["//underactuated/models:vibrating_pendulum.urdf"],
