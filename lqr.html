@@ -503,10 +503,29 @@ print("S = " + str(S))</code></pre></div>
         equation -- the solution to the LQR problem is the (unique) positive
         definite solution.  But there are non-positive definite solutions, too,
         which lead to unstable controllers -- these solutions do achieve zero
-        Bellman residual. It is actually quite subtle to understand why value
-        iteration will almost surely converge on the stabilizing controller. Go
-        ahead and try many different initial $S$ in the code to verify it for
-        yourself.</p>
+        Bellman residual. Every solution to the Riccati equation is a fixed
+        point of the (fitted) value iteration update, but only the
+        positive-definite solution is a stable fixed point of the
+        algorithm.</p>
+
+        <p>To see this, write $\hat{J}(\bx) = \bx^{T} ({\bf S}^* + {\bf
+        \Delta})\bx$, where ${\bf S}^*$ is any solution to the Riccati
+        equation, and ${\bf \Delta}$ is a small deviation matrix. If we write
+        the error dynamics through the fitted value iteration update, we can
+        see that $${\bf \Delta}_{i+1} = (\bA - \bB\bK_i)^T {\bf \Delta}_i (\bA
+        - \bB \bK_i),$$ where ${\bf K}_i$ is the optimal controller given ${\bf
+        S}_i = {\bf S}^* + {\bf \Delta}_i \approx \bK^*.$  This error converges
+        to zero if and only if $(\bA - \bB\bK^*)$ is stable, which is only if
+        ${\bf S}^* \succ 0$.</p>
+
+        <!-- Error dynamics derivation 
+          S_{i+1} = Q + K'RK + (A-BK)'S_i(A-BK)
+          S_i = S* + E_i => S_{i+1} = S* + (A-BK)'E_i(A-BK) =>
+          E_i = (A-BK)'E_i(A-BK)
+        -->
+        
+        <p>Go ahead and try many different initial ${\bf S}$ in the code to
+        verify it for yourself.</p>
       </example>
 
     </subsection>
