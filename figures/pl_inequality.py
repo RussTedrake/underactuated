@@ -33,3 +33,15 @@ fig2.update_layout(
 fig2.write_html("data/pl_inequality_grad.html")
 fig2.show()
 
+fig3 = px.line(
+  x=x, y=df, 
+  labels={'x':'x', 'y':'df/dx'},
+  color_discrete_sequence=['#993333']
+)
+fig3.update_layout(
+  margin=dict(l=20, r=20, t=20, b=20),
+  plot_bgcolor='rgba(0,0,0,0)',
+  paper_bgcolor='rgba(0,0,0,0)'
+)
+
+fig3.show()

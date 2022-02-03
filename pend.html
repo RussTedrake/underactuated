@@ -471,6 +471,12 @@ complete trajectory.</p>
       point at zero is clearly unstable.  The fixed point with $r^*=1$ attracts
       all other trajectories, but it is not stable by any of our
       definitions.</p>
+
+      <figure id="attractivity">
+        <img width="60%" src="figures/exercises/attractivity_vs_stability.svg"/>
+        <figcaption>Phase diagram of a two-dimensional system.</figcaption>
+      </figure>
+  
     </example>
 
     <p>Take a minute to draw the vector field of this (you can draw each
@@ -670,12 +676,14 @@ complete trajectory.</p>
 
     <exercise><h1>Attractivity vs Stability</h1>
 
-      <figure>
-      <img width="60%" src="figures/exercises/attractivity_vs_stability.svg"/>
-      <figcaption>Phase diagram of a two-dimensional system.</figcaption>
-      </figure>
-
-      This figure shows the phase portrait of the dynamical system \begin{align*} \dot x_1 &= x_1 (1-|\bx|) + x_2 \frac{x_1-|\bx|}{2|\bx|}, \\ \dot x_2 &= x_2 (1-|\bx|) - x_1 \frac{x_1-|\bx|}{2|\bx|}, \end{align*} where $|\bx| = \sqrt{x_1^2+x_2^2}$.  To help you with the analysis of this system, we set up <a href="https://deepnote.com/project/74f96db1-185b-4172-b9ac-0dbaafee6dbc" target="_blank">this python notebook</a>.  Take your time to understand the code in it, and then answer the following questions.
+      Consider the dynamical system given by \begin{align*} \dot x_1 &= x_1
+      (1-|\bx|) + x_2 \frac{x_1-|\bx|}{2|\bx|}, \\ \dot x_2 &= x_2 (1-|\bx|) -
+      x_1 \frac{x_1-|\bx|}{2|\bx|}, \end{align*} where $|\bx| =
+      \sqrt{x_1^2+x_2^2}$.  To help you with the analysis of this system, we
+      set up <a
+      href="https://deepnote.com/project/74f96db1-185b-4172-b9ac-0dbaafee6dbc"
+      target="_blank">this python notebook</a>.  Take your time to understand
+      the code in it, and then answer the following questions.
 
       <ol type="a">
 
