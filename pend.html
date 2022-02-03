@@ -460,17 +460,30 @@ complete trajectory.</p>
 
     <p>Before we continue, let me now give you the promised example of a system
     that is not stable i.s.L., but which attracts all trajectories as time
-    goes to infinity.</p>
+    goes to infinity. We can accomplish this with a very pendulum-like example
+    (written here in polar coordinates):</p>
 
     <example><h1>Unstable equilibrium point that attracts all trajectories</h1>
 
-      <p>The fixed point at the origin of the system 
-      $$\begin{aligned} \dot{x} &= x^2 - y^2, \\ \dot{y} &= 2xy, \end{aligned}$$
-      is attractive, but not stable.  Take a minute to convince yourself that this is true!</p>
+      <p>Consider the system \begin{align*} \dot{r} &= r(1-r), \\ \dot\theta &= \sin^2
+      \left( \frac{\theta}{2} \right).\end{align*}  This system has two equilibrium points, one at
+      $r^*=0,\theta^*=0$, and the other at $r^* = 1,\theta^*=0$.  The fixed
+      point at zero is clearly unstable.  The fixed point with $r^*=1$ attracts
+      all other trajectories, but it is not stable by any of our
+      definitions.</p>
 
-      <figure><img width=80% src="figures/attractive.svg"/></figure>
+      <p>I've added another example, with the phase plot, in the notebook.</p>
+      <script>document.write(notebook_link('pend'))</script>
 
     </example>
+
+    <p>Take a minute to draw the vector field of this (you can draw each
+    coordinate independently, if it helps) to make sure you understand.  Note
+    that to wrap-around rotation is convenient but not essential -- we could
+    have written the same dynamical system in cartesian coordinates without
+    wrapping.  And if this still feels too arbitrary, we will see it happen in
+    practice when we introduce the energy-shaping swing-up controller for the
+    pendulum in the next chapter.</p>
 
     <subsection><h1>The damped pendulum</h1>
 
