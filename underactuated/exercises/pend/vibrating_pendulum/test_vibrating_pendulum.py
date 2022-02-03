@@ -16,7 +16,7 @@ class TestVibratingPendulum(unittest.TestCase):
         # note: all prints here go to the output item in the json file
 
         # the response must be monotonically increasing
-        theta_dot = self.notebook_locals['logger'].data()[-1, :]
+        theta_dot = self.notebook_locals['log'].data()[-1, :]
         self.assertTrue(
             all(i <= j + 1e-4 for i, j in zip(theta_dot, theta_dot[1:])),
             msg='theta_dot(t) is decreasing.',
