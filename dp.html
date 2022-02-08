@@ -323,7 +323,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     for all $s_i$, then proceeds with an iterative algorithm which sets
     \begin{equation} \hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[ \ell(s_i,a)
     + \hat{J}^*\left({f(s_i,a)}\right) \right]. \label{eq:value_update}
-    \end{equation} In software, $\hat{J}^*$ can be represented as a vector with
+    \end{equation} The algorithm is simpler if we ensure that the update $f(s,a)$ is defined for every state-action pair; we
+    can add zero-cost self transitions at the goal node for every action. In software, $\hat{J}^*$ can be represented as a
+    vector with
     dimension equal to the number of discrete states.  This algorithm,
     appropriately known as <em>value iteration</em>, is guaranteed to converge
     to the optimal cost-to-go up to a constant factor, $\hat{J}^* \rightarrow
