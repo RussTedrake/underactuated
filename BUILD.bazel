@@ -109,6 +109,7 @@ rt_ipynb_test(
         "//underactuated",
         "//underactuated:double_integrator",
         "//underactuated:meshcat_cpp_utils",
+        "//underactuated:optimizers",
         "//underactuated:pendulum",
     ],
 )
