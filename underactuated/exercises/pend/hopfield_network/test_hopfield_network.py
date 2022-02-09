@@ -73,7 +73,7 @@ class TestHopfield(unittest.TestCase):
             [np.ones((28, 28)).reshape((-1)),
              np.zeros((28, 28)).reshape((-1))])
 
-        diff_a = (abs(A_target1 - A_calc)).max() > 1e-4
-        diff_b = (abs(A_target2 - A_calc)).max() > 1e-4
+        diff_a = (abs(A_target1 - A_calc)).max() < 1e-4
+        diff_b = (abs(A_target2 - A_calc)).max() < 1e-4
         self.assertTrue(diff_a or diff_b,
                         msg='calculate_A did not produce expected output.')
