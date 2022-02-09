@@ -9,7 +9,6 @@ load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 rt_ipynb_test(
     name = "lp_dp",
     srcs = ["lp_dp.ipynb"],
-    timeout = "moderate",
     deps = [
         "//underactuated",
         "//underactuated/exercises",
