@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import timeout_decorator
 from gradescope_utils.autograder_utils.decorators import weight
-
+from underactuated import FindResource
 
 class Testlpdp(unittest.TestCase):
 
@@ -17,7 +17,7 @@ class Testlpdp(unittest.TestCase):
         # note: all prints here go to the output item in the json file
         J_value = self.notebook_locals['J_value']
 
-        J = np.load("J.npy")
+        J = np.load(FindResource("exercises/dp/lp_dp/J.npy"))
 
         diff = np.abs(J - J_value)
 
