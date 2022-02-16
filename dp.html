@@ -232,8 +232,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <p>And for completeness, we can compute the optimal time to the goal by
       solving for the amount of time required to reach the switching surface
       plus the amount of time spent moving along the switching surface to the
-      goal.  With a little algebra, you will find that the time to goal,
-      $T(\bx)$, is given by \[ T(\bx) = \begin{cases}
+      goal.  With a little algebra, you will find that the time to the goal,
+      $J(\bx)$, is given by \[ J(\bx) = \begin{cases}
       2\sqrt{\frac{1}{2}\dot{q}^2-q} - \dot{q} & \text{for } u=+1 \text{
       regime}, \\ 0 & \text{for } u=0, \\ \dot{q} +
       2\sqrt{\frac{1}{2}\dot{q}^2+q} & \text{for } u=-1, \end{cases} \]<!-- call
@@ -323,7 +323,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     for all $s_i$, then proceeds with an iterative algorithm which sets
     \begin{equation} \hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[ \ell(s_i,a)
     + \hat{J}^*\left({f(s_i,a)}\right) \right]. \label{eq:value_update}
-    \end{equation} In software, $\hat{J}^*$ can be represented as a vector with
+    \end{equation} The algorithm is simpler if we ensure that the update $f(s,a)$ is defined for every state-action pair; we
+    can add zero-cost self transitions at the goal node for every action. In software, $\hat{J}^*$ can be represented as a
+    vector with
     dimension equal to the number of discrete states.  This algorithm,
     appropriately known as <em>value iteration</em>, is guaranteed to converge
     to the optimal cost-to-go up to a constant factor, $\hat{J}^* \rightarrow
@@ -1037,13 +1039,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <exercise><h1>Value Iteration for Minimum-Time Problems</h1>
 
-      <p>In this exercise we analyze the performance of the value-iteration algorithm, considering its application to the <a href="#minimum_time_double_integrator">minimum time problem for the double integrator</a>.  <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/dp/minimum_time/minimum_time.ipynb" target="_blank">In this python notebook</a>, you will find everything you need for this analysis.  Take the time to go through the notebook and understand the code in it, then answer the following questions.</p>
+      <p>In this exercise we analyze the performance of the value-iteration algorithm, considering its application to the <a href="#minimum_time_double_integrator">minimum time problem for the double integrator</a>.  <a href="https://deepnote.com/project/0e79c2da-1dba-47a3-afa6-d193401fa3ec" target="_blank">In this python notebook</a>, you will find everything you need for this analysis.  Take the time to go through the notebook and understand the code in it, then answer the following questions.</p>
 
       <ol type="a">
 
         <li>
 
-          At the end of the <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/dp/minimum_time/minimum_time.ipynb" target="_blank">notebook</a> section "Performance of the Value-Iteration Policy", we plot the state trajectory of the double integrator in closed loop with the value-iteration policy, as well as the resulting control signal.
+          At the end of the <a href="https://deepnote.com/project/0e79c2da-1dba-47a3-afa6-d193401fa3ec" target="_blank">notebook</a> section "Performance of the Value-Iteration Policy", we plot the state trajectory of the double integrator in closed loop with the value-iteration policy, as well as the resulting control signal.
 
           <ol ol type="i">
 
@@ -1057,11 +1059,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         </li>
 
-        <li>In the "Value Iteration Algorithm" section of the <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/dp/minimum_time/minimum_time.ipynb" target="_blank">notebook</a>, increase the number of knot points on the $q$ and the $\dot q$ axes to refine the state-space mesh used in the value iteration.  Does this fix the issues you have seen in point (a)?</li>
+        <li>In the "Value Iteration Algorithm" section of the <a href="https://deepnote.com/project/0e79c2da-1dba-47a3-afa6-d193401fa3ec" target="_blank">notebook</a>, increase the number of knot points on the $q$ and the $\dot q$ axes to refine the state-space mesh used in the value iteration.  Does this fix the issues you have seen in point (a)?</li>
 
-        <li>In the final section of the <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/dp/minimum_time/minimum_time.ipynb" target="_blank">notebook</a>, implement the theoretically-optimal control policy from <a href="#minimum_time_double_integrator">the example</a>, and use the plots to verify that the closed-loop system behaves as expected.</li>
+        <li>In the final section of the <a href="https://deepnote.com/project/0e79c2da-1dba-47a3-afa6-d193401fa3ec" target="_blank">notebook</a>, implement the theoretically-optimal control policy from <a href="#minimum_time_double_integrator">the example</a>, and use the plots to verify that the closed-loop system behaves as expected.</li>
 
       </ol>
+
+    </exercise>
+
+    <exercise><h1>Linear Program for Dynamic Programming</h1>
+
+      <p>In this exercise we solve the dynamic programming using a linear program, considering its application to the <a href="#grid_world">grid world</a>.  <a href="https://deepnote.com/project/lpdp-2Fj9MJ3bQKeUstV3AhBRSQ/%2Flp_dp.ipynb" target="_blank">In this python notebook</a>, you will write a linear program for solving the optimal cost-to-go in the grid world. </p>
 
     </exercise>
 

@@ -38,6 +38,13 @@ rt_py_library(
 )
 
 rt_py_library(
+    name = "optimizers",
+    srcs = ["optimizers.py"],
+    imports = [".."],
+    visibility = ["//visibility:public"],
+)
+
+rt_py_library(
     name = "pendulum",
     srcs = ["pendulum.py"],
     imports = [".."],

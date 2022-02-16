@@ -16,3 +16,13 @@ rt_ipynb_test(
         "//underactuated/exercises/dp/minimum_time",
     ],
 )
+
+rt_ipynb_test(
+    name = "lp_dp",
+    srcs = ["lp_dp.ipynb"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/dp/lp_dp",
+    ],
+)
