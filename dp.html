@@ -594,7 +594,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       quadratic function in $\bu$, if the system does not have any constraints
       on $\bu$, then we can solve in closed-form for the minimizing $\bu$ by
       taking the gradient of the right-hand side: \[ \pd{}{\bu} = 2\bu^T {\bf R}
-      + \pd{J}{\bx} f_2(\bx) = 0, \] and setting it equal to zero to obtain \[
+      + (\pd{J}{\bx} f_2(\bx))^T = 0, \] and setting it equal to zero to obtain \[
       \bu^* = -\frac{1}{2}{\bf R}^{-1}f_2^T(\bx) \pd{J}{\bx}^T.\] If there are
       linear constraints on the input, such as torque limits, then more
       generally this could be solved (at any particular $\bx$) as a quadratic
