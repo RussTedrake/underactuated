@@ -19,9 +19,12 @@ class TestDoubleCartPoleURDF(unittest.TestCase):
             'get_single_pendulum_urdf_parameters']
         urdf_parameters = get_single_pendulum_urdf_parameters()
         a = 0
+        b = 0
         for x in get_single_pendulum_urdf_parameters():
             a += hash(tuple(x))
-        self.assertEqual(a, -3713082714464628219,
+        for x in [[-1,0]]:
+            b += hash(tuple(x))
+        self.assertEqual(a, b,
                          "Incorrect single pendulum urdf parameters.")
 
     @weight(5)
@@ -33,7 +36,10 @@ class TestDoubleCartPoleURDF(unittest.TestCase):
             'get_double_pendulum_urdf_parameters']
         urdf_parameters = get_double_pendulum_urdf_parameters()
         a = 0
+        b = 0
         for x in get_double_pendulum_urdf_parameters():
             a += hash(tuple(x))
-        self.assertEqual(a, -7426164346401008863,
+        for x in [[-1, 0], [1 ,-1]]:
+            b += hash(tuple(x))
+        self.assertEqual(a, b,
                          "Incorrect double pendulum urdf parameters.")

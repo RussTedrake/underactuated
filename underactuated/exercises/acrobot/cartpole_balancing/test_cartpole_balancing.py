@@ -87,9 +87,19 @@ class TestCartPoleBalancing(unittest.TestCase):
         # note: all prints here go to the output item in the json file
         get_A_lin = self.notebook_locals['get_A_lin']
         A_lin = get_A_lin()
-        a = hash(tuple(np.ndarray.flatten(A_lin)))
-        self.assertEqual(a, -4269322539335713771,
-                         "Incorrect linearization matrix A.")
+        g = 9.81
+        A_lin_true = np.array([
+        [0, 0, 1, 0],
+        [0, 0, 0, 1],
+        [0, g, 0, 0],
+        [0, 2*g, 0, 0] ])
+        
+        err = np.norm(np.abs(A_lin_true - A_lin))
+        self.assertLessEqual(err, 1e-8, "incorrect A linearization")
+        # a = hash(tuple(np.ndarray.flatten(A_lin)))
+        # self.assertTrue(np.allclose(A_lin_true, A_lin))
+        # self.assertEqual(a, -4269322539335713771,
+        #                  "Incorrect linearization matrix A.")
 
     @weight(2)
     @timeout_decorator.timeout(1.)
@@ -98,9 +108,20 @@ class TestCartPoleBalancing(unittest.TestCase):
         # note: all prints here go to the output item in the json file
         get_B_lin = self.notebook_locals['get_B_lin']
         B_lin = get_B_lin()
-        a = hash(tuple(np.ndarray.flatten(B_lin)))
-        self.assertEqual(a, 4686582722430018711,
-                         "Incorrect linearization matrix B.")
+
+        B_lin_true = np.array([
+        [0],
+        [0],
+        [1],
+        [1]
+        ])
+        
+        err = np.norm(np.abs(B_lin_true - B_lin))
+        self.assertLessEqual(err, 1e-8, "incorrect B linearization")
+
+        # a = hash(tuple(np.ndarray.flatten(B_lin)))
+        # self.assertEqual(a, 4686582722430018711,
+        #                  "Incorrect linearization matrix B.")
 
     @weight(1)
     @timeout_decorator.timeout(1.)
@@ -164,8 +185,7 @@ class TestCartPoleBalancing(unittest.TestCase):
         system_recovers_from_states = \
             self.notebook_locals['system_recovers_from_states']
         arr = np.sort(np.asarray(system_recovers_from_states))
-        a = hash(tuple(arr))
-        self.assertEqual(
-            a, 6260030330839110161,
-            "Incorrect states from which the system is able\
-                              to recover.")
+        true_recover = np.array([0, 1, 2, 5])
+        same = np.all(arr == true_recover)
+        self.assertTrue(same)
+        
