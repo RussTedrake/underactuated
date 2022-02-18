@@ -91,7 +91,7 @@ class TestCartPoleBalancing(unittest.TestCase):
         A_lin_true = np.array([[0, 0, 1, 0], [0, 0, 0, 1], [0, g, 0, 0],
                                [0, 2 * g, 0, 0]])
 
-        err = np.norm(np.abs(A_lin_true - A_lin))
+        err = np.linalg.norm(np.abs(A_lin_true - A_lin))
         self.assertLessEqual(err, 1e-8, "incorrect A linearization")
         # a = hash(tuple(np.ndarray.flatten(A_lin)))
         # self.assertTrue(np.allclose(A_lin_true, A_lin))
@@ -108,7 +108,7 @@ class TestCartPoleBalancing(unittest.TestCase):
 
         B_lin_true = np.array([[0], [0], [1], [1]])
 
-        err = np.norm(np.abs(B_lin_true - B_lin))
+        err = np.linalg.norm(np.abs(B_lin_true - B_lin))
         self.assertLessEqual(err, 1e-8, "incorrect B linearization")
 
         # a = hash(tuple(np.ndarray.flatten(B_lin)))
