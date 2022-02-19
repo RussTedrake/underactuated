@@ -9,7 +9,10 @@ load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 rt_ipynb_test(
     name = "attractivity_vs_stability",
     srcs = ["attractivity_vs_stability.ipynb"],
-    deps = ["//underactuated"],
+    deps = [
+      "//underactuated",
+      "//underactuated/exercises",
+    ],
 )
 
 rt_ipynb_test(
