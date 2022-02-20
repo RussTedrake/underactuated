@@ -6,6 +6,13 @@ import nbformat
 from nbconvert import PythonExporter
 import os
 
+grader_throws = False
+
+
+def set_grader_throws(val):
+    global grader_throws
+    grader_throws = val
+
 
 class Grader:
 
@@ -101,6 +108,9 @@ class Grader:
         # print total score
         max_score = sum(test['max_score'] for test in result['tests'])
         print('Total score is {}/{}.'.format(int(result['score']), max_score))
+
+        if grader_throws and int(result['score']) != max_score:
+            raise RuntimeError("Grader did not award full points.")
 
         # print partial scores
         for test in result['tests']:
