@@ -16,5 +16,6 @@ __pycache__/
 /user.bazelrc
 /.history
 dist/
+wandb/
 
 underactuated.egg-info/
