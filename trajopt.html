@@ -204,19 +204,18 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       decision variables was not strictly necessary.  If we know $\bx[0]$ and
       we know $\bu[\cdot]$, then we should be able to solve for $\bx[n]$ using
       forward simulation.  For our discrete-time linear systems, this is
-      particularly nice: \begin{align*}\bx[1] =& {\bf A}\bx[0] + {\bf B}\bu[0]
-      \\ \bx[2] =& {\bf A}({\bf A}\bx[0] + {\bf B}\bu[0]) + {\bf B}\bu[1] \\
-      \bx[n] =& {\bf A}^n\bx[0] + \sum_{k=0}^{n-1} {\bf A}^{n-1-k}{\bf
-      B}u[k].\end{align*}  What's more, the solution is still linear in
-      $\bu[\cdot]$.  This is amazing... we can get rid of a bunch of decision
-      variables, and turn a constrained optimization problem into an
-      unconstrained optimization problem (assuming we don't have any other
-      constraints).  This approach -- using $\bu[\cdot]$ but <i>not</i>
-      $\bx[\cdot]$ as decision variables and using forward simulation to obtain
-      $\bx[n]$ -- is called the <i>direct shooting</i> transcription.  For
-      linear systems with linear/quadratic objectives in $\bx$, and $\bu$, it
-      is still a convex optimization, and has less decision variables and
-      constraints than the direct transcription.</p>
+      particularly nice: \begin{align*}\bx[1] =& \bA\bx[0] + \bB\bu[0] \\
+      \bx[2] =& \bA(\bA\bx[0] + \bB\bu[0]) + \bB\bu[1] \\ \bx[n] =& \bA^n\bx[0]
+      + \sum_{k=0}^{n-1} \bA^{n-1-k}\bB\bu[k].\end{align*}  What's more, the
+      solution is still linear in $\bu[\cdot]$.  This is amazing... we can get
+      rid of a bunch of decision variables, and turn a constrained optimization
+      problem into an unconstrained optimization problem (assuming we don't
+      have any other constraints).  This approach -- using $\bu[\cdot]$ but
+      <i>not</i> $\bx[\cdot]$ as decision variables and using forward
+      simulation to obtain $\bx[n]$ -- is called the <i>direct shooting</i>
+      transcription.  For linear systems with linear/quadratic objectives in
+      $\bx$, and $\bu$, it is still a convex optimization, and has less
+      decision variables and constraints than the direct transcription.</p>
 
     </subsection>
 

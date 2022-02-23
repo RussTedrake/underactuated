@@ -452,11 +452,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <p>Consider a system $\dot{\bx}=f(\bx,\bu)$ and an infinite-horizon
         additive cost $\int_0^\infty \ell(\bx,\bu)dt$, with $f$ and $\ell$
-        continuous functions, and $\ell$ a strictly-positive-definite function that obtains zero only when $\bx=\bx^*$. Suppose $J(\bx)$ is a positive-definite solution to the HJB
-        equation; that is $J$ is continuously differentiable in $\bx$ and is
-        such that \[ 0 = \min_{\bu \in U} \left[\ell(\bx,\bu) +
-        \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx, \] and that
-        $\pi(\bx)$ is the minimizer for all $\bx$.  Then, under some technical conditions on the existence and boundedness of solutions, we have that $J(\bx) - J(\bx^*)$ is the optimal cost-to-go and $\pi$ is an optimal policy.</p>
+        continuous functions, and $\ell$ a strictly-positive-definite function
+        that obtains zero only at a unique state $\bx^*$. Suppose $J(\bx)$ is a
+        solution to the HJB equation: $J$ is continuously differentiable in
+        $\bx$ and is such that \[ 0 = \min_{\bu \in U} \left[\ell(\bx,\bu) +
+        \pd{J}{\bx}f(\bx,\bu) \right],\quad \text{for all } \bx. \] Further
+        assume that $J(\bx)$ is positive definite and that $\pi(\bx)$ is the
+        minimizer for all $\bx$.  Then, under some technical conditions on the
+        existence and boundedness of solutions, we have that $J(\bx) -
+        J(\bx^*)$ is the optimal cost-to-go and $\pi$ is an optimal policy.</p>
 
         <p style="font-size:smaller;"><details><summary>Here is a more formal version from a personal communication with <a href="http://www.mit.edu/~ameg/">Sasha Megretski</a>.</summary> 
           
@@ -856,7 +860,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     <p>There are many many nice extensions to the basic formulations that we've
     presented so far.  I'll try to list a few of the most important ones here.
     I've also had a number of students in this course explore very interesting
-    extensions; for example <elib>Yang20</elib> looked a imposing a low-rank
+    extensions; for example <elib>Yang20</elib> looked at imposing a low-rank
     structure on the (discrete-state) value function using ideas from matrix
     completion to obtain good estimates despite updating only a small fraction
     of the states.</p>
