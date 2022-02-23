@@ -1,4 +1,4 @@
-mport unittest
+import unittest
 import timeout_decorator
 from gradescope_utils.autograder_utils.decorators import weight
 import numpy as np
@@ -88,8 +88,7 @@ class TestCartPoleBalancing(unittest.TestCase):
         get_A_lin = self.notebook_locals['get_A_lin']
         A_lin = get_A_lin()
         g = 9.81
-        
-        
+
         a = hash(tuple(np.ndarray.flatten(A_lin)))
         self.assertEqual(a, -4269322539335713771,
                          "Incorrect linearization matrix A.")
