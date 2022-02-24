@@ -97,7 +97,7 @@ class TestPendulumCVI(unittest.TestCase):
         simulator = self.build_pendulum_simulator(value_mlp, value_mlp_context,
                                                   R_diag, compute_u_star)
         simulator_context = simulator.get_mutable_context()
-        simulator.set_target_realtime_rate(1.0)
+        simulator.set_target_realtime_rate(0.)
         num_sim = 20
         np.random.seed(14)
         errors = []
