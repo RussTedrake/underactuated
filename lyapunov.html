@@ -155,34 +155,36 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     and exponential stability.  We can use Lyapunov functions to demonstrate
     each of these, in turn.</p>
 
-    <theorem><h1>Lyapunov's Direct Method</h1>
+    <theorem><h1>Lyapunov's Direct Method (for local stability)</h1>
 
       <p>Given a system $\dot{\bx} = f(\bx)$, with $f$ continuous, and for some
-      region ${\cal B}$ around the origin (specifically an open subset of
+      region ${\cal D}$ around the origin (specifically an open subset of
       $\mathbf{R}^n$ containing the origin), if I can produce a scalar,
       continuously-differentiable function $V(\bx)$, such that \begin{gather*}
-      V(\bx) > 0, \forall \bx \in {\cal B} \setminus \{0\} \quad V(0) = 0,
+      V(\bx) > 0, \forall \bx \in {\cal D} \setminus \{0\} \quad V(0) = 0,
       \text{ and} \\ \dot{V}(\bx) = \pd{V}{\bx} f(\bx) \le 0, \forall \bx \in
-      {\cal B} \setminus \{0\} \quad \dot{V}(0) = 0, \end{gather*} then the
+      {\cal D} \setminus \{0\} \quad \dot{V}(0) = 0, \end{gather*} then the
       origin $(\bx = 0)$ is stable in the sense of Lyapunov (i.s.L.).   [Note: the notation $A \setminus B$ represents the set $A$ with the elements of $B$ removed.]</p>
 
       <p>If, additionally, we have $$\dot{V}(\bx) = \pd{V}{\bx} f(\bx) < 0,
-      \forall \bx \in {\cal B} \setminus \{0\},$$ then the origin is (locally)
+      \forall \bx \in {\cal D} \setminus \{0\},$$ then the origin is (locally)
       asymptotically stable.  And if we have $$\dot{V}(\bx) = \pd{V}{\bx} f(\bx)
-      \le -\alpha V(x), \forall \bx \in {\cal B} \setminus \{0\},$$ for some $\alpha>0$,
+      \le -\alpha V(x), \forall \bx \in {\cal D} \setminus \{0\},$$ for some $\alpha>0,$
       then the origin is (locally) exponentially stable. </p>
 
     </theorem>
 
     <p>Note that for the sequel we will use the notation $V \succ 0$ to denote a
-    <em>positive-definite function</em>, meaning that $V(0)=0$ and $V(\bx)>0$
-    for all $\bx\ne0$ (and also $V \succeq 0$ for positive semi-definite, $V
-    \prec 0$ for negative-definite functions).</p>
+    <em>positive-definite function</em>, meaning that $V(0)=0$ and $V(\bx)>0,$
+    for all $\bx \ne 0$.  We can use "positive definite in ${\cal D}$" if this
+    applies $\forall x \in {\cal D}$.  Similarly, we'll use $V \succeq 0$ for
+    positive semi-definite, $V \prec 0$ for negative-definite functions,
+    etc.</p>
 
     <p>The intuition here is exactly the same as for the energy argument we made
     in the pendulum example:  since $\dot{V}(x)$ is always zero or negative, the
     value of $V(x)$ will only get smaller (or stay the same) as time progresses.
-    Inside the subset ${\cal B}$, for every $\epsilon$-ball, I can choose a
+    Inside the subset ${\cal D}$, for every $\epsilon$-ball, I can choose a
     $\delta$ such that $|x(0)|^2 < \delta \Rightarrow |x(t)|^2 < \epsilon,
     \forall t$ by choosing $\delta$ sufficiently small so that the sublevel set
     of $V(x)$ for the largest value that $V(x)$ takes in the $\delta$ ball is
@@ -191,7 +193,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     $\dot{V}$ is strictly negative away from the origin, then it must eventually
     get to the origin (asymptotic stability). The exponential condition is
     implied by the fact that $\forall t>0, V(\bx(t)) \le V(\bx(0)) e^{-\alpha
-    t}$.</p>
+    t}.$</p>
 
     <p> Notice that the system analyzed above, $\dot{\bx}=f(\bx)$, did not have
     any control inputs. Therefore, Lyapunov analysis is used to study either the
@@ -275,7 +277,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <p>Recall the <a href="acrobot.html#cartpole_swingup">example of using partial-feedback linearization to generate a swing-up controller for the cart-pole system</a>.  We first examined the dynamics of the pole (pendulum) only, by writing it's energy: $$E(\bx) = \frac{1}{2}\dot\theta^2 - \cos\theta,$$ desired energy, $E^d = 1$, and the difference $\tilde{E}(\bx) = E(\bx) - E^d.$  We were able to show that our proposed controller produced $$\dot{\tilde{E}} = -k \dot\theta^2 \cos^2\theta \tilde{E},$$ where $k$ is a positive gain that we get to choose.  And we said that was good!</p>
 
-        <p>Now we have the tools to understand that really we have a Lyapunov function $$V(\bx) = \frac{1}{2}\tilde{E}^2(\bx),$$, and what we have shown is that $\dot{V} \le 0$.  By LaSalle, we can only argue that the closed-loop system will converge to the largest invariant set, which here is the entire homoclinic orbit: $\tilde{E}(\bx) = 0$.  We have to switch to the LQR controller in order to stabilize the upright.</p>
+        <p>Now we have the tools to understand that really we have a Lyapunov function $$V(\bx) = \frac{1}{2}\tilde{E}^2(\bx),$$ and what we have shown is that $\dot{V} \le 0$.  By LaSalle, we can only argue that the closed-loop system will converge to the largest invariant set, which here is the entire homoclinic orbit: $\tilde{E}(\bx) = 0$.  We have to switch to the LQR controller in order to stabilize the upright.</p>
 
         <figure>
           <iframe id="igraph" scrolling="no" style="border:none;" seamless="seamless" src="data/cartpole_swingup_V.html" height="350" width="100%"></iframe>
