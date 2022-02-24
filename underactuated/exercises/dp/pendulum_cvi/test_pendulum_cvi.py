@@ -30,26 +30,26 @@ class TestPendulumCVI(unittest.TestCase):
         self.assertLessEqual(
             compute_state_cost(Q, target_state, target_state),
             tol,
-            msg=
-            f'target state cost is {compute_state_cost(Q, target_state, target_state)} which is more than tolerance {tol}'
-        )
+            msg=('target state cost is '
+                 f'{compute_state_cost(Q, target_state, target_state)}'
+                 ' which is more than tolerance {tol}'))
 
-        self.assertLessEqual(np.abs(
-            compute_state_cost(Q, target_state,
-                               np.array([0, 0]).reshape(-1, 1))
-            - np.pi**2 * 20.),
+        cost = compute_state_cost(Q, target_state,
+                                  np.array([0, 0]).reshape(-1, 1))
+        target = np.pi**2 * 20.
+        self.assertLessEqual(np.abs(cost - target),
                              tol,
                              msg='Cost at state = 0 is incorrect')
 
-        test_states = np.array([[
+        state1 = [
             5.89375203, 5.72132364, 2.07924145, -25.58778621, 4.84281921,
             -19.20542969, -2.35612669
-        ],
-                                [
-                                    -35.69553553, 24.11618679, -0.85857409,
-                                    3.61505439, -3.28412933, 26.96593774,
-                                    -0.81457745
-                                ]])
+        ]
+        state2 = [
+            -35.69553553, 24.11618679, -0.85857409, 3.61505439, -3.28412933,
+            26.96593774, -0.81457745
+        ]
+        test_states = np.array([state1, state2])
         result_true = np.array([
             30201.18682396, 8831.40552794, 324.34992454, 659.21812345,
             849.25095811, 11720.8369055, 318.57697075
@@ -76,10 +76,9 @@ class TestPendulumCVI(unittest.TestCase):
         u_star_true = np.array(
             [[2.20789167, 2.98984167, 15.70045, -12.72798333, 7.183475]])
         u_star_test = compute_u_star(R_diag, dJdX, dstate_dynamics_du)
-        self.assertTrue(
-            u_star_true.shape == u_star_test.shape,
-            f"output of compute_u_star is incorrect. Expected {u_star_true.shape} got {u_star_test.shape}"
-        )
+        self.assertTrue(u_star_true.shape == u_star_test.shape,
+                        (f"output of compute_u_star is incorrect. Expected "
+                         "{u_star_true.shape} got {u_star_test.shape}"))
 
         for i in range(u_star_test.shape[0]):
             for j in range(u_star_test.shape[1]):
@@ -123,8 +122,8 @@ class TestPendulumCVI(unittest.TestCase):
         threshold = int(frac * num_sim)
         self.assertGreaterEqual(
             num_passed, threshold,
-            f"Only passed {num_passed/num_sim * 100}% of initial configurations. Need to pass {frac*100}%"
-        )
+            (f"Only passed {num_passed/num_sim * 100}% of initial"
+             " configurations. Need to pass {frac*100}%"))
 
     # initialize controller and plant
     def build_pendulum_simulator(self, value_mlp, value_mlp_context, R_diag,
