@@ -26,3 +26,18 @@ rt_ipynb_test(
         "//underactuated/exercises/dp/lp_dp",
     ],
 )
+
+rt_ipynb_test(
+    name = "pendulum_cvi",
+    data = ["//underactuated/models:cartpole.urdf"],
+    srcs = ["pendulum_cvi.ipynb"],
+    timeout = "moderate",
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated:meshcat_cpp_utils",
+        "//underactuated:optimizers",
+        "//underactuated:pendulum",
+        "//underactuated/exercises/dp/pendulum_cvi",
+    ],
+)
