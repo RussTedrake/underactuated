@@ -165,8 +165,6 @@ snowballstemmer==2.2.0
     #   pydocstyle
 timeout-decorator==0.5.0
     # via underactuated (setup.cfg)
-torch==1.10.1
-    # via underactuated (setup.cfg)
 tornado==5.1.1
     # via
     #   -c htmlbook/colab-constraints-ubuntu.txt

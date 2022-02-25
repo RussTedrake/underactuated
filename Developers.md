@@ -14,6 +14,19 @@ If you would like to `bazel` to use a local installation of drake, you can set
 the `DRAKE_INSTALL_DIR` environment variable. Otherwise it will look in
 `/opt/drake`.
 
+## Additional setup on macos arm64
+
+Currently, after pip installing nbconvert on apple m1, the `jupyter --paths`
+command still doesn't include `/opt/homebrew/share/jupyter`.  As a result,
+nbconvert fails to find the python template.  Hopefully this will be fixed, but
+for now a work-around is:
+
+```
+% cd ~/Library/Jupyter/nbconvert/
+% mv templates templates_bk
+% ln -s /opt/homebrew/share/jupyter/nbconvert/templates
+```
+
 ## To update the pip wheels
 
 Update the version number in `setup.py`, then from the root directory, run:
