@@ -1,5 +1,12 @@
 import os
 
+running_as_test = False
+
+
+def set_running_as_test(value):
+    global running_as_test
+    running_as_test = value
+
 
 def FindResource(filename):
     return os.path.join(os.path.dirname(__file__), filename)
