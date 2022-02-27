@@ -166,6 +166,7 @@ rt_html_test(
 
 rt_ipynb_test(
     name = "policy_search",
+    flaky = True,
     srcs = ["policy_search.ipynb"],
     deps = [
         "//underactuated",
