@@ -78,7 +78,7 @@ class TestPendulumCVI(unittest.TestCase):
         u_star_test = compute_u_star(R_diag, dJdX, dstate_dynamics_du)
         self.assertTrue(u_star_true.shape == u_star_test.shape,
                         (f"output of compute_u_star is incorrect. Expected "
-                         "{u_star_true.shape} got {u_star_test.shape}"))
+                         f"{u_star_true.shape} got {u_star_test.shape}"))
 
         for i in range(u_star_test.shape[0]):
             for j in range(u_star_test.shape[1]):
@@ -123,7 +123,7 @@ class TestPendulumCVI(unittest.TestCase):
         self.assertGreaterEqual(
             num_passed, threshold,
             (f"Only passed {num_passed/num_sim * 100}% of initial"
-             " configurations. Need to pass {frac*100}%"))
+             f" configurations. Need to pass {frac*100}%"))
 
     # initialize controller and plant
     def build_pendulum_simulator(self, value_mlp, value_mlp_context, R_diag,
