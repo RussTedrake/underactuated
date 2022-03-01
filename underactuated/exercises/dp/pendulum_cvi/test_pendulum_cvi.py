@@ -91,11 +91,12 @@ class TestPendulumCVI(unittest.TestCase):
     def test_policy(self):
         """Test policy"""
         value_mlp = self.notebook_locals['value_mlp']
+        input_limits = self.notebook_locals['input_limits']
         value_mlp_context = self.notebook_locals['value_mlp_context']
         R_diag = self.notebook_locals['R_diag']
         compute_u_star = self.notebook_locals['compute_u_star']
         simulator = self.build_pendulum_simulator(value_mlp, value_mlp_context,
-                                                  R_diag, compute_u_star)
+                                                  R_diag, compute_u_star,input_limits = input_limits)
         simulator_context = simulator.get_mutable_context()
         simulator.set_target_realtime_rate(0.)
         num_sim = 20
@@ -127,14 +128,14 @@ class TestPendulumCVI(unittest.TestCase):
 
     # initialize controller and plant
     def build_pendulum_simulator(self, value_mlp, value_mlp_context, R_diag,
-                                 compute_u_star):
+                                 compute_u_star, input_limits = None):
         time_step = 0.01
         closed_loop_builder = DiagramBuilder()
         plant_cl, scene_graph_cl = closed_loop_builder.AddSystem(
             PendulumPlant()), closed_loop_builder.AddSystem(SceneGraph())
 
         controller_sys = ContinuousFittedValueIterationPolicyComputeUStar(
-            plant_cl, value_mlp, value_mlp_context, R_diag, compute_u_star)
+            plant_cl, value_mlp, value_mlp_context, R_diag, compute_u_star, input_limits = input_limits)
 
         PendulumGeometry.AddToBuilder(closed_loop_builder,
                                       plant_cl.get_state_output_port(),
@@ -210,9 +211,6 @@ class ContinuousFittedValueIterationPolicyComputeUStar(LeafSystem):
             dstate_dynamics_du[:, :, i] = (self._plant.EvalTimeDerivatives(
                 self._plant_context).CopyToVector() - state_dynamics_x).reshape(
                     -1, 1)
-            if self.input_limits is not None:
-                ui = np.minimum(np.maximum(ui, self.input_limits[0]),
-                                self.input_limits[1])
             u[i] = 0
 
         u_star = self.compute_u_star(self.R_diag, self.dJdX,
