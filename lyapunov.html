@@ -375,9 +375,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       <p>For stable linear systems the existence of a quadratic Lyapunov
       function is actually a necessary (as well as sufficient) condition.
-      Furthermore, a Lyapunov function can always be found by finding the
-      positive-definite solution to the matrix Lyapunov equation
-      \begin{equation}{\bf PA} + {\bf A}^T{\bf P} = - {\bf
+      Furthermore, if $\bA$ is stable, then a Lyapunov function can always be
+      found by finding the positive-definite solution to the matrix Lyapunov
+      equation \begin{equation}{\bf PA} + {\bf A}^T{\bf P} = - {\bf
       Q},\label{eq:algebraic_lyapunov} \end{equation} for any ${\bf Q}={\bf
       Q}^T\succ 0$.</p>
 
@@ -386,10 +386,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       <p>This is a very powerful result - for nonlinear systems it will be
       potentially difficult to find a Lyapunov function, but for linear systems
-      it is straight-forward. In fact, this result is often used to propose
-      candidates for non-linear systems, e.g., by linearizing the equations and
-      solving a local linear Lyapunov function which should be valid in the
-      vicinity of a fixed point.</p>
+      it is straightforward. In fact, this result is often used to propose
+      candidate Lyapunov functions for non-linear systems, e.g., by linearizing
+      the equations and solving a local linear Lyapunov function which should
+      be valid in the vicinity of a fixed point.</p>
 
     </subsection> <!-- lyapunov for linear -->
 
@@ -558,14 +558,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <elib>Ahmadi11a</elib>) and here we are only searching over a fixed-degree
       polynomial.  Second, even if a polynomial Lyapunov function does exist,
       there is a gap between the SOS polynomials and the positive
-      polynomials.</p>
+      polynomials<elib part="&sect;3.1">Blekherman13</elib>.</p>
 
       <p>Despite these caveats, I have found this formulation to be surprisingly
       effective in practice.  Intuitively, I think that this is because there is
       relatively a lot of flexibility in the Lyapunov conditions -- if you can
       find one function which is a Lyapunov function for the system, then there
       are also many "nearby" functions which will satisfy the same
-      constraints.</p>
+      constraints. This is the fundamental benefit of <a href="#HJB">changing the equality in the HJB into an inequality in Lyapunov analysis</a>.</p>
 
     </subsection>
 
@@ -762,9 +762,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         I can find a polynomial "multiplier", $\lambda(\bx)$, such that
         \[p(\bx) + \lambda^T(\bx) g(\bx) \sos \] then this is sufficient to
         demonstrate that $$p(\bx)\ge 0 \quad \forall \bx \in \{ \bx | g(\bx) = 0
-        \}.$$  Here the intuition is that $\lambda(x)$ can add arbitrary
+        \}.$$  Here the intuition is that $\lambda(\bx)$ can add arbitrary
         positive terms to help me be SOS, but those terms contribute nothing
-        precisely when $g(x)=0$.</p>
+        precisely when $g(\bx)=0$.</p>
 
       </subsubsection>
 
@@ -843,22 +843,42 @@ V = RegionOfAttraction(sys, context)
 
           <p>Remember that although we have tried to make it convenient to call
           these functions, they are not a black box.  I highly recommend
-          opening up the <code>RegionOfAttraction</code> method and
-          understanding how it works.  There are lots of different options /
-          formulations, and numerous numerical recipes to improve the numerics
-          of the optimization problem.</p>
+          opening up the code implementing the <code>RegionOfAttraction</code>
+          method and understanding how it works (even if you don't love C++,
+          the <code>MathematicalProgram</code> modeling language in Drake makes
+          these formulations pretty readable). There are lots of different
+          options / formulations, and numerous numerical recipes to improve the
+          numerics of the optimization problem.</p>
         </example>
 
-        <!--
+        <p>In order to develop our intuition for these tools, it is helpful to
+        understand how "tight" the inner approximation can be for each choice
+        of the fixed degree of the Lyapunov function / Lagrange multipliers.
+        I've included a few of my favorite examples of nonlinear systems which
+        use some clever construction to have <i>known</i> regions of
+        attraction.</p>
+
         <example><h1>Region of attraction for the time-reversed Van der Pol oscillator</h1>
 
-          <pre><code class="matlab" testfile="testVanDerPol">
-            cd(fullfile(getDrakePath,'examples'));
-            VanDerPol.run();
-          </code></pre>
+          <p>We will study the Van der Pol oscillator in more detail when we
+          study limit cycles. For now, it suffices to know that the dynamics
+          are polynomial, and that the stable limit cycle of the system when
+          simulated forward in time produces a known (via numerical
+          integration) boundary for the region of attraction of the fixed point
+          at the origin when we simulate the system <i>backwards</i> in
+          time.</p>
+
+          <todo>Figure here</todo>
+
+          <script>document.write(notebook_link('lyapunov'))</script>
+
+          <p>I've provided an example here for solving this problem with the
+          <code>RegionOfAttraction</code> in Drake, but we will also work you
+          through writing the sums-of-squares problem yourself in the <a
+          href="van_der_pol_roa">exercises</a>.</p>
 
         </example>
-  -->
+
       </subsubsection>
 
       <subsubsection><h1>The equality-constrained formulation</h1>
@@ -957,6 +977,64 @@ V = RegionOfAttraction(sys, context)
 
         </h1></example>
 
+        <example>
+          <h1>Estimated regions of attraction need not be convex regions (in
+          state space)</h1>
+
+          <p>Although we are using convex optimization to find regions of
+          attraction, this does not imply that the regions we are certifying
+          need to be convex.  To demonstrate that, let's make a system with a
+          known, non-convex region of attraction.  We'll do this by taking some
+          interesting potential function $U(x) \in SOS$ and setting the
+          dynamics to be $\dot{x} = (U(x)-1) \frac{\partial U}{\partial x}^T$,
+          which has $U(x) <= 1$ as the region of attraction.</p>
+
+          <p>Slightly more general is to write $\dot{x} = (U(x)-1) {\bf
+          R}(\theta) \frac{\partial U}{\partial x}^T$, where ${\bf R}(\theta) =
+          \begin{bmatrix} \cos\theta & \sin\theta \\ -\sin\theta &
+          \cos\theta\end{bmatrix}$ is the 2D rotation matrix, and $\theta<\pi$
+          is a constant parameter (not a decision variable nor indeterminate),
+          which still has the same region of attraction.</p>
+
+          <p>Searching for Lyapunov functions of only degree 2 (quadratics)
+          will, of course, limit our certified regions to convex regions.  But
+          if we increase the degree of the Lyapunov function to degree 4, then
+          we can tighten our inner approximation, and indeed certify non-convex
+          regions. While we can use the Lyapunov method for linear systems to
+          initialize quadratic Lyapunov functions, the ability to search for
+          the parameters of the Lyapunov functions really shines when the
+          Lyapunov candidates are higher degree (such as the quartic we use
+          here).</p>
+
+          <todo>Figures here</todo>
+        
+          <script>document.write(notebook_link('lyapunov'))</script>
+
+        </example>
+
+        <example><h1>Regions of attraction and LQR</h1>
+        
+          <p>So far we have only considered verifying regions of attraction for
+          systems of the form $\dot{\bx} = f(\bx)$ (e.g. with no control
+          input); the implication has been that one should design a feedback
+          controller first and then analyze the stability of the closed-loop
+          dynamics. But some control design techniques produce artifacts that
+          can be useful for this verification. Often jointly designing a
+          controller and certificate can be more tractable than trying to
+          certify an arbitrary controller.</p>
+
+          <p>One nice example of this that we've already seen is the linear
+          quadratic regulator.  Even when it is applied to (the linearization
+          of) nonlinear systems, it still produces a quadratic cost-to-go
+          function $\bar\bx^T {\bf S} \bar\bx$ which can be immediately used as
+          a candidate Lyapunov function for the nonlinear system.</p>
+
+          <p>To demonstrate this...</p>
+
+          <todo>Numerical example of LQR for a polynomial systems</todo>
+
+        </example>
+        
       </subsubsection>
 
       <subsubsection><h1>Convex outer approximations of the ROA</h1>
@@ -1325,6 +1403,13 @@ V = RegionOfAttraction(sys, context)
     actually looks like the linear spring, although writing the feedback as $u
     = -\bK \sin\theta$ is a viable alternative.</p>
 
+    <example><h1>Regions of attraction for LQR of trigonometric systems</h1>
+  
+      <todo>example of design + certification of LQR using $u = -\bK
+      \sin\theta$</todo>
+
+    </example>
+  
     <p>In practice, you can also Taylor approximate any smooth nonlinear
     function using polynomials.  This can be an effective strategy in
     practice, because you can limit the degrees of the polynomial, and because
@@ -1475,7 +1560,7 @@ V = RegionOfAttraction(sys, context)
 
       <p>In the outer-approximation, we produce a barrier certificate to find
       the set of states where the controller cannot go (for any $\bu$).  Our
-      barrier certificate now has the form $$\forall x, \forall u, \quad
+      barrier certificate now has the form $$\forall \bx, \forall \bu, \quad
       \dot{\mathcal{B}}(\bx, \bu) \le 0.$$  Certainly, $\mathcal{B}(\bx) \ge 0$
       is now an outer-approximation of the true "backward-reachable set" (BRS)
       of the fixed point <elib>Henrion14+Korda13</elib>.  Again
@@ -1816,6 +1901,12 @@ PhD thesis, California Institute of Technology, May 18, <span class="year">2000<
 <span class="author">Amir Ali Ahmadi and Miroslav Krstic and Pablo A. Parrilo</span>, 
 <span class="title">"A Globally Asymptotically Stable Polynomial Vector Field with no Polynomial Lyapunov Function"</span>, 
 <span class="publisher">Proceedings of the Conference on Decision and Control</span> , <span class="year">2011</span>.
+
+</li><br>
+<li id=Blekherman13>
+<span class="author">Grigoriy Blekherman and Pablo A Parrilo and Rekha R Thomas</span>, 
+<span class="title">"Semidefinite optimization and convex algebraic geometry"</span>, {SIAM}
+, vol. 13, <span class="year">2013</span>.
 
 </li><br>
 <li id=Shen20>

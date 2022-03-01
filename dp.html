@@ -871,7 +871,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     completion to obtain good estimates despite updating only a small fraction
     of the states.</p>
 
-    <subsection id="discounting"><h1>Discounted cost</h1>
+    <subsection id="discounting">
+      <h1>Discounted and average cost formulations</h1>
 
       <p>Throughout this chapter, we have focused primarily on minimizing an
       infinite horizon integral of costs.  Whenever you write an infinite sum
@@ -903,10 +904,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       stable than it actually is. It is possible to find an optimal controller
       for the discounted cost that results in an unstable controller.</p>
 
-      <!-- Note: Sasha thinks the exponential discounting should be in the
-      opposite direction (costs are weighed zero initially and grow
-      exponentially), because that would lead to conservative estimates of the
-      cost instead of optimistic ones. -->
+      <p>A more robust alternative is to consider an average-cost
+      formulations... (details coming soon!)       <!-- : $$J^\pi(\bx) =
+      \liminf_{N \rightarrow \infty} \frac{1}{N} \sum_{n=0}^N
+      \ell(\bx[n],\pi(\bx[n])) \qquad \text{or} \qquad J^\pi(\bx) = \liminf_{T
+      \rightarrow \infty} \int_0^T \ell(\bx(t), \pi(\bx(t)) dt.$$ The
+      corresponding Bellman equations are: $$J^*(\bx) + c^* = \min_u \left[
+      \ell(\bx, \bu) + J^*(f(\bx,\bu))\right],$$ and $$c^* = \min_\bu \left[
+      \ell(\bx,\bu) + \pd{J^*}{\bx} f(\bx,\bu)\right],$$ respectively, where
+      $c^*$ is a constant.-->
+      </p>
     </subsection>
 
     <subsection id="mdp"><h1>Stochastic control for finite MDPs</h1>
