@@ -65,8 +65,10 @@ mysql-connector-python==8.0.23
     # via -r htmlbook/mac-requirements.in
 nbclient==0.5.3
     # via nbconvert
-nbconvert==6.0.7
-    # via -r htmlbook/mac-requirements.in
+nbconvert==6.4.2
+    # via
+    #   -r htmlbook/mac-requirements.in
+    #   -r mac-requirements.in
 nbformat==5.1.3
     # via
     #   nbclient
@@ -83,12 +85,14 @@ packaging==20.9
     #   bleach
     #   matplotlib
     #   setuptools-scm
-pandas==1.2.4
+pandas==1.4.1
     # via -r mac-requirements.in
 pandocfilters==1.4.3
     # via nbconvert
-pillow==8.1.0
-    # via matplotlib
+pillow==9.0.1
+    # via
+    #   -r htmlbook/mac-requirements.in
+    #   matplotlib
 protobuf==3.14.0
     # via mysql-connector-python
 pycodestyle==2.6.0
@@ -117,7 +121,7 @@ pytz==2021.1
     # via pandas
 pyyaml==5.4.1
     # via -r mac-requirements.in
-pyzmq==22.0.3
+pyzmq==22.3.0
     # via jupyter-client
 requests==2.25.1
     # via -r htmlbook/mac-requirements.in
@@ -140,8 +144,6 @@ timeout-decorator==0.5.0
     # via -r mac-requirements.in
 tomli==1.2.2
     # via setuptools-scm
-torch @ https://download.pytorch.org/whl/nightly/cpu/torch-1.11.0.dev20220110-cp39-none-macosx_11_0_arm64.whl ; platform_machine == "arm64"
-    # via -r mac-requirements.in
 tornado==6.1
     # via jupyter-client
 traitlets==5.1.1
@@ -152,8 +154,6 @@ traitlets==5.1.1
     #   nbclient
     #   nbconvert
     #   nbformat
-typing-extensions==3.7.4.3
-    # via torch
 urllib3==1.26.3
     # via requests
 webencodings==0.5.1

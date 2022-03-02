@@ -78,7 +78,7 @@ class TestPendulumCVI(unittest.TestCase):
         u_star_test = compute_u_star(R_diag, dJdX, dstate_dynamics_du)
         self.assertTrue(u_star_true.shape == u_star_test.shape,
                         (f"output of compute_u_star is incorrect. Expected "
-                         "{u_star_true.shape} got {u_star_test.shape}"))
+                         f"{u_star_true.shape} got {u_star_test.shape}"))
 
         for i in range(u_star_test.shape[0]):
             for j in range(u_star_test.shape[1]):
@@ -95,8 +95,11 @@ class TestPendulumCVI(unittest.TestCase):
         value_mlp_context = self.notebook_locals['value_mlp_context']
         R_diag = self.notebook_locals['R_diag']
         compute_u_star = self.notebook_locals['compute_u_star']
-        simulator = self.build_pendulum_simulator(value_mlp, value_mlp_context,
-                                                  R_diag, compute_u_star,input_limits = input_limits)
+        simulator = self.build_pendulum_simulator(value_mlp,
+                                                  value_mlp_context,
+                                                  R_diag,
+                                                  compute_u_star,
+                                                  input_limits=input_limits)
         simulator_context = simulator.get_mutable_context()
         simulator.set_target_realtime_rate(0.)
         num_sim = 20
@@ -124,18 +127,27 @@ class TestPendulumCVI(unittest.TestCase):
         self.assertGreaterEqual(
             num_passed, threshold,
             (f"Only passed {num_passed/num_sim * 100}% of initial"
-             " configurations. Need to pass {frac*100}%"))
+             f" configurations. Need to pass {frac*100}%"))
 
     # initialize controller and plant
-    def build_pendulum_simulator(self, value_mlp, value_mlp_context, R_diag,
-                                 compute_u_star, input_limits = None):
+    def build_pendulum_simulator(self,
+                                 value_mlp,
+                                 value_mlp_context,
+                                 R_diag,
+                                 compute_u_star,
+                                 input_limits=None):
         time_step = 0.01
         closed_loop_builder = DiagramBuilder()
         plant_cl, scene_graph_cl = closed_loop_builder.AddSystem(
             PendulumPlant()), closed_loop_builder.AddSystem(SceneGraph())
 
         controller_sys = ContinuousFittedValueIterationPolicyComputeUStar(
-            plant_cl, value_mlp, value_mlp_context, R_diag, compute_u_star, input_limits = input_limits)
+            plant_cl,
+            value_mlp,
+            value_mlp_context,
+            R_diag,
+            compute_u_star,
+            input_limits=input_limits)
 
         PendulumGeometry.AddToBuilder(closed_loop_builder,
                                       plant_cl.get_state_output_port(),

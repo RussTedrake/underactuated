@@ -777,8 +777,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
           have the closed-form solution.  (Can you understand why?)</p>
           -->
           
+        </example>
+        
+        <example><h1>Continuous Neural Fitted Value Iteration</h1>
+    
+          <script>document.write(notebook_link('dp'))</script>
+          
         </example>        
-
+        
       </subsubsection>
 
       <subsubsection><h1>Continuous-time systems</h1>
@@ -855,7 +861,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
   <section><h1>Extensions</h1>
 
-    <todo> discounting.  finite-horizon / time-varying dynamics or cost.</todo>
+    <todo> finite-horizon / time-varying dynamics or cost.</todo>
 
     <p>There are many many nice extensions to the basic formulations that we've
     presented so far.  I'll try to list a few of the most important ones here.
@@ -864,6 +870,51 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     structure on the (discrete-state) value function using ideas from matrix
     completion to obtain good estimates despite updating only a small fraction
     of the states.</p>
+
+    <subsection id="discounting">
+      <h1>Discounted and average cost formulations</h1>
+
+      <p>Throughout this chapter, we have focused primarily on minimizing an
+      infinite horizon integral of costs.  Whenever you write an infinite sum
+      (or integral), one should immediately question whether that sum converges
+      to a finite value. For many control problems, it does -- for instance, if
+      we set the cost to be zero at the goal and the controller can drive the
+      system to the goal at a rate that is faster cost is accrued. However,
+      once we enter the realm of approximate optimal control, we can run into
+      problems. For instance, if we can a discrete state and action
+      approximation of the dynamics, it may not be possible for the discretized
+      system to arrive <i>exactly</i> at the zero-cost goal.</p>
+
+      <p>A common way to protect oneself from this is to add an exponential
+      discount factor to the integral cost. This is a natural choice since it
+      preserves the recursive structure of the Bellman equation. In discrete
+      time, it takes the form $$\min_{\bu[\cdot]} \sum_{n=0}^\infty \gamma^n
+      \ell(\bx[n], \bu[n]),$$ which leads to the Bellman equation $$J^*(\bx) =
+      \min_\bu \left[ \ell(\bx, \bx) + \gamma J^*(f(\bx,\bu) \right].$$  In
+      continuous time we have<elib>Doya00</elib> $$\min_\bu(\cdot)
+      \int_0^\infty e^{-\frac{t}{\tau}} \ell(\bx(t), \bu(t)) dt,$$ which leads
+      to the corresponding HJB: $$\frac{1}{\tau} J^*(\bx) = \min_\bu \left[
+      \ell(\bx, \bu) + \pd{J^*}{\bx} f(\bx,\bu)\right].$$
+      </p>
+
+      <p>A word of warning: this discount factor <i>does</i> change the optimal
+      policy; and it not without its pitfalls. We'll work out a specific case
+      of the discounted cost for the LQR problem, and see that the discounted
+      controller is exactly a controller which assumes that the plant is more
+      stable than it actually is. It is possible to find an optimal controller
+      for the discounted cost that results in an unstable controller.</p>
+
+      <p>A more robust alternative is to consider an average-cost
+      formulations... (details coming soon!)       <!-- : $$J^\pi(\bx) =
+      \liminf_{N \rightarrow \infty} \frac{1}{N} \sum_{n=0}^N
+      \ell(\bx[n],\pi(\bx[n])) \qquad \text{or} \qquad J^\pi(\bx) = \liminf_{T
+      \rightarrow \infty} \int_0^T \ell(\bx(t), \pi(\bx(t)) dt.$$ The
+      corresponding Bellman equations are: $$J^*(\bx) + c^* = \min_u \left[
+      \ell(\bx, \bu) + J^*(f(\bx,\bu))\right],$$ and $$c^* = \min_\bu \left[
+      \ell(\bx,\bu) + \pd{J^*}{\bx} f(\bx,\bu)\right],$$ respectively, where
+      $c^*$ is a constant.-->
+      </p>
+    </subsection>
 
     <subsection id="mdp"><h1>Stochastic control for finite MDPs</h1>
 
@@ -1162,6 +1213,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <span class="author">Yuzhe Yang and Guo Zhang and Zhi Xu and Dina Katabi</span>, 
 <span class="title">"Harnessing Structures for Value-Based Planning and Reinforcement Learning"</span>, 
 <span class="publisher">International Conference on Learning Representations</span> , <span class="year">2020</span>.
+
+</li><br>
+<li id=Doya00>
+<span class="author">Doya and K.</span>, 
+<span class="title">"Reinforcement Learning in Continuous Time and Space"</span>, 
+<span class="publisher">Neural Computation</span>, vol. 12, no. 1, pp. 219-245, January, <span class="year">2000</span>.
 
 </li><br>
 <li id=Farias02>
