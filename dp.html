@@ -151,8 +151,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     and algorithms, the popularity of numerical optimal control has grown at an
     incredible pace over the last few years.</p>
 
-    <example id="minimum_time_double_integrator"><h1>The minimum time problem for the double
-    integrator</h1>
+    <example id="minimum_time_double_integrator"><h1>The minimum time problem
+    for the double integrator</h1>
 
       <p>For more intuition, let's do an informal derivation of the solution to
       the minimum time problem for the double integrator with input constraints:
@@ -181,9 +181,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       that $u=-1$ . Integrating the equations, we have \begin{gather*}
       \ddot{q}(t) = u = -1 \\\dot{q}(t) = \dot{q}(0) - t \\ q(t) = q(0) +
       \dot{q}(0) t - \frac{1}{2} t^2.  \end{gather*} Substituting $t =
-      \dot{q}(0) - \dot{q}$ into the solution reveals that the
-      system orbits are parabolic arcs: \[ q = -\frac{1}{2} \dot{q}^2 + c_{-},
-      \] with $c_{-} = q(0) + \frac{1}{2}\dot{q}^2(0)$.</p>
+      \dot{q}(0) - \dot{q}$ into the solution reveals that the system orbits
+      are parabolic arcs: \[ q = -\frac{1}{2} \dot{q}^2 + c_{-}, \] with $c_{-}
+      = q(0) + \frac{1}{2}\dot{q}^2(0)$.</p>
 
       <figure>
         <img width="80%" src="figures/double_integrator_orbits.svg"/>
@@ -226,7 +226,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       <figure>
       <img width="80%" src="figures/double_integrator_mintime_orbits.svg"/>
-      <figcaption>Solution trajectories of system using the optimal policy</figcaption>
+      <figcaption>Solution trajectories of system using the optimal
+      policy</figcaption>
       </figure>
 
       <p>And for completeness, we can compute the optimal time to the goal by
@@ -267,21 +268,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       can come from formulating objective functions using <em>additive
       cost</em>, because they often yield recursive solutions.  In the additive
       cost formulation, the long-term "score" for a trajectory can be written
-      as $$\int_0^T \ell(x(t),u(t)) dt,$$ where $\ell()$ is the instantaneous cost
-      (also referred to as the "running cost"), and $T$ can be either a finite
-      real number or $\infty$.  We will call a problem specification with a
-      finite $T$ a "finite-horizon" problem, and $T=\infty$ an
+      as $$\int_0^T \ell(x(t),u(t)) dt,$$ where $\ell()$ is the instantaneous
+      cost (also referred to as the "running cost"), and $T$ can be either a
+      finite real number or $\infty$.  We will call a problem specification
+      with a finite $T$ a "finite-horizon" problem, and $T=\infty$ an
       "infinite-horizon" problem.  Problems and solutions for infinite-horizon
       problems tend to be more elegant, but care is required to make sure that
       the integral converges for the optimal controller (typically by having an
       achievable goal that allows the robot to accrue zero-cost).</p>
 
-      <p> The quadratic cost function suggested in the double integrator example
-      above is clearly written as an additive cost.  At first glance, our
-      minimum-time problem formulation doesn't appear to be of this form, but we
-      actually can write it as an additive cost problem using an infinite
-      horizon and the instantaneous cost  $$\ell(x,u) = \begin{cases} 0 & \text{if
-      } x=0, \\ 1 & \text{otherwise.} \end{cases}$$</p>
+      <p> The quadratic cost function suggested in the double integrator
+      example above is clearly written as an additive cost.  At first glance,
+      our minimum-time problem formulation doesn't appear to be of this form,
+      but we actually can write it as an additive cost problem using an
+      infinite horizon and the instantaneous cost  $$\ell(x,u) = \begin{cases}
+      0 & \text{if } x=0, \\ 1 & \text{otherwise.} \end{cases}$$</p>
 
       <p> We will examine a number of approaches to solving optimal control
       problems throughout the next few chapters.  For the remainder of this
@@ -314,28 +315,29 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     Furthermore we will denote the transition "dynamics" using \[ s[n+1] =
     f(s[n],a[n]). \] For instance, in the graph above, $f(s_1,a_1) = s_2$.</p>
 
-    <p>There are many algorithms for finding (or approximating) the optimal path
-    from a start to a goal on directed graphs.  In dynamic programming, the key
-    insight is that we can find the shortest path from every node by solving
-    recursively for the optimal <em>cost-to-go</em> (the cost that will be
-    accumulated when running the optimal controller) from every node to the
+    <p>There are many algorithms for finding (or approximating) the optimal
+    path from a start to a goal on directed graphs.  In dynamic programming,
+    the key insight is that we can find the shortest path from every node by
+    solving recursively for the optimal <em>cost-to-go</em> (the cost that will
+    be accumulated when running the optimal controller) from every node to the
     goal. One such algorithm starts by initializing an estimate $\hat{J}^*=0$
     for all $s_i$, then proceeds with an iterative algorithm which sets
-    \begin{equation} \hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[ \ell(s_i,a)
-    + \hat{J}^*\left({f(s_i,a)}\right) \right]. \label{eq:value_update}
-    \end{equation} The algorithm is simpler if we ensure that the update $f(s,a)$ is defined for every state-action pair; we
-    can add zero-cost self transitions at the goal node for every action. In software, $\hat{J}^*$ can be represented as a
-    vector with
-    dimension equal to the number of discrete states.  This algorithm,
-    appropriately known as <em>value iteration</em>, is guaranteed to converge
-    to the optimal cost-to-go up to a constant factor, $\hat{J}^* \rightarrow
-    J^* + c$ <elib>Bertsekas96</elib>, and in practice does so rapidly.
-    Typically the update is done in <em>batch</em> -- e.g. the estimate is
-    updated for all $i$ at once -- but the <em>asynchronous</em> version where
-    states are updated one at a time is also known to converge, so long as every
-    state is eventually updated infinitely often.  Assuming the graph has a goal
-    state with a zero-cost self-transition, then this cost-to-go function
-    represents the weighted shortest distance to the goal. </p>
+    \begin{equation} \hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[
+    \ell(s_i,a) + \hat{J}^*\left({f(s_i,a)}\right) \right].
+    \label{eq:value_update} \end{equation} The algorithm is simpler if we
+    ensure that the update $f(s,a)$ is defined for every state-action pair; we
+    can add zero-cost self transitions at the goal node for every action. In
+    software, $\hat{J}^*$ can be represented as a vector with dimension equal
+    to the number of discrete states.  This algorithm, appropriately known as
+    <em>value iteration</em>, is guaranteed to converge to the optimal
+    cost-to-go up to a constant factor, $\hat{J}^* \rightarrow J^* + c$
+    <elib>Bertsekas96</elib>, and in practice does so rapidly. Typically the
+    update is done in <em>batch</em> -- e.g. the estimate is updated for all
+    $i$ at once -- but the <em>asynchronous</em> version where states are
+    updated one at a time is also known to converge, so long as every state is
+    eventually updated infinitely often.  Assuming the graph has a goal state
+    with a zero-cost self-transition, then this cost-to-go function represents
+    the weighted shortest distance to the goal. </p>
 
     <p> Value iteration is an amazingly simple algorithm, but it accomplishes
     something quite amazing: it efficiently computes the long-term cost of an
@@ -354,8 +356,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <elib>Sutton98</elib></p>
 
       <figure>
-        <iframe style="border:0;height:460px;width:550px;" src="data/grid_world.html?height=350px" pdf="no"></iframe>
-        <p pdf="only"><a href="data/grid_world.html">Click here for the animation.</a></p>
+        <iframe style="border:0;height:460px;width:550px;"
+        src="data/grid_world.html?height=350px" pdf="no"></iframe>
+        <p pdf="only"><a href="data/grid_world.html">Click here for the
+        animation.</a></p>
         <figcaption>The one-step cost for the grid-world minimum-time problem.
         The goal state has a cost of zero, the obstacles have a cost of 10, and
         every other state has a cost of 1.</figcaption>
@@ -490,7 +494,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         </p>
           
         <p><b>Proof.</b>
-          First, observe that, for all piecewise continuous $(x,u)$ satisfying (\ref{e1}),
+          First, observe that, for all piecewise continuous $(x,u)$ satisfying
+          (\ref{e1}),
           <ol type="I">
           <li> due to (\ref{e0}), 
           \begin{equation}\label{e3}     
@@ -498,34 +503,36 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
           \end{equation}
           </li>
           <li> whenever $J(x,u)<\infty$, there exists a sequece  
-          of positive numbers $T_k$, $k=1,2,\dots$, $T_k\to+\infty$,
-          such that $g(x(T_k),u(T_k))\to0$, which, according to assumption (a), implies 
+          of positive numbers $T_k$, $k=1,2,\dots$, $T_k\to+\infty$, such that
+          $g(x(T_k),u(T_k))\to0$, which, according to assumption (a), implies
           $x(T_k)\to x^*$ as $k\to\infty$.</li>
           </ol>
-          In particular, for a piecewise continuous 
-          solution $(x,u)$ of (\ref{e1}), satisfying, in addition, equation (\ref{e2}), condition
-          (I) means
-          \[ \int_0^Tg(x(t),u(t))dt=V(x_0)-V(x(T))\le V(x_0).\]
-          Since the upper bound $V(x_0)$ does not depend on $T$, and $g(x(t),u(t))\ge0$ is
-          non-negative, we conclude that 
-          \[ \int_0^\infty g(x(t),u(t))dt<\infty.\]
-          Therefore observation (**) applies, and, for the corresponding $T_k$, 
-          \begin{align*} J(x,u)&=\int_0^\infty g(x(t),u(t))dt=\lim_{k\to\infty}\int_0^{T_k}g(x(t),u(t))dt \\&= 
+          In particular, for a piecewise continuous solution $(x,u)$ of
+          (\ref{e1}), satisfying, in addition, equation (\ref{e2}), condition
+          (I) means \[ \int_0^Tg(x(t),u(t))dt=V(x_0)-V(x(T))\le V(x_0).\] Since
+          the upper bound $V(x_0)$ does not depend on $T$, and
+          $g(x(t),u(t))\ge0$ is non-negative, we conclude that \[ \int_0^\infty
+          g(x(t),u(t))dt<\infty.\] Therefore observation (**) applies, and, for
+          the corresponding $T_k$, \begin{align*} J(x,u)&=\int_0^\infty
+          g(x(t),u(t))dt=\lim_{k\to\infty}\int_0^{T_k}g(x(t),u(t))dt \\&=
           \lim_{k\to\infty}V(x_0)-V(x(T_k))=V(x_0)-V(x^*).\end{align*}
-          Moreover, since $g$ is non-negative, the inequality $V(x_0)\ge V(x^*)$ 
-          must hold for
-          every $x_0\in\Omega$.</p> 
+          Moreover, since $g$ is non-negative, the inequality $V(x_0)\ge
+          V(x^*)$ must hold for every $x_0\in\Omega$.</p> 
           
-          <p>To finish the proof, for an arbitrary piecewise continuous solution of (\ref{e1}),
-          equation (\ref{e3}), together with non-negativity of $g_V$, implies
-          \[  J(x,u)=\int_0^Tg(x(t),u(t))dt\ge V(x_0)-V(x(T)).\]
-          When $J(x,u)<\infty$, applying this to $T=T_k$, 
-          where $T_k$ are described in observation (II), and taking the limit as $k\to\infty$
-          (and $x(T_k)\to x^*$) yields $J(x,u)\ge V(x_0)-V(x^*)$. $\Box$
+          <p>To finish the proof, for an arbitrary piecewise continuous
+          solution of (\ref{e1}), equation (\ref{e3}), together with
+          non-negativity of $g_V$, implies \[  J(x,u)=\int_0^Tg(x(t),u(t))dt\ge
+          V(x_0)-V(x(T)).\] When $J(x,u)<\infty$, applying this to $T=T_k$,
+          where $T_k$ are described in observation (II), and taking the limit
+          as $k\to\infty$ (and $x(T_k)\to x^*$) yields $J(x,u)\ge
+          V(x_0)-V(x^*)$. $\Box$
           </details></p>
       </theorem>
 
-      <p>It is possible to prove sufficiency under different assumptions, too.  The particular assumptions here were chosen to ensure that $J(\bx(0)) < \infty$ implies that $\bx(t) \rightarrow \bx^*$.  As Sasha says, "without something like this, all sorts of counter-examples emerge."</p>
+      <p>It is possible to prove sufficiency under different assumptions, too.
+      The particular assumptions here were chosen to ensure that $J(\bx(0)) <
+      \infty$ implies that $\bx(t) \rightarrow \bx^*$.  As Sasha says, "without
+      something like this, all sorts of counter-examples emerge."</p>
 
       <p>As a tool for verifying optimality, the HJB equations are actually
       surprisingly easy to work with: we can verify optimality for an
@@ -538,24 +545,25 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <p>Consider the problem of regulating the double integrator (this time
         without input limits) to the origin   using a quadratic cost: $$
-        \ell(\bx,\bu) = q^2 + \dot{q}^2 + u^2. $$  I claim   (without derivation)
-        that the optimal controller for this objective is $$\pi(\bx) = -q -
-        \sqrt{3}\dot{q}.$$   To convince you that this is indeed optimal, I
-        have produced the following cost-to-go function: $$J(\bx) = \sqrt{3}
-        q^2 + 2 q \dot{q} + \sqrt{3} \dot{q}^2.$$</p>
+        \ell(\bx,\bu) = q^2 + \dot{q}^2 + u^2. $$  I claim   (without
+        derivation) that the optimal controller for this objective is
+        $$\pi(\bx) = -q - \sqrt{3}\dot{q}.$$   To convince you that this is
+        indeed optimal, I have produced the following cost-to-go function:
+        $$J(\bx) = \sqrt{3} q^2 + 2 q \dot{q} + \sqrt{3} \dot{q}^2.$$</p>
 
         <p>Taking \begin{gather*} \pd{J}{q} = 2\sqrt{3} q + 2\dot{q}, \qquad
         \pd{J}{\dot{q}} = 2q + 2\sqrt{3}\dot{q}, \end{gather*}   we can write
-        \begin{align*} \ell(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) &= q^2 + \dot{q}^2 +
-        u^2 + (2\sqrt{3} q + 2\dot{q}) \dot{q} + (2q + 2\sqrt{3}\dot{q}) u
+        \begin{align*} \ell(\bx,\bu) + \pd{J}{\bx}f(\bx,\bu) &= q^2 + \dot{q}^2
+        + u^2 + (2\sqrt{3} q + 2\dot{q}) \dot{q} + (2q + 2\sqrt{3}\dot{q}) u
         \end{align*}   This is a convex quadratic function in $u$, so we can
         find the minimum with respect to $u$ by finding where the gradient with
         respect to $u$ evaluates to zero.   \[ \pd{}{u} \left[ \ell(\bx,\bu) +
-        \pd{J}{\bx} f(\bx,\bu) \right] = 2u + 2q + 2\sqrt{3}\dot{q}. \]  Setting
-        this equal to $0$ and   solving for $u$ yields: $$u^* = -q - \sqrt{3}
-        \dot{q},$$ thereby confirming that our policy $\pi$ is in fact the
-        minimizer.  Substituting $u^*$ back into the HJB reveals that the right
-        side does in fact simplify to zero.  I hope you are convinced!</p>
+        \pd{J}{\bx} f(\bx,\bu) \right] = 2u + 2q + 2\sqrt{3}\dot{q}. \]
+        Setting this equal to $0$ and   solving for $u$ yields: $$u^* = -q -
+        \sqrt{3} \dot{q},$$ thereby confirming that our policy $\pi$ is in fact
+        the minimizer.  Substituting $u^*$ back into the HJB reveals that the
+        right side does in fact simplify to zero.  I hope you are
+        convinced!</p>
 
       </example>
 
@@ -564,11 +572,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       satisfied wherever that gradient is well-defined.  This is certainly
       mounting evidence in support of our bang-bang policy being optimal, but
       since $\pd{J}{\bx}$ is not defined everywhere, it does not actually
-      satisfy the requirements of the sufficiency theorem as stated above.  In some sense, the assumption in the sufficiency theorem that $\pd{J}{\bx}$ is defined everywhere makes it very weak.</p>
+      satisfy the requirements of the sufficiency theorem as stated above.  In
+      some sense, the assumption in the sufficiency theorem that $\pd{J}{\bx}$
+      is defined everywhere makes it very weak.</p>
 
     </subsection> <!-- end HJB -->
 
-    <subsection id="hjb_minimizing_control"><h1>Solving for the minimizing control</h1>
+    <subsection id="hjb_minimizing_control"><h1>Solving for the minimizing
+    control</h1>
 
       <p>We still face a few barriers to actually using the HJB in an algorithm.
       The first barrier is the minimization over $u$.  When the action set was
@@ -588,21 +599,38 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <p>Recall that I've already tried to convince you that a majority of the
       systems of interest   are <em>control affine</em>, e.g. I can write \[
       f(\bx,\bu) = f_1(\bx) + f_2(\bx)\bu. \]   We can make another dramatic
-      simplification by restricting ourselves to instantaneous cost functions of
-      the form \[ \ell(\bx,\bu) = \ell_1(\bx) + \bu^T {\bf R} \bu, \qquad {\bf R}={\bf
-      R}^T \succ 0. \] In my view, this is not very restrictive - many of the
-      cost functions that I find myself choosing to write down can be expressed
-      in this form.  Given these assumptions, we can write the HJB as \[ 0 =
-      \min_{\bu} \left[ \ell_1(\bx) + \bu^T {\bf R} \bu + \pd{J}{\bx} \left[
-      f_1(\bx) + f_2(\bx)\bu \right]\right]. \]  Since this is a positive
-      quadratic function in $\bu$, if the system does not have any constraints
-      on $\bu$, then we can solve in closed-form for the minimizing $\bu$ by
-      taking the gradient of the right-hand side: \[ \pd{}{\bu} = 2\bu^T {\bf R}
-      + \pd{J}{\bx} f_2(\bx) = 0, \] and setting it equal to zero to obtain \[
-      \bu^* = -\frac{1}{2}{\bf R}^{-1}f_2^T(\bx) \pd{J}{\bx}^T.\] If there are
-      linear constraints on the input, such as torque limits, then more
-      generally this could be solved (at any particular $\bx$) as a quadratic
-      program.</p>
+      simplification by restricting ourselves to instantaneous cost functions
+      of the form \[ \ell(\bx,\bu) = \ell_1(\bx) + \bu^T {\bf R} \bu, \qquad
+      {\bf R}={\bf R}^T \succ 0. \] In my view, this is not very restrictive -
+      many of the cost functions that I find myself choosing to write down can
+      be expressed in this form.  Given these assumptions, we can write the HJB
+      as \[ 0 = \min_{\bu} \left[ \ell_1(\bx) + \bu^T {\bf R} \bu + \pd{J}{\bx}
+      \left[ f_1(\bx) + f_2(\bx)\bu \right]\right]. \]  Since this is a
+      positive quadratic function in $\bu$, if the system does not have any
+      constraints on $\bu$, then we can solve in closed-form for the minimizing
+      $\bu$ by taking the gradient of the right-hand side: \[ \pd{}{\bu} =
+      2\bu^T {\bf R} + \pd{J}{\bx} f_2(\bx) = 0, \] and setting it equal to
+      zero to obtain \[ \bu^* = -\frac{1}{2}{\bf R}^{-1}f_2^T(\bx)
+      \pd{J}{\bx}^T.\] If there are linear constraints on the input, such as
+      torque limits, then more generally this could be solved (at any
+      particular $\bx$) as a quadratic program.</p>
+
+      <p>Exploiting the ability to solve for the optimal action in closed form
+      is also nice for generating benchmark problems for numerical optimal
+      control, as it can be used for "converse optimal control"
+      <elib>Doyle96</elib>.</p>
+      
+      <example id="optimal_cubic_polynomial">
+        <h1>Converse optimal control for a cubic polynomial</h1>
+        
+        <p>Consider a one-dimensional system of the form $\dot{x} = f_1(x) +
+        xu,$ and the running cost function $\ell(x,u) = x^2 + u^2.$ The optimal
+        policy is $u^* = -\frac{1}{2}x\pd{J^*}{x},$ leading to the HJB $$0 =
+        x^2 - \frac{1}{4}x^2\left[\pd{J^*}{x}\right]^2 + \pd{J^*}{x} f_1(x).$$
+        Choosing $J^*(x) = x^2$, we find that this is the cost-to-go when
+        $f_1(x) = -\frac{1}{2}x + \frac{1}{2}x^3$ and $u^* = -x^2.$
+        </p>
+      </example>
 
       <p> What happens in the case where our system is not control affine or if
       we really   do need to specify an instantaneous cost function on $\bu$
@@ -684,7 +712,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         \left[ \ell(\bx_k,\bu) + \hat{J}^*_\alpha\left({f(\bx_k,\bu)}\right)
         \right], \\ \balpha \Leftarrow \argmin_\balpha \sum_k
         \left(\hat{J}^*_\balpha(\bx_k) - J^d_k \right)^2.
-        \label{eq:fitted_value_iteration} \end{gather} Since the desired values $J^d_k$ are only an initial guess of the cost-to-go, we will apply this algorithm iteratively until (hopefully) we achieve some numerical convergence.</p>
+        \label{eq:fitted_value_iteration} \end{gather} Since the desired values
+        $J^d_k$ are only an initial guess of the cost-to-go, we will apply this
+        algorithm iteratively until (hopefully) we achieve some numerical
+        convergence.</p>
       
         <p>Note that the update in \eqref{eq:fitted_value_iteration} is not
         <i>quite</i> the same as doing least-squares optimization of $$\sum_k
@@ -764,7 +795,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <example><h1>Neural Fitted Value Iteration</h1>
 
-          <p>Let us try reproducing our double-integrator value iteration examples using neural networks:</p>
+          <p>Let us try reproducing our double-integrator value iteration
+          examples using neural networks:</p>
     
           <script>document.write(notebook_link('dp'))</script>
     
@@ -794,14 +826,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         notation simpler. Let us consider a problem with a finite-horizon:
         \begin{gather*} \min_{\bu[\cdot]} \sum_{n=0}^N \ell(\bx[n],\bu[n]), \\
         \text{ s.t. } \bx[n+1] = f(\bx[n], \bu[n]), \bx[0] = \bx_0\end{gather*}
-        In fact, the way that we compute this is by solving the <em>time-varying
-        cost-to-go function</em> backwards in time: \begin{gather*}J^*(\bx,N) =
-        \min_\bu \ell(\bx, \bu) \\ J^*(\bx,n-1) = \min_\bu \left[ \ell(\bx, \bu) +
-        J^*(f(\bx,\bu), n) \right]. \end{gather*} The convergence of the value
-        iteration update is equivalent to solving this time-varying cost-to-go
-        backwards in time until it reaches a steady-state solution (the
-        infinite-horizon solution).  Which explains why value iteration only
-        converges if the optimal cost-to-go is bounded.</p>
+        In fact, the way that we compute this is by solving the
+        <em>time-varying cost-to-go function</em> backwards in time:
+        \begin{gather*}J^*(\bx,N) = \min_\bu \ell(\bx, \bu) \\ J^*(\bx,n-1) =
+        \min_\bu \left[ \ell(\bx, \bu) + J^*(f(\bx,\bu), n) \right].
+        \end{gather*} The convergence of the value iteration update is
+        equivalent to solving this time-varying cost-to-go backwards in time
+        until it reaches a steady-state solution (the infinite-horizon
+        solution).  Which explains why value iteration only converges if the
+        optimal cost-to-go is bounded.</p>
 
         <p>Now let's consider the continuous-time version.  Again, we have a
         time-varying cost-to-go, $J^*(\bx,t)$.  Now $$\frac{dJ^*}{dt} =
@@ -851,11 +884,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   <!--
   <subsection><h1>How far can we take this?  (Performance and Scaling)</h1>
 
-  <todo>
-  Errors in bang-bang for double integrator due to discretization.
+  <todo> Errors in bang-bang for double integrator due to discretization.
 
-  Limited in number of dimensions.  Function approximation, but lacks convergence results.
-  </todo>
+  Limited in number of dimensions.  Function approximation, but lacks
+  convergence results. </todo>
 
   </section> --><!-- end scaling -->
 
@@ -973,7 +1005,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       alternative view, but may also be more generalizable and even more
       efficient for some instances of the problem.</p>
 
-      <todo>I've moved the stochastic dp equations, but this text depended on them.</todo>
+      <todo>I've moved the stochastic dp equations, but this text depended on
+      them.</todo>
       <p>Recall the optimality conditions from Eq. \eqref{eq:value_update}.  If
       we describe the cost-to-go function as a vector, $J_i = J(s_i)$, then
       these optimality conditions can be rewritten in vector form as
@@ -995,11 +1028,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       above, now we have a matrix of features with $\bPsi_{i,j} =
       \psi^T_j(\bx_i)$ and we can write the LP \begin{gather} \maximize_\balpha
       \quad \bc^T \bPsi \balpha, \\ \subjto \quad \forall a, \bPsi \balpha \le
-      {\bf \ell}(a) + \bT(a) \bPsi \balpha. \end{gather}  This time the solution is not
-      necessarily optimal, because $\bPsi \balpha^*$ only approximates $\bJ^*$,
-      and the relative values of the elements of $\bc$ (called the
-      "state-relevance weights") can determine the relative tightness of the
-      approximation for different features <elib>Farias02</elib>.</p>
+      {\bf \ell}(a) + \bT(a) \bPsi \balpha. \end{gather}  This time the
+      solution is not necessarily optimal, because $\bPsi \balpha^*$ only
+      approximates $\bJ^*$, and the relative values of the elements of $\bc$
+      (called the "state-relevance weights") can determine the relative
+      tightness of the approximation for different features
+      <elib>Farias02</elib>.</p>
 
       <todo>Add an example here; and perhaps reference the problem set
       question.</todo>
@@ -1071,16 +1105,29 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
   <section><h1>Exercises</h1>
 
-    <exercise id="discounting_convergence"><h1>Discounting and the Convergence of Value Iteration</h1>
+    <exercise id="discounting_convergence"><h1>Discounting and the Convergence
+    of Value Iteration</h1>
 
-      <p>Let's consider the discrete time, state, and action version of value iteration:
-      \begin{equation} \hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[ \ell(s_i,a)
-      + \hat{J}^*\left({f(s_i,a)}\right) \right],\end{equation}
-      which finds the optimal policy for the infinite horizon cost function $\sum_{n=0}^\infty \ell(s[n],a[n]).$  If $J^*$ is the true optimal cost-to-go, show that any solution $\hat{J}^* = J^* + c$, where $c$ is any constant scalar, is a fixed point of this value iteration update.  Is the controller still optimal, even if the estimated cost-to-go function is off by a constant factor?</p>
+      <p>Let's consider the discrete time, state, and action version of value
+      iteration: \begin{equation} \hat{J}^*(s_i) \Leftarrow \min_{a \in A}
+      \left[ \ell(s_i,a) + \hat{J}^*\left({f(s_i,a)}\right)
+      \right],\end{equation} which finds the optimal policy for the infinite
+      horizon cost function $\sum_{n=0}^\infty \ell(s[n],a[n]).$  If $J^*$ is
+      the true optimal cost-to-go, show that any solution $\hat{J}^* = J^* +
+      c$, where $c$ is any constant scalar, is a fixed point of this value
+      iteration update.  Is the controller still optimal, even if the estimated
+      cost-to-go function is off by a constant factor?</p>
 
-      <p>Surprisingly, adding a discount factor can help with this.  Consider the infinite-horizon discounted cost: $\sum_{n=0}^\infty \gamma^n \ell(s[n],a[n])$, where $0 < \gamma \le 1$ is the discount factor.  The corresponding value iteration update is       \begin{equation} \hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[ \ell(s_i,a)
-        + \gamma\hat{J}^*\left({f(s_i,a)}\right) \right].\end{equation}
-      For simplicity, assume that there exists a state $s_i$ that is a zero-cost fixed point under the optimal policy; e.g. $\ell(s_i, \pi^*(s_i)) = 0$ and $f(s_i, \pi^*(s_i)) = s_i$.  Is $\hat{J}^* = J^* + c$ still a fixed point of the value iteration update when $\gamma < 1$?  Show your work.
+      <p>Surprisingly, adding a discount factor can help with this.  Consider
+      the infinite-horizon discounted cost: $\sum_{n=0}^\infty \gamma^n
+      \ell(s[n],a[n])$, where $0 < \gamma \le 1$ is the discount factor.  The
+      corresponding value iteration update is       \begin{equation}
+      \hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[ \ell(s_i,a) +
+      \gamma\hat{J}^*\left({f(s_i,a)}\right) \right].\end{equation} For
+      simplicity, assume that there exists a state $s_i$ that is a zero-cost
+      fixed point under the optimal policy; e.g. $\ell(s_i, \pi^*(s_i)) = 0$
+      and $f(s_i, \pi^*(s_i)) = s_i$.  Is $\hat{J}^* = J^* + c$ still a fixed
+      point of the value iteration update when $\gamma < 1$?  Show your work.
       </p>
     
     </exercise>
@@ -1089,22 +1136,48 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       <figure>
         <img width="50%" src="figures/exercises/choosing_cost.svg"/>
-        <figcaption>Autonomous car moving at velocity $v$ on a straight road.</figcaption>
+        <figcaption>Autonomous car moving at velocity $v$ on a straight
+        road.</figcaption>
       </figure>
 
-      <p>The figure above shows an autonomous car moving at constant velocity $v>0$ on a straight road.  Let $x$ be the (longitudinal) position of the car along the road, $y$ its (transversal) distance from the centerline, and $\theta$ the angle between the centerline and the direction of motion.  The only control action is the steering velocity $u$, which is constrained in the interval $[u_{\text{min}}, u_{\text{max}}]$ (where $u_{\text{min}}<0$ and $u_{\text{max}}>0$).  We describe the car dynamics with the simple kinematic model \begin{align*}\dot x &= v \cos \theta, \\ \dot y &= v \sin \theta, \\ \dot \theta &= u.\end{align*}  Let $\bx = [x, y, \theta]^T$ be the state vector.  To optimize the car trajectory we consider a quadratic objective function $$J = \int_{0}^{\infty} [\bx^T(t) \bQ \bx(t)  + R u^2(t)] dt,$$ where $\bQ$ is a constant positive-semidefinite (hence symmetric) matrix and $R$ is a constant nonnegative scalar (note that $R=0$ is allowed here).</p>
+      <p>The figure above shows an autonomous car moving at constant velocity
+      $v>0$ on a straight road.  Let $x$ be the (longitudinal) position of the
+      car along the road, $y$ its (transversal) distance from the centerline,
+      and $\theta$ the angle between the centerline and the direction of
+      motion.  The only control action is the steering velocity $u$, which is
+      constrained in the interval $[u_{\text{min}}, u_{\text{max}}]$ (where
+      $u_{\text{min}}<0$ and $u_{\text{max}}>0$).  We describe the car dynamics
+      with the simple kinematic model \begin{align*}\dot x &= v \cos \theta, \\
+      \dot y &= v \sin \theta, \\ \dot \theta &= u.\end{align*}  Let $\bx = [x,
+      y, \theta]^T$ be the state vector.  To optimize the car trajectory we
+      consider a quadratic objective function $$J = \int_{0}^{\infty} [\bx^T(t)
+      \bQ \bx(t)  + R u^2(t)] dt,$$ where $\bQ$ is a constant
+      positive-semidefinite (hence symmetric) matrix and $R$ is a constant
+      nonnegative scalar (note that $R=0$ is allowed here).</p>
 
       <ol type="a">
 
-        <li>Suppose our only goal is to keep the distance $y$ between the car and the centerline as small as possible, as fast as possible, without worrying about anything else.  What would be your choice for $\bQ$ and $R$?</li>
+        <li>Suppose our only goal is to keep the distance $y$ between the car
+        and the centerline as small as possible, as fast as possible, without
+        worrying about anything else.  What would be your choice for $\bQ$ and
+        $R$?</li>
 
-        <li>How would the behavior of the car change if you were to multiply the weights $\bQ$ and $R$ from the previous point by an arbitrary positive coefficient $\alpha$?</li>
+        <li>How would the behavior of the car change if you were to multiply
+        the weights $\bQ$ and $R$ from the previous point by an arbitrary
+        positive coefficient $\alpha$?</li>
 
-        <li>The cost function from point (a) might easily lead to excessively sharp turns.  Which entry of $\bQ$ or $R$ would you increase to mitigate this issue?</li>
+        <li>The cost function from point (a) might easily lead to excessively
+        sharp turns.  Which entry of $\bQ$ or $R$ would you increase to
+        mitigate this issue?</li>
 
-        <li>Country roads are more slippery on the sides than in the center.  Is this class of objective functions (quadratic objectives) rich enough to include a penalty on sharp turns that increases with the distance of the car from the centerline?</li>
+        <li>Country roads are more slippery on the sides than in the center.
+        Is this class of objective functions (quadratic objectives) rich enough
+        to include a penalty on sharp turns that increases with the distance of
+        the car from the centerline?</li>
 
-        <li>With this dynamics model and this objective function, would you ever choose a weight matrix $\bQ$ which is strictly positive definite (independent of the task you want the car to accomplish)? Why?</li>
+        <li>With this dynamics model and this objective function, would you
+        ever choose a weight matrix $\bQ$ which is strictly positive definite
+        (independent of the task you want the car to accomplish)? Why?</li>
 
       </ol>
 
@@ -1112,15 +1185,31 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <exercise><h1>Ill-Posed Optimal Control Problem</h1>
 
-      <p>In this exercise we will see how seemingly simple cost functions can give surprising results.  Consider the single-integrator system $\dot x = u$ with initial state $x(0)=0$.  We would like to find the control signal $u(t)$ that minimizes the seemingly innocuous cost function $$J = \int_0^T x^2(t) + (u^2(t) - 1)^2 dt,$$ with $T$ finite.  To this end, we consider a <a href="https://en.wikipedia.org/wiki/Square_wave">square-wave</a> control parameterized by $\tau>0$: $$u_\tau(t) = \begin{cases} 1 &\text{if} & t \in [0, \tau) \cup [3 \tau, 5 \tau) \cup [7 \tau, 9 \tau) \cup \cdots \\ -1 &\text{if} & t \in [\tau, 3 \tau) \cup [5 \tau, 7 \tau) \cup [9 \tau, 11 \tau) \cup \cdots \end{cases}.$$</p>
+      <p>In this exercise we will see how seemingly simple cost functions can
+      give surprising results.  Consider the single-integrator system $\dot x =
+      u$ with initial state $x(0)=0$.  We would like to find the control signal
+      $u(t)$ that minimizes the seemingly innocuous cost function $$J =
+      \int_0^T x^2(t) + (u^2(t) - 1)^2 dt,$$ with $T$ finite.  To this end, we
+      consider a <a
+      href="https://en.wikipedia.org/wiki/Square_wave">square-wave</a> control
+      parameterized by $\tau>0$: $$u_\tau(t) = \begin{cases} 1 &\text{if} & t
+      \in [0, \tau) \cup [3 \tau, 5 \tau) \cup [7 \tau, 9 \tau) \cup \cdots \\
+      -1 &\text{if} & t \in [\tau, 3 \tau) \cup [5 \tau, 7 \tau) \cup [9 \tau,
+      11 \tau) \cup \cdots \end{cases}.$$</p>
 
       <ol type="a">
 
-        <li>What are the states $x$ and the inputs $u$ for which the running cost $$\ell(x, u) = x^2 + (u^2 - 1)^2$$ is equal to zero?</li>
+        <li>What are the states $x$ and the inputs $u$ for which the running
+        cost $$\ell(x, u) = x^2 + (u^2 - 1)^2$$ is equal to zero?</li>
 
-        <li>Consider now two control signals $u_{\tau_1}(t)$ and $u_{\tau_2}(t)$, with $\tau_1 = \tau_2 / 2$.  Which one of the two incurs the lower cost $J$? (Hint: start by sketching how the system state $x(t)$ evolves under these two control signals.)</li>
+        <li>Consider now two control signals $u_{\tau_1}(t)$ and
+        $u_{\tau_2}(t)$, with $\tau_1 = \tau_2 / 2$.  Which one of the two
+        incurs the lower cost $J$? (Hint: start by sketching how the system
+        state $x(t)$ evolves under these two control signals.)</li>
 
-        <li>What happens to the cost $J$ when $\tau$ gets smaller and smaller?  What does the optimal control signal look like?  Could you implement it with a finite-bandwidth controller?</li>
+        <li>What happens to the cost $J$ when $\tau$ gets smaller and smaller?
+        What does the optimal control signal look like?  Could you implement it
+        with a finite-bandwidth controller?</li>
 
       </ol>
 
@@ -1128,25 +1217,44 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <exercise><h1>A Linear System with Quadratic Cost</h1>
 
-      <p>Consider the scalar control differential equation $$\dot{x} = x + u,$$ and the infinite horizon cost function $$J = \int_0^{\infty} [3x^2(t) + u^2(t)] dt.$$  As we will see in the <a href="lqr.html">chapter on linear-quadratic regulation</a>, the optimal cost-to-go for a problem of this kind assumes the form $J^* = S x^2$.  It is not hard to see that this, in turn, implies that the optimal controller has the form $u^* = - K x$.</p>
+      <p>Consider the scalar control differential equation $$\dot{x} = x + u,$$
+      and the infinite horizon cost function $$J = \int_0^{\infty} [3x^2(t) +
+      u^2(t)] dt.$$  As we will see in the <a href="lqr.html">chapter on
+      linear-quadratic regulation</a>, the optimal cost-to-go for a problem of
+      this kind assumes the form $J^* = S x^2$.  It is not hard to see that
+      this, in turn, implies that the optimal controller has the form $u^* = -
+      K x$.</p>
 
       <ol type="a">
 
-        <li>Imagine that you plugged the expression $J^* = S x^2$ in the HJB equations for this problem, you solved them for $S$, and you got $S \leq 0$.  Would this result ring any alarm bells?  Explain your answer.</li>
+        <li>Imagine that you plugged the expression $J^* = S x^2$ in the HJB
+        equations for this problem, you solved them for $S$, and you got $S
+        \leq 0$.  Would this result ring any alarm bells?  Explain your
+        answer.</li>
 
-        <li>Use the HJB sufficiency theorem to derive the optimal values of $S$ and $K$.</li>
+        <li>Use the HJB sufficiency theorem to derive the optimal values of $S$
+        and $K$.</li>
 
         <li>
 
-          Working with digital controllers, we typically have to sample the dynamics of our systems, and approximate them with discrete-time models.  Let us introduce a time step $h > 0$ and discretize the dynamics as $$\frac{x[n+1] - x[n]}{h} = x[n] + u[n],$$ and the objective as $$h \sum_{n=0}^{\infty} (3 x^2[n] + u^2[n]).$$  One of the following expressions is the correct cost-to-go $J_h^*(x)$ for this discretized problem.  Can you identify it without solving the discrete-time HJB equation? Explain your answer.
+          Working with digital controllers, we typically have to sample the
+          dynamics of our systems, and approximate them with discrete-time
+          models.  Let us introduce a time step $h > 0$ and discretize the
+          dynamics as $$\frac{x[n+1] - x[n]}{h} = x[n] + u[n],$$ and the
+          objective as $$h \sum_{n=0}^{\infty} (3 x^2[n] + u^2[n]).$$  One of
+          the following expressions is the correct cost-to-go $J_h^*(x)$ for
+          this discretized problem.  Can you identify it without solving the
+          discrete-time HJB equation? Explain your answer.
 
           <ol ol type="i">
 
             <li>$J_h^* (x)= S_h x^4$ with $S_h = 3 + h + \sqrt{6}h^2$.</li>
 
-            <li>$J_h^* (x)= S_h x^2$ with $S_h = 1 + 2h + 2 \sqrt{h^2 + h +1}$.</li>
+            <li>$J_h^* (x)= S_h x^2$ with $S_h = 1 + 2h + 2 \sqrt{h^2 + h
+            +1}$.</li>
 
-            <li>$J_h^* (x)= S_h x^2$ with $S_h = 3 + 2h^2 + \sqrt{h^2 + h + 2}$.</li>
+            <li>$J_h^* (x)= S_h x^2$ with $S_h = 3 + 2h^2 + \sqrt{h^2 + h +
+            2}$.</li>
 
           </ol>
 
@@ -1158,29 +1266,56 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <exercise><h1>Value Iteration for Minimum-Time Problems</h1>
 
-      <p>In this exercise we analyze the performance of the value-iteration algorithm, considering its application to the <a href="#minimum_time_double_integrator">minimum time problem for the double integrator</a>.  <a href="https://deepnote.com/project/0e79c2da-1dba-47a3-afa6-d193401fa3ec" target="_blank">In this python notebook</a>, you will find everything you need for this analysis.  Take the time to go through the notebook and understand the code in it, then answer the following questions.</p>
+      <p>In this exercise we analyze the performance of the value-iteration
+      algorithm, considering its application to the <a
+      href="#minimum_time_double_integrator">minimum time problem for the
+      double integrator</a>.  <a
+      href="https://deepnote.com/project/0e79c2da-1dba-47a3-afa6-d193401fa3ec"
+      target="_blank">In this python notebook</a>, you will find everything you
+      need for this analysis.  Take the time to go through the notebook and
+      understand the code in it, then answer the following questions.</p>
 
       <ol type="a">
 
         <li>
 
-          At the end of the <a href="https://deepnote.com/project/0e79c2da-1dba-47a3-afa6-d193401fa3ec" target="_blank">notebook</a> section "Performance of the Value-Iteration Policy", we plot the state trajectory of the double integrator in closed loop with the value-iteration policy, as well as the resulting control signal.
+          At the end of the <a
+          href="https://deepnote.com/project/0e79c2da-1dba-47a3-afa6-d193401fa3ec"
+          target="_blank">notebook</a> section "Performance of the
+          Value-Iteration Policy", we plot the state trajectory of the double
+          integrator in closed loop with the value-iteration policy, as well as
+          the resulting control signal.
 
           <ol ol type="i">
 
-            <li>Does the state-space trajectory follow the theoretically-optimal quadratic arcs we have seen in <a href="#minimum_time_double_integrator">the example</a>?</li>
+            <li>Does the state-space trajectory follow the
+            theoretically-optimal quadratic arcs we have seen in <a
+            href="#minimum_time_double_integrator">the example</a>?</li>
 
-            <li>Is the control policy we get from value iteration a bang-bang policy? In other words, does the control signal take values in the set $\{-1, 0, 1\}$ exclusively?</li>
+            <li>Is the control policy we get from value iteration a bang-bang
+            policy? In other words, does the control signal take values in the
+            set $\{-1, 0, 1\}$ exclusively?</li>
 
-            <li>Explain in a couple of sentences, what is the reason for this behavior.</li>
+            <li>Explain in a couple of sentences, what is the reason for this
+            behavior.</li>
 
           </ol>
 
         </li>
 
-        <li>In the "Value Iteration Algorithm" section of the <a href="https://deepnote.com/project/0e79c2da-1dba-47a3-afa6-d193401fa3ec" target="_blank">notebook</a>, increase the number of knot points on the $q$ and the $\dot q$ axes to refine the state-space mesh used in the value iteration.  Does this fix the issues you have seen in point (a)?</li>
+        <li>In the "Value Iteration Algorithm" section of the <a
+        href="https://deepnote.com/project/0e79c2da-1dba-47a3-afa6-d193401fa3ec"
+        target="_blank">notebook</a>, increase the number of knot points on the
+        $q$ and the $\dot q$ axes to refine the state-space mesh used in the
+        value iteration.  Does this fix the issues you have seen in point
+        (a)?</li>
 
-        <li>In the final section of the <a href="https://deepnote.com/project/0e79c2da-1dba-47a3-afa6-d193401fa3ec" target="_blank">notebook</a>, implement the theoretically-optimal control policy from <a href="#minimum_time_double_integrator">the example</a>, and use the plots to verify that the closed-loop system behaves as expected.</li>
+        <li>In the final section of the <a
+        href="https://deepnote.com/project/0e79c2da-1dba-47a3-afa6-d193401fa3ec"
+        target="_blank">notebook</a>, implement the theoretically-optimal
+        control policy from <a href="#minimum_time_double_integrator">the
+        example</a>, and use the plots to verify that the closed-loop system
+        behaves as expected.</li>
 
       </ol>
 
@@ -1188,16 +1323,24 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <exercise><h1>Linear Program for Dynamic Programming</h1>
 
-      <p>In this exercise we solve the dynamic programming using a linear program, considering its application to the <a href="#grid_world">grid world</a>.  <a href="https://deepnote.com/project/lpdp-2Fj9MJ3bQKeUstV3AhBRSQ/%2Flp_dp.ipynb" target="_blank">In this python notebook</a>, you will write a linear program for solving the optimal cost-to-go in the grid world. </p>
+      <p>In this exercise we solve the dynamic programming using a linear
+      program, considering its application to the <a href="#grid_world">grid
+      world</a>.  <a
+      href="https://deepnote.com/project/lpdp-2Fj9MJ3bQKeUstV3AhBRSQ/%2Flp_dp.ipynb"
+      target="_blank">In this python notebook</a>, you will write a linear
+      program for solving the optimal cost-to-go in the grid world. </p>
 
     </exercise>
 
     <exercise><h1>Continuous Fitted Value Iteration for Pendulum Swingup</h1>
 
-      <p>In this excercise we will implement value iteration for a continuous time system with continuous actions and states.
-        We will achieve by training a neural network to approximate our value function. You will work exclusively in
+      <p>In this excercise we will implement value iteration for a continuous
+      time system with continuous actions and states. We will achieve by
+      training a neural network to approximate our value function. You will
+      work exclusively in
          <a href="https://deepnote.com/project/Continuous-Fitted-Value-Iteration-for-Pendulum-Swingup-JwGriOVqSbWn3SHPD6fc6g#0e3b6237-73ad-4e80-b490-4e3083c523c0" target = "blank"> this python noteook</a> 
-         to implement the algorithms described in <a href="#section3">the Continuous Dynamic Programming</a> section.</p>
+         to implement the algorithms described in <a href="#section3">the
+         Continuous Dynamic Programming</a> section.</p>
     </exercise>
   </section>
 
@@ -1235,6 +1378,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <span class="author">Dimitri P. Bertsekas</span>, 
 <span class="title">"Dynamic Programming \& Optimal Control"</span>, Athena Scientific
 , vol. I and II, May 1, <span class="year">2005</span>.
+
+</li><br>
+<li id=Doyle96>
+<span class="author">John Doyle and James A Primbs and Benjamin Shapiro and Vesna Nevistic</span>, 
+<span class="title">"Nonlinear games: examples and counterexamples"</span>, 
+<span class="publisher">Proceedings of 35th IEEE Conference on Decision and Control</span> , vol. 4, pp. 3915--3920, <span class="year">1996</span>.
 
 </li><br>
 <li id=Jacobson70>
