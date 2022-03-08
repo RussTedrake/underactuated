@@ -1456,63 +1456,34 @@ V = RegionOfAttraction(sys, context)
     of a feedback motion planning algorithm, which is the subject of an <a
     href="feedback_motion_planning.html">upcoming chapter</a>.</p>
 
-    <subsection id="PQ"><h1>State feedback for linear systems</h1>
-
-      <p>Let's re-examine the Lyapunov conditions for linear systems from Eq.
-      \ref{eq:lyap}, but now add in a linear state feedback $\bu = \bK\bx$,
-      resulting in the closed-loop dynamics $\dot{\bx} = (\bA + \bB\bK)\bx.$
-      One can show that the set of all stabilizing $\bK$ can be characterized
-      by the following two matrix inequalities <elib>Boyd94</elib>: \[{\bf P} =
-      {\bf P}^T \succ 0, \qquad {\bf P}(\bA + \bB\bK) + (\bA + \bB\bK)^T{\bf P}
-      \prec 0. \]  Unfortunately, these inequalities are <i>bilinear</i> in the
-      decision variables, ${\bf P}$ and $\bK$, and therefore non-convex.  It
-      turns out that we can turn these into <i>linear</i> matrix inequalities
-      (LMIs) through a simple change of coordinates, $\bQ = {\bf P}^{-1}, {\bf
-      Y} = \bK{\bf P}^{-1}$, resulting in \[ \bQ = \bQ^T \succ 0, \qquad \bA\bQ
-      + \bQ\bA^T + \bB{\bf Y} + {\bf Y}^T \bB^T \prec 0. \]  Furthermore, given
-      matrices $\bA$ and $\bB$, there exists a matrix $\bK$ such that $(\bA +
-      \bB\bK)$ is stable if and only if there exist matrices $\bQ$ and ${\bf
-      Y}$ which satisfy this (strict) linear matrix inequality.</p>
-
-      <todo>The robust state-feedback design for polytopic uncertainty example
-      from LMIsinSYSTEMSCONTROL.pdf (in Zotero) by Denis ARZELIER essentially
-      combines this with the linear common-lyapunov function example. </todo>
-
-    </subsection>
-
-    <subsection id="control_alternations"><h1>Control design via alternations</h1>
-
-      <p>For control design using convex optimization, we will lean heavily on
-      the assumption of the dynamics being control-affine.  Let me write it
-      this time as: $$\dot{\bx} = {\bf f}(\bx) + \sum_{i=0}^{m-1} u_i {\bf
-      f}_i(x).$$ As we have discussed, for mechanical systems this assumption
-      is perfectly reasonable.</p>
+    <subsection id="control_alternations"><h1>Control design via
+    alternations</h1>
 
       <p>For linear optimal control, we found controllers of the form, $\bu =
       -\bK \bx.$  The natural generalization of this to polynomial analysis
-      will be to look for controllers of the form $\bu = \pi(\bx)$, where
-      $\pi(\bx)$ is a polynomial.  (For mechanical systems like the pendulum
-      above, we might make $\pi$ a polynomial in $s$ and $c$.)</p>
+      will be to look for controllers of the form $\bu = \bK(\bx)$, where
+      $\bK(\bx)$ is a polynomial vector.  (For mechanical systems like the
+      pendulum above, we might make $\bK(x)$ polynomial in $s$ and $c$.)</p>
 
-      <p>If we apply this control to the Lyapunov conditions (for global
-      analysis), we quickly see the problem.  We have $$\dot{V}(\bx) =
-      \pd{V}{\bx}\left[ {\bf f}(x) + \sum_{i=0}^{m-1} {\bf f}_i(\bx)
-      \pi_i(\bx)\right],$$ and as a result if we are trying to search for the
-      parameters of $V$ and $\pi$ simultaneously, the decision variables
-      multiply and the problem will be non-convex.</p>
+      <p>If we apply this control directly to the Lyapunov conditions (for
+      global analysis) with control-affine dynamics, we quickly see the
+      problem.  We have $$\dot{V}(\bx) = \pd{V}{\bx}\left[ {\bf f}_1(\bx) +
+      {\bf f}_2(\bx) \bK(\bx)\right],$$ and as a result if we are trying to
+      search for the parameters of $V$ and $\bK$ simultaneously, the decision
+      variables multiply and the problem will be non-convex.</p>
 
       <p>One very natural strategy is to use alternations.  The idea is simple,
-      we will fix $\pi$ and optimize $V$, then fix $V$ and optimize $\pi$ and
+      we will fix $\bK$ and optimize $V$, then fix $V$ and optimize $\bK$ and
       repeat until convergence.  This approach has roots in the famous "DK
       iterations" for robust control (e.g. <elib>Lind94</elib>).</p>
 
       <p>For this approach, it is important to start with an initial feasible
-      $V$ or $\pi$.  For example, one can think of locally stabilizing a
+      $V$ or $\bK$.  For example, one can think of locally stabilizing a
       nonlinear system with LQR, and then searching for a linear control law
       (or even a higher-order polynomial control law) that achieves a larger
       basin of attraction.  But note that once we move from global stability to
       region of attraction optimization, we now need to alternate between three
-      sets of variables: $V(\bx), \pi(\bx), \lambda(\bx),$ where $\lambda(\bx)$
+      sets of variables: $V(\bx), \bK(\bx), \lambda(\bx),$ where $\lambda(\bx)$
       was the multiplier polynomial for the S-procedure.  We took exactly this
       approach in <elib>Majumdar13</elib>.  In that paper, we showed that
       alternations could increase the certified region of attraction for the
@@ -1537,6 +1508,43 @@ V = RegionOfAttraction(sys, context)
 
     </subsection>
 
+    <subsection id="PQ"><h1>State feedback for linear systems</h1>
+
+      <p>There is a clever reparameterization of the original problem that can
+      make the co-design of Lyapunov functions and stabilizing controllers
+      jointly convex in some cases.</p>
+
+      <p>Let's re-examine the Lyapunov conditions for linear systems from Eq.
+      \ref{eq:lyap}, but now add in a linear state feedback $\bu = \bK\bx$,
+      resulting in the closed-loop dynamics $\dot{\bx} = (\bA + \bB\bK)\bx.$
+      One can show that the set of all stabilizing $\bK$ can be characterized
+      by the following two matrix inequalities <elib>Boyd94</elib>: \[{\bf P} =
+      {\bf P}^T \succ 0, \qquad {\bf P}(\bA + \bB\bK) + (\bA + \bB\bK)^T{\bf P}
+      \prec 0. \]  Unfortunately, these inequalities are <i>bilinear</i> in the
+      decision variables, ${\bf P}$ and $\bK$, and therefore non-convex.  It
+      turns out that we can turn these into <i>linear</i> matrix inequalities
+      (LMIs) through a simple change of coordinates, $\bQ = {\bf P}^{-1}, {\bf
+      Y} = \bK{\bf P}^{-1}$, resulting in \[ \bQ = \bQ^T \succ 0, \qquad \bA\bQ
+      + \bQ\bA^T + \bB{\bf Y} + {\bf Y}^T \bB^T \prec 0. \]  Furthermore, given
+      matrices $\bA$ and $\bB$, there exists a matrix $\bK$ such that $(\bA +
+      \bB\bK)$ is stable if and only if there exist matrices $\bQ$ and ${\bf
+      Y}$ which satisfy this (strict) linear matrix inequality.</p>
+
+      <todo>The robust state-feedback design for polytopic uncertainty example
+      from LMIsinSYSTEMSCONTROL.pdf (in Zotero) by Denis ARZELIER essentially
+      combines this with the linear common-lyapunov function example. </todo>
+
+      <todo>Make a new subsection for this and add an example.</todo>
+      <p>For global stability, there is a nice extension of this using sums of
+      squares <elib>Prajna04b</elib>
+      to the case of $$\dot{\bx} = {\bf f}_1(\bx){\bf m}(\bx) + {\bf
+      f}_2(\bx)\bu,$$ where ${\bf m}(\bx)$ is a vector of monomials with ${\bf
+      m}(\bx)=0$ iff $\bx=0$, and the elements of ${\bf f}_1(\bx)$ and ${\bf
+      f}_2$ are polynomial. The search is over polynomial feedback controllers
+      of the form $\bu = \bK(\bx){\bf m}(\bx).$</p>
+
+    </subsection>
+    
     <subsection id="control-lyapunov"><h1>Control-Lyapunov Functions</h1>
 
       <p>Another core idea connecting Lyapunov analysis with control design is
@@ -1969,6 +1977,12 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 <span class="title">"Control Design along Trajectories with Sums of Squares Programming"</span>, 
 <span class="publisher">Proceedings of the 2013 IEEE International Conference on Robotics and Automation (ICRA)</span>, pp. 4054-4061, <span class="year">2013</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/majumdar13.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Prajna04b>
+<span class="author">Stephen Prajna and Antonis Papachristodoulou and Fen Wu</span>, 
+<span class="title">"Nonlinear Control Synthesis by Sum of Squares Optimization: A {L}yapunov-based Approach"</span>, 
+<span class="publisher">Proceedings of the ASCC 2004</span> , <span class="year">2004</span>.
 
 </li><br>
 <li id=Korda13>
