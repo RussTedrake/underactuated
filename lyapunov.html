@@ -1504,8 +1504,7 @@ V = RegionOfAttraction(sys, context)
       <p>One very natural strategy is to use alternations.  The idea is simple,
       we will fix $\pi$ and optimize $V$, then fix $V$ and optimize $\pi$ and
       repeat until convergence.  This approach has roots in the famous "DK
-      iterations" for robust control (e.g. <elib>Lind94</elib>).  It takes
-      advantage of the structured convex optimization at each step.</p>
+      iterations" for robust control (e.g. <elib>Lind94</elib>).</p>
 
       <p>For this approach, it is important to start with an initial feasible
       $V$ or $\pi$.  For example, one can think of locally stabilizing a
@@ -1513,43 +1512,46 @@ V = RegionOfAttraction(sys, context)
       (or even a higher-order polynomial control law) that achieves a larger
       basin of attraction.  But note that once we move from global stability to
       region of attraction optimization, we now need to alternate between three
-      sets of variables: $V(\bx), \pi(\bx), \lambda(\bx),$ where $\lambda(]bx)$
+      sets of variables: $V(\bx), \pi(\bx), \lambda(\bx),$ where $\lambda(\bx)$
       was the multiplier polynomial for the S-procedure.  We took exactly this
       approach in <elib>Majumdar13</elib>.  In that paper, we showed that
       alternations could increase the certified region of attraction for the
       Acrobot.</p>
 
-      <p>The alternation approach takes advantage of convex optimization in the
-      inner loop, but it is still only a local approach to solving the
-      nonconvex joint optimization.  It is subject to local minima.  The primary
-      advantage is that, barring numerical issues, we expect recursive
-      feasibility (once we have a controller and Lyapunov function that
-      achieves stability, even with a small region of attraction, we will not
-      lose it) and monotonic improvement on the objective.  It is also possible
-      to attempt to optimize these objectives more directly with other
-      non-convex optimization procedures (like stochastic gradient descent, or
-      sequential quadratic programming) (e.g. <elib>Shen20</elib>), but strict
-      feasibility is harder to guarantee.  Often times the Lyapunov conditions
-      are just evaluated at samples, or along sample trajectories; we can still
-      certify the performance using just a single SOS verification step the
-      with controller fixed before deplying. </p>
+      <p>The alternation approach takes advantage of a structured convex
+      optimization in each step of the alternations, but it is still only a
+      local approach to solving the non-convex joint optimization.  It is
+      subject to local minima. The primary advantage is that, barring numerical
+      issues, we expect recursive feasibility (once we have a controller and
+      Lyapunov function that achieves stability, even with a small region of
+      attraction, we will not lose it) and monotonic improvement on the
+      objective.  It is also possible to attempt to optimize these objectives
+      more directly with other non-convex optimization procedures (like
+      stochastic gradient descent, or sequential quadratic programming
+      <elib>Shen20</elib>), but strict feasibility is harder to guarantee.
+      Oftentimes the Lyapunov conditions are just evaluated at samples, or
+      along sample trajectories.  However, once we "learn" a Lyapunov candidate
+      even by approximate methods, we may once again attempt to rigorously
+      certify the Lyapunov conditions using just a single convex optimization
+      step the with controller fixed.</p>
 
     </subsection>
 
     <subsection id="control-lyapunov"><h1>Control-Lyapunov Functions</h1>
 
       <p>Another core idea connecting Lyapunov analysis with control design is
-      the "<a href="https://en.wikipedia.org/wiki/Control-Lyapunov_function">control-Lyapunov
+      the "<a
+      href="https://en.wikipedia.org/wiki/Control-Lyapunov_function">control-Lyapunov
       function</a>".  Given a system $\dot{\bx} = f(\bx, \bu)$, a
       control-Lyapunov function $V$ is a positive-definite function for which
       $$\forall \bx \neq 0, \exists \bu \quad \dot{V}(\bx,\bu) = \pd{V}{\bx}
       f(\bx, \bu) < 0 \quad \text{and} \quad \exists \bu \quad \dot{V}(0, \bu)
-      = 0.$$  In words, for all $\bx$, there exists a control that would allow
-      the $V$ to decrease.  Once again, we adorn this basic property with extra
-      conditions (e.g. radially unbounded, or satisfied over a control-
+      = 0.$$  In words, for all $\bx$, there exists a control input that would
+      allow the $V$ to decrease.  Once again, we adorn this basic property with
+      extra conditions (e.g. radially unbounded, or satisfied over a control-
       invariant set) in order to construct global or regional stability
       statements.  What is important to understand is that we can design
-      control-Lyapunov functions without explicitly parameterizing the
+      control-Lyapunov functions without explicitly parametrizing the
       controller; often the control action is not even determined until
       execution time by finding a particular $\bu$ that goes downhill.</p>
 
@@ -1571,12 +1573,11 @@ V = RegionOfAttraction(sys, context)
       has some nice examples of this written directly in sums-of-squares
       form.</p>
 
-      <p>Now here is where it gets a little frustrating.  Certainly,
-      sublevel sets of $\mathcal{B}(\bx)$ are control-invariant (via the proper
-      choice of $\bu$).  But we do not (cannot) expect that the entire
-      estimated region (the 0-superlevel set) can be rendered invariant.  The
-      estimated region is an <i>outer</i> approximation of the backward
-      reachable set.
+      <p>Now here is where it gets a little frustrating.  Certainly, sublevel
+      sets of $\mathcal{B}(\bx)$ are control-invariant (via the proper choice
+      of $\bu$).  But we do not (cannot) expect that the entire estimated
+      region (the 0-superlevel set) can be rendered invariant.  The estimated
+      region is an <i>outer</i> approximation of the backward reachable set.
       <todo>it's more than that... \dot{B}=0 happens somewhere in the interior,
       and it's conservative due to the forall u.</todo>
       <elib>Majumdar13b</elib> gave a recipe for extracting a polynomial
@@ -1658,7 +1659,12 @@ V = RegionOfAttraction(sys, context)
 
   </section>
 
-  <section><h1>Neural Lyapunov functions</h1></section>
+  <section><h1>Neural Lyapunov functions</h1>
+  
+    <p>Details coming soon.  For some recent work with a fairly extensive
+    bibliography, see <elib>Dai21</elib>.</p>
+  
+  </section>
 
   <section><h1>Contraction metrics</h1>
 
@@ -1976,6 +1982,13 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 <span class="title">"Convex Optimization of Nonlinear Feedback Controllers via Occupation Measures"</span>, 
 <span class="publisher">Proceedings of Robotics: Science and Systems (RSS)</span> , <span class="year">2013</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar13b.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Dai21>
+<span class="author">Hongkai Dai and Benoit Landry and Lujie Yang and Marco Pavone and Russ Tedrake</span>, 
+<span class="title">"Lyapunov-stable neural-network control"</span>, 
+<span class="publisher">Robotics: {S}cience and {S}ystems</span> , <span class="year">2021</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Dai21.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Aicardi95>
