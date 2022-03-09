@@ -1844,6 +1844,27 @@ V = RegionOfAttraction(sys, context)
 
     </exercise>
 
+    <exercise><h1>Control Lyapunov and Barrier Functions</h1>
+
+      <p>
+        In this exercise you will carefully investigate the difference between the different types of certification functions.
+        Consider the dynamics system $$\dot{x} = -x^{3} + u$$.
+      </p>
+
+      <ol type="a">
+
+        <li>Is the function $V(x,u) = \frac{1}{2}(x^{2}+u^{2})$ a Control Lyapunov function, Barrier certificate, or neither?</li>
+
+        <li>Let $u \in [-1,-0.1]$ and $x \in [-0.25, 0.25]$. Is the function $V(x,u) = -\frac{1}{2}(x^{2}+u^{2}) + x + 1$ a Control Lyapunov function, Barrier certificate, or neither?</li>
+
+        <li>Does your answer to part a) change if $x \in [-1,1]$? </li>
+
+        <li>Does your answer to part b) change if $u \in [-0.1, 0.1]$? </li>
+
+      </ol>
+
+    </exercise>
+
   </section>
 
 </chapter>
