@@ -1849,7 +1849,7 @@ V = RegionOfAttraction(sys, context)
       <p>
         In this exercise we carefully investigate the procedure for designing stabilizing controller via alternations.
         
-        Consider the problem of jointly designing a polynomial control function $u = K(x)$ and Lyapunov certificate $V(x)$ for the dynamic system $$\dot(x) = f_{1}(x) + f_{2}(x)K(x)$$ which attempts to maximize the region of attraction around the origin. We can write the search for the maximal region of attraction as:
+        Consider the problem of jointly designing a polynomial control function $u = K(x)$ and Lyapunov certificate $V(x)$ for the dynamic system $$\dot{x} = f_{1}(x) + f_{2}(x)K(x)$$ We can write the search for the maximal region of attraction as:
         \begin{align*}
         \max_{\rho, K(x), V(x), L(x)}& \qquad \rho
         \\
@@ -1859,7 +1859,7 @@ V = RegionOfAttraction(sys, context)
         & -\frac{\partial V}{\partial x} (f_{1}(x) + f_{2}(x)K(x)) + (L(x)( V(x) - \rho)) \text{ is SOS}
         \end{align*}
 
-        Assume know some $\rho_{0},~ V_{0}(x),~ K_{0}(x)$, and $L_{0}(x)$ which are feasible for the above program.
+        Assume we know some $\rho_{0},~ V_{0}(x),~ K_{0}(x)$, and $L_{0}(x)$ which are feasible for the above program.
 
         <ol type = "a">
           <li> Is the above optimization program convex? Why or why not?</li>
@@ -1874,10 +1874,10 @@ V = RegionOfAttraction(sys, context)
                 Fix $K(x)$ and $L(x)$ and search for $\rho$ and $V(x)$
               </li>
               <li>
-                Fix $L(x)$ and $V(x)$, search $\rho$ and $K(x)$
+                Fix $L(x)$ and $V(x)$ and search $\rho$ and $K(x)$
               </li>
               <li> 
-                Fix $K(x)$ and $\rho$, search for $V(x)$ and $L(x)$
+                Fix $K(x)$ and $\rho$ and search for $V(x)$ and $L(x)$
               </li>
             </ol>
           </li>
@@ -1890,7 +1890,7 @@ V = RegionOfAttraction(sys, context)
                   \text{subject to } &
                   \qquad V(x) \text{ is SOS}
                   \\
-                  & -\frac{\partial V}{\partial x} (f_{1}(x) + f_{2}(x)K_{0}(x)) + (L_{0}(x)( V(x) - \rho)) \text{ is SOS}
+                  & -\frac{\partial V}{\partial x} (f_{1}(x) + f_{2}(x)K_{0}(x)) + L_{0}(x)( V(x) - \rho) \text{ is SOS}
                   \end{align*}
                   <ol type = "i">
                     <li>
