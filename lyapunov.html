@@ -1851,15 +1851,15 @@ V = RegionOfAttraction(sys, context)
         
         Consider the problem of jointly designing a polynomial control function $u = K(x)$ and Lyapunov certificate $V(x)$ for the dynamic system $$\dot{x} = f_{1}(x) + f_{2}(x)K(x)$$ We can write the search for the maximal region of attraction as:
         \begin{align*}
-        \max_{\rho, K(x), V(x), L(x)}& \qquad \rho
+        \max_{\rho, K(x), V(x), \lambda(x)}& \qquad \rho
         \\
         \text{subject to } & \qquad
-        V(x),~L(x) \text{ are SOS}
+        V(x),~\lambda(x) \text{ are SOS}
         \\
-        & -\frac{\partial V}{\partial x} (f_{1}(x) + f_{2}(x)K(x)) + (L(x)( V(x) - \rho)) \text{ is SOS}
+        & -\frac{\partial V}{\partial x} (f_{1}(x) + f_{2}(x)K(x)) + \lambda(x)( V(x) - \rho) \text{ is SOS}
         \end{align*}
 
-        Assume we know some $\rho_{0},~ V_{0}(x),~ K_{0}(x)$, and $L_{0}(x)$ which are feasible for the above program.
+        Assume we know some $\rho_{0},~ V_{0}(x),~ K_{0}(x)$, and $\lambda_{0}(x)$ which are feasible for the above program.
 
         <ol type = "a">
           <li> Is the above optimization program convex? Why or why not?</li>
@@ -1868,16 +1868,16 @@ V = RegionOfAttraction(sys, context)
             For each of the following combinations decide whether the problem is convex, bilinear, or neither in the decision variables
             <ol type = "i">
               <li> 
-                Fix $\rho$ and  $V(x)$ and search for $L(x)$ and $K(x)$
+                Fix $\rho$ and  $V(x)$ and search for $\lambda(x)$ and $K(x)$
               </li>
               <li>
-                Fix $K(x)$ and $L(x)$ and search for $\rho$ and $V(x)$
+                Fix $K(x)$ and $\lambda(x)$ and search for $\rho$ and $V(x)$
               </li>
               <li>
-                Fix $L(x)$ and $V(x)$ and search $\rho$ and $K(x)$
+                Fix $\lambda(x)$ and $V(x)$ and search $\rho$ and $K(x)$
               </li>
               <li> 
-                Fix $K(x)$ and $\rho$ and search for $V(x)$ and $L(x)$
+                Fix $K(x)$ and $\rho$ and search for $V(x)$ and $\lambda(x)$
               </li>
             </ol>
           </li>
@@ -1890,7 +1890,7 @@ V = RegionOfAttraction(sys, context)
                   \text{subject to } &
                   \qquad V(x) \text{ is SOS}
                   \\
-                  & -\frac{\partial V}{\partial x} (f_{1}(x) + f_{2}(x)K_{0}(x)) + L_{0}(x)( V(x) - \rho) \text{ is SOS}
+                  & -\frac{\partial V}{\partial x} (f_{1}(x) + f_{2}(x)K_{0}(x)) + \lambda_{0}(x)( V(x) - \rho) \text{ is SOS}
                   \end{align*}
                   <ol type = "i">
                     <li>
@@ -1906,24 +1906,24 @@ V = RegionOfAttraction(sys, context)
           </li>
 
           <li>
-            Define $(L^{\star}(x), K^{\star}(x))$ as solutions to the program:
+            Define $(\lambda^{\star}(x), K^{\star}(x))$ as solutions to the program:
             \begin{align*}
-            \textbf{find}&\qquad L (x), K(x)
+            \textbf{find}&\qquad \lambda(x), K(x)
             \\
             \text{subject to } &
-            \qquad L(x) \text{ is SOS}
+            \qquad \lambda(x) \text{ is SOS}
             \\
-            & -\frac{\partial V_{0}}{\partial x} (f_{1}(x) + f_{2}(x)K_{0}(x)) + (L_{0}(x)( V_{0}(x) - \rho_{0})) \text{ is SOS}
+            & -\frac{\partial V_{0}}{\partial x} (f_{1}(x) + f_{2}(x)K(x)) + \lambda(x)( V_{0}(x) - \rho_{0}) \text{ is SOS}
             \end{align*}
             <ol type = "i">
               <li>
                 Is the above program guaranteed to be feasible? Why or why not?
               </li>
               <li>
-                Are $L_{0}(x)$ and $K_{0}(x)$ optimal for this program?
+                Are $\lambda_{0}(x)$ and $K_{0}(x)$ optimal for this program? Is there any reason a convex solver should not return $\lambda_{0}(x)$ and $K_{0}(x)$?
               </li>
               <li>
-                Describe a procedure that uses the above program to find a $K(x)$ which enlarges the region of attraction certified by $V_{0}(x)$. 
+                Describe a procedure that uses the above program to find a $K(x)$ which enlarges the region of attraction certified by $V_{0}(x)$.  Hint: You do not need to change the objective.
               </li>
             </ol>
           </li>
