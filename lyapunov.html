@@ -1844,6 +1844,94 @@ V = RegionOfAttraction(sys, context)
 
     </exercise>
 
+    <exercise><h1>Control Design Via Alternations</h1>
+
+      <p>
+        In this exercise we carefully investigate the procedure for designing stabilizing controller via alternations.
+        
+        Consider the problem of jointly designing a polynomial control function $u = K(x)$ and Lyapunov certificate $V(x)$ for the dynamic system $$\dot(x) = f_{1}(x) + f_{2}(x)K(x)$$ which attempts to maximize the region of attraction around the origin. We can write the search for the maximal region of attraction as:
+        \begin{align*}
+        \max_{\rho, K(x), V(x), L(x)}& \qquad \rho
+        \\
+        \text{subject to } & \qquad
+        V(x),~L(x) \text{ are SOS}
+        \\
+        & -\frac{\partial V}{\partial x} (f_{1}(x) + f_{2}(x)K(x)) + (L(x)( V(x) - \rho)) \text{ is SOS}
+        \end{align*}
+
+        Assume know some $\rho_{0},~ V_{0}(x),~ K_{0}(x)$, and $L_{0}(x)$ which are feasible for the above program.
+
+        <ol type = "a">
+          <li> Is the above optimization program convex? Why or why not?</li>
+
+          <li>
+            For each of the following combinations decide whether the problem is convex, bilinear, or neither in the decision variables
+            <ol type = "i">
+              <li> 
+                Fix $\rho$ and  $V(x)$ and search for $L(x)$ and $K(x)$
+              </li>
+              <li>
+                Fix $K(x)$ and $L(x)$ and search for $\rho$ and $V(x)$
+              </li>
+              <li>
+                Fix $L(x)$ and $V(x)$, search $\rho$ and $K(x)$
+              </li>
+              <li> 
+                Fix $K(x)$ and $\rho$, search for $V(x)$ and $L(x)$
+              </li>
+            </ol>
+          </li>
+
+           <li>
+                  Define $(\rho^{\star}, V^{\star}(x))$ as the solutions to the program:
+                  \begin{align*}
+                  \max_{\rho, V(x)}& \qquad\rho
+                  \\
+                  \text{subject to } &
+                  \qquad V(x) \text{ is SOS}
+                  \\
+                  & -\frac{\partial V}{\partial x} (f_{1}(x) + f_{2}(x)K_{0}(x)) + (L_{0}(x)( V(x) - \rho)) \text{ is SOS}
+                  \end{align*}
+                  <ol type = "i">
+                    <li>
+                      Is the above program guaranteed to be feasible? Why or why not?
+                    </li>
+                    <li>
+                      If $\rho^{\star}$ exists, is it guaranteed to be greater than, less than, or equal to $\rho_{0}$?
+                    </li>
+                    <li>
+                      Consider $x_{0}$ such that $V_{0}(x_{0}) \leq \rho_{0}$. Is it true that $V^{\star}(x_{0}) \leq \rho_{0}$?
+                    </li>
+                  </ol>
+          </li>
+
+          <li>
+            Define $(L^{\star}(x), K^{\star}(x))$ as solutions to the program:
+            \begin{align*}
+            \textbf{find}&\qquad L (x), K(x)
+            \\
+            \text{subject to } &
+            \qquad L(x) \text{ is SOS}
+            \\
+            & -\frac{\partial V_{0}}{\partial x} (f_{1}(x) + f_{2}(x)K_{0}(x)) + (L_{0}(x)( V_{0}(x) - \rho_{0})) \text{ is SOS}
+            \end{align*}
+            <ol type = "i">
+              <li>
+                Is the above program guaranteed to be feasible? Why or why not?
+              </li>
+              <li>
+                Are $L_{0}(x)$ and $K_{0}(x)$ optimal for this program?
+              </li>
+              <li>
+                Describe a procedure that uses the above program to find a $K(x)$ which enlarges the region of attraction certified by $V_{0}(x)$. 
+              </li>
+            </ol>
+          </li>
+
+        </ol>
+      </p>
+    </exercise>
+
   </section>
 
 </chapter>
