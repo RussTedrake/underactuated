@@ -94,17 +94,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     <p>Given an initial condition, $\bx_0$, and an input trajectory $\bu(t)$
     defined over a finite interval, $t\in[t_0,t_f],$   we can compute the
     long-term (finite-horizon) cost of executing that trajectory   using the
-    standard additive-cost optimal control objective, \[ J_{\bu(\cdot)}(\bx_0) =
-    \ell_f (\bx(t_f)) + \int_{t_0}^{t_f} \ell(\bx(t),\bu(t)) dt. \]  We will
+    standard additive-cost optimal control objective, \[ J_{\bu(\cdot)}(\bx_0)
+    = \ell_f (\bx(t_f)) + \int_{t_0}^{t_f} \ell(\bx(t),\bu(t)) dt. \]  We will
     write the trajectory optimization problem as \begin{align*}
     \min_{\bu(\cdot)} \quad & \ell_f (\bx(t_f)) + \int_{t_0}^{t_f}
     \ell(\bx(t),\bu(t)) dt \\ \subjto \quad & \dot{\bx}(t) = f(\bx(t),\bu(t)),
-    \quad \forall t\in[t_0, t_f] \\ & \bx(t_0) = \bx_0. \\ \end{align*} Some
-    trajectory optimization problems may also include additional constraints,
+    \quad \forall t\in[t_0, t_f] \\ & \bx(t_0) = \bx_0. \\ \end{align*} Many
+    trajectory optimization problems will also include additional constraints,
     such as collision avoidance (e.g., where the constraint is that the signed
     distance between the robot's geometry and the obstacles stays positive) or
-    input limits (e.g. $\bu_{min} \le \bu \le \bu_{max}$ ), which can be defined
-    for all time or some subset of the trajectory.</p>
+    input limits (e.g. $\bu_{min} \le \bu \le \bu_{max}$ ). Constraints can be
+    defined for all time or some subset of the trajectory.</p>
 
     <p> As written, the optimization above is an optimization over continuous
     trajectories.  In order to formulate this as a numerical optimization, we
@@ -121,8 +121,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     dimension (time), whereas in the mesh-based value iteration algorithms we
     had to work in the dimension of the state space.  Our mesh-based
     discretizations scaled badly with this state dimension, and led to
-    numerical errors that were difficult to deal with.  There is relatively
-    much more known about discretizing solutions to differential equations over
+    numerical errors that were difficult to deal with.  Discreting over just
+    one dimension (time), is fundamentally different.  There is relatively much
+    more known about discretizing solutions to differential equations over
     time, including work on error-controlled integration.  And the number of
     parameters required for trajectory parameterizations scales linearly with
     the state dimension, instead of exponentially in mesh-based value
@@ -152,11 +153,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       constraints in these decision variables.  As a result, if we can restrict
       our additional constraints to linear inequality constraints and our
       objective function to being linear/quadratic in $\bx$ and $\bu$, then the
-      resulting trajectory optimization is a convex optimization (specifically a
-      linear program or quadratic program depending on the objective).  As a
-      result, we can reliably solve these problems to global optimality at quite
-      large scale; these days it is common to solve these optimization online
-      inside a high-rate feedback controller.</p>
+      resulting trajectory optimization is a convex optimization (specifically
+      a linear program or quadratic program depending on the objective).  We
+      can reliably solve these problems to global optimality at quite large
+      scale; these days it is common to solve these optimization online inside
+      a high-rate feedback controller.</p>
 
       <example><h1>Trajectory optimization for the Double Integrator</h1>
 
@@ -228,28 +229,30 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       might prefer the direct transcription: <ul><li>Numerical conditioning.
       Shooting involves calculating ${\bf A}^n$ for potentially large $n$,
       which can lead to a large range of coefficient values in the constraints.
-      This problem (sometimes referred to as the "tail wagging the dog") is
-      somewhat fundamental in trajectory optimization: the control input
-      $\bu[0]$ really does have more opportunity to have a large impact on the
-      total cost than control input $\bu[N-1]$.  But the direct transcription
-      approach combats the numerical issue by spreading this effect out over a
-      large number of well-balanced constraints.</li><li>Adding state
-      constraints.  Having $\bx[n]$ as explicit decision variables makes it
-      very easy/natural to add additional state constraints; and the solver
-      effectively reuses the computation of ${\bf A}^n$ for each constraint.
-      In shooting, one has to unroll those terms for each new
-      constraint.</li><li>Parallelization.  For larger problems, evaluating the
-      constraints can be a substantial cost.  In direct transcription, one can
-      evaluate the dynamics/constraints in parallel (because each iteration
-      begins with $\bx[n]$ already given), whereas shooting is more
-      fundamentally a serial operation.</li></ul></p>
+      This problem is sometimes referred to as the "tail wagging the dog", or
+      in very deep neural networks as "vanishing gradients" and/or "exploding
+      gradients".  In trajectory optimization, it is not simply an artifact of
+      our transcription, but is a real property of the problem we have
+      formulated: the control input $\bu[0]$ really does have more opportunity
+      to have a large impact on the total cost than control input $\bu[N-1]$.
+      The direct transcription approach combats the numerical issue by
+      spreading this effect out over a large number of well-balanced
+      constraints.</li><li>Adding state constraints.  Having $\bx[n]$ as
+      explicit decision variables makes it very easy/natural to add additional
+      state constraints; and the solver effectively reuses the computation of
+      ${\bf A}^n$ for each constraint. In shooting, one has to unroll those
+      terms for each new constraint.</li><li>Parallelization.  For larger
+      problems, evaluating the constraints can be a substantial cost.  In
+      direct transcription, one can evaluate the dynamics/constraints in
+      parallel (because each iteration begins with $\bx[n]$ already given),
+      whereas shooting is more fundamentally a serial operation.</li></ul></p>
 
       <p>For linear convex problems, the solvers are mature enough that these
       differences often don't amount to much.  For nonlinear optimization
       problems, the differences can be substantial.  If you look at trajectory
       optimization papers in mainstream robotics, you will see that both direct
-      transcription and direct shooting approaches are used. (It's possible you
-      could guess which research lab wrote the paper simply by the
+      transcription and direct shooting approaches are used. (It used to be
+      that you could guess which research lab wrote a paper simply by the
       transcription they use!)</p>
 
       <p>It is also worth noting that the problems generated by the direct
@@ -258,7 +261,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       is actually the same pattern that we exploit in the Riccati equations.
       Thanks to the importance of these methods in real applications, numerous
       specialized solvers have been written to explicitly exploit this sparsity
-      (e.g. <elib>Wang09a</elib>).</p>
+      (e.g. <elib>Wang09a+Dellaert12</elib>).</p>
 
     </subsection>
 
@@ -407,7 +410,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       <p>Once again, direct collocation effectively integrates the equations of
       motion by satisfying the constraints of the optimization -- this time
-      producing an integration of the dynamics that is accurate to third-order
+      producing an integration of the dynamics that is accurate to third order
       with effectively two evaluations of the plant dynamics per segment (since
       we use $\dot\bx(t_k)$ for two intervals). <elib>Hargraves87</elib>
       claims, without proof, that as the break points are brought closer
@@ -541,28 +544,23 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     solvers.</p>
 
     <p>This trajectory-optimization structure is easiest to discuss, and
-    implement, in unconstrained formulations, so we will start there. In fact,
-    in recent years we have seen a surge in popularity in robotics for doing
-    trajectory optimization using (often special-purpose) solvers for
-    unconstrained trajectory optimization, where the constrained problems are
-    transformed into unconstrained problem via <a
-    href="optimization.html#penalty">penalty methods</a>.  I would say penalty
-    methods based on the augmented Lagrangian are particularly popular for
-    trajectory optimization these days <elib>Lin91+Toussaint14</elib>.</p>
+    implement, in unconstrained formulations, so we will start there.</p>
 
     <subsection><h1>Efficiently computing gradients</h1>
 
       <p>Providing gradients of the objectives and constraints to the solver is
       not strictly required -- most solvers will obtain them from finite
-      differences if they are not provided -- but I feel strongly that the
-      solvers are faster and more robust when exact gradients are provided.
-      Providing the gradients for the direct transcription methods is very
-      straight-forward -- we simply provide the gradients for each constraint
-      individually.  But in the direct shooting approach, where we have removed
-      the $\bx$ decision variables from the program but still write objectives
-      and constraints in terms of $\bx$, it would become very inefficient to
-      compute the gradients of each objective/constraint independently.  We
-      need to leverage the chain rule.</p>
+      differences if they are not provided -- but I feel strongly that for
+      smooth problems the solvers are faster and more robust when exact
+      gradients are provided (systems that make and break contact might be a
+      different story<elib>Suh22b</elib>). Providing the gradients for the
+      direct transcription methods is very straight-forward -- we simply
+      provide the gradients for each constraint individually.  But in the
+      direct shooting approach, where we have removed the $\bx$ decision
+      variables from the program but still write objectives and constraints in
+      terms of $\bx$, it would become very inefficient to compute the gradients
+      of each objective/constraint independently.  We need to leverage the
+      chain rule.</p>
 
       <p>To be concise (and slightly more general),   let us define
       $\bx[n+1]=f_d(\bx[n],\bu[n])$ as the discrete-time approximation of the
@@ -612,11 +610,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       in the neural networks literature, or more generally a bespoke version of
       reverse-mode <a
       href="https://en.wikipedia.org/wiki/Automatic_differentiation">automatic
-      differentiation</a>. </p>
+      differentiation</a>. (The previous section would correspond to
+      forward-mode automatic differentiation.)</p>
 
     </subsection>
 
     <subsection><h1>Penalty methods and the Augmented Lagrangian</h1>
+
+      <p>In fact, in recent years we have seen a surge in popularity in
+      robotics for doing trajectory optimization using (often special-purpose)
+      solvers for unconstrained trajectory optimization, where the constrained
+      problems are transformed into unconstrained problem via <a
+      href="optimization.html#penalty">penalty methods</a>.  I would say
+      penalty methods based on the augmented Lagrangian are particularly
+      popular for trajectory optimization these days
+      <elib>Lin91+Toussaint14</elib>.</p>
   
     </subsection>
 
@@ -624,7 +632,27 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     
       <p>Cross-entropy method (CEM) and Model-predictive path-integral control
       (MPPI).</p>
-    
+
+      <p>In the last few years, we've seen trajectory optimization playing a
+      major role in "model-based reinforcement learning", especially when the
+      model is represented using a deep neural network (e.g.
+      <elib>Li18+Li18a</elib>). Despite the fact that neural network toolboxes
+      can provide efficient gradients, the gradient-free trajectory
+      optimization methods described here normally the tool of choice. There
+      are a few possible explanations for this. The trajectory optimization
+      problem has local minima, and the zero-order optimizers do provide some
+      aspect of "global optimization" (at least they tend to explore multiple
+      possible minima before converging). Neural network models fit with
+      limited data may even have more local minima than if one used the
+      original physics model -- the standard regression loss could be small
+      even if the neural representation of the function is locally
+      bumpy/non-smooth.  But I think the biggest reason for the popularity of
+      the zero-order methods is that they are trivially parallelizable, and
+      very nicely compatible with the existing GPU neural-network workflows.
+      When rolling out 10,000 samples in parallel costs approximately the same
+      as rolling out 1, then this certainly makes the zero-order methods more
+      appealing.</p>
+
     </subsection>
 
     <subsection><h1>Getting good solutions... in practice.</h1>
@@ -1390,6 +1418,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <span class="publisher">IEEE Transactions on control systems technology</span>, vol. 18, no. 2, pp. 267--278, <span class="year">2009</span>.
 
 </li><br>
+<li id=Dellaert12>
+<span class="author">Frank Dellaert</span>, 
+<span class="title">"Factor graphs and GTSAM: A hands-on introduction"</span>, 
+Tech. Report, GT-RIM-CP&R-2012-002, <span class="year">2012</span>.
+
+</li><br>
 <li id=Hargraves87>
 <span class="author">C. R. Hargraves and S. W. Paris</span>, 
 <span class="title">"Direct Trajectory Optimization using Nonlinear Programming and Collocation"</span>, 
@@ -1408,6 +1442,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <span class="publisher">Annual Reviews in Control</span>, vol. 36, no. 2, pp. 182--197, dec, <span class="year">2012</span>.
 
 </li><br>
+<li id=Suh22b>
+<span class="author">H. J. Terry Suh and Max Simchowitz and Kaiqing Zhang and Russ Tedrake</span>, 
+<span class="title">"Do Differentiable Simulators Give Better Policy Gradients?"</span>, 
+<span class="publisher">Under Review.</span> , January, <span class="year">2022</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Suh22b.pdf">link</a>&nbsp;]
+
+</li><br>
 <li id=Lin91>
 <span class="author">TC Lin and JS Arora</span>, 
 <span class="title">"Differential dynamic programming technique for constrained optimal control"</span>, 
@@ -1418,6 +1459,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <span class="author">Marc Toussaint</span>, 
 <span class="title">"A Novel Augmented Lagrangian Approach for Inequalities and Convergent Any-Time Non-Central Updates"</span>, 
 , <span class="year">2014</span>.
+
+</li><br>
+<li id=Li18>
+<span class="author">Yunzhu Li and Jiajun Wu and Jun-Yan Zhu and Joshua B. Tenenbaum and Antonio Torralba and Russ Tedrake</span>, 
+<span class="title">"Propagation Networks for Model-Based Control Under Partial Observation"</span>, 
+<span class="publisher">Proceedings of the International Conference on Robotics and Automation (ICRA)</span> , May, <span class="year">2019</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Li18.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Li18a>
+<span class="author">Yunzhu Li and Jiajun Wu and Russ Tedrake and Joshua B. Tenenbaum and Antonio Torralba</span>, 
+<span class="title">"Learning Particle Dynamics for Manipulating Rigid Bodies, Deformable Objects, and Fluids"</span>, 
+<span class="publisher">Proceedings of the International Conference on Learning Representations (ICLR)</span>, <span class="year">2019</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Li18a.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Mombaur05>
