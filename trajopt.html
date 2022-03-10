@@ -72,12 +72,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   locally optimal control policies (e.g. using LQR) for even very
   high-dimensional systems, but the effectiveness of the resulting controllers
   is limited to the region of state space where the linearization is a good
-  approximation of the nonlinear dynamics.  The computational tools for Lyapunov
-  analysis from the last chapter can provide, among other things, an effective
-  way to compute estimates of those regions.  But we have not yet provided any
-  real computational tools for approximate optimal control that work for
-  high-dimensional systems beyond the linearization around a goal. That is
-  precisely the goal for this chapter.</p>
+  approximation of the nonlinear dynamics.  The computational tools for
+  Lyapunov analysis from the last chapter can provide, among other things, an
+  effective way to compute estimates of those regions, and the sums-of-squares
+  approaches to dynamic programming are still in their early days.  We have not
+  yet provided the mainstream computational tools for approximate optimal
+  control that work for high-dimensional systems beyond the linearization
+  around a goal. That is precisely the goal for this chapter.</p>
 
   <p>In order to scale to high-dimensional systems, we are going to formulate a
   simpler version of the optimization problem.  Rather than trying to solve for
@@ -518,131 +519,155 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     </subsection>
 
-    <subsection><h1>Solution techniques</h1>
+  </section>
 
-      <p>The different transcriptions presented above represent different ways
-      to map the (potentially continuous-time) optimal control problem into a
-      finite set of decision variables, objectives, and constraints.  But even
-      once that choice is made, there are numerous approaches to solving this
-      optimization problem.  Any general approach to <a
-      href="optimization.html#nonlinear">nonlinear programming</a>
-      can be applied here; in the python examples we've included so far, the
-      problems are handed directly to the sequential-quadratic programming (SQP)
-      solver SNOPT, or to the interior-point solver IPOPT.</p>
+  <section><h1>Solution techniques</h1>
 
-      <p>There is also quite a bit of exploitable problem-specific structure in
-      these trajectory optimization problems due to the sequential nature of the
-      problem. As a result, there are some ideas that are fairly specific to the
-      trajectory optimization formulation of optimal control, and customized
-      solvers can often (and sometimes dramatically) outperform general purpose
-      solvers.</p>
+    <p>The different transcriptions presented above represent different ways to
+    map the (potentially continuous-time) optimal control problem into a finite
+    set of decision variables, objectives, and constraints.  But even once that
+    choice is made, there are numerous approaches to solving this optimization
+    problem.  Any general approach to <a
+    href="optimization.html#nonlinear">nonlinear programming</a>
+    can be applied here; in the python examples we've included so far, the
+    problems are handed directly to the sequential-quadratic programming (SQP)
+    solver SNOPT, or to the interior-point solver IPOPT.</p>
 
-      <p>This trajectory-optimization structure is easiest to discuss, and
-      implement, in unconstrained formulations, so we will start there. In fact,
-      in recent years we have seen a surge in popularity in robotics for doing
-      trajectory optimization using (often special-purpose) solvers for
-      unconstrained trajectory optimization, where the constrained problems are
-      transformed into unconstrained problem via <a
-      href="optimization.html#penalty">penalty methods</a>.  I would say penalty
-      methods based on the augmented Lagrangian are particularly popular for
-      trajectory optimization these days <elib>Lin91+Toussaint14</elib>.</p>
+    <p>There is also quite a bit of exploitable problem-specific structure in
+    these trajectory optimization problems due to the sequential nature of the
+    problem. As a result, there are some ideas that are fairly specific to the
+    trajectory optimization formulation of optimal control, and customized
+    solvers can often (and sometimes dramatically) outperform general purpose
+    solvers.</p>
 
-      <subsubsection><h1>Efficiently computing gradients</h1>
+    <p>This trajectory-optimization structure is easiest to discuss, and
+    implement, in unconstrained formulations, so we will start there. In fact,
+    in recent years we have seen a surge in popularity in robotics for doing
+    trajectory optimization using (often special-purpose) solvers for
+    unconstrained trajectory optimization, where the constrained problems are
+    transformed into unconstrained problem via <a
+    href="optimization.html#penalty">penalty methods</a>.  I would say penalty
+    methods based on the augmented Lagrangian are particularly popular for
+    trajectory optimization these days <elib>Lin91+Toussaint14</elib>.</p>
 
-        <p>Providing gradients of the objectives and constraints to the solver
-        is not strictly required -- most solvers will obtain them from finite
-        differences if they are not provided -- but I feel strongly that the
-        solvers are faster and more robust when exact gradients are provided.
-        Providing the gradients for the direct transcription methods is very
-        straight-forward -- we simply provide the gradients for each constraint
-        individually.  But in the direct shooting approach, where we have
-        removed the $\bx$ decision variables from the program but still write
-        objectives and constraints in terms of $\bx$, it would become very
-        inefficient to compute the gradients of each objective/constraint
-        independently.  We need to leverage the chain rule.</p>
+    <subsection><h1>Efficiently computing gradients</h1>
 
-        <p>To be concise (and slightly more general),   let us define
-        $\bx[n+1]=f_d(\bx[n],\bu[n])$ as the discrete-time approximation of the
-        continuous dynamics; for example, the forward Euler integration scheme
-        used above would give $f_d(\bx[n],\bu[n]) = \bx[n]+f(\bx[n],\bu[n])dt.$
-        Then we have \[\pd{J}{\bu_k} = \pd{\ell_f(\bx[N])}{\bu_k} +
-        \sum_{n=0}^{N-1} \left(\pd{\ell(\bx[n],\bu[n])}{\bx[n]}
-        \pd{\bx[n]}{\bu_k} + \pd{\ell(\bx[n],\bu[n])}{\bu_k} \right), \]   where
-        the gradient of the state with respect to the inputs can be computed
-        during the "forward simulation",   \[ \pd{\bx[n+1]}{\bu_k} =
-        \pd{f_d(\bx[n],\bu[n])}{\bx[n]} \pd{\bx[n]}{\bu_k} +
-        \pd{f_d(\bx[n],\bu[n])}{\bu_k}.  \]   These simulation gradients can
-        also be used in the chain rule to provide the gradients of any
-        constraints.  Note that there are a lot of terms to keep around here, on
-        the order of (state dim) $\times$ (control dim) $\times$ (number of
-        timesteps).   Ouch.  Note also that many of these terms are zero; for
-        instance with the Euler integration scheme above $\pd{\bu[n]}{\bu_k} =
-        0$ if $k\ne n$.  (If this looks like I'm mixing two notations here,
-        recall that I'm using $\bu_k$ to represent the decision variable and
-        $\bu[n]$ to represent the input used in the $n$th step of the
-        simulation.)</p>
+      <p>Providing gradients of the objectives and constraints to the solver is
+      not strictly required -- most solvers will obtain them from finite
+      differences if they are not provided -- but I feel strongly that the
+      solvers are faster and more robust when exact gradients are provided.
+      Providing the gradients for the direct transcription methods is very
+      straight-forward -- we simply provide the gradients for each constraint
+      individually.  But in the direct shooting approach, where we have removed
+      the $\bx$ decision variables from the program but still write objectives
+      and constraints in terms of $\bx$, it would become very inefficient to
+      compute the gradients of each objective/constraint independently.  We
+      need to leverage the chain rule.</p>
 
-      </subsubsection>  <!-- gradients -->
+      <p>To be concise (and slightly more general),   let us define
+      $\bx[n+1]=f_d(\bx[n],\bu[n])$ as the discrete-time approximation of the
+      continuous dynamics; for example, the forward Euler integration scheme
+      used above would give $f_d(\bx[n],\bu[n]) = \bx[n]+f(\bx[n],\bu[n])dt.$
+      Then we have \[\pd{J}{\bu_k} = \pd{\ell_f(\bx[N])}{\bu_k} +
+      \sum_{n=0}^{N-1} \left(\pd{\ell(\bx[n],\bu[n])}{\bx[n]}
+      \pd{\bx[n]}{\bu_k} + \pd{\ell(\bx[n],\bu[n])}{\bu_k} \right), \]   where
+      the gradient of the state with respect to the inputs can be computed
+      during the "forward simulation",   \[ \pd{\bx[n+1]}{\bu_k} =
+      \pd{f_d(\bx[n],\bu[n])}{\bx[n]} \pd{\bx[n]}{\bu_k} +
+      \pd{f_d(\bx[n],\bu[n])}{\bu_k}.  \]   These simulation gradients can also
+      be used in the chain rule to provide the gradients of any constraints.
+      Note that there are a lot of terms to keep around here, on the order of
+      (state dim) $\times$ (control dim) $\times$ (number of timesteps).
+      Ouch.  Note also that many of these terms are zero; for instance with the
+      Euler integration scheme above $\pd{\bu[n]}{\bu_k} = 0$ if $k\ne n$.  (If
+      this looks like I'm mixing two notations here, recall that I'm using
+      $\bu_k$ to represent the decision variable and $\bu[n]$ to represent the
+      input used in the $n$th step of the simulation.)</p>
 
-      <subsubsection><h1>The special case of direct shooting without state
-      constraints</h1>
+    </subsection>  <!-- gradients -->
 
-        <p>By solving for $\bx(\cdot)$ ourselves, we've removed a large number
-        of constraints from the optimization.  If no additional state
-        constraints are present, and the only gradients we need to compute are
-        the gradients of the objective, then a surprisingly efficient algorithm
-        emerges.  I'll give the steps here without derivation, but will derive
-        it in the Pontryagin section below: <ol> <li>Simulate forward:
-        $$\bx[n+1] = f_d(\bx[n],\bu_n),$$ from  $\bx[0] = \bx_0$.</li>
-        <li>Calculate backwards: $$\lambda[n-1] =
-        \pd{\ell(\bx[n],\bu[n])}{\bx[n]}^T + \pd{f(\bx[n],\bu[n])}{\bx[n]}^T
-        \lambda[n],$$ from $\lambda[N-1]=\pd{\ell_f(\bx[N])}{\bx[N]}$.</li>
-        <li>Extract the gradients: $$\pd{J}{\bu[n]} =
-        \pd{\ell(\bx[n],\bu[n])}{\bu[n]} + \lambda[n]^T
-        \pd{f(\bx[n],\bu[n])}{\bu[n]},$$ with $\pd{J}{\bu_k} = \sum_n
-        \pd{J}{\bu[n]}\pd{\bu[n]}{\bu_k}$.</li> </ol> <p>Here $\lambda[n]$ is a
-        vector the same size as $\bx[n]$ which has an interpretation as
-        $\lambda[n]=\pd{J}{\bx[n+1]}^T$.  The equation governing $\lambda$ is
-        known as the <em>adjoint equation</em>, and it represents a dramatic
-        efficiency improvement over calculating the huge number of simulation
-        gradients described above. In case you are interested, yes the adjoint
-        equation is exactly the <em>backpropagation algorithm</em> that is
-        famous in the neural networks literature, or more generally a bespoke
-        version of reverse-mode <a
-        href="https://en.wikipedia.org/wiki/Automatic_differentiation">automatic
-        differentiation</a>. </p>
+    <subsection><h1>The special case of direct shooting without state
+    constraints</h1>
 
-      </subsubsection>
+      <p>By solving for $\bx(\cdot)$ ourselves, we've removed a large number of
+      constraints from the optimization.  If no additional state constraints
+      are present, and the only gradients we need to compute are the gradients
+      of the objective, then a surprisingly efficient algorithm emerges.  I'll
+      give the steps here without derivation, but will derive it in the
+      Pontryagin section below: <ol> <li>Simulate forward: $$\bx[n+1] =
+      f_d(\bx[n],\bu_n),$$ from  $\bx[0] = \bx_0$.</li>
+      <li>Calculate backwards: $$\lambda[n-1] =
+      \pd{\ell(\bx[n],\bu[n])}{\bx[n]}^T + \pd{f(\bx[n],\bu[n])}{\bx[n]}^T
+      \lambda[n],$$ from $\lambda[N-1]=\pd{\ell_f(\bx[N])}{\bx[N]}$.</li>
+      <li>Extract the gradients: $$\pd{J}{\bu[n]} =
+      \pd{\ell(\bx[n],\bu[n])}{\bu[n]} + \lambda[n]^T
+      \pd{f(\bx[n],\bu[n])}{\bu[n]},$$ with $\pd{J}{\bu_k} = \sum_n
+      \pd{J}{\bu[n]}\pd{\bu[n]}{\bu_k}$.</li> </ol> <p>Here $\lambda[n]$ is a
+      vector the same size as $\bx[n]$ which has an interpretation as
+      $\lambda[n]=\pd{J}{\bx[n+1]}^T$.  The equation governing $\lambda$ is
+      known as the <em>adjoint equation</em>, and it represents a dramatic
+      efficiency improvement over calculating the huge number of simulation
+      gradients described above. In case you are interested, yes the adjoint
+      equation is exactly the <em>backpropagation algorithm</em> that is famous
+      in the neural networks literature, or more generally a bespoke version of
+      reverse-mode <a
+      href="https://en.wikipedia.org/wiki/Automatic_differentiation">automatic
+      differentiation</a>. </p>
 
-      <subsubsection><h1>Getting good solutions... in practice.</h1>
+    </subsection>
 
-        <p>As you begin to play with these algorithms on your own problems, you might feel like you're on an emotional roller-coaster.  You will have moments of incredible happiness -- the solver may find very impressive solutions to highly nontrivial problems.  But you will also have moments of frustration, where the solver returns an awful solution, or simply refuses to return a solution (saying "infeasible").  The frustrating thing is, you cannot distinguish between a problem that is actually infeasible, vs. the case where the solver was simply stuck in a local minima.</p>
+    <subsection><h1>Penalty methods and the Augmented Lagrangian</h1>
+  
+    </subsection>
 
-        <p>So the next phase of your journey is to start trying to "help" the solver along.  There are two common approaches.</p>
+    <subsection><h1>Zero-order optimization</h1>
+    
+      <p>Cross-entropy method (CEM) and Model-predictive path-integral control
+      (MPPI).</p>
+    
+    </subsection>
 
-        <p>The first is tuning your cost function -- some people spend a lot of time adding new elements to the objective or adjusting the relative weight of the different components of the objective.  This is a slippery slope, and I tend to try to avoid it (possibly to a fault; other groups tend to put out more compelling videos!).</p>
+    <subsection><h1>Getting good solutions... in practice.</h1>
 
-        <p>The second approach is to give a better initial guess to your solver
-        to put it in the vicinity of the "right" local minimal.  I find this
-        approach more satisfying, because for most problems I think there really
-        is a "correct" formulation for the objective and constraints, and we
-        should just aim to find the optimal solution.  Once again, we do see a
-        difference here between the direct shooting algorithms and the direct
-        transcription / collocation algorithms.  For shooting, we can only
-        provide the solver with an initial guess for $\bu(\cdot)$, whereas the
-        other methods allow us to also specify an initial guess for $\bx(\cdot)$
-        directly.  I find that this can help substantially, even with very
-        simple initializations.  In the direct collocation examples for the
-        swing-up problem of the Acrobot and cart-pole, simply providing the
-        initial guess for $\bx(\cdot)$ as a straight line trajectory between the
-        start and the goal was enough to help the solver find a good solution;
-        in fact it was necessary.</p>
+      <p>As you begin to play with these algorithms on your own problems, you
+      might feel like you're on an emotional roller-coaster.  You will have
+      moments of incredible happiness -- the solver may find very impressive
+      solutions to highly nontrivial problems.  But you will also have moments
+      of frustration, where the solver returns an awful solution, or simply
+      refuses to return a solution (saying "infeasible").  The frustrating
+      thing is, you cannot distinguish between a problem that is actually
+      infeasible, vs. the case where the solver was simply stuck in a local
+      minima.</p>
 
-      </subsubsection>
+      <p>So the next phase of your journey is to start trying to "help" the
+      solver along.  There are two common approaches.</p>
 
-      <!-- maybe: relaxing dynamic constraints (as in the formulation n Ross and Karpenko, 2012 between eq 16 and 17) -->
+      <p>The first is tuning your cost function -- some people spend a lot of
+      time adding new elements to the objective or adjusting the relative
+      weight of the different components of the objective.  This is a slippery
+      slope, and I tend to try to avoid it (possibly to a fault; other groups
+      tend to put out more compelling videos!).</p>
 
-    </subsection> <!-- end pros/cons -->
+      <p>The second approach is to give a better initial guess to your solver
+      to put it in the vicinity of the "right" local minimal.  I find this
+      approach more satisfying, because for most problems I think there really
+      is a "correct" formulation for the objective and constraints, and we
+      should just aim to find the optimal solution.  Once again, we do see a
+      difference here between the direct shooting algorithms and the direct
+      transcription / collocation algorithms.  For shooting, we can only
+      provide the solver with an initial guess for $\bu(\cdot)$, whereas the
+      other methods allow us to also specify an initial guess for $\bx(\cdot)$
+      directly.  I find that this can help substantially, even with very simple
+      initializations.  In the direct collocation examples for the swing-up
+      problem of the Acrobot and cart-pole, simply providing the initial guess
+      for $\bx(\cdot)$ as a straight line trajectory between the start and the
+      goal was enough to help the solver find a good solution; in fact it was
+      necessary.</p>
+
+    </subsection>
+
+    <!-- maybe: relaxing dynamic constraints (as in the formulation n Ross and
+    Karpenko, 2012 between eq 16 and 17) -->
 
   </section> <!-- end three algorithms -->
 
