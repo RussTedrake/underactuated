@@ -623,11 +623,22 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <p>In fact, in recent years we have seen a surge in popularity in
       robotics for doing trajectory optimization using (often special-purpose)
       solvers for unconstrained trajectory optimization, where the constrained
-      problems are transformed into unconstrained problem via <a
-      href="optimization.html#penalty">penalty methods</a>.  I would say
-      penalty methods based on the augmented Lagrangian are particularly
-      popular for trajectory optimization these days
-      <elib>Lin91+Toussaint14</elib>.</p>
+      problems are transformed into unconstrained problem via penalty
+      methods.</p>  
+      
+      <p>Manually adding penalty terms to the cost function with user-specified
+      cost weighting can be nasty business. Often this generates a significant
+      amount of effort in "cost function tuning"; setting the weights too large
+      can cause the problems to become numerically ill-conditioned, but setting
+      them too small can allow unwanted constraint violations. The <a
+      href="https://en.wikipedia.org/wiki/Augmented_Lagrangian_method"><i>augmented
+      Lagrangian</i></a> approach offers a principled solution to this problem,
+      by automatically scheduling the weights in order to achieve "essentially
+      exact" satisfaction of the constraints with finite penalties
+      <elib>Bertsekas82</elib>, <elib part="Ch. 17">Nocedal06</elib>.</p>
+      
+      <p>Methods based on the augmented Lagrangian are particularly popular for
+      trajectory optimization these days <elib>Lin91+Toussaint14</elib>.</p>
   
     </subsection>
 
@@ -1451,6 +1462,18 @@ Tech. Report, GT-RIM-CP&R-2012-002, <span class="year">2012</span>.
 <span class="title">"Do Differentiable Simulators Give Better Policy Gradients?"</span>, 
 <span class="publisher">Under Review.</span> , January, <span class="year">2022</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Suh22b.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Bertsekas82>
+<span class="author">Dimitri P Bertsekas</span>, 
+<span class="title">"Constrained optimization and Lagrange multiplier methods"</span>, Academic press
+, <span class="year">1982</span>.
+
+</li><br>
+<li id=Nocedal06>
+<span class="author">Jorge Nocedal and Stephen J. Wright</span>, 
+<span class="title">"Numerical optimization"</span>, Springer
+, <span class="year">2006</span>.
 
 </li><br>
 <li id=Lin91>
