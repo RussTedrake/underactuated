@@ -8,4 +8,5 @@ docker push russtedrake/underactuated:latest
 docker build -f setup/docker/Dockerfile -t russtedrake/underactuated:$(git rev-parse --short HEAD) .
 docker push russtedrake/underactuated:$(git rev-parse --short HEAD)
 echo russtedrake/underactuated:$(git rev-parse --short HEAD)
+python3 htmlbook/publish_to_deepnote.py $(git rev-parse --short HEAD)
 ```

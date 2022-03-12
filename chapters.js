@@ -1,3 +1,5 @@
+// TODO: Write this in install_html_metadata to keep it in sync with
+// Deepnote.json
 var deepnote = {
   "intro": "52e7e101-429f-4aef-a373-e4cca7980cfe",
   "pend": "314062d5-b839-4089-b02f-6c21e42e9581",
@@ -12,7 +14,7 @@ var deepnote = {
   "limit_cycles": "b03c5019-403b-4693-8305-f864177e89c3",
   "contact": "41a6fb3f-9ceb-4752-883b-7dbcea779f49",
   "sysid": "8f8d3fd5-f29b-43b9-a0d4-4cee1c8b244e",
-  "optimization": "4266eff1-41ee-434a-aa62-0f5a1243ecd2",
+  "optimization": "4266eff1-41ee-434a-aa62-0f5a1243ecd2"
 }
 
 function notebook_header(chapter) {
