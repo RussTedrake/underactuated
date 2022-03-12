@@ -383,22 +383,23 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       </figure>
 
       <p>Given values of the decision variables ($\bu(t_k)$ and $\bx(t_k)$ at
-      the break points), the spline is fully specified, but we need one
-      additional constraint to constrain that those decision variables are
-      dynamically consistent with each other.  In direct collocation, we add a
-      derivative constraint at the so-called <i>collocation points</i>.  In
-      particular, if we choose the collocation points to be the midpoints of
-      the spline, then we have that \begin{gather*} t_{c,k} =
-      \frac{1}{2}\left(t_k + t_{k+1}\right), \qquad h_k = t_{k+1} - t_k, \\
-      \bu(t_{c,k}) = \frac{1}{2}\left(\bu(t_k) + \bu(t_{k+1})\right), \\
-      \bx(t_{c,k}) = \frac{1}{2}\left(\bx(t_k) + \bx(t_{k+1})\right) +
-      \frac{h}{8} \left(\dot\bx(t_k) - \dot\bx(t_{k+1})\right), \\
-      \dot\bx(t_{c,k}) = -\frac{3}{2h}\left(\bx(t_k) - \bx(t_{k+1})\right) -
-      \frac{1}{4} \left(\dot\bx(t_k) + \dot\bx(t_{k+1})\right). \end{gather*}
-      These equations come directly from the equations that fit the cubic
-      spline to the end points/derivatives then interpolate them at the
-      midpoint.  They give us precisely what we need to add the dynamics
-      constraint to our optimization at the collocation points:\begin{align*}
+      the break points), the spline is fully specified, but we need dim$(\bx)$
+      additional constraints to constrain that $\bx(t_{k+1})$ is
+      (approximately) $\bx(t_k) + \int_{t_k}^{t_{k+1}} f(\bx(t),\bu(t)) dt.$ In
+      direct collocation, we impose this with derivative constraints at the
+      so-called <i>collocation points</i>.  In particular, if we choose the
+      collocation points to be the midpoints of the spline, then we have that
+      \begin{gather*} t_{c,k} = \frac{1}{2}\left(t_k + t_{k+1}\right), \qquad
+      h_k = t_{k+1} - t_k, \\ \bu(t_{c,k}) = \frac{1}{2}\left(\bu(t_k) +
+      \bu(t_{k+1})\right), \\ \bx(t_{c,k}) = \frac{1}{2}\left(\bx(t_k) +
+      \bx(t_{k+1})\right) + \frac{h}{8} \left(\dot\bx(t_k) -
+      \dot\bx(t_{k+1})\right), \\ \dot\bx(t_{c,k}) =
+      -\frac{3}{2h}\left(\bx(t_k) - \bx(t_{k+1})\right) - \frac{1}{4}
+      \left(\dot\bx(t_k) + \dot\bx(t_{k+1})\right). \end{gather*} These
+      equations come directly from the equations that fit the cubic spline to
+      the end points/derivatives then interpolate them at the midpoint.  They
+      give us precisely what we need to add the dynamics constraint to our
+      optimization at the collocation points:\begin{align*}
       \min_{\bx[\cdot],\bu[\cdot]} \quad & \ell_f(\bx[N]) + \sum_{n_0}^{N-1}
       h_n \ell(\bx[n],\bu[n]) \\ \subjto \quad & \dot\bx(t_{c,n}) =
       f(\bx(t_{c,n}), \bu(t_{c,n})), & \forall n \in [0,N-1]  \\ & \bx[0] =
@@ -407,7 +408,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       variables, and the collocation constraint at $t_{c,k}$ depends on the
       decision variables: $\bx[k], \bx[k+1], \bu[k], \bu[k+1]$. The actual
       equations of motion get evaluated at both the break points, $t_k$, and
-      the collocation points, $t_{c,k}$.</p>
+      the collocation points, $t_{c,k}$, because we need to evaluate the
+      dynamics at the break points in order to write $\dot{\bx}(t_{c,k}).$</p>
 
       <p>Once again, direct collocation effectively integrates the equations of
       motion by satisfying the constraints of the optimization -- this time

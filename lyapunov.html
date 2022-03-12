@@ -490,17 +490,28 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       over positive polynomials (if you are not familiar, take a moment to <a
       href="optimization.html#sums_of_squares">read the appendix</a>).  This
       suggests that it may be possible to generalize the optimization approach
-      using SDP to search for Lyapunov functions for linear systems to searching
-      for Lyapunov functions for at least the polynomial systems: $\dot\bx =
-      f(\bx),$ where $f$ is a vector-valued polynomial function.  If we
-      parameterize a <em>fixed-degree</em> Lyapunov candidate as a polynomial
-      with unknown coefficients, e.g., \[ V_\alpha(\bx) = \alpha_0 + \alpha_1
-      x_1 + \alpha_2 x_2 + \alpha_3 x_1x_2 + \alpha_4 x_1^2 + ..., \] then the
-      time-derivative of $V$ is also a polynomial, and I can formulate the
-      optimization: \begin{align*} \find_\alpha, \quad \subjto \quad&
-      V_\alpha(\bx) \sos \\ & -\dot{V}_\alpha(\bx) = -\pd{V_\alpha}{\bx} f(\bx)
-      \sos. \end{align*}  Because this is a convex optimization, the solver will
-      return a solution if one exists.</p>
+      using SDP to search for Lyapunov functions for linear systems to
+      searching for Lyapunov functions for at least the polynomial systems:
+      $\dot\bx = f(\bx),$ where $f$ is a vector-valued polynomial function.  If
+      we parameterize a <em>fixed-degree</em> Lyapunov candidate as a
+      polynomial with unknown coefficients, e.g., \[ V_\alpha(\bx) = \alpha_0 +
+      \alpha_1 x_1 + \alpha_2 x_2 + \alpha_3 x_1x_2 + \alpha_4 x_1^2 + ..., \]
+      then the time-derivative of $V$ is also a polynomial, and I can formulate
+      the optimization: \begin{align*} \find_\alpha, \quad \subjto \quad&
+      V_\alpha(\bx) \sos,  \quad V_\alpha(0) = 0 \\ & -\dot{V}_\alpha(\bx) =
+      -\pd{V_\alpha}{\bx} f(\bx) \sos. \end{align*} Because this is a convex
+      optimization, the solver will return a solution if one exists, and this
+      solution would certify stability i.s.L. of the origin. Note that I don't
+      actually need to include the constraint $\dot{V}_\alpha({\bf 0}) = 0$; if
+      $V_\alpha$ is a smooth function, is zero at zero, and is positive for all
+      $\bx$, then this already implies that $\pd{V_\alpha}{\bx} = 0.$</p>
+
+      <p>If we wish to demonstrate (global) asymptotic stability, then we can
+      write the constraint $\dot{V}_\alpha(\bx) \prec 0$ as
+      $$-\dot{V}_\alpha(\bx) - \epsilon \bx^T\bx \text{ is SOS,}$$ where
+      $\epsilon$ is a small positive constant that need only be larger than the
+      numerical tolerances of the solver. The conditions for exponential
+      stability fit easily, too.</p>
 
       <example><h1>Verifying a Lyapunov candidate via SOS</h1>
 
