@@ -200,30 +200,6 @@ class TestIlqrDriving(unittest.TestCase):
                                35.931091753768,
                                msg="Incorrect V_xx")
 
-        k, K = np.random.randn(*k.shape), np.random.randn(*K.shape)
-        V_x, V_xx = V_terms(Q_x, Q_u, Q_xx, Q_ux, Q_uu, K, k)
-        V_x_test_val = V_x @ test_inputs
-        V_xx_test_val = test_inputs @ V_xx @ test_inputs
-
-        # Uncomment these to ensure that simplification is not
-        # occurrring in V_terms
-
-        # if np.isclose(V_x_test_val, -2.0669672522096185) and np.isclose(
-        #         V_xx_test_val, -18.783097848222507):
-        #     self.assertTrue(
-        #         False,
-        #         msg="Do NOT simplify out the expression for the value "
-        #         "update assuming that by "
-        #         "K = Q_uu^{-1}Q_ux and k = Quu^{-1}Qu")
-
-        # self.assertAlmostEqual(V_x_test_val,
-        #                        -2.092235316826726,
-        #                        msg="Incorrect V_x")
-
-        # self.assertAlmostEqual(V_xx_test_val,
-        #                        1.1134429282957403,
-        #                        msg="Incorrect V_xx")
-
     @weight(2)
     @timeout_decorator.timeout(1.)
     def test7_forward_pass(self):
