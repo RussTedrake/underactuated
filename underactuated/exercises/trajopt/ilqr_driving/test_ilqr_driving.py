@@ -205,6 +205,8 @@ class TestIlqrDriving(unittest.TestCase):
         V_x_test_val = V_x @ test_inputs
         V_xx_test_val = test_inputs @ V_xx @ test_inputs
 
+
+        # Uncomment these to ensure that simplification is not occurrring in V_terms
         if np.isclose(V_x_test_val, -2.0669672522096185) and np.isclose(
                 V_xx_test_val, -18.783097848222507):
             self.assertTrue(
@@ -265,6 +267,9 @@ class TestIlqrDriving(unittest.TestCase):
         K = np.random.randn(2, 5)
         u_trj = np.random.randn(N - 1, n_u)
         x_trj = np.random.randn(N, n_x)
+        
+        # reset the regu back to 100 (not 0.0) to test difference between simplified and
+        # unsimplified V_terms implementation
         k_trj, K_trj, _ = backward_pass(x_trj, u_trj, 0.0)
 
         r_test = 10 * np.random.randn(k_trj.shape[1])
