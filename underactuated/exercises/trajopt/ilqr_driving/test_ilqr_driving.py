@@ -132,14 +132,21 @@ class TestIlqrDriving(unittest.TestCase):
         Q_ux_test_target = 0.5156605288974515
         Q_uu_test_target = -0.28166353613679074
 
-        self.assertAlmostEqual(Q_x_test_val, Q_x_test_target, "Incorrect Q_x")
-        self.assertAlmostEqual(Q_u_test_val, Q_u_test_target, "Incorrect Q_u")
-        self.assertAlmostEqual(Q_xx_test_val, Q_xx_test_target,
-                               "Incorrect Q_xx")
-        self.assertAlmostEqual(Q_ux_test_val, Q_ux_test_target,
-                               "Incorrect Q_ux")
-        self.assertAlmostEqual(Q_uu_test_val, Q_uu_test_target,
-                               "Incorrect Q_uu")
+        self.assertAlmostEqual(Q_x_test_val,
+                               Q_x_test_target,
+                               msg="Incorrect Q_x")
+        self.assertAlmostEqual(Q_u_test_val,
+                               Q_u_test_target,
+                               msg="Incorrect Q_u")
+        self.assertAlmostEqual(Q_xx_test_val,
+                               Q_xx_test_target,
+                               msg="Incorrect Q_xx")
+        self.assertAlmostEqual(Q_ux_test_val,
+                               Q_ux_test_target,
+                               msg="Incorrect Q_ux")
+        self.assertAlmostEqual(Q_uu_test_val,
+                               Q_uu_test_target,
+                               msg="Incorrect Q_uu")
 
     @weight(3)
     @timeout_decorator.timeout(1.)
