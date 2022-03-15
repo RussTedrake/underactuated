@@ -244,7 +244,12 @@ class TestIlqrDriving(unittest.TestCase):
         K = np.random.randn(2, 5)
         u_trj = np.random.randn(N - 1, n_u)
         x_trj = np.random.randn(N, n_x)
-        k_trj, K_trj, _ = backward_pass(x_trj, u_trj, 100.0)
+
+        # TODO(AlexandreAmice) reset the regu
+        # back to 100 (not 0.0) to test difference
+        # between simplified and
+        # unsimplified V_terms implementation
+        k_trj, K_trj, _ = backward_pass(x_trj, u_trj, 0.0)
 
         r_test = 10 * np.random.randn(k_trj.shape[1])
         l_test = 10 * np.random.randn(k_trj.shape[0])
@@ -253,6 +258,6 @@ class TestIlqrDriving(unittest.TestCase):
         K_trj_test_val = np.einsum("i, ijk, j -> k", l_test, K_trj,
                                    r_test).sum()
 
-        self.assertEqual(k_trj_test_val, -5.38760291010242, "Incorrect k_trj")
+        self.assertEqual(k_trj_test_val, -1692.9113129829561, "Incorrect k_trj")
 
-        self.assertEqual(K_trj_test_val, 3.775264597792349, "Incorrect K_trj")
+        self.assertEqual(K_trj_test_val, 1206.556213713096, "Incorrect K_trj")
