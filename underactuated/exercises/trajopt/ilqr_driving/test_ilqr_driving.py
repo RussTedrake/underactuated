@@ -223,11 +223,13 @@ class TestIlqrDriving(unittest.TestCase):
         x_trj_new_test_val = x_test @ x_trj_new @ x_test
         u_trj_new_test_val = (u_test @ u_trj_new).sum()
 
-        self.assertEqual(x_trj_new_test_val, -1.0615491271322297,
-                         "Incorrect x_trj_new")
+        self.assertAlmostEqual(x_trj_new_test_val,
+                               -1.0615491271322297,
+                               msg="Incorrect x_trj_new")
 
-        self.assertEqual(u_trj_new_test_val, -10.649763284585609,
-                         "Incorrect u_trj_new")
+        self.assertAlmostEqual(u_trj_new_test_val,
+                               -10.649763284585609,
+                               msg="Incorrect u_trj_new")
 
     @weight(2)
     @timeout_decorator.timeout(1.)
@@ -258,6 +260,10 @@ class TestIlqrDriving(unittest.TestCase):
         K_trj_test_val = np.einsum("i, ijk, j -> k", l_test, K_trj,
                                    r_test).sum()
 
-        self.assertEqual(k_trj_test_val, -1692.9113129829561, "Incorrect k_trj")
+        self.assertAlmostEqual(k_trj_test_val,
+                               -1692.9113129829561,
+                               msg="Incorrect k_trj")
 
-        self.assertEqual(K_trj_test_val, 1206.556213713096, "Incorrect K_trj")
+        self.assertAlmostEqual(K_trj_test_val,
+                               1206.556213713096,
+                               msg="Incorrect K_trj")
