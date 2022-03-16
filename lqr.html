@@ -256,6 +256,21 @@ print("S = " + str(S))</code></pre></div>
       to the value iteration visualizations that we did in the previous
       chapter.</todo>
 
+      <p>The solution ${\bf S}(t)$ will be the result of numerical integration.
+      On weakly controllable systems (like the <a
+      href="trajopt.html#perching">perching airplane</a>), I've found that even
+      error-controlled integration can lead to crippling numerical artifacts
+      such as the loss of symmetry or positive definiteness. For a more robust
+      numerical solution, we can instead integrate a factorization of ${\bf S}$
+      that ensures these properties are maintained. Taking ${\bf S}(t) = {\bf
+      P}(t){\bf P}^T(t)$, and again using the fact that $\bx^T{\bf P}\dot{\bf
+      P}^T\bx = \bx^T\dot{\bf P}{\bf P}^T \bx$, we can write the "square-root
+      form" of the Riccati differential equation: $$-\dot{\bf P}(t) = \bA^T
+      {\bf P}(t) - \frac{1}{2}{\bf S}(t)\bB{\bf R}^{-1}\bB^T{\bf P}(t) +
+      \frac{1}{2}{\bf Q}{\bf P}^{-T}(t), \quad {\bf P}(t_f) = {\bf
+      Q}_f^\frac{1}{2}.$$ This form does require that ${\bf P}(t)$ is
+      invertible, which in turn requires that ${\bf Q}_f \succ 0.$</p>
+
     </subsection>
 
     <subsection><h1>Time-varying LQR</h1>
@@ -378,11 +393,12 @@ print("S = " + str(S))</code></pre></div>
       derivation, and is symmetric (as we assumed).  Note also that $s_0(t)$ has
       no effect on control (even indirectly), and so can often be ignored.</p>
 
-      <p>A quick observation about the quadratic form, which might be helpful in
-      debugging.  We know that $J(\bx,t)$ must be uniformly positive.  This is
-      true iff ${\bf S}_{xx}\succ 0$ and $s_0 > {\bf s}_x^T {\bf S}_{xx}^{-1}
-      {\bf s}_x$, which comes from evaluating the function at $\bx_{min}(t)$ defined
-      by $\left[ \pd{J^*(\bx,t)}{\bx} \right]_{\bx=\bx_{min}(t)} = 0$.</p>
+      <p>A quick observation about the quadratic form, which might be helpful
+      in debugging.  We know that $J(\bx,t)$ must be uniformly positive.  This
+      is true iff ${\bf S}_{xx}\succ 0$ and $s_0 > {\bf s}_x^T {\bf
+      S}_{xx}^{-1} {\bf s}_x$, which comes from evaluating the function at
+      $\bx_{min}(t)$ defined by $\left[ \pd{J^*(\bx,t)}{\bx}
+      \right]_{\bx=\bx_{min}(t)} = 0$.</p>
 
       <todo>test this on an example, get my notation consistent (s(t)^T vs
       s^T(t), etc.</todo>
