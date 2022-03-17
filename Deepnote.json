@@ -8,6 +8,7 @@
   "lqr": "05eb768f-556f-4673-9f82-b8e681c9339e",
   "lyapunov": "e5ec0aeb-d006-4689-a009-180923e76318",
   "trajopt": "05031f8c-3586-4b47-be79-7f4893cf2f9d",
+  "examples/perching": "05031f8c-3586-4b47-be79-7f4893cf2f9d",
   "policy_search": "580a0aa5-3a4d-4c74-a50f-aeda83251fdc",
   "limit_cycles": "b03c5019-403b-4693-8305-f864177e89c3",
   "contact": "41a6fb3f-9ceb-4752-883b-7dbcea779f49",
