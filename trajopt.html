@@ -972,12 +972,27 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <figure>
         <img width="100%" src="figures/perching_lqr.svg">
         <figcaption>Rollouts with the finite-horizon LQR
-        regulator.</figcaption>
+          regulator.</figcaption>
       </figure>
 
       <script>document.write(notebook_link('trajopt', 'perching'))</script>
 
+      <figure>
+        <img width="100%" src="figures/perching_controllability.svg">
+        <figcaption>Rendering of the inverse of the largest eigenvalue of ${\bf
+        S}(t)$ overlaid on the perching trajectory, demonstrating the regions
+        of poor controllability as the velocity of the vehicle approaches zero
+        <elib>Roberts09</elib>.</figcaption>
+      </figure>
+  
     <subsection><h1>Trajectory funnels</h1></subsection>
+
+      <figure>
+        <img width="100%" src="figures/perching_funnels_xz_trajs.svg">
+        <figcaption>Finite-time invariant sets for the LQR controller around a
+          perching trajectory (obtained via sums-of-squares
+          optimization).</figcaption>
+        </figure>
 
     <subsection><h1>Beyond a single trajectory</h1>
 
