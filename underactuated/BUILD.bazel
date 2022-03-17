@@ -15,6 +15,7 @@ rt_py_library(
         "multibody.py",
         "plot_utils.py",
         "pyplot_visualizer.py",
+        "scenarios.py",
         "utils.py",
     ],
     imports = [".."],
