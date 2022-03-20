@@ -11,6 +11,7 @@ rt_ipynb_test(
     timeout = "moderate",
     srcs = ["compass_gait_limit_cycle.ipynb"],
     data = ["//underactuated/models:compass_gait_limit_cycle.urdf"],
+    flaky = True,  # SNOPT fails sometimes. Why??
     deps = [
         "//underactuated",
         "//underactuated/exercises",

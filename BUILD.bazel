@@ -65,7 +65,7 @@ rt_ipynb_test(
     name = "acrobot",
     srcs = ["acrobot.ipynb"],
     data = ["//underactuated/models:cartpole.urdf"],
-    tags = ["flaky"],
+    flaky = True,
     deps = [
         "//underactuated",
         "//underactuated:meshcat_cpp_utils",

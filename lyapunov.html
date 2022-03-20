@@ -1382,7 +1382,8 @@ V = RegionOfAttraction(sys, context)
     everywhere that $\bM(\bq)\ddot\bq + ... = ... + {\bf B}\bu$ is
     satisfied, using the S-procedure.</p>
 
-    <example id="ex:implicit"><h1>Verifying dynamics in implicit form</h1>
+    <subsection id="implicit"><h1>Verifying dynamics in implicit form</h1>
+
       <p>Typically we write our differential equations in the form $\dot\bx =
       {\bf f}(\bx, \bu).$  But let us consider for a moment the case where the
       dynamics are given in the form $${\bf g}(\bx, \bu, \dot\bx ) = 0.$$ This
@@ -1407,8 +1408,24 @@ V = RegionOfAttraction(sys, context)
       0, \forall \bx,\bz \in \{ \bx, \bz | \bg(\bx,\bz) = 0 \}$ using SOS, then
       we have verified that $\dot{V}(\bx) \le 0$, albeit at the non-trivial cost
       of adding indeterminates $\bz$ and an additional S-procedure.</p>
-    </example>
 
+      <p>To combine the trigonometric substitutions with the implicit form for
+      a simple second-order system (where the number of positions is equal to
+      the number of velocities), we use ${\bf z}$ to represent the implicit
+      $\ddot{\bq}$ and convert \begin{gather*} V(\bq, \dot\bq) \Rightarrow
+      V({\bf s}, {\bf c}, \dot\bq) \\ {\bf g}(\bq, \dot\bq, {\bf z})
+      \Rightarrow {\bf g}({\bf s}, {\bf c}, \dot\bq, {\bf z}), \end{gather*}
+      and write the Lyapunov conditions using $\dot{V} = \sum_i \pd{V}{s_i} c_i
+      \dot{q}_i - \sum_i \pd{V}{c_i}s_i \dot{q}_i + \pd{V}{\dot\bq} \bz.$  The
+      most common case for the number of positions is not equal to the number
+      of velocities is when we deal with 3D rotations represented by unit
+      quaternions; this case can be handled using the implicit form, too (we
+      use the implicit form to relate $\dot{q}$ to the velocities and verify
+      the Lyapunov conditions only on the manifold defined by the quaternion
+      unit norm constraint).</p>
+    </subsection>
+
+    <subsection><h1>Linear feedback</h1>
     <p>There are a few things that <i>do</i> break this clean polynomial view
     of the world.  Rotary springs, for instance, if modeled as $\tau = k
     (\theta_0 - \theta)$ will mean that $\theta$ appears alongside
@@ -1424,35 +1441,37 @@ V = RegionOfAttraction(sys, context)
 
     </example>
   
-    <p>In practice, you can also Taylor approximate any smooth nonlinear
-    function using polynomials.  This can be an effective strategy in
-    practice, because you can limit the degrees of the polynomial, and because
-    in many cases it is possible to provide conservative bounds on the errors
-    due to the approximation.</p>
+    </subsection>
+ 
+    <subsection><h1>Alternatives for obtaining polynomial equations</h1>
+      <p>In practice, you can also Taylor approximate any smooth nonlinear
+      function using polynomials.  This can be an effective strategy in
+      practice, because you can limit the degrees of the polynomial, and because
+      in many cases it is possible to provide conservative bounds on the errors
+      due to the approximation.</p>
 
-    <p>One final technique that is worth knowing about is a change of
-    coordinates, often referred to as the <a
-    href="https://en.wikipedia.org/wiki/Stereographic_projection">
-    stereographic projection</a>, that provides a coordinate system in which
-    we can replace $\sin$ and $\cos$ with polynomials:
-    <figure>
-      <img width="70%" src="figures/stereographic.svg"/>
-      <figcaption>The stereographic projection.</figcaption>
-    </figure>
-    By projecting onto the line, and using similar triangles, we find that $p
-    = \frac{\sin\theta}{1 + \cos\theta}.$  Solving for $\sin\theta$ and
-    $\cos\theta$ reveals $$\cos\theta = \frac{1-p^2}{1+p^2}, \quad \sin\theta
-    = \frac{2p}{1+p^2}, \quad \text{and} \quad \frac{\partial p}{\partial
-    \theta} = \frac{1+p^2}{2},$$ where $\frac{\partial p}{\partial \theta}$
-    can be used in the chain rule to derive the dynamics $\dot{p}$.  Although
-    the equations are rational, they share the denominator $1+p^2$ and can be
-    treated efficiently in mass-matrix form.  Compared to the simple
-    substitution of $s=\sin\theta$ and $c=\cos\theta$, this is a minimal
-    representation (scalar to scalar, no $s^2+c^2=1$ required); unfortunately
-    it does have a singularity at $\theta=\pi$, so likely cannot be used for
-    global analysis.
-  </p>
-
+      <p>One final technique that is worth knowing about is a change of
+      coordinates, often referred to as the <a
+      href="https://en.wikipedia.org/wiki/Stereographic_projection">
+      stereographic projection</a>, that provides a coordinate system in which
+      we can replace $\sin$ and $\cos$ with polynomials:
+      <figure>
+        <img width="70%" src="figures/stereographic.svg"/>
+        <figcaption>The stereographic projection.</figcaption>
+      </figure>
+      By projecting onto the line, and using similar triangles, we find that $p
+      = \frac{\sin\theta}{1 + \cos\theta}.$  Solving for $\sin\theta$ and
+      $\cos\theta$ reveals $$\cos\theta = \frac{1-p^2}{1+p^2}, \quad \sin\theta
+      = \frac{2p}{1+p^2}, \quad \text{and} \quad \frac{\partial p}{\partial
+      \theta} = \frac{1+p^2}{2},$$ where $\frac{\partial p}{\partial \theta}$
+      can be used in the chain rule to derive the dynamics $\dot{p}$.  Although
+      the equations are rational, they share the denominator $1+p^2$ and can be
+      treated efficiently in mass-matrix form.  Compared to the simple
+      substitution of $s=\sin\theta$ and $c=\cos\theta$, this is a minimal
+      representation (scalar to scalar, no $s^2+c^2=1$ required); unfortunately
+      it does have a singularity at $\theta=\pi$, so likely cannot be used for
+      global analysis.</p>
+  </subsection>
   </section> <!-- end rigid bodies are polynomial -->
 
   <section id="control"><h1>Control design</h1>
