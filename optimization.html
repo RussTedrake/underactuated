@@ -261,16 +261,19 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       the terms in ${\bf m}(\bx)$.  For example, if you give me the polynomial
       \[ p(x) = 2 - 4x + 5x^2 \] and ask if it is positive for all real $x$, I
       can convince you that it is by producing the sums-of-squares
-      factorization \[ p(x) = 1 + (1-2x)^2 + x^2, \] and I know that I can
-      formulate the problem without needing any monomials of degree greater
-      than 1 (the square-root of the degree of $p$) in my monomial vector.  In
-      practice, what this means for us is that people have authored
-      optimization front-ends which take a high-level specification with
-      constraints on the positivity of polynomials and they automatically
-      generate the SDP problem for you, without having to think about what
-      terms should appear in ${\bf m}(\bx)$ (c.f. <elib>Prajna04</elib>).
-      This class of optimization problems is called Sums-of-Squares (SOS)
-      optimization.</p>
+      factorization \[ p(x) = 1 + (1-2x)^2 + x^2, \] or the factorization \[
+      p(x) = \begin{bmatrix} 1 \\ x \end{bmatrix}^T \begin{bmatrix} 2 & -2 \\
+      -2 & 5 \end{bmatrix} \begin{bmatrix} 1 \\ x \end{bmatrix}, \] since the
+      matrix in this quadratic form is PSD.  In general, I can produce a
+      monomial vector containing all monomials with degree up to the the
+      square-root of the degree of $p$ (we can actually do much better, but I
+      will defer those details). In practice, what this means for us is that
+      people have authored optimization front-ends which take a high-level
+      specification with constraints on the positivity of polynomials and they
+      automatically generate the SDP problem for you, without having to think
+      about what terms should appear in ${\bf m}(\bx)$ (c.f.
+      <elib>Prajna04</elib>). This class of optimization problems is called
+      Sums-of-Squares (SOS) optimization.</p>
 
       <p>As it happens, the particular choice of ${\bf m}(\bx)$ can have a huge
       impact on the numerics of the resulting semidefinite program (and on your
