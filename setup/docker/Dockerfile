@@ -14,7 +14,7 @@
 # docker login
 # docker push russtedrake/underactuated:latest
 
-FROM robotlocomotion/drake:focal
+FROM robotlocomotion/drake:focal-20220315
 ARG DEBIAN_FRONTEND=noninteractive
 ENV SHELL /bin/bash
 # Open ports for meshcat:
@@ -37,7 +37,7 @@ COPY requirements.txt /tmp/requirements.txt
 COPY setup/docker/pip.conf /root/.config/pip/pip.conf
 COPY setup/ubuntu/20.04/install_prereqs.sh /tmp/
 RUN /tmp/install_prereqs.sh
-RUN apt -y install xvfb git
+RUN apt -y install xvfb git nginx-light
 RUN pip3 install -r /tmp/requirements.txt pyngrok pyvirtualdisplay
 RUN rm -rf /root/.cache /root/.config
 RUN rm -f /tmp/install_prereqs.sh
