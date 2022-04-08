@@ -377,14 +377,14 @@ Robots</h1>
         <img width="80%" src="figures/exercises/foot_on_ground.svg"/>
         <figcaption>External forces acting on a robot pushing on a flat ground</figcaption>
       </figure>
-      Suppose there is no actuator at the pin joint P
+      Consider an abstracted legged robot. The foot and the leg are assumed to be massless. Suppose there is no actuator at the pin joint P
      <ol type = "a">
        <li> 
           Is the system stable at $\theta = \pi/2 + 10^{-3}$?
        </li>
 
        <li>
-         Compute the zero moment point on the ground as a function of $\theta$ and the constants $m, h, l, L_{1}, L_{2}$.
+         Compute the zero moment point on the ground as a function of $\theta$ and the constants $m, h, g, l, L_{1}, L_{2}$ (if needed).
        </li>
 
        <li>
@@ -399,7 +399,36 @@ Robots</h1>
        </li>
 
        <li>
-         Suppose now that there is an actuator at the ankle with a controller capable of perfectly cancelling the torque around $P$ due to gravity. What value of $\theta$ can you achieve without falling down? Express your answer in terms of the constants $m, h, l, L_{1}, L_{2}$.
+         Suppose now that there is an actuator at the ankle with a controller capable of perfectly cancelling the torque around $P$ due to gravity. What value of $\theta$ can you achieve without falling down? Express your answer in terms of the constants $m, h, l, L_{1}, L_{2}$ (if needed).
+       </li>
+
+       <li>
+         Suppose you are designing a foot that maximizes the postures you can assume without falling down. <ol type = i>
+           <li>
+            Would you want a taller or flatter foot?
+           </li>
+           <li>
+             Would you want a longer or shorter foot?
+           </li>
+           <li>
+             Where would you put the ankle with respect to the heel and toe?
+           </li>  
+         </ol>
+       </li>
+
+       <li>
+         Suppose you are designing a robot designed to only walk forward.
+          <ol type = i>
+           <li>
+            Explain the trade offs in foot height.
+           </li>
+           <li>
+             Would you want a longer or shorter $L_{1}$?
+           </li>
+           <li>
+            Would you want a longer or shorter $L_{2}$?
+           </li>  
+         </ol>
        </li>
      </ol>
 
