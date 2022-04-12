@@ -826,16 +826,16 @@ of Walking and Running</h1>
 
         <p>The rimless wheel had only two state variables ($\theta$, and
         $\dot\theta$), and since the surface of section drops one variable, we
-        ended up with a one-dimensional Poincare map.  We have a lot more state
-        variables here.  Is there any hope for graphical analysis?</p>
+        ended up with a one-dimensional Poincar&eacute map.  We have a lot more
+        state variables here.  Is there any hope for graphical analysis?</p>
 
         <p>For this system, one can still make progress if we define the
-        Poincare section to be at the apex of the hop (when $\dot{z}=0$), and
-        analyze the dynamics from apex to apex.  We will ignore the absolute
-        horizontal position, $x$, and the leg angle, $\theta$, as they are
-        irrelevant to the flight dynamics.  This still leaves us with two state
-        variables at the apex: the horizontal velocity, $\dot{x},$ and the
-        hopping height, $z$.</p>
+        Poincar&eacute section to be at the apex of the hop (when $\dot{z}=0$),
+        and analyze the dynamics from apex to apex.  We will ignore the
+        absolute horizontal position, $x$, and the leg angle, $\theta$, as they
+        are irrelevant to the flight dynamics.  This still leaves us with two
+        state variables at the apex: the horizontal velocity, $\dot{x},$ and
+        the hopping height, $z$.</p>
 
         <p>Importantly, at the apex, these two variables are linked -- when you
         know one, you know the other.  This is because no energy is ever added
@@ -843,12 +843,14 @@ of Walking and Running</h1>
         the system, and you know the height at the apex, then you know the
         horizontal velocity (up to a sign): $$E_{apex}(z, \dot{x}) =
         \frac{1}{2}m \dot{x}^2 + mgz = E_0.$$  To make our analysis less
-        dependent on our specific choice of parameters, we typically report
-        any analysis using a dimensionless total energy, $\tilde{E} =
-        \frac{E}{m g l_0},$ and a dimensionless spring constant, $\tilde{k} = \frac{k l_0}{mg}$ <elib>Geyer05</elib>.</p> 
+        dependent on our specific choice of parameters, we typically report any
+        analysis using a dimensionless total energy, $\tilde{E} = \frac{E}{m g
+        l_0},$ and a dimensionless spring constant, $\tilde{k} = \frac{k
+        l_0}{mg}$ <elib>Geyer05</elib>.</p> 
 
         <p>Putting all of these together, we can numerically evaluate the
-        apex-to-apex return map, given a known total energy of the system.</p>
+        apex-to-apex return map given a known total energy of the system as a
+        one-dimensional Poincar&eacute map.</p>
         
         <example><h1>Numerical SLIP apex-to-apex map</h1>
 
@@ -895,9 +897,9 @@ of Walking and Running</h1>
         the ground to acquire its stability.  Is there any chance for a system
         that is energy conserving to be stable?  The apex-to-apex return maps
         visualized above reveal "stable" fixed-points, but you must understand
-        that the projection from $(z,\dot{x]})$ to just $z$ is using the
+        that the projection from $(z,\dot{x})$ to just $z$ is using the
         assumption that the energy is conserved.  As a result, our analysis on
-        the one-dimensional Poincare map can only make a statement about
+        the one-dimensional Poincar&eacute map can only make a statement about
         <i>partial stability</i> (i.s.L., asymptotic, or exponential); our
         analysis does not say anything about stability against disturbances
         that change the total energy of the system.</p>
@@ -919,6 +921,82 @@ of Walking and Running</h1>
 
       </subsubsection>
 
+      <subsubsection id="slip_control"><h1>SLIP Control</h1>
+      
+        <p>Our SLIP analysis was simplified considerably by the assumption that
+        the leg is massless, and can be moved instantaneously during the flight
+        phase into the desired touchdown position. This might sound to you like
+        an offensive oversimplification, but in fact the strong trend in legged
+        robots these days has been to build physical devices which make this
+        sort of abstraction (approximately) valid. For quadrupeds especially,
+        it's hard to fall over when you can move your foot instantaneously into
+        the direction where your body is falling.</p>
+
+        <figure>
+          <img height="200px" src="https://cdn.vox-cdn.com/thumbor/UGU-aXp6muGuy7zyvGsb_mKVN1M=/1400x1400/filters:format(jpeg)/cdn.vox-cdn.com/uploads/chorus_asset/file/16125611/bd_spotmini.jpg"/>
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          <img height="200px" src="https://robots.ieee.org/robots/minicheetah/minicheetah-thumb@2x.jpg"/>
+          <figcaption>(Left) Spot-mini from Boston Dynamic, (right)
+          Mini-Cheetah from MIT. These are two of my favorite representatives
+          from a fleet of legged robots that have extremely light legs (and
+          approximately point feet), which simplifies control and can improve
+          stability.</figcaption>
+        </figure>
+
+        <p>Assuming a massless leg also gives us a nice conceptual advantage --
+        it becomes natural to think about control design as making a control
+        decision <i>once per step</i>. This fits nicely with our Poincar&eacute
+        analysis -- we can think of the apex-to-apex map of the SLIP model as
+        being parameterized by the (scalar) control decision $u[n]$ which sets
+        the touchdown angle for the $n$th hop: $$x_p[n+1] = P(x_p[n], u[n]).$$
+        This system can be stabilized like any other discrete-time system. For
+        example, it would be perfectly reasonable to linearize the apex-to-apex
+        map around the hopping fixed point, and use the (discrete-time) linear
+        quadratic regulator to design a controller.</p>
+
+        <p>It turns out that for the SLIP model, there is a more interesting
+        approach available.  If we set the cost on control effort to zero
+        (consistent with our massless leg assumption), then the optimal action
+        to pick is the one that drives the system exactly to the desired fixed
+        point in a single hop. This is the so-called <i>deadbeat</i>
+        controller. Not all systems can be stabilized in this way, but
+        <elib>Geyer05</elib> showed that the relationship between the touchdown
+        angle and the hopping height in the apex-to-apex map was an invertible
+        relationship (within the bounds from the total energy of the system):
+        given a desired hopping height one can uniquely choose a touchdown
+        angle that will achieve it at the next apex.</p>
+        
+        <p>Take a moment to reflect on this.  In continuous time, if I were to
+        remove the cost on control input, then the optimal actions would be
+        unbounded, or bang-bang if there are input limits. But in discrete-time
+        systems, this is not necessarily the case -- one can often achieve
+        perfect convergence in a finite number of steps with bounded control
+        input -- this corresponds to a finite-time convergence in continuous
+        time. For this simple running model, what is particularly elegant is
+        that this convergence can even be achieved in just one step.</p>
+
+        <p>In fact, the story for deadbeat control of the SLIP model gets even
+        better. <elib>Ernst09</elib> observed that the desired touchdown angle
+        to achieve a deadbeat apex-to-apex max is a smooth function of the
+        desired hopping height (or equivalently forward speed).  Now imagine
+        that we are trying to run/hop at a constant speed over rough terrain.
+        For bonus points, let's do it blind -- with no sensing of the terrain
+        height. It turns out that, given this smooth relationship between
+        touchdown angle and running speed, one can sweep the leg through an
+        <i>open-loop</i> leg angle trajectory (based only on the time since the
+        apex), such that whenever the foot happens to collide with the ground,
+        it will always be in exactly the deadbeat touchdown angle!</p>
+
+        <p>One would not expect to use the terms "blind", "running",
+        "rough-terrain", and "deadbeat control" all at once to describe a
+        control strategy. But there you have it. A very nice result! The
+        authors went on to study whether this observation could help to explain
+        the known phenomenon in biomechanics of "ground-speed matching" -- a
+        human/animals' tendency to actively swing the leg around to meet the
+        ground at the moment of touchdown.</p>
+
+      </subsubsection>
+      
       <subsubsection><h1>SLIP extensions</h1>
       
         <p>The original SLIP model, perhaps inspired by the hopping robots
@@ -927,8 +1005,8 @@ of Walking and Running</h1>
         Remarkably, experiments showed that the dimensionless individual leg
         stiffness was very close to 10 for a huge range of animals, ranging
         from a $0.001~kg$ cockroach to a $135~kg$ horse
-        <elib>Koditschek04</elib>.  But the SLIP model, and modest extensions
-        to it, has also been used to understand lateral stability in
+        <elib>Koditschek04</elib>.  But the SLIP models, and modest extensions
+        to them, have also been used to understand lateral stability in
         cockroaches, resulting in some of my favorite experimental videos of
         all time <elib>Jindrich02</elib>.
         </p>
@@ -937,11 +1015,6 @@ of Walking and Running</h1>
 
       </subsubsection>
 
-      <subsubsection id="slip_control"><h1>SLIP Control</h1>
-      
-        <todo>Hartmut's open-loop deadbeat, etc.</todo>
-      
-      </subsubsection>
     </subsection>
     
     <subsection id="leglab"><h1>Hopping robots from the MIT Leg Laboratory</h1>
