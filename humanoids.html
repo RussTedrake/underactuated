@@ -70,16 +70,21 @@ Robots</h1>
   the "zero-moment point" and footstep planning.  The goal of this chapter is to
   penetrate that world.</p>
 
-  <p>I'd like to start the discussion with a model that might seem quite far
-  from the world of legged robots, but I think it's a very useful way to think
-  about the problem.</p>
+  <section><h1>Centroidal dynamics</h1>
 
-  <section><h1>Center of Mass Dynamics</h1>
+    <p>Perhaps one of the most surprising thing about the world of complex
+    (highly-articulated) legged robots is the dominant use of simple models for
+    estimation, planning, and control.  These abstractions become valuable when
+    you have enough degrees of freedom to move your feet independently (to an
+    extent) from how you move your body.</p>
 
-    <subsection><h1>A hovercraft model</h1>
+    <p>Let's start the discussion with a model that might seem quite far from
+    the world of legged robots, but I think it's a very useful way to think
+    about the problem.</p>
+    
+    <subsection><h1>A spacecraft model</h1>
 
-      <figure><img width="70%" src="figures/hovercraft.svg"/></figure>
-      <todo>flip the directions of the force vector in the image</todo>
+      <figure><img width="70%" src="figures/zmp_thrusters.svg"/></figure>
 
       <p>Imagine you have a flying vehicle modeled as a single rigid body in a
       gravity field with some number of force "thrusters" attached.  We'll
@@ -92,7 +97,7 @@ Robots</h1>
       force in the $x$ direction and have taken just the $y$-axis component of
       the cross product on the last line. </p>
 
-      <p>Our goal is to move the hovercraft to a desired position/orientation
+      <p>Our goal is to move the spacecraft to a desired position/orientation
       and to keep it there.  If we take the inputs to be $F_i$, then the
       dynamics are affine (linear plus a constant term).  As such, we can
       stabilize a stabilizable fixed point using a change of coordinates plus
@@ -112,8 +117,8 @@ Robots</h1>
       (e.g. $|F_i||\dot{r}_i| = 0$) and there is a limit to how quickly you can
       move the thrusters $|\dot{r}|_i \le v_{max}$.  This problem is now a lot
       more difficult, due especially to the fact that constraints of the form
-      $u_1 u_2 = 0$ are non-convex.</p> <center><img width="25%"
-      src="figures/complementarityConstraint.svg"/></center> <p>I find this a
+      $xy = 0$ are non-convex (the red area in the illustration below represents the feasible set).</p> <center><img width="25%"
+      src="figures/complementarity_constraint.svg"/></center> <p>I find this a
       very useful thought exercise; somehow our controller needs to make an
       effectively discrete decision to turn off a thruster and move it.  The
       framework of optimal control should support this - you are sacrificing a
@@ -122,31 +127,32 @@ Robots</h1>
       tools yet that deal well with this discrete plus continuous decision
       making.  We'll need to address that here.</p>
 
-      <p>Unfortunately, although the problem is already difficult, we need to
-      continue to add constraints.  Now let's say additionally, that the
-      thrusters can only be turned on in certain locations, as cartooned
-      here:</p> <center><img width="60%"
-      src="figures/hovercraftCartesianConstraints.svg"/></center> <p>The
-      union of these regions need not form a convex set.  Furthermore, these
-      locations could be specified in the robot frame, but may also be specified
-      in the world frame, which I'll call ${\bf p}_i$: $${\bf p}_i = {\bf r}_i -
-      \begin{bmatrix} x \\ 0 \\ z \end{bmatrix}.$$  This problem still feels
-      like it should be tractable, but it's definitely getting hard.</p>
+      <p>Unfortunately, although the problem is already difficult, we need a
+      few more constraints to make it relevant for legged robots.  Now let's
+      say additionally, that the thrusters can only be turned on in certain
+      locations, as cartooned here:</p> <center><img width="70%"
+      src="figures/zmp_thrusters_w_regions.svg"/></center> <p>The union
+      of these regions need not form a convex set.  Furthermore, these
+      locations could be specified in the robot frame, but may also be
+      specified in the world frame, which I'll call ${\bf p}_i$: $${\bf p}_i =
+      {\bf r}_i - \begin{bmatrix} x \\ 0 \\ z \end{bmatrix}.$$  This problem
+      still feels like it should be tractable, but it's definitely getting
+      more difficult.</p>
 
     </subsection>
 
     <subsection><h1>Robots with (massless) legs</h1>
 
-      <p>In my view, the hovercraft problem above is a central component of the
-      walking problem.  If we consider a walking robot with massless legs, then
-      the feet are exactly like movable thrusters.  As above, they are highly
-      constrained - they can only produce force when they are touching the
-      ground, and (typically) they can only produce forces in certain
-      directions, for instance as described by a "friction cone" (you can push
-      on the ground but not pull on the ground, and with Coulomb friction the
-      forces tangential to the ground must be smaller than the forces normal to
-      the ground, as described by a coefficient of friction, e.g.
-      $|F_{\parallel}| < \mu |F_{\perp}|$).</p>
+      <p>In my view, the spacecraft with thrusters problem above is a central
+      component of the walking problem.  If we consider a walking robot with
+      massless legs, then the feet are exactly like movable thrusters.  As
+      above, they are highly constrained - they can only produce force when
+      they are touching the ground, and (typically) they can only produce
+      forces in certain directions, for instance as described by a "friction
+      cone" (you can push on the ground but not pull on the ground, and with
+      Coulomb friction the forces tangential to the ground must be smaller than
+      the forces normal to the ground, as described by a coefficient of
+      friction, e.g. $|F_{\parallel}| < \mu |F_{\perp}|$).</p>
 
       <figure><img width="50%" src="figures/hovercraftLegs.svg"/></figure>
 
@@ -374,7 +380,7 @@ Robots</h1>
 
     <exercise><h1>Understanding the zero moment point</h1>
       <figure>
-        <img width="80%" src="figures/exercises/foot_on_ground.svg"/>
+        <img width="50%" src="figures/exercises/foot_on_ground.svg"/>
         <figcaption>External forces acting on a robot pushing on a flat ground</figcaption>
       </figure>
       Consider an abstracted legged robot. The foot and the leg are assumed to be massless. Suppose there is no actuator at the pin joint P
