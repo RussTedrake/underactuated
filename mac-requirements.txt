@@ -75,7 +75,7 @@ nbformat==5.1.3
     #   nbconvert
 nest-asyncio==1.5.1
     # via nbclient
-numpy==1.22.0
+numpy==1.22.3
     # via
     #   -c htmlbook/mac-constraints.txt
     #   matplotlib

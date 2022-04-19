@@ -5,6 +5,7 @@
 
 set -euxo pipefail
 
+git config --global --add safe.directory /__w/underactuated/underactuated
 git submodule sync --recursive
 set +x
 git -c "http.extraheader=$(git config --local --get http.https://github.com/.extraheader)" \
