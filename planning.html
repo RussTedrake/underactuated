@@ -61,33 +61,46 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <chapter style="counter-reset: chapter 11"><h1>Motion Planning as
 Search</h1>
 
-  <p>The term "motion planning" is a hopelessly general term which almost
+  <p>The term "motion planning" is a quite general term which almost
   certainly encompasses the dynamic programming, feedback design, and
   trajectory optimization algorithms that we have already discussed.  However,
   there are a number of algorithms and ideas that we have not yet discussed
   which have grown from the idea of formulating motion planning as a search
   problem -- for instance searching for a path from a start to a goal in a
-  graph which is too large solve completely with dynamic programming. Some, but
+  graph which is too large solve completely with dynamic programming. <!--Some, but
   certainly not all, of these algorithms sacrifice optimality in order to find
   any path if it exists, and the notion of a planner being "complete" --
-  guaranteed to find a path if one exists -- is highly valued.  This is
-  precisely our goal for this chapter, to add some additional tools that will
-  be able to provide some form of solutions for our most geometrically complex,
-  highly non-convex, robot control problems.</p>
+  guaranteed to find a path if one exists -- is highly valued.-->  </p>
+  
+  <p>My goal for this chapter is to introduce these additional tools based on
+  search into our toolkit.  For robotics, they will play a particularly
+  valuable role when the planning problem is geometrically complex (e.g. a
+  robot moving around obstacles in 3D) or the optimization landscape is very
+  nonconvex, because these are the problems where the trajectory optimization
+  formulation we've studied before will potentially suffer badly from local
+  minima. Many of these algorithms were developed initially for discrete or
+  purely kinematic planning problems; a major theme of this chapter will be the
+  adaptations that allow them to work for underactuated systems. There are also
+  many deep mathematical connections between discrete search and
+  <i>combinatorial</i> optimization; I hope to make a few of those connections
+  for you here.</p>
 
   <p><elib>LaValle06</elib> is a very nice book on planning algorithms in
   general and on motion planning algorithms in particular.  Compared to other
   planning problems, <em>motion planning</em> typically refers to problems
   where the planning domain is continuous (e.g. continuous state space,
   continuous action space), but many motion planning algorithms trace their
-  origins back to ideas in discrete domains (e.g., graph search).</p>
+  origins back to ideas in discrete domains.  The term <em>kinodynamic motion planning</em> is often used when the plant is subject to
+  dynamic constraints like underactuation, in addition to kinematic constraints
+  like obstacle avoidance.</p>
 
+  <!--
   <p>For this chapter, we will consider the following problem formulation:
   given a system defined by the nonlinear dynamics (in continuous- or
   discrete-time) $$\dot{\bx} = f(\bx,\bu) \quad \text{or} \quad \bx[n+1] =
   f(\bx[n],\bu[n]),$$ and given a start state $\bx(0) = \bx_0$ and a goal
   region ${\cal G}$, find any finite-time trajectory from $\bx_0$ to to $\bx
-  \in {\cal G}$ if such a trajectory exists.</p>
+  \in {\cal G}$ if such a trajectory exists.</p>-->
 
   <section><h1>Artificial Intelligence as Search</h1>
 
@@ -105,9 +118,15 @@ Search</h1>
 
     <p>Online planning.  $D^*$, $D^*$-Lite.</p>
 
+    <p>Some of the most visible success stories in deep learning today still make use of planning. For example: DeepMind's
+      <a href="https://en.wikipedia.org/wiki/AlphaGo">AlphaGo</a> and <a
+        href="https://en.wikipedia.org/wiki/AlphaZero">AlphaZero</a> combine the planning algorithms developed over the
+      years in discrete games , notably <a href="https://en.wikipedia.org/wiki/Monte_Carlo_tree_search">Monte-Carlo Tree
+        Search (MCTS)</a>, with learned heuristics in the form of policies and value functions.</p>
+
   </section>
 
-  <section><h1>Randomized motion planning</h1>
+  <section><h1>Sampling-based motion planning</h1>
 
     <p>If you remember how we introduced dynamic programming initially as a
     graph search, you'll remember that there were some challenges in
@@ -175,8 +194,10 @@ Search</h1>
       without strong heuristics to guide the selection of the nodes scheduled for expansion,
       it can be extremely inefficient.  For a simple example, consider the system $\bx[n] = \bu[n]$ with $\bx \in \Re^2$ and $\bu_i \in [-1,1]$.
       We'll start at the origin and put the goal region as $\forall i, 15 \le x_i \le 20$.
-      Try it yourself:
 
+      <!--
+      Try it yourself:
+     
       <pre><code class="matlab" testfile="testRandomTree">
 T = struct('parent',zeros(1,1000),'node',zeros(2,1000));  % pre-allocate memory for the "tree"
 for i=2:size(T.parent,2)
@@ -194,6 +215,8 @@ line([T.node(1,T.parent(2:end));T.node(1,2:end)],[T.node(2,T.parent(2:end));T.no
 patch([15,15,20,20],[15,20,20,15],'g')
 axis([-10,25,-10,25]);
 </code></pre>
+-->
+
       Again, this algorithm <em>is</em> probabilistically complete.  But after expanding 1000 nodes, the tree is basically a mess of node points all right on top of
       each other:
       <figure>
@@ -259,10 +282,19 @@ axis([-10,25,-10,25]);
 
     <p>Cell decomposition...</p>
 
-    <p>Mixed-integer planning.</p>
-
     <p>Approximate decompositions for complex environments (e.g. IRIS)</p>
 
+  </section>
+
+  <section><h1>Planning as Combinatorial + Continuous Optimization</h1>
+
+    <p>Shortest path on a graph as a linear program.</p>
+
+    <p>Mixed-integer planning.</p>
+
+    <subsection>
+      <h1>Motion Planning on Graphs of Convex Sets (GCS)</h1>
+    </subsection>
   </section>
 
   <section><h1>Exercises</h1>
