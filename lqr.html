@@ -580,10 +580,10 @@ print("S = " + str(S))</code></pre></div>
     <subsection id="equality_constrained"><h1>LQR on a manifold</h1>
 
       <p>One important case that does have closed-form solutions is LQR with
-      linear <i>equality</i> constraints. This is particularly relevant in the case of stabilizing robots
-      with kinematic constraints such as a closed kinematic chain, which
-      appears in four-bar linkages or even for the linearization of a biped
-      robot with two feet on the ground.</p>
+      linear <i>equality</i> constraints. This is particularly relevant in the
+      case of stabilizing robots with kinematic constraints such as a closed
+      kinematic chain, which appears in four-bar linkages or even for the
+      linearization of a biped robot with two feet on the ground.</p>
 
       <p>Our formulation is as follows: in addition to the linear dynamics (in
       continuous time or discrete time), we have a linear equality constraint
@@ -629,44 +629,43 @@ print("S = " + str(S))</code></pre></div>
         easy to see: there is nothing that the actuators can do to change $z$,
         the vertical position of the ball. Perhaps the more subtle reason is
         that there is a (holonomic) constraint from the ball rolling without
-        slip on the ground: $x = r \theta_{ball},$ where $r$ is
+        slip on the ground: $x = -r \theta_{ball},$ where $r$ is
         the radius of the ball.</p>
 
-        <p>To use LQR, we will write these constraints as $${\bf Fx} =
-        \begin{bmatrix} 0 & 1 & 0 & 0 \\ 1 & 0 & -r & 0 \end{bmatrix} \bx = 0,
-        \qquad {\bf P} = \begin{bmatrix} 0 & 0 & 0 & 1 \\
-        \frac{r}{\sqrt{1+r^2}} & 0 & \frac{1}{\sqrt{1+r^2}} & 0
-        \end{bmatrix}.$$  The nullspace matrix ${\bf P}$ can be obtained
-        numerically, but here it was simple enough to get from inspection. We
-        can obtain the matrices $\bA_x \in \Re^{4 \times 4}, \bB_x \in \Re^{4
-        \times 1}$ by linearizing the MultibodyPlant dynamics, taking care to
-        find a fixed point (which will have the ball resting slightly into the
-        ground, so that ground reaction forces from the soft contact counteract
-        gravity).  Then we will call LQR with the projected matrices.  Note
-        that the we will use the discrete-time dynamics mode of the
-        <code>MultibodyPlant</code> (by passing in a non-zero
-        <code>time_step</code> to the constructor), because discrete-time
-        dynamics engine contains our most advanced and robust algorithms for
-        simulating contact.</p>
-
-        <p>Importantly, although we design the LQR controller using the reduced
-        model, we can run this controller directly on the original model.</p>
-
-        <center><i>Notebook example coming soon...</i></center>
-        <!--
-        <script>document.write(notebook_link('lqr'))</script>
-
-        <todo>Insert segway balancing animation</todo>
-        -->
-
-        <p>I did use one small implementation trick. In my code, rather than
+        <p>I will use one small implementation "trick". In my code, rather than
         deal with finding the resting penetration of the ball, I decided to
         remove the vertical degree of freedom completely, and used a prismatic
         joint for $x$ and a revolute joint for $\theta_{ball}$ instead of the
         <code>PlanarJoint</code> for the floating base. I configured it so that
         the ball was sufficiently in penetration that the normal forces from
         the ground were substantial enough that the friction cone could support
-        the horizontal frictional forces I needed to roll.</p>
+        the horizontal frictional forces I needed to roll. This effectively
+        implements the $z$ constraint by construction (completely removing that
+        degree of freedom).</p>
+        
+        <p>To use LQR, we will write the constraints $x = -r\theta_{ball}$ and
+        the implied $\dot{x} = -r\dot\theta_{ball}$ as $${\bf Fx} =
+        \begin{bmatrix}1 & r & 0 & 0 & 0 & 0 \\ 0 & 0 & 0 & 1 & r & 0
+        \end{bmatrix} \bx = 0$$  The nullspace matrix ${\bf P}$ can be obtained
+        numerically, but here it was simple enough to get from inspection,
+        $${\bf P} = \begin{bmatrix} \frac{r}{\sqrt{1+r^2}} &
+        -\frac{1}{\sqrt{1+r^2}} & 0 & 0 & 0 & 0 \\ 0 & 0 & 1 & 0 & 0 & 0 \\ 0 &
+        0 & 0 & \frac{r}{\sqrt{1+r^2}} & -\frac{1}{\sqrt{1+r^2}} & 0 \\ 0 & 0 &
+        0 & 0 & 0 & 1 \end{bmatrix}.$$ We can obtain the matrices $\bA_x \in
+        \Re^{6 \times 6}, \bB_x \in \Re^{6  \times 1}$ by linearizing the
+        <code>MultibodyPlant</code> dynamics. Then we will call LQR with the
+        projected matrices.  Note that the we will use the discrete-time
+        dynamics mode of the <code>MultibodyPlant</code> (by passing in a
+        non-zero <code>time_step</code> to the constructor), because
+        discrete-time dynamics engine contains our most advanced and robust
+        algorithms for simulating contact.</p>
+
+        <p>Importantly, although we design the LQR controller using the reduced
+        model, we can run this controller directly on the original model.</p>
+
+        <script>document.write(notebook_link('lqr'))</script>
+
+        <todo>Insert segway balancing animation</todo>
 
       </example>
 

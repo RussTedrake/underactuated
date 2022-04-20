@@ -1,6 +1,6 @@
 import os
 
-from pydrake.all import (JointIndex, namedview)
+from pydrake.all import (JointActuatorIndex, JointIndex, namedview)
 
 running_as_test = False
 
@@ -75,3 +75,12 @@ def MakeNamedViewState(mbp, view_name):
     pview = MakeNamedViewPositions(mbp, f"{view_name}_pos", True)
     vview = MakeNamedViewVelocities(mbp, f"{view_name}_vel", True)
     return namedview(view_name, pview.get_fields() + vview.get_fields())
+
+
+def MakeNamedViewActuation(mbp, view_name):
+    names = [None] * mbp.get_actuation_input_port().size()
+    for ind in range(mbp.num_actuators()):
+        actuator = mbp.get_joint_actuator(JointActuatorIndex(ind))
+        assert actuator.num_inputs() == 1
+        names[actuator.input_start()] = actuator.name()
+    return namedview(view_name, names)
