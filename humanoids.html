@@ -282,20 +282,21 @@ Robots</h1>
       diagram to have r instead of p</todo>
 
       <p>I can re-write the equations of motion as \begin{align*} m\ddot{x} =&
-      \sum_i F_{i,x} = F_{net,x},\\ m\ddot{z} =& \sum_i F_{i,z} - mg = F_{net,z}
-      - mg,\\ I\ddot\theta =& \sum_i \left[ r_i \times F_i \right]_y = ({\bf r}
-      \times {\bf F}_{net})_y + \tau_{net}, \end{align*} where ${\bf F}_{net} =
-      \sum_i {\bf F}_i$ and the value of $\tau_{net}$ depends on the location
-      ${\bf r}$.  For some choices of ${\bf r}$, we can make $\tau_{net}=0$.
-      Examining \[ ({\bf r} \times {\bf F}_{net})_y = r_z F_{net,x} - r_x
-      F_{net,z} = \left[ r_i \times F_i \right]_y, \] we can see that when
-      $F_{net,z} > 0$ there is an entire line of solutions, $r_x = a r_z + b$,
-      including one that will intercept the terrain.  For walking robots, it is
-      this point on the ground from which the external wrench can be described
-      by a single force vector (and no moment) that is the famous "zero-moment
-      point" (ZMP).     Substituting the back in to replace $F_{net}$, we can
-      see that \[ r_x = \frac{r_z m \ddot{x} - I \ddot\theta}{m\ddot{z} + mg}.
-      \] If we assume that $\ddot{z}=\ddot{\theta}=0$ and replace the relative
+      \sum_i F_{i,x} = F_{net,x},\\ m\ddot{z} =& \sum_i F_{i,z} - mg =
+      F_{net,z} - mg,\\ I\ddot\theta =& \sum_i \left[ r_i \times F_i \right]_y
+      = ({\bf r} \times {\bf F}_{net})_y + \tau_{net}, \end{align*} where ${\bf
+      F}_{net} = \sum_i {\bf F}_i$ and the value of $\tau_{net}$ depends on the
+      location ${\bf r}$.  For some choices of ${\bf r}$, we can make
+      $\tau_{net}=0$. Examining \[ ({\bf r} \times {\bf F}_{net})_y = r_z
+      F_{net,x} - r_x F_{net,z} = \left[ r_i \times F_i \right]_y, \] we can
+      see that when $F_{net,z} > 0$ there is an entire line of solutions, $r_x
+      = a r_z + b$, including one that will intercept the terrain.  For walking
+      robots, it is this point on the ground from which the external wrench can
+      be described by a single force vector (and no moment) that is the famous
+      "zero-moment point" (ZMP).  Substituting the equations of motion into
+      this equation to replace the individual terms of $F_{net}$, we can see
+      that \[ r_x = \frac{r_z m \ddot{x} - I \ddot\theta}{m\ddot{z} + mg}. \]
+      If we assume that $\ddot{z}=\ddot{\theta}=0$ and replace the relative
       coordinates with the global coordinates ${\bf r} = {\bf p} - [x,0,z]^T$,
       then we arrive at precisely the equation presented above.</p>
 
