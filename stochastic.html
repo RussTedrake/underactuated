@@ -130,12 +130,11 @@ with Stochasticity</h1>
       to the other fixed point.  Another way to visualize this output is to
       animate a histogram of the particles over time.</p>
 
-      <figure> <img width="80%"
-      src="figures/cubic_bistable_histogram.svg"/> <figcaption>Histogram of
-      the states of the bistable system with noise ($\sigma = 0.01$) after
-      simulating from random initial conditions until $t=30$. <br/><a
-      href="figures/cubic_bistable_histogram.swf">Click here to see the
-      animation</a></figcaption> </figure>
+      <figure> 
+        <iframe style="border:0;height:300px;width:400px;" src="data/cubic_bistable.html?height=240px" pdf="no"></iframe>
+      <figcaption>Histogram of the states of the bistable system with noise
+      ($\sigma = 1$) after simulating from random initial conditions until
+      $t=20$.</figcaption> </figure>
 
       <p>You can run this demo for yourself:</p>
       <script>document.write(notebook_link('stochastic'))</script>
@@ -169,7 +168,7 @@ with Stochasticity</h1>
     equation</a>" for the stochastic process.  In fact this update is even
     linear(!) ; a fact that can enable closed-form solutions to some impressive
     long-term statistics, like mean time to failure or first passage
-    times<elib>Byl08a</elib>. Unfortunately, it is often difficult to perform
+    times<elib>Byl08f</elib>. Unfortunately, it is often difficult to perform
     the integral in closed form, so we must often resort to discretization or
     numerical analysis. </p>
 
@@ -227,7 +226,7 @@ with Stochasticity</h1>
       (but a distribution of initial conditions), the linear map given by the
       master equation is known as the <i>Perron-Frobenius operator</i>, and it
       gives rise to the Liouville equation that we will study later in the
-      chapter.</p>
+      text.</p>
 
     </example>
 
@@ -249,16 +248,22 @@ with Stochasticity</h1>
 
   <section><h1>Stationary Distributions</h1>
 
-    <p>In the example above, the histogram is our numerical approximation of the
-    probability density. If you simulate it a few times, you will probably
-    believe that, although the individual trajectories of the system <i>do
-    not</i> converge, the probability distribution actually <i>does</i> converge
-    to what's known as a <i>stationary distribution</i> -- a fixed point of the
-    master equation.  Instead of thinking about the dynamics of the
-    trajectories, we need to start thinking about the dynamics of the
+    <p>In the example above, the histogram is our numerical approximation of
+    the probability density. The logistic map example had the remarkable
+    property that, although the individual trajectories of the system <i>do
+    not</i> converge, the probability distribution actually <i>does</i>
+    converge to what's known as a <i>stationary distribution</i> -- a fixed
+    point of the master equation.  Instead of thinking about the dynamics of
+    the trajectories, we need to start thinking about the dynamics of the
     distribution.</p>
 
-    <example id="linear_gaussian"><h1>The Linear Gaussian System</h1>
+    <p>The most important example of this analysis is for systems with linear
+    dynamics and additive Gaussian noise; for this case we have closed-form
+    solutions (in arbitrary dimensions). But to keep things simple, let's make
+    sure we understand the scalar case first.</p>
+
+    <example id="linear_gaussian"><h1>A One-dimensional Linear Gaussian
+    System</h1>
 
       <p>Let's consider the one-dimensional linear system with additive noise:
       \[ x[n+1] = a x[n] + w[n]. \] When $w[n]=0$, the system is stable (to the
@@ -267,30 +272,31 @@ with Stochasticity</h1>
       noise with standard deviation $\sigma$. </p>
 
       <p>First, recall that the probability density function of a Gaussian with
-      mean $\mu$ is given by \[ p(w) = \frac{1}{\sqrt{2 \pi \sigma^2}}
-      e^{-\frac{(w-\mu)^2}{2\sigma^2}}. \] When conditioned on $x[n]$, the
+      mean $\mu$ is given by \[ p_w(w) = \frac{1}{\sqrt{2 \pi \sigma_w^2}}
+      e^{-\frac{(w-\mu)^2}{2\sigma_w^2}}. \] When conditioned on $x[n]$, the
       distribution given by the dynamics subjected to mean-zero Gaussian white
       noise is simply another Gaussian, with the mean given by $ax[n]$: \[
-      p(x[n+1]|x[n]) = \frac{1}{\sqrt{2 \pi \sigma^2}}
-      e^{-\frac{(x[n+1]-ax[n])^2}{2\sigma^2}}, \] yielding the master equation
-      \[ p_{n+1}(x) = \frac{1}{\sqrt{2 \pi \sigma^2}} \int_{-\infty}^\infty
-      e^{-\frac{(x-ax')^2}{2\sigma^2}} p_n(x') dx'. \] </p>
+      p(x[n+1]|x[n]) = \frac{1}{\sqrt{2 \pi \sigma_w^2}}
+      e^{-\frac{(x[n+1]-ax[n])^2}{2\sigma_w^2}}, \] yielding the master equation
+      \[ p_{n+1}(x) = \frac{1}{\sqrt{2 \pi \sigma_w^2}} \int_{-\infty}^\infty
+      e^{-\frac{(x-ax')^2}{2\sigma_w^2}} p_n(x') dx'. \] </p>
 
       <p>Now here's the magic.  Let's push a distribution, $p_n(x)$, which is
       zero-mean, with standard deviation $\sigma_n$, through the master
       equation: \begin{align*} p_{n+1}(x) =& \frac{1}{\sqrt{2 \pi
-      \sigma^2}}\frac{1}{\sqrt{2 \pi \sigma_n^2}} \int_{-\infty}^\infty
-      e^{-\frac{(x-ax')^2}{2\sigma^2}} e^{-\frac{(x')^2}{2\sigma_n^2}} dx',\\ =&
-      \frac{1}{\sqrt{2 \pi (\sigma^2+a^2 \sigma_n^2)}} e^{-\frac{x^2}{2(\sigma^2
-      + a^2 \sigma_n^2)}}. \end{align*} The result is another mean-zero Gaussian
-      with $\sigma_{n+1}^2 = \sigma^2 + a^2 \sigma_n^2$.  This result
-      generalizes to the multi-variate case, too, and might be familiar to you
-      e.g. from the process update of the <a
-      href="https://en.wikipedia.org/wiki/Kalman_filter">Kalman filter</a>. </p>
+      \sigma_w^2}}\frac{1}{\sqrt{2 \pi \sigma_n^2}} \int_{-\infty}^\infty
+      e^{-\frac{(x-ax')^2}{2\sigma_w^2}} e^{-\frac{(x')^2}{2\sigma_n^2}} dx',\\
+      =& \frac{1}{\sqrt{2 \pi (\sigma_w^2+a^2 \sigma_n^2)}}
+      e^{-\frac{x^2}{2(\sigma_w^2 + a^2 \sigma_n^2)}}. \end{align*} The result
+      is another mean-zero Gaussian with $\sigma_{n+1}^2 = \sigma_w^2 + a^2
+      \sigma_n^2$.  This result generalizes to the multi-variate case, too, and
+      might be familiar to you e.g. from the process update of the <a
+      href="https://en.wikipedia.org/wiki/Kalman_filter">Kalman filter</a>.
+      </p>
 
       <p>Taking it a step further, we can see that a stationary distribution for
       this system is given by a mean-zero Gaussian with \[ \sigma_*^2 =
-      \frac{\sigma^2}{1-a^2}. \] Note that this distribution is well defined
+      \frac{\sigma_w^2}{1-a^2}. \] Note that this distribution is well defined
       when $-1 < a < 1$ (only when the system is stable).</p>
 
     </example>
@@ -307,7 +313,8 @@ with Stochasticity</h1>
     <p>Given how rich the dynamics can be for deterministic nonlinear systems,
     you can probably imagine that the possible long-term dynamics of the
     probability are also extremely rich.  If we simply flip the signs in the
-    dynamics we examined above, we'll get our next example:</p>
+    cubic polynomial dynamics we examined above, we'll get our next
+    example:</p>
 
     <example><h1>The Cubic Example + Noise</h1>
 
@@ -370,13 +377,11 @@ with Stochasticity</h1>
 
       <script>document.write(notebook_link('stochastic'))</script>
 
-      <p style="text-align:center"><a
-      href="figures/vanderpol_particles.swf">Click here to see the animation
-      (first 20 seconds)</a></p>
-
-      <p style="text-align:center"><a
-      href="figures/vanderpol_particles_mixed.svg">Click here to see the
-      particles after 2000 seconds of simulation</a></p>
+      <todo>improve the visualization</todo>
+      <figure>
+      <iframe style="border:0;height:600px;width:420px;" src="data/vdp_particles.html?height=480px" pdf="no"></iframe>
+      <figcaption>Rollouts of the stochastic Van der Pol oscillator.</figcaption>
+      </figure>
 
        <p>The explanation is simple: the periodic solution of the system is only
        <i>orbitally stable</i>; there is no stability along the limit cycle.  So
@@ -386,6 +391,11 @@ with Stochasticity</h1>
        when $w=0$ eventually reaches a stationary distribution (fixed point) in
        the master equation.</p>
 
+       <figure>
+        <img width="420px" src="data/vdp_particles.svg"/>
+        <figcaption>Sampled approximation of the stationary distribution of the stochastic Van der Pol oscillator.</figcaption>
+        </figure>
+         
     </example>
 
   </section>
@@ -441,24 +451,17 @@ with Stochasticity</h1>
 <div id="references"><section><h1>References</h1>
 <ol>
 
-<li id=Byl08a>
+<li id=Byl08f>
 <span class="author">Katie Byl and Russ Tedrake</span>, 
-<span class="title">"Metastable Walking on Stochastically Rough Terrain"</span>, 
-<span class="publisher">Proceedings of Robotics: Science and Systems IV</span> , <span class="year">2008</span>.
-[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Byl08a.pdf">link</a>&nbsp;]
+<span class="title">"Metastable Walking Machines"</span>, 
+<span class="publisher">International Journal of Robotics Research</span>, vol. 28, no. 8, pp. 1040-1064, August 1, <span class="year">2009</span>.
+[&nbsp;<a href="http://ijr.sagepub.com/cgi/content/abstract/0278364909340446v1">link</a>&nbsp;]
 
 </li><br>
 <li id=Lasota13>
 <span class="author">Andrzej Lasota and Michael C Mackey</span>, 
 <span class="title">"Chaos, fractals, and noise: stochastic aspects of dynamics"</span>, Springer Science \& Business Media
 , vol. 97, <span class="year">2013</span>.
-
-</li><br>
-<li id=Byl08f>
-<span class="author">Katie Byl and Russ Tedrake</span>, 
-<span class="title">"Metastable Walking Machines"</span>, 
-<span class="publisher">International Journal of Robotics Research</span>, vol. 28, no. 8, pp. 1040-1064, August 1, <span class="year">2009</span>.
-[&nbsp;<a href="http://ijr.sagepub.com/cgi/content/abstract/0278364909340446v1">link</a>&nbsp;]
 
 </li><br>
 </ol>

@@ -27,7 +27,8 @@ def pyplot_is_interactive():
 def AdvanceToAndVisualize(simulator,
                           visualizer,
                           time,
-                          time_if_running_headless=0.1):
+                          time_if_running_headless=0.1,
+                          movie_filename=None):
     """
     Helper to support visualizing a simulation with pyplot visualizer.
     Will simply simulate (with target_realtime_rate = 1) if visualizer.show =
@@ -44,12 +45,15 @@ def AdvanceToAndVisualize(simulator,
     if time_if_running_headless and not running_as_notebook:
         time = time_if_running_headless
     simulator.AdvanceTo(time)
-    if visualizer._show:
-        simulator.set_target_realtime_rate(target_rate)
-    else:
+    if not visualizer._show or movie_filename:
         print("done.\ngenerating animation...")
         ani = visualizer.get_recording_as_animation()
         display(HTML(ani.to_jshtml()))
+        if movie_filename:
+            with open(movie_filename, 'w') as f:
+                f.write(ani.to_jshtml())
+    else:
+        simulator.set_target_realtime_rate(target_rate)
 
 
 def SetupMatplotlibBackend(wishlist=["notebook"]):
