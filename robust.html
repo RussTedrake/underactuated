@@ -64,15 +64,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   <p>My goal of presenting a relatively consumable survey of a few of the main
   ideas is perhaps more important in this chapter than any other.  It's been
   said that "robust control is encrypted" (as in you need to know the secret
-  code to get in).  The culture in the robust control community has been to
+  code to get in). The culture in the robust control community has been to
   leverage high-powered mathematics, sometimes at the cost of offering more
   simple explanations.  This is unfortunate, I think, because robotics and
   machine learning would benefit from a richer connection to these tools, and
   are perhaps destined to reinvent many of them.</p>
-    
+  
   <p>The classic reference for robust control is <elib>Zhou97</elib>.
-  <elib>Petersen00</elib> has a treatment that does more of it's development in
-  the time-domain and via Riccati equations.</p>
+  <elib>Petersen00</elib> has a treatment that does more of its development in
+  the time-domain and via Riccati equations; I will do the same here.</p>
 
   <section><h1>Stochastic models</h1>
   
@@ -143,7 +143,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     Broadly speaking, one might specify a cost in a handful of ways:</p>
     <ul>
       <li><b>Average cost</b>, $E[ \sum_n \ell(\bx[n], \bu[n]) ]$, or some
-      averaged/discounted variant.  This is by far the most popular choice
+      time-averaged/discounted variant.  This is by far the most popular choice
       (especially in reinforcement learning), because it preserves the dynamic
       programming recursion for additive cost.</li>
       <li><b>Worst-case cost</b>, e.g. $\min_{\bu[\cdot]}\max_{\bx[0], {\bf
@@ -165,7 +165,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     Similarly, we can think about how to generalize our deterministic
     constraints, e.g. $g(\bx) \le 0,$ into a the stochastic framework:
     <ul>
-      <li><b>Chance constraints</b>, which take the form e.g. $\Pr[ g(\bx) \le
+      <li><b>Chance constraints</b>, which take the form e.g. $\Pr[ g(\bx) >
       0 ] \le \alpha.$  For instance, we might like to guarantee that the
       probability that our airplane will crash into a tree is less that
       $\alpha$. Even for Gaussian uncertainty and polytopic constraints, these
@@ -173,11 +173,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       approximations<elib>Scher22</elib> though there is some hope to provide
       rigorous bounds with Lyapunov-like arguments
       <elib>Steinhardt11a</elib>.</li>
-      <li><b>Absolute constraints</b>, which are the worst-case version of the
-      chance constraints (take $\alpha = 0$) tend to be much more amenable to
-      computation, and connect directly to <a
-      href="lyapunov.html#finite-time">reachability analysis</a> (for instance,
-      with Lyapunov functions or barrier certificates).</li>
+      <li><b>Worst-case constraints</b>, which are the limit of the chance
+      constraints when we take $\alpha \rightarrow 0$, tend to be much more
+      amenable to computation, and connect directly to <a
+      href="lyapunov.html#finite-time">reachability analysis</a>.</li>
     </ul>
     </p>
 
@@ -206,51 +205,139 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
   <section><h1>Finite Markov Decision Processes</h1>
 
-    <p>We already had quick preview into stochastic optimal control in one of the cases where it is particularly easy: <a href="dp.html#mdp">finite Markov Decision Processes (MDPs)</a>.</p>
+    <p>The Bellman equation.</p>
 
-    <todo>Perhaps a example of something other than expected-value cost (worst case, e.g. Katie's metastability?)</todo>
+    <p>Discounted cost. Infinite-horizon average cost.</p>
+
+
+      <p>We already had quick preview into stochastic optimal control in one of the cases where it is particularly easy: <a href="dp.html#mdp">finite Markov Decision Processes (MDPs)</a>.</p>
+
+      <todo>Perhaps a example of something other than expected-value cost (worst case, e.g. Katie's metastability?)</todo>
+    </subsection>
 
   </section>
 
   <section><h1>Linear optimal control</h1>
+    <subsection><h1>Stochastic LQR</h1>
 
-    <subsection><h1>Analysis</h1>
+      <p>Let's consider a stochastic extension of the (discrete-time) LQR
+      problem, where the system is now subjected to additive Gaussian white
+      noise: \begin{gather*} \bx[n+1] = \bA\bx[n] + \bB\bu[n] + \bw[n],\\
+      E\left[\bw[i]\right] = 0, \quad E\left[ \bw[i]\bw^T[j] \right] =
+      \delta_{ij}{\bf \Sigma_w},\end{gather*} where $\delta_{ij}$ is one if
+      $i=j$ and zero otherwise, and ${\bf \Sigma_w}$ is the covariance matrix
+      of the disturbance, and we take the average cost: $$\min E\left[
+      \sum_{n=0}^\infty \bx^T[n]\bQ\bx[n] + \bu^T[n] \bR\bu[n] \right], \qquad
+      \bQ=\bQ^T \ge 0, \bR = \bR^T > 0.$$ Note that we saw one version of this
+      already when we discussed <a href="policy_search.html#lqr">policy search
+      for LQR</a>.</p>
+
+      <p>In the standard LQR derivation, we started by assuming a quadratic
+      form for the cost-to-go function. Is that a suitable starting place for
+      this stochastic version? We've already <a
+      href="stochastic.html#linear_gaussian">studied the dynamics of a linear
+      system subjected to Gaussian noise</a>, and learned that (at best) we
+      should expect it to have a Gaussian stationary distribution. But that
+      sounds problematic, no? If the system can not drive the system to zero
+      and stay at zero in order to stop accruing cost, then won't the
+      infinite-horizon cost be infinite (regardless of the controller)?</p>
+
+      <p>Yes. The cost-to-go for this problem is infinite! But it turns out
+      that it still has enough structure for us to work with. In particular,
+      let's "guess" a cost-to-go function of the form: $$J_n(\bx) = \bx^T {\bf
+      S}_n \bx + c_n,$$ where $c_n$ is a (scalar) constant. Now we can write
+      the Bellman equation and do some algebra: \begin{align*} J_n(\bx) &=
+      \min_\bu E_\bw\left[\bx^T \bQ \bx + \bu^T\bR\bu + [\bA\bx + \bB\bu +
+      \bw]^T{\bf S}_{n+1}[\bA\bx + \bB\bu + \bw] + c_{n+1}\right] \\ &
+      \begin{split}= \min_\bu &[\bx^T \bQ \bx + \bu^T\bR\bu + [\bA\bx +
+      \bB\bu]^T{\bf S}_{n+1}[\bA\bx + \bB\bu] + c_{n+1} \\ &+ E_\bw\left[
+      [\bA\bx + \bB\bu]^T{\bf S}_{n+1} \bw + \bw^T{\bf S}_{n+1}[\bA\bx +
+      \bB\bu]\right] + E_\bw[\bw^T \bw]]\end{split} \\ &= \min_\bu [\bx^T \bQ
+      \bx + \bu^T\bR\bu + [\bA\bx + \bB\bu]^T{\bf S}_{n+1}[\bA\bx + \bB\bu] +
+      c_{n+1} + \tr({\bf \Sigma_w})]. \end{align*} The second line follows by
+      simply pulling all of the deterministic terms outside of the expected
+      value. The third line follows by observing that $\bx$ and $\bu$ are
+      uncorrelated with $\bw,$ and $E[\bw] = 0$, so those cross terms are zero
+      in expectation. Notice that, apart from the $c_{n+1}$ and ${\bf
+      \Sigma_w}$, the remaining terms are exactly the same as the deterministic
+      (discrete-time) LQR version.
+      </p>
+
+      <p>Remarkably, we can therefore achieve our dynamic programming recursion
+      by using ${\bf S}_n$ as the solution of the discrete Riccati equation,
+      and $c_n = c_{n+1} + \tr({\bf \Sigma_w}).$ As we take $n\rightarrow
+      \infty$, ${\bf S}_n$ converges to the steady-state solution to the
+      algebraic Riccati equation, and only $c_n$ grows to infinity.  As a
+      result, even though the cost-to-go is infinite, the optimal control is
+      still well defined: it is the same $\bu^* = -{\bf K}\bx$ that we obtain
+      from the deterministic LQR problem!</p>
+
+      <subsection><h1>Non-i.i.d. disturbances</h1>
     
-      <subsubsection><h1>Common Lyapunov functions</h1>
-        <p>We've already seen one nice example of robustness analysis for
-        linear systems when we wrote a small optimization to find a <a
-        href="lyapunov.html#common-lyapunov-linear">common Lyapunov function
-        for uncertain linear systems</a>.  That example studied the dynamics
-        $\bx[n+1] = \bA \bx[n]$ where the coefficients of $\bA$ were unknown
-        but bounded.</p>  
+        <p>The LQR derivation above assumed that the disturbances $\bw[n]$ were
+        independent and identically distributed (i.i.d.). But many of the
+        disturbances we would like to model are not i.i.d..  For instance,
+        consider a UAV flying in the wind. The wind is correlated over time,
+        sometimes building up to gusts but even those gusts are relatively long
+        compared to any the sampling rate of a control system.</p>
+
+        <p>In fact, the standard models of wind are typically the output of a
+        Gaussian i.i.d. random signal passed through a linear low-pass filter
+        <elib sect="Ch. 9">Moore14b</elib>. This suggests a very natural
+        approach to using LQR to stabilize a UAV in the wind: design the
+        controller for the joint wind + UAV system. The state of this system
+        contains both the state of the UAV and the state of the wind, so the
+        resulting controller will have the form $$\bu = -{\bf K}
+        \begin{bmatrix}\bx_{uav} \\ \bx_{wind} \end{bmatrix}.$$ In practice,
+        this means that the controller will need to rely on an online estimator
+        for the wind state in addition to the standard (UAV) state
+        estimator.</p>
+
+        <todo>definitely need a diagram here.</todo>
+    
+      </subsection>
+
+      <example><h1>A quadrotor flying in the wind.</h1>
       
-        <p><a href="lyapunov.html#common-lyapunov">We also saw</a> that
-        essentially the same technique can be used to certify stability against
-        disturbances, e.g.: $$\bx[n+1] = \bA\bx[n] + \bw[n], \qquad \bw[n] \in
-        \mathcal{W},$$ where $\mathcal{W}$ describes some bounded set of
-        possible uncertainties.  In order to be compatible with convex
-        optimization, we often choose to describe $\mathcal{W}$ as either an
-        ellipsoid or as a convex polytope<elib>Boyd04a</elib>.  But let's
-        remember a very important point: in this situation with additive
-        disturbances, we can no-longer expect the system to converge stably to
-        the origin.  Our example before used the common Lyapunov function only
-        to certify the <i>invariance</i> of a region (if I start inside some region, then I'll never leave).</p>
+      </example>
 
-      </subsubsection>
- 
-      <subsubsection><h1>$L_2$ gain</h1>
+    </subsection>
 
-        <p>In some sense, the common-Lyapunov analysis above is probably the
-        wrong analysis for linear systems (perhaps other systems as well).  It
-        might be unreasonable to assume that disturbances are bounded.
-        Moreover, we know that the response to an input (including the
-        disturbance input) is linear, so we expect the magnitude of the
-        deviation in $\bx$ compared to the undisturbed case to be proportional
-        to the magnitude of the disturbance, $\bw$.  A more natural bound for a
-        linear system's response is to bound the magnitude of the response
-        (from zero initial conditions) relative to the magnitude of the
-        disturbance.  
-        </p>
+    <!--
+    <subsection><h1>Common Lyapunov functions</h1>
+      <p>We've already seen one nice example of robustness analysis for linear
+      systems when we wrote a small optimization to find a <a
+      href="lyapunov.html#common-lyapunov-linear">common Lyapunov function for
+      uncertain linear systems</a>.  That example studied the dynamics
+      $\bx[n+1] = \bA \bx[n]$ where the coefficients of $\bA$ were unknown but
+      bounded.</p>  
+    
+      <p><a href="lyapunov.html#common-lyapunov">We also saw</a> that
+      essentially the same technique can be used to certify stability against
+      disturbances, e.g.: $$\bx[n+1] = \bA\bx[n] + \bw[n], \qquad \bw[n] \in
+      \mathcal{W},$$ where $\mathcal{W}$ describes some bounded set of possible
+      uncertainties.  In order to be compatible with convex optimization, we
+      often choose to describe $\mathcal{W}$ as either an ellipsoid or as a
+      convex polytope<elib>Boyd04a</elib>.  But let's remember a very important
+      point: in this situation with additive disturbances, we can no-longer
+      expect the system to converge stably to the origin.  Our example before
+      used the common Lyapunov function only to certify the <i>invariance</i>
+      of a region (if I start inside some region, then I'll never leave).</p>
+
+    </subsection>
+-->
+
+    <subsection><h1>$L_2$ gain</h1>
+
+      <p>Worst-case analysis for linear systems requires some care. Even if disturbances are bounded, 
+      Moreover, we know that the response to an input (including the
+      disturbance input) is linear, so we expect the magnitude of the
+      deviation in $\bx$ compared to the undisturbed case to be proportional
+      to the magnitude of the disturbance, $\bw$.  A more natural bound for a
+      linear system's response is to bound the magnitude of the response
+      (from zero initial conditions) relative to the magnitude of the
+      disturbance.  
+      </p>
         
         <!--
         <example><h1>Gain bounds for linear maps</h1>
@@ -287,32 +374,25 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         
       </subsubsection>
 
+      <subsubsection><h1>Dissipation inequalities</h1>
+    
+        <p>Coming soon... See, for instance, <elib>Ebenbauer09</elib> or <elib part="Ch. 2">Scherer15</elib>.</p>
+  
+      </subsubsection>
+  
+  
       <subsubsection><h1>Small-gain theorem</h1>
       
         <todo>Robust control diagram</todo>
         <p>Coming soon...</p>
         
       </subsubsection>
-
-      <subsubsection><h1>Dissipation inequalities</h1>
-      
-        <p>Coming soon... See, for instance, <elib>Ebenbauer09</elib> or <elib part="Ch. 2">Scherer15</elib>.</p>
-
-      </subsubsection>
+  
+  
 
       <todo>IQCs</todo>
 
-      <example><h1>A quadrotor flying in the wind.</h1>
-      
-        <p>Wind gust modeling. Discussion in <elib sect="Ch. 9">Moore14b</elib> </p>
-      </example>
 
-    </subsection>
-
-    <subsection><h1>Disturbance-based feedback</h1>
-    
-      <p>The Youla parameterization.</p>
-    
     </subsection>
 
     <subsection><h1>$H_2$ design</h1>
@@ -423,7 +503,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     <subsection><h1>Monte-carlo trajectory optimization</h1>
       
     </subsection>
-    <subsection><h1>Iterative $H_2$</h1>
+    <subsection><h1>Iterative $H_2$/iLQG</h1>
 
       <todo>cover iLQR and perhaps Scott's UKF version in the output-feedback chapter?</todo>
     </subsection>
@@ -518,6 +598,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 [&nbsp;<a href="http://ijr.sagepub.com/content/31/7/901.abstract">link</a>&nbsp;]
 
 </li><br>
+<li id=Moore14b>
+<span class="author">Joseph Moore</span>, 
+<span class="title">"Robust Post-Stall Perching with a Fixed-Wing UAV"</span>, 
+PhD thesis, Massachusetts Institute of Technology, September, <span class="year">2014</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Moore14b.pdf">link</a>&nbsp;]
+
+</li><br>
 <li id=Boyd04a>
 <span class="author">Stephen Boyd and Lieven Vandenberghe</span>, 
 <span class="title">"Convex Optimization"</span>, Cambridge University Press
@@ -534,13 +621,6 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <span class="author">Carsten Scherer and Siep Weiland</span>, 
 <span class="title">"Linear {Matrix} {Inequalities} in {Control}"</span>, Online Draft
 , pp. 293, <span class="year">2015</span>.
-
-</li><br>
-<li id=Moore14b>
-<span class="author">Joseph Moore</span>, 
-<span class="title">"Robust Post-Stall Perching with a Fixed-Wing UAV"</span>, 
-PhD thesis, Massachusetts Institute of Technology, September, <span class="year">2014</span>.
-[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Moore14b.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Jacobson73>
