@@ -60,65 +60,6 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 13"><h1>Robust and
   Stochastic Control</h1>
-  
-  <p>So far in the notes, we have concerned ourselves with only known,
-  deterministic systems.  In this chapter we will begin to consider uncertainty.
-  This uncertainy can come in many forms... we may not know the governing
-  equations (e.g. the coefficient of friction in the joints), our robot may be
-  <a href="https://youtu.be/cNZPRsrwumQ?t=32">walking on unknown terrain,
-  subject to unknown disturbances</a>, or even be picking up unknown objects.
-  There are a number of mathematical frameworks for considering this
-  uncertainty; for our purposes this chapter will generalizing our thinking to
-  equations of the form: $$\dot\bx = {\bf f}(\bx, \bu, \bw, t) \qquad \text{or}
-  \qquad \bx[n+1] = {\bf f}(\bx[n], \bu[n], \bw[n], n),$$ where $\bw$ is a new
-  <i>random</i> input signal to the equations capturing all of this potential
-  variability. Although it is certainly possible to work in continuous time, and
-  treat $\bw(t)$ as a continuous-time random signal (c.f. <a
-  href="https://en.wikipedia.org/wiki/Wiener_process">Wiener process</a>), it is
-  notationally simpler to work with $\bw[n]$ as a discrete-time random signal.
-  For this reason, we'll devote our attention in this chapter to the
-  discrete-time systems.</p>
-
-  <p>In order to simulate equations of this form, or to design controllers
-  against them, we need to define the random process that generates $\bw[n]$. It
-  is typical to assume the values $\bw[n]$ are independent and identically
-  distributed (i.i.d.), meaning that $\bw[i]$ and $\bw[j]$ are uncorrelated when
-  $i \neq j$.  As a result, we typically define our distribution via a
-  probability density $p_{\bf w}(\bw[n])$.  This is not as limiting as it may
-  sound... if we wish to treat temporally-correlated noise (e.g. "colored
-  noise") the format of our equations is rich enough to support this by adding
-  additional state variables; we'll give an example below of a "whitening
-  filter" for modeling wind gusts.  The other source of randomness that we will
-  now consider in the equations is randomness in the initial conditions; we will
-  similarly define a probabilty density $p_\bx(\bx[0]).$</p>
-
-  <p>This modeling framework is rich enough for us to convey the key ideas; but
-  it is not quite sufficient for all of the systems I am interested in.  In
-  <drake></drake> we go to additional lengths to support more general cases of
-  <a
-  href="https://drake.mit.edu/doxygen_cxx/group__stochastic__systems.html">stochastic
-  systems</a>.  This includes modeling system parameters that are drawn from
-  random each time the model is initialized, but are fixed over the duration of
-  a simulation; it is possible but inefficient to model these as additional
-  state variables that have no dynamics.  In other problems, even the
-  <i>dimension of the state vector</i> may change in different realizations of
-  the problem!  Consider, for instance, the case of a robot manipulating random
-  numbers of dishes in a sink. I do not know many control formulations that
-  handle this type of randomness well, and I consider this a top priority to
-  think more about!  (We'll begin to address it in the <a href="output_feedback.html">output feedback chapter</a>.)</p>
-  
-  <p>Roughly speaking, I will refer to "stochastic control" as the discipline of
-  synthesizing controllers that govern the probabilistic evolution of the
-  equations.  "Stochastic optimal control" defines a cost function (now a random
-  variable), and tries to find controllers that optimize some metric such as the
-  expected cost.  When we use the terms "robust control", we are typically
-  referring to a class of techniques that try to guarantee a worst-case
-  performance or a worst-case bound on the effect of randomness on the input on
-  the randomness on the output.  Interestingly, for many robust control
-  formulations we do not attempt to know the precise probability distribution of
-  $\bx[0]$ and $\bw[n]$, but instead only define the <i>sets</i>
-  of possible values that they can take.  This modeling is powerful, but can
-  lead to conservative controllers and pessimistic estimates of performance.</p>
 
   <p>My goal of presenting a relatively consumable survey of a few of the main
   ideas is perhaps more important in this chapter than any other.  It's been
@@ -128,18 +69,139 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   simple explanations.  This is unfortunate, I think, because robotics and
   machine learning would benefit from a richer connection to these tools, and
   are perhaps destined to reinvent many of them.</p>
-  
+    
   <p>The classic reference for robust control is <elib>Zhou97</elib>.
   <elib>Petersen00</elib> has a treatment that does more of it's development in
   the time-domain and via Riccati equations.</p>
 
+  <section><h1>Stochastic models</h1>
+  
+    <p>So far in the notes, we have concerned ourselves primarily with known,
+    deterministic systems.  In the <a href="stochastic.html">stochastic
+    systems</a> chapter, we started our study of nonlinear dynamics of
+    stochastic systems, which can be beautiful!  In this chapter we will begin
+    to consider computational tools for analysis and control of those systems.
+    Stochasticity can come in many forms... we may not know the governing
+    equations (e.g. the coefficient of friction in the joints), our robot may
+    be <a href="https://youtu.be/cNZPRsrwumQ?t=32">walking on unknown terrain,
+    subject to unknown disturbances</a>, or even be picking up unknown objects.
+    There are a number of mathematical frameworks for considering this
+    uncertainty; for our purposes this chapter will generalizing our thinking
+    to equations of the form: $$\dot\bx = {\bf f}(\bx, \bu, \bw, t) \qquad
+    \text{or} \qquad \bx[n+1] = {\bf f}(\bx[n], \bu[n], \bw[n], n),$$ where
+    $\bw$ is a new <i>random</i> input signal to the equations capturing all of
+    this potential variability. Although it is certainly possible to work in
+    continuous time, and treat $\bw(t)$ as a continuous-time random signal
+    (c.f. <a href="https://en.wikipedia.org/wiki/Wiener_process">Wiener
+    process</a>), the notation and intuition is a big simpler when we work with
+    $\bw[n]$ as a discrete-time random signal. For this reason, we'll devote
+    our attention in this chapter to the discrete-time systems.</p>
+
+    <p>In order to simulate equations of this form, or to design controllers
+    against them, we need to define the random process that generates $\bw[n]$.
+    It is typical to assume the values $\bw[n]$ are independent and identically
+    distributed (i.i.d.), meaning that $\bw[i]$ and $\bw[j]$ are uncorrelated
+    when $i \neq j$.  As a result, we typically define our distribution via a
+    probability density $p_{\bf w}(\bw[n])$.  This is not as limiting as it may
+    sound... if we wish to treat temporally-correlated noise (e.g. "colored
+    noise") the format of our equations is rich enough to support this by
+    adding additional state variables; we'll give an example below of a
+    "whitening filter" for modeling wind gusts.  The other source of randomness
+    that we will now consider in the equations is randomness in the initial
+    conditions; we will similarly define a probability density
+    $p_\bx(\bx[0]).$</p>
+      
+    <p>This modeling framework is rich enough for us to convey the key ideas;
+    but it is not quite sufficient for all of the systems I am interested in.
+    In <drake></drake> we go to additional lengths to support more general
+    cases of <a
+    href="https://drake.mit.edu/doxygen_cxx/group__stochastic__systems.html">stochastic
+    systems</a>.  This includes modeling system parameters that are drawn from
+    random each time the model is initialized, but are fixed over the duration
+    of a simulation; it is possible but inefficient to model these as
+    additional state variables that have no dynamics.  In other problems, even
+    the <i>dimension of the state vector</i> may change in different
+    realizations of the problem!  Consider, for instance, the case of a robot
+    manipulating random numbers of dishes in a sink. I do not know many control
+    formulations that handle this type of randomness well, and I consider this
+    a top priority to think more about!  (We'll begin to address it in the <a
+    href="output_feedback.html">output feedback chapter</a>.)</p>
+
+  </section>
+
   <section><h1>Costs and constraints for stochastic systems</h1>
   
-    <!--
-      <p>Given a stochastic model, what sort of cost function should we write in order to capture some essence of robustness?</p>
+    <p>Given a stochastic model, what sort of cost function should we write in
+    order to capture the desired aspect of performance?  There are a number of
+    natural choices, which provide nice trade-offs between capturing the
+    desired phenomena and computational tractability.</p>
 
-     Expected value, worst-case (guaranteed cost), conditional value at risk, ani risk metrics. -->
-  
+    <todo>Airplane flying through the canyon figure?</todo>
+
+    <p>Remember that $\bx[n]$ is now a random variable, so we want to write our
+    cost and constraints using the distribution described e.g. $p_n(\bx)$.
+    Broadly speaking, one might specify a cost in a handful of ways:</p>
+    <ul>
+      <li><b>Average cost</b>, $E[ \sum_n \ell(\bx[n], \bu[n]) ]$, or some
+      averaged/discounted variant.  This is by far the most popular choice
+      (especially in reinforcement learning), because it preserves the dynamic
+      programming recursion for additive cost.</li>
+      <li><b>Worst-case cost</b>, e.g. $\min_{\bu[\cdot]}\max_{\bx[0], {\bf
+      w}[\cdot]} \sum_n \ell(\bx[n], \bu[n]).$ When we are able to upper-bound
+      this cost and push down on that bound, then this is sometimes call
+      <i>guaranteed cost control</i>.</li>
+      <li><b>Relative worst-case</b> (aka "gain bounds"). Even for linear
+      systems, bounding the absolute performance (for all $\bw$) leads to
+      vacuous bounds; we can do much better by evaluating our performance
+      metric relative to the magnitude of the disturbance input.</li>
+      <li><b>Value at Risk (VaR)</b> and other related metrics from economics
+      and operations research. $\text{VaR}(p)$ is the maximum cost if we ignore
+      the tails of the distribution (worse outcomes whose combined probability
+      is at most $p$). Note that VaR is easy to understand, but the related
+      quantity "conditional value at risk" (CVaR) has superior mathematical
+      properties, including connections to convex optimization
+      <elib>Majumdar20</elib>.</li>
+    </ul>
+    Similarly, we can think about how to generalize our deterministic
+    constraints, e.g. $g(\bx) \le 0,$ into a the stochastic framework:
+    <ul>
+      <li><b>Chance constraints</b>, which take the form e.g. $\Pr[ g(\bx) \le
+      0 ] \le \alpha.$  For instance, we might like to guarantee that the
+      probability that our airplane will crash into a tree is less that
+      $\alpha$. Even for Gaussian uncertainty and polytopic constraints, these
+      quantities can be hard to evaluate exactly; we often end up making
+      approximations<elib>Scher22</elib> though there is some hope to provide
+      rigorous bounds with Lyapunov-like arguments
+      <elib>Steinhardt11a</elib>.</li>
+      <li><b>Absolute constraints</b>, which are the worst-case version of the
+      chance constraints (take $\alpha = 0$) tend to be much more amenable to
+      computation, and connect directly to <a
+      href="lyapunov.html#finite-time">reachability analysis</a> (for instance,
+      with Lyapunov functions or barrier certificates).</li>
+    </ul>
+    </p>
+
+    <p>The term "robust control" is typically associated with the class of
+    techniques that try to guarantee some <i>worst-case</i> performance or a
+    worst-case bound (e.g. the gain bounds). The term "stochastic optimal
+    control" or "stochastic control" is typically used as a catch-all for other
+    methods that reason about stochasticity, without necessarily providing the
+    strict robustness guarantees.</p>
+    
+    <p>It's important to realize that proponents of robust control are not
+    necessarily pessimistic by nature; there is a philosophical stance about
+    how difficult it can be to model the true distribution of randomness that a
+    control system will face in the world. Worst-case analysis typically
+    requires only a definition of the <i>set</i> of possible values that the
+    random variable can take, and not a detailed <i>distribution</i> over those
+    possible values.  It may be more practical to operationalize a concept like
+    "this UAV will not crash so long as the peak wind gusts are below 35 mph"
+    than requiring a detailed distribution over wind gust probabilities. But
+    this simpler specification does come at some cost -- worst-case
+    certificates are often pessimistic about the true performance of a system,
+    and optimizing worst-case performance can lead to conservatism in the
+    control design.</p>
+
   </section>
 
   <section><h1>Finite Markov Decision Processes</h1>
@@ -434,6 +496,26 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <span class="author">I. R. Petersen and V. A. Ugrinovskii and A. V. Savkin</span>, 
 <span class="title">"Robust Control Design using H-infinity Methods"</span>, Springer-Verlag
 , <span class="year">2000</span>.
+
+</li><br>
+<li id=Majumdar20>
+<span class="author">Anirudha Majumdar and Marco Pavone</span>, 
+<span class="title">"How should a robot assess risk? towards an axiomatic theory of risk in robotics"</span>, 
+<span class="publisher">Robotics Research</span> , pp. 75--84, <span class="year">2020</span>.
+
+</li><br>
+<li id=Scher22>
+<span class="author">Guy Scher and Sadra Sadraddini and Russ Tedrake and Hadas Kress-Gazit</span>, 
+<span class="title">"Elliptical Slice Sampling for Probabilistic Verification of Stochastic Systems with Signal Temporal Logic Specifications"</span>, 
+<span class="publisher">To appear in the Proceedings of Hybrid Systems: Computation and Control (HSCC)</span> , <span class="year">2022</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Scher22.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Steinhardt11a>
+<span class="author">Jacob Steinhardt and Russ Tedrake</span>, 
+<span class="title">"Finite-time Regional Verification of Stochastic Nonlinear Systems"</span>, 
+<span class="publisher">International Journal of Robotics Research</span>, vol. 31, no. 7, pp. 901-923, June, <span class="year">2012</span>.
+[&nbsp;<a href="http://ijr.sagepub.com/content/31/7/901.abstract">link</a>&nbsp;]
 
 </li><br>
 <li id=Boyd04a>
