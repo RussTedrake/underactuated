@@ -210,9 +210,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     <p>Discounted cost. Infinite-horizon average cost.</p>
 
 
-      <p>We already had quick preview into stochastic optimal control in one of the cases where it is particularly easy: <a href="dp.html#mdp">finite Markov Decision Processes (MDPs)</a>.</p>
+      <p>We already had quick preview into stochastic optimal control in one of
+      the cases where it is particularly easy: <a href="dp.html#mdp">finite
+      Markov Decision Processes (MDPs)</a>.</p>
 
-      <todo>Perhaps a example of something other than expected-value cost (worst case, e.g. Katie's metastability?)</todo>
+      <todo>Perhaps a example of something other than expected-value cost
+      (worst case, e.g. Katie's metastability?)</todo>
     </subsection>
 
   </section>
@@ -228,9 +231,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       $i=j$ and zero otherwise, and ${\bf \Sigma_w}$ is the covariance matrix
       of the disturbance, and we take the average cost: $$\min E\left[
       \sum_{n=0}^\infty \bx^T[n]\bQ\bx[n] + \bu^T[n] \bR\bu[n] \right], \qquad
-      \bQ=\bQ^T \ge 0, \bR = \bR^T > 0.$$ Note that we saw one version of this
-      already when we discussed <a href="policy_search.html#lqr">policy search
-      for LQR</a>.</p>
+      \bQ=\bQ^T \succeq 0, \bR = \bR^T \succ 0.$$ Note that we saw one version
+      of this already when we discussed <a href="policy_search.html#lqr">policy
+      search for LQR</a>.</p>
 
       <p>In the standard LQR derivation, we started by assuming a quadratic
       form for the cost-to-go function. Is that a suitable starting place for
@@ -329,57 +332,57 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <subsection><h1>$L_2$ gain</h1>
 
-      <p>Worst-case analysis for linear systems requires some care. Even if disturbances are bounded, 
-      Moreover, we know that the response to an input (including the
-      disturbance input) is linear, so we expect the magnitude of the
-      deviation in $\bx$ compared to the undisturbed case to be proportional
-      to the magnitude of the disturbance, $\bw$.  A more natural bound for a
-      linear system's response is to bound the magnitude of the response
-      (from zero initial conditions) relative to the magnitude of the
-      disturbance.  
+      <p>Which cost function should we use to do worst-case design and analysis
+      for linear systems? Certainly we can put an absolute bound on the
+      magnitude of $\bw$, and perform reachability analysis (we will do it
+      below). But knowing that the dependency on $\bw$ is linear allows us to
+      do something more natural, which can lead to tighter bounds. In
+      particular, we expect the magnitude of the deviation in $\bx$ compared to
+      the undisturbed case to be proportional to the magnitude of the
+      disturbance, $\bw$.  So the natural bound for a linear system is a
+      <i>relative</i> bound on the magnitude of the response (from zero initial
+      conditions) relative to the magnitude of the disturbance.
       </p>
         
-        <!--
-        <example><h1>Gain bounds for linear maps</h1>
-          <p>Allow me to make the point with a much simpler problem.  Imagine I
-          have just a affine function (not even a system): $x = aw$.  One could certainly make the statement: if $|w|\le 1$, then $|x| \le |a|$</p>
-        </example>
-        -->
-        <p>
-        Typically, this is done with the a scalar "$L_2$
-        gain", $\gamma$, defined as: \begin{align*}\argmin_\gamma \quad
-        \subjto& \quad \sup_{\bw(\cdot) \in \int \|\bw(t)\|^2 dt\le \infty}
-        \frac{\int_0^T \| \bx(t) \|^2 dt}{\int_0^T \| \bw(t) \|^2dt} \le
-        \gamma^2, \qquad \text{or} \\ \argmin_\gamma \quad \subjto&
-        \sup_{\bw[\cdot] \in \sum_n \|\bw[n]\|^2 \le \infty} \frac{\sum_0^N
-        \|\bx[n]\|^2}{\sum_0^N \| \bw[n] \|^2} \le \gamma^2.\end{align*} The
-        name "$L_2$ gain" comes from the use of the $\ell_2$ norm on the
-        signals $\bw(t)$ and $\bx(t)$, which is assumed only to be finite.</p>
+      <!--
+      <example><h1>Gain bounds for linear maps</h1>
+        <p>Allow me to make the point with a much simpler problem.  Imagine I
+        have just a affine function (not even a system): $x = aw$.  One could certainly make the statement: if $|w|\le 1$, then $|x| \le |a|$</p>
+      </example>
+      -->
+      <p>
+      Typically, this is done with the a scalar "$L_2$
+      gain", $\gamma$, defined as: \begin{align*}\argmin_\gamma \quad
+      \subjto& \quad \sup_{\bw(\cdot) \in \int \|\bw(t)\|^2 dt\le \infty}
+      \frac{\int_0^T \| \bx(t) \|^2 dt}{\int_0^T \| \bw(t) \|^2dt} \le
+      \gamma^2, \qquad \text{or} \\ \argmin_\gamma \quad \subjto&
+      \sup_{\bw[\cdot] \in \sum_n \|\bw[n]\|^2 \le \infty} \frac{\sum_0^N
+      \|\bx[n]\|^2}{\sum_0^N \| \bw[n] \|^2} \le \gamma^2.\end{align*} The
+      name "$L_2$ gain" comes from the use of the $\ell_2$ norm on the
+      signals $\bw(t)$ and $\bx(t)$, which is assumed only to be finite.</p>
+    
+      <p>More often, these gains are written not in terms of $\bx[n]$ directly,
+      but in terms of some "performance output", $\bz[n]$.  For instance, if
+      would would like to bound the cost of a quadratic regulator objective as
+      a function of the magnitude of the disturbance, we can minimize $$
+      \min_\gamma \quad \subjto \quad \sup_{\bw[n]} \frac{\sum_0^N
+      \|\bz[n]\|^2}{\sum_0^N \| \bw[n] \|^2} \le \gamma^2, \qquad \bz[n] =
+      \begin{bmatrix}\sqrt{\bQ} \bx[n] \\ \sqrt{\bR} \bu[n]\end{bmatrix}.$$
+      This is a simple but important idea, and understanding it is the key to
+      understanding the language around robust control.  In particular the
+      $\mathcal{H}_2$ norm of a system (from input $\bw$ to output $\bz$) is
+      the energy of the impulse response; when $\bz$ is chosen to represent the
+      quadratic regulator cost as above, it corresponds to the expected LQR
+      cost.  The $\mathcal{H}_\infty$ norm of a system (from $\bw$ to $\bz$) is
+      the largest singular value of the transfer function; it corresponds to
+      the $L_2$ gain.</p>
       
-        <p>More often, these gains are written not in terms of $\bx[n]$
-        directly, but in terms of some "performance output", $\bz[n]$.  For
-        instance, if would would like to bound the cost of a quadratic
-        regulator objective as a function of the magnitude of the disturbance,
-        we can minimize $$ \min_\gamma \quad \subjto \quad \sup_{\bw[n]}
-        \frac{\sum_0^N \|\bz[n]\|^2}{\sum_0^N \| \bw[n] \|^2} \le \gamma^2,
-        \qquad \bz[n] = \begin{bmatrix}\sqrt{\bQ} \bx[n] \\ \sqrt{\bR}
-        \bu[n]\end{bmatrix}.$$  This is a simple but important idea, and
-        understanding it is the key to understanding the language around robust
-        control.  In particular the $H_2$ norm of a system (from input $\bw$ to
-        output $\bz$) is the energy of the impulse response; when $\bz$ is
-        chosen to represent the quadratic regulator cost as above, it
-        corresponds to the expected LQR cost.  The $H_\infty$ norm of a system
-        (from $\bw$ to $\bz$) is the largest singular value of the transfer
-        function; it corresponds to the $L_2$ gain.</p>
-        
-      </subsubsection>
-
       <subsubsection><h1>Dissipation inequalities</h1>
     
-        <p>Coming soon... See, for instance, <elib>Ebenbauer09</elib> or <elib part="Ch. 2">Scherer15</elib>.</p>
+        <p>Coming soon... See, for instance, <elib>Ebenbauer09</elib> or <elib
+        part="Ch. 2">Scherer15</elib>.</p>
   
       </subsubsection>
-  
   
       <subsubsection><h1>Small-gain theorem</h1>
       
@@ -395,14 +398,72 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     </subsection>
 
-    <subsection><h1>$H_2$ design</h1>
+    <subsection><h1>Robust LQR as $\mathcal{H}_\infty$</h1>
 
+      <p>Let's consider a robust variant of the LQR problem: \begin{gather*}
+      \min_{\bu[\cdot]} \max_{\bw[\cdot]} \sum_{n=0}^\infty \bx^T[n]\bQ\bx[n] +
+      \bu^T[n] \bR\bu[n] - \gamma^2 \bw^T[n]\bw[n],\\ \bx[n+1] = \bA\bx[n] +
+      \bB\bu[n] + \bB_\bw \bw[n],\\ \bQ=\bQ^T \succeq 0, \bR = \bR^T \succ 0.
+      \end{gather*} The reason for this choice of cost function will become
+      clear in the derivation, but the intuition is that we want to reward the
+      controller for having a small response to large $\bw[\cdot]$. Note that
+      unlike the stochastic LQR formulation, here we do not specify the
+      distribution over $\bw[n]$, and in fact we don't even restrict it to a
+      bounded set.  All we know is that at each time step, an omniscient
+      adversary is allowed to choose the $\bw[n]$ that tries to maximize this
+      objective.</p>
 
-    </subsection>
+      <p>In fact, since we don't need to specify a continuous-time random
+      process and the continuous-time derivation is both cleaner and by now, I
+      think, more familiar, let's do this one in continuous time.
+      \begin{gather*} \min_{\bu[\cdot]} \max_{\bw[\cdot]} \int_{n=0}^\infty dt
+      \left[\bx^T(t)\bQ\bx(t) + \bu^T(t) \bR\bu(t) - \gamma^2
+      \bw^T(t)\bw(t)\right],\\ \dot\bx(t) = \bA\bx(t) + \bB\bu(t) + \bB_\bw
+      \bw(t),\\ \bQ=\bQ^T \succeq 0, \bR = \bR^T \succ 0. \end{gather*} We will
+      once again guess a quadratic cost-to-go function: $$J(\bx) = \bx^T {\bf
+      S} \bx, \quad {\bf S} = {\bf S}^T \succ 0.$$ The dynamic programming
+      recursion still holds for this problem , resulting in the Bellman
+      equation: $$\forall \bx,\quad 0 = \min_\bu \max_\bw \left[\bx^T\bQ\bx +
+      \bu^T\bR\bu - \gamma^2 \bw^T\bw + \pd{J^*}{\bx}[\bA\bx + \bB\bu + \bB_\bw
+      \bw]\right].$$ Since the inside is a concave quadratic form over $\bw$,
+      we can solve for the adversary by finding the maximum: \begin{gather*}
+      \pd{}{\bw} = -2 \gamma^2 \bw^T + 2\bx^T {\bf S} \bB_\bw,\\ \bw^* =
+      \frac{1}{\gamma^2} \bB_\bw^T {\bf S} \bx.\end{gather*} This is the
+      disturbance input that can cause the largest cost; the optimal play for
+      the adversary. Now we can solve the remainder as we did with the original
+      LQR problem: \begin{gather*} \pd{}{\bu} = 2 \bu^T \bR + 2\bx^T {\bf S}
+      \bB,\\ \bu^* = -\bR^{-1} \bB^T {\bf S} \bx = -\bK \bx.\end{gather*}
+      Substituting this back into the Bellman equation gives: $$0 = \bQ + {\bf
+      S}\left[ \gamma^{-2} \bB_\bw \bB_\bw^T - \bB \bR^{-1} \bB^T \right]{\bf
+      S} + {\bf S}^T \bA + \bA^T {\bf S},$$ which is the original LQR Riccati
+      equation with one additional term involving $\gamma.$ And like the
+      original LQR Riccati equation, we must ask whether it has a
+      positive-definite solution for ${\bf S}$. It turns out that if the system
+      is stabilizable and $\gamma$ large enough, then it does have a PD
+      solution. However, as we reduce $\gamma$ towards zero, there will be some
+      threshold $\gamma$ beneath which this Riccati equation does not have a PD
+      solution.  Intuitively, if $\gamma$ is too small, then the adversary is
+      rewarded for injecting disturbances that are so large as to break the
+      convergence.</p>
 
-    <subsection><h1>$H_\infty$ design</h1>
+      <p>Here is the fascinating thing: the $\gamma$ in this robust LQR cost
+      function can be interpreted as an $L_2 gain$ for the system. Recall that
+      when we were making connections between the Bellman equation and Lyapunov
+      equations, we observed that the Bellman equation can be written as
+      $\forall \bx, \quad \dot{J}^*(\bx) \le -\ell(\bx,\bu)$? Here this yields:
+      $$\forall \bx, \quad \dot{J}^*(\bx) \le \gamma^2 \bw^T(t)\bw(t) -
+      \bx^T(t)\bQ\bx(t) - \bu^T(t) \bR\bu(t).$$ This means that the cost-to-go
+      is a valid dissipation inequality for the supply rate that provides an
+      $L_2$-gain for the performance output $\bz = \begin{bmatrix}\sqrt{\bQ}
+      \bx \\ \sqrt{\bR} \bu\end{bmatrix}.$  Moreover, we can find the minimal
+      $L_2$-gain by finding the minimal $\gamma > 0$ for which the Riccati
+      equation has a positive-definite solution. And given the properties of
+      the Riccati equation, this can be done with a line search in
+      $\gamma$.</p>
 
-
+      <p>Because the $L_2$-gain is the $\mathcal{H}_\infty$-norm of the system,
+      this recipe of searching for the smallest $\gamma$ and taking the Riccati
+      solution is an instance of $\mathcal{H}_\infty$ control design.</p>
     </subsection>
 
     <todo>  Loftberg 2003 for
@@ -443,9 +504,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <subsection><h1>Adaptive control</h1>
 
-      <p>The standard criticism of $H_2$ optimal control is that minimizing the
+      <p>The standard criticism of $\mathcal{H}_2$ optimal control is that minimizing the
       expected value does not allow any guarantees on performance.  The
-      standard criticism of $H_\infty$ optimal control is that it concerns
+      standard criticism of $\mathcal{H}_\infty$ optimal control is that it concerns
       itself with the worst case, and may therefore be conservative, especially
       because distributions over possible disturbances chosen a priori may be
       unnecessarily conservative.  One might hope that we could get some of
@@ -503,7 +564,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     <subsection><h1>Monte-carlo trajectory optimization</h1>
       
     </subsection>
-    <subsection><h1>Iterative $H_2$/iLQG</h1>
+    <subsection><h1>Iterative $\mathcal{H}_2$/iLQG</h1>
 
       <todo>cover iLQR and perhaps Scott's UKF version in the output-feedback chapter?</todo>
     </subsection>
