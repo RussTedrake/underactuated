@@ -377,10 +377,39 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       the largest singular value of the transfer function; it corresponds to
       the $L_2$ gain.</p>
       
-      <subsubsection><h1>Dissipation inequalities</h1>
+      <subsubsection id="dissipation"><h1>Dissipation inequalities</h1>
     
-        <p>Coming soon... See, for instance, <elib>Ebenbauer09</elib> or <elib
-        part="Ch. 2">Scherer15</elib>.</p>
+        <p>One of the mechanisms for certifying an $L_2$-gain for a system
+        comes from a generalization of Lyapunov analysis to consider the contributions of system inputs via the so-called "dissipation
+        inequalities".  Dissipation inequalities are a general tool, and
+        $L_2$-gain analysis is only one application of them; for a broader
+        treatment see <elib>Ebenbauer09</elib> or <elib part="Ch.
+        2">Scherer15</elib>.</p>
+
+        <p>Informally, the idea is to generalize the Lyapunov conditions,
+        $V(\bx) \succ 0, \dot{V}(\bx) \preceq 0,$ into the more general form
+        $$V(\bx) \succ 0, \quad \dot{V}(\bx) \preceq s(\bx, \bw),$$ where $\bw$
+        is the input of interest in this setting, and $s()$ is a scalar
+        quantity representing a "supply rate". Once a system has input, the
+        value of $V$ may go up or it may go down, but if we can bound the way
+        that it goes up by a simple function of the input, then we may still be
+        able to provide input-to-state or input-output bounds for the system.
+        Integrating both sides of the derivative condition with respect to time
+        yields: $$\forall \bx(0),\quad V(\bx(T)) \le V(\bx(0)) + \int_0^T
+        s(\bx(t), \bw(t))dt.$$ </p>
+
+        <p>To obtain a bound on the $L_2$-gain between input $\bw(t)$ and
+        output $\bz(t)$, the supply rate of interest is $$s(\bx,\bw) = \gamma^2
+        \|\bw\|^2 - \|\bz\|^2,$$ which yields $$\forall \bx(0),\quad V(\bx(T))
+        \le V(\bx(0)) + \int_0^T \gamma^2 \|\bw(t)\|^2dt - \int_0^T
+        \|\bz(t)\|^2dt .$$ Now, since this must hold for all $\bx(0)$, it holds
+        for $\bx(0) = 0$.  Furthermore, we know $V(\bx(T))$ is non-negative, so
+        we also have $$0 \le V(\bx(T)) \le \int_0^T \gamma^2 \|\bw(t)\|^2dt -
+        \int_0^T \|\bz(t)\|^2dt .$$  Therefore, if we can find a $V$ that
+        satisfied the dissipation inequality for this storage function, we have
+        certified the $\gamma$ is an $L_2$-gain for the system: $$
+        \frac{\int_0^T \| \bz(t) \|^2 dt}{\int_0^T \| \bw(t) \|^2dt} \le
+        \gamma^2.$$</p>
   
       </subsubsection>
   
