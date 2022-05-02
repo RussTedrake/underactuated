@@ -161,6 +161,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       quantity "conditional value at risk" (CVaR) has superior mathematical
       properties, including connections to convex optimization
       <elib>Majumdar20</elib>.</li>
+      <li><b>Regret</b> formulations try to minimize the difference between the
+      designed controller and e.g. an optimal controller in some class that has
+      access to privileged information, such as knowing a priori the
+      disturbances $\bw[n].$ These formulations have become popular in the
+      field of online optimization, and we are now starting to see "regret
+      bounds" for control.
+      </li>
     </ul>
     Similarly, we can think about how to generalize our deterministic
     constraints, e.g. $g(\bx) \le 0,$ into a the stochastic framework:
@@ -274,6 +281,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       result, even though the cost-to-go is infinite, the optimal control is
       still well defined: it is the same $\bu^* = -{\bf K}\bx$ that we obtain
       from the deterministic LQR problem!</p>
+
+      <p>Take note of the fact that the true cost-to-go blows up to infinity.
+      In reinforcement learning, for instance, it is common practice to avoid
+      this blow-up by considering discounted-cost formulations,
+      $$\sum_{n=0}^\infty \gamma^n \ell(\bx[n], \bu[n]),\quad 0 < \gamma \le
+      1,$$ or average-cost formulations, $$\lim_{N\rightarrow \infty}
+      \sum_{n=0}^N \ell(\bx[n], \bu[n]).$$ These are satisfactory solutions to
+      the problem, but please make sure to understand why they <i>must</i> be
+      used.</p>
 
       <subsection><h1>Non-i.i.d. disturbances</h1>
     
