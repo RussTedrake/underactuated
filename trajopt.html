@@ -578,7 +578,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       \pd{f_d(\bx[n],\bu[n])}{\bu_k}.  \]   These simulation gradients can also
       be used in the chain rule to provide the gradients of any constraints.
       Note that there are a lot of terms to keep around here, on the order of
-      (state dim) $\times$ (control dim) $\times$ (number of timesteps).
+      (state dim) $\times$ (control dim) $\times$ (number of time steps).
       Ouch.  Note also that many of these terms are zero; for instance with the
       Euler integration scheme above $\pd{\bu[n]}{\bu_k} = 0$ if $k\ne n$.  (If
       this looks like I'm mixing two notations here, recall that I'm using
@@ -793,12 +793,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       <p>One core idea is the concept of <i>receding-horizon</i> MPC. Since our
       trajectory optimization problems are formulated over a finite-horizon, we
-      can think each optimization as reasoning about the next $N$ timesteps.  If
-      our true objective is to optimize the performance over a horizon longer
-      than $N$ (e.g. over the infinite horizon), then it is standard to continue
-      solving for an $N$ step horizon on each evaluation of the controller.  In
-      this sense, the total horizon under consideration continues to move
-      forward in time (e.g. to recede).</p>
+      can think each optimization as reasoning about the next $N$ time steps.
+      If our true objective is to optimize the performance over a horizon
+      longer than $N$ (e.g. over the infinite horizon), then it is standard to
+      continue solving for an $N$ step horizon on each evaluation of the
+      controller.  In this sense, the total horizon under consideration
+      continues to move forward in time (e.g. to recede).</p>
 
       <p>Some care must be taken in receding-horizon formulations because on
       each new step we are introducing new costs and constraints into the
@@ -1106,7 +1106,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
   <section><h1>Variations and Extensions</h1>
 
-    <todo>Multiple Shooting: Direct transcription is the limit of multiple shooting where every timestep is a different "shot".</todo>
+    <todo>Multiple Shooting: Direct transcription is the limit of multiple shooting where every time step is a different "shot".</todo>
 
     <subsection id="differential_flatness"><h1>Differential Flatness</h1>
 
@@ -1117,7 +1117,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       close to the idea of <a
       href="acrobot.html#partial_feedback_linearization">partial feedback
       linearization</a> that we discussed for acrobots and cart-pole systems.
-      But perhaps the most famous applciation of differential flatness, which
+      But perhaps the most famous application of differential flatness, which
       we will explore here, is actually for quadrotors.</p>
 
       <p>One of the most important lessons from partial feedback linearization,
