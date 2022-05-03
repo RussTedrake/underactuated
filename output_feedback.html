@@ -61,13 +61,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <chapter style="counter-reset: chapter 14"><h1>
 Output Feedback (aka Pixels-to-Torques)</h1>
 
-  <p>In this chapter we will start considering systems of the form:
-  \begin{gather*} \bx[n+1] = {\bf f}(\bx[n], \bu[n], \bw[n], n) \\ \by[n] = {\bf
-  g}(\bx[n], \bu[n], \bv[n], n).\end{gather*}  In other words, we'll finally
-  start addressing the fact that we have to make decisions based on sensor
-  measurements -- most of our discussions until now have tacitly assumed that we
-  have access to the true state of the system for use in our feedback
-  controllers (and that's already been a hard problem).
+  <p>In this chapter we will finally start considering systems of the form:
+  \begin{gather*} \bx[n+1] = {\bf f}(\bx[n], \bu[n], \bw[n]) \\ \by[n] =
+  {\bf g}(\bx[n], \bu[n], \bv[n]),\end{gather*} where most of these symbols
+  have been <a href="robust.html">described before</a>, but we have now added
+  $\by[n]$ as the output of the system, and $\bv[n]$ which is representing
+  "measurement noise" and is typically the output of a random process.  In
+  other words, we'll finally start addressing the fact that we have to make
+  decisions based on sensor measurements -- most of our discussions until now
+  have tacitly assumed that we have access to the true state of the system for
+  use in our feedback controllers (and that's already been a hard problem).
   </p>
 
   <p>In some cases, we will see that the assumption of "full-state feedback" is
@@ -83,45 +86,146 @@ Output Feedback (aka Pixels-to-Torques)</h1>
   state variables might be completely unobservable, others might require
   specific "information-gathering" actions on the part of the controller.</p>
 
-  <p>For me, the problem of robot manipulation is the application domain where
-  more direct approaches to output feedback become critically important. Imagine
-  you are trying to design a controller for a robot that needs to button the
-  buttons on your dress shirt.  If step one is to estimate the state of the
-  shirt (how many degrees of freedom does my shirt have?), then it feels like
-  we're not going to be successful.  Or if you want to program a robot to make a
-  salad -- what's the state of the salad?  Do I really need to know the
-  positions and velocities of every piece of lettuce in order to be
-  successful?</p>
+  <p>For me, the problem of robot manipulation is one important application
+  domain where more flexible approaches to output feedback become critically
+  important. Imagine you are trying to design a controller for a robot that
+  needs to button the buttons on your shirt.  Our current tools would require
+  us to first estimate the state of the shirt (how many degrees of freedom does
+  my shirt have?); but certainly the full state of my shirt should not be
+  required to button a single button.  Or if you want to program a robot to
+  make a salad -- what's the state of the salad?  Do I really need to know the
+  positions and velocities of every piece of lettuce in order to be successful?
+  These questions are (finally) getting a lot of attention in the research
+  community these days, under the umbrella of "learning state representations".
+  But what does it mean to be a good state representation?  There are a number
+  of simple lessons from output feedback in control that can shed light on this
+  fundamental question.
+  </p>
 
-  <section><h1>The Classical Perspective</h1>
+  <section><h1>Background</h1>
+    <subsection><h1>The classical perspective</h1>
 
-    <p>To some extent, this idea of calling out "output feedback" as a special,
-    advanced topic is a new problem.  Before state space and optimization-based
-    approaches to control ushered in "modern control", we had "classical
-    control".  Classical control focused predominantly (though not exclusively)
-    on linear time-invariant (LTI) systems, and made very heavy use of
-    frequency-domain analysis (e.g. via the Fourier Transform/Laplace
-    Transform).  There are many excellent books on the subject;
-    <elib>Hespanha09+Astrom10</elib> are nice examples of modern treatments that
-    start with state-space representations but also treat the frequency-domain
-    perspective.</p>
+      <p>To some extent, this idea of calling out "output feedback" as an
+      advanced topic is a relatively new problem.  Before state-space and
+      optimization-based approaches to control ushered in "modern control", we
+      had "classical control".  Classical control focused predominantly (though
+      not exclusively) on linear time-invariant (LTI) systems, and made very
+      heavy use of frequency-domain analysis (e.g. via the Fourier
+      Transform/Laplace Transform).  There are many excellent books on the
+      subject; <elib>Hespanha09+Astrom10</elib> are nice examples of modern
+      treatments that start with state-space representations but also treat the
+      frequency-domain perspective. "Pole placement" and "loop shaping" are some
+      of the tools of this trade.</p>
 
-    <p>What's important for us to acknowledge here is that in classical control,
-    basically everything was built around the idea of output feedback.  The
-    fundamental concept is the transfer function of a system, which is a
-    input-to-output map (in frequency domain) that can completely characterize
-    an LTI system.  Core concepts like pole placement and loop shaping were
-    fundamentally addressing the challenge of output feedback that we are
-    discussing here.  Sometimes I feel that, despite all of the things we've
-    gain with modern, optimization-based control, I worry that we've lost
-    something in terms of considering rich characterizations of closed-loop
-    performance (rise time, dwell time, overshoot, ...) and perhaps even in
-    practical robustness of our systems to unmodeled errors.</p>
+      <p>What's important for us to acknowledge here is that in classical
+      control, basically everything was built around the idea of output
+      feedback.  The fundamental concept is the transfer function of a system,
+      which is a input-to-output map (in frequency domain) that can completely
+      characterize an LTI system.  Core concepts like pole placement and loop
+      shaping were fundamentally addressing the challenge of output feedback
+      that we are discussing here.  Sometimes I feel that, despite all of the
+      things we've gained with modern, optimization-based control, I worry that
+      we've lost something in terms of considering rich characterizations of
+      closed-loop performance (rise time, dwell time, overshoot, ...) and
+      perhaps even in practical robustness of our systems to unmodeled
+      errors.</p>
 
-    <todo>Add a few examples here that capture it.</todo>
+      <todo>Add a few examples here that capture it.</todo>
 
-  </section>  
+    </subsection>
 
+    <subsection><h1>From pixels to torques</h1>
+
+      <p>Just like some of our oldest approaches to control were fundamentally
+      solving an output feedback problem, some of our newest approaches to
+      control are doing it, too. Deep learning has revolutionized computer
+      vision, and "deep imitation learning" and "deep reinforcement learning"
+      have been a recent source of many impressive demonstrations of control
+      systems that can operate directly from pixels (e.g. consuming the output
+      of a deep perception system), without explicitly representing nor
+      estimating the full state of the system.  Unfortunately, the success or
+      failure of these methods are not yet well understood, and they often
+      require a great deal of artisanal tuning and an embarrassing (sometimes
+      prohibitive) amount of computation.</p>
+
+      <p>The synthesis of ideas between machine learning (both theoretical and
+      applied) and control theory is one of the most exciting and productive
+      frontiers for research today.  I am highly optimistic that we will be
+      able to uncover the underlying principles and help transition this
+      budding field into a technology. I hope that summarizing some of the key
+      lessons from control here can help.</p>
+    </subsection>
+
+  </section>
+
+  <section><h1>Static Output Feedback</h1>
+  
+    <p>One of the extremely important almost unstated lessons from dynamic
+    programming with additive costs and the Bellman equation is that the
+    optimal policy can <i>always</i> be represented as a function $\bu^*
+    = \pi^*(\bx).$ So far in these notes, we've assumed that the controller has
+    direct access to the true state, $\bx$. In this chapter, we are finally
+    removing that assumption. Now the controller only has direct access to the
+    potentially noisy observations $\by$.</p>
+
+    <p>So the natural first question to ask might be, what happens if we write
+    our policies now as a function, $\bu = \pi(\by)?$  This is known as
+    "static" output feedback, in contrast to "dynamic" output feedback where
+    the controller is not a static function, but is itself another input-output
+    dynamical system. Unfortunately, in the general case it is <i>not</i> the
+    case that optimal policies can be perfectly represented with static output
+    feedback.  But one can still try to solve an optimal control problem where
+    we restrict our search to static policies; our goal will be to find the
+    best controller in this class to minimize the cost.</p>
+
+    <subsection><h1>A hardness result</h1>
+    
+      <p>We've already seen <a
+      href="policy_search.html#static_output_feedback">an example</a> of a very
+      simple linear control problem where the set of stabilizing feedback gains
+      formed a disconnected set -- which is suggestive that it could be a
+      difficult problem for optimization.  For some other problems in control,
+      we've been able to find a convex reparametrization.</p>
+      
+      <p>Unfortunately, <elib>Blondel97</elib> showed that the question of
+      whether a stabilizing static output feedback $\bu = -\bK \by$ even exists
+      for a given system of the form $$\dot\bx = \bA\bx + \bB\bu,\quad \by =
+      \bC \bx,$$ is NP-hard. I think this is one reason why the amount of
+      attention that output feedback has received from the controls community,
+      relative to its importance, is surprisingly small.</p>
+      
+      <p>Just because this problem is NP-hard doesn't mean we can't find good
+      controllers in practice. Some of the recent results from reinforcement
+      learning have reminded us of this. We should not expect an efficient
+      globally optimal algorithm that works for every problem instance; but we
+      should absolutely keep working on the problem. Perhaps the class of
+      problems that our robots will actually encounter in the real world is a
+      easier than this general case (the standard examples of bad cases in
+      linear systems, e.g. with interleaved poles and zeros, do feel a bit
+      contrived and unlikely to occur in practice).</p>
+
+    </subsection>
+
+    <subsection><h1>Via policy search</h1>
+
+      <p>Searching for the best controller within a parametric class of
+      policies is generally referred to as <a href="policy_search.html">policy
+      search</a>.  If we do policy search on a class of static output feedback
+      policies, how well does it perform?  Of course, the answer depends on the
+      particular governing equations (for instance, $\by = \bx$ is a perfectly
+      reasonable output, and in this case the policy can be optimal).</p>
+
+
+      <todo>Jack had another nice example in his poly search lecture:
+      https://youtu.be/JhjROrZxBhM?t=1099 and "what goes wrong in output
+      feedback?" https://youtu.be/JhjROrZxBhM?t=5066</todo>
+
+      <p>Bilinear alternations with SOS, Policy search with SGD, ...</p>
+    
+    </subsection>
+  
+  </section>
+  
   <section><h1>Observer-based Feedback</h1>
 
     <subsection><h1>Luenberger Observer</h1></subsection>
@@ -130,11 +234,12 @@ Output Feedback (aka Pixels-to-Torques)</h1>
     (LQG)</h1></subsection>
 
     <subsection><h1>Partially-observable Markov Decision Processes</h1>
+      <todo>Defer most of the discussion to the state estimation
+        chapter</todo>
     
     </subsection>
 
-    <todo>Defer the rest of the discussion to the state estimation
-    chapter</todo>
+    <subsection><h1>Trajectory optimization with Iterative LQG</h1></subsection>
 
   </section>
 
@@ -156,14 +261,6 @@ I would be a bit cautious about recovering the LDC with Ho-Kalman. Nik Matni and
 I suppose I should re-read that paper, but there was no dimensionality reduction going on, when recovering a state-space representation of the FIR
   </todo>
 
-  <section><h1>Static Output Feedback</h1>
-  
-    <subsection><h1>For Linear Systems</h1></subsection>
-
-    <todo>Bilinear alternations with SOS, Policy search with SGD</todo>
-  
-  </section>
-  
   <section><h1>Disturbance-based feedback</h1>
   
     <todo>State-space models.  ARX Models.</todo>
@@ -171,9 +268,9 @@ I suppose I should re-read that paper, but there was no dimensionality reduction
   
   </section>
 
-  <todo>Task-relevant variables</todo>
+  <todo>Task-relevant variables / learning state representations</todo>
 
-<!--  <section><h1>Feedback from Pixels</h1></section> -->
+  <section><h1>Feedback from Pixels</h1></section>
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
@@ -191,6 +288,12 @@ I suppose I should re-read that paper, but there was no dimensionality reduction
 <span class="author">Karl Johan {\AA}str{\"o}m and Richard M Murray</span>, 
 <span class="title">"Feedback systems: an introduction for scientists and engineers"</span>, Princeton university press
 , <span class="year">2010</span>.
+
+</li><br>
+<li id=Blondel97>
+<span class="author">Vincent Blondel and John N Tsitsiklis</span>, 
+<span class="title">"{NP}-hardness of some linear control design problems"</span>, 
+<span class="publisher">SIAM journal on control and optimization</span>, vol. 35, no. 6, pp. 2118--2127, <span class="year">1997</span>.
 
 </li><br>
 </ol>
