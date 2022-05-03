@@ -190,9 +190,9 @@ Output Feedback (aka Pixels-to-Torques)</h1>
       <p>Unfortunately, <elib>Blondel97</elib> showed that the question of
       whether a stabilizing static output feedback $\bu = -\bK \by$ even exists
       for a given system of the form $$\dot\bx = \bA\bx + \bB\bu,\quad \by =
-      \bC \bx,$$ is NP-hard. I think this is one reason why the amount of
-      attention that output feedback has received from the controls community,
-      relative to its importance, is surprisingly small.</p>
+      \bC \bx,$$ is NP-hard. Many of the strongest results from $H_2$ and
+      $H_\infty$ design, for instance, are limited to dynamic controllers that
+      can effectively reconstruct the entire state.</p>
       
       <p>Just because this problem is NP-hard doesn't mean we can't find good
       controllers in practice. Some of the recent results from reinforcement
@@ -264,7 +264,28 @@ I suppose I should re-read that paper, but there was no dimensionality reduction
   <section><h1>Disturbance-based feedback</h1>
   
     <todo>State-space models.  ARX Models.</todo>
-    <subsection><h1>System-Level Synthesis</h1></subsection>
+
+  <p>Here is a simple extension of the <a href="lqr.html#sls">LQR with
+  least-squares derivation</a>... (it's a work in progress!)</p>
+  
+  <p>Given the state space equations: \begin{gather*} \bx[n+1] = \bA\bx[n] +
+  \bB\bu[n] + \bw[n],\end{gather*} Consider parametrizing an output feedback
+  policy of the form $$\bu[n] = \bK_0[n] \bx_0 +
+  \sum_{i=1}^{n-1}\bK_i[n]\bw[n-i],$$ then the closed-loop state is convex in
+  the control parameters, $\bK$: \begin{align*}\bx[n] =& \left( {\bf A}^n +
+  \sum_{i=0}^{n-1}{\bf A}^{n-i-1}{\bf B}{\bf K}_0[i] \right) \bx_0 +
+  \sum_{j=0}^{n-1} \sum_{i=0}^{n-1}{\bf A}^{n-i-1}{\bf B}{\bf K}_{j}[i]
+  \bw[i-j],\end{align*} and therefore objectives that are convex in $\bx$ and
+  $\bu$ (like LQR) are also convex in $\bK$.  Moreover, we can calculate
+  $\bw[n]$ by the time that it is needed given our observations of $\bx[n+1],
+  \bx[n],$ and knowledge of $\bu[n].$</p>
+
+  <p>We can extend this to output distrubance-based feedback: \begin{gather*}
+  \bx[n+1] = \bA\bx[n] + \bB\bu[n] + \bw[n],\\ \by[n] = \bC\bx[n] + \bv[n],
+  \end{gather*} by parametrizing an output feedback policy of the form
+  $$\bu[n] = \bK_0[n] \by[0] + \sum_{i=1}^{n-1}\bK_i[n]{\bf e}[n-i],$$ where ${\bf e}[n] = ...$ <elib>Sadraddini20</elib>.</p>
+
+  <subsection><h1>System-Level Synthesis</h1></subsection>
   
   </section>
 
@@ -294,6 +315,13 @@ I suppose I should re-read that paper, but there was no dimensionality reduction
 <span class="author">Vincent Blondel and John N Tsitsiklis</span>, 
 <span class="title">"{NP}-hardness of some linear control design problems"</span>, 
 <span class="publisher">SIAM journal on control and optimization</span>, vol. 35, no. 6, pp. 2118--2127, <span class="year">1997</span>.
+
+</li><br>
+<li id=Sadraddini20>
+<span class="author">Sadra Sadraddini and Russ Tedrake</span>, 
+<span class="title">"Robust Output Feedback Control with Guaranteed Constraint Satisfaction"</span>, 
+<span class="publisher">In the Proceedings of 23rd ACM International Conference on Hybrid Systems: Computation and Control</span> , pp. 12, April, <span class="year">2020</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Sadraddini20.pdf">link</a>&nbsp;]
 
 </li><br>
 </ol>
