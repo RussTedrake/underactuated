@@ -280,7 +280,7 @@ I suppose I should re-read that paper, but there was no dimensionality reduction
   $\bw[n]$ by the time that it is needed given our observations of $\bx[n+1],
   \bx[n],$ and knowledge of $\bu[n].$</p>
 
-  <p>We can extend this to output distrubance-based feedback: \begin{gather*}
+  <p>We can extend this to output disturbance-based feedback: \begin{gather*}
   \bx[n+1] = \bA\bx[n] + \bB\bu[n] + \bw[n],\\ \by[n] = \bC\bx[n] + \bv[n],
   \end{gather*} by parametrizing an output feedback policy of the form
   $$\bu[n] = \bK_0[n] \by[0] + \sum_{i=1}^{n-1}\bK_i[n]{\bf e}[n-i],$$ where ${\bf e}[n] = ...$ <elib>Sadraddini20</elib>.</p>
@@ -292,6 +292,9 @@ I suppose I should re-read that paper, but there was no dimensionality reduction
   <todo>Task-relevant variables / learning state representations</todo>
 
   <section><h1>Feedback from Pixels</h1></section>
+
+  <todo>Should I even mention teacher-student (as used by Marco Hutter/Pulkit)?
+  Put it in context?</todo>
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
