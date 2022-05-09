@@ -11,6 +11,7 @@ rt_ipynb_test(
     timeout = "moderate",
     srcs = ["one_d_hopper.ipynb"],
     data = ["//underactuated/models:one_d_hopper.urdf"],
+    flaky = True,
     deps = [
         "//underactuated",
         "//underactuated/exercises",

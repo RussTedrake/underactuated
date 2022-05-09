@@ -1,6 +1,6 @@
 import numpy as np
 
-from pydrake.systems.framework import BasicVector_, LeafSystem_, PortDataType
+from pydrake.systems.framework import LeafSystem_, PortDataType
 from pydrake.systems.pyplot_visualizer import PyPlotVisualizer
 from pydrake.systems.scalar_conversion import TemplateSystem
 
@@ -19,12 +19,11 @@ def Quadrotor2D_(T):
         def _construct(self, converter=None):
             LeafSystem_[T].__init__(self, converter)
             # two inputs (thrust)
-            self.DeclareVectorInputPort("u", BasicVector_[T](2))
-            # six outputs (full state)
-            self.DeclareVectorOutputPort("x", BasicVector_[T](6),
-                                         self.CopyStateOut)
+            self.DeclareVectorInputPort("u", 2)
             # three positions, three velocities
-            self.DeclareContinuousState(3, 3, 0)
+            state_index = self.DeclareContinuousState(3, 3, 0)
+            # six outputs (full state)
+            self.DeclareStateOutputPort("x", state_index)
 
             # parameters based on [Bouadi, Bouchoucha, Tadjine, 2007]
             self.length = 0.25  # length of rotor arm
@@ -34,10 +33,6 @@ def Quadrotor2D_(T):
 
         def _construct_copy(self, other, converter=None):
             Impl._construct(self, converter=converter)
-
-        def CopyStateOut(self, context, output):
-            x = context.get_continuous_state_vector().CopyToVector()
-            y = output.SetFromVector(x)
 
         def DoCalcTimeDerivatives(self, context, derivatives):
             x = context.get_continuous_state_vector().CopyToVector()
