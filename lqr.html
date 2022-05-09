@@ -575,14 +575,99 @@ print("S = " + str(S))</code></pre></div>
       promising approaches to approximate explicit MPC (c.f.
       <elib>Marcucci17</elib>).</p>
 
-      <p>One important case that does have closed-form solutions is LQR with
-      linear <i>equality</i> constraints (c.f. <elib>Posa15</elib>, section
-      IIIb).  This is particularly relevant in the case of stabilizing robots
-      with kinematic constraints such as a closed kinematic chain, which appears
-      in four-bar linkages or even for the linearization of a biped robot with
-      two feet on the ground.</p>
+    </subsection>
 
-      <todo>Add the equality-constrained LQR derivation here.</todo>
+    <subsection id="equality_constrained"><h1>LQR on a manifold</h1>
+
+      <p>One important case that does have closed-form solutions is LQR with
+      linear <i>equality</i> constraints. This is particularly relevant in the case of stabilizing robots
+      with kinematic constraints such as a closed kinematic chain, which
+      appears in four-bar linkages or even for the linearization of a biped
+      robot with two feet on the ground.</p>
+
+      <p>Our formulation is as follows: in addition to the linear dynamics (in
+      continuous time or discrete time), we have a linear equality constraint
+      of the form ${\bf F}\bx = 0,$ with ${\bf F} \in \Re^{(n-d) \times n}.$
+      Form a matrix ${\bf P} \in \Re^{d \times n}$ that forms an orthonormal
+      basis for the nullspace of ${\bf F},$ such that $${\bf PP}^T = {\bf I}^{d
+      \times d}, \quad {\bf PF}^T = {\bf 0}^{d \times (n-d)}.$$ Then for any
+      $\bx$ we can write $\bx = {\bf P}^T \by + {\bf F}^T \bz,$ form some $\by
+      \in \Re^d$ and $\bz \in \Re^{n-d}.$  However, as the result of the
+      constraints we know that ${\bf F}\bx = \bz = 0.$  Instead of stabilizing
+      $\bx$ via LQR, we will stabilize $\by$, whose dynamics are given by the
+      linear matrices $$\bA_\by = {\bf P}\bA_\bx{\bf P}^T, \qquad \bB_\by =
+      {\bf P}\bB_\bx,$$ where $\bA_\bx,\bB_\bx$ are the state-space matrices
+      from the full coordinates model. I've chosen to write it this way because
+      it is the same in both discrete and continuous time.  The resulting
+      cost-to-go is given by ${\bf S}_\bx = {\bf P}^T{\bf S}_y{\bf P}$ and the
+      controller is given by $\bK_\bx = \bK_\by {\bf P},$ and the where $\bK_y,
+      {\bf S}_y$ are the solutions to the reduced LQR problem in $\by.$</p>
+
+      <p>More generally, for a nonlinear system with nonlinear equality
+      constraints, we would linearize both the system dynamics and the
+      constraint, and then apply the derivation above. <elib
+      part="IIIb">Posa15</elib>
+      provides the time-varying LQR version, which follows naturally.</p>
+
+      <example id="segway"><h1>Balancing a Segway</h1>
+      
+        <p>A nice example of this is the task of balancing a Segway in the
+        plane.  In 3D, one could either consider the nonholonomic wheels of the
+        Segway, or turn it into a <a
+        href="https://en.wikipedia.org/wiki/Ballbot">Ballbot</a>.  For the
+        purposes of simulation, one can simply construct the ground, the ball,
+        and the bot with appropriate collision geometry, and drop it into
+        <code>MultibodyPlant</code>. The frictional contact between the ball
+        and the ground generate the expected dynamics.</p>
+
+        <p>Designing the LQR controller is another story. We will use a
+        <code>PlanarJoint</code> for the floating base, giving us 4 degrees of
+        freedom: $[x, z, \theta_{ball}, \theta_{bot-ball}].$  If we linearize
+        this model and call LQR, the LQR call will fail because <i>the system
+        is not controllable in the full coordinates</i>.  The first reason is
+        easy to see: there is nothing that the actuators can do to change $z$,
+        the vertical position of the ball. Perhaps the more subtle reason is
+        that there is a (holonomic) constraint from the ball rolling without
+        slip on the ground: $x = r \theta_{ball},$ where $r$ is
+        the radius of the ball.</p>
+
+        <p>To use LQR, we will write these constraints as $${\bf Fx} =
+        \begin{bmatrix} 0 & 1 & 0 & 0 \\ 1 & 0 & -r & 0 \end{bmatrix} \bx = 0,
+        \qquad {\bf P} = \begin{bmatrix} 0 & 0 & 0 & 1 \\
+        \frac{r}{\sqrt{1+r^2}} & 0 & \frac{1}{\sqrt{1+r^2}} & 0
+        \end{bmatrix}.$$  The nullspace matrix ${\bf P}$ can be obtained
+        numerically, but here it was simple enough to get from inspection. We
+        can obtain the matrices $\bA_x \in \Re^{4 \times 4}, \bB_x \in \Re^{4
+        \times 1}$ by linearizing the MultibodyPlant dynamics, taking care to
+        find a fixed point (which will have the ball resting slightly into the
+        ground, so that ground reaction forces from the soft contact counteract
+        gravity).  Then we will call LQR with the projected matrices.  Note
+        that the we will use the discrete-time dynamics mode of the
+        <code>MultibodyPlant</code> (by passing in a non-zero
+        <code>time_step</code> to the constructor), because discrete-time
+        dynamics engine contains our most advanced and robust algorithms for
+        simulating contact.</p>
+
+        <p>Importantly, although we design the LQR controller using the reduced
+        model, we can run this controller directly on the original model.</p>
+
+        <center><i>Notebook example coming soon...</i></center>
+        <!--
+        <script>document.write(notebook_link('lqr'))</script>
+
+        <todo>Insert segway balancing animation</todo>
+        -->
+
+        <p>I did use one small implementation trick. In my code, rather than
+        deal with finding the resting penetration of the ball, I decided to
+        remove the vertical degree of freedom completely, and used a prismatic
+        joint for $x$ and a revolute joint for $\theta_{ball}$ instead of the
+        <code>PlanarJoint</code> for the floating base. I configured it so that
+        the ball was sufficiently in penetration that the normal forces from
+        the ground were substantial enough that the friction cone could support
+        the horizontal frictional forces I needed to roll.</p>
+
+      </example>
 
     </subsection>
 
