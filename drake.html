@@ -135,31 +135,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       -->
     </subsection>
 
-    <subsection><h1>Enabling Mosek</h1>
+    <subsection><h1>Enabling licensed solvers</h1>
 
-      <a href="https://www.mosek.com/">Mosek</a> is an advanced commercial solver for semidefinite programs and mixed-integer programs. The Mosek binaries are shipped as part of the Drake binaries, but you must point Drake to your license file in order to enable it.
-      <ul>
-        <li>If you don't have one, obtain a Mosek license.  Academics can
-        request a free <a
-        href="https://www.mosek.com/products/academic-licenses/">personal
-        academic license</a>.</li>
-        <li>Upload the <code>mosek.lic</code> file to the cloud server (e.g.
-        Deepnote).</li>
-        <li>Set an environment variable to tell Drake where to find the license
-        file.</li>
-      </ul>
-  
-      <p>For instance, you can add the following at the top of your
-      notebook:
-      <pre class="highlight"><code>  import os
-  os["MOSEKLM_LICENSE_FILE"] = "mosek.lic"</code></pre>
-  
-      Now <code>MosekSolver.available()</code> should be <code>True</code>, and
-      Mosek will be chosen as the default preferred solver for many problem
-      instances if you simply call <code>Solve(prog)</code>.</p>
-      
-      <p><b>Note: Please be very careful not to share the online notebook
-      with your <code>mosek.lic</code> uploaded.</b></p>
+      <p>You can enabled more powerful solvers for
+      <code>MathematicalProgram</code> if you have a license (most are free for
+      academics).  Please see this <a
+      href="https://deepnote.com/workspace/russtedrake-b58d8141-6691-43e8-ad76-0575b319c8b8/project/Enabling-licensed-solvers-on-Deepnote-7581ca0c-04be-4632-9108-f0426b6c3fbb/%2Flicensed_solvers.ipynb">tutorial</a>
+      for instructions.</p>
 
     </subsection>
 
