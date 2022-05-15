@@ -89,7 +89,7 @@
     <parent link="cart" />
     <child link="pole" />
     <origin xyz="0 0 .25" />
-    <axis xyz="0 1 0" />
+    <axis xyz="0 -1 0" />
     <dynamics damping="0.1" />
   </joint>
 
