@@ -82,7 +82,6 @@
     <child link="cart" />
     <origin xyz="0 0 0" />
     <axis xyz="1 0 0" />
-    <dynamics damping="0.1" />
   </joint>
 
   <joint name="theta" type="continuous">
@@ -90,7 +89,6 @@
     <child link="pole" />
     <origin xyz="0 0 .25" />
     <axis xyz="0 -1 0" />
-    <dynamics damping="0.1" />
   </joint>
 
   <transmission type="SimpleTransmission" name="cart_force">
