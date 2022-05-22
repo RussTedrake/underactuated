@@ -293,15 +293,46 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <subsection><h1>The Full 3D Quadrotor</h1>
 
-      <p>See <code>drake/examples/Quadrotor</code>.  Will fill in the text
-      description/derivation here soon!  The most interesting part is that the
-      model needs to include the moment produced by the rotating props,
-      otherwise the system linearized about the hovering configuration is
+      <p>The dynamics of the 3D Quadrotor follow similarly.  The only
+      complexity comes from handling the 3D rotations.  The code implementing
+      the dynamics of the <a
+      href="https://github.com/RobotLocomotion/drake/blob/53571e1d65d1716d8b4b72ae8d3571ee89fa36cf/examples/quadrotor/quadrotor_plant.cc#L55"><code>QuadrotorPlant</code></a>
+      example in Drake is almost as readable as a LaTeX derivation.  The most
+      interesting feature of this model that we include the
+      <i>moment</i> produced by the rotating propellers.  Surprisingly, without
+      these moments, the system linearized about the hovering configuration is
       actually not controllable.</p>
+
+      <p>The <code>QuadrotorPlant</code> example implements the simple model.
+      But often you may want to add extra features to the quadrotor model.  For
+      instance, you might wish to add collision dynamics to land on the ground
+      or to bounce off obstacles, or you might want to add a pendulum to the
+      quadrotor to balance, or a suspended payload hanging off the bottom.  In
+      these cases, rather than implement the equations by hand, it is much more
+      convenient to use Drake's main physics engine (in
+      <code>MultibodyPlant</code>).  We just need to manually wire the
+      <a href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1multibody_1_1_propeller.html"><code>Propeller</code></a>
+      forces into the <code>Diagram</code> (because <code>Propeller</code> is
+      not a concept supported in URDF nor SDF just yet).  <!-- TODO: Finish this: 
+      I've implemented both
+      versions side-by-side in the notebook.</p>
+
+      <script>document.write(notebook_link('acrobot'))</script> -->
+
+      <p>Note that by default, the orientation of each floating body in
+      <code>MultibodyPlant</code> is represented by a unit quaternion. If you
+      were to try to linearize the model using the quaternion representation of
+      state, without accounting for unit norm constraint, the linearization of
+      this model is also uncontrollable. To avoid this for now, I have manually
+      added a "roll-pitch-yaw" floating base to the model.  This keeps
+      linearization simple but does introduce a singularity at "gimble lock".
+      I've tried to mostly avoid dealing with 3D rotations throughout these
+      notes, but I do have a few more notes about this <a
+      href="https://manipulation.csail.mit.edu/pick.html#floating-base">here</a>.</p>
 
     </subsection>
 
-  </section> <!-- end quadrotor2d -->
+  </section> <!-- end quadrotor -->
 
   <section><h1>Balancing</h1>
 
