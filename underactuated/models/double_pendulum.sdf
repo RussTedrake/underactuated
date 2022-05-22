@@ -40,7 +40,6 @@
       <child>upper_arm</child>
       <axis>
         <xyz>0 1 0</xyz>
-        <dynamics><damping>0.1</damping></dynamics>
       </axis>
     </joint>
 
@@ -83,7 +82,6 @@
       <child>lower_arm</child>
       <axis>
         <xyz>0 1 0</xyz>
-        <dynamics><damping>0.1</damping></dynamics>
       </axis>
     </joint>
   </model>

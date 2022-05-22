@@ -5,8 +5,9 @@ from pydrake.symbolic import Expression
 import numpy as np
 
 
-def ManipulatorDynamics(plant, q, v=None):
-    context = plant.CreateDefaultContext()
+def ManipulatorDynamics(plant, q, v=None, context=None):
+    if context is None:
+        context = plant.CreateDefaultContext()
     plant.SetPositions(context, q)
     if v is not None:
         plant.SetVelocities(context, v)
