@@ -154,14 +154,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     <p>First, pick your platform (click on your OS):</p>
 
     <p style="text-align:center">
-    <span class="bionic">
-      <b>Ubuntu Linux (Bionic)</b>  |
+    <span class="focal">
+      <b>Ubuntu Linux (Focal)</b>  |
       <span onclick="setPlatform('mac');" style="text-decoration:underline;cursor:pointer">Mac Homebrew</span>
     </span>
     <span class="mac">
-      <span onclick="setPlatform('bionic');"
+      <span onclick="setPlatform('focal');"
             style="text-decoration:underline;cursor:pointer">Ubuntu Linux
-        (Bionic)</span>  |
+        (Focal)</span>  |
       <b>Mac Homebrew</b> </span></p>
 
     <subsection><h1>Install Drake</h1>
@@ -171,15 +171,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       <h4 >Download the binaries</h4>
 
-      <div class="bionic"><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-bionic-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-bionic.tar.gz</div></code></pre></div>
+      <div class="focal"><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-focal-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-focal.tar.gz</div></code></pre></div>
 
       <div class="mac"><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-mac-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-mac.tar.gz</div></code></pre></div>
 
       <h4>Unpack and set your PYTHONPATH and Test</h4>
 
-      <div class="bionic"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
+      <div class="focal"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
 sudo /opt/drake/share/drake/setup/install_prereqs
-export PYTHONPATH=/opt/drake/lib/python3.6/site-packages:${PYTHONPATH}
+export PYTHONPATH=/opt/drake/lib/python3.8/site-packages:${PYTHONPATH}
 
 python3 -c 'import pydrake; print(pydrake.__file__)'</code></pre></div>
 
@@ -197,8 +197,8 @@ python3.9 -c 'import pydrake; print(pydrake.__file__)'</code></pre></div>
 
       <p>and install the prerequisites using the platform-specific installation script provided:</p>
 
-      <div class="bionic"><pre class="highlight"><code>cd underactuated
-sudo setup/ubuntu/18.04/install_prereqs.sh
+      <div class="focal"><pre class="highlight"><code>cd underactuated
+sudo setup/ubuntu/20.04/install_prereqs.sh
 pip3 install --requirement requirements.txt
 export PYTHONPATH=`pwd`:${PYTHONPATH}</code></pre></div>
 
