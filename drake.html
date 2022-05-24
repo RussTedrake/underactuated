@@ -164,33 +164,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         (Focal)</span>  |
       <b>Mac Homebrew</b> </span></p>
 
-    <subsection><h1>Install Drake</h1>
+      <subsection><h1>Install Drake</h1>
 
-      <p>The links below indicate the specific distributions that the
-      examples in this text have been tested against.</p>
-
-      <h4 >Download the binaries</h4>
-
-      <div class="focal"><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-focal-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-focal.tar.gz</div></code></pre></div>
-
-      <div class="mac"><pre class="highlight"><code>curl -o drake.tar.gz <div id="drake-mac-binaries" style="display:inline">https://drake-packages.csail.mit.edu/drake/nightly/drake-latest-mac.tar.gz</div></code></pre></div>
-
-      <h4>Unpack and set your PYTHONPATH and Test</h4>
-
-      <div class="focal"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
-sudo /opt/drake/share/drake/setup/install_prereqs
-export PYTHONPATH=/opt/drake/lib/python3.8/site-packages:${PYTHONPATH}
-
-python3 -c 'import pydrake; print(pydrake.__file__)'</code></pre></div>
-
-      <div class="mac"><pre class="highlight"><code>sudo tar -xvzf drake.tar.gz -C /opt
-/opt/drake/share/drake/setup/install_prereqs
-export PYTHONPATH=/opt/drake/lib/python3.9/site-packages:${PYTHONPATH}
-
-python3.9 -c 'import pydrake; print(pydrake.__file__)'</code></pre></div>
-
-    </section>
-
+        <p>Follow the installation instructions on the <a
+        href="https://drake.mit.edu/installation.html">Drake website</a>.  I
+        recommend the binary installations if you are only using Drake, and the
+        source installation if you plan to develop/contribute to Drake.</p>
+  
+      </section>
+  
     <subsection><h1>Download the textbook supplement</h1>
 
       <div><pre class="highlight"><code>git clone https://github.com/RussTedrake/underactuated.git</code></pre></div>
