@@ -61,11 +61,45 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <chapter class="appendix" style="counter-reset: chapter 3"><h1>An Optimization
   Playbook</h1>
 
-  <p>Coming soon... a collection of tips and formulations that can make
-  seemingly non-smooth constraints smooth, seemingly non-convex constraints
-  convex, etc.</p>
+  <p>This chapter is intended to provide a collection of tips and formulations
+  that can make seemingly non-smooth constraints smooth, seemingly non-convex
+  constraints convex, etc.  (It's very much a work in progress...)</p>
+  
+  <section data-type="sect1"><h1>Matrices</h1>
+    <todo>max eigenvalue.  min eigenvalue. rank (nuclear norm, ...)</todo>
 
+  </section>
+
+  <section data-type="sect1"><h1>Ellipsoids</h1>
+
+    <p>Imagine an ellipsoid centered at the origin: $E = \{x | x^T S x \leq
+    1\}$ with $S=S^T\succ0$. The volume of this ellipse is proportional to
+    $\left(\det S^{-1} \right)^\frac{1}{2}$.  We know that $\log\det(S)$ is a
+    concave function in the elements of $S$ <elib>Boyd04a</elib>.</p>
+
+    <p>maximizing volume.</p>
+
+    <p>minimizing volume.</p>
+
+    <p>volume of a semi-algebraic set.  (via a contained ellipsoid)</p>
+  </section>
+
+  <section data-type="sect1"><h1>Polytopes</h1>
+    <todo>Sadra's linear encodings of polytopic containment</todo>
+  </section>
+
+  <section data-type="sect1"><h1>(Mixed-)Integer Programming</h1>
+
+  </section>
+
+  <section data-type="sect1"><h1>Bilinear Matrix Inequalities (BMIs)</h1>
+    
   <todo>PQ trick from LQR</todo>
+  <todo>Rank minimization</todo>
+  </section>
+
+  <section data-type="sect1"><h1>Geometry (SE(3), Penetration, and
+    Contact)</h1>
   <todo>Hongkai's smooth non-penetration constraints for polygons</todo>
 
   <todo>"Soft" absolute value: $|x|_epsilon \approx \sqrt{x^2 +
@@ -75,7 +109,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     x = np.linspace(-2.,2.,101)
     plt.plot(x, np.sqrt(np.power(x,2) + 0.01))
   </todo>
-
+  </section>
   <todo>Barrier function for friction cones in Grandia 2019, Feedback MPC for
   Torque-Controlled Legged Robots.</todo>
 
@@ -86,7 +120,18 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 
-<div id="references"></div>
+<div id="references"><section><h1>References</h1>
+<ol>
+
+<li id=Boyd04a>
+<span class="author">Stephen Boyd and Lieven Vandenberghe</span>, 
+<span class="title">"Convex Optimization"</span>, Cambridge University Press
+, <span class="year">2004</span>.
+
+</li><br>
+</ol>
+</section><p/>
+</div>
 
 <table style="width:100%;"><tr style="width:100%">
   <td style="width:33%;text-align:left;"><a class="previous_chapter" href=optimization.html>Previous Chapter</a></td>
