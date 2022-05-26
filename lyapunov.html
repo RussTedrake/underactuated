@@ -1394,7 +1394,7 @@ V = RegionOfAttraction(sys, context)
       represent <a
       href="https://en.wikipedia.org/wiki/Differential-algebraic_system_of_equations">differential
       algebraic equations (DAEs)</a> which are more general than ODEs; $\bg$
-      could even include algebraic constraints like $s_i^2 + c^2 - 1$.  Most
+      could even include algebraic constraints like $s_i^2 + c_i^2 - 1$.  Most
       importantly, for manipulators, ${\bf g}$ can be polynomial, even if ${\bf
       f}$ would have been rational.  <drake></drake> provides access to
       continuous-time dynamics in implicit form via the <a
@@ -1425,14 +1425,29 @@ V = RegionOfAttraction(sys, context)
       unit norm constraint).</p>
     </subsection>
 
-    <subsection><h1>Linear feedback</h1>
+    <subsection id="trig_quadratic"><h1>Linear feedback and quadratic forms</h1>
+
     <p>There are a few things that <i>do</i> break this clean polynomial view
     of the world.  Rotary springs, for instance, if modeled as $\tau = k
-    (\theta_0 - \theta)$ will mean that $\theta$ appears alongside
-    $\sin\theta$ and $\cos\theta$, and the relationship between $\theta$ and
-    $\sin\theta$ is sadly <i>not polynomial</i>.  Linear feedback from LQR
-    actually looks like the linear spring, although writing the feedback as $u
-    = -\bK \sin\theta$ is a viable alternative.</p>
+    (\theta_0 - \theta)$ will mean that $\theta$ appears alongside $\sin\theta$
+    and $\cos\theta$, and the relationship between $\theta$ and $\sin\theta$ is
+    sadly <i>not polynomial</i>.  As we have presented it so far, even linear
+    feedback from LQR actually looks like a linear spring.</p> 
+    
+    <p>Looking more closely, though, there is a natural alternative. Consider
+    the mechanical energy of the simple pendulum , $E = \frac{1}{2}ml^2
+    \dot\theta^2 + mgl(1- \cos\theta),$ where we've taken the potential energy
+    so that $E \ge 0$).  Observe that using half-angle formulas  we can write
+    this as a quadratic form: $$E = \frac{1}{2} \begin{bmatrix}
+    2\sin(\frac{\theta}{2}) \\ \dot\theta \end{bmatrix}^T \begin{bmatrix} mgl &
+    0 \\ 0 & ml^2 \end{bmatrix} \begin{bmatrix} 2\sin(\frac{\theta}{2}) \\
+    \dot\theta \end{bmatrix}.$$  The term $2 \sin(\frac{\theta}{2})$ has slope
+    one at $\theta = 0$. This isn't unique to the pendulum,
+    $2\sin^2(\frac{\theta}{2})$ is a natural choice for a Lyapunov candidate in
+    the trigonometric coordinates that is periodic in $2\pi.$  In the case of
+    LQR applied to the linearization of a nonlinear mechanical system, one
+    could replace $-k \theta$ with $-2 k \sin(\frac{\theta}{2})$; after all
+    their linearization is the same.</p>
 
     <example><h1>Regions of attraction for LQR of trigonometric systems</h1>
   
