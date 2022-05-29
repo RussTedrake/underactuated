@@ -1401,13 +1401,47 @@ V = RegionOfAttraction(sys, context)
       href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1_system.html#a2bb4c1e3572a8009863b5a342fcb5c49"><code>CalcImplicitTimeDerivativesResidual</code></a>
       method.</p>
 
-      <p>Interestingly, we can check the Lyapunov conditions, $\dot{V}(\bx) \le
-      0$, directly on a system (with no inputs) in its implicit form,
-      $\bg(\bx,\dot\bx)=0$.  Simply define a new function $Q(\bx, \bz) =
-      \frac{\partial V(\bx)}{\partial \bx} \bz.$ If we can show $Q(\bx, \bz) \le
-      0, \forall \bx,\bz \in \{ \bx, \bz | \bg(\bx,\bz) = 0 \}$ using SOS, then
-      we have verified that $\dot{V}(\bx) \le 0$, albeit at the non-trivial cost
-      of adding indeterminates $\bz$ and an additional S-procedure.</p>
+      <p>We typically write a linear system in implicit form as $${\bf
+      E}\dot\bx = \bA\bx + \bB\bu.$$ Systems in this form are particularly
+      interesting when ${\bf E}$ is singular, and are known as descriptor
+      systems, semistate systems, generalized state-space systems or just
+      singular systems (c.f. <elib>Mehrmann91</elib>).  Just like our standard
+      approach to linearization, we can potentially obtain the matrices ${\bf
+      E}, \bA, \bB$ from a first-order Taylor approximation of the nonlinear
+      equations in ${\bf g}(\bx,\dot\bx,\bu).$  When it comes to Lyapunov
+      analysis, linear systems are often analyzed using the so-called
+      "generalized Lyapunov equation".</p> 
+      
+      <theorem><h1>Lyapunov analysis for implicit linear systems</h1>
+
+        <p>Given a linear system in the form ${\bf E}\dot\bx = \bA\bx,$ the
+        origin is asymptotically stable if there exists a matrix ${\bf P}$ such
+        that $${\bf P} = {\bf P}^T \succ 0, \quad \bA^T {\bf P}{\bf E} + {\bf
+        E}^T {\bf P} \bA \prec 0.$$ Furthermore, if such a ${\bf P}$ exists,
+        then we can obtain one by solving the <i>generalized Lyapunov
+        equation</i>: $$\bA^T {\bf P}{\bf E} + {\bf E}^T {\bf P} \bA = -{\bf
+        Q},$$ for any ${\bf Q} \succ 0$ <elib part="Ch 4">Stykel02</elib>.
+       </p>
+
+      </theorem>
+
+      <p>This can be verified by taking $$V(\bx) = \bx^T {\bf E}^T {\bf P}{\bf
+      E} \bx,$$ as the Lyapunov function.  A corresponding approach can be used
+      (e.g. via sums-of-squares) for implicit nonlinear systems like our
+      manipulator equations where ${\bf g}(\bx,\dot\bx)=0$ can be written in
+      the form ${\bf E}(\bx) \dot\bx = {\bf f}(\bx).$ </p>
+      <todo>Flesh this out and add an example.  $V(\bx) = \bx^T {\bf E}^T(\bx)
+      {\bf P}{\bf E}(\bx) \bx$ seems a natural choice of Lyapunov candidates. V
+      = v'M(q)'PM(q)v + q'Qq could bea natural form for manipulators (do I need
+      q-v cross terms?); it looks a bit like kinetic energy...</todo>
+  
+      <p>Alternatively, we can check the Lyapunov conditions, $\dot{V}(\bx) \le
+      0$, directly on a system in its implicit form, $\bg(\bx,\dot\bx)=0$.
+      Simply define a new function $Q(\bx, \bz) = \frac{\partial
+      V(\bx)}{\partial \bx} \bz.$ If we can show $Q(\bx, \bz) \le 0, \forall
+      \bx,\bz \in \{ \bx, \bz | \bg(\bx,\bz) = 0 \}$ using SOS, then we have
+      verified that $\dot{V}(\bx) \le 0$, albeit at the non-trivial cost of
+      adding indeterminates $\bz$ and an additional S-procedure.</p>
 
       <p>To combine the trigonometric substitutions with the implicit form for
       a simple second-order system (where the number of positions is equal to
@@ -2100,6 +2134,18 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 <span class="author">A.J. Sommese and C.W. Wampler</span>, 
 <span class="title">"The Numerical solution of systems of polynomials arising in engineering and science"</span>, World Scientific Pub Co Inc
 , <span class="year">2005</span>.
+
+</li><br>
+<li id=Mehrmann91>
+<span class="author">Volker Mehrmann</span>, 
+<span class="title">"The autonomous linear quadratic control problem: theory and numerical solution"</span>, Springer
+, no. 163, <span class="year">1991</span>.
+
+</li><br>
+<li id=Stykel02>
+<span class="author">Tatjana Stykel</span>, 
+<span class="title">"Analysis and numerical solution of generalized {Lyapunov} equations"</span>, 
+<span class="publisher">Institut für Mathematik, Technische Universität, Berlin</span>, <span class="year">2002</span>.
 
 </li><br>
 <li id=Lind94>
