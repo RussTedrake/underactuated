@@ -671,6 +671,24 @@ print("S = " + str(S))</code></pre></div>
 
     </subsection>
 
+    <subsection id="implicit"><h1>LQR for linear systems in implicit form</h1>
+    
+      <p>Consider a linear system given by the state-space equations, $${\bf
+      E}\dot\bx = \bA\bx + \bB\bu,$$ where ${\bf E}$ may or may not be
+      invertible.  We consider this model to be in "implicit form", and will
+      discuss much more about the use of implicit forms, and their strong
+      connections to mechanical systems, <a href="lyapunov.html#implicit">in
+      the next chapter</a>.  Under stabilizability and detectability
+      conditions<elib>Mehrmann91</elib>, the solution for the standard
+      infinite-horizon LQR cost function is given by $$J^*(\bx) = \bx^T {\bf
+      E}^T {\bf S} {\bf E} \bx, \qquad \bu^* = -\bR^{-1} \bB^T {\bf S} {\bf E}
+      \bx,$$ where ${\bf S}$ is the positive-definite solution to a generalized
+      Riccati equation: $${\bf E}^T {\bf S} \bA + \bA {\bf S} {\bf E}^T - {\bf
+      E}^T {\bf S} \bB \bR^{-1} \bB^T {\bf S} {\bf E} + \bQ = 0.$$ The
+      discrete-time form follows similarly.</p>
+
+    </subsection>
+
     <subsection id="lmi"><h1>LQR as a convex optimization</h1>
 
       <p>One can also design the LQR gains using linear matrix inequalities
@@ -878,6 +896,12 @@ print("S = " + str(S))</code></pre></div>
 <span class="title">"Optimization and stabilization of trajectories for constrained dynamical systems"</span>, 
 <span class="publisher">Proceedings of the International Conference on Robotics and Automation (ICRA)</span> , pp. 1366-1373, May, <span class="year">2016</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Posa15.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Mehrmann91>
+<span class="author">Volker Mehrmann</span>, 
+<span class="title">"The autonomous linear quadratic control problem: theory and numerical solution"</span>, Springer
+, no. 163, <span class="year">1991</span>.
 
 </li><br>
 <li id=Lofberg03>
