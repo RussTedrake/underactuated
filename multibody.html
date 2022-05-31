@@ -65,44 +65,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <p>The equations of motion for a standard robot can be derived using the
     method of Lagrange.  Using $T$ as the total kinetic energy of the system,
-    and $U$ as the total potential energy of the system, $L = T-U$, and $Q_i$
-    as the generalized force corresponding to $q_i$, the Lagrangian dynamic
-    equations are: \begin{equation} \frac{d}{dt}\pd{L}{\dot{q}_i} - \pd{L}{q_i}
-    = Q_i.\end{equation}  You can think of them as a generalization of Newton's
-    equations.  For a particle, we have $T=\frac{1}{2}m \dot{x}^2,$ so
-    $\frac{d}{dt}\pd{L}{\dot{x}} = m\ddot{x},$ and $\pd{L}{x} = -\pd{U}{x} = f$
-    amounting to $f=ma$.  But the Lagrangian derivation works in generalized
-    coordinate systems and for constrained motion.</p>
-
-    <p>Without going into the full details, the key idea for handling
-    constraints is the "principle of virtual work" (and the associated
-    D'Almbert's principle). To describe even a pendulum at equilibrium in the
-    Newtonian approach, we would have to compute both external forces (like
-    gravity) and internal forces (like the forces keeping the pendulum arm
-    attached to the table), and have their sum equal zero. Computing internal
-    forces is slightly annoying for a pendulum; it becomes untenable for more
-    complex mechanisms. If the sum of the forces equals zero, then the work done
-    by those forces in some (infinitesmal) virtual displacement is certainly
-    also equal to zero. Now here is the trick: if we consider only virtual
-    displacements that are consistent with the kinematic constraints (e.g.
-    rotations around the pin joint of the pendulum), then we can compute that
-    virtual work and set it equal to zero without ever computing the internal
-    forces! Extending this idea to the dynamics case (via D'Almbert's and
-    Hamilton's principles) results eventually in the Lagrangian equations
-    above.</p>
-
-    <p>If you are not comfortable with these equations, then any good book
-    chapter on rigid body mechanics can bring you up to speed.
-    <elib>Craig89</elib> is an excellent practical guide to robot
-    kinematics/dynamics. But <elib>Lanczos70</elib> is my favorite mechanics
-    book, by far; I highly recommend it if you want something more. It's also ok
-    to continue on for now thinking of Lagrangian mechanics simply as a recipe
-    than you can apply in a great many situations to generate the equations of
-    motion.
-    </p>
-
-    <p>For completeness, I've included a derivation of the Lagrangian from the
-    principle of stationary action <a href="#action">below</a>.</p>
+    and $U$ as the total potential energy of the system, $L = T-U$, and
+    $\tau_i$ as the generalized force corresponding to $q_i$, the Lagrangian
+    dynamic equations are: \begin{equation} \frac{d}{dt}\pd{L}{\dot{q}_i} -
+    \pd{L}{q_i} = \tau_i.\end{equation}  You can think of them as a
+    generalization of Newton's equations.  For a particle, we have
+    $T=\frac{1}{2}m \dot{x}^2,$ so $\frac{d}{dt}\pd{L}{\dot{x}} = m\ddot{x},$
+    and $\pd{L}{x} = -\pd{U}{x} = f$ amounting to $f=ma$.  But the Lagrangian
+    derivation works in generalized coordinate systems and for constrained
+    motion.</p>
 
     <example id=double_pendulum><h1>Simple Double Pendulum</h1>
 
@@ -152,6 +123,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     </example>
 
+    <p>If you are not comfortable with these equations, then any good book
+    chapter on rigid body mechanics can bring you up to speed.
+    <elib>Craig89</elib> is an excellent practical guide to robot
+    kinematics/dynamics. But <elib>Lanczos70</elib> is my favorite mechanics
+    book, by far; I highly recommend it if you want something more. It's also
+    ok to continue on for now thinking of Lagrangian mechanics simply as a
+    recipe than you can apply in a great many situations to generate the
+    equations of motion. </p>
+  
+    <p>I've also included a few more details about the connections between
+    these equations and the variational principles of mechanics in the notes <a
+    href="#mechanics">below</a>, to the extent they may prove useful in our
+    quest to write better optimizations for mechanical systems.</p>
+
   </section>
 
   <section id=manipulator><h1>The Manipulator Equations</h1>
@@ -175,12 +160,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     the joint position vector, ${\bf M}$ is the inertia matrix, $\bC$ captures
     Coriolis forces, and $\btau_g$ is the gravity vector.  The matrix $\bB$
     maps control inputs $\bu$ into generalized forces.  Note that we pair
-    $\bM\ddot\bq + \bC\dot\bq$ on the left side because "... the equations of
-    motion depend on the choice of coordinates $\bq$.  For this reason neither
-    $\bM\ddot\bq$ nor $\bC\dot\bq$ individually should be thought of as a
-    generalized force; only their sum is a force"<elib>Choset05</elib>(s.10.2).
-    These terms represent the contribution from kinetic energy to the
-    Lagrangian: $$\frac{d}{dt}\pd{T}{\dot{\bq}}^T - \pd{T}{\bq}^T = \bM(\bq) \ddot{\bq} + \bC(\bq,\dot\bq)\dot\bq.$$ Whenever I write Eq. (\ref{eq:manip}), I see $ma = f$.
+    $\bM\ddot\bq + \bC\dot\bq$ together on the left side because these terms
+    together represent the <a href="#dalembert">force of inertia</a>; the
+    contribution from kinetic energy to the Lagrangian:
+    $$\frac{d}{dt}\pd{T}{\dot{\bq}}^T - \pd{T}{\bq}^T = \bM(\bq) \ddot{\bq} +
+    \bC(\bq,\dot\bq)\dot\bq.$$ Whenever I write Eq. (\ref{eq:manip}), I see $ma
+    = f$.
     </p>
 
     <example id="manipulator_equation_double_pendulum"><h1>Manipulator Equation
@@ -239,22 +224,6 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <drake></drake> uses a related formulation from <elib>Jain11</elib>.</p>
 
     </subsection> <!-- end recursive algorithms -->
-
-    <subsection><h1>Hamiltonian Mechanics</h1>
-
-      <p>In some cases, it might be preferable to use the <a
-        href="https://en.wikipedia.org/wiki/Hamiltonian_mechanics">Hamiltonian
-        formulation of the dynamics</a>, with state variables $\bq$ and $\bp$
-      (instead of $\dot{\bq}$), where $\bp = \pd{L}{\dot{\bq}}^T = \bM
-      \dot\bq$ results in the dynamics: \begin{align*}\bM(\bq) \dot{\bq} =& \bp
-      \\ \dot{\bp} =&
-      {\bf c}_H(\bq,\bp) + \tau_g(\bq) + \bB\bu, \qquad \text{where}\quad
-      {\bf c}_H(\bq,\bp) = \frac{1}{2} \left(\pd{ \left[ \dot{\bq}^T \bM(\bq)
-      \dot{\bq}\right]}{\bq}\right)^T.\end{align*} Recall that the Hamiltonian
-      is $H = {\bf p}^T\dot\bq - L$; these equations of motion are the
-      familiar $\dot\bq = \pd{H}{\bf p}^T, \dot{\bf p} = -\pd{H}{\bq}^T.$</p>
-
-    </subsection>
 
     <subsection id="bilateral"><h1>Bilateral Position Constraints</h1>
 
@@ -475,18 +444,20 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       various points of maximal penetration.
       </figcaption></figure>
 
-      <p>If you really think about this example, it actually reveals even more of the
-      foibles of trying to even define the contact points and normals
+      <p>If you really think about this example, it actually reveals even more
+      of the foibles of trying to even define the contact points and normals
       consistently.  It seems reasonable to define the point on body B as the
       point of maximal penetration into body A, but notice that as I've drawn
       it, that isn't actually unique!  The corresponding point on body A should
       probably be the point on the surface with the minimal distance from the
       max penetration point (other tempting choices would likely cause the
-      distance to be discontinuous at the onset of penetration).  But this whole
-      strategy is asymmetric;  why shouldn't I have picked the vector going with
-      maximal penetration into body B?  My point is simply that these cases
-      exist, and that even our best software implementations get pretty
-      unsatisfying when you look into the details.  And in practice, it's a lot to expect the collision engine to give consistent and smooth contact points out in every situation.</p>
+      distance to be discontinuous at the onset of penetration).  But this
+      whole strategy is asymmetric;  why shouldn't I have picked the vector
+      going with maximal penetration into body B?  My point is simply that
+      these cases exist, and that even our best software implementations get
+      pretty unsatisfying when you look into the details.  And in practice,
+      it's a lot to expect the collision engine to give consistent and smooth
+      contact points out in every situation.</p>
 
       <p>Some of the advantages of this approach include (1) the fact that it is
       easy to implement, at least for simple geometries, (2) by virtue of being
@@ -954,50 +925,186 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   http://web.mit.edu/10.001/Web/Course_Notes/Differential_Equations_Notes/node3.html)
   </todo>
 
-  <section id="action"><h1>Principle of Stationary Action</h1>
+  <section id="mechanics"><h1>Variational mechanics</h1>
+  
+    <p>The field of analytic mechanics (or variational mechanics), has given us
+    a number of different and potentially powerful interpretations of these
+    equations. While our principle of virtual work was very much rooted in
+    mechanical work, these variational principles have proven to be much more
+    general. In the context of these notes, the variational principles also
+    provide some deep connections between mechanics and optimization.  So let's
+    consider some of the equations above, but through the more general lens of
+    variational mechanics.</p>
 
-    <p><elib>Susskind14</elib> says <blockquote>The principle of least action -- really the principle of stationary action -- is the most compact form of the classical laws of physics.  This simple rule (it can be written in a single line) summarizes everything!  Not only the principles of classical mechanics, but electromagnetism, general relativity, quantum mechanics, everything known about chemistry -- right down to the ultimate known constituents of matter, elementary particles.</blockquote>  Sounds important!</p>
+    <subsection><h1>Virtual work</h1>
 
-    <p>I find a lot of presentations of the principle of stationary action
-    derivation of the Lagrangian unnecessarily confusing.  Here's my version,
-    in case it helps.</p>
+      <p>Most of us are comfortable with the idea that a body is in equilibrium
+      if the sum of all forces acting on that body (including gravity) is zero:
+      $$\sum_i {\bf f}_i = 0.$$  It turns out that there are some limitations
+      in working with forces directly: forces require us to (arbitrarily)
+      define a coordinate system, and to achieve force balance we might need to
+      consider <i>all</i> of the forces in the system, including internal
+      forces like the forces at the joints that hold our robots together.</p>
 
-    <p>Consider a trajectory $\bq(t)$ defined over $t \in [t_0, t_1]$.  The
-    principle of stationary action states that this trajectory is a valid
-    solution to the differential equation governing our system if it represents
-    a stationary point of the "action", defined as $$A = \int_{t_0}^{t_1}
-    L(\bq,\dot{\bq})dt.$$  What does it mean for a trajectory to be a
-    stationary point?  Using the calculus of variations, we think of an
-    infinitesimal variation of this trajectory: $\bq(t) + {\bf \epsilon}(t),$
-    where ${\bf \epsilon}(t)$ is an arbitrary differentiable function that is zero at
-    $t_0$ and $t_1$.  That this variation should not change the action means
-    $\delta A = 0$ for any small ${\bf \epsilon}(t)$: \begin{align*} \delta A =&
-    A(\bq(t) + {\bf \epsilon}(t)) - A(\bq(t)) \\ =& \int_{t_0}^{t_1}
-    L\left(\bq(t)+{\bf \epsilon}(t),\, \dot\bq(t) + \dot{\bf \epsilon}(t)\right) dt -
-    \int_{t_0}^{t_1} L\left(\bq(t),\,\dot\bq(t)\right)dt.\end{align*}  We can
-    expand the term in the first integral: $$L\left(\bq(t)+{\bf \epsilon}(t),\,
-    \dot\bq(t) + \dot{\bf \epsilon}(t)\right) = L\left(\bq(t),\,\dot\bq(t)\right) +
-    \pd{L}{\bq(t)}{\bf \epsilon}(t) + \pd{L}{\dot\bq(t)}\dot{\bf \epsilon}(t).$$
-    Substituting this back in and simplifying leaves: $$\delta A =
-    \int_{t_0}^{t_1} \left[\pd{L}{\bq(t)}{\bf \epsilon}(t) +
-    \pd{L}{\dot\bq(t)}\dot{\bf \epsilon}(t)\right]dt.$$  Now use integration by parts
-    on the second term: $$\int_{t_0}^{t_1} \pd{L}{\dot\bq(t)}\dot{\bf \epsilon}(t)dt
-    = \left[\pd{L}{\dot\bq(t)} {\bf \epsilon}(t) \right]_{t_0}^{t_1} -
-    \int_{t_0}^{t_1} \frac{d}{dt} \pd{L}{\dot\bq(t)} {\bf \epsilon}(t) dt,$$ and
-    observe that the first term in the right-hand side is zero since
-    ${\bf \epsilon}(t_0) = {\bf \epsilon}(t_1) = 0$.  This leaves $$\delta A =
-    \int_{t_0}^{t_1} \left[\pd{L}{\bq} -
-    \frac{d}{dt}\pd{L}{\dot\bq}\right]{\bf \epsilon}(t) dt = 0.$$  Since this must
-    integrate to zero for any ${\bf \epsilon}(t)$, we must have $$\pd{L}{\bq} -
-    \frac{d}{dt}\pd{L}{\dot\bq} = 0,$$ which can be multiplied by negative one
-    to obtain the familiar form of the (unforced) Lagrangian equations of
-    motion.  The forced version follows from the variation $$\delta A =
-    \int_{t_0}^{t_1} L(\bq(t),\dot\bq(t))dt + \int_{t_0}^{t_1}
-    \bQ^T(t){\bf \epsilon}(t) dt = 0.$$ </p>
+      <p>So it turns out to be better to think not about forces directly, but
+      to think instead about the <i>work</i>, $w$, done by those forces.  Work
+      is force times distance. It's a scalar quantity, and it is invariant to
+      the choice of coordinate system.  Even for a system that is in
+      equilibrium, we can reason about the <i>virtual work</i> that would occur
+      if we were to make an infinitesimal change to the configuration of the
+      system.  Even better, since we know that the internal forces do no work,
+      we can ignore them completely and only consider the virtual work that
+      occurs due to a variation in the configuration variables. A multibody
+      system in equilibrium must have zero virtual work: $$\delta w = \sum_i
+      {\bf \tau}_i^T \delta \bq = 0.$$ Notice that these forces are the
+      generalized forces (they have the same dimension as $\bq$). We can map
+      between a Cartesian force and the generalized force using a kinematic
+      Jacobian: ${\bf \tau}_i = {\bf J}_i^T(\bq){\bf f}_i.$  In particular,
+      forces due to gravity, or any forces described by a "potential energy"
+      function, are can be written as $${\bf \tau}_{g} =
+      -\pd{U_{g}(\bq)}{\bq}^T.$$ (Note: work functions / potential functions
+      that depend on velocity or time are also possible, but require more terms
+      <elib part="&sect;I.7">Lanczos70</elib>.) </p>
 
-    <p>For a much richer treatment, see <elib>Lanczos70</elib>.</p>
+      <p>If all of the generalized forces can be derived from such a potential
+      function, then we can go even further. For a system to be in equilibrium,
+      we must have that varations in the potential energy function must be
+      zero, $\delta U(\bq) = 0.$  This follows simply from $\delta U =
+      \pd{U}{\bq} \delta \bq$ and the principle of virtual work.  Moreover, for
+      the system to be in a <i>stable</i> equilibrium, $\bq$ must not only be a
+      stationary point of the potential, but a <i>minimum</i> of the potential.
+      This is our first important connection in this section between mechanics
+      and optimization.</p>
+
+    </subsection>
+
+    <subsection id="dalembert"><h1>D'Alembert's principle and the force of
+    inertia</h1>
+    
+      <p>What about bodies in motion? d'Alembert's principle states that we can
+      reduce dynamics problems to statics problems by simply including a "force
+      of inertia", which is the familiar mass times acceleration for simple
+      particles. In order to have $\delta w = \sum_i {\bf \tau}_i^T \delta \bq
+      = 0,$ for all $\delta \bq$, we must have $\sum_i {\bf \tau}_i = 0,$ so
+      for multibody systems we know that the force of inertia must be: $${\bf
+      \tau}_{inertia} = -{\bf M}(\bq)\ddot{\bq} - {\bf
+      C}(\bq,\dot\bq)\dot{\bq}.$$  But where did that term come from?  Is it
+      the result of nature "optimizing" some scalar function?</p>
+
+      <!-- Note: I spent some time thinking this should be tau = d/dt p = d/dt
+      M(q)qdot, but that does not work out (it's presented that way in Lanczos
+      and Goldstein and ..., but that's only for particles).  The last section
+      of the wikipedia page set me straight:
+      https://en.wikipedia.org/wiki/D%27Alembert%27s_principle -->
+
+      <p>A natural candidate would be the kinetic energy: $T(\bq, \dot\bq) =
+      \frac{1}{2} \dot\bq^T {\bf M}(\bq) \dot\bq.$  What would it mean to take
+      a variation of the kinetic energy, $\delta T?$ So far we've only had
+      variations with respect to $\delta \bq$, but the kinetic energy depends
+      on both $\bq$ and $\dot\bq$. We cannot vary these variables
+      independently, but how are they related?</p>
+
+      <p>The solution is to take a variation not at a single point, but along a
+      trajectory, where the relationship between $\delta \bq$ and $\delta
+      \dot\bq$ is well defined.  If we consider $$A(\bq(t)) = \int_{t_0}^{t_1}
+      T(\bq,\dot\bq)dt,$$ then a variation of $A$ (using the <a
+      href="https://en.wikipedia.org/wiki/Calculus_of_variations">calculus of
+      variations</a>) w.r.t. any trajectory $\bq(t)$, will take the form:
+      $$\delta A = A(\bq(t) + \delta \bq(t)) - A(\bq(t) = \int_{t_0}^{t_1}
+      T(\bq + \delta \bq(t), \dot\bq + \delta \dot\bq(t))dt - \int_{t_0}^{t_1}
+      T(\bq(t), \dot\bq(t))dt,$$ where $\delta \bq(t)$ is defined to be an
+      arbitrary (small) differentiable function in the space of $\bq$ that is
+      zero at $t_0$ and $t_1.$</p>
+    
+      <details>
+        <summary>The derivation takes a few steps, which can be found in most
+        mechanics texts. Click here to see my version.
+        </summary>
+
+        <p>We can expand the term in the first integral:
+        $$T\left(\bq(t)+\bq(t),\, \dot\bq(t) + \delta \dot\bq(t)\right) =
+        T\left(\bq(t),\,\dot\bq(t)\right) + \pd{T}{\bq(t)}\delta \bq(t) +
+        \pd{T}{\dot\bq(t)}\delta \dot\bq(t).$$ Substituting this back in and
+        simplifying leaves: $$\delta A = \int_{t_0}^{t_1}
+        \left[\pd{T}{\bq(t)}\delta {\bf q}(t) + \pd{T}{\dot\bq(t)}\delta
+        \dot{\bf q}(t)\right]dt.$$  Now use integration by parts on the second
+        term: $$\int_{t_0}^{t_1} \pd{T}{\dot\bq(t)}\delta \dot{\bf q}(t)dt =
+        \left[\pd{T}{\dot\bq(t)} \delta {\bf q}(t) \right]_{t_0}^{t_1} -
+        \int_{t_0}^{t_1} \frac{d}{dt} \pd{T}{\dot\bq(t)} \delta {\bf q}(t)
+        dt,$$ and observe that the first term in the right-hand side is zero
+        since $\delta {\bf q}(t_0) = \delta {\bf q}(t_1) = 0$.  This leaves
+        $$\delta A = \int_{t_0}^{t_1} \left[\pd{T}{\bq} -
+        \frac{d}{dt}\pd{T}{\dot\bq}\right]\delta {\bf q}(t) dt.$$ If our goal
+        is to analyze the stationary points of this variation, then this
+        quantity must integrate to zero for any ${\bf q}(t)$, so we must have
+        $$\pd{T}{\bq} - \frac{d}{dt}\pd{T}{\dot\bq} = 0.$$</p>
+      </details>
+
+      <p>The result is that we find that the natural generalization of
+      $-\pd{U(\bq)}{\bq}^T$ for stationary points of variations of quantities
+      that also depend on velocity is $$\tau_{inertia} = -\pd{T}{\bq}^T +
+      \frac{d}{dt}\pd{T}{\dot{\bq}}^T.$$ This is exactly (the negation of) our
+      familiar $\bM(\bq) \ddot{\bq} + \bC(\bq,\dot\bq)\dot\bq.$
+      </p>
+    </subsection>
+
+    <subsection id="action"><h1>Principle of Stationary Action</h1>
+
+      <p>The integral quantity $A$ that we used in the last section is commonly
+      called the "action" of the system.  More generally, the action is defined
+      as $$A = \int_{t_0}^{t_1} L(\bq,\dot{\bq})dt,$$ where $L(\bq,\dot\bq)$ is
+      an appropriate "Lagrangian" for the system. The Lagrangian has units of
+      energy, but it is not uniquely defined. Any function which generates the
+      correct equations of motion, in agreement with physical laws, can be
+      taken as a Lagrangian. For our mechanical systems, the familiar form of
+      the Lagrangian is what we presented above: $L = T - U$ (kinetic energy
+      minus potential energy).  Since the terms involving $U(\bq)$ do not
+      depend directly on $\dot\bq$, they only contribute the $\pd{U}{\bq}^T$
+      terms that we expect, and taking $\delta A = 0$ for this Lagrangian is a
+      way to generate the entire equations of motion in one go.  For our
+      purposes, the Lagrangian will also include the work done by
+      time-dependent applied forces, ${\bu}(t).$</p>
+
+      <p>The viewpoint of variational mechanics is that it is this scalar
+      quantity $L(\bq,\dot\bq)$ that should be the central object of study (as
+      opposed to coordinate dependent forces), and this has proven to
+      generalize beautifully.  <elib>Susskind14</elib> says
+      <blockquote>The principle of least action -- really the principle of
+      stationary action -- is the most compact form of the classical laws of
+      physics.  This simple rule (it can be written in a single line)
+      summarizes everything!  Not only the principles of classical mechanics,
+      but electromagnetism, general relativity, quantum mechanics, everything
+      known about chemistry -- right down to the ultimate known constituents of
+      matter, elementary particles.</blockquote> </p>
+  
+      <todo>It's only a stationary point, not a minima.  Can I say that stable
+      trajectories are minima?  (it's the natural extension of the potential
+      energy case)?  In what sense, precisely, are they stable?</todo>
+
+    </subsection>      
+
+    <!-- hertz -->
+      
+    <subsection><h1>Hamiltonian Mechanics</h1>
+
+      <p>In some cases, it might be preferable to use the <a
+      href="https://en.wikipedia.org/wiki/Hamiltonian_mechanics">Hamiltonian
+      formulation of the dynamics</a>, with state variables $\bq$ and $\bp$
+      (instead of $\dot{\bq}$), where $\bp = \pd{L}{\dot{\bq}}^T = \bM \dot\bq$
+      results in the dynamics: \begin{align*}\bM(\bq) \dot{\bq} =& \bp \\
+      \dot{\bp} =& {\bf c}_H(\bq,\bp) + \tau_g(\bq) + \bB\bu, \qquad
+      \text{where}\quad {\bf c}_H(\bq,\bp) = \frac{1}{2} \left(\pd{ \left[
+      \dot{\bq}^T \bM(\bq) \dot{\bq}\right]}{\bq}\right)^T.\end{align*} Recall
+      that the Hamiltonian is $H({\bf p}, \bq) = {\bf p}^T\dot\bq -
+      L(\bq,\dot\bq)$; these equations of motion are the familiar $\dot\bq =
+      \pd{H}{\bf p}^T, \dot{\bf p} = -\pd{H}{\bq}^T.$</p>
+
+    </subsection>
+  
 
   </section>
+
+
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
@@ -1027,12 +1134,6 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <span class="author">Roy Featherstone</span>, 
 <span class="title">"Efficient Factorization of the Joint Space Inertia Matrix for Branched Kinematic Trees"</span>, 
 <span class="publisher">International Journal of Robotics Research</span>, vol. 24, no. 6, pp. 487–500, <span class="year">2005</span>.
-
-</li><br>
-<li id=Choset05>
-<span class="author">H. Choset and K. M. Lynch and S. Hutchinson and G. Kantor and W. Burgard and L. E. Kavraki and S. Thrun</span>, 
-<span class="title">"Principles of Robot Motion-Theory, Algorithms, and Implementations"</span>, The MIT Press
-, <span class="year">2005</span>.
 
 </li><br>
 <li id=Slotine90>
