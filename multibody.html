@@ -66,14 +66,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     <p>The equations of motion for a standard robot can be derived using the
     method of Lagrange.  Using $T$ as the total kinetic energy of the system,
     and $U$ as the total potential energy of the system, $L = T-U$, and
-    $\tau_i$ as the generalized force corresponding to $q_i$, the Lagrangian
-    dynamic equations are: \begin{equation} \frac{d}{dt}\pd{L}{\dot{q}_i} -
-    \pd{L}{q_i} = \tau_i.\end{equation}  You can think of them as a
-    generalization of Newton's equations.  For a particle, we have
-    $T=\frac{1}{2}m \dot{x}^2,$ so $\frac{d}{dt}\pd{L}{\dot{x}} = m\ddot{x},$
-    and $\pd{L}{x} = -\pd{U}{x} = f$ amounting to $f=ma$.  But the Lagrangian
-    derivation works in generalized coordinate systems and for constrained
-    motion.</p>
+    $\tau_i$ as the element of the generalized force vector corresponding to
+    $q_i$, the Lagrangian dynamic equations are: \begin{equation}
+    \frac{d}{dt}\pd{L}{\dot{q}_i} - \pd{L}{q_i} = \tau_i.\end{equation}  You
+    can think of them as a generalization of Newton's equations.  For a
+    particle, we have $T=\frac{1}{2}m \dot{x}^2,$ so
+    $\frac{d}{dt}\pd{L}{\dot{x}} = m\ddot{x},$ and $\pd{L}{x} = -\pd{U}{x} = f$
+    amounting to $f=ma$.  But the Lagrangian derivation works in generalized
+    coordinate systems and for constrained motion.</p>
 
     <example id=double_pendulum><h1>Simple Double Pendulum</h1>
 
@@ -962,9 +962,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       Jacobian: ${\bf \tau}_i = {\bf J}_i^T(\bq){\bf f}_i.$  In particular,
       forces due to gravity, or any forces described by a "potential energy"
       function, are can be written as $${\bf \tau}_{g} =
-      -\pd{U_{g}(\bq)}{\bq}^T.$$ (Note: work functions / potential functions
-      that depend on velocity or time are also possible, but require more terms
-      <elib part="&sect;I.7">Lanczos70</elib>.) </p>
+      -\pd{U_{g}(\bq)}{\bq}^T.$$</p>
 
       <p>If all of the generalized forces can be derived from such a potential
       function, then we can go even further. For a system to be in equilibrium,
@@ -1062,8 +1060,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       depend directly on $\dot\bq$, they only contribute the $\pd{U}{\bq}^T$
       terms that we expect, and taking $\delta A = 0$ for this Lagrangian is a
       way to generate the entire equations of motion in one go.  For our
-      purposes, the Lagrangian will also include the work done by
-      time-dependent applied forces, ${\bu}(t).$</p>
+      purposes, where we care about conservative forces but also control inputs
+      (as generalized forces $\bB \bu$), the principle of virtual work tells us
+      that we will have $\delta A + \int_{t_0}^{t_1} \bu^T \bB^T \delta \bq(t)
+      dt = 0.$</p>
 
       <p>The viewpoint of variational mechanics is that it is this scalar
       quantity $L(\bq,\dot\bq)$ that should be the central object of study (as
