@@ -188,10 +188,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     are many other important properties that might prove useful.  For instance,
     we know that the $i$ element of $\bC\dot{\bq}$ is given by <elib
     part="&sect;5.2.3">Asada86</elib>: $$\left[\bC(\bq,\dot\bq)\dot\bq
-    \right]_i = \sum_{j,k} c_{ijk} \dot{q}_j \dot{q}_k, \qquad c_{ijk}(\bq) =
-    \pd{M_{ij}}{q_k} - \frac{1}{2}\pd{M_{jk}}{q_k},$$ (e.g. it also quadratic
-    in $\dot{\bq}$) and, for the appropriate choice of $\bC$, we have that
-    $\bM(\bq) - 2\bC(\bq,\dot{\bq})$ is skew-symmetric<elib>Slotine90</elib>.</p>
+    \right]_i = \dot{\bq}^T \bar{\bf C}_i \dot{\bq} , \qquad
+    \bar{C}_{i;j,k}(\bq) =  \pd{M_{ij}}{q_k} - \frac{1}{2} \pd{M_{jk}}{q_i},$$
+    (e.g. it also quadratic in $\dot{\bq}$). For the appropriate choice of
+    $\bC$, we have that $\bM(\bq) - 2\bC(\bq,\dot{\bq})$ is
+    skew-symmetric<elib>Slotine90</elib>. </p>
 
     <!-- Khalil and Dombre have c_{ijk} = \frac{1}{2}[\pd{H_{ij}}{q_k} + \pd{H_{ik}}{q_j} - \pd{H_{jk}}{q_i}], which is slightly different... -->
 
