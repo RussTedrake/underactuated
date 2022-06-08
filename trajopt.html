@@ -388,7 +388,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       (approximately) $\bx(t_k) + \int_{t_k}^{t_{k+1}} f(\bx(t),\bu(t)) dt.$ In
       direct collocation, we impose this with derivative constraints at the
       so-called <i>collocation points</i>.  In particular, if we choose the
-      collocation points to be the midpoints of the spline, then we have that
+      collocation times to be the midpoints of the spline, then we have that
       \begin{gather*} t_{c,k} = \frac{1}{2}\left(t_k + t_{k+1}\right), \qquad
       h_k = t_{k+1} - t_k, \\ \bu(t_{c,k}) = \frac{1}{2}\left(\bu(t_k) +
       \bu(t_{k+1})\right), \\ \bx(t_{c,k}) = \frac{1}{2}\left(\bx(t_k) +
@@ -399,7 +399,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       equations come directly from the equations that fit the cubic spline to
       the end points/derivatives then interpolate them at the midpoint.  They
       give us precisely what we need to add the dynamics constraint to our
-      optimization at the collocation points:\begin{align*}
+      optimization at the collocation times:\begin{align*}
       \min_{\bx[\cdot],\bu[\cdot]} \quad & \ell_f(\bx[N]) + \sum_{n=0}^{N-1}
       h_n \ell(\bx[n],\bu[n]) \\ \subjto \quad & \dot\bx(t_{c,n}) =
       f(\bx(t_{c,n}), \bu(t_{c,n})), & \forall n \in [0,N-1]  \\ & \bx[0] =
@@ -408,7 +408,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       variables, and the collocation constraint at $t_{c,k}$ depends on the
       decision variables: $\bx[k], \bx[k+1], \bu[k], \bu[k+1]$. The actual
       equations of motion get evaluated at both the break points, $t_k$, and
-      the collocation points, $t_{c,k}$, because we need to evaluate the
+      the collocation times, $t_{c,k}$, because we need to evaluate the
       dynamics at the break points in order to write $\dot{\bx}(t_{c,k}).$</p>
 
       <p>Once again, direct collocation effectively integrates the equations of
@@ -450,7 +450,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <p>The direct collocation method of <elib>Hargraves87</elib> was our first
       example of explicitly representing the solution of the optimal control
       problem as a parameterized trajectory, and adding constraints to the
-      derivatives at a series of collocation points.  In the algorithm above,
+      derivatives at a series of collocation times.  In the algorithm above,
       the representation of choice was <i>piecewise-polynomials</i>, e.g. cubic
       spines, and the spline coefficients were the decision variables.  A
       closely related approach, often called "pseudo-spectral" optimal control,
@@ -458,7 +458,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       using a linear combination of <i>global, polynomial</i> basis functions.
       These methods use typically much higher-degree polynomials, but can
       leverage clever parameterizations to write sparse collocation objectives
-      and to select the collocation points <elib>Garg11+Ross12a</elib>.
+      and to select the collocation times <elib>Garg11+Ross12a</elib>.
       Interestingly, The continuously-differentiable nature of the
       representation of these methods has led to comparatively more theorems and
       analysis than we have seen for other direct trajectory optimization
@@ -471,20 +471,25 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       convergence to happen as we increase the degree of the polynomials.</p>
 
       <p>The pseudo-spectral methods are also sometimes knowns as "orthogonal
-      collocation" because the $N$ basis polynomials, $\phi_j(t)$, are chosen so
-      that at the $j$th collocation point $t_j$, we have $$\phi_i(t_j) =
+      collocation" because the $N$ basis polynomials, $\phi_j(t)$, are chosen
+      so that at the $j$th collocation time $t_j$, we have $$\phi_i(t_j) =
       \begin{cases} 1 & i=j, \\ 0 & \text{otherwise.}\end{cases}$$  This can be
-      accomplished by choosing $$\phi_j(t) = \prod_{i=0, i\ne j}^{N}
-      \frac{t-t_i}{t_j - t_i}.$$  Note that for both numerical reasons and for
-      analysis, time is traditionally rescaled from the interval $[t_0, t_f]$ to
-      $[-1, 1]$.  Collocation points are chosen based on small variations of <a href="https://en.wikipedia.org/wiki/Gaussian_quadrature"></a>Gaussian quadrature</a>, known as the "Gauss-Lobatto" which includes collocation points at $t=-1$ and $t=1$.</p>
+      accomplished by using the Lagrange polynomials, $$\phi_i(t) = \prod_{j=0,
+      j\ne i}^{N} \frac{t-t_j}{t_i - t_j}.$$  Note that for both numerical
+      reasons and for analysis, time is traditionally rescaled from the
+      interval $[t_0, t_f]$ to $[-1, 1]$.  Collocation times are chosen based
+      on small variations of
+      <a href="https://en.wikipedia.org/wiki/Gaussian_quadrature"></a>Gaussian
+      quadrature</a>, known as the "Gauss-Lobatto" which includes collocation
+      times at $t=-1$ and $t=1$.</p>
 
-      <p>Interestingly, a number of papers have also infinite-horizon
-      pseudo-spectral optimization by the nonlinear rescaling of the time
-      interval $t\in[0, \infty)$ to the half-open interval $\tau\in[-1, 1)$ via
-      $\tau = \frac{t-1}{t+1}$ <elib>Garg11+Ross12a</elib>.  In this case, one
-      chooses the collocation times so that they include $\tau = -1$ but do not
-      include $\tau=1$, using the so-called "Gauss-Radau" points
+      <p>Interestingly, a number of papers have also considered
+      infinite-horizon pseudo-spectral optimization by the nonlinear rescaling
+      of the time interval $t\in[0, \infty)$ to the half-open interval
+      $\tau\in[-1, 1)$ via $\tau = \frac{t-1}{t+1}$
+      <elib>Garg11+Ross12a</elib>.  In this case, one chooses the collocation
+      times so that they include $\tau = -1$ but do not include $\tau=1$, using
+      the so-called "Gauss-Radau" points
       <elib>Garg11</elib>.</p>
 
       <todo>Add an example.  Acrobot swingup?</todo>
