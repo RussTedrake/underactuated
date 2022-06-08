@@ -90,13 +90,13 @@
       </geometry>
       <material name="black" />
     </visual>
-    <collision group="left_lower_legs">
+    <collision>
       <origin xyz="-0.0265 0 -0.048" /> <!-- note this is approximate -->
       <geometry>
         <capsule radius="0.012" length="0.09" />
       </geometry>
     </collision>
-    <collision group="feet">
+    <collision>
       <origin xyz="-0.0265 0 -0.0985"/>
       <geometry>
         <sphere radius="0.0103"/>
@@ -190,13 +190,13 @@
       </geometry>
       <material name="black"/>
     </visual>
-    <collision group="right_lower_legs">
+    <collision>
       <origin xyz="-0.0265 0 -0.048" /> <!-- note this is approximate -->
       <geometry>
         <capsule radius="0.012" length="0.09" />
       </geometry>
     </collision>
-    <collision group="feet">
+    <collision>
       <origin xyz="-0.0265 0 -0.0985"/>
       <geometry>
         <sphere radius="0.0103"/>
@@ -289,13 +289,13 @@
       </geometry>
       <material name="black" />
     </visual>
-    <collision group="left_lower_legs">
+    <collision>
       <origin xyz="0.0265 0 -0.048" /> <!-- note this is approximate -->
       <geometry>
         <capsule radius="0.012" length="0.09" />
       </geometry>
     </collision>
-    <collision group="feet">
+    <collision>
       <origin xyz="0.0265 0 -0.0985"/>
       <geometry>
         <sphere radius="0.0103"/>
@@ -388,13 +388,13 @@
       </geometry>
       <material name="black" />
     </visual>
-    <collision group="right_lower_legs">
+    <collision>
       <origin xyz="0.0265 0 -0.048" /> <!-- note this is approximate -->
       <geometry>
         <capsule radius="0.012" length="0.09" />
       </geometry>
     </collision>
-    <collision group="feet">
+    <collision>
       <origin xyz="0.0265 0 -0.0985"/>
       <geometry>
         <sphere radius="0.0103"/>
