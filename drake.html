@@ -149,64 +149,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
   <section><h1>Running on your own machine</h1>
 
-    <p>As you get more advanced, you will likely want to run (and extend) these examples on your own machine.  The <drake></drake> website has a number of <a href="https://drake.mit.edu/installation.html">installation options</a>, including precompiled binaries and Docker instances.  Here I provide an example workflow of setting up drake from the precompiled binaries and running the textbook examples.</p>
+    <p>As you get more advanced, you will likely want to run (and extend) these examples on your own machine. On platforms that Drake supports (the latest two releases of Mac and Ubuntu), it should be as simple as running 
+      <pre><code class="python">pip install underactuated</code></pre>
+    In general, I would strongly recommend running <code>pip</code>
+    commands in a <a
+    href="https://python-guide-cn.readthedocs.io/en/latest/dev/virtualenvs.html">virtualenv</a>.</p>
+            
+    <p></p>The <drake></drake> website also has a number of alternative <a href="https://drake.mit.edu/installation.html">installation options</a>, including precompiled binaries and Docker instances.</p>
 
-    <p>First, pick your platform (click on your OS):</p>
+    <p>You'll likely want to start from the underactuated root directory.  Then launch your notebook with:</p>
 
-    <p style="text-align:center">
-    <span class="focal">
-      <b>Ubuntu Linux (Focal)</b>  |
-      <span onclick="setPlatform('mac');" style="text-decoration:underline;cursor:pointer">Mac Homebrew</span>
-    </span>
-    <span class="mac">
-      <span onclick="setPlatform('focal');"
-            style="text-decoration:underline;cursor:pointer">Ubuntu Linux
-        (Focal)</span>  |
-      <b>Mac Homebrew</b> </span></p>
+    <div><pre class="highlight"><code>jupyter notebook</code></pre></div>
 
-      <subsection><h1>Install Drake</h1>
-
-        <p>Follow the installation instructions on the <a
-        href="https://drake.mit.edu/installation.html">Drake website</a>.  I
-        recommend the binary installations if you are only using Drake, and the
-        source installation if you plan to develop/contribute to Drake.</p>
-  
-      </section>
-  
-    <subsection><h1>Download the textbook supplement</h1>
-
-      <div><pre class="highlight"><code>git clone https://github.com/RussTedrake/underactuated.git</code></pre></div>
-
-      <p>and install the prerequisites using the platform-specific installation script provided:</p>
-
-      <div class="focal"><pre class="highlight"><code>cd underactuated
-sudo setup/ubuntu/20.04/install_prereqs.sh
-pip3 install --requirement requirements.txt
-export PYTHONPATH=`pwd`:${PYTHONPATH}</code></pre></div>
-
-      <div class="mac"><pre class="highlight"><code>cd underactuated
-setup/mac/install_prereqs.sh
-pip3.9 install --requirement /opt/drake/share/drake/setup/requirements.txt --requirement requirements.txt
-export PYTHONPATH=`pwd`:${PYTHONPATH}</code></pre></div>
-
-<p>Note that, as always, I would strongly recommend running
-  <code>pip</code>
-  commands in a <a
-  href="https://python-guide-cn.readthedocs.io/en/latest/dev/virtualenvs.html">virtualenv</a>.</p>
-
-    </subsection>
-
-    <subsection><h1>Run Jupyter Notebook</h1>
-
-      <p>You'll likely want to start from the underactuated root directory.  Then launch your notebook with:</p>
-
-      <div><pre class="highlight"><code>jupyter notebook</code></pre></div>
-
-      <p>The examples for each chapter that has them will be in a .ipynb file
-      right alongside the chapter's html file, and the notebook exercises are
-      all located in the <code>exercises</code> subdirectory.
-
-    </subsection>
+    <p>The examples for each chapter that has them will be in a .ipynb file
+    right alongside the chapter's html file, and the notebook exercises are
+    all located in the <code>exercises</code> subdirectory.
 
   </section>
 
