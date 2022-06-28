@@ -926,41 +926,42 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         but positive pitch is down. </figcaption>
       </figure>
 
-      <p>In our experiments, we found the dynamics of our aircraft were
-      captured very well by the so-called "flat plate model"
-      <elib>Cory08</elib>. In flat plate theory lift and drag forces of a wing
-      are summarized by a single force at the center-of-pressure of the wing
-      acting normal to the wing, with magnitude: $$f_n(S, {\bf n}, \bv) = \rho
-      S \sin\alpha |\bv|^2 = -\rho S ({\bf n} \cdot \bv) |\bv|,$$ where $\rho$
-      is the density of the air, $S$ is the area of the wing, $\alpha$ is the
-      angle of attack of the surface, ${\bf n}$ is the normal vector of the
-      lifting surface, and $\bv$ is the velocity of the center of pressure
-      relative to the air.  This corresponds to having lift and drag
-      coefficients $$c_{\text{lift}} = 2\sin\alpha\cos\alpha, \quad
-      c_{\text{drag}} = 2\sin^2\alpha.$$ In our glider model, we summarize all
-      of the aerodynamic forces by contributions of two lifting surfaces, the
-      wing (including some contribution from the horizontal fuselage) denoted
-      by subscript $w$ and the elevator denoted by subscript $e$, with centers
-      at $\bp_w = [x_w, z_w]^T$ and $\bp_e = [x_e, z_e]^T$ given by the
-      kinematics: $$\bp_w = \bp - l_w\begin{bmatrix} c_\theta \\ -s_\theta
-      \end{bmatrix},\quad \bp_e = \bp - l_h \begin{bmatrix} c_\theta \\
-      -s_\theta \end{bmatrix} - l_e \begin{bmatrix} c_{\theta+\phi} \\
-      -s_{\theta+\phi} \end{bmatrix},$$ where the origin of our vehicle
-      coordinate system, $\bp = [x,z]^T$, is chosen to be the center of mass.
-      We assume still air, so $\bv = \dot{\bp}$ for both the wing and the
-      elevator.  We assume that the elevator is massless, and the actuator
-      controls velocity directly (note that this breaks our "control affine"
-      structure, but is more realistic for the tiny hobby servos we were
-      dealing with).  This gives us a total of 7 state variables $\bx = [x, z,
-      \theta, \phi, \dot{x}, \dot{z}, \dot\theta]^T$ and one control input $\bu
-      = \dot\phi.$ The resulting equations of motion are: \begin{gather*} {\bf
-      n}_w = \begin{bmatrix} s_\theta \\ c_\theta \end{bmatrix}, \quad {\bf
-      n}_e = \begin{bmatrix} s_{\theta+\phi} \\ c_{\theta+\phi} \end{bmatrix},
-      \\ f_w = f_n(S_w, {\bf n}_w, \dot\bp_w), \quad f_e = f_n(S_e, {\bf n}_e,
-      \dot\bp_e), \\ \ddot{x} = \frac{1}{m} \left(f_w s_\theta + f_e
-      s_{\theta+\phi} \right), \\ \ddot{z} = \frac{1}{m} \left(f_w c_\theta +
-      f_e c_{\theta+\phi} \right) - g, \\ \ddot\theta = \frac{1}{I} \left( l_w
-      f_w + (l_h c_\phi + l_e) f_e \right). \end{gather*}
+      <p>In our experiments, we found the dynamics of our aircraft
+      <elib>Cory08</elib> were captured very well by the so-called "flat plate
+      model" <elib part="Ch.4, Sec.6">Hoerner85</elib>. In flat plate theory
+      lift and drag forces of a wing are summarized by a single force at the
+      center-of-pressure of the wing acting normal to the wing, with magnitude:
+      $$f_n(S, {\bf n}, \bv) = \rho S \sin\alpha |\bv|^2 = -\rho S ({\bf n}
+      \cdot \bv) |\bv|,$$ where $\rho$ is the density of the air, $S$ is the
+      area of the wing, $\alpha$ is the angle of attack of the surface, ${\bf
+      n}$ is the normal vector of the lifting surface, and $\bv$ is the
+      velocity of the center of pressure relative to the air.  This corresponds
+      to having lift and drag coefficients $$c_{\text{lift}} =
+      2\sin\alpha\cos\alpha, \quad c_{\text{drag}} = 2\sin^2\alpha.$$ In our
+      glider model, we summarize all of the aerodynamic forces by contributions
+      of two lifting surfaces, the wing (including some contribution from the
+      horizontal fuselage) denoted by subscript $w$ and the elevator denoted by
+      subscript $e$, with centers at $\bp_w = [x_w, z_w]^T$ and $\bp_e = [x_e,
+      z_e]^T$ given by the kinematics: $$\bp_w = \bp - l_w\begin{bmatrix}
+      c_\theta \\ -s_\theta \end{bmatrix},\quad \bp_e = \bp - l_h
+      \begin{bmatrix} c_\theta \\ -s_\theta \end{bmatrix} - l_e \begin{bmatrix}
+      c_{\theta+\phi} \\ -s_{\theta+\phi} \end{bmatrix},$$ where the origin of
+      our vehicle coordinate system, $\bp = [x,z]^T$, is chosen to be the
+      center of mass. We assume still air, so $\bv = \dot{\bp}$ for both the
+      wing and the elevator.  We assume that the elevator is massless, and the
+      actuator controls velocity directly (note that this breaks our "control
+      affine" structure, but is more realistic for the tiny hobby servos we
+      were dealing with).  This gives us a total of 7 state variables $\bx =
+      [x, z, \theta, \phi, \dot{x}, \dot{z}, \dot\theta]^T$ and one control
+      input $\bu = \dot\phi.$ The resulting equations of motion are:
+      \begin{gather*} {\bf n}_w = \begin{bmatrix} s_\theta \\ c_\theta
+      \end{bmatrix}, \quad {\bf n}_e = \begin{bmatrix} s_{\theta+\phi} \\
+      c_{\theta+\phi} \end{bmatrix}, \\ f_w = f_n(S_w, {\bf n}_w, \dot\bp_w),
+      \quad f_e = f_n(S_e, {\bf n}_e, \dot\bp_e), \\ \ddot{x} = \frac{1}{m}
+      \left(f_w s_\theta + f_e s_{\theta+\phi} \right), \\ \ddot{z} =
+      \frac{1}{m} \left(f_w c_\theta + f_e c_{\theta+\phi} \right) - g, \\
+      \ddot\theta = \frac{1}{I} \left( l_w f_w + (l_h c_\phi + l_e) f_e
+      \right). \end{gather*}
       <!-- Note: the inertia term looks suspicious, but is the result of a lot of cancellations in the cross product.  See, for instance, eq. 3.9 in Moore14b -->
       </p>
 
@@ -1612,6 +1613,12 @@ PhD thesis, Massachusetts Institute of Technology, June, <span class="year">2010
 <span class="title">"Robust Post-Stall Perching with a Fixed-Wing UAV"</span>, 
 PhD thesis, Massachusetts Institute of Technology, September, <span class="year">2014</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Moore14b.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Hoerner85>
+<span class="author">Sighard F. Hoerner and Henry V. Borst</span>, 
+<span class="title">"Fluid-{Dynamic} {Lift}"</span>, Mrs. Liselotte A. Hoerner
+, <span class="year">1985</span>.
 
 </li><br>
 <li id=Bertsekas00a>
