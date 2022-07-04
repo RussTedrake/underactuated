@@ -106,11 +106,18 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       U =& m_1 g y_1 + m_2 g y_2 = -(m_1+m_2) g l_1 c_1 - m_2 g l_2 c_{1+2}
       \end{align*}
 
-      Taking the partial derivatives $\pd{T}{q_i}$, $\pd{T}{\dot{q}_i}$, and
-      $\pd{U}{q_i}$ ($\pd{U}{\dot{q}_i}$ terms are always zero), then
-      $\frac{d}{dt}\pd{T}{\dot{q}_i}$, and plugging them into the Lagrangian,
-      reveals the equations of motion:
-
+      Taking the partial derivatives
+      \begin{align*}
+      \pd{T}{q_1} &= 0, \\
+      \pd{U}{q_1} & = (m_1 + m_2)gl_1s_1 + m_2 g l_2 s_{1+2}, \\
+      \pd{T}{q_2} &= - m_2 l_1 l_2 \dot{q}_1(\dot{q}_1 + \dot{q}_2)s_2, \\
+      \pd{U}{q_2} &= m_2 g l_2 s_{1+2}, \\
+      \pd{T}{\dot{q}_1} &=  (m_1 + m_2) l_1^2 \dot{q}_1 + m_2 l_2^2 (\dot{q}_1 + \dot{q}_2) + m_2 l_1 l_2 (2 \dot{q}_1 + \dot{q}_2) c_2, \\
+      \pd{T}{\dot{q}_2} &= m_2 l_2^2 (\dot{q}_1 + \dot{q}_2) + m_2 l_1 l_2 \dot{q}_1 c_2, \\
+      \frac{d}{dt}\pd{T}{\dot{q}_1} &= (m_1+m_2)l_1^2 \ddot{q}_1 + m_2 l_2^2(\ddot{q}_1 + \ddot{q}_2) + m_2 l_1 l_2 (2 \ddot{q}_1 + \ddot{q}_2) c_2 - m_2 l_1 l_2 (2 \dot{q}_1 + \dot{q}_2) \dot{q}_2 s_2, \\
+      \frac{d}{dt}\pd{T}{\dot{q}_2} &= m_2 l_2^2 (\ddot{q}_1 + \ddot{q}_2) + m_2 l_1 l_2 \ddot{q}_1 c_2 - m_2 l_1 l_2 \dot{q}_1 \dot{q}_2 s_2,
+      \end{align*}
+      and plugging them into the Lagrangian, reveals the equations of motion:
       \begin{align*}
       (m_1 + m_2) l_1^2 \ddot{q}_1& + m_2 l_2^2 (\ddot{q}_1 + \ddot{q}_2) + m_2 l_1 l_2 (2 \ddot{q}_1 + \ddot{q}_2) c_2 \\
       &- m_2 l_1 l_2 (2 \dot{q}_1 + \dot{q}_2) \dot{q}_2 s_2 + (m_1 + m_2) l_1 g s_1 + m_2 g l_2 s_{1+2} = \tau_1 \\
