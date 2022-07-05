@@ -332,21 +332,29 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     equations that look like \eqref{eq:f1_plus_f2} but tack on additional
     constraints like $|\bu|\le 1$; as we will discuss below, input limits and
     other constraints can also make a system underactuated.</p>
+    
+    <p>Note also that we are using the word <i>system</i> here to describe the
+    mathematical model (potentially of a physical robot).  When we way that the
+    <i>system</i> is underactuated, we are talking about the mathematical
+    model. Imagine a two-link robot with two actuators, a typical model with
+    rigid links could be fully actuated, but if we add extra degrees of freedom
+    to model small amounts of flexibility in the links then that system model
+    could be underactuated.</p>
 
     <p>Notice that whether or not a control system is underactuated may depend
     on the state of the system or even on time, although for most systems
     (including all of the systems in this book) underactuation is a global
-    property of the system.  We will refer to a system as underactuated if it is
+    property of the model.  We will refer to a model as underactuated if it is
     underactuated in <i>all</i> states and times.  In practice, we often refer
     informally to systems as fully actuated as long as they are fully actuated
     in <i>most</i> states (e.g., a "fully-actuated" system might still have
     joint limits or lose rank at a kinematic singularity).  Admittedly, this
     permits the existence of a gray area, where it might feel awkward to
-    describe the <i>system</i> as either fully- or underactuated (we should
+    describe the <i>model</i> as either fully- or underactuated (we should
     instead only describe its states); even powerful robot arms on factory
     floors do have actuator limits, but we can typically design controllers for
     them as though they were fully actuated.  The primary interest of this text
-    is in systems for which the underactuation is useful/necessary for
+    is in models for which the underactuation is useful/necessary for
     developing a control strategy.</p>
 
     <example id="robot_manipulators"><h1>Robot Manipulators</h1>
