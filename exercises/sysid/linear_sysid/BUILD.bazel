@@ -9,6 +9,7 @@ load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 rt_ipynb_test(
     name = "linear_sysid",
     srcs = ["linear_sysid.ipynb"],
+    tags = ["no-sandbox"],  # For gurobi license.
     deps = [
         "//underactuated",
         "//underactuated/exercises",

@@ -405,7 +405,7 @@ class MeshcatJointSliders(LeafSystem):
         """
         Args:
             publishing_system:  The system to call publish on.  Probably a
-                          MeshcatVisualizerCpp.
+                          MeshcatVisualizer.
             root_context: A mutable root Context of the Diagram containing both
                           the ``plant`` and the ``publishing_system``; we will
                           extract the subcontext's using `GetMyContextFromRoot`.
