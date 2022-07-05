@@ -1060,13 +1060,13 @@ of Walking and Running</h1>
 
     <exercise><h1>One-Dimensional Hopper</h1>
 
-      <p>In this exercise we implement a one-dimensional version of the controller proposed in <elib>Raibert84</elib>.  The goal is to control the vertical motion of a hopper by generating a stable resonant oscillation that causes the system to hop off the ground at a given height.  We accomplish this via a careful energy analysis of the hopping cycle: all the details are in <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/simple_legs/one_d_hopper/one_d_hopper.ipynb" target="_blank">this notebook</a>.  Besides understanding in detail the dynamics of the hopping system, in <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/simple_legs/one_d_hopper/one_d_hopper.ipynb" target="_blank">the notebook</a>, you are asked to write two pieces of code:</p>
+      <p>In this exercise we implement a one-dimensional version of the controller proposed in <elib>Raibert84</elib>.  The goal is to control the vertical motion of a hopper by generating a stable resonant oscillation that causes the system to hop off the ground at a given height.  We accomplish this via a careful energy analysis of the hopping cycle: all the details are in <script>document.write(notebook_link('one_d_hopper', deepnote['exercises/simple_legs'], link_text = 'this notebook'))</script>.  Besides understanding in detail the dynamics of the hopping system, in the notebook, you are asked to write two pieces of code:</p>
 
       <ol type="a">
 
         <li>A function that, given the state of the hopper, returns its total mechanical energy.</li>
 
-        <li>The hopping controller class.  This is a <drake></drake> VectorSystem that, at each sampling time, reads the state of the hopper and returns the preload of the hopper spring necessary for the system to hop at the desired height.  All the necessary information for the synthesis of this controller are given in  <a href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/exercises/simple_legs/one_d_hopper/one_d_hopper.ipynb" target="_blank">the notebook</a>.</li>
+        <li>The hopping controller class.  This is a <drake></drake> VectorSystem that, at each sampling time, reads the state of the hopper and returns the preload of the hopper spring necessary for the system to hop at the desired height.  All the necessary information for the synthesis of this controller are given in the notebook.</li>
 
       </ol>
 

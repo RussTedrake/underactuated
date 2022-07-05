@@ -7,14 +7,14 @@
 load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
-    name = "one_d_hopper",
+    name = "compass_gait_limit_cycle",
     timeout = "moderate",
-    srcs = ["one_d_hopper.ipynb"],
-    data = ["//underactuated/models:one_d_hopper.urdf"],
-    flaky = True,
+    srcs = ["compass_gait_limit_cycle.ipynb"],
+    data = ["//underactuated/models:compass_gait_limit_cycle.urdf"],
+    flaky = True,  # SNOPT fails sometimes. Why??
     deps = [
         "//underactuated",
         "//underactuated/exercises",
-        "//underactuated/exercises/simple_legs:one_d_hopper",
+        "//underactuated/exercises/contact:compass_gait_limit_cycle",
     ],
 )
