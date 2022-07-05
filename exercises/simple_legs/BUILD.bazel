@@ -1,0 +1,33 @@
+# -*- mode: python -*-
+# vi: set ft=python :
+
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
+
+rt_ipynb_test(
+    name = "compass_gait_limit_cycle",
+    timeout = "moderate",
+    srcs = ["compass_gait_limit_cycle.ipynb"],
+    data = ["//underactuated/models:compass_gait_limit_cycle.urdf"],
+    flaky = True,  # SNOPT fails sometimes. Why??
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/simple_legs:compass_gait_limit_cycle",
+    ],
+)
+
+rt_ipynb_test(
+    name = "one_d_hopper",
+    timeout = "moderate",
+    srcs = ["one_d_hopper.ipynb"],
+    data = ["//underactuated/models:one_d_hopper.urdf"],
+    flaky = True,
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/simple_legs:one_d_hopper",
+    ],
+)

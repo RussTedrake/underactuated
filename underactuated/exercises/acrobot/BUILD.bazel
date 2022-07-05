@@ -7,8 +7,13 @@
 load("//htmlbook/tools/python:defs.bzl", "rt_py_library")
 
 rt_py_library(
-    name = "exercises",
-    srcs = ["grader.py"],
+    name = "cartpole_balancing",
+    srcs = ["test_cartpole_balancing.py"],
     visibility = ["//visibility:public"],
 )
 
+rt_py_library(
+    name = "double_cartpole_urdf",
+    srcs = ["test_double_cartpole_urdf.py"],
+    visibility = ["//visibility:public"],
+)

@@ -11,20 +11,20 @@ rt_ipynb_test(
     srcs = ["attractivity_vs_stability.ipynb"],
     deps = [
       "//underactuated",
-      "//underactuated/exercises",
+      "//underactuated/exercises", # Needed for grader throws logic.
     ],
 )
 
 rt_ipynb_test(
     name = "hopfield_network",
     srcs = ["hopfield_network.ipynb"],
-    data = ["//underactuated/exercises/pend/hopfield_network:mnist"],
+    data = ["//underactuated/exercises/pend:mnist"],
     # Downloads data from upload.wikimedia.org
     tags = ["requires-network"],
     deps = [
         "//underactuated",
         "//underactuated/exercises",
-        "//underactuated/exercises/pend/hopfield_network",
+        "//underactuated/exercises/pend:hopfield_network",
     ],
 )
 
@@ -35,6 +35,6 @@ rt_ipynb_test(
     deps = [
         "//underactuated",
         "//underactuated/exercises",
-        "//underactuated/exercises/pend/vibrating_pendulum",
+        "//underactuated/exercises/pend:vibrating_pendulum",
     ],
 )

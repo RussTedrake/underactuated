@@ -13,7 +13,7 @@ rt_ipynb_test(
     deps = [
         "//underactuated",
         "//underactuated/exercises",
-        "//underactuated/exercises/dp/minimum_time",
+        "//underactuated/exercises/dp:minimum_time",
     ],
 )
 
@@ -24,7 +24,7 @@ rt_ipynb_test(
     deps = [
         "//underactuated",
         "//underactuated/exercises",
-        "//underactuated/exercises/dp/lp_dp",
+        "//underactuated/exercises/dp:lp_dp",
     ],
 )
 
@@ -39,6 +39,6 @@ rt_ipynb_test(
         "//underactuated:meshcat_cpp_utils",
         "//underactuated:optimizers",
         "//underactuated:pendulum",
-        "//underactuated/exercises/dp/pendulum_cvi",
+        "//underactuated/exercises/dp:pendulum_cvi",
     ],
 )

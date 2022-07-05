@@ -7,8 +7,13 @@
 load("//htmlbook/tools/python:defs.bzl", "rt_py_library")
 
 rt_py_library(
-    name = "exercises",
-    srcs = ["grader.py"],
+    name = "compass_gait_limit_cycle",
+    srcs = ["test_compass_gait_limit_cycle.py"],
     visibility = ["//visibility:public"],
 )
 
+rt_py_library(
+    name = "one_d_hopper",
+    srcs = ["test_one_d_hopper.py"],
+    visibility = ["//visibility:public"],
+)

@@ -7,8 +7,13 @@
 load("//htmlbook/tools/python:defs.bzl", "rt_py_library")
 
 rt_py_library(
-    name = "exercises",
-    srcs = ["grader.py"],
+    name = "glider_sysid",
+    srcs = ["test_glider_sysid.py"],
     visibility = ["//visibility:public"],
 )
 
+rt_py_library(
+    name = "linear_sysid",
+    srcs = ["test_linear_sysid.py"],
+    visibility = ["//visibility:public"],
+)
