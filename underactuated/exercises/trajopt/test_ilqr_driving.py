@@ -207,6 +207,29 @@ class TestIlqrDriving(unittest.TestCase):
                                35.931091753768,
                                msg="Incorrect V_xx")
 
+        # this tests whether the student simplified the V_terms expression
+        k2, K2 = 10*np.random.randn(*k.shape), 10*np.random.randn(*K.shape)
+        V_x2, V_xx2 = V_terms(Q_x, Q_u, Q_xx, Q_ux, Q_uu, K2, k2)
+
+        V_x2_test_val = V_x2 @ test_inputs
+        V_xx2_test_val = test_inputs @ V_xx2 @ test_inputs
+
+        self.assertNotAlmostEqual(V_x2_test_val,
+                                  2.484304411129088,
+                                  msg="It appears you may have simplified the expression for V_x. Do not do this")
+        self.assertNotAlmostEqual(V_xx2_test_val,
+                                  265.0164583112695,
+                                  msg="It appears you may have simplified the expression for V_xx. Do not do this")
+
+        self.assertAlmostEqual(V_x2_test_val,
+                               -6.043415622930539,
+                               msg="Incorrect V_x")
+
+        self.assertAlmostEqual(V_xx2_test_val,
+                               -52.01732694080634,
+                               msg="Incorrect V_xx")
+
+
     @weight(2)
     @timeout_decorator.timeout(1.)
     def test7_forward_pass(self):
@@ -254,11 +277,7 @@ class TestIlqrDriving(unittest.TestCase):
         u_trj = np.random.randn(N - 1, n_u)
         x_trj = np.random.randn(N, n_x)
 
-        # TODO(AlexandreAmice) reset the regu
-        # back to 100 (not 0.0) to test difference
-        # between simplified and
-        # unsimplified V_terms implementation
-        k_trj, K_trj, _ = backward_pass(x_trj, u_trj, 0.0)
+        k_trj, K_trj, _ = backward_pass(x_trj, u_trj, 100.0)
 
         r_test = 10 * np.random.randn(k_trj.shape[1])
         l_test = 10 * np.random.randn(k_trj.shape[0])
@@ -268,9 +287,9 @@ class TestIlqrDriving(unittest.TestCase):
                                    r_test).sum()
 
         self.assertAlmostEqual(k_trj_test_val,
-                               -1692.9113129829561,
+                               -5.380572857461254,
                                msg="Incorrect k_trj")
 
         self.assertAlmostEqual(K_trj_test_val,
-                               1206.556213713096,
+                               3.770894929116537,
                                msg="Incorrect K_trj")
