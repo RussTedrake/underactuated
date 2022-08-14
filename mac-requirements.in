@@ -7,6 +7,5 @@ nbconvert>=6.4.2
 pandas>=1.4.1
 pydot>=1.4.1
 PyYAML>=6.0
-scipy
 timeout-decorator>=0.4.1
 traitlets>=5.1.1  # for ipykernel on arm64

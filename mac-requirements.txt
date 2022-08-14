@@ -80,7 +80,6 @@ numpy==1.23.1
     #   -c htmlbook/mac-constraints.txt
     #   matplotlib
     #   pandas
-    #   scipy
 packaging==20.9
     # via
     #   bleach
@@ -126,10 +125,6 @@ pyzmq==22.3.0
     # via jupyter-client
 requests==2.25.1
     # via -r htmlbook/mac-requirements.in
-scipy==1.9.0
-    # via
-    #   -c htmlbook/mac-constraints.txt
-    #   -r mac-requirements.in
 setuptools-scm==6.3.2
     # via matplotlib
 six==1.15.0
