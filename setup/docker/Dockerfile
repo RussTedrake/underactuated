@@ -25,7 +25,7 @@ LABEL org.opencontainers.image.description="Algorithms for walking, running, swi
 LABEL org.opencontainers.image.licenses="BSD-3-Clause"
 LABEL org.opencontainers.image.source="https://github.com/RussTedrake/underactuated.git"
 LABEL org.opencontainers.image.title="Underactuated Robotics"
-LABEL org.opencontainers.image.url="http://underactuated.mit.edu/"
+LABEL org.opencontainers.image.url="https://underactuated.csail.mit.edu/"
 LABEL org.opencontainers.image.vendor="Massachusetts Institute of Technology"
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
