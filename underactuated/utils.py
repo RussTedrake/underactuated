@@ -42,7 +42,7 @@ def MakeNamedViewPositions(mbp, view_name, add_suffix_if_single_position=False):
     for ind in mbp.GetFloatingBaseBodies():
         body = mbp.get_body(ind)
         start = body.floating_positions_start()
-        for i in range(7):
+        for i in range(7 if body.has_quaternion_dofs() else 6):
             names[start
                   + i] = f"{body.name()}_{body.floating_position_suffix(i)}"
     return namedview(view_name, names)

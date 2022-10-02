@@ -9,7 +9,9 @@ async-generator==1.10
 attrs==20.3.0
     # via jsonschema
 beautifulsoup4==4.9.3
-    # via -r htmlbook/mac-requirements.in
+    # via
+    #   -r htmlbook/mac-requirements.in
+    #   nbconvert
 bleach==3.3.0
     # via nbconvert
 certifi==2020.12.5
@@ -22,8 +24,6 @@ cycler==0.10.0
     # via matplotlib
 defusedxml==0.7.1
     # via nbconvert
-entrypoints==0.3
-    # via nbconvert
 fonttools==4.28.2
     # via matplotlib
 gradescope-utils==0.4.0
@@ -32,7 +32,7 @@ idna==2.10
     # via requests
 ipython-genutils==0.2.0
     # via nbformat
-jinja2==2.11.3
+jinja2==3.1.2
     # via
     #   mpld3
     #   nbconvert
@@ -50,14 +50,18 @@ jupyterlab-pygments==0.1.2
 kiwisolver==1.3.1
     # via matplotlib
 lxml==4.6.3
-    # via -r htmlbook/mac-requirements.in
-markupsafe==1.1.1
-    # via jinja2
+    # via
+    #   -r htmlbook/mac-requirements.in
+    #   nbconvert
+markupsafe==2.1.1
+    # via
+    #   jinja2
+    #   nbconvert
 matplotlib==3.5.0
     # via
     #   -r htmlbook/mac-requirements.in
     #   mpld3
-mistune==0.8.4
+mistune==2.0.4
     # via nbconvert
 mpld3==0.5.7
     # via -r mac-requirements.in
@@ -65,7 +69,7 @@ mysql-connector-python==8.0.23
     # via -r htmlbook/mac-requirements.in
 nbclient==0.5.3
     # via nbconvert
-nbconvert==6.4.2
+nbconvert==7.0.0
     # via
     #   -r htmlbook/mac-requirements.in
     #   -r mac-requirements.in
@@ -75,7 +79,7 @@ nbformat==5.1.3
     #   nbconvert
 nest-asyncio==1.5.1
     # via nbclient
-numpy==1.23.1
+numpy==1.23.3
     # via
     #   -c htmlbook/mac-constraints.txt
     #   matplotlib
@@ -84,6 +88,7 @@ packaging==20.9
     # via
     #   bleach
     #   matplotlib
+    #   nbconvert
     #   setuptools-scm
 pandas==1.4.1
     # via -r mac-requirements.in
@@ -138,10 +143,10 @@ snowballstemmer==2.1.0
     # via pydocstyle
 soupsieve==2.2
     # via beautifulsoup4
-testpath==0.4.4
-    # via nbconvert
 timeout-decorator==0.5.0
     # via -r mac-requirements.in
+tinycss2==1.1.1
+    # via nbconvert
 tomli==1.2.2
     # via setuptools-scm
 tornado==6.1
@@ -157,7 +162,9 @@ traitlets==5.1.1
 urllib3==1.26.3
     # via requests
 webencodings==0.5.1
-    # via bleach
+    # via
+    #   bleach
+    #   tinycss2
 yapf==0.30.0
     # via -r htmlbook/mac-requirements.in
 

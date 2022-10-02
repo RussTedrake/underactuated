@@ -5,10 +5,10 @@
 *Algorithms for Walking, Running, Swimming, Flying, and Manipulation*
 
 This is the companion software for the textbook available at:
-http://underactuated.mit.edu/
+https://underactuated.csail.mit.edu/
 
 To cite this software (or the corresponding textbook), please use:
 
 Russ Tedrake. _Underactuated Robotics: Algorithms for Walking, Running,
 Swimming, Flying, and Manipulation (Course Notes for MIT 6.832)._
-Downloaded on [date] from <http://underactuated.mit.edu/>.
+Downloaded on [date] from <https://underactuated.csail.mit.edu/>.
