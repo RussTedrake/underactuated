@@ -88,9 +88,9 @@ jobs:
       - name: test
         run: ./htmlbook/workflows/ci/focal/test
         shell: bash
-  bigsur:
-    name: macos big sur 11
-    runs-on: macos-11
+  monterey:
+    name: macos monterey 12
+    runs-on: macos-12
     steps:
       - name: checkout
         uses: actions/checkout@v2
@@ -98,9 +98,9 @@ jobs:
         run:  ./setup/submodule_checkout
         shell: zsh -efuo pipefail {0}
       - name: setup
-        run: ./htmlbook/workflows/ci/bigsur/setup
+        run: ./htmlbook/workflows/ci/monterey/setup
         shell: zsh -efuo pipefail {0}
       - name: test
-        run: ./htmlbook/workflows/ci/bigsur/test
+        run: ./htmlbook/workflows/ci/monterey/test
         shell: zsh -efuo pipefail {0}
 ...
