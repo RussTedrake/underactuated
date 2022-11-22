@@ -83,11 +83,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   machine learning boom, system identification as a field had a very strong
   foundation with thorough statistical understanding of the basic algorithms,
   at least in the asymptotic regime (the limit where the amount of data goes to
-  infinity).  My goal for this chapter is to establish this foundation, and to
-  provide some pointers, but I will stop short of providing the full
-  statistical viewpoint here.</p>
+  infinity).  Machine learning theory has brought a wealth of new results in
+  the online optimization and finite-sample regimes. My goal for this chapter
+  is to establish these foundations, and to provide some pointers so that you
+  can learn more about this rich topic.</p>
 
-  <section><h1>Problem formulation: equation error vs simulation error</h1>
+  <section><h1>Problem formulation</h1>
+    
+    <subsection><h1>Equation error vs simulation error</h1>
 
     <figure><img width="80%"" src="data/sysid.svg"/></figure>
 
@@ -118,7 +121,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     \bu_n) - \hat{\bx}_{n+1} \|^2_2.$$  </li><li><i>Simulation error</i>
     captures the long-term prediction error: $$\min_{\alpha} \sum_{n=1}^{N-1}
     \| \bx[n] - \hat{\bx}_n \|^2_2, \qquad \subjto \quad \bx[n+1] =
-    f_\balpha(\bx[n], \bu_n), \bx[0] = \hat\bx_0,$$ </li></ul>  The
+    f_\balpha(\bx[n], \bu_n),\, \bx[0] = \hat\bx_0,$$ </li></ul>  The
     equation-error formulations often result in much more tractable
     optimization problems, but unfortunately we will see that optimizing the
     one-step error can still result in arbitrarily large simulation errors.
@@ -126,6 +129,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     objective we hope to optimize, and the equation error only as a potentially
     useful surrogate.</p>
 
+    <p>Within this framework of model learning, we will face all of the
+    standard questions from supervised learning about sample efficiency and
+    generalization.</p>
+    
     <!--
     <subsection><h1>Preprocessing your data</h1>
 
@@ -136,6 +143,69 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       (with emphasis on the fitting of linear models).  </p>
     </subsection>
     -->
+
+    </subsection>
+
+    <subsection><h1>Online optimization</h1>
+    
+      <p>Theoretical machine learning has brought a number of fresh
+      perspectives to this old problem of system identification. Perhaps most
+      relevant is the perspective of online optimization
+      <elib>Rakhlin14+Hazan16+Rakhlin22</elib>. In addition to changing the
+      formulation to considering streaming online data (as opposed to offline,
+      batch analysis), this field has (re)popularized the notion of an old idea
+      from decision theory: using <a
+      href="https://en.wikipedia.org/wiki/Regret_(decision_theory)"><i>regret</i></a>
+      as the loss function for identification.</p>
+
+      <p>In the regret formulation, we acknowledge that the class of
+      parameterized models that we are searching over can likely not perfectly
+      represent the input-output data. Rather than score ourselves directly on
+      the prediction error, we can score ourselves relative to the predictions
+      that would be made by best parameters in our model class. For
+      equation-error formulations, the regret $R$ at step $N$ would take the
+      form $$R[N] = \sum_{n=0}^{N-2} \| f_\balpha(\hat\bx_n, \bu_n) -
+      \hat{\bx}_{n+1} \|^2_2 - \min_{\alpha^*} \sum_{n=0}^{N-2} \|
+      f_{\alpha^*}(\hat\bx_n, \bu_n) - \hat{\bx}_{n+1} \|^2_2.$$ The goal is to
+      produce an online learning algorithm to select $\alpha$ at each step in
+      order to drive the regret to zero. This turns out to be an important
+      distinction, as we will see below.</p>
+
+    </subsection>
+
+    <subsection><h1>Learning models for control</h1>
+    
+      <p>So far we've described the problem purely as capturing
+      the input-output behavior of the system. If our goal is to use this model
+      for control, then that might not be quite the right objective for a
+      number of reasons.</p>
+      
+      <p>First of, predicting the observations might be <i>more</i> than we
+      need for making optimal decisions; <elib>Zhang20a</elib> tells that story
+      nicely. Imagine you are trying to swing-up and balance a cart-pole
+      system, where the only sensor is a camera. The background images are
+      irrelevant; we know that only the state of the cart-pole should matter.
+      If there was a movie playing on a screen in the background, you don't
+      want to spend all of the representational power of your model predicting
+      the next frame of the movie, at the cost of not predicting as well the
+      next state of the cart-pole.  These challenges have led to a nice active
+      area of research on learning <i>task-relevant</i> models/representations;
+      I'll devote a section to it below after we cover the basics.</p>
+
+      <p>There are other considerations, as well. To be useful for control,
+      we'll need the state of our model to be observable (from online
+      observations) and controllable. There may also be trade-offs in model
+      complexity. If we learn a just linear model of the dynamics then we have
+      very powerful control design tools available, but we might not capture
+      the rich dynamics of the world. If we learn too complex of a model, then
+      our online planning and control techniques might become a bottleneck.
+      <elib>Watter15</elib> makes that point nicely. At the time of this
+      writing, I think it's broadly fair to say that deep learning models are
+      able to describe incredibly rich dynamics, but that our control tools for
+      making decisions with these models are still painfully weak.</p>
+    
+    </subsection>
+
   </section>
 
   <section id="lumped"><h1>Parameter Identification for Mechanical Systems</h1>
@@ -1065,7 +1135,26 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     <subsection><h1>Input-output (autoregressive) models</h1>
     </subsection>
 
-    <todo>Ensembled networks for uncertainty.</todo>
+    <subsection><h1>Particle-based models</h1>
+    
+      <todo>Yunzhu's thesis, etc.</todo>
+    </subsection>
+
+    <subsection><h1>Object-centric models</h1>
+    
+      <todo>Compositional NeRF, etc</todo>
+
+    </subsection>
+
+    <subsection><h1>Modeling stochasticity</h1></subsection>
+
+    <todo>Ensembled networks for uncertainty. Lagrangian/Hamiltonian neural nets, Michael's contact nets.</todo>
+
+    <subsection><h1>Control design for neural network models</h1>
+    
+      <todo>RL, CMA / MPPI, ...</todo>
+
+    </subsection>
   </section>
 
 
@@ -1154,6 +1243,36 @@ control (Proctor et al., 2016b).-->
 <div id="references"><section><h1>References</h1>
 <ol>
 
+<li id=Rakhlin14>
+<span class="author">Alexander Rakhlin and Karthik Sridharan</span>, 
+<span class="title">"Statistical Learning and Sequential Prediction"</span>, Online Draft
+, September, <span class="year">2014</span>.
+
+</li><br>
+<li id=Hazan16>
+<span class="author">Elad Hazan and others</span>, 
+<span class="title">"Introduction to online convex optimization"</span>, 
+<span class="publisher">Foundations and Trends in Optimization</span>, vol. 2, no. 3-4, pp. 157--325, <span class="year">2016</span>.
+
+</li><br>
+<li id=Rakhlin22>
+<span class="author">A. Rakhlin</span>, 
+<span class="title">"IDS.160 – Mathematical Statistics: A Non-Asymptotic Approach"</span>, Online lecture notes
+, Spring, <span class="year">2022</span>.
+
+</li><br>
+<li id=Zhang20a>
+<span class="author">Amy Zhang and Rowan McAllister and Roberto Calandra and Yarin Gal and Sergey Levine</span>, 
+<span class="title">"Learning invariant representations for reinforcement learning without reconstruction"</span>, 
+<span class="publisher">arXiv preprint arXiv:2006.10742</span>, <span class="year">2020</span>.
+
+</li><br>
+<li id=Watter15>
+<span class="author">Manuel Watter and Jost Springenberg and Joschka Boedecker and Martin Riedmiller</span>, 
+<span class="title">"Embed to Control: A Locally Linear Latent Dynamics Model for Control from Raw Images"</span>, 
+<span class="publisher">Advances in Neural Information Processing Systems</span> , vol. 28, <span class="year">2015</span>.
+
+</li><br>
 <li id=Khalil04>
 <span class="author">W Khalil and E Dombre</span>, 
 <span class="title">"Modeling, Identification and Control of Robots"</span>, Elsevier
