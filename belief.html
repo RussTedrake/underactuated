@@ -3,64 +3,233 @@
 <html>
 
   <head>
-    <title>Underactuated Robotics</title>
-    <meta name="Underactuated Robotics" content="text/html; charset=utf-8;" />
+    <title>Ch. DRAFT - Planning Under
+Uncertainty</title>
+    <meta name="Ch. DRAFT - Planning Under
+Uncertainty" content="text/html; charset=utf-8;" />
+    <link rel="canonical" href="http://underactuated.mit.edu/belief.html" />
 
+    <script src="https://hypothes.is/embed.js" async></script>
     <script type="text/javascript" src="chapters.js"></script>
     <script type="text/javascript" src="htmlbook/book.js"></script>
 
-    <script src="htmlbook/mathjax-config.js" defer></script> 
+    <script src="htmlbook/mathjax-config.js" defer></script>
     <script type="text/javascript" id="MathJax-script" defer
-      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">
+      src="htmlbook/MathJax/es5/tex-chtml.js">
     </script>
+    <script>window.MathJax || document.write('<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" defer><\/script>')</script>
 
     <link rel="stylesheet" href="htmlbook/highlight/styles/default.css">
     <script src="htmlbook/highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
     <script>hljs.initHighlightingOnLoad();</script>
 
-    <link rel="stylesheet" type="text/css" href="htmlbook/book.css">
+    <link rel="stylesheet" type="text/css" href="htmlbook/book.css" />
   </head>
-
-
 
 <body onload="loadChapter('underactuated');">
 
 <div data-type="titlepage">
   <header>
-    <h1><a href="underactuated.html" style="text-decoration:none;">Underactuated Robotics</a></h1>
-    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p> 
+    <h1><a href="index.html" style="text-decoration:none;">Underactuated Robotics</a></h1>
+    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p>
     <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
-    <p style="font-size: 14px; text-align: right;"> 
-      &copy; Russ Tedrake, 2021<br/>
-      <a href="tocite.html">How to cite these notes</a><br/>
+    <p style="font-size: 14px; text-align: right;">
+      &copy; Russ Tedrake, 2022<br/>
+      Last modified <span id="last_modified"></span>.</br>
+      <script>
+      var d = new Date(document.lastModified);
+      document.getElementById("last_modified").innerHTML = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();</script>
+      <a href="misc.html">How to cite these notes, use annotations, and give feedback.</a><br/>
     </p>
   </header>
 </div>
 
 <p><b>Note:</b> These are working notes used for <a
-href="https://underactuated.csail.mit.edu/Spring2021/">a course being taught
-at MIT</a>. They will be updated throughout the Spring 2021 semester.  <a 
-href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos are available on YouTube</a>.</p> 
+href="https://underactuated.csail.mit.edu/Spring2022/">a course being taught
+at MIT</a>. They will be updated throughout the Spring 2022 semester.  <a
+href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos are available on YouTube</a>.</p>
 
-<chapter><h1>Planning Under
+<table style="width:100%;"><tr style="width:100%">
+  <td style="width:33%;text-align:left;"><a class="previous_chapter"></a></td>
+  <td style="width:33%;text-align:center;"><a href=index.html>Table of contents</a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter"></a></td>
+</tr></table>
+
+<script type="text/javascript">document.write(notebook_header('belief'))
+</script>
+<!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+<chapter style="counter-reset: chapter 100"><h1>Planning Under
 Uncertainty</h1>
 
-  <todo>POMDP, SLAG, Belief-space sample-based planning, ...</todo>
+  <section><h1>Partially-obervable Markov decision processes (POMDPs)</h1>
 
-  <todo>iLQG (following LQG from Output Feedback chapter), iLEG (papers by
-  Buchli, then Righetti)</todo>
+    <p>For notational simplicity, let's start the discussion with discrete
+    time, states, actions, and even observations. This allows us to have a
+    lossless representation of the probability masses over these
+    quantities, and to write them as vectors.</p>
+
+    <p>A partially-observable Markov decision process (POMDP) is a stochastic
+    state-space dynamical system with discrete states $X$, actions $U$,
+    observations $Y$, initial condition probabilities $P_{x_0}(x)$, transition
+    probabilities $P_x(x'|x,u)$, observation probabilities $P_y(y | x)$, and a
+    deterministic  reward function $R: X \times U \rightarrow \Re$
+    <elib>Kaelbling98</elib>.  Our goal is to maximize the finite-horizon
+    expected rewards, $E[\sum_{n=1}^N R(x_n, u_n)].$  <!--As is tradition,
+    we'll denote a POMDP by the tuple ${\bf P} = \langle X, U, Y, P_{x_0}, P_x,
+    P_y, R, N \rangle$.--></p>
+
+    <p>An important idea for POMDP's is the notion of a "belief state" of a
+    POMDP: \[[b_n]_i = \Pr(x_n = x_i | u_0, y_0, ... u_{n-1}, y_{n-1}).\]  $b_n
+    \in \mathcal{B}_n \subset \Delta^{|X|}$ where $\Delta^n \subset \Re^n$ is
+    the $n$-dimensional <a
+    href="https://en.wikipedia.org/wiki/Simplex">simplex</a>
+    and we use $[b_n]_i$ to denote the $i$th element.  $b_n$ is a sufficient
+    statistic for the POMDP, in the sense that it captures all information
+    about the history that can be used to predict the future state (and
+    therefore also observations, and rewards) of the process.  Using $h_n =
+    [u_0, y_0, ..., u_{n-1}, y_{n-1}]$ to denote the history of all actions and
+    observations, we have  $$\Pr(x_{n+1} = x | b_n, h_n, u_n) = \Pr(x_{n+1} = x
+    | b_n, u_n).$$  It is also <i>sufficient for optimal control</i>, in the
+    sense that the optimal policy can be written as $u_n^* = \pi^*(b_n,
+    n).$</p>
+
+    <p>The belief state is <i>observable</i>, with the optimal Bayesian
+    estimator/observer given by the (belief-)state-space form as
+    \begin{gather*} [b_{n+1}]_i = f_i(b_n, u_n, y_n) = \frac{P_y(y_n | x_i)
+    \sum_{j \in |X|} P_x(x_i|x_j,u_n) [b_n]_j}{\Pr(y_n | b_n,
+    u_n)}\end{gather*} where $b_0 \sim \mathcal{B}_0$, and $$\Pr(y_j | b, u) =
+    \sum_{x' \in X} P_y(y | x') \sum_{j \in |X|} P_x(x' | x_j, u) [b]_j = {\bf
+    P}_y(y_j|x) {\bf P}_{x,u} b,$$  where ${\bf P}_y(y_j|x)$ is the $|X|$
+    element row vector and ${\bf P}_{x,u}$ is the $|X| \times |X|$ matrix of
+    transition probabilities given $u$.  We can even write $$b_{n+1} = f(b_n,
+    u_n, y_n) = \frac{{\bf D}_n {\bf P}_{x,u} b_{n}}{\Pr(y_n|b_n, u_n)},$$
+    where ${\bf D}_j$ is the diagonal matrix with $P_y(y_j|x_i)$ on the $i$the
+    diagonal.  Moreover, we can use this belief update to form the ``belief
+    MDP'' for planning by marginalizing over the future observations, giving
+    the \begin{align*} \Pr(b_{n+1}=b|b_n, u_n) = \sum_{\{y|b = f(b_n, u_n,
+    y)\}} P_y(y | b_n, u_n) = \sum_{\{j | b=f(b_n, u_n, y_j)\}} {\bf D}_j {\bf
+    P}_{x,u_n} b_n.\end{align*}   Note that although $b_n$ is represented with
+    a vector of real values, it actually lives in a finite space,
+    $\mathcal{B}_n$, which is why we use probability mass and MDP notation
+    here.  It is well known that the optimal policy $\pi^*(b_n, n)$ is the
+    optimal state feedback for the belief MDP. </p>
+
+    <example><h1>Cheeze Maze</h1>
+    
+      <todo>Make a simple visualization where one can walk through the maze and
+      watch the belief states update.</todo>
+
+      <todo>Could be fun to have them do it again, without the visualization of the map (only the belief states).</todo>
+    
+    </example>
+
+    <!--
+    <subsection><h1>When is number of finite beliefs bounded?</h1>
+
+      <p>One interesting case is when the dynamics and observations are deterministic (but still partially observable); for instance, any maze like the cheese maze.  In this case, it only makes sense to have $|Y| < |X|.$  Given a single observation, my belief state in $\Re^{|X|}$ can only be supported in the subset of states with that observation.  Taking it further, my beliefs will only ever be equally distributed over a subset of the states, and moreover the subset of states corresponding to a common observation.  So we could make one discrete belief for each power set of the set of states corresponding to each observation.</p>
+
+    </subsection>
+    -->
+    <todo>There might be a few more useful thoughts in my "model-reduction for
+    pomdps" draft:
+    https://www.overleaf.com/project/5fbc14452ec47212266a4de5</todo>
+
+    <subsection><h1>Continuous states, actions, and observations</h1>
+
+      <example><h1>Light-dark domain</h1>
+      
+      </example>
+
+    </subsection>
+
+    <subsection><h1>Finite-parameterizations of distributions</h1>
+
+      <todo>multi-modal guassian, particles, histograms, deep nets</todo>
+    
+    </subsection>
+
+  </section>
+
+  <section><h1>Why plan in belief space?</h1>
+  
+    <p>Information-gathering actions...</p>
+  
+    <p>It's worth noting that, even for fully-actuated robots, planning in
+    belief space is <i>underactuated</i>. Even in the linear-Gaussian setting,
+    the the dimension of the belief space is the number of means (equal to the
+    number of deterministic states) plus the number of covariances (equal to
+    the number of deterministic states squared), minus one if we take into
+    account the constraint that the probabilities have to integrate to one. No
+    robot has enough actuators to instantaneously control all of these degrees
+    of freedom.</p>
+
+  </section>
+
+  <section><h1>Trajectory optimization</h1>
+
+    <todo>SLAG</todo>
+
+    <todo>iLQG (following LQG from Output Feedback chapter), iLEG (papers by
+      Buchli, then Righetti)</todo>
+
+  </section>
+
+  <section><h1>Sampling-based planning</h1>
+  
+  </section>
+
+  <section><h1>Learned state representations</h1>
+
+    <p>A number of other techniques that we have discussed are intimately
+    related to this notion of planning under uncertainty and belief-space, even
+    if that connection is not typically made explicitly.  For instance, if we
+    perform policy search in a partially-observable setting, using a dynamic
+    policy, then the state realization in the policy is best thought of as an
+    (approximate) belief state. These days it's also common to learn value
+    functions or Q-functions with internal state; again the interpretation
+    should be that the observations are being collated into an (approximate)
+    belief state.</p>
+
+    <p>Let us contrast this, however, with the "student-teacher" architecture
+    that is sometimes used in RL -- where one first trains a state-feedback
+    policy with RL, then uses supervised learning to turn this into an output
+    feedback policy. This optimal state-feedback policy can be fundamentally
+    different -- it will not take any information-gathering actions...</p>
+
+    <todo>AIS</todo>
+  
+  </section>
+
 </chapter>
+<!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 
+<div id="references"><section><h1>References</h1>
+<ol>
+
+<li id=Kaelbling98>
+<span class="author">Leslie Pack Kaelbling and Michael L. Littman and Anthony R. Cassandra</span>, 
+<span class="title">"Planning and Acting in Partially Observable Stochastic Domains"</span>, 
+<span class="publisher">Artificial Intelligence</span>, vol. 101, January, <span class="year">1998</span>.
+
+</li><br>
+</ol>
+</section><p/>
+</div>
+
+<table style="width:100%;"><tr style="width:100%">
+  <td style="width:33%;text-align:left;"><a class="previous_chapter"></a></td>
+  <td style="width:33%;text-align:center;"><a href=index.html>Table of contents</a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter"></a></td>
+</tr></table>
 
 <div id="footer">
   <hr>
   <table style="width:100%;">
-    <tr><td><em>Underactuated Robotics</em></td><td align="right">&copy; Russ
-      Tedrake, 2021</td></tr>
+    <tr><td><a href="https://accessibility.mit.edu/">Accessibility</a></td><td style="text-align:right">&copy; Russ
+      Tedrake, 2022</td></tr>
   </table>
 </div>
 
 
 </body>
 </html>
-  

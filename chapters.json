@@ -32,5 +32,8 @@
     "dp": "Nonlinear Planning and Control",
     "sysid": "Estimation and Learning",
     "drake": "Appendix"
-  }
+  },
+  "draft_chapter_ids": [
+    "belief"
+  ]
 }
