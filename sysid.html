@@ -833,7 +833,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       + \bv[0], \\ \by[1] =& \bC(\bA\bx[0] + \bB\bu[0] + \bw[0]) + {\bf
       D}\bu[1] + \bv[1], \\ \by[n] =& \bC\bA^n\bx[0] + {\bf D}\bu[n] + \bv[n] +
       \sum_{k=0}^{n-1}\bC\bA^{n-k-1}(\bB\bu[k] + \bw[k]). \end{align*} For the
-      purposes of identification, let's write $y[n]$ as a function of the most
+      purposes of identification, let's write $\by[n]$ as a function of the most
       recent $N+1$ inputs (for $k \ge N$): \begin{align*}\by[n] =&
       \begin{bmatrix} \bC\bA^{N-1}\bB & \bC\bA^{N-2}\bB & \cdots & \bC\bB &
       {\bf D}\end{bmatrix} \begin{bmatrix} \bu[n-N] \\ \bu[n-N+1] \\ \vdots \\
@@ -1010,6 +1010,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       state: not controllable.</todo>
 
       <todo>More generally, a filter bank of recent observations?</todo>
+    </subsection>
+
+    <subsection><h1>Statistical analysis of learning linear models</h1>
+    
+      <todo>Define the appropriate notion of regret. Max and Adam's PWA draft cites a few key papers + a summary.</todo>
+
     </subsection>
 
   </section>
@@ -1196,11 +1202,108 @@ control (Proctor et al., 2016b).-->
 
     <todo>hybrid system survey papers</todo>
     <todo>decision trees/CART</todo>
+    <todo>Max/Adam PWA regret via randomized smoothing</todo>
 
   </section>
 
 
-  <section><h1>Task-relevant models</h1></section>
+  <section><h1>Task-relevant models</h1>
+  
+  <p>As discussed briefly in the introduction, the standard objective for
+  system identification is to match the input-output behavior of a dynamical
+  system. Certainly if we can find a model that predicts all outputs perfectly,
+  then this model should be sufficient for making optimal decisions. But when
+  we cannot make perfect predictions, due to limited data and/or limited model
+  representation power, then the relative cost placed on predicting different
+  outputs becomes important. This feels particularly important when the
+  observations come from a camera -- in most cases predicting every pixel in
+  the scene accurately is not the right objective for a robot trying to use the
+  camera to accomplish a particular task.</p>
+
+  <p>Fortunately, the problem of learning task-relevant models or "learning
+  state representations" has become a darling of the machine learning
+  community. There are a lot of smart people thinking about the problem and the
+  field has made considerable progress in the last years. In the immense volume
+  of papers, I think there are a few really core ideas.</p>
+
+  <p>What makes a good state representation for control? Two defining
+  properties are: 1) it should be observable, and 2) it should be sufficient
+  for making optimal decisions. In other words, if $\bz[n]$ is the state of the
+  dynamic controller (which we can think of as an observer of the learned state
+  representation), then we would like that the optimal policy given this state
+  to take the same action as an optimal policy which uses the entire available
+  history: $$\pi^*(\bz[n]) \approx \bar\pi^*(\by[n], \by[n-1], \by[n-2], ...,
+  \bu[n-1], \bu[n-2], ...).$$ Certainly the <i><a href="belief.html">belief
+  state</a></i>, which is by definition a sufficient statistic for predicting
+  future observations, has this property. But much more minimal representations
+  may also be sufficient. So a third, slightly more tenuous property of a good
+  state representation is that we would like it to be tractable for learning,
+  representation, and decision making.</p>
+
+  <p>Being sufficient for making optimal control decisions is a difficult
+  objective because it couples the problem of representation learning / system
+  identification with the problem of control design. How can we know what the
+  optimal action is without solving the optimal control problem? This is one
+  reason that imitation learning <elib>Florence20+Florence22</elib> is a
+  potentially valuable undertaking -- by providing demonstrations of an
+  "optimal" policy, it reduces representation learning back to classical system
+  identification and allows us to focus on the question of state representation
+  without simultaneously solving control design. Other works like
+  <elib>Srinivas18</elib> attempt use a planner on the learned representation
+  even during learning, and take a loss function requesting that the actions
+  taken from a policy using the current state matches the actions taken from a
+  planner using the representation to optimize multiple steps into the
+  future.</p>
+
+  <p>A closely related idea would ask for the representation to be sufficient
+  to predict the optimal value function (rather than the optimal action).
+  Certainly if we have a model and a value function that is consistent with
+  that model, then this would be sufficient for making optimal decisions. But
+  it should be noted that there are cases where predicting the optimal
+  cost-to-go is actually harder than predicting the optimal action. Imagine an
+  agent in a grid world that can traverse one of two corridors and has learned
+  that the left corridor always has more reward than the right. Predicting the
+  precise amount of reward that will be obtained when moving down the left
+  corridor is not needed to choose the optimal action. Predicting optimal
+  values also does not break the "chicken-and-the-egg" problem (how can you
+  know the optimal values until you have an optimal policy?), but may have more
+  subtle merits in terms of representation or learning efficiency.</p>
+
+  <p>One proposal which <i>does</i> fundamentally break the chicken-and-the-egg
+  problem is given by <elib>Subramanian19</elib> and called "approximate
+  information states" (AIS). The key idea in this work is that if a state
+  representation, $\bz[n]$ is 1) sufficient to predict the one-step reward, and
+  2) sufficient to predict $\bz[n+1]$, then it is sufficient for making optimal
+  decisions. This motivates their notion of an <i>approximate</i> information
+  state, as a representation that approximately accomplishes these two goals.
+  They provide one particular bound for the suboptimality of the resulting
+  policy, based on worst case errors in the one-step reward and next state
+  predictions. In my group, we've been studying this approach, trying to
+  understand the implications for the two cases we can deeply understand:
+  finite (tabular) Markov decision processes <elib>Yang22</elib> and
+  linear-Gaussian systems <elib>Tian22</elib>. It seems clear that the bounds
+  can be very loose.</p>
+
+  <p>Approximate information states are themselves closely related to prior
+  work on "state aggregation" in MDPs via the so-called "bisimulation metrics".
+  The basic idea is that if the future outcomes from two states are
+  indistinguishable, then these states can be aggregated into a single state,
+  thus reducing the state space. See <elib>Givan03</elib> for the original work
+  on exact bisimulation, <elib>Ferns04</elib> for approximate bisimulation, 
+  <elib>Castro09</elib> for an extension to POMDPs, and <elib>Zhang20a</elib>
+  for a more modern version using neural networks.</p>
+
+  <p>Interestingly, the famous work by DeepMind on MuZero
+  <elib>Schrittwieser20</elib> learns a task-relevant state representation
+  using a combination of all of these ideas: the loss function for the state
+  combines a loss for predicting the action, the value function, and the
+  one-step reward. But I have seen a few projects that struggled to reproduce
+  its success in robotics domains.</p>
+
+  <p>This area is moving fast; I will try to update this section as results
+  appear, and will give some worked out examples soon.</p>
+
+  </section>
 
   <section><h1>Exercises</h1>
 
@@ -1461,6 +1564,61 @@ PhD thesis, Massachusetts Institute of Technology, June, <span class="year">2012
 <span class="author">Alekh Agarwal and Nan Jiang and Sham M. Kakade and Wen Sun</span>, 
 <span class="title">"Reinforcement Learning: Theory and Algorithms"</span>, Online Draft
 , <span class="year">2020</span>.
+
+</li><br>
+<li id=Florence22>
+<span class="author">Pete Florence and Corey Lynch and Andy Zeng and Oscar A Ramirez and Ayzaan Wahid and Laura Downs and Adrian Wong and Johnny Lee and Igor Mordatch and Jonathan Tompson</span>, 
+<span class="title">"Implicit behavioral cloning"</span>, 
+<span class="publisher">Conference on Robot Learning</span> , pp. 158--168, <span class="year">2022</span>.
+
+</li><br>
+<li id=Srinivas18>
+<span class="author">Aravind Srinivas and Allan Jabri and Pieter Abbeel and Sergey Levine and Chelsea Finn</span>, 
+<span class="title">"Universal planning networks: Learning generalizable representations for visuomotor control"</span>, 
+<span class="publisher">International Conference on Machine Learning</span> , pp. 4732--4741, <span class="year">2018</span>.
+
+</li><br>
+<li id=Subramanian19>
+<span class="author">Jayakumar Subramanian and Aditya Mahajan</span>, 
+<span class="title">"Approximate information state for partially observed systems"</span>, 
+<span class="publisher">2019 IEEE 58th Conference on Decision and Control (CDC)</span> , pp. 1629--1636, <span class="year">2019</span>.
+
+</li><br>
+<li id=Yang22>
+<span class="author">Lujie Yang and Kaiqing Zhang and Alexandre Amice and Yunzhu Li and Russ Tedrake</span>, 
+<span class="title">"Discrete Approximate Information States in Partially Observable Environments"</span>, 
+<span class="publisher">Proceedings of the 2022 American Control Conference (ACC)</span> , <span class="year">2022</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Yang22.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Tian22>
+<span class="author">Yi Tian and Kaiqing Zhang and Russ Tedrake and Suvrit Sra</span>, 
+<span class="title">"Can Direct Latent Model Learning Solve Linear Quadratic Gaussian Control?"</span>, 
+<span class="publisher">arXiv preprint arXiv:2212.14511</span>, <span class="year">2022</span>.
+
+</li><br>
+<li id=Givan03>
+<span class="author">Robert Givan and Thomas Dean and Matthew Greig</span>, 
+<span class="title">"Equivalence notions and model minimization in Markov decision processes"</span>, 
+<span class="publisher">Artificial Intelligence</span>, vol. 147, no. 1-2, pp. 163--223, <span class="year">2003</span>.
+
+</li><br>
+<li id=Ferns04>
+<span class="author">Norm Ferns and Prakash Panangaden and Doina Precup</span>, 
+<span class="title">"Metrics for Finite Markov Decision Processes."</span>, 
+<span class="publisher">UAI</span> , vol. 4, pp. 162--169, <span class="year">2004</span>.
+
+</li><br>
+<li id=Castro09>
+<span class="author">Pablo Samuel Castro and Prakash Panangaden and Doina Precup</span>, 
+<span class="title">"Equivalence Relations in Fully and Partially Observable Markov Decision Processes."</span>, 
+<span class="publisher">IJCAI</span> , vol. 9, pp. 1653--1658, <span class="year">2009</span>.
+
+</li><br>
+<li id=Schrittwieser20>
+<span class="author">Julian Schrittwieser and Ioannis Antonoglou and Thomas Hubert and Karen Simonyan and Laurent Sifre and Simon Schmitt and Arthur Guez and Edward Lockhart and Demis Hassabis and Thore Graepel and others</span>, 
+<span class="title">"Mastering {A}tari, {G}o, chess and shogi by planning with a learned model"</span>, 
+<span class="publisher">Nature</span>, vol. 588, no. 7839, pp. 604--609, <span class="year">2020</span>.
 
 </li><br>
 </ol>
