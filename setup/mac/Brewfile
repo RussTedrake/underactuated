@@ -4,4 +4,4 @@
 brew "bazel"
 brew "python@3.10"
 brew "tidy-html5"
-brew "scipy"  # See #496.  We use brew instead of pip because bazel's pip was installing an incompatible numpy@1.21.6 (into /opt/homebrew/lib/python3.10/site-packages/) if scipy was listed in requirements.txt
+brew "gprof2dot" # Supplies dot for pydot

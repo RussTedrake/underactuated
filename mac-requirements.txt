@@ -79,11 +79,12 @@ nbformat==5.1.3
     #   nbconvert
 nest-asyncio==1.5.1
     # via nbclient
-numpy==1.23.3
+numpy==1.24.1
     # via
     #   -c htmlbook/mac-constraints.txt
     #   matplotlib
     #   pandas
+    #   scipy
 packaging==20.9
     # via
     #   bleach
@@ -130,6 +131,8 @@ pyzmq==22.3.0
     # via jupyter-client
 requests==2.25.1
     # via -r htmlbook/mac-requirements.in
+scipy==1.9.3
+    # via -r mac-requirements.in
 setuptools-scm==6.3.2
     # via matplotlib
 six==1.15.0
