@@ -678,7 +678,7 @@ Control through Contact</a></li>
   nonlinear control. But the dynamics of our robots quickly get too complex for
   us to handle with a pencil-and-paper approach.  As a result, the primary
   focus of these notes is on computational approaches to control design,
-  especially using optimization.<p>
+  especially using optimization and machine learning.<p>
 
   <p>When I started teaching this class, and writing these notes, the
   computational approach to control was far from mainstream in robotics.  I had
@@ -698,21 +698,22 @@ Control through Contact</a></li>
   understand about the structure of the equations that govern our mechanical
   systems; algorithms which don't make use of that structure are missing
   obvious opportunities for data efficiency and robustness.  The dream is to
-  make the learning algorithms discover this structure on their own.  My goal
-  for this course, however, is to help <i>you</i> discover this structure, and
-  to learn how to use this structure to develop stronger algorithms and to
-  guide your scientific endeavors into learning-based control.</p>
+  make the learning algorithms discover this structure on their own; but even
+  then it pays for you (the designer) to understand the optimization landscape
+  the learning systems are operating on.  That's why my goal for this course is
+  to help <i>you</i> discover this structure, and to learn how to use this
+  structure to develop stronger algorithms and to guide your scientific
+  endeavors into learning-based control.</p>
 
   <p>I'll go even further.  I'm willing to bet that our views of intelligence
   in 10-20 years will look less like feedforward networks with a training mode
   and a test mode, and more like a <i>system</i> with dynamics that ebb and
-  flow in a beautiful dance with the dynamics of the environment.  These
-  systems will move more flexibly between perception, forward prediction /
-  sequential decision making, storing and retrieving long-term memories, and
-  taking action. A fascinating question is whether it will be important for
-  these systems to be embodied (e.g. in a robot) in order to explore the world
-  at the timescales of classical mechanics that we learn and evolve with.  It
-  certainly makes for a wonderful playground.</p>
+  flow in a beautiful dance with streams of incoming data and the ever-changing
+  dynamics of the environment.  These systems will move more flexibly between
+  perception, forward prediction / sequential decision making, storing and
+  retrieving long-term memories, and taking action. Dynamical systems theory
+  offers us a way to understand and harness the complexity of these systems
+  that we are building.</p>
 
   <p>Although the material in the book comes from many sources, the
   presentation is targeted very specifically at a handful of robotics problems.
