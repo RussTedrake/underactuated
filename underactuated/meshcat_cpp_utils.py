@@ -5,7 +5,7 @@ import numpy as np
 
 from pydrake.geometry import Cylinder, Rgba, Sphere
 from pydrake.perception import PointCloud, Fields, BaseField
-from pydrake.solvers.mathematicalprogram import BoundingBoxConstraint
+from pydrake.solvers import BoundingBoxConstraint
 
 # imports for interact
 from inspect import signature, Parameter
