@@ -4,7 +4,7 @@ from gradescope_utils.autograder_utils.decorators import weight
 import numpy as np
 from pydrake.all import (DiagramBuilder, SceneGraph, Simulator, LeafSystem,
                          DiagramBuilder, SceneGraph, ZeroOrderHold)
-from pydrake.examples.pendulum import PendulumGeometry, PendulumPlant
+from pydrake.examples import PendulumGeometry, PendulumPlant
 
 
 class TestPendulumCVI(unittest.TestCase):
