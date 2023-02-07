@@ -59,14 +59,23 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <chapter style="counter-reset: chapter 0">
 <h1>Fully-actuated vs Underactuated Systems</h1>
 
-  <p>Robots today move far too conservatively, and accomplish only a fraction of
-  the tasks and achieve a fraction of the performance that they are mechanically
-  capable of.  In many cases, we are still fundamentally limited by control
-  technology which matured on rigid robotic arms in structured factory
-  environments.  The study of underactuated robotics focuses on building control
-  systems which use the natural dynamics of the machines in an attempt to
-  achieve extraordinary performance in terms of speed, efficiency, or
-  robustness.</p>
+  <p>Robots today move far too conservatively, and accomplish only a fraction
+  of the tasks and achieve a fraction of the performance that they are
+  mechanically capable of. In some cases, we are still fundamentally limited by
+  control technology which matured on rigid robotic arms in structured factory
+  environments, were large actuators could be used to "shape" the dynamics of
+  the machine to achieve precision and repeatability. The study of
+  underactuated robotics focuses on building control systems which instead
+  exploit the natural dynamics of the machines in an attempt to achieve
+  extraordinary performance in terms of speed, efficiency, or robustness.</p>
+  
+  <p>In the last few years, controllers designed using machine learning have
+  showcased the potential power of optimization-based control, but these
+  methods do not yet enjoy the sample-efficiency nor algorithmic reliability
+  that we've come to expect from more mature control technologies. The study of
+  underactuated robotics asks us to look closely at the optimization landscapes
+  that occur when we are optimizing mechanical systems, to understand and
+  exploit that structure in our optimization and learning algorithms.</p>
 
   <section>
   <h1>Motivation</h1>
@@ -160,7 +169,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <p> This result is a marvel of engineering (the mechanical design alone is
       amazing...).  In this class, we'll teach you the computational tools
       required to make robots perform this way.  We'll also try to reason about
-      how robust these types of maneuvers are and can be.  Don't worry, if you
+      how robust these types of maneuvers are and can be.  Don't worry: if you
       do not have a super lightweight, super capable, and super durable
       humanoid, then a simulation will be provided for you.  </p> </subsection>
 
@@ -266,7 +275,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       reorienting it in the hand), and our brains don't throw NaNs if we use the
       entire surface of our arms to e.g. manipulate a large object. </p>
 
-      <p>In the last few years, I've began to focus my own research to problems in the manipulation domain.  In this space, the interaction between dynamics and perception is incredibly rich.  As a result, I've started an <a href="http://manipulation.csail.mit.edu">entirely separate set of notes (and a second course) on manipulation</a>.</p>
+      <p>In the last few years, the massive progress in computer vision has
+      completely opened up this space. I've began to focus my own research to
+      problems in the manipulation domain.  In manipulation, the interaction
+      between dynamics and perception is incredibly rich.  As a result, I've
+      started an <a href="http://manipulation.csail.mit.edu">entirely separate
+      set of notes (and a second course) on manipulation</a>.</p>
 
       <p>By the way, in most cases, if the robots fail to make contact at the
       anticipated contact times/locations, <a
@@ -286,16 +300,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       which take advantage of the dynamics, not cancel them out.  That is the
       topic of this course. </p>
 
-      <p> Surprisingly, many formal control ideas do not support the idea of
-      "exploiting" the dynamics.  Optimal control formulations (which we will
-      study in depth) allow it in principle, but optimal control of nonlinear
-      systems is still a relatively ad hoc discipline.  Sometimes I joke that
-      in order to convince a control theorist to consider the dynamics, you
-      have to do something drastic, like taking away her control authority -
-      remove a motor, or enforce a torque-limit.  These issues have created a
-      formal class of systems, the underactuated systems, for which people have
-      begun to more carefully consider the dynamics of their machines in the
-      context of control. </p>
+      <p>Surprisingly, many formal control ideas that developed in robotics do
+      not support the idea of "exploiting" the dynamics.  Optimal control
+      formulations (which we will study in depth) allow it in principle, but
+      optimal control of nonlinear systems remains a challenging problem. Back
+      when I started these notes, I used to joke that in order to convince a
+      robotics control researcher to consider the dynamics, you have to do
+      something drastic like taking away her control authority - remove a
+      motor, or enforce a torque-limit. Systems that are interesting in this
+      way are called the "underactuated" systems. It is in this field of
+      "underactuated robotics" where research on the type of control I am
+      advocating for began.</p>
 
     </subsection>
 
@@ -318,7 +333,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     is <i>fully actuated</i> in state $\bx = (\bq, \dot\bq)$ and time $t$ if the
     resulting map ${\bf f}$ is surjective: for every $\ddot\bq$ there exists a
     $\bu$ which produces the desired response.  Otherwise it is
-    <i>underactuated</i> (in $\bx$ at time $t$).
+    <i>underactuated</i> (at state $\bx$ at time $t$).
     </definition>
 
     <p>As we will see, the dynamics for many of the robots that we care about
@@ -328,18 +343,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     control dynamical system described by equation \eqref{eq:f1_plus_f2}, if we
     have \begin{equation} \textrm{rank}\left[{\bf f}_2 (\bq,\dot{\bq},t)\right]
     < \dim\left[\bq\right],\label{eq:underactuated_low_rank}\end{equation} then
-    the system is underactuated. Be careful, though -- sometimes we will write
-    equations that look like \eqref{eq:f1_plus_f2} but tack on additional
-    constraints like $|\bu|\le 1$; as we will discuss below, input limits and
-    other constraints can also make a system underactuated.</p>
+    the system is underactuated at $(\bq, \dot\bq, t)$. The implication is only
+    in one direction, though -- sometimes we will write equations that look
+    like \eqref{eq:f1_plus_f2} and have a full rank ${\bf f}_2$ but additional
+    constraints like $|\bu|\le 1$ can also make a system underactuated.</p>
     
     <p>Note also that we are using the word <i>system</i> here to describe the
-    mathematical model (potentially of a physical robot).  When we way that the
+    mathematical model (potentially of a physical robot).  When we say that the
     <i>system</i> is underactuated, we are talking about the mathematical
     model. Imagine a two-link robot with two actuators, a typical model with
     rigid links could be fully actuated, but if we add extra degrees of freedom
     to model small amounts of flexibility in the links then that system model
-    could be underactuated.</p>
+    could be underactuated. These two models describe the same robot, but at
+    different levels of fidelity. Two actuators might be enough to completely
+    control the joint angles, but not the joint angles <i>and</i> the flexing
+    modes of the link.</p>
 
     <p>Notice that whether or not a control system is underactuated may depend
     on the state of the system or even on time, although for most systems
@@ -367,21 +385,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       animation</a>.</figcaption>
       </figure>
 
-      <p> Consider the simple robot manipulator illustrated above.  As described
-      in the <a href="multibody.html">Appendix</a>, the
-      equations of motion for this system are quite simple to derive, and take the
-      form of the standard "manipulator equations": $${\bf M}(\bq)\ddot\bq +
-      \bC(\bq,\dot\bq)\dot\bq = \btau_g(\bq) + {\bf B}\bu.$$ It is well known that
-      the inertia matrix, ${\bf M}(\bq)$ is (always) uniformly symmetric and
-      positive definite, and is therefore invertible. Putting the system into the
-      form of equation \ref{eq:f1_plus_f2} yields: \begin{align*}\ddot{\bq} =&
-      {\bf M}^{-1}(\bq)\left[ \btau_g(\bq) + \bB\bu - \bC(\bq,\dot\bq)\dot\bq
-      \right].\end{align*} Because ${\bf M}^{-1}(\bq)$ is always full rank, we
-      find that a system described by the manipulator equations is fully-actuated
-      if and only if $\bB$ is full row rank. For this particular example,
-      $\bq = [\theta_1,\theta_2]^T$ and $\bu = [\tau_1,\tau_2]^T$ (motor torques
-      at the joints), and $\bB = {\bf I}_{2 \times 2}$.  The system is fully
-      actuated.</p>
+      <p> Consider the simple robot manipulator illustrated above.  As
+      described in the <a href="multibody.html">Appendix</a>, the equations of
+      motion for this system are quite simple to derive, and take the form of
+      the standard "manipulator equations": $${\bf M}(\bq)\ddot\bq +
+      \bC(\bq,\dot\bq)\dot\bq = \btau_g(\bq) + {\bf B}\bu.$$ It is well known
+      that the inertia matrix, ${\bf M}(\bq)$ is (always) uniformly symmetric
+      and positive definite, and is therefore invertible. Putting the system
+      into the form of equation \ref{eq:f1_plus_f2} yields:
+      \begin{align*}\ddot{\bq} =& {\bf M}^{-1}(\bq)\left[ \btau_g(\bq) + \bB\bu
+      - \bC(\bq,\dot\bq)\dot\bq \right].\end{align*} Because ${\bf
+      M}^{-1}(\bq)$ is always full rank, we find that a system described by the
+      manipulator equations is fully-actuated if and only if $\bB$ is full row
+      rank. For this particular example, $\bq = [\theta_1,\theta_2]^T$ and $\bu
+      = [\tau_1,\tau_2]^T$ (motor torques at the joints), and $\bB = {\bf I}_{2
+      \times 2}$.  The system is fully actuated.</p>
 
       <div><b>Python Example</b>
 
@@ -519,6 +537,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     systems are ones where we have an easy recipe for the linearizing controller
     (based on inverting $f_2$). -->
 
+    <p>Perhaps you are coming with a background in optimization or machine
+    learning, rather than linear controls? To you, I could say that for
+    fully-actuated systems, there is a straight-forward change of variables
+    that can make the optimization landscape (for many control performance
+    objectives) convex. Optimization/learning for these systems is relatively
+    easy. For underactuated systems, we can still aim to leverage the mechanics
+    to improve the optimization landscape but it requires more insights.
+    Developing those insights is one of the themes in these notes, and
+    continues to be an active area of research.</p>
+
   </section>
 
   <section><h1>Input and State Constraints</h1>
@@ -597,7 +625,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       converse is not necessarily true&mdash;the double pendulum system which is
       missing an actuator is underactuated but would not typically be called a
       nonholonomic system.  Note that the Lagrangian equations of motion are a
-      constraint of the form \[\bphi(\bq,{\bf \dot{q}},{\bf \ddot{q}},t) =  0,\]
+      constraint of the form \[\bphi(\bq,\dot\bq, \ddot\bq, \bu, t) =  0,\]
       so do not qualify as a nonholonomic constraint.</p>
 
     </subsection>
@@ -606,11 +634,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
   <section><h1>Underactuated robotics</h1>
 
-    <p> The control of underactuated systems is an open and interesting problem
-    in controls.  Although there are a number of special cases where
-    underactuated systems have been controlled, there are relatively few general
-    principles.  Now here's the rub... most of the interesting problems in
-    robotics are underactuated: </p>
+    <p> Today, control design for underactuated systems relies heavily on
+    optimization and optimal control, with fast progress but still many open
+    questions in both model-based optimization and machine learning for
+    control. It's a great time to be studying this material! Now that computer
+    vision has started to work, and we can ask large language models for
+    high-level instructions what our robot should be doing (e.g. "chat GPT,
+    give me detailed instructions on how to make a pizza"), we still have many
+    interesting problems in robotics that are still hard because they are
+    underactuated: </p>
 
     <ul>
 
@@ -647,12 +679,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
   <section><h1>Goals for the course</h1>
 
-    <p> This course is based on the observation that there are new computational
-    tools from optimization theory, control theory, motion planning, and even
-    machine learning which can be used to design feedback control for
-    underactuated systems.  The goal of this class is to develop these tools in
-    order to design robots that are more dynamic and more agile than the current
-    state-of-the-art.</p>
+    <p> This course is studies the rapidly advancing computational tools from
+    optimization theory, control theory, motion planning, and machine learning
+    which can be used to design feedback control for underactuated systems. The
+    goal of this class is to develop these tools in order to design robots that
+    are more dynamic and more agile than the current state-of-the-art.</p>
 
     <p> The target audience for the class includes both computer science and
     mechanical/aero students pursuing research in robotics.  Although I assume a
@@ -660,13 +691,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     provide most of the material and references required for the course. </p>
 
     <p>I have a confession: I actually think that the material we'll cover in
-      these notes is valuable far beyond robotics.  I think that systems theory
-      provides a powerful language for organizing computation in exceedingly
-      complex systems -- especially when one is trying to program and/or analyze
-      systems with continuous variables in a feedback loop (which happens
-      throughout computer science and engineering, by the way).  I hope you find
-      these tools to be broadly useful, even if you don't have a humanoid robot
-      capable of performing a backflip at your immediate disposal.</p>
+    these notes is valuable far beyond robotics.  I think that systems theory
+    provides a powerful language for organizing computation in exceedingly
+    complex systems -- especially when one is trying to program and/or analyze
+    systems with continuous variables in a feedback loop (which happens
+    throughout computer science and engineering, by the way).  I hope you find
+    these tools to be broadly useful, even if you don't have a humanoid robot
+    capable of performing a backflip at your immediate disposal.</p>
 
   </section>
 
