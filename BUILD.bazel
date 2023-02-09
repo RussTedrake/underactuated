@@ -59,7 +59,7 @@ rt_ipynb_test(
     flaky = True,
     deps = [
         "//underactuated",
-        "//underactuated:meshcat_cpp_utils",
+        "//underactuated:meshcat_utils",
         "//underactuated:quadrotor2d",
     ],
 )
@@ -99,7 +99,7 @@ rt_ipynb_test(
     deps = [
         "//underactuated",
         "//underactuated:double_integrator",
-        "//underactuated:meshcat_cpp_utils",
+        "//underactuated:meshcat_utils",
         "//underactuated:optimizers",
         "//underactuated:pendulum",
     ],

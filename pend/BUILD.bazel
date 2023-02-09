@@ -20,7 +20,7 @@ rt_ipynb_test(
     srcs = ["autapse.ipynb"],
     deps = [
       "//underactuated",
-      "//underactuated:meshcat_cpp_utils",
+      "//underactuated:meshcat_utils",
     ],
 )
 
@@ -37,7 +37,7 @@ rt_ipynb_test(
     srcs = ["lstm.ipynb"],
     deps = [
       "//underactuated",
-      "//underactuated:meshcat_cpp_utils",
+      "//underactuated:meshcat_utils",
     ],
 )
 
@@ -46,6 +46,6 @@ rt_ipynb_test(
     srcs = ["pend.ipynb"],
     deps = [
       "//underactuated",
-      "//underactuated:meshcat_cpp_utils",
+      "//underactuated:meshcat_utils",
     ],
 )

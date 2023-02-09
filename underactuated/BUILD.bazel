@@ -30,8 +30,8 @@ rt_py_library(
 )
 
 rt_py_library(
-    name = "meshcat_cpp_utils",
-    srcs = ["meshcat_cpp_utils.py"],
+    name = "meshcat_utils",
+    srcs = ["meshcat_utils.py"],
     imports = [".."],
     visibility = ["//visibility:public"],
     deps = ["underactuated"],

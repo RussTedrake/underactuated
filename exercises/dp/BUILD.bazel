@@ -36,7 +36,7 @@ rt_ipynb_test(
     deps = [
         "//underactuated",
         "//underactuated/exercises",
-        "//underactuated:meshcat_cpp_utils",
+        "//underactuated:meshcat_utils",
         "//underactuated:optimizers",
         "//underactuated:pendulum",
         "//underactuated/exercises/dp:pendulum_cvi",
