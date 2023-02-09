@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 docker pull robotlocomotion/drake:focal
 docker build -f setup/docker/Dockerfile -t russtedrake/underactuated:latest .
 docker push russtedrake/underactuated:latest
