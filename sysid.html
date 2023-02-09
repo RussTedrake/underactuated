@@ -1138,7 +1138,22 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     </subsection>
 
-    <subsection><h1>Input-output (autoregressive) models</h1>
+    <subsection id="nn_autoregressive"><h1>Input-output (autoregressive) models</h1>
+
+      <p>You might have heard about a neural network model called the
+      Transformer<todo>cite attention is all you need</todo>. There are a
+      massive number of online resources where you can
+      <a href="https://jalammar.github.io/illustrated-transformer/">learn about
+      Transformers</a>. These started in the natural language processing (NLP)
+      community, where they rapidly replaced recurrent neural network models
+      which were, at the time, struggling to handle very long sentences
+      (trajectories).  Transformers get around this problem by switching back
+      to an autoregressive-style model, but they compress the very long history
+      of previous observations into a compact representation using attention
+      mechanisms. This is what now enables large language models, like
+      chat-GPT, to e.g. write an entire essay, "remembering" names/concepts
+      that it used early in the essay correctly very late in the essay.</p>
+
     </subsection>
 
     <subsection><h1>Particle-based models</h1>
