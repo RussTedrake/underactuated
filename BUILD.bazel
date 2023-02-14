@@ -93,18 +93,6 @@ rt_html_test(
     srcs = ["dp.html"],
 )
 
-rt_ipynb_test(
-    name = "dp",
-    srcs = ["dp.ipynb"],
-    deps = [
-        "//underactuated",
-        "//underactuated:double_integrator",
-        "//underactuated:meshcat_utils",
-        "//underactuated:optimizers",
-        "//underactuated:pendulum",
-    ],
-)
-
 rt_html_test(
     srcs = ["lqr.html"],
 )

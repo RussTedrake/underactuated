@@ -97,7 +97,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       <p>You can experiment with this system in <drake></drake> using</p>
 
-      <script>document.write(notebook_link('pend'))</script>
+      <script>document.write(notebook_link('pend', d=deepnote, link_text="", notebook="pend"))</script>
 
     </example>
 
@@ -271,12 +271,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         and $w$ is the weight of the synaptic feedback.</p>
 
         <p>Experiment with it for yourself:</p>
-        <script>document.write(notebook_link('pend'))</script>
+        <script>document.write(notebook_link('pend', d=deepnote, link_text="", notebook="autapse"))</script>
   
-        <p>As a bonus, you'll also find a the equations of an <a
+        <p>As I've also provided the equations of an <a
         href="https://en.wikipedia.org/wiki/Long_short-term_memory">LSTM</a>
-        unit that you can also experiment with.  See if you can figure it out!
-        Architectures like the <a
+        unit that you can also experiment with.  See if you can figure it
+        out!</p>
+
+        <script>document.write(notebook_link('pend', d=deepnote, link_text="", notebook="lstm"))</script>
+
+        <p>Architectures like the <a
         href="https://en.wikipedia.org/wiki/Transformer_(machine_learning_model)">Transformer</a>
         for sequence modeling can also be understood through the lens of
         dynamical systems theory (as autoregressive models), but we will defer
@@ -600,7 +604,7 @@ complete trajectory.</p>
       <p>Take a minute to play around with the energy-shaping controller for
       swinging up the pendulum</p>
 
-      <script>document.write(notebook_link('pend'))</script>
+      <script>document.write(notebook_link('pend', d=deepnote, link_text="", notebook="energy_shaping"))</script>
 
       <p>Make sure that you take a minute to look at the code which runs during
       these examples.  Note the somewhat arbitrary threshold for switching to

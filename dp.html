@@ -62,13 +62,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   simple pendulum, and concluded with a challenge: can we design a nonlinear
   controller to <em>reshape</em> the phase portrait, with a very modest amount
   of actuation, so that the upright fixed point becomes globally stable?  With
-  unbounded torque, feedback-cancellation solutions (e.g., invert gravity) can
-  work well, but can also require an unnecessarily large amount of control
-  effort. The energy-based swing-up control solutions presented for the acrobot
-  and cart-pole systems  are considerably more appealing, but required some
-  cleverness and might not scale to more complicated systems.  Here we
-  investigate another approach to the problem, using computational optimal
-  control to synthesize a feedback controller directly.</p>
+  enough actuators and unbounded torque, feedback-cancellation solutions (e.g.,
+  invert gravity) can work well, but can also require an unnecessarily large
+  amount of control effort. The energy-based swing-up control solutions
+  presented for the Acrobot and cart-pole systems  are considerably more
+  appealing, but required some cleverness and might not scale to more
+  complicated systems.  Here we investigate another approach to the problem,
+  using computational optimal control to synthesize a feedback controller
+  directly.</p>
 
   <section><h1>Formulating control design as an optimization</h1>
 
@@ -95,8 +96,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       <p>Consider the double integrator system $$\ddot{q} = u, \quad |u| \le
       1.$$ If you would like a mechanical analog of the system (I always do),
-      then you can think about this as a unit mass brick moving along the x-axis
-      on a frictionless surface, with a control input which provides a
+      then you can think about this as a unit mass brick moving along the
+      $x$-axis on a frictionless surface, with a control input which provides a
       horizontal force, $u$. The task is to design a control system, $u =
       \pi(\bx,t)$, $\bx=[q,\dot{q}]^T$ to regulate this brick to $\bx =
       [0,0]^T$.</p>
@@ -110,36 +111,38 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <p>In order to formulate this control design problem using optimal
       control, we must define a scalar objective which scores the long-term
       performance of running each candidate control policy, $\pi(\bx,t)$, from
-      each initial condition, $(\bx_0,t_0)$, and a list of constraints that must
-      be satisfied. For the task of driving the double integrator to the origin,
-      one could imagine a number of optimal control formulations which would
-      accomplish the task, e.g.: <ul> <li> Minimum time:  $\min_\pi t_f,$
+      each initial condition, $(\bx_0,t_0)$, and a list of constraints that
+      must be satisfied. For the task of driving the double integrator to the
+      origin, one could imagine a number of optimal control formulations which
+      would accomplish the task, e.g.: <ul> <li> Minimum time:  $\min_\pi t_f,$
       subject to $\bx(t_0) = \bx_0,$ $\bx(t_f) = {\bf 0}.$ </li> <li> Quadratic
       cost:  $\min_\pi \int_{t_0}^{\infty} \left[ \bx^T(t) {\bf Q} \bx(t)
-      \right] dt,$ ${\bf Q}\succ0$.</li> </ul> where the first is a constrained
+      \right] dt,$ ${\bf Q}\succ0$.</li> </ul> The first is a constrained
       optimization formulation which optimizes time, and the second accrues a
-      penalty at every instance according to the distance that the state is away
-      from the origin (in a metric space defined by the matrix ${\bf Q}$), and
-      therefore encourages trajectories that go more directly towards the goal,
-      possibly at the expense of requiring a longer time to reach the goal (in
-      fact it will result in an exponential approach to the goal, where as the
-      minimum-time formulation will arrive at the goal in finite time). Note
-      that both optimization problems only have well-defined solutions if it is
-      possible for the system to actually reach the origin, otherwise the
-      minimum-time problem cannot satisfy the terminal constraint, and the
-      integral in the quadratic cost would not converge to a finite value as
-      time approaches infinity (fortunately the double integrator system is
-      controllable, and therefore can be driven to the goal in finite time).</p>
+      penalty at every instance according to the distance that the state is
+      away from the origin (in a metric space defined by the matrix ${\bf Q}$),
+      and therefore encourages trajectories that go more directly towards the
+      goal, possibly at the expense of requiring a longer time to reach the
+      goal (in fact it will result in an exponential approach to the goal,
+      where as the minimum-time formulation will arrive at the goal in finite
+      time). Note that both optimization problems only have well-defined
+      solutions if it is possible for the system to actually reach the origin,
+      otherwise the minimum-time problem cannot satisfy the terminal
+      constraint, and the integral in the quadratic cost would not converge to
+      a finite value as time approaches infinity (fortunately the
+      double-integrator system is <a
+      href="acrobot.html#controllability">controllable</a>, and therefore can
+      be driven to the goal in finite time).</p>
 
       <p> Note that the input limits, $|u|\le1$ are also required to make this
       problem well-posed; otherwise both optimizations would result in the
       optimal policy using infinite control input to approach the goal
-      infinitely fast. Besides input limits, another common approach to limiting
-      the control effort is to add an additional quadratic cost on the input (or
-      "effort"), e.g. $\int \left[ \bu^T(t) {\bf R} \bu(t) \right] dt,$   ${\bf
-      R}\succ0$. This could be added to either formulation above.  We will
-      examine many of these formulations in some details in the examples worked
-      out at the end of this chapter. </p>
+      infinitely fast. Besides input limits, another common approach to
+      limiting the control effort is to add an additional quadratic cost on the
+      input (or "effort"), e.g. $\int \left[ \bu^T(t) {\bf R} \bu(t) \right]
+      dt,$   ${\bf R}\succ0$. This could be added to either formulation above.
+      We will examine many of these formulations in some detail in the examples
+      worked out at the end of this chapter. </p>
 
     </example>
 
@@ -149,7 +152,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     quadratic regulator with Gaussian noise (LQG) have become essential tools
     for any practicing controls engineer.  With increasingly powerful computers
     and algorithms, the popularity of numerical optimal control has grown at an
-    incredible pace over the last few years.</p>
+    incredible pace over the last decades.</p>
 
     <example id="minimum_time_double_integrator"><h1>The minimum time problem
     for the double integrator</h1>
@@ -161,7 +164,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         \subjto \quad & \bx(t_0) = \bx_0, \\
         & \bx(t_f) = {\bf 0}, \\
         & \ddot{q}(t) = u(t), \\
-        & |u| \le 1.
+        & |u(t)| \le 1.
       \end{align*}
       What behavior would you expect an optimal controller exhibit?</p>
 
@@ -171,7 +174,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       then hitting the brakes in order to come to a stop exactly at the goal.
       This would be called a <em>bang-bang</em> control policy; these are often
       optimal for systems with bounded input, and it is in fact optimal for the
-      double integrator, although we will not prove it until we have developed
+      double integrator although we will not prove it until we have developed
       more tools.  <!-- leave the proof to the pontryagin notes --></p>
 
       <p> Let's work out the details of this bang-bang policy.  First, we can
@@ -267,7 +270,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       than others. One important example is the dramatic simplification that
       can come from formulating objective functions using <em>additive
       cost</em>, because they often yield recursive solutions.  In the additive
-      cost formulation, the long-term "score" for a trajectory can be written
+      cost formulation, the long-term objective for a trajectory can be written
       as $$\int_0^T \ell(x(t),u(t)) dt,$$ where $\ell()$ is the instantaneous
       cost (also referred to as the "running cost"), and $T$ can be either a
       finite real number or $\infty$.  We will call a problem specification
@@ -275,12 +278,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       "infinite-horizon" problem.  Problems and solutions for infinite-horizon
       problems tend to be more elegant, but care is required to make sure that
       the integral converges for the optimal controller (typically by having an
-      achievable goal that allows the robot to accrue zero-cost).</p>
+      achievable goal that allows the robot to accrue zero-cost, or by having
+      costs that discount/decay to zero as time increases).</p>
 
-      <p> The quadratic cost function suggested in the double integrator
-      example above is clearly written as an additive cost.  At first glance,
-      our minimum-time problem formulation doesn't appear to be of this form,
-      but we actually can write it as an additive cost problem using an
+      <p> The "quadratic cost" formulation we considered in the double
+      integrator example above is clearly written as an additive cost.  At
+      first glance, our "minimum-time" formulation doesn't appear to be of this
+      form, but we actually can write it as an additive cost problem using an
       infinite horizon and the instantaneous cost  $$\ell(x,u) = \begin{cases}
       0 & \text{if } x=0, \\ 1 & \text{otherwise.} \end{cases}$$</p>
 
@@ -296,12 +300,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   <section><h1>Optimal control as graph search</h1>
 
     <p> For systems with continuous states and continuous actions, dynamic
-    programming is a set of theoretical ideas surrounding additive cost optimal
+    programming is a set of theoretical ideas surrounding additive-cost optimal
     control problems. For systems with a finite, discrete set of states and a
     finite, discrete set of actions, dynamic programming also represents a set
     of very efficient numerical <em>algorithms</em> which can compute optimal
-    feedback controllers. Many of you will have learned it before as a tool for
-    graph search. </p>
+    feedback controllers. Many of you will have seen it introduced before as a
+    tool for graph search.</p>
 
     <p>Imagine you have a directed graph with states (or nodes) $\{s_1,s_2,...\}
     \in S$ and "actions" associated with edges labeled as $\{a_1,a_2,...\} \in
@@ -318,15 +322,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     <p>There are many algorithms for finding (or approximating) the optimal
     path from a start to a goal on directed graphs.  In dynamic programming,
     the key insight is that we can find the shortest path from every node by
-    solving recursively for the optimal <em>cost-to-go</em> (the cost that will
+    solving recursively for the <em>optimal cost-to-go</em> (the cost that will
     be accumulated when running the optimal controller) from every node to the
     goal. One such algorithm starts by initializing an estimate $\hat{J}^*=0$
     for all $s_i$, then proceeds with an iterative algorithm which sets
-    \begin{equation} \hat{J}^*(s_i) \Leftarrow \min_{a \in A} \left[
-    \ell(s_i,a) + \hat{J}^*\left({f(s_i,a)}\right) \right].
-    \label{eq:value_update} \end{equation} The algorithm is simpler if we
-    ensure that the update $f(s,a)$ is defined for every state-action pair; we
-    can add zero-cost self transitions at the goal node for every action. In
+    \begin{equation} \forall i \quad \hat{J}^*(s_i) \Leftarrow \min_{a \in A}
+    \left[ \ell(s_i,a) + \hat{J}^*\left({f(s_i,a)}\right) \right].
+    \label{eq:value_update} \end{equation} This notation is more reasonable if
+    we ensure that the update $f(s,a)$ is defined for every state-action pair;
+    we can add zero-cost self transitions at the goal node for every action. In
     software, $\hat{J}^*$ can be represented as a vector with dimension equal
     to the number of discrete states.  This algorithm, appropriately known as
     <em>value iteration</em>, is guaranteed to converge to the optimal
@@ -365,7 +369,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         every other state has a cost of 1.</figcaption>
       </figure>
 
-      <script>document.write(notebook_link('dp'))</script>
+      <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="grid_world"))</script>
 
     </example> <!-- end grid world -->
 
@@ -378,7 +382,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       barycentric interpolation to interpolate between nodes) in <drake></drake>
       using: </p>
 
-      <script>document.write(notebook_link('dp'))</script>
+      <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="on_a_mesh"))</script>
 
       <p>Please do take some time to try different cost functions by
       editing the code yourself.</p>
@@ -405,13 +409,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     Let's apply it now to the simple pendulum, which was intractable
     analytically.</p>
 
-    <example><h1>Dynamic Programming for the
-    Simple Pendulum</h1>
+    <example><h1>Dynamic Programming for the Simple Pendulum</h1>
 
       <p>You can run value iteration for the simple pendulum (using barycentric
       interpolation to interpolate between nodes) in <drake></drake> using:</p>
 
-      <script>document.write(notebook_link('dp'))</script>
+      <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="on_a_mesh"))</script>
 
     <p>Again, you can easily try different cost functions by
       editing the code yourself.</p>
@@ -798,7 +801,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
           <p>Let us try reproducing our double-integrator value iteration
           examples using neural networks:</p>
     
-          <script>document.write(notebook_link('dp'))</script>
+          <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="mlp"))</script>
     
           <!--
           <p>In this example, you'll see that we use two different approaches to
@@ -813,7 +816,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         
         <example><h1>Continuous Neural Fitted Value Iteration</h1>
     
-          <script>document.write(notebook_link('dp'))</script>
+          <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="mlp"))</script>
           
         </example>        
         
@@ -1078,7 +1081,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <figure><img width="100%"" src="figures/sos_dp_cubic.svg"/></figure>
 
-        <script>document.write(notebook_link('dp'))</script>
+        <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="sums_of_squares"))</script>
 
       </example>
 
@@ -1087,7 +1090,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         <p>We can use this approach to design an approximation to the optimal
         controller for the (torque-limited) swing-up of the pendulum!</p>
 
-        <script>document.write(notebook_link('dp'))</script>
+        <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="sums_of_squares"))</script>
 
       </example>
 
