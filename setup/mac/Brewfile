@@ -2,6 +2,6 @@
 # vi: set ft=ruby :
 
 brew "bazel"
-brew "python@3.10"
+brew "python@3.11"
 brew "tidy-html5"
 brew "gprof2dot" # Supplies dot for pydot

@@ -10,3 +10,5 @@ PyYAML>=6.0
 scipy
 timeout-decorator>=0.4.1
 traitlets>=5.1.1  # for ipykernel on arm64
+pyzmq>=25.0.0 # seems to be needed on python 3.11
+lxml>=4.9.2 # seems to be needed on python 3.11

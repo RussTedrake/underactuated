@@ -49,9 +49,10 @@ jupyterlab-pygments==0.1.2
     # via nbconvert
 kiwisolver==1.3.1
     # via matplotlib
-lxml==4.6.3
+lxml==4.9.2
     # via
     #   -r htmlbook/mac-requirements.in
+    #   -r mac-requirements.in
     #   nbconvert
 markupsafe==2.1.1
     # via
@@ -79,7 +80,7 @@ nbformat==5.1.3
     #   nbconvert
 nest-asyncio==1.5.1
     # via nbclient
-numpy==1.24.1
+numpy==1.24.2
     # via
     #   -c htmlbook/mac-constraints.txt
     #   matplotlib
@@ -91,7 +92,7 @@ packaging==20.9
     #   matplotlib
     #   nbconvert
     #   setuptools-scm
-pandas==1.4.1
+pandas==1.5.3
     # via -r mac-requirements.in
 pandocfilters==1.4.3
     # via nbconvert
@@ -123,12 +124,14 @@ python-dateutil==2.8.1
     #   jupyter-client
     #   matplotlib
     #   pandas
-pytz==2021.1
+pytz==2022.7.1
     # via pandas
 pyyaml==6.0
     # via -r mac-requirements.in
-pyzmq==22.3.0
-    # via jupyter-client
+pyzmq==25.0.0
+    # via
+    #   -r mac-requirements.in
+    #   jupyter-client
 requests==2.25.1
     # via -r htmlbook/mac-requirements.in
 scipy==1.9.3
