@@ -20,6 +20,12 @@ rt_py_library(
 )
 
 rt_py_library(
+    name = "minimum_time_utils",
+    srcs = ["minimum_time_utils.py"],
+    visibility = ["//visibility:public"],
+)
+
+rt_py_library(
     name = "pendulum_cvi",
     srcs = ["test_pendulum_cvi.py"],
     visibility = ["//visibility:public"],

@@ -14,6 +14,7 @@ rt_ipynb_test(
         "//underactuated",
         "//underactuated/exercises",
         "//underactuated/exercises/dp:minimum_time",
+        "//underactuated/exercises/dp:minimum_time_utils",
     ],
 )
 
