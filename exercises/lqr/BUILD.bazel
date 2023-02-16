@@ -1,0 +1,16 @@
+# -*- mode: python -*-
+# vi: set ft=python :
+
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
+
+rt_ipynb_test(
+    name = "drake_diagrams",
+    srcs = ["drake_diagrams.ipynb"],
+    deps = [
+      "//underactuated/exercises/lqr:drake_diagrams",
+      "//underactuated/exercises", # Needed for grader throws logic.
+    ],
+)
