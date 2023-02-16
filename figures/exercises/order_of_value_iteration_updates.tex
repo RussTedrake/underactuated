@@ -1,0 +1,49 @@
+\documentclass[border = 0.2cm]{standalone}
+
+%\usetikzlibrary{...}% tikz package already loaded by 'tikz' option
+\makeatletter
+% Required packages and libraries
+\usepackage {tikz}
+\usetikzlibrary{arrows, automata}
+
+
+\begin{document}
+
+\begin{tikzpicture}[
+  > = stealth, % arrow head style
+  shorten > = 1pt, % don't touch arrow head to node
+  auto,
+  node distance = 3cm, % distance between nodes
+  semithick % line style
+]
+
+\tikzstyle{every state}=[
+  draw = black,
+  thick,
+  fill = white,
+  minimum size = 4mm
+]
+
+\node[state] (s0) {$s_0$};
+% \node[state] (s1) [above right of=s] {$v_1$};
+\node[state] (s1) [right of=s0] {$s_1$};
+\node[state] (s2) [above right of=s1] {$s_2$};
+\node[state] (s3) [below right of=s1] {$s_3$};
+\node[state] (s4) [right of=s1, xshift=1.3cm] {$s_4$};
+\node[state] (s5) [right of=s4] {$s_5$};
+
+% \node[state] (v3) [below right of=s] {$v_2$};
+% \node[state] (t) [right of=v2] {$t$};
+
+\path[->] (s0) edge node {1} (s1);
+\path[->] (s1) edge node {1} (s2);
+\path[->] (s1) edge node {1} (s3);
+\path[->] (s2) edge node {1} (s4);
+\path[->] (s3) edge node {1} (s4);
+\path[->] (s4) edge node {1} (s5);
+\draw (s5) edge[loop right] node {\tt 0} (s5);
+
+% \draw[red, dashed] (1, 2) -- (1, -2);
+\end{tikzpicture}
+
+\end{document}

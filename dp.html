@@ -1335,6 +1335,45 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
          to implement the algorithms described in <a href="#continuous">the
          Continuous Dynamic Programming</a> section.</p>
     </exercise>
+
+    <exercise><h1>Ordering of the Value Iteration Updates</h1>
+
+      The batched Bellman update used in batched value iteration is as follows:
+      $$\forall i \in |S| \quad \hat{J}^{\ast}(s_i) \leftarrow \min_{a \in A} [l (s_i, a) + \hat{J}^{\ast} (f(s_i, a))]$$
+      
+      The batched Bellman update consists of $|S|$ individual Bellman updates on each iteration of the algorithm.
+      
+      <ol type="a">
+        <li>Suppose we represent our dynamics with a graph $G = (V, E)$ where the vertices represent the states and edges represent the available actions/state transitions. We use the following goal reaching cost: 
+      
+      \begin{align*}
+      l(s_i, a) = \left\{
+          \begin{array}{lr}
+             0 & \text{if } s_i = s_5\\
+              1 & \text{else}
+          \end{array}
+      \right\}
+      \end{align*}
+      
+      Calculate the batched value iteration tables until convergence for the following directed acyclic graph (DAG), and calculate the total number of individual Bellman updates.      
+
+      <figure>
+        <img src="figures/exercises/order_of_value_iteration_updates.svg"/>
+      </figure>
+      </li>
+
+      <li>Suppose we are performing asynchronous value iteration with a hand-specified update order. Produce the update order for the above graph that minimizes the number of individual Bellman updates till convergence, and calculate the total number of individual updates. </li>
+
+      <li>Generalize the update order in part (b) to arbitrary DAGs with a single start node and single goal node by defining the set of states to be updated at iteration $n+1$ in terms of the set of states that were updated at iteration $n$. Note: Describe the update sequence iteratively in terms of sets of states instead of individual states (as defined by asynchronous VI) because this simplifies the description of the update sequence.</li>
+      
+      <li>Suppose instead of DAGs, we additionally allow cycles in our dynamics graph. Does the optimal policy change? Explain your answer.</li>
+      
+      <li>(Optional, ungraded) Suppose we are uniformly sampling states under asynchronous value iteration (updating each $i$ one at a time in a random order). What is the probability that asynchronous value iteration converges with less total Bellman updates than batched value iteration?</li>
+      
+      </ol>
+
+    </exercise>
+
   </section>
 
 </chapter>
