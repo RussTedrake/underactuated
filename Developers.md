@@ -29,7 +29,7 @@ for now a work-around is:
 
 ## To update the pip wheels
 
-Update the version number in `setup.py`, then from the root directory, run:
+Update the version number in `setup.cfg`, then from the root directory, run:
 ```
 python3 -m pip install --upgrade build twine
 python3 -m build
