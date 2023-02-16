@@ -11,7 +11,7 @@ class Testlpdp(unittest.TestCase):
         super().__init__(test_name)
         self.notebook_locals = notebook_locals
 
-    @weight(8)
+    @weight(6)
     @timeout_decorator.timeout(1.)
     def test_J_from_lp(self):
         """Test optimal cost-to-go from Linear Program"""

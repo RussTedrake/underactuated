@@ -9,7 +9,7 @@ class TestMinimumTime(unittest.TestCase):
         super().__init__(test_name)
         self.notebook_locals = notebook_locals
 
-    @weight(8)
+    @weight(4)
     @timeout_decorator.timeout(1.)
     def test_q1_policy_closed_form(self):
         """Test closed form policy"""
