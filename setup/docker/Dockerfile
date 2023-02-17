@@ -38,7 +38,7 @@ COPY setup/docker/pip.conf /root/.config/pip/pip.conf
 COPY setup/ubuntu/20.04/install_prereqs.sh /tmp/
 RUN /tmp/install_prereqs.sh
 RUN apt -y install xvfb git nginx-light
-RUN pip3 install -r /tmp/requirements.txt pyngrok pyvirtualdisplay
+RUN pip3 install -r /tmp/requirements.txt pyvirtualdisplay
 RUN rm -rf /root/.cache /root/.config
 RUN rm -f /tmp/install_prereqs.sh
 RUN rm -f /tmp/requirements.txt
