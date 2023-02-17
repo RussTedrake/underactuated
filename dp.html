@@ -1343,8 +1343,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       
       The batched Bellman update consists of $|S|$ individual Bellman updates on each iteration of the algorithm.
       
-      <ol type="a">
-        <li>Suppose we represent our dynamics with a graph $G = (V, E)$ where the vertices represent the states and edges represent the available actions/state transitions. We use the following goal reaching cost: 
+      Throughout this problem, we use the following goal reaching cost: 
       
       \begin{align*}
       l(s_i, a) = \left\{
@@ -1354,6 +1353,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
           \end{array}
       \right\}
       \end{align*}
+      
+      <ol type="a">
+        <li>Suppose we represent our dynamics with a graph $G = (V, E)$ where the vertices represent the states and edges represent the available actions/state transitions. 
       
       Calculate the batched value iteration tables until convergence for the following directed acyclic graph (DAG), and calculate the total number of individual Bellman updates.      
 
@@ -1366,7 +1368,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       <li>Generalize the update order in part (b) to arbitrary DAGs with a single start node and single goal node by defining the set of states to be updated at iteration $n+1$ in terms of the set of states that were updated at iteration $n$. Note: Describe the update sequence iteratively in terms of sets of states instead of individual states (as defined by asynchronous VI) because this simplifies the description of the update sequence.</li>
       
-      <li>Suppose instead of DAGs, we additionally allow cycles in our dynamics graph. Does the optimal policy change? Explain your answer.</li>
+      <li>Suppose we extend the class of dynamics graphs in part c) to allow cycles. Take an instance of this class of graphs and apply value iteration to get an optimal value function. Can an optimal policy associated with this value function contain a cycle? Explain your answer.</li>
       
       <li>(Optional, ungraded) Suppose we are uniformly sampling states under asynchronous value iteration (updating each $i$ one at a time in a random order). What is the probability that asynchronous value iteration converges with less total Bellman updates than batched value iteration?</li>
       
