@@ -19,11 +19,14 @@ class TestDrakeSystems(unittest.TestCase):
 
         system = self.notebook_locals['pendulum_system']
 
-        assert (isinstance(system, System))
-        assert (system.num_input_ports() == 1)
-        assert (system.get_input_port(0).size() == 1)
-        assert (system.num_continuous_states() == 2)
-        assert (system.num_discrete_state_groups() == 0)
+        assert isinstance(system, System), "pendulum_system is not a System"
+        assert system.num_input_ports() == 1, "should have 1 input port"
+        assert system.get_input_port(
+            0).size() == 1, "the input port is the wrong size"
+        assert system.num_continuous_states(
+        ) == 2, "wrong size for the state vector"
+        assert system.num_discrete_state_groups(
+        ) == 0, "your system should not have discrete states"
 
     @weight(1)
     @timeout_decorator.timeout(5.)
