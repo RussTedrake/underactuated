@@ -31,6 +31,7 @@ for now a work-around is:
 
 Update the version number in `setup.cfg`, then from the root directory, run:
 ```
+rm -rf dist/*
 python3 -m pip install --upgrade build twine
 python3 -m build
 python3 -m twine upload dist/* -u __token__ 
