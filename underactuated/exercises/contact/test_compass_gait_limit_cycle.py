@@ -13,7 +13,9 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
     # starts by testing the constraints we already implemented
     # but gives zero points for each test
 
-    def _test_time_intervals(self):
+    @weight(0)
+    @timeout_decorator.timeout(3.)
+    def test_time_intervals(self):
         """Time intervals are within bounds"""
         # retrieve variables from notebook
         T = self.notebook_locals['T']
@@ -31,7 +33,9 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
                             msg=f'Time interval upper bound violated at time '
                             + f'step {t}.')
 
-    def _test_dynamic_feasibility(self):
+    @weight(0)
+    @timeout_decorator.timeout(3.)
+    def test_dynamic_feasibility(self):
         """Implicit Euler equations are verified"""
         # retrieve variables from notebook
         T = self.notebook_locals['T']
@@ -68,7 +72,9 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
                 err_msg='Manipulator equations are not verified at time '
                 + f'step {t}.')
 
-    def _test_impulsive_collision(self):
+    @weight(0)
+    @timeout_decorator.timeout(3.)
+    def test_impulsive_collision(self):
         """Impulsive collision is verified at the heel strike"""
         # retrieve variables from notebook
         q = self.notebook_locals['q_opt']
@@ -88,7 +94,9 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
             rtol=1e-5,
             err_msg='Impulsive collision equations are not verified.')
 
-    def _test_periodicity(self):
+    @weight(0)
+    @timeout_decorator.timeout(3.)
+    def test_periodicity(self):
         """Periodicity of the walking gait"""
         # retrieve variables from notebook
         q = self.notebook_locals['q_opt']
@@ -122,12 +130,6 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
     @timeout_decorator.timeout(3.)
     def test_stance_foot_on_ground(self):
         """Stance foot on the ground for all times"""
-        # run the tests for the constraints already in the notebook
-        self._test_time_intervals()
-        self._test_dynamic_feasibility()
-        self._test_impulsive_collision()
-        self._test_periodicity()
-
         # retrieve variables from notebook
         T = self.notebook_locals['T']
         q = self.notebook_locals['q_opt']
@@ -141,12 +143,6 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
     @timeout_decorator.timeout(3.)
     def test_swing_foot_on_ground(self):
         """Swing foot on the ground at time zero"""
-        # run the tests for the constraints already in the notebook
-        self._test_time_intervals()
-        self._test_dynamic_feasibility()
-        self._test_impulsive_collision()
-        self._test_periodicity()
-
         # retrieve variables from notebook
         q = self.notebook_locals['q_opt']
         swing_foot_height = self.notebook_locals['swing_foot_height']
@@ -159,12 +155,6 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
     @timeout_decorator.timeout(3.)
     def test_no_penetration(self):
         """No penetration of the swing foot in the ground for all times"""
-        # run the tests for the constraints already in the notebook
-        self._test_time_intervals()
-        self._test_dynamic_feasibility()
-        self._test_impulsive_collision()
-        self._test_periodicity()
-
         # retrieve variables from notebook
         T = self.notebook_locals['T']
         q = self.notebook_locals['q_opt']
@@ -180,12 +170,6 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
     @timeout_decorator.timeout(3.)
     def test_stance_foot_friction(self):
         """Stance-foot contact force in friction cone for all times"""
-        # run the tests for the constraints already in the notebook
-        self._test_time_intervals()
-        self._test_dynamic_feasibility()
-        self._test_impulsive_collision()
-        self._test_periodicity()
-
         # retrieve variables from notebook
         T = self.notebook_locals['T']
         friction = self.notebook_locals['friction']
@@ -207,12 +191,6 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
     @timeout_decorator.timeout(3.)
     def test_swing_foot_friction(self):
         """Swing-foot impulse in friction cone"""
-        # run the tests for the constraints already in the notebook
-        self._test_time_intervals()
-        self._test_dynamic_feasibility()
-        self._test_impulsive_collision()
-        self._test_periodicity()
-
         # retrieve variables from notebook
         friction = self.notebook_locals['friction']
         imp = self.notebook_locals['imp_opt']
