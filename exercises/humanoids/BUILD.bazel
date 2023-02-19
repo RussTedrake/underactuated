@@ -14,5 +14,4 @@ rt_ipynb_test(
         "//underactuated/exercises",
         "//underactuated/exercises/humanoids:footstep_planning",
     ],
-    timeout = "moderate",
 )
