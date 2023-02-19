@@ -9,7 +9,6 @@ load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 rt_ipynb_test(
     name = "minimum_time",
     srcs = ["minimum_time.ipynb"],
-    #timeout = "moderate",
     deps = [
         "//underactuated",
         "//underactuated/exercises",
@@ -33,7 +32,6 @@ rt_ipynb_test(
     name = "pendulum_cvi",
     data = ["//underactuated/models:cartpole.urdf"],
     srcs = ["pendulum_cvi.ipynb"],
-    #timeout = "moderate",
     deps = [
         "//underactuated",
         "//underactuated/exercises",
