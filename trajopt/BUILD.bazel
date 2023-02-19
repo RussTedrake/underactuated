@@ -16,9 +16,14 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
-    name = "littledog",
-#    timeout = "moderate",
-    srcs = ["littledog.ipynb"],
-    data = ["//underactuated/models/littledog"],
-    deps = ["//underactuated"],
+    name = "trajopt",
+    timeout = "moderate",
+    srcs = ["trajopt.ipynb"],
+    data = ["//underactuated/models:cartpole.urdf"],
+    tags = ["requires-network"],  # For gurobi license.
+    deps = [
+        "//underactuated",
+        "//underactuated:pendulum",
+    ],
 )
+

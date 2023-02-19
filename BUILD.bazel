@@ -120,18 +120,6 @@ rt_html_test(
     srcs = ["trajopt.html"],
 )
 
-rt_ipynb_test(
-    name = "trajopt",
-    timeout = "moderate",
-    srcs = ["trajopt.ipynb"],
-    data = ["//underactuated/models:cartpole.urdf"],
-    tags = ["requires-network"],  # For gurobi license.
-    deps = [
-        "//underactuated",
-        "//underactuated:pendulum",
-    ],
-)
-
 rt_html_test(
     srcs = ["planning.html"],
 )
@@ -142,14 +130,6 @@ rt_html_test(
 
 rt_html_test(
     srcs = ["policy_search.html"],
-)
-
-rt_ipynb_test(
-    name = "policy_search",
-    srcs = ["policy_search.ipynb"],
-    deps = [
-        "//underactuated",
-    ],
 )
 
 rt_html_test(
