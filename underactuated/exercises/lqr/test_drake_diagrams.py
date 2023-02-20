@@ -110,5 +110,6 @@ class TestDrakeDiagrams(unittest.TestCase):
         assert controller.num_continuous_states(
         ) == 0, "your controller has state; that shouldn't happen"
         np.testing.assert_almost_equal(
-            np.sort(controller.D()), np.sort([[-1.06519664, -1., -2.26503715]]),
+            np.sort(controller.D()),
+            np.sort([[-1.06519664, -1., -2.26503715]]),
             err_msg="your LQR gains do not match the expected value")
