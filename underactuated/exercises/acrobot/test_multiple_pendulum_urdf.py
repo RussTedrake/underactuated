@@ -17,9 +17,8 @@ class TestMultiplePendulumURDF(unittest.TestCase):
         x_star_obtained = self.notebook_locals['x_star_single_pendulum']
         assert (len(x_star_obtained) == 4), "x_star for single pendulum must have dimension 4"
         x_star_target = np.array([0, np.pi, 0, 0])
-        self.assertLess(
-            np.linalg.norm(x_star_obtained - x_star_target),
-            0.00001, 'unstable equilibrium for single pendulum does not match')
+        np.testing.assert_array_almost_equal(x_star_obtained, x_star_target, 
+                    err_msg='unstable equilibrium for single pendulum does not match')
 
     @weight(1)
     @timeout_decorator.timeout(1.)
@@ -29,9 +28,8 @@ class TestMultiplePendulumURDF(unittest.TestCase):
         x_star_obtained = self.notebook_locals['x_star_double_pendulum']
         assert (len(x_star_obtained) == 6), "x_star for double pendulum must have dimension 6"
         x_star_target = np.array([0, np.pi, np.pi, 0, 0, 0])
-        self.assertLess(
-            np.linalg.norm(x_star_obtained - x_star_target),
-            0.00001, 'unstable equilibrium for double pendulum does not match')
+        np.testing.assert_array_almost_equal(x_star_obtained, x_star_target, 
+                    err_msg='unstable equilibrium for double pendulum does not match')
 
     @weight(3)
     @timeout_decorator.timeout(10.)
@@ -67,9 +65,8 @@ class TestMultiplePendulumURDF(unittest.TestCase):
                                         -2.40275702e-15],
                                         [ 0.00000000e+00, -3.14159265e-01,  3.42396821e+00,
                                         8.53622180e+00]])
-        self.assertLess(
-            np.linalg.norm(result - target_derivatives),
-            1e-4, 'the dynamics for the single pendulum do not match')
+        np.testing.assert_array_almost_equal(result, target_derivatives, decimal=6,
+                    err_msg='the dynamics for the single pendulum do not match')
 
     @weight(3)
     @timeout_decorator.timeout(10.)
@@ -105,9 +102,8 @@ class TestMultiplePendulumURDF(unittest.TestCase):
                                             -2.40275702e-15, -2.40275702e-15,  4.80551404e-15],
                                         [ 2.00000000e-01,  0.00000000e+00, -3.14159265e-01,
                                             5.48279134e+00,  1.01557019e+01, -1.00624246e+01]])
-        self.assertLess(
-            np.linalg.norm(result - target_derivatives),
-            1e-4, 'the dynamics for the double pendulum do not match')
+        np.testing.assert_array_almost_equal(result, target_derivatives, decimal=6,
+                    err_msg='the dynamics for the double pendulum do not match')
 
     @weight(2)
     @timeout_decorator.timeout(10.)
@@ -136,9 +132,8 @@ class TestMultiplePendulumURDF(unittest.TestCase):
                                        [ 1.00000000e-02,  0.00000000e+00,  4.85651106e+01, -9.81000000e+00],
                                        [ 0.00000000e+00,  0.00000000e+00, -1.20137851e-15, -2.40275702e-15],
                                        [ 0.00000000e+00, -3.14159265e-01, -2.61730991e+01, -1.54083086e+01]])
-        self.assertLess(
-            np.linalg.norm(result - target_derivatives),
-            1e-4, 'the dynamics for the single pendulum LQR do not match')
+        np.testing.assert_array_almost_equal(result, target_derivatives, decimal=4,
+                    err_msg='the dynamics for the single pendulum LQR do not match')
 
     @weight(2)
     @timeout_decorator.timeout(10.)
@@ -173,7 +168,5 @@ class TestMultiplePendulumURDF(unittest.TestCase):
                                             -2.40275702e-15, -2.40275702e-15,  4.80551404e-15],
                                        [ 2.00000000e-01,  0.00000000e+00, -3.14159265e-01,
                                             -6.76710554e+01, -4.94569192e+01,  5.04100712e+01]])
-
-        self.assertLess(
-            np.linalg.norm(result - target_derivatives),
-            1e-4, 'the LQR dynamics for the double pendulum LQR do not match')
+        np.testing.assert_array_almost_equal(result, target_derivatives, decimal=4,
+                    err_msg='the dynamics for the double pendulum LQR do not match')
