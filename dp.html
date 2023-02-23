@@ -1109,18 +1109,25 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   <section><h1>Exercises</h1>
 
     <exercise id="discounting_convergence"><h1>Discounting and the Convergence
-    of Value Iteration</h1>
-
+      of Value Iteration</h1>
+  
       <p>Let's consider the discrete time, state, and action version of value
       iteration: \begin{equation} \hat{J}^*(s_i) \Leftarrow \min_{a \in A}
       \left[ \ell(s_i,a) + \hat{J}^*\left({f(s_i,a)}\right)
       \right],\end{equation} which finds the optimal policy for the infinite
-      horizon cost function $\sum_{n=0}^\infty \ell(s[n],a[n]).$  If $J^*$ is
-      the true optimal cost-to-go, show that any solution $\hat{J}^* = J^* +
-      c$, where $c$ is any constant scalar, is a fixed point of this value
-      iteration update.  Is the controller still optimal, even if the estimated
-      cost-to-go function is off by a constant factor?</p>
-
+      horizon cost function $\sum_{n=0}^\infty \ell(s[n],a[n]).$</p>
+  
+        <ol type="a">
+  
+          <li>If $J^*$ is the true optimal cost-to-go, show that any solution 
+          $\hat{J}^* = J^* + c$, where $c$ is any constant scalar, is a fixed point 
+          of this value iteration update.</li>
+  
+          <li>Is the controller still optimal, even if the estimated cost-to-go 
+          function is off by a constant factor?</li>
+  
+        </ol>
+  
       <p>Surprisingly, adding a discount factor can help with this.  Consider
       the infinite-horizon discounted cost: $\sum_{n=0}^\infty \gamma^n
       \ell(s[n],a[n])$, where $0 < \gamma \le 1$ is the discount factor.  The
@@ -1129,11 +1136,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       \gamma\hat{J}^*\left({f(s_i,a)}\right) \right].\end{equation} For
       simplicity, assume that there exists a state $s_i$ that is a zero-cost
       fixed point under the optimal policy; e.g. $\ell(s_i, \pi^*(s_i)) = 0$
-      and $f(s_i, \pi^*(s_i)) = s_i$.  Is $\hat{J}^* = J^* + c$ still a fixed
-      point of the value iteration update when $\gamma < 1$?  Show your work.
-      </p>
-    
-    </exercise>
+      and $f(s_i, \pi^*(s_i)) = s_i$.</p>
+        
+        <ol type="a" start="3">
+  
+          <li>Is $\hat{J}^* = J^* + c$ still a fixed point of the value iteration 
+          update when $\gamma < 1$?  Show your work.</li>
+        
+        </ol>
+              
+      </exercise>
     
     <exercise><h1>Choosing a Cost Function</h1>
 
