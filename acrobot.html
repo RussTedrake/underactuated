@@ -435,7 +435,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <subsection id="controllability"><h1>Controllability of linear systems</h1>
 
-      <definition><h1>Controllability</h1>     A control system
+      <definition id="controllability_def"><h1>Controllability</h1>     A control system
       of the form $$\dot{\bx} = {\bf f}(\bx,\bu)$$ is called
       <em>controllable</em> if it is possible to construct an unconstrained
       input signal, $\bu(t)$, $t \in [0,t_f],$ which will move the system from
@@ -485,7 +485,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       </subsubsection>
 
-      <subsubsection><h1>A general solution</h1>
+      <subsubsection id="controllability_matrix"><h1>A general solution</h1>
 
         <details><summary>Included only for completeness.  Click to expand the details.</summary>
 
@@ -1049,7 +1049,88 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     </exercise>
 
+    <exercise><h1>Controllability of Discrete and Continuous LTI Systems</h1>
 
+      <p>
+
+      <ol type="a">
+        <li> (2-D grid with discrete double integrator) Consider a discretized
+        grid world where $$\bx = \begin{bmatrix}x_1 \\ x_2\end{bmatrix}, \text{
+        and } x_1[n], x_2[n] \in \mathbb{Z}.$$ The dynamics of $x[n]$ is a
+        discrete-time version of double integrator, $$ \bx[n+1] =
+        \begin{bmatrix} x_1[n] + x_2[n] \\ x_2[n] + u[n] \end{bmatrix},$$ where
+        the control input $u[n] \in \mathbb{Z}$ is also an integer.
+          <ol>
+            <li> Suppose we represent the discretized double integrator
+            dynamics on the following graph, where the nodes $s_{i, j}$
+            represent state vector values ($\bx = s_{i, j}$ means $x_1 = i, x_2
+            = j$) and edges are state transitions defined by a control law. In
+            the following truncated graph, draw the edges when $u = -1$, $u=0$,
+            and $u=1$. (Please include all outgoing edges from the nodes in the
+            truncated graph, along with their ending nodes)
+              <figure>
+                <img src="figures/exercises/2d_grid_double_integrator.svg"/>
+              </figure>
+
+            </li> 
+            <li>
+              Suppose we start from $s_{0, 0}$, construct a control input
+              sequence ($u[n]$ could be a function of time step) to reach an
+              arbitrary state $s_{i, j}$ that satisfies $j > i > 0$. What would
+              be the minimal number of time steps needed to reach any $s_{i,
+              j}$ that satisfies $j > i > 0$? Show that the number you've
+              chosen is indeed minimum.
+            </li>
+            <li>
+              Now consider a more general case, from an arbitrary initial state
+              $s_{i_1, j_1}$, can you find a control input sequence $u[n]$ with
+              the same number of time steps as in (2) that allows the state to
+              reach any final state $s_{i_2, j_2}$? Also show that the number
+              you've chosen is minimum.
+            </li>
+          </ol>
+
+        </li>
+        <li>
+          Considering linear systems $$\dot{\bx} = {\bf A} \bx + {\bf B} \bu,$$
+          are the following linear systems controllable? 
+          \begin{align*}
+            {\bf A}_1 = \begin{bmatrix}
+                1 & 0 \\ 0 & 1
+            \end{bmatrix}, {\bf B}_1 = \begin{bmatrix}
+                0 \\ 1
+            \end{bmatrix};\qquad {\bf A}_2 = \begin{bmatrix}
+                1 & 0 \\ 0 & 1
+            \end{bmatrix}, {\bf B}_2 = \begin{bmatrix}
+                1\\ 1
+            \end{bmatrix}; \\ \\
+            {\bf A}_3 = \begin{bmatrix}
+                1 & 0 \\ 0 & 1
+            \end{bmatrix}, {\bf B}_3 = \begin{bmatrix}
+                1 & 0 \\ 0 & 1
+            \end{bmatrix};\qquad {\bf A}_4 = \begin{bmatrix}
+                0 & 1 \\ 0 & 0
+            \end{bmatrix}, {\bf B}_4 = \begin{bmatrix}
+                0 \\ 1
+            \end{bmatrix}.
+        \end{align*}
+
+        <p>Can you make a
+          conclusion whether these systems are underactuated? (Note that the
+          definition requires the system to be interpreted as a second-order
+          system with, i.e., $\bx = [q, \dot{q}]^T$)</p>
+
+        <p>You should only need the conditions described <a
+        href="#controllability_def">the definition of controllability</a> to
+        explain your conclusion. (Hint: Think about the similarity between
+        system $({\bf A}_4, {\bf B}_4)$ and the grid-world discrete-time system
+        in (b)). The more general tools found in <a
+        href="#controllability_matrix">this collapsable section</a> will
+        certainly work, too.</p>
+        </li>
+      </ol>
+
+    </exercise>
   </section>
 
 </chapter>
