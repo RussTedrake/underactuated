@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.5.1-0-g916b5db  Build Version: 1.5.7152.31018
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<!-- Additional modifications by Russ Tedrake -->
+<robot
+  name="glider">
+  <link
+    name="fuselage">
+    <inertial>
+      <origin
+        xyz="-0.0818128241934648 -1.22124532708767E-15 -0.00908986598442222"
+        rpy="0 0 0" />
+      <mass
+        value="0.00370301987946561" />
+      <inertia
+        ixx="2.07978185361861E-06"
+        ixy="-6.51921720268355E-22"
+        ixz="4.10535888298005E-07"
+        iyy="6.8353862114488E-05"
+        iyz="3.50540764772016E-22"
+        izz="6.62780619947118E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/fuselagev_main.obj" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba=".7 .7 .7 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/fuselagev_main.obj" />
+      </geometry>
+    </collision>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/fuselagev_top.obj" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba=".7 .7 .7 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/fuselagev_top.obj" />
+      </geometry>
+    </collision>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/fuselagev_vstab.obj" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba=".7 .7 .7 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/fuselagev_vstab.obj" />
+      </geometry>
+    </collision>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/fuselageh_main.obj" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba=".7 .7 .7 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/fuselageh_main.obj" />
+      </geometry>
+    </collision>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/fuselageh_hstab.obj" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba=".7 .7 .7 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/fuselageh_hstab.obj" />
+      </geometry>
+    </collision>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/wing_left.obj" />
+      </geometry>
+      <material
+        name="">
+        <color rgba="0 .34 .9 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/wing_left.obj" />
+      </geometry>
+    </collision>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/wing_right.obj" />
+      </geometry>
+      <material
+        name="">
+        <color rgba="0 .34 .9 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/wing_right.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="elevator">
+    <inertial>
+      <origin
+        xyz="-0.0233269083291484 5.1589050238332E-05 -2.16840434497101E-19"
+        rpy="0 0 0" />
+      <mass
+        value="0.00149262442134654" />
+      <inertia
+        ixx="7.52285851301533E-06"
+        ixy="-1.45222492008535E-12"
+        ixz="1.75768911831126E-23"
+        iyy="6.94987923385513E-07"
+        iyz="-1.92169321155844E-23"
+        izz="8.21624146684023E-06" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/elevator.obj" />
+      </geometry>
+      <material name="">
+        <color rgba="0 .34 .9 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="meshes/elevator.obj" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="elevator_hinge"
+    type="revolute">
+    <origin
+      xyz="-0.317 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="fuselage" />
+    <child
+      link="elevator" />
+    <axis
+      xyz="0 1 0" />
+    <limit
+      lower="-0.9473"
+      upper="0.4463"
+      effort="0"
+      velocity="0" />
+  </joint>
+</robot>

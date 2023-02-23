@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<robot name="ground">
+  <link name="ground">
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" ixy="0" ixz="0" iyy="1" iyz="0" izz="1"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 -5"/>
+      <geometry>
+        <box size="100 100 10"/>
+      </geometry>
+      <material name="desert_sand">
+      	<color rgba="0.9297 0.7930 0.6758 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 -5"/>
+      <geometry>
+        <box size="100 100 10"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="weld" type="fixed">
+    <parent link="world" />
+    <child link="ground" />
+  </joint>
+  
+</robot>

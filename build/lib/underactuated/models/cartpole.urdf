@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+
+<robot xmlns="http://drake.mit.edu"
+ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+ name="CartPole">
+
+  <link name="world">
+    <visual>
+      <origin xyz="0 0 -5" rpy="0 0 0" />
+      <geometry>
+        <box size="1000 1000 10" />
+      </geometry>
+      <material>
+        <color rgba="0.93 .74 .4 1" />
+      </material>
+    </visual>
+  </link>
+
+  <link name="cart">
+    <inertial>
+      <origin xyz="0 0 .25" rpy="0 0 0" />
+      <mass value="10" />
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 .25" rpy="0 0 0" />
+      <geometry>
+        <box size=".6 .3 .3" />
+      </geometry>
+      <material>
+        <color rgba="0 1 0 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz=".15 0 .025" rpy="0 0 0" />
+      <geometry>
+        <sphere radius=".05" />
+      </geometry>
+      <material>
+        <color rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="-.15 0 .025" rpy="0 0 0" />
+      <geometry>
+        <sphere radius=".05" />
+      </geometry>
+      <material>
+        <color rgba="0 0 0 1" />
+      </material>
+    </visual>
+  </link>
+
+  <link name="pole">
+    <inertial>
+      <origin xyz="0 0 -.5" rpy="0 0 0" />
+      <mass value="1" />
+      <inertia ixx="0" ixy="0" ixz="0" iyy="0" iyz="0" izz="0" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 -.25" rpy="0 0 0" />
+      <geometry>
+         <cylinder length=".5" radius=".01" />
+      </geometry>
+      <material>
+        <color rgba="1 0 0 1" />
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0 0 -.5" rpy="0 0 0" />
+      <geometry>
+         <sphere radius=".05" />
+      </geometry>
+      <material>
+        <color rgba="0 0 1 1" />
+      </material>
+    </visual>
+  </link>
+  
+  <joint name="x" type="prismatic">
+    <parent link="world" />
+    <child link="cart" />
+    <origin xyz="0 0 0" />
+    <axis xyz="1 0 0" />
+  </joint>
+
+  <joint name="theta" type="continuous">
+    <parent link="cart" />
+    <child link="pole" />
+    <origin xyz="0 0 .25" />
+    <axis xyz="0 -1 0" />
+  </joint>
+
+  <transmission type="SimpleTransmission" name="cart_force">
+    <actuator name="force" />
+    <joint name="x" />
+    <mechanicalReduction>1</mechanicalReduction>
+  </transmission>
+</robot>
