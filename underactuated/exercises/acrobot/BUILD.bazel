@@ -13,7 +13,7 @@ rt_py_library(
 )
 
 rt_py_library(
-    name = "double_cartpole_urdf",
-    srcs = ["test_double_cartpole_urdf.py"],
+    name = "cartpoles_urdf",
+    srcs = ["test_cartpoles_urdf.py"],
     visibility = ["//visibility:public"],
 )

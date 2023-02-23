@@ -1,4 +1,4 @@
 {
   "cartpole_balancing": "8f51f84f-82bd-4047-a4cd-6bd1f78885df",
-  "double_cartpole_urdf": "ef372e02-465c-45cf-a608-6bcfdbd7bc9c"
+  "cartpoles_urdf": "ef372e02-465c-45cf-a608-6bcfdbd7bc9c"
 }

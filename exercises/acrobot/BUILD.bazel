@@ -18,11 +18,11 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
-    name = "double_cartpole_urdf",
-    srcs = ["double_cartpole_urdf.ipynb"],
+    name = "cartpoles_urdf",
+    srcs = ["cartpoles_urdf.ipynb"],
     deps = [
         "//underactuated",
         "//underactuated/exercises",
-        "//underactuated/exercises/acrobot:double_cartpole_urdf",
+        "//underactuated/exercises/acrobot:cartpoles_urdf",
     ],
 )
