@@ -1131,6 +1131,117 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       </ol>
 
     </exercise>
+
+    <exercise><h1>Comparison between stability of nonlinear system and linearization</h1>
+      <p> In this problem, we use phase portraits to examine how linearization technique helps with local stability analysis for nonlinear systems and its limitations using the nonlinear pendulum with zero torque as an example. The pendulum parameters are chosen as $m = 1$, $l = 1$, $g = 9.81$. Follow the exercises below and complete the graphical analysis for equilibrium points $x^* = [0, 0]^T$, $x^* = [\pi, 0]^T$, which will guide you to studying the systems. When you are done, populate this table:
+
+        <table>
+          <tr>
+            <td>&nbsp;</td>
+            <td>$sign(Re(\lambda_1))$</td>
+            <td>$sign(Re(\lambda_2))$</td>
+            <td>stable i.s.L.</td>
+            <td>Asymp. Stable</td>
+            <td>Exp. Stable</td>
+          </tr>
+          <tr>
+            <td>Nonlinear $b = 0$, $x^* = [0, 0]^T$</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+          </tr>
+          <tr>
+            <td>Nonlinear $b = 0$, $x^* = [\pi, 0]^T$</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+          </tr>
+          <tr>
+            <td>Linearization $b = 0$, $x^* = [0, 0]^T$</td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+          </tr>
+          <tr>
+            <td>Linearization $b = 0$, $x^* = [\pi, 0]^T$</td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+          </tr>
+          <tr>
+            <td>Nonlinear $b = 1$, $x^* = [0, 0]^T$</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+          </tr>
+          <tr>
+            <td>Nonlinear $b = 1$, $x^* = [\pi, 0]^T$</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+          </tr>
+          <tr>
+            <td>Linearization $b = 1$, $x^* = [0, 0]^T$</td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+          </tr>
+          <tr>
+            <td>Linearization $b = 1$, $x^* = [\pi, 0]^T$</td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+            <td> </td>
+          </tr>
+        </table>
+
+        
+      <ol type="a">
+        <li>Let's first look at an undamped pendulum $b = 0$.
+          <ol>
+            <li>
+              Using <a href="">this notebook</a> as an example, draw the phase portrait using "plot_2d_phase_portrait" function around equilibrium $x^*$. Is the nonlinear undamped pendulum stable i.s.L.? asymptotically stable? exponentially stable?
+            </li>
+            <li>
+              Derive the linearization of the undamped nonlinear pendulum around equilibrium $x^*$. Compute the eigenvalues of the Jacobian $\left[\frac{\partial f}{\partial x} \right]_{x = x^*}$, what are the signs of the real parts of these two eigenvalues, $sign(Re(\lambda_1))$, $sign(Re(\lambda_2))$?
+            </li>
+            <li>
+              Using phase portrait, is the linearized system $\dot{x} = \left[ \frac{\partial f}{\partial x} \right]_{x = x^*}(x - x^*)$ stable i.s.L.? exponentially stable?
+            </li>
+          </ol>
+        </li>
+
+        <li> Now let's consider a pendulum with damping coefficient $b = 1$. 
+          <ol>
+            <li>
+              Using <a href="">this notebook</a> as an example, draw the phase portrait using "plot_2d_phase_portrait" function around equilibrium $x^*$. Is the nonlinear damped pendulum stable i.s.L.? asymptotically stable? exponentially stable?
+            </li>
+            <li>
+              Derive the linearization of the damped nonlinear pendulum around equilibrium $x^*$. Compute the eigenvalues of the Jacobian $\left[\frac{\partial f}{\partial x} \right]_{x = x^*}$, what are the signs of the real parts of these two eigenvalues, $sign(Re(\lambda_1))$, $sign(Re(\lambda_2))$?
+            </li>
+            <li>
+              Using phase portrait, is the linearized system $\dot{x} = \left[ \frac{\partial f}{\partial x} \right]_{x = x^*}(x - x^*)$ stable i.s.L.? exponentially stable?
+            </li>
+          </ol>
+        </li>
+        </ol>
+        </p>
+        </exercise>
   </section>
 
 </chapter>
