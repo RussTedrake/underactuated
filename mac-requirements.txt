@@ -20,6 +20,8 @@ certifi==2020.12.5
     #   requests
 chardet==4.0.0
     # via requests
+contourpy==1.0.7
+    # via matplotlib
 cycler==0.10.0
     # via matplotlib
 defusedxml==0.7.1
@@ -58,7 +60,7 @@ markupsafe==2.1.1
     # via
     #   jinja2
     #   nbconvert
-matplotlib==3.5.0
+matplotlib==3.7.0
     # via
     #   -r htmlbook/mac-requirements.in
     #   mpld3
@@ -83,6 +85,7 @@ nest-asyncio==1.5.1
 numpy==1.24.2
     # via
     #   -c htmlbook/mac-constraints.txt
+    #   contourpy
     #   matplotlib
     #   pandas
     #   scipy
@@ -91,7 +94,6 @@ packaging==20.9
     #   bleach
     #   matplotlib
     #   nbconvert
-    #   setuptools-scm
 pandas==1.5.3
     # via -r mac-requirements.in
 pandocfilters==1.4.3
@@ -136,8 +138,6 @@ requests==2.25.1
     # via -r htmlbook/mac-requirements.in
 scipy==1.9.3
     # via -r mac-requirements.in
-setuptools-scm==6.3.2
-    # via matplotlib
 six==1.15.0
     # via
     #   bleach
@@ -153,8 +153,6 @@ timeout-decorator==0.5.0
     # via -r mac-requirements.in
 tinycss2==1.1.1
     # via nbconvert
-tomli==1.2.2
-    # via setuptools-scm
 tornado==6.1
     # via jupyter-client
 traitlets==5.1.1
