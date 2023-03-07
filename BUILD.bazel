@@ -97,14 +97,6 @@ rt_html_test(
     srcs = ["lqr.html"],
 )
 
-rt_ipynb_test(
-    name = "lqr",
-    srcs = ["lqr.ipynb"],
-    deps = [
-      "//underactuated",
-    ],
-)
-
 rt_html_test(
     srcs = ["lyapunov.html"],
 )

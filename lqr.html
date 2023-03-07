@@ -480,8 +480,8 @@ print("S = " + str(S))</code></pre></div>
 
         <p>You can explore the relationship between the discrete-time and continuous-time formulations in this notebook:</p>
   
-        <script>document.write(notebook_link('lqr'))</script>
-  
+        <script>document.write(notebook_link('lqr', d=deepnote, link_text="", notebook="continuous_vs_discrete_time"))</script>
+
       </example>
 
       <p>In reinforcement learning, it is popular to consider the
@@ -509,7 +509,7 @@ print("S = " + str(S))</code></pre></div>
         leverage some of the special tools for fitted value iteration with a
         <i>linear function approximator</i>.</p>
         
-        <script>document.write(notebook_link('lqr'))</script>
+        <script>document.write(notebook_link('lqr', d=deepnote, link_text="", notebook="value_iteration"))</script>
         
         <p>I've included two versions of the value iteration update in the
         notebook -- one that samples over both $\bx$ and $\bu$, and one that
@@ -666,7 +666,7 @@ print("S = " + str(S))</code></pre></div>
         <p>Importantly, although we design the LQR controller using the reduced
         model, we can run this controller directly on the original model.</p>
 
-        <script>document.write(notebook_link('lqr'))</script>
+        <script>document.write(notebook_link('lqr', d=deepnote, link_text="", notebook="ballbot"))</script>
 
         <todo>Insert segway balancing animation</todo>
 
