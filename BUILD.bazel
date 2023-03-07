@@ -101,13 +101,6 @@ rt_html_test(
     srcs = ["lyapunov.html"],
 )
 
-rt_ipynb_test(
-    name = "lyapunov",
-    data = ["//underactuated/models:cartpole.urdf"],
-    srcs = ["lyapunov.ipynb"],
-    deps = ["//underactuated"],
-)
-
 rt_html_test(
     srcs = ["trajopt.html"],
 )

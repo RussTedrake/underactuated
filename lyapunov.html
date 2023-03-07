@@ -463,7 +463,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <p> You can try this example for yourself in <drake></drake>.</p>
 
-        <script>document.write(notebook_link('lyapunov'))</script>
+        <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="common_lyap_linear"))</script>
 
         <p>As always, make sure that you open up the code and take a look.</p>
 
@@ -524,7 +524,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         <p>The numerical solution can be written in a few lines of code, and
         is a convex optimization.</p>
 
-        <script>document.write(notebook_link('lyapunov'))</script>
+        <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="global_polynomial"))</script>
 
       </example>
 
@@ -552,7 +552,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         = 1$.  Then we write: \begin{align*} \find_{\bc} \ \ \subjto \ \ &
         V\text{ is sos, } \\ & -\dot{V} \text{ is sos.}\end{align*}</p>
 
-        <script>document.write(notebook_link('lyapunov'))</script>
+        <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="global_polynomial"))</script>
 
         <p>Up to numerical convergence tolerance, it discovers the same
         coefficients that we chose above (zeroing out the unnecessary
@@ -813,7 +813,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
           <p>You can try this example for yourself in <drake></drake>.</p>
 
-          <script>document.write(notebook_link('lyapunov'))</script>
+          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="cubic_poly"))</script>
 
         </example>
 
@@ -853,7 +853,7 @@ context = sys.CreateDefaultContext()
 V = RegionOfAttraction(sys, context)
           </code></pre>
 
-          <script>document.write(notebook_link('lyapunov'))</script>
+          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="cubic_poly"))</script>
 
           <p>Remember that although we have tried to make it convenient to call
           these functions, they are not a black box.  I highly recommend
@@ -884,7 +884,7 @@ V = RegionOfAttraction(sys, context)
 
           <todo>Figure here</todo>
 
-          <script>document.write(notebook_link('lyapunov'))</script>
+          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="van_der_pol"))</script>
 
           <p>I've provided an example here for solving this problem with the
           <code>RegionOfAttraction</code> in Drake, but we will also work you
@@ -987,8 +987,6 @@ V = RegionOfAttraction(sys, context)
 
           <p>(Details coming soon...)</p>
 
-          <script>document.write(notebook_link('lyapunov'))</script>
-
         </h1></example>
 
         <example>
@@ -1022,7 +1020,7 @@ V = RegionOfAttraction(sys, context)
 
           <todo>Figures here</todo>
         
-          <script>document.write(notebook_link('lyapunov'))</script>
+          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="star_convex"))</script>
 
         </example>
 
@@ -1132,7 +1130,7 @@ V = RegionOfAttraction(sys, context)
           quite far from that here, but nevertheless have a tight approximation
           from $\mathcal{B}(\bx) \ge 0$).</p>
 
-          <script>document.write(notebook_link('lyapunov'))</script>
+          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="outer_approx"))</script>
 
         </example>
 
@@ -1352,7 +1350,7 @@ V = RegionOfAttraction(sys, context)
       for style points, in the code example in <drake></drake> we ask for
       exponential stability:</p>
 
-      <script>document.write(notebook_link('lyapunov'))</script>
+      <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="global_pend"))</script>
 
       <p>As always, make sure that you open up the code and take a look.  The
         result is a Lyapunov function that looks familiar (visualized as a
