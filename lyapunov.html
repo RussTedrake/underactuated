@@ -2022,6 +2022,28 @@ V = RegionOfAttraction(sys, context)
       </p>
     </exercise>
 
+    <exercise><h1>Lyapunov Analysis for Robustness of Pendulum Swing-up Controllers</h1>
+
+      <p>In this problem, we examine the robustness of the swing-up controller designed for the pendulum in <a href="pend.html#pendulum_energy_shaping">this example</a> using Lyapunov analysis. We consider an undamped pendulum in part (a)-(d), and one with damping ratio $b \neq 0$ in (e). Assume (1) we can measure $\theta$ and $\widetilde{\theta}$ perfectly (2) the pendulum does not start and will not stay at the downright position at any time.</p>
+
+      <ol type="a">
+
+        <li>Suppose we have perfect measurements of mass $m$, length $l$, and the gravitational constant $g$. Is $V(x) = \frac{1}{2}\widetilde{E}^2$ a Lyapunov function for the fixed point at the upright position? Show that the fixed point is attractive using LaSalle's Theorem and the scalar function $V(x)$. </li>
+
+        <li>The swing-up controller is robust with respect to mass measurement. Suppose the mass measurement is incorrect $m_i \neq m$. Show that the controller can still complete the swing-up task, i.e., the fixed point is still attractive.</li>
+
+        <li>Consider the case where both mass and length measurements are incorrect, $l_i \neq l$ and $m_i \neq m$. Is the fixed point still attractive? If not, identify conditions $m_i, l_i, \dot{\theta}, \theta, \widetilde{E}$ could satisfy such that $\dot{V} > 0$.</li>
+
+        <li>Suppose in addition to uncertaint mass and length, the gravitational constant is also uncertain, $g_i \neq g$. Suppose the pendulum's small-oscillation period $T = 2\pi\sqrt{\frac{l}{g}}$ can be measured precisely, and the estimated values of length and gravitational constant satisfy $T = 2\pi\sqrt{\frac{l_i}{g_i}}$. Show that the controller can still complete the swing-up task, i.e., the fixed point is still attractive.</li>
+
+        <li>Suppose we have accurate measurements of mass and length, but now the pendulum is damped, i.e., $b \neq 0$, and we have incorrect estimates of the damping ratio $b_i \neq b$. Using a swing-up controller $u = -k\dot{\theta}\widetilde{E} + b_i \dot{\theta}$, show that $V(x) = \frac{1}{2}\widetilde{E}^2$ cannot be used as a Lyapunov function to certify attractivity.</li>
+
+        <li>(Not graded) When parametric uncertainties are present, the true values of pendulum parameters $m, g, l$ are unknown. To implement the energy-shaping controller $u = -k\dot{\theta}\widetilde{E}$, in which $\widetilde{E}$ depends on $m, g, l$, we substitute unknown parameters with their estimated values $m_i, g_i, l_i$ online in order to compute an estimate for energy difference $\widetilde{E}_i$. However, when we construct Lyapunov function $V = \frac{1}{2}\widetilde{E}$ to analyze robustness of our controller, the expressions of $V$ and $\dot{V}$ still contain unknown parameters $m, g, l$. In order to certify attractivity, is there a need to substitute these parameters with their estimates as well?</li>
+
+      </ol>
+
+    </exercise>
+
   </section>
 
 </chapter>
