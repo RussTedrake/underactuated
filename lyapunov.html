@@ -467,7 +467,19 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <p>As always, make sure that you open up the code and take a look.</p>
 
-        <p>There are many small variants of this result that are potentially of interest.  For instance, a very similar set of conditions can certify "mean-square stability" for linear systems with multiplicative noise (see e.g. <elib>Boyd94</elib>, &sect; 9.1.1).</p>
+        <p>Note that the argument above does not actually make use of the
+        $\sum_i \beta_i = 1;$ that assumption can be safely removed. So really,
+        our common Lyapunov function, when found, has certified the convex cone
+        with the $A_i$ matrices as the extreme rays. This is not surprising,
+        since if we have any linear system/Lyapunov quadratic form pair $A, P$,
+        then $P$ also confirms that $\beta A$ is stable for any $\beta >
+        0.$ Multiplying a system matrix by a scalar will not change the sign of
+        its eigenvalues.</p>
+
+        <p>There are many small variants of this result that are potentially of
+        interest.  For instance, a very similar set of conditions can certify
+        "mean-square stability" for linear systems with multiplicative noise
+        (see e.g. <elib>Boyd94</elib>, &sect; 9.1.1).</p>
 
       </example>
 
