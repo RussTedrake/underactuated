@@ -23,7 +23,7 @@
     <link rel="stylesheet" type="text/css" href="htmlbook/book.css">
   </head>
 
-<body onload="forwardOldChapterLink(); customTags(); MathJax.typeset();">
+<body onload="loadIndex();">
 
 <div data-type="titlepage">
   <header>
@@ -41,6 +41,8 @@
             </p>
   </header>
 </div>
+
+<div id="mathjax"/>
 
 <p><b>Note:</b> These are working notes used for <a
 href="https://underactuated.csail.mit.edu/Spring2023/">a course being taught
@@ -106,6 +108,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <ul>
       <li>The overdamped pendulum</li>
       <li>The undamped pendulum with zero torque</li>
+      <ul>
+        <li>Orbit calculations</li>
+      </ul>
       <li>The undamped pendulum with a constant
     torque</li>
     </ul>
@@ -134,12 +139,27 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture  videos 
     <ul>
       <li>Linearizing the manipulator equations</li>
       <li>Controllability of linear systems</li>
+      <ul>
+        <li>The special case of non-repeated
+      eigenvalues</li>
+        <li>A general solution</li>
+        <li>Controllability vs. underactuated</li>
+      </ul>
       <li>LQR feedback</li>
     </ul>
     <li><a href=acrobot.html#partial_feedback_linearization>Partial feedback linearization</a></li>
     <ul>
       <li>PFL for the Cart-Pole System</li>
+      <ul>
+        <li>Collocated</li>
+        <li>Non-collocated</li>
+      </ul>
       <li>General form</li>
+      <ul>
+        <li>Collocated linearization</li>
+        <li>Non-collocated linearization</li>
+        <li>Task-space partial feedback linearization</li>
+      </ul>
     </ul>
     <li><a href=acrobot.html#section6>Swing-up control</a></li>
     <ul>
@@ -161,6 +181,14 @@ of Walking and Running</a></li>
     <li><a href=simple_legs.html#section2>Simple Models of Walking</a></li>
     <ul>
       <li>The Rimless Wheel</li>
+      <ul>
+        <li>Stance Dynamics</li>
+        <li>Foot Collision</li>
+        <li>Forward simulation</li>
+        <li>Poincar&eacute Map</li>
+        <li>Fixed Points and Stability</li>
+        <li>Stability of standing still</li>
+      </ul>
       <li>The Compass Gait</li>
       <li>The Kneed Walker</li>
       <li>Curved feet</li>
@@ -169,7 +197,17 @@ of Walking and Running</a></li>
     <li><a href=simple_legs.html#running>Simple Models of Running</a></li>
     <ul>
       <li>The Spring-Loaded Inverted Pendulum (SLIP)</li>
+      <ul>
+        <li>Analysis on the apex-to-apex map</li>
+        <li>SLIP Control</li>
+        <li>SLIP extensions</li>
+      </ul>
       <li>Hopping robots from the MIT Leg Laboratory</li>
+      <ul>
+        <li>The Planar Monopod Hopper</li>
+        <li>Running on four legs as though they were
+      one</li>
+      </ul>
       <li>Towards human-like running</li>
     </ul>
     <li><a href=simple_legs.html#section4>A simple model that can walk and run</a></li>
@@ -223,11 +261,22 @@ with Stochasticity</a></li>
       <li>Solving for the minimizing
     control</li>
       <li>Numerical solutions for $J^*$</li>
+      <ul>
+        <li>Value iteration with function approximation</li>
+        <li>Linear function approximators</li>
+        <li>Value iteration on a mesh</li>
+        <li>Neural fitted value iteration</li>
+        <li>Continuous-time systems</li>
+      </ul>
     </ul>
     <li><a href=dp.html#section4>Extensions</a></li>
     <ul>
       <li>Discounted and average cost formulations</li>
       <li>Stochastic control for finite MDPs</li>
+      <ul>
+        <li>Stochastic interpretation of deterministic,
+      continuous-state value iteration</li>
+      </ul>
       <li>Linear Programming Dynamic Programming</li>
       <li>Sums-of-Squares Dynamic
     Programming</li>
@@ -274,31 +323,37 @@ with Stochasticity</a></li>
       <li>LaSalle's Invariance Principle</li>
       <li>Relationship to the Hamilton-Jacobi-Bellman
     equations</li>
+      <li>Lyapunov functions for estimating regions of
+      attraction</li>
+      <li>Robustness analysis using "common Lyapunov functions"</li>
     </ul>
     <li><a href=lyapunov.html#optimization>Lyapunov analysis with convex optimization</a></li>
     <ul>
-      <li>Lyapunov analysis for linear systems</li>
+      <li>Linear systems</li>
       <li>Lyapunov analysis as a semi-definite program
     (SDP)</li>
-      <li>Lyapunov analysis for polynomial systems</li>
-    </ul>
-    <li><a href=lyapunov.html#section3>Lyapunov functions for estimating regions of
-  attraction</a></li>
-    <ul>
-      <li>Robustness analysis using "common Lyapunov functions"</li>
+      <li>Global analysis for polynomial systems</li>
       <li>Region of attraction estimation for polynomial systems</li>
+      <ul>
+        <li>The S-procedure</li>
+        <li>Basic region of attraction formulation</li>
+        <li>The equality-constrained formulation</li>
+        <li>Searching for $V(\bx)$</li>
+        <li>Convex outer approximations of the ROA</li>
+      </ul>
+      <li>Verifying dynamics in implicit form</li>
+      <li>Rigid-body dynamics are (rational) polynomial</li>
+      <ul>
+        <li>Linear feedback and quadratic
+      forms</li>
+        <li>Alternatives for obtaining polynomial equations</li>
+      </ul>
     </ul>
     <li><a href=lyapunov.html#finite-time>Finite-time Reachability</a></li>
     <ul>
       <li>Time-varying dynamics and Lyapunov functions</li>
       <li>Finite-time reachability</li>
       <li>Reachability via Lyapunov functions</li>
-    </ul>
-    <li><a href=lyapunov.html#section5>Rigid-body dynamics are (rational) polynomial</a></li>
-    <ul>
-      <li>Verifying dynamics in implicit form</li>
-      <li>Linear feedback and quadratic forms</li>
-      <li>Alternatives for obtaining polynomial equations</li>
     </ul>
     <li><a href=lyapunov.html#control>Control design</a></li>
     <ul>
@@ -307,17 +362,20 @@ with Stochasticity</a></li>
       <li>State feedback for linear systems</li>
       <li>Control-Lyapunov Functions</li>
       <li>Approximate dynamic programming with SOS</li>
+      <ul>
+        <li>Upper and lower bounds on cost-to-go</li>
+      </ul>
     </ul>
-    <li><a href=lyapunov.html#section7>Alternative computational approaches</a></li>
+    <li><a href=lyapunov.html#section5>Alternative computational approaches</a></li>
     <ul>
       <li>"Satisfiability modulo theories" (SMT)
       </li>
       <li>Mixed-integer programming (MIP) formulations</li>
       <li>Continuation methods</li>
     </ul>
-    <li><a href=lyapunov.html#section8>Neural Lyapunov functions</a></li>
-    <li><a href=lyapunov.html#section9>Contraction metrics</a></li>
-    <li><a href=lyapunov.html#section10>Exercises</a></li>
+    <li><a href=lyapunov.html#section6>Neural Lyapunov functions</a></li>
+    <li><a href=lyapunov.html#section7>Contraction metrics</a></li>
+    <li><a href=lyapunov.html#section8>Exercises</a></li>
   </ul>
   <li><a href="trajopt.html">Chapter 10: Trajectory
   Optimization</a></li>
@@ -336,6 +394,9 @@ with Stochasticity</a></li>
       <li>Direct Transcription and Direct Shooting</li>
       <li>Direct Collocation</li>
       <li>Pseudo-spectral Methods</li>
+      <ul>
+        <li>Dynamic constraints in implicit form</li>
+      </ul>
     </ul>
     <li><a href=trajopt.html#section4>Solution techniques</a></li>
     <ul>
@@ -425,6 +486,10 @@ Search</a></li>
     <ul>
       <li>Stochastic LQR</li>
       <li>$L_2$ gain</li>
+      <ul>
+        <li>Dissipation inequalities</li>
+        <li>Small-gain theorem</li>
+      </ul>
       <li>Robust LQR as $\mathcal{H}_\infty$</li>
       <li>Linear Exponential-Quadratic Gaussian (LEQG)</li>
       <li>Adaptive control</li>
@@ -524,6 +589,11 @@ Control through Contact</a></li>
     <li><a href=sysid.html#section3>Identifying (time-domain) linear dynamical systems</a></li>
     <ul>
       <li>From state observations</li>
+      <ul>
+        <li>Model-based Iterative Learning Control (ILC)</li>
+        <li>Compression using the dominant eigenmodes</li>
+        <li>Linear dynamics in a nonlinear basis</li>
+      </ul>
       <li>From input-output data (the state-realization problem)</li>
       <li>Adding stability constraints</li>
       <li>Autoregressive models</li>
@@ -603,7 +673,18 @@ Control through Contact</a></li>
     <ul>
       <li>Compliant Contact Models</li>
       <li>Rigid Contact with Event Detection</li>
+      <ul>
+        <li>Impulsive Collisions</li>
+        <li>Putting it all together</li>
+      </ul>
       <li>Time-stepping Approximations for Rigid Contact</li>
+      <ul>
+        <li>Complementarity formulations</li>
+        <li>Anitescu's convex formulation</li>
+        <li>Todorov's regularization</li>
+        <li>The Semi-Analytic Primal (SAP) solver</li>
+        <li>Beyond Point Contact</li>
+      </ul>
     </ul>
     <li><a href=multibody.html#mechanics>Variational mechanics</a></li>
     <ul>
@@ -628,6 +709,11 @@ Control through Contact</a></li>
       <li>Linear Programs/Quadratic Programs/Second-Order Cones</li>
       <li>Semidefinite Programming and Linear Matrix Inequalities</li>
       <li>Sums-of-squares optimization</li>
+      <ul>
+        <li>Sums of squares on a Semi-Algebraic Set</li>
+        <li>Sums of squares optimization on an Algebraic Variety</li>
+        <li>DSOS and SDSOS</li>
+      </ul>
       <li>Solution techniques</li>
     </ul>
     <li><a href=optimization.html#nonlinear>Nonlinear programming</a></li>
@@ -635,6 +721,10 @@ Control through Contact</a></li>
       <li>Second-order methods (SQP /
     Interior-Point)</li>
       <li>First-order methods (SGD / ADMM) </li>
+      <ul>
+        <li>Penalty methods</li>
+        <li>Projected Gradient Descent</li>
+      </ul>
       <li>Zero-order methods (CMA)</li>
       <li>Example: Inverse Kinematics</li>
     </ul>

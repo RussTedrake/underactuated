@@ -323,6 +323,163 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <todo>Include instability results, as in Briat15 Theorem 2.2.5</todo>
 
+    <subsection><h1>Lyapunov functions for estimating regions of
+      attraction</h1>
+    
+        <p>There is another very important connection between Lyapunov functions
+        and the concept of an invariant set: <em>any sublevel set of a Lyapunov
+        function is also an invariant set</em>.  This gives us the ability to use
+        sublevel sets of a Lyapunov function as approximations of the region of
+        attraction for nonlinear systems. For a locally attractive fixed point,
+        $\bx^*$, the <i>region of attraction</i> to $\bx^*$ is the largest set
+        ${\cal D} \subseteq {\cal X}$ for which $\bx(0) \in {\cal D} \Rightarrow
+        \lim_{t\rightarrow \infty} \bx(t) = \bx^*.$ </p>
+    
+        <theorem><h1>Lyapunov invariant set and region of attraction
+        theorem</h1>
+    
+          <p>Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous, if we can
+          find a scalar function $V(\bx) \succ 0$ and a bounded sublevel set
+          $${\cal G}: \{ \bx | V(\bx) \le \rho \}$$ on which $$\forall \bx \in
+          {\cal G}, \dot{V}(\bx) \preceq 0,$$ then ${\cal G}$ is an invariant set.
+          By LaSalle, $\bx$ will converge to the largest invariant subset of ${\cal
+          G}$ on which $\dot{V}=0$.<p>
+    
+          <p>Furthermore, if $\dot{V}(\bx) \prec 0$ in ${\cal G}$, then the origin
+          is locally asymptotically stable and the set ${\cal G}$ is inside the
+          region of attraction of this fixed point.  Alternatively, if $\dot{V}(\bx)
+          \preceq 0$ in ${\cal G}$ and $\bx = 0$ is the only invariant subset of
+          ${\cal G}$ where $\dot{V}=0$, then the origin is asymptotically stable and
+          the set ${\cal G}$ is inside the region of attraction of this fixed point.
+          </p>
+    
+        </theorem>
+    
+        <example><h1>Region of attraction for a one-dimensional system</h1>
+    
+          <p> Consider the first-order, one-dimensional system $\dot{x} = -x +
+          x^3.$ We can quickly understand this system using our tools for
+          graphical analysis.</p> <figure> <img width="80%"
+          src="figures/cubicPolynomialExample.svg"/> </figure> <p>In the
+          vicinity of the origin, $\dot{x}$ looks like $-x$, and as we move
+          away it looks increasingly like $x^3$.  There is a stable fixed point
+          at the origin and unstable fixed points at $\pm 1$.  In fact, we can
+          deduce visually that the region of attraction to the stable fixed
+          point at the origin is $\bx \in (-1,1)$.  Let's see if we can
+          demonstrate this with a Lyapunov argument.</p>
+    
+          <p>First, let us linearize the dynamics about the origin and use the
+          Lyapunov equation for linear systems to find a candidate $V(\bx)$.
+          Since the linearization is $\dot{x} = -x$, if we take ${\bf Q}=1$,
+          then we find ${\bf P}=\frac{1}{2}$ is the positive definite solution
+          to the algebraic Lyapunov equation (\ref{eq:algebraic_lyapunov}).
+          Proceeding with $$V(\bx) = \frac{1}{2} x^2,$$ we have $$\dot{V} = x
+          (-x + x^3) = -x^2 + x^4.$$ This function is zero at the origin,
+          negative for $|x| < 1$, and positive for $|x| > 1$.  Therefore we can
+          conclude that the sublevel set $V < \frac{1}{2}$ is invariant and the
+          set $x \in (-1,1)$ is inside the region of attraction of the
+          nonlinear system.  In fact, this estimate is tight.</p>
+    
+        </example>
+    </subsection>
+
+    <subsection id="common-lyapunov"><h1>Robustness analysis using "common Lyapunov functions"</h1>
+    
+        <p>While we will defer most discussions on robustness analysis until <a
+        href="robust.html">later in the notes</a>, the idea of a <em>common
+        Lyapunov function</em>, which we introduced briefly for linear systems in
+        the <a href="#common-lyapunov-linear">example above</a>, can be readily
+        extended to nonlinear systems and region of attraction analysis.  Imagine
+        that you have a model of a dynamical system but that you are uncertain
+        about some of the parameters.  For example, you have a model of a
+        quadrotor, and are fairly confident about the mass and lengths (both of
+        which are easy to measure), but are not confident about the moment of
+        inertia.  One approach to robustness analysis is to define a bounded
+        uncertainty, which could take the form of $$\dot{\bx} = f_\alpha(\bx),
+        \quad \alpha_{min} \le \alpha \le \alpha_{max},$$ with $\alpha$ a vector
+        of uncertain parameters in your model.  Richer specifications of the
+        uncertainty bounds are also possible, but this will serve for our
+        examples.</p>
+  
+        <p>In standard Lyapunov analysis, we are searching for a function that
+        goes downhill for all $\bx$ to make statements about the long-term
+        dynamics of the system.  In common Lyapunov analysis, we can make many
+        similar statements about the long-term dynamics of an uncertain system if
+        we can find a single Lyapunov function that goes downhill <em>for all
+        possible values of $\alpha$</em>.  If we can find such a function, then we
+        can use it to make statements with all of the variations we've discussed
+        (local, regional, or global; in the sense of Lyapunov, asymptotic, or
+        exponential).</p>
+  
+        <example><h1>A one-dimensional system with gain uncertainty</h1>
+  
+          <p>Let's consider the same one-dimensional example used above, but add
+          an uncertain parameter into the dynamics.  In particular, consider the
+          system: $$\dot{x} = -x + \alpha x^3, \quad \frac{3}{4} < \alpha <
+          \frac{3}{2}.$$ Plotting the graph of the one-dimensional dynamics for a
+          few values of $\alpha$, we can see that the fixed point at the origin is
+          still stable, but the <em>robust region of attraction</em> to this fixed
+          point (shaded in blue below) is smaller than the region of attraction
+          for the system with $\alpha=1$.</p>
+  
+          <figure> <img width="80%"
+          src="figures/cubicPolynomialExample_gain_uncertainty.svg"/>
+          </figure>
+  
+          <p>Taking the same Lyapunov candidate as above, $V = \frac{1}{2} x^2$,
+          we have $$\dot{V} = -x^2 + \alpha x^4.$$  This function is zero at the
+          origin, and negative for all $\alpha$ whenever $x^2 > \alpha x^4$, or
+          $$|x| < \frac{1}{\sqrt{\alpha_{max}}} = \sqrt{\frac{2}{3}}.$$ Therefore,
+          we can conclude that $|x| < \sqrt{\frac{2}{3}}$ is inside the robust
+          region of attraction of the uncertain system.</p>
+  
+        </example>
+  
+        <p>Not all forms of uncertainty are as simple to deal with as the gain
+        uncertainty in that example.  For many forms of uncertainty, we might not
+        even know the location of the fixed points of the uncertain system.  In
+        this case, we can often still use common Lyapunov functions to give some
+        guarantees about the system, such as guarantees of <em>robust set
+        invariance</em>.  For instance, if you have uncertain parameters on a
+        quadrotor model, you might be ok with the quadrotor stabilizing to a pitch
+        of $0.01$ radians, but you would like to guarantee that it definitely does
+        not flip over and crash into the ground.</p>
+  
+        <example><h1>A one-dimensional system with additive uncertainty</h1>
+  
+          <p>Now consider the system: $$\dot{x} = -x + x^3 + \alpha, \quad
+          -\frac{1}{4} < \alpha < \frac{1}{4}.$$  Plotting the graph of the
+          one-dimensional dynamics for a few values of $\alpha$, this time we can
+          see that the fixed point is not necessarily at the origin;  the location
+          of the fixed point moves depending on the value of $\alpha$.  But we
+          should be able to guarantee that the uncertain system will stay near the
+          origin if it starts near the origin, using an invariant set
+          argument.</p>
+  
+          <figure>
+            <img width="80%" src="figures/cubicPolynomialExample_additive_uncertainty.svg"/>
+          </figure>
+  
+          <p>Taking the same Lyapunov candidate as above, $V = \frac{1}{2} x^2$,
+          we have $$\dot{V} = -x^2 + x^4 + \alpha x.$$ This Lyapunov function
+          allows us to easily verify, for instance, that $V \le \frac{1}{3}$ is a
+          <em>robust invariant set</em>, because whenever $V = \frac{1}{3}$, we
+          have $$\forall \alpha \in [\alpha_{min},\alpha_{max}],\quad
+          \dot{V}(x,\alpha) < 0.$$  Therefore $V$ can never start at less than
+          one-third and cross over to greater than one-third.  To see this, see
+          that $$ V=\frac{1}{3} \quad \Rightarrow \quad x = \pm \sqrt{\frac{2}{3}}
+          \quad \Rightarrow \quad \dot{V} = -\frac{2}{9} \pm \alpha
+          \sqrt{\frac{2}{3}} < 0, \forall \alpha \in
+          \left[-\frac{1}{4},\frac{1}{4} \right]. $$  Note that not all sublevel
+          sets of this invariant set are invariant.  For instance $V <
+          \frac{1}{32}$ does not satisfy this condition, and by visual inspection
+          we can see that it is in fact not robustly invariant.</p>
+  
+        </example>
+  
+      <todo>robust quadrotor example</todo>
+  
+    </subsection> <!-- end common lyap -->
   </section> <!-- Lyapunov definitions -->
 
   <section id="optimization"><h1>Lyapunov analysis with convex optimization</h1>
@@ -355,7 +512,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     dense sampling; these will also give us additional leverage in formulating
     the search for Lyapunov functions.  </p>
 
-    <subsection><h1>Lyapunov analysis for linear systems</h1>
+    <subsection><h1>Linear systems</h1>
 
       <p>Let's take a moment to see how things play out for linear systems.</p>
 
@@ -495,7 +652,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     </subsection>
 
-    <subsection><h1>Lyapunov analysis for polynomial systems</h1>
+    <subsection><h1>Global analysis for polynomial systems</h1>
 
       <p><a href="optimization.html#sums_of_squares">Sums of squares
       optimization</a> provides a natural generalization of SDP to optimizing
@@ -592,165 +749,6 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     </subsection>
 
-  </section> <!-- computing Lyapunov -->
-
-  <section><h1>Lyapunov functions for estimating regions of
-  attraction</h1>
-
-    <p>There is another very important connection between Lyapunov functions
-    and the concept of an invariant set: <em>any sublevel set of a Lyapunov
-    function is also an invariant set</em>.  This gives us the ability to use
-    sublevel sets of a Lyapunov function as approximations of the region of
-    attraction for nonlinear systems. For a locally attractive fixed point,
-    $\bx^*$, the <i>region of attraction</i> to $\bx^*$ is the largest set
-    ${\cal D} \subseteq {\cal X}$ for which $\bx(0) \in {\cal D} \Rightarrow
-    \lim_{t\rightarrow \infty} \bx(t) = \bx^*.$ </p>
-
-    <theorem><h1>Lyapunov invariant set and region of attraction
-    theorem</h1>
-
-      <p>Given a system $\dot{\bx} = f(\bx)$ with $f$ continuous, if we can
-      find a scalar function $V(\bx) \succ 0$ and a bounded sublevel set
-      $${\cal G}: \{ \bx | V(\bx) \le \rho \}$$ on which $$\forall \bx \in
-      {\cal G}, \dot{V}(\bx) \preceq 0,$$ then ${\cal G}$ is an invariant set.
-      By LaSalle, $\bx$ will converge to the largest invariant subset of ${\cal
-      G}$ on which $\dot{V}=0$.<p>
-
-      <p>Furthermore, if $\dot{V}(\bx) \prec 0$ in ${\cal G}$, then the origin
-      is locally asymptotically stable and the set ${\cal G}$ is inside the
-      region of attraction of this fixed point.  Alternatively, if $\dot{V}(\bx)
-      \preceq 0$ in ${\cal G}$ and $\bx = 0$ is the only invariant subset of
-      ${\cal G}$ where $\dot{V}=0$, then the origin is asymptotically stable and
-      the set ${\cal G}$ is inside the region of attraction of this fixed point.
-      </p>
-
-    </theorem>
-
-    <example><h1>Region of attraction for a one-dimensional system</h1>
-
-      <p> Consider the first-order, one-dimensional system $\dot{x} = -x + x^3.$
-      We can quickly understand this system using our tools for graphical
-      analysis.</p> <figure> <img width="80%"
-      src="figures/cubicPolynomialExample.svg"/> </figure> <p>In the vicinity of
-      the origin, $\dot{x}$ looks like $-x$, and as we move away it looks
-      increasingly like $x^3$.  There is a stable fixed point at the origin and
-      unstable fixed points at $\pm 1$.  In fact, we can deduce visually that
-      the region of attraction to the stable fixed point at the origin is $\bx
-      \in (-1,1)$.  Let's see if we can demonstrate this with a Lyapunov
-      argument.</p>
-
-      <p>First, let us linearize the dynamics about the origin and use the
-      Lyapunov equation for linear systems to find a candidate $V(\bx)$.  Since
-      the linearization is $\dot{x} = -x$, if we take ${\bf Q}=1$, then we find
-      ${\bf P}=\frac{1}{2}$ is the positive definite solution to the algebraic
-      Lyapunov equation (\ref{eq:algebraic_lyapunov}).  Proceeding with $$V(\bx)
-      = \frac{1}{2} x^2,$$ we have $$\dot{V} = x (-x + x^3) = -x^2 + x^4.$$
-      This function is zero at the origin, negative for $|x| < 1$, and positive
-      for $|x| > 1$.  Therefore we can conclude that the sublevel set $V <
-      \frac{1}{2}$ is invariant and the set $x \in (-1,1)$ is inside the region
-      of attraction of the nonlinear system.  In fact, this estimate is
-      tight.</p>
-
-    </example>
-
-    <subsection id="common-lyapunov"><h1>Robustness analysis using "common Lyapunov functions"</h1>
-
-      <p>While we will defer most discussions on robustness analysis until <a
-      href="robust.html">later in the notes</a>, the idea of a <em>common
-      Lyapunov function</em>, which we introduced briefly for linear systems in
-      the <a href="#common-lyapunov-linear">example above</a>, can be readily
-      extended to nonlinear systems and region of attraction analysis.  Imagine
-      that you have a model of a dynamical system but that you are uncertain
-      about some of the parameters.  For example, you have a model of a
-      quadrotor, and are fairly confident about the mass and lengths (both of
-      which are easy to measure), but are not confident about the moment of
-      inertia.  One approach to robustness analysis is to define a bounded
-      uncertainty, which could take the form of $$\dot{\bx} = f_\alpha(\bx),
-      \quad \alpha_{min} \le \alpha \le \alpha_{max},$$ with $\alpha$ a vector
-      of uncertain parameters in your model.  Richer specifications of the
-      uncertainty bounds are also possible, but this will serve for our
-      examples.</p>
-
-      <p>In standard Lyapunov analysis, we are searching for a function that
-      goes downhill for all $\bx$ to make statements about the long-term
-      dynamics of the system.  In common Lyapunov analysis, we can make many
-      similar statements about the long-term dynamics of an uncertain system if
-      we can find a single Lyapunov function that goes downhill <em>for all
-      possible values of $\alpha$</em>.  If we can find such a function, then we
-      can use it to make statements with all of the variations we've discussed
-      (local, regional, or global; in the sense of Lyapunov, asymptotic, or
-      exponential).</p>
-
-      <example><h1>A one-dimensional system with gain uncertainty</h1>
-
-        <p>Let's consider the same one-dimensional example used above, but add
-        an uncertain parameter into the dynamics.  In particular, consider the
-        system: $$\dot{x} = -x + \alpha x^3, \quad \frac{3}{4} < \alpha <
-        \frac{3}{2}.$$ Plotting the graph of the one-dimensional dynamics for a
-        few values of $\alpha$, we can see that the fixed point at the origin is
-        still stable, but the <em>robust region of attraction</em> to this fixed
-        point (shaded in blue below) is smaller than the region of attraction
-        for the system with $\alpha=1$.</p>
-
-        <figure> <img width="80%"
-        src="figures/cubicPolynomialExample_gain_uncertainty.svg"/>
-        </figure>
-
-        <p>Taking the same Lyapunov candidate as above, $V = \frac{1}{2} x^2$,
-        we have $$\dot{V} = -x^2 + \alpha x^4.$$  This function is zero at the
-        origin, and negative for all $\alpha$ whenever $x^2 > \alpha x^4$, or
-        $$|x| < \frac{1}{\sqrt{\alpha_{max}}} = \sqrt{\frac{2}{3}}.$$ Therefore,
-        we can conclude that $|x| < \sqrt{\frac{2}{3}}$ is inside the robust
-        region of attraction of the uncertain system.</p>
-
-      </example>
-
-      <p>Not all forms of uncertainty are as simple to deal with as the gain
-      uncertainty in that example.  For many forms of uncertainty, we might not
-      even know the location of the fixed points of the uncertain system.  In
-      this case, we can often still use common Lyapunov functions to give some
-      guarantees about the system, such as guarantees of <em>robust set
-      invariance</em>.  For instance, if you have uncertain parameters on a
-      quadrotor model, you might be ok with the quadrotor stabilizing to a pitch
-      of $0.01$ radians, but you would like to guarantee that it definitely does
-      not flip over and crash into the ground.</p>
-
-      <example><h1>A one-dimensional system with additive uncertainty</h1>
-
-        <p>Now consider the system: $$\dot{x} = -x + x^3 + \alpha, \quad
-        -\frac{1}{4} < \alpha < \frac{1}{4}.$$  Plotting the graph of the
-        one-dimensional dynamics for a few values of $\alpha$, this time we can
-        see that the fixed point is not necessarily at the origin;  the location
-        of the fixed point moves depending on the value of $\alpha$.  But we
-        should be able to guarantee that the uncertain system will stay near the
-        origin if it starts near the origin, using an invariant set
-        argument.</p>
-
-        <figure>
-          <img width="80%" src="figures/cubicPolynomialExample_additive_uncertainty.svg"/>
-        </figure>
-
-        <p>Taking the same Lyapunov candidate as above, $V = \frac{1}{2} x^2$,
-        we have $$\dot{V} = -x^2 + x^4 + \alpha x.$$ This Lyapunov function
-        allows us to easily verify, for instance, that $V \le \frac{1}{3}$ is a
-        <em>robust invariant set</em>, because whenever $V = \frac{1}{3}$, we
-        have $$\forall \alpha \in [\alpha_{min},\alpha_{max}],\quad
-        \dot{V}(x,\alpha) < 0.$$  Therefore $V$ can never start at less than
-        one-third and cross over to greater than one-third.  To see this, see
-        that $$ V=\frac{1}{3} \quad \Rightarrow \quad x = \pm \sqrt{\frac{2}{3}}
-        \quad \Rightarrow \quad \dot{V} = -\frac{2}{9} \pm \alpha
-        \sqrt{\frac{2}{3}} < 0, \forall \alpha \in
-        \left[-\frac{1}{4},\frac{1}{4} \right]. $$  Note that not all sublevel
-        sets of this invariant set are invariant.  For instance $V <
-        \frac{1}{32}$ does not satisfy this condition, and by visual inspection
-        we can see that it is in fact not robustly invariant.</p>
-
-      </example>
-
-    <todo>robust quadrotor example</todo>
-
-    </subsection> <!-- end common lyap -->
-
     <subsection><h1>Region of attraction estimation for polynomial systems</h1>
 
       <p>Now we have arrived at the tool that I believe can be a work-horse for
@@ -781,7 +779,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         when $g(\bx) > 0$, it is possible for the combined function to be SOS
         even if $p(\bx)$ is negative.  We will sometimes find it convenient to
         use the short-hand: $$g(\bx) \le 0 \Rightarrow p(\bx) \ge 0$$ to denote
-        the implication certified by the S-procedure (e.g. "whenever $g(\bx) \le 0$, we have $p(\bx) \ge 0$"). </p>
+        the implication certified by the S-procedure, e.g. whenever $g(\bx) \le 0$, we have $p(\bx) \ge 0.$</p>
 
         <p>We can also handle equality constraints with only a minor
         modification -- we no longer require the multiplier to be positive. If
@@ -823,7 +821,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
           \begin{align*} \find_{\bf c} \quad & \\  \subjto \quad& - \dot{V}(x) +
           \lambda(x) (V(x)-1) \sos \\ & \lambda(x) \sos \end{align*} </p>
 
-          <p>You can try this example for yourself in <drake></drake>.</p>
+          <p>You can try these examples for yourself in <drake></drake>.</p>
 
           <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="cubic_poly"))</script>
 
@@ -835,15 +833,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         for the largest $\rho$ that can satisfy these conditions.
         Unfortunately, in this first formulation, optimizing $\rho$ directly
         would make the optimization problem non-convex because we would have
-        terms like $\rho c_0$, $\rho c_1 x$, ... which are bilinear in the
+        terms like $\rho c_0$, $\rho c_1 x$, which are bilinear in the
         decision variables; we need the sums-of-squares constraints to be only
         linear in the decision variables.</p>
 
         <p>Fortunately, because the problem is convex with $\rho$ fixed (and
         therefore can be solved reliably), and $\rho$ is just a scalar, we can
-        perform a simple line search on $\rho$ to find the largest value for
-        which the convex optimization returns a feasible solution.  This will
-        be our estimate for the region of attraction.</p>
+        perform a simple <i>line search</i> on $\rho$ to find the largest value
+        for which the convex optimization returns a feasible solution.  This
+        will be our estimate for the region of attraction.</p>
 
         <p>There are a number of variations to this basic formulation; I will
         describe a few of them below.  There are also important ideas like
@@ -880,8 +878,8 @@ V = RegionOfAttraction(sys, context)
         <p>In order to develop our intuition for these tools, it is helpful to
         understand how "tight" the inner approximation can be for each choice
         of the fixed degree of the Lyapunov function / Lagrange multipliers.
-        I've included a few of my favorite examples of nonlinear systems which
-        use some clever construction to have <i>known</i> regions of
+        I've included below a few of my favorite examples of nonlinear systems
+        which use some clever construction to have <i>known</i> regions of
         attraction.</p>
 
         <example><h1>Region of attraction for the time-reversed Van der Pol oscillator</h1>
@@ -940,6 +938,28 @@ V = RegionOfAttraction(sys, context)
         quotient ring of this algebraic variety, and in particular some recent
         results for exact certification using sampling
         varieties<elib>Shen20</elib>.</p>
+
+        <example id="max_roa_cubic_system"><h1>Maximizing the ROA for the cubic
+        polynomial system</h1>
+
+          <p>Let's return again to our example from above: \[ \dot{x} = -x +
+          x^3 \] and try to use SOS optimization, this time to maximize the
+          sub-level set of our Lyapunov candidate $V = x^2,$ in order to
+          certify the largest ROA that we can using these tools.</p>
+
+          <p>Again, we define the multiplier polynomial, $\lambda(x)$, but this
+          time we won't require it to be sums-of-squares (here it's a "free"
+          polynomial). Then define the optimization \begin{align*} \max_{\rho}
+          \quad & \\  \subjto \quad& x^2 (V(x)-\rho) - \lambda(x)\dot{V}(x)
+          \sos. \end{align*} What degree should we choose for $\lambda(x)$
+          here? Note that $V(x)$ has degree 2, so $x^2V(x)$ has degree 4, and
+          $\dot{V}(x)$ also has degree 4, so it's possible that even a
+          zero-degree $\lambda(x)$ (just a constant) can be sufficient here.
+          Our numerical experiments confirm that this is indeed the case:</p>
+
+          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="cubic_poly"))</script>
+  
+        </example>
 
       </subsubsection>
 
@@ -1150,7 +1170,249 @@ V = RegionOfAttraction(sys, context)
 
     </subsection> <!-- ROA for polynomial -->
 
-  </section>
+    <subsection id="implicit"><h1>Verifying dynamics in implicit form</h1>
+
+      <p>Typically we write our differential equations in the form $\dot\bx =
+      {\bf f}(\bx, \bu).$  But let us consider for a moment the case where the
+      dynamics are given in the form $${\bf g}(\bx, \bu, \dot\bx ) = 0.$$ This
+      form is strictly more general because I can always write ${\bf
+      g}(\bx,\bu,\dot\bx) = f(\bx,\bu) - \dot\bx$, but importantly here I can
+      also write the bottom rows of ${\bf g}$ as $\bM(\bq)\ddot\bq +
+      \bC(\bq,\dot\bq)\dot\bq - \btau_g - \bB \bu$.  This form can also
+      represent <a
+      href="https://en.wikipedia.org/wiki/Differential-algebraic_system_of_equations">differential
+      algebraic equations (DAEs)</a> which are more general than ODEs; $\bg$
+      could even include algebraic constraints like $s_i^2 + c_i^2 - 1$.  Most
+      importantly, for manipulators, ${\bf g}$ can be polynomial, even if ${\bf
+      f}$ would have been rational.  <drake></drake> provides access to
+      continuous-time dynamics in implicit form via the <a
+      href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1_system.html#a2bb4c1e3572a8009863b5a342fcb5c49"><code>CalcImplicitTimeDerivativesResidual</code></a>
+      method.</p>
+
+      <p>We typically write a linear system in implicit form as $${\bf
+      E}\dot\bx = \bA\bx + \bB\bu.$$ Systems in this form are particularly
+      interesting when ${\bf E}$ is singular, and are known as descriptor
+      systems, semistate systems, generalized state-space systems or just
+      singular systems (c.f. <elib>Mehrmann91</elib>).  Just like our standard
+      approach to linearization, we can potentially obtain the matrices ${\bf
+      E}, \bA, \bB$ from a first-order Taylor approximation of the nonlinear
+      equations in ${\bf g}(\bx,\dot\bx,\bu).$  When it comes to Lyapunov
+      analysis, linear systems are often analyzed using the so-called
+      "generalized Lyapunov equation".</p> 
+      
+      <theorem><h1>Lyapunov analysis for implicit linear systems</h1>
+
+        <p>Given a linear system in the form ${\bf E}\dot\bx = \bA\bx,$ the
+        origin is asymptotically stable if there exists a matrix ${\bf P}$ such
+        that $${\bf P} = {\bf P}^T \succ 0, \quad \bA^T {\bf P}{\bf E} + {\bf
+        E}^T {\bf P} \bA \prec 0.$$ Furthermore, if such a ${\bf P}$ exists,
+        then we can obtain one by solving the <i>generalized Lyapunov
+        equation</i>: $$\bA^T {\bf P}{\bf E} + {\bf E}^T {\bf P} \bA = -{\bf
+        Q},$$ for any ${\bf Q} \succ 0$ <elib part="Ch 4">Stykel02</elib>.
+        </p>
+
+      </theorem>
+
+      <p>This can be verified by taking $$V(\bx) = \bx^T {\bf E}^T {\bf P}{\bf
+      E} \bx,$$ as the Lyapunov function.  A corresponding approach can be used
+      (e.g. via sums-of-squares) for implicit nonlinear systems like our
+      manipulator equations where ${\bf g}(\bx,\dot\bx)=0$ can be written in
+      the form ${\bf E}(\bx) \dot\bx = {\bf f}(\bx).$ </p>
+      <todo>Flesh this out and add an example.  $V(\bx) = \bx^T {\bf E}^T(\bx)
+      {\bf P}{\bf E}(\bx) \bx$ seems a natural choice of Lyapunov candidates. V
+      = v'M(q)'PM(q)v + q'Qq could bea natural form for manipulators (do I need
+      q-v cross terms?); it looks a bit like kinetic energy...</todo>
+
+      <p>Alternatively, we can check the Lyapunov conditions, $\dot{V}(\bx) \le
+      0$, directly on a system in its implicit form, $\bg(\bx,\dot\bx)=0$.
+      Simply define a new function $Q(\bx, \bz) = \frac{\partial
+      V(\bx)}{\partial \bx} \bz.$ If we can show $Q(\bx, \bz) \le 0, \forall
+      \bx,\bz \in \{ \bx, \bz | \bg(\bx,\bz) = 0 \}$ using SOS, then we have
+      verified that $\dot{V}(\bx) \le 0$, albeit at the non-trivial cost of
+      adding indeterminates $\bz$ and an additional S-procedure.</p>
+
+      <p>To combine the trigonometric substitutions with the implicit form for
+      a simple second-order system (where the number of positions is equal to
+      the number of velocities), we use ${\bf z}$ to represent the implicit
+      $\ddot{\bq}$ and convert \begin{gather*} V(\bq, \dot\bq) \Rightarrow
+      V({\bf s}, {\bf c}, \dot\bq) \\ {\bf g}(\bq, \dot\bq, {\bf z})
+      \Rightarrow {\bf g}({\bf s}, {\bf c}, \dot\bq, {\bf z}), \end{gather*}
+      and write the Lyapunov conditions using $\dot{V} = \sum_i \pd{V}{s_i} c_i
+      \dot{q}_i - \sum_i \pd{V}{c_i}s_i \dot{q}_i + \pd{V}{\dot\bq} \bz.$  The
+      most common case for the number of positions is not equal to the number
+      of velocities is when we deal with 3D rotations represented by unit
+      quaternions; this case can be handled using the implicit form, too (we
+      use the implicit form to relate $\dot{q}$ to the velocities and verify
+      the Lyapunov conditions only on the manifold defined by the quaternion
+      unit norm constraint).</p>
+    </subsection>
+
+    <subsection><h1>Rigid-body dynamics are (rational) polynomial</h1>
+
+      <p>We've been talking a lot in this chapter about numerical methods for
+      polynomial systems.  But even our simple pendulum has a $\sin\theta$ in the
+      dynamics.  Have I been wasting your time?  Must we just resort to polynomial
+      approximations of the non-polynomial equations?  It turns out that our
+      polynomial tools can perform exact analysis of the manipulation equation for
+      almost all&dagger;<sidenote>&dagger;the most notable exception to this is if
+      your robot has helical/screw joints (see
+      <elib>Wampler11</elib>).</sidenote>of our robots.  We just have to do a
+      little more work to reveal that structure.</p>
+
+      <p>Let us first observe that rigid-body kinematics are polynomial (except
+      the helical joint).  This is fundamental -- the very nature of a "rigid
+      body" assumption is that Euclidean distance is preserved between points on
+      the body; if $\bp_1$ and $\bp_2$ are two points on a body, then the
+      kinematics enforce that $|\bp_1 - \bp_2|_2^2$ is constant -- these are
+      polynomial constraints.  Of course, we commonly write the kinematics in a
+      minimal coordinates using $\sin\theta$ and $\cos\theta$.  But because of
+      rigid body assumption, these terms only appear in the simplest forms, and
+      we can simply make new variables $s_i = \sin\theta_i, c_i = \cos\theta_i$,
+      and add the constraint that $s_i^2 + c_i^2 = 1.$  For a more thorough
+      discussion see, for instance, <elib>Wampler11</elib> and
+      <elib>Sommese05</elib>. Since the potential energy of a multi-body system
+      is simply an accumulation of weight times the vertical position for all of
+      the points on the body, the potential energy is polynomial.<p>
+
+      <p>If configurations (positions) of our robots can be described by
+      polynomials, then velocities can as well: forward kinematics $\bp_i =
+      f(\bq)$ implies that $\dot\bp_i = \frac{\partial f}{\partial \bq}\dot\bq,$
+      which is polynomial in $s, c, \dot\theta$.  Since the kinetic energy of
+      our robot is given by the accumulation of the kinetic energy of all the
+      mass, $T = \sum_i \frac{1}{2} m_i v_i^Tv_i,$ the kinetic energy is
+      polynomial, too (even when we write it with inertial matrices and angular
+      velocities).</p>
+
+      <p>Finally, the <a href="multibody.html">equations of motion</a> can be
+      obtained by taking derivatives of the Lagrangian (kinetic minus
+      potential). These derivatives are still polynomial!</p>
+
+      <example id="ex:global_pend"><h1>Global stability of the simple pendulum
+        via SOS</h1>
+
+        <p> We opened this chapter using our intuition about energy to discuss
+        stability on the simple pendulum. Now we'll replace that intuition with
+        convex optimization (because it will also work for more difficult
+        systems where our intuition fails).</p>
+
+        <p>Let's change coordinates from $[\theta,\dot\theta]^T$ to $\bx =
+        [s,c,\dot\theta]^t$, where $s \equiv \sin\theta$ and $c \equiv
+        \cos\theta$.  Then we can write the pendulum dynamics as $$\dot\bx =
+        \begin{bmatrix} c \dot\theta \\ -s \dot\theta \\ -\frac{1}{m l^2}
+        \left( b \dot\theta + mgls \right) \end{bmatrix}.$$
+        </p>
+
+        <p>Now let's parameterize a Lyapunov candidate $V(s,c,\dot\theta)$ as
+        the polynomial with unknown coefficients which contains all monomials
+        up to degree 2:  $$V = \alpha_0 + \alpha_1 s + \alpha_2 c + ...
+        \alpha_{9} s^2 + \alpha_{10} sc + \alpha_{11} s\dot\theta.$$ Now we'll
+        formulate the feasibility problem: \[ \find_{\bf \alpha} \quad  \subjto
+        \quad V \sos, \quad -\dot{V} \sos.\] In fact, this is asking too much
+        -- really $\dot{V}$ only needs to be negative when $s^2+c^2=1$.  We can
+        accomplish this with the S-procedure, and instead write \[ \find_{{\bf
+        \alpha},\lambda} \quad  \subjto \quad V \sos, \quad -\dot{V}
+        -\lambda(\bx)(s^2+c^2-1) \sos.\] (Recall that $\lambda(\bx)$ is another
+        polynomial with free coefficients which the optimization can use to
+        make terms arbitrarily more positive when $s^2+c^2 \neq 1$.) Finally,
+        for style points, in the code example in <drake></drake> we ask for
+        exponential stability:</p>
+
+        <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="global_pend"))</script>
+
+        <p>As always, make sure that you open up the code and take a look.  The
+          result is a Lyapunov function that looks familiar (visualized as a
+          contour plot here):</p>
+
+        <div  style="text-align:center"><img
+            src="figures/pend_global_sos.svg" width="400px"/></div>
+
+        <p>Aha!  Not only does the optimization finds us coefficients for the
+        Lyapunov function which satisfy our Lyapunov conditions, but the result
+        looks a lot like mechanical energy.  In fact, the result is a little
+        better than energy... there are some small extra terms added which prove
+        exponential stability without having to invoke LaSalle's Theorem.</p>
+
+      </example>
+
+      <p>The one-degree-of-freedom pendulum did allow us to gloss over one
+      important detail: while the manipulator equations $\bM(\bq) \ddot{\bq} +
+      \bC(\bq, \dot\bq)\dot{\bq} = ...$ are polynomial, in order to solve for
+      $\ddot{\bq}$ we actually have to multiply both sides by $\bM^{-1}$.  This,
+      unfortunately, is <i>not</i> a polynomial operation, so in fact the final
+      dynamics of the multibody systems are <i>rational</i> polynomial.  Not
+      only that, but evaluating $\bM^{-1}$ symbolically is not advised -- the
+      equations get very complicated very fast.  But we can actually write the
+      Lyapunov conditions using the dynamics in implicit form, e.g. by writing
+      $V(\bq,\dot\bq,\ddot\bq)$ and asking it to satisfy the Lyapunov conditions
+      everywhere that $\bM(\bq)\ddot\bq + ... = ... + {\bf B}\bu$ is
+      satisfied, using the S-procedure.</p>
+
+      <subsubsection id="trig_quadratic"><h1>Linear feedback and quadratic
+      forms</h1>
+
+      <p>There are a few things that <i>do</i> break this clean polynomial view
+      of the world.  Rotary springs, for instance, if modeled as $\tau = k
+      (\theta_0 - \theta)$ will mean that $\theta$ appears alongside
+      $\sin\theta$ and $\cos\theta$, and the relationship between $\theta$ and
+      $\sin\theta$ is sadly <i>not polynomial</i>.  As we have presented it so
+      far, even linear feedback from LQR actually looks like a linear
+      spring.</p> 
+      
+      <p>Looking more closely, though, there is a natural alternative. Consider
+      the mechanical energy of the simple pendulum , $E = \frac{1}{2}ml^2
+      \dot\theta^2 + mgl(1- \cos\theta),$ where we've taken the potential energy
+      so that $E \ge 0$).  Observe that using half-angle formulas  we can write
+      this as a quadratic form: $$E = \frac{1}{2} \begin{bmatrix}
+      2\sin(\frac{\theta}{2}) \\ \dot\theta \end{bmatrix}^T \begin{bmatrix} mgl &
+      0 \\ 0 & ml^2 \end{bmatrix} \begin{bmatrix} 2\sin(\frac{\theta}{2}) \\
+      \dot\theta \end{bmatrix}.$$  The term $2 \sin(\frac{\theta}{2})$ has slope
+      one at $\theta = 0$. This isn't unique to the pendulum,
+      $2\sin^2(\frac{\theta}{2})$ is a natural choice for a Lyapunov candidate in
+      the trigonometric coordinates that is periodic in $2\pi.$  In the case of
+      LQR applied to the linearization of a nonlinear mechanical system, one
+      could replace $-k \theta$ with $-2 k \sin(\frac{\theta}{2})$; after all
+      their linearization is the same.</p>
+
+      <example><h1>Regions of attraction for LQR of trigonometric systems</h1>
+
+        <todo>example of design + certification of LQR using $u = -\bK
+        \sin\theta$</todo>
+
+      </example>
+
+      </subsubsection>
+
+      <subsubsection><h1>Alternatives for obtaining polynomial equations</h1>
+        <p>In practice, you can also Taylor approximate any smooth nonlinear
+        function using polynomials.  This can be an effective strategy in
+        practice, because you can limit the degrees of the polynomial, and because
+        in many cases it is possible to provide conservative bounds on the errors
+        due to the approximation.</p>
+
+        <p>One final technique that is worth knowing about is a change of
+        coordinates, often referred to as the <a
+        href="https://en.wikipedia.org/wiki/Stereographic_projection">
+        stereographic projection</a>, that provides a coordinate system in which
+        we can replace $\sin$ and $\cos$ with polynomials:
+        <figure>
+          <img width="70%" src="figures/stereographic.svg"/>
+          <figcaption>The stereographic projection.</figcaption>
+        </figure>
+        By projecting onto the line, and using similar triangles, we find that $p
+        = \frac{\sin\theta}{1 + \cos\theta}.$  Solving for $\sin\theta$ and
+        $\cos\theta$ reveals $$\cos\theta = \frac{1-p^2}{1+p^2}, \quad \sin\theta
+        = \frac{2p}{1+p^2}, \quad \text{and} \quad \frac{\partial p}{\partial
+        \theta} = \frac{1+p^2}{2},$$ where $\frac{\partial p}{\partial \theta}$
+        can be used in the chain rule to derive the dynamics $\dot{p}$.  Although
+        the equations are rational, they share the denominator $1+p^2$ and can be
+        treated efficiently in mass-matrix form.  Compared to the simple
+        substitution of $s=\sin\theta$ and $c=\cos\theta$, this is a minimal
+        representation (scalar to scalar, no $s^2+c^2=1$ required); unfortunately
+        it does have a singularity at $\theta=\pi$, so likely cannot be used for
+        global analysis.</p>
+    </subsubsection>
+  </subsection>
+  </section> 
 
   <section id="finite-time"><h1>Finite-time Reachability</h1>
 
@@ -1292,246 +1554,6 @@ V = RegionOfAttraction(sys, context)
 
   </section>
 
-  <section><h1>Rigid-body dynamics are (rational) polynomial</h1>
-
-    <p>We've been talking a lot in this chapter about numerical methods for
-    polynomial systems.  But even our simple pendulum has a $\sin\theta$ in the
-    dynamics.  Have I been wasting your time?  Must we just resort to polynomial
-    approximations of the non-polynomial equations?  It turns out that our
-    polynomial tools can perform exact analysis of the manipulation equation for
-    almost all&dagger;<sidenote>&dagger;the most notable exception to this is if
-    your robot has helical/screw joints (see
-    <elib>Wampler11</elib>).</sidenote>of our robots.  We just have to do a
-    little more work to reveal that structure.</p>
-
-    <p>Let us first observe that rigid-body kinematics are polynomial (except
-    the helical joint).  This is fundamental -- the very nature of a "rigid
-    body" assumption is that Euclidean distance is preserved between points on
-    the body; if $\bp_1$ and $\bp_2$ are two points on a body, then the
-    kinematics enforce that $|\bp_1 - \bp_2|_2^2$ is constant -- these are
-    polynomial constraints.  Of course, we commonly write the kinematics in a
-    minimal coordinates using $\sin\theta$ and $\cos\theta$.  But because of
-    rigid body assumption, these terms only appear in the simplest forms, and
-    we can simply make new variables $s_i = \sin\theta_i, c_i = \cos\theta_i$,
-    and add the constraint that $s_i^2 + c_i^2 = 1.$  For a more thorough
-    discussion see, for instance, <elib>Wampler11</elib> and
-    <elib>Sommese05</elib>. Since the potential energy of a multi-body system
-    is simply an accumulation of weight times the vertical position for all of
-    the points on the body, the potential energy is polynomial.<p>
-
-    <p>If configurations (positions) of our robots can be described by
-    polynomials, then velocities can as well: forward kinematics $\bp_i =
-    f(\bq)$ implies that $\dot\bp_i = \frac{\partial f}{\partial \bq}\dot\bq,$
-    which is polynomial in $s, c, \dot\theta$.  Since the kinetic energy of
-    our robot is given by the accumulation of the kinetic energy of all the
-    mass, $T = \sum_i \frac{1}{2} m_i v_i^Tv_i,$ the kinetic energy is
-    polynomial, too (even when we write it with inertial matrices and angular
-    velocities).</p>
-
-    <p>Finally, the <a href="multibody.html">equations of motion</a> can be
-    obtained by taking derivatives of the Lagrangian (kinetic minus
-    potential). These derivatives are still polynomial!</p>
-
-    <example id="ex:global_pend"><h1>Global stability of the simple pendulum
-      via SOS</h1>
-
-      <p> We opened this chapter using our intuition about energy to discuss
-      stability on the simple pendulum. Now we'll replace that intuition with
-      convex optimization (because it will also work for more difficult
-      systems where our intuition fails).</p>
-
-      <p>Let's change coordinates from $[\theta,\dot\theta]^T$ to $\bx =
-      [s,c,\dot\theta]^t$, where $s \equiv \sin\theta$ and $c \equiv
-      \cos\theta$.  Then we can write the pendulum dynamics as $$\dot\bx =
-      \begin{bmatrix} c \dot\theta \\ -s \dot\theta \\ -\frac{1}{m l^2}
-      \left( b \dot\theta + mgls \right) \end{bmatrix}.$$
-      </p>
-
-      <p>Now let's parameterize a Lyapunov candidate $V(s,c,\dot\theta)$ as
-      the polynomial with unknown coefficients which contains all monomials
-      up to degree 2:  $$V = \alpha_0 + \alpha_1 s + \alpha_2 c + ...
-      \alpha_{9} s^2 + \alpha_{10} sc + \alpha_{11} s\dot\theta.$$ Now we'll
-      formulate the feasibility problem: \[ \find_{\bf \alpha} \quad  \subjto
-      \quad V \sos, \quad -\dot{V} \sos.\] In fact, this is asking too much
-      -- really $\dot{V}$ only needs to be negative when $s^2+c^2=1$.  We can
-      accomplish this with the S-procedure, and instead write \[ \find_{{\bf
-      \alpha},\lambda} \quad  \subjto \quad V \sos, \quad -\dot{V}
-      -\lambda(\bx)(s^2+c^2-1) \sos.\] (Recall that $\lambda(\bx)$ is another
-      polynomial with free coefficients which the optimization can use to
-      make terms arbitrarily more positive when $s^2+c^2 \neq 1$.) Finally,
-      for style points, in the code example in <drake></drake> we ask for
-      exponential stability:</p>
-
-      <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="global_pend"))</script>
-
-      <p>As always, make sure that you open up the code and take a look.  The
-        result is a Lyapunov function that looks familiar (visualized as a
-        contour plot here):</p>
-
-      <div  style="text-align:center"><img
-          src="figures/pend_global_sos.svg" width="400px"/></div>
-
-      <p>Aha!  Not only does the optimization finds us coefficients for the
-      Lyapunov function which satisfy our Lyapunov conditions, but the result
-      looks a lot like mechanical energy.  In fact, the result is a little
-      better than energy... there are some small extra terms added which prove
-      exponential stability without having to invoke LaSalle's Theorem.</p>
-
-    </example>
-
-    <p>The one-degree-of-freedom pendulum did allow us to gloss over one
-    important detail: while the manipulator equations $\bM(\bq) \ddot{\bq} +
-    \bC(\bq, \dot\bq)\dot{\bq} = ...$ are polynomial, in order to solve for
-    $\ddot{\bq}$ we actually have to multiply both sides by $\bM^{-1}$.  This,
-    unfortunately, is <i>not</i> a polynomial operation, so in fact the final
-    dynamics of the multibody systems are <i>rational</i> polynomial.  Not
-    only that, but evaluating $\bM^{-1}$ symbolically is not advised -- the
-    equations get very complicated very fast.  But we can actually write the
-    Lyapunov conditions using the dynamics in implicit form, e.g. by writing
-    $V(\bq,\dot\bq,\ddot\bq)$ and asking it to satisfy the Lyapunov conditions
-    everywhere that $\bM(\bq)\ddot\bq + ... = ... + {\bf B}\bu$ is
-    satisfied, using the S-procedure.</p>
-
-    <subsection id="implicit"><h1>Verifying dynamics in implicit form</h1>
-
-      <p>Typically we write our differential equations in the form $\dot\bx =
-      {\bf f}(\bx, \bu).$  But let us consider for a moment the case where the
-      dynamics are given in the form $${\bf g}(\bx, \bu, \dot\bx ) = 0.$$ This
-      form is strictly more general because I can always write ${\bf
-      g}(\bx,\bu,\dot\bx) = f(\bx,\bu) - \dot\bx$, but importantly here I can
-      also write the bottom rows of ${\bf g}$ as $\bM(\bq)\ddot\bq +
-      \bC(\bq,\dot\bq)\dot\bq - \btau_g - \bB \bu$.  This form can also
-      represent <a
-      href="https://en.wikipedia.org/wiki/Differential-algebraic_system_of_equations">differential
-      algebraic equations (DAEs)</a> which are more general than ODEs; $\bg$
-      could even include algebraic constraints like $s_i^2 + c_i^2 - 1$.  Most
-      importantly, for manipulators, ${\bf g}$ can be polynomial, even if ${\bf
-      f}$ would have been rational.  <drake></drake> provides access to
-      continuous-time dynamics in implicit form via the <a
-      href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1_system.html#a2bb4c1e3572a8009863b5a342fcb5c49"><code>CalcImplicitTimeDerivativesResidual</code></a>
-      method.</p>
-
-      <p>We typically write a linear system in implicit form as $${\bf
-      E}\dot\bx = \bA\bx + \bB\bu.$$ Systems in this form are particularly
-      interesting when ${\bf E}$ is singular, and are known as descriptor
-      systems, semistate systems, generalized state-space systems or just
-      singular systems (c.f. <elib>Mehrmann91</elib>).  Just like our standard
-      approach to linearization, we can potentially obtain the matrices ${\bf
-      E}, \bA, \bB$ from a first-order Taylor approximation of the nonlinear
-      equations in ${\bf g}(\bx,\dot\bx,\bu).$  When it comes to Lyapunov
-      analysis, linear systems are often analyzed using the so-called
-      "generalized Lyapunov equation".</p> 
-      
-      <theorem><h1>Lyapunov analysis for implicit linear systems</h1>
-
-        <p>Given a linear system in the form ${\bf E}\dot\bx = \bA\bx,$ the
-        origin is asymptotically stable if there exists a matrix ${\bf P}$ such
-        that $${\bf P} = {\bf P}^T \succ 0, \quad \bA^T {\bf P}{\bf E} + {\bf
-        E}^T {\bf P} \bA \prec 0.$$ Furthermore, if such a ${\bf P}$ exists,
-        then we can obtain one by solving the <i>generalized Lyapunov
-        equation</i>: $$\bA^T {\bf P}{\bf E} + {\bf E}^T {\bf P} \bA = -{\bf
-        Q},$$ for any ${\bf Q} \succ 0$ <elib part="Ch 4">Stykel02</elib>.
-       </p>
-
-      </theorem>
-
-      <p>This can be verified by taking $$V(\bx) = \bx^T {\bf E}^T {\bf P}{\bf
-      E} \bx,$$ as the Lyapunov function.  A corresponding approach can be used
-      (e.g. via sums-of-squares) for implicit nonlinear systems like our
-      manipulator equations where ${\bf g}(\bx,\dot\bx)=0$ can be written in
-      the form ${\bf E}(\bx) \dot\bx = {\bf f}(\bx).$ </p>
-      <todo>Flesh this out and add an example.  $V(\bx) = \bx^T {\bf E}^T(\bx)
-      {\bf P}{\bf E}(\bx) \bx$ seems a natural choice of Lyapunov candidates. V
-      = v'M(q)'PM(q)v + q'Qq could bea natural form for manipulators (do I need
-      q-v cross terms?); it looks a bit like kinetic energy...</todo>
-  
-      <p>Alternatively, we can check the Lyapunov conditions, $\dot{V}(\bx) \le
-      0$, directly on a system in its implicit form, $\bg(\bx,\dot\bx)=0$.
-      Simply define a new function $Q(\bx, \bz) = \frac{\partial
-      V(\bx)}{\partial \bx} \bz.$ If we can show $Q(\bx, \bz) \le 0, \forall
-      \bx,\bz \in \{ \bx, \bz | \bg(\bx,\bz) = 0 \}$ using SOS, then we have
-      verified that $\dot{V}(\bx) \le 0$, albeit at the non-trivial cost of
-      adding indeterminates $\bz$ and an additional S-procedure.</p>
-
-      <p>To combine the trigonometric substitutions with the implicit form for
-      a simple second-order system (where the number of positions is equal to
-      the number of velocities), we use ${\bf z}$ to represent the implicit
-      $\ddot{\bq}$ and convert \begin{gather*} V(\bq, \dot\bq) \Rightarrow
-      V({\bf s}, {\bf c}, \dot\bq) \\ {\bf g}(\bq, \dot\bq, {\bf z})
-      \Rightarrow {\bf g}({\bf s}, {\bf c}, \dot\bq, {\bf z}), \end{gather*}
-      and write the Lyapunov conditions using $\dot{V} = \sum_i \pd{V}{s_i} c_i
-      \dot{q}_i - \sum_i \pd{V}{c_i}s_i \dot{q}_i + \pd{V}{\dot\bq} \bz.$  The
-      most common case for the number of positions is not equal to the number
-      of velocities is when we deal with 3D rotations represented by unit
-      quaternions; this case can be handled using the implicit form, too (we
-      use the implicit form to relate $\dot{q}$ to the velocities and verify
-      the Lyapunov conditions only on the manifold defined by the quaternion
-      unit norm constraint).</p>
-    </subsection>
-
-    <subsection id="trig_quadratic"><h1>Linear feedback and quadratic forms</h1>
-
-    <p>There are a few things that <i>do</i> break this clean polynomial view
-    of the world.  Rotary springs, for instance, if modeled as $\tau = k
-    (\theta_0 - \theta)$ will mean that $\theta$ appears alongside $\sin\theta$
-    and $\cos\theta$, and the relationship between $\theta$ and $\sin\theta$ is
-    sadly <i>not polynomial</i>.  As we have presented it so far, even linear
-    feedback from LQR actually looks like a linear spring.</p> 
-    
-    <p>Looking more closely, though, there is a natural alternative. Consider
-    the mechanical energy of the simple pendulum , $E = \frac{1}{2}ml^2
-    \dot\theta^2 + mgl(1- \cos\theta),$ where we've taken the potential energy
-    so that $E \ge 0$).  Observe that using half-angle formulas  we can write
-    this as a quadratic form: $$E = \frac{1}{2} \begin{bmatrix}
-    2\sin(\frac{\theta}{2}) \\ \dot\theta \end{bmatrix}^T \begin{bmatrix} mgl &
-    0 \\ 0 & ml^2 \end{bmatrix} \begin{bmatrix} 2\sin(\frac{\theta}{2}) \\
-    \dot\theta \end{bmatrix}.$$  The term $2 \sin(\frac{\theta}{2})$ has slope
-    one at $\theta = 0$. This isn't unique to the pendulum,
-    $2\sin^2(\frac{\theta}{2})$ is a natural choice for a Lyapunov candidate in
-    the trigonometric coordinates that is periodic in $2\pi.$  In the case of
-    LQR applied to the linearization of a nonlinear mechanical system, one
-    could replace $-k \theta$ with $-2 k \sin(\frac{\theta}{2})$; after all
-    their linearization is the same.</p>
-
-    <example><h1>Regions of attraction for LQR of trigonometric systems</h1>
-  
-      <todo>example of design + certification of LQR using $u = -\bK
-      \sin\theta$</todo>
-
-    </example>
-  
-    </subsection>
- 
-    <subsection><h1>Alternatives for obtaining polynomial equations</h1>
-      <p>In practice, you can also Taylor approximate any smooth nonlinear
-      function using polynomials.  This can be an effective strategy in
-      practice, because you can limit the degrees of the polynomial, and because
-      in many cases it is possible to provide conservative bounds on the errors
-      due to the approximation.</p>
-
-      <p>One final technique that is worth knowing about is a change of
-      coordinates, often referred to as the <a
-      href="https://en.wikipedia.org/wiki/Stereographic_projection">
-      stereographic projection</a>, that provides a coordinate system in which
-      we can replace $\sin$ and $\cos$ with polynomials:
-      <figure>
-        <img width="70%" src="figures/stereographic.svg"/>
-        <figcaption>The stereographic projection.</figcaption>
-      </figure>
-      By projecting onto the line, and using similar triangles, we find that $p
-      = \frac{\sin\theta}{1 + \cos\theta}.$  Solving for $\sin\theta$ and
-      $\cos\theta$ reveals $$\cos\theta = \frac{1-p^2}{1+p^2}, \quad \sin\theta
-      = \frac{2p}{1+p^2}, \quad \text{and} \quad \frac{\partial p}{\partial
-      \theta} = \frac{1+p^2}{2},$$ where $\frac{\partial p}{\partial \theta}$
-      can be used in the chain rule to derive the dynamics $\dot{p}$.  Although
-      the equations are rational, they share the denominator $1+p^2$ and can be
-      treated efficiently in mass-matrix form.  Compared to the simple
-      substitution of $s=\sin\theta$ and $c=\cos\theta$, this is a minimal
-      representation (scalar to scalar, no $s^2+c^2=1$ required); unfortunately
-      it does have a singularity at $\theta=\pi$, so likely cannot be used for
-      global analysis.</p>
-  </subsection>
-  </section> <!-- end rigid bodies are polynomial -->
 
   <section id="control"><h1>Control design</h1>
 
@@ -2140,18 +2162,16 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 <span class="publisher">SIAM Review</span>, vol. 51, no. 4, pp. 722--743, <span class="year">2009</span>.
 
 </li><br>
-<li id=Tobenkin10b>
-<span class="author">Mark M. Tobenkin and Ian R. Manchester and Russ Tedrake</span>, 
-<span class="title">"Invariant Funnels around Trajectories using Sum-of-Squares Programming"</span>, 
-<span class="publisher">Proceedings of the 18th IFAC World Congress, extended version available online: arXiv:1010.3013 [math.DS]</span>, <span class="year">2011</span>.
-[&nbsp;<a href="http://arxiv.org/abs/1010.3013">link</a>&nbsp;]
+<li id=Mehrmann91>
+<span class="author">Volker Mehrmann</span>, 
+<span class="title">"The autonomous linear quadratic control problem: theory and numerical solution"</span>, Springer
+, no. 163, <span class="year">1991</span>.
 
 </li><br>
-<li id=Majumdar13f>
-<span class="author">Anirudha Majumdar</span>, 
-<span class="title">"Robust Online Motion Planning with Reachable Sets"</span>, 
-, May, <span class="year">2013</span>.
-[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar13f.pdf">link</a>&nbsp;]
+<li id=Stykel02>
+<span class="author">Tatjana Stykel</span>, 
+<span class="title">"Analysis and numerical solution of generalized {Lyapunov} equations"</span>, 
+<span class="publisher">Institut für Mathematik, Technische Universität, Berlin</span>, <span class="year">2002</span>.
 
 </li><br>
 <li id=Wampler11>
@@ -2166,16 +2186,18 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 , <span class="year">2005</span>.
 
 </li><br>
-<li id=Mehrmann91>
-<span class="author">Volker Mehrmann</span>, 
-<span class="title">"The autonomous linear quadratic control problem: theory and numerical solution"</span>, Springer
-, no. 163, <span class="year">1991</span>.
+<li id=Tobenkin10b>
+<span class="author">Mark M. Tobenkin and Ian R. Manchester and Russ Tedrake</span>, 
+<span class="title">"Invariant Funnels around Trajectories using Sum-of-Squares Programming"</span>, 
+<span class="publisher">Proceedings of the 18th IFAC World Congress, extended version available online: arXiv:1010.3013 [math.DS]</span>, <span class="year">2011</span>.
+[&nbsp;<a href="http://arxiv.org/abs/1010.3013">link</a>&nbsp;]
 
 </li><br>
-<li id=Stykel02>
-<span class="author">Tatjana Stykel</span>, 
-<span class="title">"Analysis and numerical solution of generalized {Lyapunov} equations"</span>, 
-<span class="publisher">Institut für Mathematik, Technische Universität, Berlin</span>, <span class="year">2002</span>.
+<li id=Majumdar13f>
+<span class="author">Anirudha Majumdar</span>, 
+<span class="title">"Robust Online Motion Planning with Reachable Sets"</span>, 
+, May, <span class="year">2013</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar13f.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Lind94>
