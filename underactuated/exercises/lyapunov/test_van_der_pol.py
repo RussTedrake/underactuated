@@ -11,7 +11,39 @@ class TestVanDerPol(unittest.TestCase):
         super().__init__(test_name)
         self.notebook_locals = notebook_locals
 
-    @weight(5)
+    @weight(1)
+    @timeout_decorator.timeout(5.)
+    def test_linearization(self):
+        """Test linearization matrix A"""
+        A = self.notebook_locals['A']
+        target_A = np.array([[0, -1], [1, -1]])
+        assert (
+            A.shape == (2, 2)
+        ), f"A must be a 2x2 matrix. Given A is {A.shape}"  # yapf: disable
+        err = np.linalg.norm(A - target_A)
+        self.assertLessEqual(err, 1e-8, "incorrect linearization matrix A")
+
+    @weight(1)
+    @timeout_decorator.timeout(5.)
+    def test_lyapunov_matrices(self):
+        """Test lyapunov matrices"""
+        A = self.notebook_locals['A']
+        Q = self.notebook_locals['Q']
+        P = self.notebook_locals['P']
+        assert (
+            Q.shape == (2, 2)
+        ), f"Q must be a 2x2 matrix. Given Q is {Q.shape}"  # yapf: disable
+        assert (
+            P.shape == (2, 2)
+        ), f"P must be a 2x2 matrix. Given P is {P.shape}"  # yapf: disable
+        target_Q = -(A.T @ P + P @ A)
+        np.testing.assert_array_almost_equal(
+            Q,
+            target_Q,
+            err_msg="A'P + PA is not equal to -Q.",
+        )
+
+    @weight(3)
     @timeout_decorator.timeout(5.)
     def test_method_1(self):
         """Test level set for Method 1"""
