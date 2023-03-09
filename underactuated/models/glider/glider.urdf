@@ -27,7 +27,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/fuselagev_main.obj" />
+          filename="package://underactuated/models/glider/meshes/fuselagev_main.obj" />
       </geometry>
       <material
         name="">
@@ -41,7 +41,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/fuselagev_main.obj" />
+          filename="package://underactuated/models/glider/meshes/fuselagev_main.obj" />
       </geometry>
     </collision>
     <visual>
@@ -50,7 +50,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/fuselagev_top.obj" />
+          filename="package://underactuated/models/glider/meshes/fuselagev_top.obj" />
       </geometry>
       <material
         name="">
@@ -64,7 +64,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/fuselagev_top.obj" />
+          filename="package://underactuated/models/glider/meshes/fuselagev_top.obj" />
       </geometry>
     </collision>
     <visual>
@@ -73,7 +73,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/fuselagev_vstab.obj" />
+          filename="package://underactuated/models/glider/meshes/fuselagev_vstab.obj" />
       </geometry>
       <material
         name="">
@@ -87,7 +87,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/fuselagev_vstab.obj" />
+          filename="package://underactuated/models/glider/meshes/fuselagev_vstab.obj" />
       </geometry>
     </collision>
     <visual>
@@ -96,7 +96,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/fuselageh_main.obj" />
+          filename="package://underactuated/models/glider/meshes/fuselageh_main.obj" />
       </geometry>
       <material
         name="">
@@ -110,7 +110,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/fuselageh_main.obj" />
+          filename="package://underactuated/models/glider/meshes/fuselageh_main.obj" />
       </geometry>
     </collision>
     <visual>
@@ -119,7 +119,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/fuselageh_hstab.obj" />
+          filename="package://underactuated/models/glider/meshes/fuselageh_hstab.obj" />
       </geometry>
       <material
         name="">
@@ -133,7 +133,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/fuselageh_hstab.obj" />
+          filename="package://underactuated/models/glider/meshes/fuselageh_hstab.obj" />
       </geometry>
     </collision>
     <visual>
@@ -142,7 +142,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/wing_left.obj" />
+          filename="package://underactuated/models/glider/meshes/wing_left.obj" />
       </geometry>
       <material
         name="">
@@ -155,7 +155,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/wing_left.obj" />
+          filename="package://underactuated/models/glider/meshes/wing_left.obj" />
       </geometry>
     </collision>
     <visual>
@@ -164,7 +164,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/wing_right.obj" />
+          filename="package://underactuated/models/glider/meshes/wing_right.obj" />
       </geometry>
       <material
         name="">
@@ -177,7 +177,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/wing_right.obj" />
+          filename="package://underactuated/models/glider/meshes/wing_right.obj" />
       </geometry>
     </collision>
   </link>
@@ -203,7 +203,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/elevator.obj" />
+          filename="package://underactuated/models/glider/meshes/elevator.obj" />
       </geometry>
       <material name="">
         <color rgba="0 .34 .9 1" />
@@ -215,7 +215,7 @@
         rpy="0 0 0" />
       <geometry>
         <mesh
-          filename="meshes/elevator.obj" />
+          filename="package://underactuated/models/glider/meshes/elevator.obj" />
       </geometry>
     </collision>
   </link>

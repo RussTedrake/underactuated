@@ -14,6 +14,12 @@ def FindResource(filename):
     return os.path.join(os.path.dirname(__file__), filename)
 
 
+def ConfigureParser(parser):
+    """Add the underactuated/package.xml index to the given pydrake Parser."""
+    package_xml = os.path.join(os.path.dirname(__file__), "package.xml")
+    parser.package_map().AddPackageXml(filename=package_xml)
+
+
 def Rgba2Hex(rgb):
     """
     Turn a list of R,G,B elements (any indexable list of >= 3 elements will

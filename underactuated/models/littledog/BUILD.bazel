@@ -6,6 +6,12 @@
 
 filegroup(
     name = "littledog",
-    srcs = ["LittleDog.urdf", "ground.urdf"] + glob(["meshes/*"]),
+    srcs = [
+        "LittleDog.urdf",
+        "ground.urdf",
+        "//underactuated:package.xml",
+    ] + glob([
+            "meshes/*",
+        ]),
     visibility = ["//visibility:public"],
 )
