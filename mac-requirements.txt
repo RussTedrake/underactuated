@@ -98,9 +98,10 @@ pandas==1.5.3
     # via -r mac-requirements.in
 pandocfilters==1.4.3
     # via nbconvert
-pillow==9.0.1
+pillow==9.4.0
     # via
     #   -r htmlbook/mac-requirements.in
+    #   -r mac-requirements.in
     #   matplotlib
 protobuf==3.14.0
     # via mysql-connector-python

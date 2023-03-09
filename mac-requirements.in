@@ -5,6 +5,7 @@ gradescope-utils>=0.4.0
 mpld3>=0.5.6 # for matplotlib>=3.5.0
 nbconvert>=6.4.2
 pandas>=1.4.1
+pillow>=9.4.0  # For python3.11
 pydot>=1.4.1
 PyYAML>=6.0
 scipy
