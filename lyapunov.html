@@ -514,7 +514,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <subsection><h1>Linear systems</h1>
 
-      <p>Let's take a moment to see how things play out for linear systems.</p>
+      <p>The Lyapunov conditions we've explored above take a particularly nice form for linear systems.</p>
 
       <theorem id="linear_lyapunov_eq"><h1>Lyapunov analysis for stable linear systems</h1>
 
@@ -544,14 +544,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <p>This is a very powerful result - for nonlinear systems it will be
       potentially difficult to find a Lyapunov function, but for linear systems
       it is straightforward. In fact, this result is often used to propose
-      candidate Lyapunov functions for non-linear systems, e.g., by linearizing
+      candidate Lyapunov functions for nonlinear systems, e.g., by linearizing
       the equations and solving a local linear Lyapunov function which should
       be valid in the vicinity of a fixed point.</p>
-
-    </subsection> <!-- lyapunov for linear -->
-
-    <subsection><h1>Lyapunov analysis as a semi-definite program
-    (SDP)</h1>
 
       <p>Lyapunov analysis for linear systems has an extremely important
       connection to convex optimization. In particular, we could have also
@@ -650,7 +645,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       type of analysis to more general nonlinear systems?  Surprisingly, it
       turns out that there is.</p>
 
-    </subsection>
+    </subsection> <!-- lyapunov for linear -->
 
     <subsection><h1>Global analysis for polynomial systems</h1>
 
@@ -729,13 +724,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       </example>
 
-      <p>It is important to remember that there are a handful of gaps which make
-      the existence of this solution a sufficient condition (for proving that
-      every sublevel set of $V$ is an invariant set of $f$) instead of a
-      necessary one.  First, there is no guarantee that a stable polynomial
-      system can be verified using a polynomial Lyapunov function (of any
-      degree, and in fact there are known counter-examples
-      <elib>Ahmadi11a</elib>) and here we are only searching over a fixed-degree
+      <p>It is important to remember that there are a handful of gaps which
+      make the existence of this solution a sufficient condition (to guarantee
+      that $V(x)$ is a Lyapunov function for $f(x)$) instead of a necessary
+      one.  First, there is no guarantee that a stable polynomial system can be
+      verified using a polynomial Lyapunov function (of any degree), and in fact
+      there are known counter-examples
+      <elib>Ahmadi11a</elib>; here we are only searching over a fixed-degree
       polynomial.  Second, even if a polynomial Lyapunov function does exist,
       there is a gap between the SOS polynomials and the positive
       polynomials<elib part="&sect;3.1">Blekherman13</elib>.</p>
@@ -753,10 +748,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       <p>Now we have arrived at the tool that I believe can be a work-horse for
       many serious robotics applications.  Most of our robots are not actually
-      globally stable (that's not because they are robots -- if you push me hard
-      enough, I will fall down, too), which means that understanding the regions
-      where a particular controller can be guaranteed to work can be of critical
-      importance.</p>
+      globally stable. That's not because they are robots -- if you push me
+      hard enough, I will fall down, too! Asking for global stability is too
+      much, but we can instead certify that our closed-loop systems behave well
+      over a sufficiently large region of state space (and potentially for a
+      range of possible parameters or disturbances). One of the simplest
+      versions of this is estimating the region of attraction to a fixed
+      point.</p>
 
       <p>Sums-of-squares optimization effectively gives us an oracle which we
       can ask: is this polynomial positive for all $\bx$?  To use this for
@@ -774,21 +772,24 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         find a polynomial "multiplier", $\lambda(\bx)$, such that \[ p(\bx) +
         \lambda^T(\bx) g(\bx) \sos, \quad \text{and} \quad \lambda(\bx) \sos,
         \] then this is sufficient to demonstrate that $$p(\bx)\ge 0 \quad
-        \forall \bx \in \{ \bx | g(\bx) \le 0 \}.$$  To convince yourself,
+        \forall \bx \in \{ \bx~|~g(\bx) \le 0 \}.$$  To convince yourself,
         observe that when $g(\bx) \le 0$, it is only harder to be positive, but
         when $g(\bx) > 0$, it is possible for the combined function to be SOS
         even if $p(\bx)$ is negative.  We will sometimes find it convenient to
         use the short-hand: $$g(\bx) \le 0 \Rightarrow p(\bx) \ge 0$$ to denote
-        the implication certified by the S-procedure, e.g. whenever $g(\bx) \le 0$, we have $p(\bx) \ge 0.$</p>
+        the implication certified by the S-procedure, e.g. whenever $g(\bx) \le
+        0$, we have $p(\bx) \ge 0.$</p>
 
         <p>We can also handle equality constraints with only a minor
         modification -- we no longer require the multiplier to be positive. If
         I can find a polynomial "multiplier", $\lambda(\bx)$, such that
         \[p(\bx) + \lambda^T(\bx) g(\bx) \sos \] then this is sufficient to
-        demonstrate that $$p(\bx)\ge 0 \quad \forall \bx \in \{ \bx | g(\bx) = 0
-        \}.$$  Here the intuition is that $\lambda(\bx)$ can add arbitrary
-        positive terms to help me be SOS, but those terms contribute nothing
-        precisely when $g(\bx)=0$.</p>
+        demonstrate that $$p(\bx)\ge 0 \quad \forall \bx \in \{ \bx | g(\bx) =
+        0 \}.$$  Note the difference: for $g(\bx)\le 0$ we needed $\lambda(\bx)
+        >= 0$, but for $g(\bx) = 0$, $\lambda(\bx)$ can be arbitrary.  The
+        intuition is that $\lambda(\bx)$ can add arbitrary positive terms to
+        help me be SOS, but those terms contribute nothing precisely when
+        $g(\bx)=0$.</p>
 
       </subsubsection>
 
@@ -804,7 +805,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         \lambda(\bx)(V(\bx) - \rho) \text{ is SOS,} \quad \text{and} \quad
         \lambda(\bx) \text{ is SOS},$$ where $\lambda(\bx)$ is a multiplier
         polynomial with free coefficients that are to be solved for in the
-        optimization.</p>
+        optimization. Note that we've carefully chosen to denote the region of
+        interest using a sub-level set of $V(\bx)$, so that we can be sure that
+        region is also an invariant set (one of the requirements for the region
+        of attraction analysis described above).</p>
 
         <p>I think it's easiest to see the details in an example.</p>
 
@@ -829,13 +833,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <p>In this example, we only verified that the one-sublevel set of the
         pre-specified Lyapunov candidate is negative (certifying the ROA that
-        we already understood).  Even more useful is if you are able to search
-        for the largest $\rho$ that can satisfy these conditions.
-        Unfortunately, in this first formulation, optimizing $\rho$ directly
-        would make the optimization problem non-convex because we would have
-        terms like $\rho c_0$, $\rho c_1 x$, which are bilinear in the
-        decision variables; we need the sums-of-squares constraints to be only
-        linear in the decision variables.</p>
+        we already understood).  More generally, we can replace the 1-sublevel
+        set with any constant value $\rho$. It is tempting to try to make
+        $\rho$ a decision variable that we could optimize, but this would make
+        the optimization problem non-convex because we would have terms like
+        $\rho c_0$, $\rho c_1 x$, which are bilinear in the decision variables.
+        We need the sums-of-squares constraints to be only linear in the
+        decision variables.</p>
 
         <p>Fortunately, because the problem is convex with $\rho$ fixed (and
         therefore can be solved reliably), and $\rho$ is just a scalar, we can
@@ -849,59 +853,6 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         numerics of the problem, and potentially make them much better for the
         solvers.  But you do not need to master them all in order to use the
         tools effectively.</p>
-
-        <example><h1>Region of Attraction codes in Drake</h1>
-
-          <p>In <drake></drake>, we have packaged most of the work in setting up
-          and solving the sums-of-squares optimization for regions of attraction
-          into a single method <code>RegionOfAttraction(system, context,
-          options)</code>. This makes it as simple as, for instance:</p>
-
-          <pre><code class="python">x = Variable("x")
-sys = SymbolicVectorSystem(state=[x], dynamics=[-x+x**3])
-context = sys.CreateDefaultContext()
-V = RegionOfAttraction(sys, context)
-          </code></pre>
-
-          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="cubic_poly"))</script>
-
-          <p>Remember that although we have tried to make it convenient to call
-          these functions, they are not a black box.  I highly recommend
-          opening up the code implementing the <code>RegionOfAttraction</code>
-          method and understanding how it works (even if you don't love C++,
-          the <code>MathematicalProgram</code> modeling language in Drake makes
-          these formulations pretty readable). There are lots of different
-          options / formulations, and numerous numerical recipes to improve the
-          numerics of the optimization problem.</p>
-        </example>
-
-        <p>In order to develop our intuition for these tools, it is helpful to
-        understand how "tight" the inner approximation can be for each choice
-        of the fixed degree of the Lyapunov function / Lagrange multipliers.
-        I've included below a few of my favorite examples of nonlinear systems
-        which use some clever construction to have <i>known</i> regions of
-        attraction.</p>
-
-        <example><h1>Region of attraction for the time-reversed Van der Pol oscillator</h1>
-
-          <p>We will study the Van der Pol oscillator in more detail when we
-          study limit cycles. For now, it suffices to know that the dynamics
-          are polynomial, and that the stable limit cycle of the system when
-          simulated forward in time produces a known (via numerical
-          integration) boundary for the region of attraction of the fixed point
-          at the origin when we simulate the system <i>backwards</i> in
-          time.</p>
-
-          <todo>Figure here</todo>
-
-          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="van_der_pol"))</script>
-
-          <p>I've provided an example here for solving this problem with the
-          <code>RegionOfAttraction</code> in Drake, but we will also work you
-          through writing the sums-of-squares problem yourself in the <a
-          href="#van_der_pol_roa">exercises</a>.</p>
-
-        </example>
 
       </subsubsection>
 
@@ -1168,94 +1119,87 @@ V = RegionOfAttraction(sys, context)
 
       </subsubsection>
 
+      <subsubsection><h1>Regions of attraction codes in Drake</h1>
+
+        <p>In <drake></drake>, we have packaged most of the work in setting up
+        and solving the sums-of-squares optimization for regions of attraction
+        into a single method <code>RegionOfAttraction(system, context,
+        options)</code>, which aims to implement the best methods described in
+        this chapter.</p>
+
+        <example><h1>RegionOfAttraction for the cubic polynomial</h1>
+
+          <p>Using the <code>RegionOfAttraction</code> method, many of the notebooks above can be reduced to just a few lines:</p>
+
+          <pre><code class="python">x = Variable("x")
+sys = SymbolicVectorSystem(state=[x], dynamics=[-x+x**3])
+context = sys.CreateDefaultContext()
+V = RegionOfAttraction(sys, context)
+          </code></pre>
+
+          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="cubic_poly"))</script>
+
+          <p>Remember that although we have tried to make it convenient to call
+          these functions, they are not a black box.  I highly recommend
+          opening up the code implementing the <code>RegionOfAttraction</code>
+          method and understanding how it works (even if you don't love C++,
+          the <code>MathematicalProgram</code> modeling language in Drake makes
+          these formulations pretty readable). There are lots of different
+          options / formulations, and numerous numerical recipes to improve the
+          numerics of the optimization problem.</p>
+        </example>
+
+        <p>In order to develop our intuition for these tools, it is helpful to
+        understand how "tight" the inner approximation can be for each choice
+        of the fixed degree of the Lyapunov function / Lagrange multipliers.
+        I've included below a few of my favorite examples of nonlinear systems
+        which use some clever construction to have <i>known</i> regions of
+        attraction.</p>
+
+        <example><h1>Region of attraction for the time-reversed Van der Pol oscillator</h1>
+
+          <p>We will study the Van der Pol oscillator in more detail when we
+          study limit cycles. For now, it suffices to know that the dynamics
+          are polynomial, and that the stable limit cycle of the system when
+          simulated forward in time produces a known (via numerical
+          integration) boundary for the region of attraction of the fixed point
+          at the origin when we simulate the system <i>backwards</i> in
+          time.</p>
+
+          <todo>Figure here</todo>
+
+          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="van_der_pol"))</script>
+
+          <p>I've provided an example here for solving this problem with the
+          <code>RegionOfAttraction</code> in Drake, but we will also work you
+          through writing the sums-of-squares problem yourself in the <a
+          href="#van_der_pol_roa">exercises</a>.</p>
+
+        </example>
+
+      </subsubsection>      
     </subsection> <!-- ROA for polynomial -->
 
-    <subsection id="implicit"><h1>Verifying dynamics in implicit form</h1>
+    <subsection><h1>Robustness analysis using the S-procedure</h1>
+    
+    </subsection>
 
-      <p>Typically we write our differential equations in the form $\dot\bx =
-      {\bf f}(\bx, \bu).$  But let us consider for a moment the case where the
-      dynamics are given in the form $${\bf g}(\bx, \bu, \dot\bx ) = 0.$$ This
-      form is strictly more general because I can always write ${\bf
-      g}(\bx,\bu,\dot\bx) = f(\bx,\bu) - \dot\bx$, but importantly here I can
-      also write the bottom rows of ${\bf g}$ as $\bM(\bq)\ddot\bq +
-      \bC(\bq,\dot\bq)\dot\bq - \btau_g - \bB \bu$.  This form can also
-      represent <a
-      href="https://en.wikipedia.org/wiki/Differential-algebraic_system_of_equations">differential
-      algebraic equations (DAEs)</a> which are more general than ODEs; $\bg$
-      could even include algebraic constraints like $s_i^2 + c_i^2 - 1$.  Most
-      importantly, for manipulators, ${\bf g}$ can be polynomial, even if ${\bf
-      f}$ would have been rational.  <drake></drake> provides access to
-      continuous-time dynamics in implicit form via the <a
-      href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1_system.html#a2bb4c1e3572a8009863b5a342fcb5c49"><code>CalcImplicitTimeDerivativesResidual</code></a>
-      method.</p>
+    <subsection><h1>Piecewise-polynomial systems</h1>
 
-      <p>We typically write a linear system in implicit form as $${\bf
-      E}\dot\bx = \bA\bx + \bB\bu.$$ Systems in this form are particularly
-      interesting when ${\bf E}$ is singular, and are known as descriptor
-      systems, semistate systems, generalized state-space systems or just
-      singular systems (c.f. <elib>Mehrmann91</elib>).  Just like our standard
-      approach to linearization, we can potentially obtain the matrices ${\bf
-      E}, \bA, \bB$ from a first-order Taylor approximation of the nonlinear
-      equations in ${\bf g}(\bx,\dot\bx,\bu).$  When it comes to Lyapunov
-      analysis, linear systems are often analyzed using the so-called
-      "generalized Lyapunov equation".</p> 
-      
-      <theorem><h1>Lyapunov analysis for implicit linear systems</h1>
+      <example><h1>Closed-loop dynamics with input saturations</h1>
+      </example>
 
-        <p>Given a linear system in the form ${\bf E}\dot\bx = \bA\bx,$ the
-        origin is asymptotically stable if there exists a matrix ${\bf P}$ such
-        that $${\bf P} = {\bf P}^T \succ 0, \quad \bA^T {\bf P}{\bf E} + {\bf
-        E}^T {\bf P} \bA \prec 0.$$ Furthermore, if such a ${\bf P}$ exists,
-        then we can obtain one by solving the <i>generalized Lyapunov
-        equation</i>: $$\bA^T {\bf P}{\bf E} + {\bf E}^T {\bf P} \bA = -{\bf
-        Q},$$ for any ${\bf Q} \succ 0$ <elib part="Ch 4">Stykel02</elib>.
-        </p>
-
-      </theorem>
-
-      <p>This can be verified by taking $$V(\bx) = \bx^T {\bf E}^T {\bf P}{\bf
-      E} \bx,$$ as the Lyapunov function.  A corresponding approach can be used
-      (e.g. via sums-of-squares) for implicit nonlinear systems like our
-      manipulator equations where ${\bf g}(\bx,\dot\bx)=0$ can be written in
-      the form ${\bf E}(\bx) \dot\bx = {\bf f}(\bx).$ </p>
-      <todo>Flesh this out and add an example.  $V(\bx) = \bx^T {\bf E}^T(\bx)
-      {\bf P}{\bf E}(\bx) \bx$ seems a natural choice of Lyapunov candidates. V
-      = v'M(q)'PM(q)v + q'Qq could bea natural form for manipulators (do I need
-      q-v cross terms?); it looks a bit like kinetic energy...</todo>
-
-      <p>Alternatively, we can check the Lyapunov conditions, $\dot{V}(\bx) \le
-      0$, directly on a system in its implicit form, $\bg(\bx,\dot\bx)=0$.
-      Simply define a new function $Q(\bx, \bz) = \frac{\partial
-      V(\bx)}{\partial \bx} \bz.$ If we can show $Q(\bx, \bz) \le 0, \forall
-      \bx,\bz \in \{ \bx, \bz | \bg(\bx,\bz) = 0 \}$ using SOS, then we have
-      verified that $\dot{V}(\bx) \le 0$, albeit at the non-trivial cost of
-      adding indeterminates $\bz$ and an additional S-procedure.</p>
-
-      <p>To combine the trigonometric substitutions with the implicit form for
-      a simple second-order system (where the number of positions is equal to
-      the number of velocities), we use ${\bf z}$ to represent the implicit
-      $\ddot{\bq}$ and convert \begin{gather*} V(\bq, \dot\bq) \Rightarrow
-      V({\bf s}, {\bf c}, \dot\bq) \\ {\bf g}(\bq, \dot\bq, {\bf z})
-      \Rightarrow {\bf g}({\bf s}, {\bf c}, \dot\bq, {\bf z}), \end{gather*}
-      and write the Lyapunov conditions using $\dot{V} = \sum_i \pd{V}{s_i} c_i
-      \dot{q}_i - \sum_i \pd{V}{c_i}s_i \dot{q}_i + \pd{V}{\dot\bq} \bz.$  The
-      most common case for the number of positions is not equal to the number
-      of velocities is when we deal with 3D rotations represented by unit
-      quaternions; this case can be handled using the implicit form, too (we
-      use the implicit form to relate $\dot{q}$ to the velocities and verify
-      the Lyapunov conditions only on the manifold defined by the quaternion
-      unit norm constraint).</p>
     </subsection>
 
     <subsection><h1>Rigid-body dynamics are (rational) polynomial</h1>
 
       <p>We've been talking a lot in this chapter about numerical methods for
-      polynomial systems.  But even our simple pendulum has a $\sin\theta$ in the
-      dynamics.  Have I been wasting your time?  Must we just resort to polynomial
-      approximations of the non-polynomial equations?  It turns out that our
-      polynomial tools can perform exact analysis of the manipulation equation for
-      almost all&dagger;<sidenote>&dagger;the most notable exception to this is if
-      your robot has helical/screw joints (see
+      polynomial systems.  But even our simple pendulum has a $\sin\theta$ in
+      the dynamics.  Have I been wasting your time?  Must we just resort to
+      polynomial approximations of the non-polynomial equations?  It turns out
+      that our polynomial tools can perform exact analysis of the manipulation
+      equation for almost all&dagger;<sidenote>&dagger;the most notable
+      exception to this is if your robot has helical/screw joints (see
       <elib>Wampler11</elib>).</sidenote>of our robots.  We just have to do a
       little more work to reveal that structure.</p>
 
@@ -1350,44 +1294,45 @@ V = RegionOfAttraction(sys, context)
       <subsubsection id="trig_quadratic"><h1>Linear feedback and quadratic
       forms</h1>
 
-      <p>There are a few things that <i>do</i> break this clean polynomial view
-      of the world.  Rotary springs, for instance, if modeled as $\tau = k
-      (\theta_0 - \theta)$ will mean that $\theta$ appears alongside
-      $\sin\theta$ and $\cos\theta$, and the relationship between $\theta$ and
-      $\sin\theta$ is sadly <i>not polynomial</i>.  As we have presented it so
-      far, even linear feedback from LQR actually looks like a linear
-      spring.</p> 
-      
-      <p>Looking more closely, though, there is a natural alternative. Consider
-      the mechanical energy of the simple pendulum , $E = \frac{1}{2}ml^2
-      \dot\theta^2 + mgl(1- \cos\theta),$ where we've taken the potential energy
-      so that $E \ge 0$).  Observe that using half-angle formulas  we can write
-      this as a quadratic form: $$E = \frac{1}{2} \begin{bmatrix}
-      2\sin(\frac{\theta}{2}) \\ \dot\theta \end{bmatrix}^T \begin{bmatrix} mgl &
-      0 \\ 0 & ml^2 \end{bmatrix} \begin{bmatrix} 2\sin(\frac{\theta}{2}) \\
-      \dot\theta \end{bmatrix}.$$  The term $2 \sin(\frac{\theta}{2})$ has slope
-      one at $\theta = 0$. This isn't unique to the pendulum,
-      $2\sin^2(\frac{\theta}{2})$ is a natural choice for a Lyapunov candidate in
-      the trigonometric coordinates that is periodic in $2\pi.$  In the case of
-      LQR applied to the linearization of a nonlinear mechanical system, one
-      could replace $-k \theta$ with $-2 k \sin(\frac{\theta}{2})$; after all
-      their linearization is the same.</p>
+        <p>There are a few things that <i>do</i> break this clean polynomial
+        view of the world.  Rotary springs, for instance, if modeled as $\tau =
+        k (\theta_0 - \theta)$ will mean that $\theta$ appears alongside
+        $\sin\theta$ and $\cos\theta$, and the relationship between $\theta$
+        and $\sin\theta$ is sadly <i>not polynomial</i>.  As we have presented
+        it so far, even linear feedback from LQR actually looks like a linear
+        spring.</p> 
+        
+        <p>Looking more closely, though, there is a natural alternative.
+        Consider the mechanical energy of the simple pendulum , $E =
+        \frac{1}{2}ml^2 \dot\theta^2 + mgl(1- \cos\theta),$ where we've taken
+        the potential energy so that $E \ge 0$).  Observe that using half-angle
+        formulas  we can write this as a quadratic form: $$E = \frac{1}{2}
+        \begin{bmatrix} 2\sin(\frac{\theta}{2}) \\ \dot\theta \end{bmatrix}^T
+        \begin{bmatrix} mgl & 0 \\ 0 & ml^2 \end{bmatrix} \begin{bmatrix}
+        2\sin(\frac{\theta}{2}) \\ \dot\theta \end{bmatrix}.$$  The term $2
+        \sin(\frac{\theta}{2})$ has slope one at $\theta = 0$. This isn't
+        unique to the pendulum, $2\sin^2(\frac{\theta}{2})$ is a natural choice
+        for a Lyapunov candidate in the trigonometric coordinates that is
+        periodic in $2\pi.$  In the case of LQR applied to the linearization of
+        a nonlinear mechanical system, one could replace $-k \theta$ with $-2 k
+        \sin(\frac{\theta}{2})$; after all their linearization is the same.</p>
 
-      <example><h1>Regions of attraction for LQR of trigonometric systems</h1>
+        <example><h1>Regions of attraction for LQR of trigonometric systems</h1>
 
-        <todo>example of design + certification of LQR using $u = -\bK
-        \sin\theta$</todo>
+          <todo>example of design + certification of LQR using $u = -\bK
+          \sin\theta$</todo>
 
-      </example>
+        </example>
 
       </subsubsection>
 
       <subsubsection><h1>Alternatives for obtaining polynomial equations</h1>
+
         <p>In practice, you can also Taylor approximate any smooth nonlinear
         function using polynomials.  This can be an effective strategy in
-        practice, because you can limit the degrees of the polynomial, and because
-        in many cases it is possible to provide conservative bounds on the errors
-        due to the approximation.</p>
+        practice, because you can limit the degrees of the polynomial, and
+        because in many cases it is possible to provide conservative bounds on
+        the errors due to the approximation.</p>
 
         <p>One final technique that is worth knowing about is a change of
         coordinates, often referred to as the <a
@@ -1398,20 +1343,98 @@ V = RegionOfAttraction(sys, context)
           <img width="70%" src="figures/stereographic.svg"/>
           <figcaption>The stereographic projection.</figcaption>
         </figure>
-        By projecting onto the line, and using similar triangles, we find that $p
-        = \frac{\sin\theta}{1 + \cos\theta}.$  Solving for $\sin\theta$ and
-        $\cos\theta$ reveals $$\cos\theta = \frac{1-p^2}{1+p^2}, \quad \sin\theta
-        = \frac{2p}{1+p^2}, \quad \text{and} \quad \frac{\partial p}{\partial
-        \theta} = \frac{1+p^2}{2},$$ where $\frac{\partial p}{\partial \theta}$
-        can be used in the chain rule to derive the dynamics $\dot{p}$.  Although
-        the equations are rational, they share the denominator $1+p^2$ and can be
-        treated efficiently in mass-matrix form.  Compared to the simple
-        substitution of $s=\sin\theta$ and $c=\cos\theta$, this is a minimal
-        representation (scalar to scalar, no $s^2+c^2=1$ required); unfortunately
-        it does have a singularity at $\theta=\pi$, so likely cannot be used for
-        global analysis.</p>
-    </subsubsection>
-  </subsection>
+        By projecting onto the line, and using similar triangles, we find that
+        $p = \frac{\sin\theta}{1 + \cos\theta}.$  Solving for $\sin\theta$ and
+        $\cos\theta$ reveals $$\cos\theta = \frac{1-p^2}{1+p^2}, \quad
+        \sin\theta = \frac{2p}{1+p^2}, \quad \text{and} \quad \frac{\partial
+        p}{\partial \theta} = \frac{1+p^2}{2},$$ where $\frac{\partial
+        p}{\partial \theta}$ can be used in the chain rule to derive the
+        dynamics $\dot{p}$.  Although the equations are rational, they share
+        the denominator $1+p^2$ and can be treated efficiently in mass-matrix
+        form.  Compared to the simple substitution of $s=\sin\theta$ and
+        $c=\cos\theta$, this is a minimal representation (scalar to scalar, no
+        $s^2+c^2=1$ required); unfortunately it does have a singularity at
+        $\theta=\pi$, so likely cannot be used for global analysis.</p>
+      </subsubsection>
+    </subsection>
+
+    <subsection id="implicit"><h1>Verifying dynamics in implicit form</h1>
+
+      <p>Typically we write our differential equations in the form $\dot\bx =
+      {\bf f}(\bx, \bu).$  But let us consider for a moment the case where the
+      dynamics are given in the form $${\bf g}(\bx, \bu, \dot\bx ) = 0.$$ This
+      form is strictly more general because I can always write ${\bf
+      g}(\bx, \bu, \dot\bx) = f(\bx \bu) - \dot\bx$, but importantly here I can
+      also write the bottom rows of ${\bf g}$ as $\bM(\bq)\ddot\bq +
+      \bC(\bq,\dot\bq)\dot\bq - \btau_g - \bB \bu$.  This form can also
+      represent <a
+      href="https://en.wikipedia.org/wiki/Differential-algebraic_system_of_equations">differential
+      algebraic equations (DAEs)</a> which are more general than ODEs; $\bg$
+      could even include algebraic constraints like $s_i^2 + c_i^2 - 1$.  Most
+      importantly, for manipulators, ${\bf g}$ can be polynomial, even if ${\bf
+      f}$ would have been rational.  <drake></drake> provides access to
+      continuous-time dynamics in implicit form via the <a
+      href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1_system.html#a2bb4c1e3572a8009863b5a342fcb5c49"><code>CalcImplicitTimeDerivativesResidual</code></a>
+      method.</p>
+
+      <p>We typically write a linear system in implicit form as $${\bf
+      E}\dot\bx = \bA\bx + \bB\bu.$$ Systems in this form are particularly
+      interesting when ${\bf E}$ is singular, and are known as descriptor
+      systems, semistate systems, generalized state-space systems or just
+      singular systems (c.f. <elib>Mehrmann91</elib>).  Just like our standard
+      approach to linearization, we can potentially obtain the matrices ${\bf
+      E}, \bA, \bB$ from a first-order Taylor approximation of the nonlinear
+      equations in ${\bf g}(\bx,\dot\bx,\bu).$  When it comes to Lyapunov
+      analysis, linear systems are often analyzed using the so-called
+      "generalized Lyapunov equation".</p> 
+      
+      <theorem><h1>Lyapunov analysis for implicit linear systems</h1>
+
+        <p>Given a linear system in the form ${\bf E}\dot\bx = \bA\bx,$ the
+        origin is asymptotically stable if there exists a matrix ${\bf P}$ such
+        that $${\bf P} = {\bf P}^T \succ 0, \quad \bA^T {\bf P}{\bf E} + {\bf
+        E}^T {\bf P} \bA \prec 0.$$ Furthermore, if such a ${\bf P}$ exists,
+        then we can obtain one by solving the <i>generalized Lyapunov
+        equation</i>: $$\bA^T {\bf P}{\bf E} + {\bf E}^T {\bf P} \bA = -{\bf
+        Q},$$ for any ${\bf Q} \succ 0$ <elib part="Ch 4">Stykel02</elib>.
+        </p>
+
+      </theorem>
+
+      <p>This can be verified by taking $$V(\bx) = \bx^T {\bf E}^T {\bf P}{\bf
+      E} \bx,$$ as the Lyapunov function.  A corresponding approach can be used
+      (e.g. via sums-of-squares) for implicit nonlinear systems like our
+      manipulator equations where ${\bf g}(\bx,\dot\bx)=0$ can be written in
+      the form ${\bf E}(\bx) \dot\bx = {\bf f}(\bx).$ </p>
+      <todo>Flesh this out and add an example.  $V(\bx) = \bx^T {\bf E}^T(\bx)
+      {\bf P}{\bf E}(\bx) \bx$ seems a natural choice of Lyapunov candidates. V
+      = v'M(q)'PM(q)v + q'Qq could bea natural form for manipulators (do I need
+      q-v cross terms?); it looks a bit like kinetic energy...</todo>
+
+      <p>Alternatively, we can check the Lyapunov conditions, $\dot{V}(\bx) \le
+      0$, directly on a system in its implicit form, $\bg(\bx,\dot\bx)=0$.
+      Simply define a new function $Q(\bx, \bz) = \frac{\partial
+      V(\bx)}{\partial \bx} \bz.$ If we can show $Q(\bx, \bz) \le 0, \forall
+      \bx,\bz \in \{ \bx, \bz | \bg(\bx,\bz) = 0 \}$ using SOS, then we have
+      verified that $\dot{V}(\bx) \le 0$, albeit at the non-trivial cost of
+      adding indeterminates $\bz$ and an additional S-procedure.</p>
+
+      <p>To combine the trigonometric substitutions with the implicit form for
+      a simple second-order system (where the number of positions is equal to
+      the number of velocities), we use ${\bf z}$ to represent the implicit
+      $\ddot{\bq}$ and convert \begin{gather*} V(\bq, \dot\bq) \Rightarrow
+      V({\bf s}, {\bf c}, \dot\bq) \\ {\bf g}(\bq, \dot\bq, {\bf z})
+      \Rightarrow {\bf g}({\bf s}, {\bf c}, \dot\bq, {\bf z}), \end{gather*}
+      and write the Lyapunov conditions using $\dot{V} = \sum_i \pd{V}{s_i} c_i
+      \dot{q}_i - \sum_i \pd{V}{c_i}s_i \dot{q}_i + \pd{V}{\dot\bq} \bz.$  The
+      most common case for the number of positions is not equal to the number
+      of velocities is when we deal with 3D rotations represented by unit
+      quaternions; this case can be handled using the implicit form, too (we
+      use the implicit form to relate $\dot{q}$ to the velocities and verify
+      the Lyapunov conditions only on the manifold defined by the quaternion
+      unit norm constraint).</p>
+    </subsection>
+
   </section> 
 
   <section id="finite-time"><h1>Finite-time Reachability</h1>
@@ -1763,6 +1786,12 @@ V = RegionOfAttraction(sys, context)
   </section>
 
   <section><h1>Alternative computational approaches</h1>
+
+    <subsection><h1>Sampling Quotient-Ring Sum-of-Squares</h1>
+    
+      <p><elib>Shen20</elib></p>
+
+    </subsection>
 
     <subsection><h1>"Satisfiability modulo theories" (SMT)
       </h1>
@@ -2162,18 +2191,6 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 <span class="publisher">SIAM Review</span>, vol. 51, no. 4, pp. 722--743, <span class="year">2009</span>.
 
 </li><br>
-<li id=Mehrmann91>
-<span class="author">Volker Mehrmann</span>, 
-<span class="title">"The autonomous linear quadratic control problem: theory and numerical solution"</span>, Springer
-, no. 163, <span class="year">1991</span>.
-
-</li><br>
-<li id=Stykel02>
-<span class="author">Tatjana Stykel</span>, 
-<span class="title">"Analysis and numerical solution of generalized {Lyapunov} equations"</span>, 
-<span class="publisher">Institut für Mathematik, Technische Universität, Berlin</span>, <span class="year">2002</span>.
-
-</li><br>
 <li id=Wampler11>
 <span class="author">Charles W. Wampler and Andrew J. Sommese</span>, 
 <span class="title">"Numerical algebraic geometry and algebraic kinematics"</span>, 
@@ -2184,6 +2201,18 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 <span class="author">A.J. Sommese and C.W. Wampler</span>, 
 <span class="title">"The Numerical solution of systems of polynomials arising in engineering and science"</span>, World Scientific Pub Co Inc
 , <span class="year">2005</span>.
+
+</li><br>
+<li id=Mehrmann91>
+<span class="author">Volker Mehrmann</span>, 
+<span class="title">"The autonomous linear quadratic control problem: theory and numerical solution"</span>, Springer
+, no. 163, <span class="year">1991</span>.
+
+</li><br>
+<li id=Stykel02>
+<span class="author">Tatjana Stykel</span>, 
+<span class="title">"Analysis and numerical solution of generalized {Lyapunov} equations"</span>, 
+<span class="publisher">Institut für Mathematik, Technische Universität, Berlin</span>, <span class="year">2002</span>.
 
 </li><br>
 <li id=Tobenkin10b>
