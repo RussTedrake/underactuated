@@ -1006,13 +1006,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
           attraction, this does not imply that the regions we are certifying
           need to be convex.  To demonstrate that, let's make a system with a
           known, non-convex region of attraction.  We'll do this by taking some
-          interesting potential function $U(x) \in SOS$ and setting the
-          dynamics to be $\dot{x} = (U(x)-1) \frac{\partial U}{\partial x}^T$,
-          which has $U(x) <= 1$ as the region of attraction.</p>
+          interesting potential function, $U(\bx)$ is SOS, and setting the
+          dynamics to be $$\dot{\bx} = (U(\bx)-1) \frac{\partial U}{\partial
+          \bx}^T,$$ which has $U(x) <= 1$ as the region of attraction.</p>
 
-          <p>Slightly more general is to write $\dot{x} = (U(x)-1) {\bf
-          R}(\theta) \frac{\partial U}{\partial x}^T$, where ${\bf R}(\theta) =
-          \begin{bmatrix} \cos\theta & \sin\theta \\ -\sin\theta &
+          <p>Slightly more general is to write $$\dot{\bx} = (U(\bx)-1) {\bf
+          R}(\theta) \frac{\partial U}{\partial \bx}^T,$$ where ${\bf R}(\theta)
+          = \begin{bmatrix} \cos\theta & \sin\theta \\ -\sin\theta &
           \cos\theta\end{bmatrix}$ is the 2D rotation matrix, and $\theta<\pi$
           is a constant parameter (not a decision variable nor indeterminate),
           which still has the same region of attraction.</p>
