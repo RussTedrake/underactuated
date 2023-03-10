@@ -11,7 +11,7 @@
     </inertial>
     <visual>
       <geometry>
-        <mesh filename="meshes/body.obj" scale=".0254 .0254 .0254" />
+        <mesh filename="package://underactuated/models/littledog/meshes/body.obj" scale=".0254 .0254 .0254" />
       </geometry>
       <material name="black">
       	<color rgba="0.1 0.1 0.1 1" />
@@ -29,7 +29,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="meshes/front_left_hip.obj" scale=".0254 .0254 .0254"/>
+        <mesh filename="package://underactuated/models/littledog/meshes/front_left_hip.obj" scale=".0254 .0254 .0254"/>
       </geometry>
       <material name="black" />
     </visual>
@@ -58,7 +58,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="meshes/front_left_upper.obj" scale=".0254 .0254 .0254"/>
+        <mesh filename="package://underactuated/models/littledog/meshes/front_left_upper.obj" scale=".0254 .0254 .0254"/>
       </geometry>
       <material name="black" />
     </visual>
@@ -86,7 +86,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="meshes/front_left_lower.obj" scale="0.0254 0.0254 0.0254"/>
+        <mesh filename="package://underactuated/models/littledog/meshes/front_left_lower.obj" scale="0.0254 0.0254 0.0254"/>
       </geometry>
       <material name="black" />
     </visual>
@@ -129,7 +129,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="meshes/front_right_hip.obj" scale="0.0254 0.0254 0.0254"/>
+        <mesh filename="package://underactuated/models/littledog/meshes/front_right_hip.obj" scale="0.0254 0.0254 0.0254"/>
       </geometry>
       <material name="black" />
     </visual>
@@ -158,7 +158,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="meshes/front_right_upper.obj" scale="0.0254 0.0254 0.0254"/>
+        <mesh filename="package://underactuated/models/littledog/meshes/front_right_upper.obj" scale="0.0254 0.0254 0.0254"/>
       </geometry>
       <material name="black"/>
     </visual>
@@ -186,7 +186,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="meshes/front_right_lower.obj" scale="0.0254 0.0254 0.0254"/>
+        <mesh filename="package://underactuated/models/littledog/meshes/front_right_lower.obj" scale="0.0254 0.0254 0.0254"/>
       </geometry>
       <material name="black"/>
     </visual>
@@ -228,7 +228,7 @@
 <!--    <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="meshes/back_left_hip.obj" scale="0.0254 0.0254 0.0254"/>
+        <mesh filename="package://underactuated/models/littledog/meshes/back_left_hip.obj" scale="0.0254 0.0254 0.0254"/>
       </geometry>
       <material name="black" />
     </visual>
@@ -257,7 +257,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="meshes/back_left_upper.obj" scale="0.0254 0.0254 0.0254"/>
+        <mesh filename="package://underactuated/models/littledog/meshes/back_left_upper.obj" scale="0.0254 0.0254 0.0254"/>
       </geometry>
       <material name="black" />
     </visual>
@@ -285,7 +285,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="meshes/back_left_lower.obj" scale="0.0254 0.0254 0.0254"/>
+        <mesh filename="package://underactuated/models/littledog/meshes/back_left_lower.obj" scale="0.0254 0.0254 0.0254"/>
       </geometry>
       <material name="black" />
     </visual>
@@ -327,7 +327,7 @@
 <!--    <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="meshes/back_right_hip.obj" scale="0.0254 0.0254 0.0254"/>
+        <mesh filename="package://underactuated/models/littledog/meshes/back_right_hip.obj" scale="0.0254 0.0254 0.0254"/>
       </geometry>
       <material name="black" />
     </visual>
@@ -356,7 +356,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="meshes/back_right_upper.obj" scale="0.0254 0.0254 0.0254"/>
+        <mesh filename="package://underactuated/models/littledog/meshes/back_right_upper.obj" scale="0.0254 0.0254 0.0254"/>
       </geometry>
       <material name="black" />
     </visual>
@@ -384,7 +384,7 @@
     <visual>
       <origin xyz="0 0 0" rpy="0 0 0" />
       <geometry>
-        <mesh filename="meshes/back_right_lower.obj" scale="0.0254 0.0254 0.0254"/>
+        <mesh filename="package://underactuated/models/littledog/meshes/back_right_lower.obj" scale="0.0254 0.0254 0.0254"/>
       </geometry>
       <material name="black" />
     </visual>

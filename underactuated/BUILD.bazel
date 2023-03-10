@@ -6,6 +6,13 @@
 
 load("//htmlbook/tools/python:defs.bzl", "rt_py_library")
 
+exports_files(
+    [
+        "package.xml",
+    ],
+    visibility = ["//visibility:public"],
+)
+
 rt_py_library(
     name = "underactuated",
     srcs = [
@@ -16,6 +23,9 @@ rt_py_library(
         "pyplot_visualizer.py",
         "scenarios.py",
         "utils.py",
+    ],
+    data = [
+        "package.xml",
     ],
     imports = [".."],
     visibility = ["//visibility:public"],

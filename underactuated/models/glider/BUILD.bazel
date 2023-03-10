@@ -6,6 +6,11 @@
 
 filegroup(
     name = "glider",
-    srcs = ["glider.urdf"] + glob(["meshes/*.obj"]),
+    srcs = [
+        "glider.urdf",
+        "//underactuated:package.xml",
+    ] + glob([
+        "meshes/*.obj",
+    ]),
     visibility = ["//visibility:public"],
 )
