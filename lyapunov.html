@@ -650,25 +650,41 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     <subsection><h1>Global analysis for polynomial systems</h1>
 
       <p><a href="optimization.html#sums_of_squares">Sums of squares
-      optimization</a> provides a natural generalization of SDP to optimizing
-      over positive polynomials (if you are not familiar, take a moment to <a
-      href="optimization.html#sums_of_squares">read the appendix</a>).  This
-      suggests that it may be possible to generalize the optimization approach
-      using SDP to search for Lyapunov functions for linear systems to
-      searching for Lyapunov functions for at least the polynomial systems:
-      $\dot\bx = f(\bx),$ where $f$ is a vector-valued polynomial function.  If
-      we parameterize a <em>fixed-degree</em> Lyapunov candidate as a
+      optimization</a> provides a natural generalization of the SDP formulation
+      to nonlinear systems. In linear systems, we searched over $V(\bx) = \bx^T
+      {\bf P} \bx, {\bf P} \succeq 0.$ In the nonlinear generalization, we
+      search over $$V(\bx) = {\bf m}^T(\bx) {\bf P} {\bf m}(\bx),\quad {\bf P}
+      \succeq 0,$$ with ${\bf m}(\bx)$ a set of nonlinear basis functions. This
+      is a linear (in the parameters ${\bf P}$) function approximator which is
+      guaranteed to be strictly positive by virtue of being a sum of squares.
+      While the positivity of this sums of squares is valid for any choice of
+      ${\bf m}(\bx)$, the recipe is particularly powerful for polynomials,
+      because for any polynomial, $p(\bx)$, we can confirm its positivity by
+      creating a surrogate sums-of-squares representation, where we have strong
+      recipes for automatically choosing good bases ${\bf m}(\bx)$ given a
+      polynomial $p(\bx)$, and we can constrain that $p(\bx) = {\bf m}^T(\bx)
+      {\bf P} {\bf m}(\bx)$ with <i>linear</i> constraints relating the
+      coefficients of $p(\bx)$ with the coefficient in ${\bf P}$.</p>
+      
+      <p>This suggests that it may be possible to generalize the optimization
+      approach using SDP to search for Lyapunov functions for linear systems to
+      searching for Lyapunov functions for nonlinear systems: $\dot\bx =
+      f(\bx),$ where $f$ is a vector-valued <i>polynomial</i> function.
+      Importantly, if $V(\bx)$ is polynomial, and $f(\bx)$ is polynomial, then
+      $\dot{V}(\bx) = \pd{V}{\bx}f(\bx)$ is also polynomial.</p>
+      
+      <p>If we parameterize a <em>fixed-degree</em> Lyapunov candidate as a
       polynomial with unknown coefficients, e.g., \[ V_\alpha(\bx) = \alpha_0 +
       \alpha_1 x_1 + \alpha_2 x_2 + \alpha_3 x_1x_2 + \alpha_4 x_1^2 + ..., \]
-      then the time-derivative of $V$ is also a polynomial, and I can formulate
-      the optimization: \begin{align*} \find_\alpha, \quad \subjto \quad&
-      V_\alpha(\bx) \sos,  \quad V_\alpha(0) = 0 \\ & -\dot{V}_\alpha(\bx) =
-      -\pd{V_\alpha}{\bx} f(\bx) \sos. \end{align*} Because this is a convex
-      optimization, the solver will return a solution if one exists, and this
-      solution would certify stability i.s.L. of the origin. Note that I don't
-      actually need to include the constraint $\dot{V}_\alpha({\bf 0}) = 0$; if
-      $V_\alpha$ is a smooth function, is zero at zero, and is positive for all
-      $\bx$, then this already implies that $\pd{V_\alpha}{\bx} = 0.$</p>
+      then we can formulate the optimization: \begin{align*} \find_\alpha,
+      \quad \subjto \quad& V_\alpha(\bx) \sos, \quad V_\alpha(0) = 0 \\ &
+      -\dot{V}_\alpha(\bx) = -\pd{V_\alpha}{\bx} f(\bx) \sos. \end{align*}
+      Because this is a convex optimization, the solver will return a solution
+      if one exists, and this solution would certify stability i.s.L. of the
+      origin. Note that I don't actually need to include the constraint
+      $\dot{V}_\alpha({\bf 0}) = 0$; if $V_\alpha$ is a smooth function, is
+      zero at zero, and is positive for all $\bx$, then this already implies
+      that $\pd{V_\alpha}{\bx} = 0.$</p>
 
       <p>If we wish to demonstrate (global) asymptotic stability, then we can
       write the constraint $\dot{V}_\alpha(\bx) \prec 0$ as
@@ -930,37 +946,47 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <p>But what if we believe the system is regionally stable, despite
         having an indefinite linearization?  Or perhaps we can certify a larger
-        volume of state space by using a Lyapunov candidate with degree greater
-        than two.  Can we use sums-of-squares optimization to find that in the
-        region of attraction case, too?</p>
+        volume of state space by optimizing our original Lyapunov candidate to
+        maximize the volume of the verified region for the nonlinear system,
+        potentially even considering Lyapunov functions with degree greater
+        than two (the linear analysis will only give quadratic candidates). We
+        can use sums-of-squares optimization in those cases, too!</p>
 
-        <p>To accomplish this, we will now make $V(x)$ a polynomial (of some
+        <p>To accomplish this, we will now make $V(\bx)$ a polynomial (of some
         fixed degree) with the coefficients as decision variables.  First we
-        will need to add constraints to ensure that $$V(0) = 0 \quad {and}
-        \quad V(\bx) - \epsilon \bx^T\bx \text{ is SOS},$$ where $\epsilon$ is
-        some small positive constant.  This $\epsilon$ term simply ensures that
-        $V$ is strictly positive definite.  Now let's consider our basic
-        formulation:  $$-\dot{V}(\bx) + \lambda(\bx)(V(\bx) - 1) \text{ is
-        SOS,} \quad \text{and} \quad \lambda(\bx) \text{ is SOS}.$$  Notice
-        that I've replaced $\rho=1$; now that we are searching for $V$ the
-        scale of the level-set can be set aribtrarily to 1.  In fact, it's
-        better to do so -- if we did not set $V(0)=0$ and $V(\bx) \le 1$ as the
-        sublevel set, then the optimization problem would be underconstrained,
-        and might cause problems for the solver.</p>
+        will need to add constraints to ensure that $$V({\bf 0}) = 0 \quad
+        {and} \quad V(\bx) - \epsilon \bx^T\bx \text{ is SOS},$$ where
+        $\epsilon$ is some small positive constant.  This $\epsilon$ term
+        simply ensures that $V$ is strictly positive definite.  Now let's
+        consider our basic formulation: 
+        
+        $$-\dot{V}(\bx) + \lambda(\bx)(V(\bx) - 1) {\text{ is SOS}}, \quad 
+        \text{and} \quad \lambda(\bx) \text{ is SOS}.$$
+        
+        Notice that I've replaced $\rho=1$; now that we are 
+        searching for $V$ the scale of the level-set can be set aribtrarily to
+        1.  In fact, it's better to do so -- if we did not set $V(0)=0$ and
+        $V(\bx) \le 1$ as the sublevel set, then the optimization problem would
+        be under-constrained, and might cause problems for the solver.</p>
 
         <p>Unfortunately, the derivative constraint is now nonconvex (bilinear)
         in the decision variables, since we are searching for both the
         coefficients of $\lambda$ and $V$, and they are multiplied together.
-        Our equality-constrained formulation doesn't get us around this one,
-        either (since the coefficients of $V$ also appear in $\dot{V}$).  Here
-        we have to resort to some weaker form of optimization.  In practice, we
-        have had good practical success using bilinear alternations: start with
-        an initial $V$ (e.g. from LQR), and search for $\lambda$; then fix
+        The equality-constrained formulation has the same bilinearity, since
+        the coefficients of $V$ also appear in $\dot{V}$.  Here we have to
+        resort to some weaker form of optimization.  In practice, we have had
+        good practical success using bilinear alternations: start with an
+        initial $V$ (e.g. from LQR), and search for $\lambda$; then fix
         $\lambda$ and search for $V$ and repeat until convergence (see, for
         instance <elib>Tedrake10+Majumdar16a</elib>).  A typical choice for the
-        objective is to maximize some convex surrogate for the volume of the
-        certified region of attraction in state space; typically we use the
-        determinant of the quadratic form describing a contained ellipse.</p>
+        objective is to maximize the volume of the certified region -- for
+        quadratic Lyapunov functions this is a convex objective (using the
+        determinant of the quadratic form). For higher-degree Lyapunov
+        functions, typically we use the determinant of the quadratic form
+        describing the maximal contained ellipse as a surrogate for the true
+        volume. We often prefer to do those optimizations in the
+        equality-constrained formulation, because we have stronger tools for
+        dealing with that equality constraint <elib>Shen20</elib>.</p>
 
         <p>Barring numerical issues, this algorithm is guaranteed to have
         recursive feasibility and tends to converge in just a few alternations,
