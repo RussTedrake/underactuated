@@ -1033,29 +1033,6 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         </example>
 
-        <example><h1>Regions of attraction and LQR</h1>
-        
-          <p>So far we have only considered verifying regions of attraction for
-          systems of the form $\dot{\bx} = f(\bx)$ (e.g. with no control
-          input); the implication has been that one should design a feedback
-          controller first and then analyze the stability of the closed-loop
-          dynamics. But some control design techniques produce artifacts that
-          can be useful for this verification. Often jointly designing a
-          controller and certificate can be more tractable than trying to
-          certify an arbitrary controller.</p>
-
-          <p>One nice example of this that we've already seen is the linear
-          quadratic regulator.  Even when it is applied to (the linearization
-          of) nonlinear systems, it still produces a quadratic cost-to-go
-          function $\bar\bx^T {\bf S} \bar\bx$ which can be immediately used as
-          a candidate Lyapunov function for the nonlinear system.</p>
-
-          <p>To demonstrate this...</p>
-
-          <todo>Numerical example of LQR for a polynomial systems</todo>
-
-        </example>
-        
       </subsubsection>
 
       <subsubsection><h1>Convex outer approximations of the ROA</h1>
@@ -1200,6 +1177,29 @@ V = RegionOfAttraction(sys, context)
           <code>RegionOfAttraction</code> in Drake, but we will also work you
           through writing the sums-of-squares problem yourself in the <a
           href="#van_der_pol_roa">exercises</a>.</p>
+
+        </example>
+
+        <example><h1>Regions of attraction and LQR</h1>
+        
+          <p>So far we have only considered verifying regions of attraction for
+          systems of the form $\dot{\bx} = f(\bx)$ (e.g. with no control
+          input); the implication has been that one should design a feedback
+          controller first and then analyze the stability of the closed-loop
+          dynamics. But some control design techniques produce artifacts that
+          can be useful for this verification. Often jointly designing a
+          controller and certificate can be more tractable than trying to
+          certify an arbitrary controller.</p>
+
+          <p>One nice example of this that we've already seen is the linear
+          quadratic regulator.  Even when it is applied to (the linearization
+          of) nonlinear systems, it still produces a quadratic cost-to-go
+          function $\bar\bx^T {\bf S} \bar\bx$ which can be immediately used as
+          a candidate Lyapunov function for the nonlinear system.</p>
+
+          <p>To demonstrate this...</p>
+
+          <todo>Numerical example of LQR for a polynomial systems</todo>
 
         </example>
 
