@@ -4,3 +4,28 @@ requires = [
     "wheel"
 ]
 build-backend = "setuptools.build_meta"
+[tool.black]
+line-length = 79
+include = '\.ipynb?$|\.pyi?$'
+exclude = '''
+/(
+    \.git
+  | \.history
+  | bazel-*
+  | \.venv
+  | build
+  | dist
+)/
+'''
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 79
+[tool.autoflake]
+in-place = true
+recursive = true
+expand-star-imports = true
+ignore-init-module-imports = true
+remove-all-unused-imports = true
+remove-duplicate-keys = true
+remove-unused-variables = true

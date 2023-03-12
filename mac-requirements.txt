@@ -4,14 +4,24 @@
 #
 #    pip-compile mac-requirements.in
 #
+appnope==0.1.3
+    # via ipython
+asttokens==2.2.1
+    # via stack-data
 async-generator==1.10
     # via nbclient
 attrs==20.3.0
     # via jsonschema
+autoflake==2.0.2
+    # via pyproject-autoflake
+backcall==0.2.0
+    # via ipython
 beautifulsoup4==4.9.3
     # via
     #   -r htmlbook/mac-requirements.in
     #   nbconvert
+black[jupyter]==23.1.0
+    # via -r mac-requirements.in
 bleach==3.3.0
     # via nbconvert
 certifi==2020.12.5
@@ -20,20 +30,30 @@ certifi==2020.12.5
     #   requests
 chardet==4.0.0
     # via requests
+click==8.1.3
+    # via black
 contourpy==1.0.7
     # via matplotlib
 cycler==0.10.0
     # via matplotlib
+decorator==5.1.1
+    # via ipython
 defusedxml==0.7.1
     # via nbconvert
+executing==1.2.0
+    # via stack-data
 fonttools==4.28.2
     # via matplotlib
 gradescope-utils==0.4.0
     # via -r mac-requirements.in
 idna==2.10
     # via requests
+ipython==8.11.0
+    # via black
 ipython-genutils==0.2.0
     # via nbformat
+jedi==0.18.2
+    # via ipython
 jinja2==3.1.2
     # via
     #   mpld3
@@ -64,10 +84,14 @@ matplotlib==3.7.0
     # via
     #   -r htmlbook/mac-requirements.in
     #   mpld3
+matplotlib-inline==0.1.6
+    # via ipython
 mistune==2.0.4
     # via nbconvert
 mpld3==0.5.7
     # via -r mac-requirements.in
+mypy-extensions==1.0.0
+    # via black
 mysql-connector-python==8.0.23
     # via -r htmlbook/mac-requirements.in
 nbclient==0.5.3
@@ -89,8 +113,9 @@ numpy==1.24.2
     #   matplotlib
     #   pandas
     #   scipy
-packaging==20.9
+packaging==23.0
     # via
+    #   black
     #   bleach
     #   matplotlib
     #   nbconvert
@@ -98,28 +123,48 @@ pandas==1.5.3
     # via -r mac-requirements.in
 pandocfilters==1.4.3
     # via nbconvert
+parso==0.8.3
+    # via jedi
+pathspec==0.11.0
+    # via black
+pexpect==4.8.0
+    # via ipython
+pickleshare==0.7.5
+    # via ipython
 pillow==9.4.0
     # via
     #   -r htmlbook/mac-requirements.in
     #   -r mac-requirements.in
     #   matplotlib
+platformdirs==3.1.1
+    # via black
+prompt-toolkit==3.0.38
+    # via ipython
 protobuf==3.14.0
     # via mysql-connector-python
+ptyprocess==0.7.0
+    # via pexpect
+pure-eval==0.2.2
+    # via stack-data
 pycodestyle==2.6.0
     # via -r htmlbook/mac-requirements.in
 pydocstyle==5.1.1
     # via -r htmlbook/mac-requirements.in
 pydot==1.4.2
     # via -r mac-requirements.in
+pyflakes==3.0.1
+    # via autoflake
 pygments==2.8.1
     # via
+    #   ipython
     #   jupyterlab-pygments
     #   nbconvert
 pyparsing==2.4.7
     # via
     #   matplotlib
-    #   packaging
     #   pydot
+pyproject-autoflake==1.0.2
+    # via -r mac-requirements.in
 pyrsistent==0.17.3
     # via jsonschema
 python-dateutil==2.8.1
@@ -150,22 +195,36 @@ snowballstemmer==2.1.0
     # via pydocstyle
 soupsieve==2.2
     # via beautifulsoup4
+stack-data==0.6.2
+    # via ipython
 timeout-decorator==0.5.0
     # via -r mac-requirements.in
 tinycss2==1.1.1
     # via nbconvert
+tokenize-rt==5.0.0
+    # via black
+toml==0.10.2
+    # via pyproject-autoflake
+tomli==2.0.1
+    # via
+    #   autoflake
+    #   black
 tornado==6.1
     # via jupyter-client
 traitlets==5.1.1
     # via
     #   -r mac-requirements.in
+    #   ipython
     #   jupyter-client
     #   jupyter-core
+    #   matplotlib-inline
     #   nbclient
     #   nbconvert
     #   nbformat
 urllib3==1.26.3
     # via requests
+wcwidth==0.2.6
+    # via prompt-toolkit
 webencodings==0.5.1
     # via
     #   bleach
