@@ -1,8 +1,4 @@
-from pydrake.autodiffutils import AutoDiffXd
 from pydrake.multibody.tree import MultibodyForces_
-from pydrake.multibody.plant import MultibodyPlant_
-from pydrake.symbolic import Expression
-import numpy as np
 
 
 def ManipulatorDynamics(plant, q, v=None, context=None):

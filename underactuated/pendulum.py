@@ -1,6 +1,5 @@
 import numpy as np
 import math
-import matplotlib.animation as animation
 from pydrake.systems.framework import Context, PortDataType
 from pydrake.systems.pyplot_visualizer import PyPlotVisualizer
 
@@ -9,15 +8,17 @@ class PendulumVisualizer(PyPlotVisualizer):
     a1 = 0.75
     ac1 = 0.75
     av = np.linspace(0, math.pi, 20)
-    rb = .03
-    hb = .07
-    aw = .01
+    rb = 0.03
+    hb = 0.07
+    aw = 0.01
     base_x = rb * np.concatenate(([1], np.cos(av), [-1]))
     base_y = np.concatenate(([-hb], rb * np.sin(av), [-hb]))
     arm_x = np.concatenate(
-        (aw * np.sin(av - math.pi / 2), aw * np.sin(av + math.pi / 2)))
+        (aw * np.sin(av - math.pi / 2), aw * np.sin(av + math.pi / 2))
+    )
     arm_y = np.concatenate(
-        (aw * np.cos(av - math.pi / 2), -a1 + aw * np.cos(av + math.pi / 2)))
+        (aw * np.cos(av - math.pi / 2), -a1 + aw * np.cos(av + math.pi / 2))
+    )
 
     def __init__(self, ax=None, show=None):
         PyPlotVisualizer.__init__(self, ax=ax, show=show)
@@ -51,8 +52,11 @@ class PendulumVisualizer(PyPlotVisualizer):
 
         path = self.arm[0].get_path()
         path.vertices[:, 0] = self.arm_x * math.cos(
-            theta) - self.arm_y * math.sin(theta)
+            theta
+        ) - self.arm_y * math.sin(theta)
         path.vertices[:, 1] = self.arm_x * math.sin(
-            theta) + self.arm_y * math.cos(theta)
-        self.center_of_mass[0].set_data(self.ac1 * math.sin(theta),
-                                        -self.ac1 * math.cos(theta))
+            theta
+        ) + self.arm_y * math.cos(theta)
+        self.center_of_mass[0].set_data(
+            self.ac1 * math.sin(theta), -self.ac1 * math.cos(theta)
+        )

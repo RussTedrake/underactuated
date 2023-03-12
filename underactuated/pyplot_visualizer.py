@@ -5,7 +5,6 @@ from pydrake.systems.framework import VectorSystem
 
 
 class SliderSystem(VectorSystem):
-
     def __init__(self, ax, title, min, max):
         # 0 inputs, 1 output.
         VectorSystem.__init__(self, 0, 1)
@@ -27,5 +26,5 @@ def AdvanceToAndSaveAnimation(simulator, visualizer, time, filename):
     # Note: Wanted to use embed_frames=True, but it did not render
     # the image properly for me.
     writer = HTMLWriter()
-    writer.frame_format = 'svg'
+    writer.frame_format = "svg"
     ani.save(filename, writer=writer)

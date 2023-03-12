@@ -2,22 +2,20 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 from pydrake.systems.pyplot_visualizer import PyPlotVisualizer
-from pydrake.systems.framework import Context, PortDataType
+from pydrake.systems.framework import PortDataType
 
 _MIT_RED = "#A31F34"
 
 
 class Brick(object):
-    WIDTH = 3.
-    HEIGHT = 1.
+    WIDTH = 3.0
+    HEIGHT = 1.0
 
     def __init__(self):
-        self.patch = plt.Rectangle((0.0, 0.0),
-                                   self.WIDTH,
-                                   self.HEIGHT,
-                                   fc=_MIT_RED,
-                                   ec="k")
-        self.set_state(0.)
+        self.patch = plt.Rectangle(
+            (0.0, 0.0), self.WIDTH, self.HEIGHT, fc=_MIT_RED, ec="k"
+        )
+        self.set_state(0.0)
 
     def set_state(self, x):
         self.patch.set_x(x - self.WIDTH / 2)  # Center at x
@@ -30,10 +28,9 @@ class Brick(object):
 
 
 class DoubleIntegratorVisualizer(PyPlotVisualizer):
-
     # Limits of view port
-    XLIM = (-15., 15.)
-    YLIM = (-6., 6.)
+    XLIM = (-15.0, 15.0)
+    YLIM = (-6.0, 6.0)
     TICK_DIMS = (0.2, 0.8)
 
     def __init__(self, ax=None, show=None):

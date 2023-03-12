@@ -1,6 +1,6 @@
 import os
 
-from pydrake.all import (JointActuatorIndex, JointIndex, namedview)
+from pydrake.all import JointActuatorIndex, JointIndex, namedview
 
 running_as_test = False
 
@@ -28,14 +28,16 @@ def Rgba2Hex(rgb):
     """
     val = 0
     for i in range(3):
-        val += (256**(2 - i)) * int(255 * rgb[i])
+        val += (256 ** (2 - i)) * int(255 * rgb[i])
     return val
 
 
 # TODO(russt): promote these to drake (and make a version with model_instance)
 
 
-def MakeNamedViewPositions(mbp, view_name, add_suffix_if_single_position=False):
+def MakeNamedViewPositions(
+    mbp, view_name, add_suffix_if_single_position=False
+):
     names = [None] * mbp.num_positions()
     for ind in range(mbp.num_joints()):
         joint = mbp.get_joint(JointIndex(ind))
@@ -43,20 +45,22 @@ def MakeNamedViewPositions(mbp, view_name, add_suffix_if_single_position=False):
             names[joint.position_start()] = joint.name()
         else:
             for i in range(joint.num_positions()):
-                names[joint.position_start() + i] = \
-                    f"{joint.name()}_{joint.position_suffix(i)}"
+                names[
+                    joint.position_start() + i
+                ] = f"{joint.name()}_{joint.position_suffix(i)}"
     for ind in mbp.GetFloatingBaseBodies():
         body = mbp.get_body(ind)
         start = body.floating_positions_start()
         for i in range(7 if body.has_quaternion_dofs() else 6):
-            names[start
-                  + i] = f"{body.name()}_{body.floating_position_suffix(i)}"
+            names[
+                start + i
+            ] = f"{body.name()}_{body.floating_position_suffix(i)}"
     return namedview(view_name, names)
 
 
-def MakeNamedViewVelocities(mbp,
-                            view_name,
-                            add_suffix_if_single_velocity=False):
+def MakeNamedViewVelocities(
+    mbp, view_name, add_suffix_if_single_velocity=False
+):
     names = [None] * mbp.num_velocities()
     for ind in range(mbp.num_joints()):
         joint = mbp.get_joint(JointIndex(ind))
@@ -64,14 +68,16 @@ def MakeNamedViewVelocities(mbp,
             names[joint.velocity_start()] = joint.name()
         else:
             for i in range(joint.num_velocities()):
-                names[joint.velocity_start() + i] = \
-                    f"{joint.name()}_{joint.velocity_suffix(i)}"
+                names[
+                    joint.velocity_start() + i
+                ] = f"{joint.name()}_{joint.velocity_suffix(i)}"
     for ind in mbp.GetFloatingBaseBodies():
         body = mbp.get_body(ind)
         start = body.floating_velocities_start() - mbp.num_positions()
         for i in range(6):
-            names[start
-                  + i] = f"{body.name()}_{body.floating_velocity_suffix(i)}"
+            names[
+                start + i
+            ] = f"{body.name()}_{body.floating_velocity_suffix(i)}"
     return namedview(view_name, names)
 
 

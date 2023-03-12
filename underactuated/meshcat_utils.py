@@ -9,18 +9,19 @@ from pydrake.solvers import BoundingBoxConstraint
 
 # imports for interact
 from inspect import signature, Parameter
-from ipywidgets.widgets.interaction import (_get_min_max_value,
-                                            _yield_abbreviations_for_parameter)
+from ipywidgets.widgets.interaction import (
+    _get_min_max_value,
+    _yield_abbreviations_for_parameter,
+)
 
 # imports for the pose sliders
 from collections import namedtuple
 from pydrake.common.value import AbstractValue
 from pydrake.math import RollPitchYaw, RigidTransform, RotationMatrix
-from pydrake.systems.framework import LeafSystem, PublishEvent
+from pydrake.systems.framework import LeafSystem
 
 # imports for the joint sliders
 from pydrake.multibody.tree import JointIndex
-from pydrake.systems.framework import PublishEvent
 
 from underactuated import running_as_notebook
 
@@ -49,11 +50,14 @@ def interact(meshcat, callback, **kwargs):
 
         for param in sig.parameters.values():
             for name, value, default in _yield_abbreviations_for_parameter(
-                    param, kwargs):
+                param, kwargs
+            ):
                 if value is Parameter.empty:
                     raise ValueError(
-                        'cannot find widget or abbreviation for argument: {!r}'.
-                        format(name))
+                        "cannot find widget or abbreviation for argument: {!r}".format(
+                            name
+                        )
+                    )
                 new_kwargs.append((name, value, default))
         return new_kwargs
 
@@ -61,18 +65,19 @@ def interact(meshcat, callback, **kwargs):
 
     for name, abbrev, default in new_kwargs:
         kw = {}
-        kw['value'] = None if default is Parameter.empty else default
+        kw["value"] = None if default is Parameter.empty else default
         if isinstance(abbrev, tuple):
-            kw['step'] = abbrev[2] if len(abbrev) != 3 else None
+            kw["step"] = abbrev[2] if len(abbrev) != 3 else None
             kw["min"], kw["max"], kw["value"] = _get_min_max_value(
-                abbrev[0], abbrev[1], **kw)
-            if kw['step'] is None:
-                kw['step'] = 0.1
+                abbrev[0], abbrev[1], **kw
+            )
+            if kw["step"] is None:
+                kw["step"] = 0.1
             meshcat.AddSlider(name, **kw)
         else:
             raise ValueError("This case is not implemented yet")
             # It might be simple.  I just haven't tried!
-        values[name] = kw['value']
+        values[name] = kw["value"]
 
     def update_values():
         changed = False
@@ -93,7 +98,7 @@ def interact(meshcat, callback, **kwargs):
     while meshcat.GetButtonClicks("Stop Interacting") < 1:
         if update_values():
             callback(**values)
-        time.sleep(.1)
+        time.sleep(0.1)
 
     meshcat.DeleteButton("Stop Interacting")
     for name in values:
@@ -128,8 +133,10 @@ class MeshcatSliders(LeafSystem):
         self._sliders = slider_names
         for i, slider_iterable in enumerate(self._sliders):
             port = self.DeclareVectorOutputPort(
-                f"slider_group_{i}", len(slider_iterable),
-                partial(self.DoCalcOutput, port_index=i))
+                f"slider_group_{i}",
+                len(slider_iterable),
+                partial(self.DoCalcOutput, port_index=i),
+            )
             port.disable_caching_by_default()
 
     def DoCalcOutput(self, context, output, port_index):
@@ -149,6 +156,7 @@ class MeshcatPoseSliders(LeafSystem):
         output_ports:
         - pose
     """
+
     # TODO(russt): Use namedtuple defaults parameter once we are Python >= 3.7.
     Visible = namedtuple("Visible", ("roll", "pitch", "yaw", "x", "y", "z"))
     Visible.__new__.__defaults__ = (True, True, True, True, True, True)
@@ -159,12 +167,14 @@ class MeshcatPoseSliders(LeafSystem):
     Value = namedtuple("Value", ("roll", "pitch", "yaw", "x", "y", "z"))
     Value.__new__.__defaults__ = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
 
-    def __init__(self,
-                 meshcat,
-                 visible=Visible(),
-                 min_range=MinRange(),
-                 max_range=MaxRange(),
-                 value=Value()):
+    def __init__(
+        self,
+        meshcat,
+        visible=Visible(),
+        min_range=MinRange(),
+        max_range=MaxRange(),
+        value=Value(),
+    ):
         """
         Args:
             meshcat: A Meshcat instance.
@@ -178,8 +188,10 @@ class MeshcatPoseSliders(LeafSystem):
         """
         LeafSystem.__init__(self)
         port = self.DeclareAbstractOutputPort(
-            "pose", lambda: AbstractValue.Make(RigidTransform()),
-            self.DoCalcOutput)
+            "pose",
+            lambda: AbstractValue.Make(RigidTransform()),
+            self.DoCalcOutput,
+        )
 
         # The widgets themselves have undeclared state.  For now, we accept it,
         # and simply disable caching on the output port.
@@ -193,14 +205,16 @@ class MeshcatPoseSliders(LeafSystem):
 
         for i in range(6):
             if visible[i]:
-                meshcat.AddSlider(min=min_range[i],
-                                  max=max_range[i],
-                                  value=value[i],
-                                  step=0.01,
-                                  name=value._fields[i])
+                meshcat.AddSlider(
+                    min=min_range[i],
+                    max=max_range[i],
+                    value=value[i],
+                    step=0.01,
+                    name=value._fields[i],
+                )
 
     def __del__(self):
-        for s in ['roll', 'pitch', 'yaw', 'x', 'y', 'z']:
+        for s in ["roll", "pitch", "yaw", "x", "y", "z"]:
             if visible[s]:
                 self._meshcat.DeleteSlider(s)
 
@@ -228,8 +242,9 @@ class MeshcatPoseSliders(LeafSystem):
         self._value[2] = rpy.yaw_angle()
         for i in range(3):
             if self._visible[i]:
-                self._meshcat.SetSliderValue(self._visible._fields[i],
-                                             self._value[i])
+                self._meshcat.SetSliderValue(
+                    self._visible._fields[i], self._value[i]
+                )
 
     def SetXyz(self, xyz):
         """
@@ -241,8 +256,9 @@ class MeshcatPoseSliders(LeafSystem):
         self._value[3:] = xyz
         for i in range(3, 6):
             if self._visible[i]:
-                self._meshcat.SetSliderValue(self._visible._fields[i],
-                                             self._value[i])
+                self._meshcat.SetSliderValue(
+                    self._visible._fields[i], self._value[i]
+                )
 
     def _update_values(self):
         changed = False
@@ -250,14 +266,16 @@ class MeshcatPoseSliders(LeafSystem):
             if self._visible[i]:
                 old_value = self._value[i]
                 self._value[i] = self._meshcat.GetSliderValue(
-                    self._visible._fields[i])
+                    self._visible._fields[i]
+                )
                 changed = changed or self._value[i] != old_value
         return changed
 
     def _get_transform(self):
         return RigidTransform(
             RollPitchYaw(self._value[0], self._value[1], self._value[2]),
-            self._value[3:])
+            self._value[3:],
+        )
 
     def DoCalcOutput(self, context, output):
         """Constructs the output values from the sliders."""
@@ -271,7 +289,8 @@ class MeshcatPoseSliders(LeafSystem):
             return
 
         publishing_context = publishing_system.GetMyContextFromRoot(
-            root_context)
+            root_context
+        )
 
         print("Press the 'Stop PoseSliders' button in Meshcat to continue.")
         self._meshcat.AddButton("Stop PoseSliders")
@@ -279,17 +298,17 @@ class MeshcatPoseSliders(LeafSystem):
             if self._update_values():
                 callback(root_context, self._get_transform())
                 publishing_system.Publish(publishing_context)
-            time.sleep(.1)
+            time.sleep(0.1)
 
         self._meshcat.DeleteButton("Stop PoseSliders")
 
 
 class WsgButton(LeafSystem):
-
     def __init__(self, meshcat):
         LeafSystem.__init__(self)
-        port = self.DeclareVectorOutputPort("wsg_position", 1,
-                                            self.DoCalcOutput)
+        port = self.DeclareVectorOutputPort(
+            "wsg_position", 1, self.DoCalcOutput
+        )
         port.disable_caching_by_default()
         self._meshcat = meshcat
         self._button = "Open/Close Gripper"
@@ -325,13 +344,15 @@ class MeshcatJointSliders(LeafSystem):
     simulate any state dynamics.
     """
 
-    def __init__(self,
-                 meshcat,
-                 plant,
-                 root_context=None,
-                 lower_limit=-10.,
-                 upper_limit=10.,
-                 resolution=0.01):
+    def __init__(
+        self,
+        meshcat,
+        plant,
+        root_context=None,
+        lower_limit=-10.0,
+        upper_limit=10.0,
+        resolution=0.01,
+    ):
         """
         Creates an meshcat slider for each joint in the plant.
 
@@ -369,8 +390,11 @@ class MeshcatJointSliders(LeafSystem):
 
         self._meshcat = meshcat
         self._plant = plant
-        plant_context = plant.GetMyContextFromRoot(root_context) if \
-            root_context else plant.CreateDefaultContext()
+        plant_context = (
+            plant.GetMyContextFromRoot(root_context)
+            if root_context
+            else plant.CreateDefaultContext()
+        )
 
         self._sliders = {}
         self._positions = plant.GetPositions(plant_context)
@@ -383,17 +407,20 @@ class MeshcatJointSliders(LeafSystem):
                 index = joint.position_start() + j
                 description = joint.name()
                 if joint.num_positions() > 1:
-                    description += '_' + joint.position_suffix(j)
-                meshcat.AddSlider(value=self._positions[index],
-                                  min=max(low[j], lower_limit[slider_num]),
-                                  max=min(upp[j], upper_limit[slider_num]),
-                                  step=resolution[slider_num],
-                                  name=description)
+                    description += "_" + joint.position_suffix(j)
+                meshcat.AddSlider(
+                    value=self._positions[index],
+                    min=max(low[j], lower_limit[slider_num]),
+                    max=min(upp[j], upper_limit[slider_num]),
+                    step=resolution[slider_num],
+                    name=description,
+                )
                 self._sliders[index] = description
                 slider_num += 1
 
-        port = self.DeclareVectorOutputPort("positions", plant.num_positions(),
-                                            self.DoCalcOutput)
+        port = self.DeclareVectorOutputPort(
+            "positions", plant.num_positions(), self.DoCalcOutput
+        )
         port.disable_caching_by_default()
 
     def DoCalcOutput(self, context, output):
@@ -419,7 +446,8 @@ class MeshcatJointSliders(LeafSystem):
 
         plant_context = self._plant.GetMyContextFromRoot(root_context)
         publishing_context = publishing_system.GetMyContextFromRoot(
-            root_context)
+            root_context
+        )
 
         publishing_system.Publish(publishing_context)
         while self._meshcat.GetButtonClicks("Stop JointSliders") < 1:
@@ -432,71 +460,76 @@ class MeshcatJointSliders(LeafSystem):
                 if callback:
                     callback(plant_context)
                 publishing_system.Publish(publishing_context)
-            time.sleep(.1)
+            time.sleep(0.1)
 
         self._meshcat.DeleteButton("Stop JointSliders")
 
 
-def AddMeshcatTriad(meshcat,
-                    path,
-                    length=.25,
-                    radius=0.01,
-                    opacity=1.,
-                    X_PT=RigidTransform()):
+def AddMeshcatTriad(
+    meshcat, path, length=0.25, radius=0.01, opacity=1.0, X_PT=RigidTransform()
+):
     meshcat.SetTransform(path, X_PT)
     # x-axis
-    X_TG = RigidTransform(RotationMatrix.MakeYRotation(np.pi / 2),
-                          [length / 2., 0, 0])
+    X_TG = RigidTransform(
+        RotationMatrix.MakeYRotation(np.pi / 2), [length / 2.0, 0, 0]
+    )
     meshcat.SetTransform(path + "/x-axis", X_TG)
-    meshcat.SetObject(path + "/x-axis", Cylinder(radius, length),
-                      Rgba(1, 0, 0, opacity))
+    meshcat.SetObject(
+        path + "/x-axis", Cylinder(radius, length), Rgba(1, 0, 0, opacity)
+    )
 
     # y-axis
-    X_TG = RigidTransform(RotationMatrix.MakeXRotation(np.pi / 2),
-                          [0, length / 2., 0])
+    X_TG = RigidTransform(
+        RotationMatrix.MakeXRotation(np.pi / 2), [0, length / 2.0, 0]
+    )
     meshcat.SetTransform(path + "/y-axis", X_TG)
-    meshcat.SetObject(path + "/y-axis", Cylinder(radius, length),
-                      Rgba(0, 1, 0, opacity))
+    meshcat.SetObject(
+        path + "/y-axis", Cylinder(radius, length), Rgba(0, 1, 0, opacity)
+    )
 
     # z-axis
-    X_TG = RigidTransform([0, 0, length / 2.])
+    X_TG = RigidTransform([0, 0, length / 2.0])
     meshcat.SetTransform(path + "/z-axis", X_TG)
-    meshcat.SetObject(path + "/z-axis", Cylinder(radius, length),
-                      Rgba(0, 0, 1, opacity))
+    meshcat.SetObject(
+        path + "/z-axis", Cylinder(radius, length), Rgba(0, 0, 1, opacity)
+    )
 
 
-def draw_open3d_point_cloud(meshcat,
-                            path,
-                            pcd,
-                            normals_scale=0.0,
-                            point_size=0.001):
+def draw_open3d_point_cloud(
+    meshcat, path, pcd, normals_scale=0.0, point_size=0.001
+):
     pts = np.asarray(pcd.points)
-    assert (pcd.has_colors())  # TODO(russt): handle this case better
+    assert pcd.has_colors()  # TODO(russt): handle this case better
     cloud = PointCloud(pts.shape[0], Fields(BaseField.kXYZs | BaseField.kRGBs))
     cloud.mutable_xyzs()[:] = pts.T
     cloud.mutable_rgbs()[:] = 255 * np.asarray(pcd.colors).T
     meshcat.SetObject(path, cloud, point_size=point_size)
     if pcd.has_normals() and normals_scale > 0.0:
-        assert ('need to implement LineSegments in meshcat c++')
+        assert "need to implement LineSegments in meshcat c++"
         normals = np.asarray(pcd.normals)
-        vertices = np.hstack(
-            (pts, pts + normals_scale * normals)).reshape(-1, 3).T
+        vertices = (
+            np.hstack((pts, pts + normals_scale * normals)).reshape(-1, 3).T
+        )
         meshcat["normals"].set_object(
-            g.LineSegments(g.PointsGeometry(vertices),
-                           g.MeshBasicMaterial(color=0x000000)))
+            g.LineSegments(
+                g.PointsGeometry(vertices), g.MeshBasicMaterial(color=0x000000)
+            )
+        )
 
 
-def plot_surface(meshcat,
-                 path,
-                 X,
-                 Y,
-                 Z,
-                 rgba=Rgba(.87, .6, .6, 1.0),
-                 wireframe=False,
-                 wireframe_line_width=1.0):
+def plot_surface(
+    meshcat,
+    path,
+    X,
+    Y,
+    Z,
+    rgba=Rgba(0.87, 0.6, 0.6, 1.0),
+    wireframe=False,
+    wireframe_line_width=1.0,
+):
     (rows, cols) = Z.shape
-    assert (np.array_equal(X.shape, Y.shape))
-    assert (np.array_equal(X.shape, Z.shape))
+    assert np.array_equal(X.shape, Y.shape)
+    assert np.array_equal(X.shape, Z.shape)
 
     vertices = np.empty((rows * cols, 3), dtype=np.float32)
     vertices[:, 0] = X.reshape((-1))
@@ -514,21 +547,18 @@ def plot_surface(meshcat,
     faces.shape = (-1, 3)
 
     # TODO(Russ): support per vertex / Colormap colors.
-    meshcat.SetTriangleMesh(path, vertices.T, faces.T, rgba, wireframe,
-                            wireframe_line_width)
+    meshcat.SetTriangleMesh(
+        path, vertices.T, faces.T, rgba, wireframe, wireframe_line_width
+    )
 
 
-def plot_mathematical_program(meshcat,
-                              path,
-                              prog,
-                              X,
-                              Y,
-                              result=None,
-                              point_size=0.05):
+def plot_mathematical_program(
+    meshcat, path, prog, X, Y, result=None, point_size=0.05
+):
     assert prog.num_vars() == 2
     assert X.size == Y.size
 
-    N = X.size
+    X.size
     values = np.vstack((X.reshape(-1), Y.reshape(-1)))
     costs = prog.GetAllCosts()
 
@@ -549,21 +579,23 @@ def plot_mathematical_program(meshcat,
                 for v in binding.variables()
             ]
             satisfied = np.array(
-                c.CheckSatisfiedVectorized(values[var_indices, :],
-                                           0.001)).reshape(1, -1)
+                c.CheckSatisfiedVectorized(values[var_indices, :], 0.001)
+            ).reshape(1, -1)
             if costs:
                 Z[~satisfied] = np.nan
 
             v = f"{cv}/{type(c).__name__}"
             Zc = np.zeros(Z.shape)
             Zc[satisfied] = np.nan
-            plot_surface(meshcat,
-                         v,
-                         X,
-                         Y,
-                         Zc.reshape(X.shape),
-                         rgba=Rgba(1.0, .2, .2, 1.0),
-                         wireframe=True)
+            plot_surface(
+                meshcat,
+                v,
+                X,
+                Y,
+                Zc.reshape(X.shape),
+                rgba=Rgba(1.0, 0.2, 0.2, 1.0),
+                wireframe=True,
+            )
         else:
             Zc = prog.EvalBindingVectorized(binding, values)
             evaluator = binding.evaluator()
@@ -572,31 +604,37 @@ def plot_mathematical_program(meshcat,
             cvb = f"{cv}/{type(evaluator).__name__}"
             for index in range(Zc.shape[0]):
                 # TODO(russt): Plot infeasible points in a different color.
-                infeasible = np.logical_or(Zc[index, :] < low[index],
-                                           Zc[index, :] > up[index])
-                plot_surface(meshcat,
-                             f"{cvb}/{index}",
-                             X,
-                             Y,
-                             Zc[index, :].reshape(X.shape),
-                             rgba=Rgba(1.0, .3, 1.0, 1.0),
-                             wireframe=True)
+                infeasible = np.logical_or(
+                    Zc[index, :] < low[index], Zc[index, :] > up[index]
+                )
+                plot_surface(
+                    meshcat,
+                    f"{cvb}/{index}",
+                    X,
+                    Y,
+                    Zc[index, :].reshape(X.shape),
+                    rgba=Rgba(1.0, 0.3, 1.0, 1.0),
+                    wireframe=True,
+                )
 
     if costs:
-        plot_surface(meshcat,
-                     f"{path}/objective",
-                     X,
-                     Y,
-                     Z.reshape(X.shape),
-                     rgba=Rgba(.3, 1.0, .3, 1.0),
-                     wireframe=True)
+        plot_surface(
+            meshcat,
+            f"{path}/objective",
+            X,
+            Y,
+            Z.reshape(X.shape),
+            rgba=Rgba(0.3, 1.0, 0.3, 1.0),
+            wireframe=True,
+        )
 
     if result:
         v = f"{path}/solution"
-        meshcat.SetObject(v, Sphere(point_size), Rgba(.3, 1.0, .3, 1.0))
+        meshcat.SetObject(v, Sphere(point_size), Rgba(0.3, 1.0, 0.3, 1.0))
         x_solution = result.get_x_val()
         meshcat.SetTransform(
             v,
             RigidTransform(
-                [x_solution[0], x_solution[1],
-                 result.get_optimal_cost()]))
+                [x_solution[0], x_solution[1], result.get_optimal_cost()]
+            ),
+        )
