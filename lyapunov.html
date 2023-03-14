@@ -480,6 +480,37 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <todo>robust quadrotor example</todo>
   
     </subsection> <!-- end common lyap -->
+
+    <subsection id="barrier"><h1>Barrier functions</h1>
+ 
+      <p>Lyapunov functions are used to certify stability or to establish
+      invariance of a region. But the same conditions can be used to certify
+      that the state of a dynamical system <i>will not visit</i> some region of
+      state space. This can be useful for e.g. verifying that your autonomous
+      car will not crash or, perhaps, that your walking robot will not fall
+      down. When used this way, we call the associated functions,
+      $\mathcal{B}(\bx)$, "barrier functions".</p>
+  
+      <theorem h1="barrier_theorem"><h1>Barrier functions</h1>
+      
+        <p>Given a continuously-differentiable dynamical system described by
+        $\dot{\bx} = {\bf f}(\bx)$, if I can find a function $\mathcal{B}(\bx)$
+        such that $\forall \bx, \dot{\mathcal{B}}(\bx) \le 0$, then the system
+        will never visit states with $\mathcal{B}(\bx(t)) >
+        \mathcal{B}(\bx(0)).$</p>
+      
+        <p>In particular, if we ensure that $\forall \bx$ in "failure" regions
+        of state space, we have $\mathcal{B}(\bx) > 0$, then the level-set
+        $\mathcal{B}(\bx) = 0$ can serve as a <i>barrier</i> certifying that
+        trajectories starting with initial conditions with $\mathcal{B}(\bx) <
+        0$ will never enter the failure set.</p>
+  
+      </theorem>
+  
+      <p>Natural extensions exist for certifying these conditions over a region,
+      considering piecewise-polynomial dynamics, worse-case robustness, etc.</p>
+  
+    </subsection>
   </section> <!-- Lyapunov definitions -->
 
   <section id="optimization"><h1>Lyapunov analysis with convex optimization</h1>
@@ -1063,19 +1094,19 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         <elib>Posa17</elib>).</p>
 
         <p>To find an outer approximation, instead of solving for a Lyapunov
-        function that certifies convergence to the origin, we use a very
-        related set of conditions to search for a Lyapunov-like "barrier
-        certificate", $\mathcal{B}(\bx).$  Like a Lyapunov function, we'd like
+        function that certifies convergence to the origin, we instead search
+        for a Lyapunov-like "<a href="#barrier">barrier certificate"</a>,
+        $\mathcal{B}(\bx).$  Like a Lyapunov function, we'd like
         $\dot{\mathcal{B}}(\bx) \leq 0$; this time we'll ask for this to be
         true everywhere (or at least in some set that is sufficiently larger
         than the ROA of interest).  Then we will set $\mathcal{B}(0) > 0$.  If
         we can find such a function, then certainly any state for which
         $\mathcal{B}(\bx) < 0$ is outside of the region of attraction of the
         fixed point -- since $\mathcal{B}$ cannot increase it can never reach
-        the origin which has $\mathcal{B} > 0$.  The <i>super</i>level set
-        $\{ \bx | \mathcal{B}(\bx) \ge 0\}$ is an outer approximation of the
-        true region of attraction: $$-\dot{\mathcal{B}}(\bx) \text{ is SOS}
-        \quad \text{and} \quad \mathcal{B}(0) > 0.$$</p>
+        the origin which has $\mathcal{B} > 0$.  The <i>super</i>level set $\{
+        \bx | \mathcal{B}(\bx) \ge 0\}$ is an outer approximation of the true
+        region of attraction: $$-\dot{\mathcal{B}}(\bx) \text{ is SOS} \quad
+        \text{and} \quad \mathcal{B}(0) > 0.$$</p>
 
         <p>In order to find the smallest such outer approximation (given a
         fixed degree polynomial), we choose an objective that tries to
@@ -1600,39 +1631,6 @@ V = RegionOfAttraction(sys, context)
       <elib>Majumdar13f+Majumdar16a</elib>.</p>
 
     </subsection>
-
-  </section>
-
-  <section id="barrier"><h1>Barrier functions</h1>
- 
-    <p>Lyapunov functions are used to certify stability or to establish
-    invariance of a region. But the same conditions can be used to certify that
-    the state of a dynamical system <i>will not visit</i> some region of state
-    space. This can be useful for e.g. verifying that your autonomous car will
-    not crash or, perhaps, that your walking robot will not fall down. When
-    used this way, we call the associated functions, $\mathcal{B}(\bx)$,
-    "barrier functions".  We saw them quickly already when working with <a
-    href="#outer_roa">outer-approximations for the region of attraction</a>,
-    but for completeness I'll give the statement again here.</p>
-
-    <theorem h1="barrier_theorem"><h1>Barrier functions</h1>
-    
-      <p>Given a continuously-differentiable dynamical system described by
-      $\dot{\bx} = {\bf f}(\bx)$, if I can find a function $\mathcal{B}(\bx)$
-      such that $\forall \bx, \dot{\mathcal{B}}(\bx) \le 0$, then the system
-      will never visit states with $\mathcal{B}(\bx(t)) >
-      \mathcal{B}(\bx(0)).$</p>
-    
-      <p>In particular, if we ensure that $\forall \bx$ in "failure" regions of
-      state space, we have $\mathcal{B}(\bx) > 0$, then the level-set
-      $\mathcal{B}(\bx) = 0$ can serve as a <i>barrier</i> certifying that
-      trajectories starting with initial conditions with $\mathcal{B}(\bx) < 0$
-      will never enter the failure set.</p>
-
-    </theorem>
-
-    <p>Natural extensions exist for certifying these conditions over a region,
-    considering piecewise-polynomial dynamics, worse-case robustness, etc.</p>
 
   </section>
 
