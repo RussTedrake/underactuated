@@ -20,3 +20,4 @@ __pycache__/
 dist/
 
 underactuated.egg-info/
+.vscode
