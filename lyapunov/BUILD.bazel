@@ -41,6 +41,15 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
+    name = "approximate_dp",
+    srcs = ["approximate_dp.ipynb"],
+    data = ["//underactuated/models:cartpole.urdf"],
+    deps = [
+      "//underactuated",
+    ],
+)
+
+rt_ipynb_test(
     name = "star_convex",
     srcs = ["star_convex.ipynb"],
     deps = [

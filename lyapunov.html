@@ -1121,7 +1121,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <example><h1>Outer approximation for the cubic polynomial</h1>
 
-          <p>Let's revisit my favorite simple dynamical system, $\dot{x} = -x +
+          <p>Let's revisit my favorite scalar dynamical system, $\dot{x} = -x +
           x^3,$ which has a region of attraction for the fixed point at zero of
           $\{x \| |x|< 1 \}.$  This time, we'll estimate the ROA using the
           outer approximation.  We can accomplish this with the following
@@ -1966,7 +1966,7 @@ V = RegionOfAttraction(sys, context)
   
           <figure><img width="100%"" src="figures/sos_dp_cubic.svg"/></figure>
   
-          <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="sums_of_squares"))</script>
+          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="approximate_dp"))</script>
   
         </example>
   
@@ -1975,8 +1975,16 @@ V = RegionOfAttraction(sys, context)
           <p>We can use this approach to design an approximation to the optimal
           controller for the (torque-limited) swing-up of the pendulum!</p>
   
-          <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="sums_of_squares"))</script>
+          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="approximate_dp"))</script>
   
+        </example>
+
+        <example><h1>Cart-pole swing-up</h1>
+        
+          <p>This final example is adapted from <elib>Yang23</elib>.  Even the lower-bound controller can effectively swing-up the cart-pole system!</p>
+
+          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="approximate_dp"))</script>
+
         </example>
   
         <p>I've only provided simple implementations above; their effectiveness
@@ -2474,6 +2482,12 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 <span class="author">Daniela Pucci de Farias</span>, 
 <span class="title">"The Linear Programming Approach to Approximate Dynamic Programming: Theory and Application"</span>, 
 PhD thesis, Stanford University, June, <span class="year">2002</span>.
+
+</li><br>
+<li id=Yang23>
+<span class="author">Lujie Yang and Hongkai Dai and Alexandre Amice and Russ Tedrake</span>, 
+<span class="title">"Suboptimal Controller Synthesis for Cart-Poles and Quadrotors via Sums-of-Squares"</span>, 
+<span class="publisher">In preparation</span> , <span class="year">2023</span>.
 
 </li><br>
 <li id=Dai21>

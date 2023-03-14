@@ -36,10 +36,3 @@ rt_ipynb_test(
     ],
 )
 
-rt_ipynb_test(
-    name = "sums_of_squares",
-    srcs = ["sums_of_squares.ipynb"],
-    deps = [
-      "//underactuated",
-    ],
-)
