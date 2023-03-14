@@ -1035,7 +1035,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       </subsubsection>
 
-      <subsubsection><h1>Convex outer approximations of the ROA</h1>
+      <subsubsection id="outer_roa"><h1>Convex outer approximations of the ROA</h1>
 
         <p>All of our region of attraction approximations so far have been
         "inner approximations" -- the certified region is guaranteed to be
@@ -1603,6 +1603,38 @@ V = RegionOfAttraction(sys, context)
 
   </section>
 
+  <section id="barrier"><h1>Barrier functions</h1>
+ 
+    <p>Lyapunov functions are used to certify stability or to establish
+    invariance of a region. But the same conditions can be used to certify that
+    the state of a dynamical system <i>will not visit</i> some region of state
+    space. This can be useful for e.g. verifying that your autonomous car will
+    not crash or, perhaps, that your walking robot will not fall down. When
+    used this way, we call the associated functions, $\mathcal{B}(\bx)$,
+    "barrier functions".  We saw them quickly already when working with <a
+    href="#outer_roa">outer-approximations for the region of attraction</a>,
+    but for completeness I'll give the statement again here.</p>
+
+    <theorem h1="barrier_theorem"><h1>Barrier functions</h1>
+    
+      <p>Given a continuously-differentiable dynamical system described by
+      $\dot{\bx} = {\bf f}(\bx)$, if I can find a function $\mathcal{B}(\bx)$
+      such that $\forall \bx, \dot{\mathcal{B}}(\bx) \le 0$, then the system
+      will never visit states with $\mathcal{B}(\bx(t)) >
+      \mathcal{B}(\bx(0)).$</p>
+    
+      <p>In particular, if we ensure that $\forall \bx$ in "failure" regions of
+      state space, we have $\mathcal{B}(\bx) > 0$, then the level-set
+      $\mathcal{B}(\bx) = 0$ can serve as a <i>barrier</i> certifying that
+      trajectories starting with initial conditions with $\mathcal{B}(\bx) < 0$
+      will never enter the failure set.</p>
+
+    </theorem>
+
+    <p>Natural extensions exist for certifying these conditions over a region,
+    considering piecewise-polynomial dynamics, worse-case robustness, etc.</p>
+
+  </section>
 
   <section id="control"><h1>Control design</h1>
 
@@ -1625,46 +1657,100 @@ V = RegionOfAttraction(sys, context)
       $\bK(\bx)$ is a polynomial vector.  (For mechanical systems like the
       pendulum above, we might make $\bK(x)$ polynomial in $s$ and $c$.)</p>
 
-      <p>If we apply this control directly to the Lyapunov conditions (for
-      global analysis) with control-affine dynamics, we quickly see the
-      problem.  We have $$\dot{V}(\bx) = \pd{V}{\bx}\left[ {\bf f}_1(\bx) +
-      {\bf f}_2(\bx) \bK(\bx)\right],$$ and as a result if we are trying to
-      search for the parameters of $V$ and $\bK$ simultaneously, the decision
-      variables multiply and the problem will be non-convex.</p>
+      <subsubsection id="global_control_alternations"><h1>Global stability</h1>
 
-      <p>One very natural strategy is to use alternations.  The idea is simple,
-      we will fix $\bK$ and optimize $V$, then fix $V$ and optimize $\bK$ and
-      repeat until convergence.  This approach has roots in the famous "DK
-      iterations" for robust control (e.g. <elib>Lind94</elib>).</p>
+        <p>If we apply this control directly to the Lyapunov conditions for
+        global analysis with control-affine dynamics, we quickly see the
+        problem. We have $$\dot{V}(\bx) = \pd{V}{\bx}\left[ {\bf f}_1(\bx) +
+        {\bf f}_2(\bx) \bK(\bx)\right],$$ and as a result if we are trying to
+        search for the parameters of $V$ and $\bK$ simultaneously, the decision
+        variables multiply and the problem will be non-convex.</p>
 
-      <p>For this approach, it is important to start with an initial feasible
-      $V$ or $\bK$.  For example, one can think of locally stabilizing a
-      nonlinear system with LQR, and then searching for a linear control law
-      (or even a higher-order polynomial control law) that achieves a larger
-      basin of attraction.  But note that once we move from global stability to
-      region of attraction optimization, we now need to alternate between three
-      sets of variables: $V(\bx), \bK(\bx), \lambda(\bx),$ where $\lambda(\bx)$
-      was the multiplier polynomial for the S-procedure.  We took exactly this
-      approach in <elib>Majumdar13</elib>.  In that paper, we showed that
-      alternations could increase the certified region of attraction for the
-      Acrobot.</p>
+        <p>One very natural strategy is to use alternations.  The idea is
+        simple, we will fix $\bK$ and optimize $V$, then fix $V$ and optimize
+        $\bK$ and repeat until convergence.  This approach has roots in the
+        famous "DK iterations" for robust control (e.g.
+        <elib>Lind94</elib>).</p>
 
-      <p>The alternation approach takes advantage of a structured convex
-      optimization in each step of the alternations, but it is still only a
-      local approach to solving the non-convex joint optimization.  It is
-      subject to local minima. The primary advantage is that, barring numerical
-      issues, we expect recursive feasibility (once we have a controller and
-      Lyapunov function that achieves stability, even with a small region of
-      attraction, we will not lose it) and monotonic improvement on the
-      objective.  It is also possible to attempt to optimize these objectives
-      more directly with other non-convex optimization procedures (like
-      stochastic gradient descent, or sequential quadratic programming
-      <elib>Shen20</elib>), but strict feasibility is harder to guarantee.
-      Oftentimes the Lyapunov conditions are just evaluated at samples, or
-      along sample trajectories.  However, once we "learn" a Lyapunov candidate
-      even by approximate methods, we may once again attempt to rigorously
-      certify the Lyapunov conditions using just a single convex optimization
-      step the with controller fixed.</p>
+        <p>For this approach, it is important to start with an initial feasible
+        $V$ or $\bK$.  For example, one can think of locally stabilizing a
+        nonlinear system with LQR, and then searching for a linear control law
+        (or even a higher-order polynomial control law) that achieves a larger
+        basin of attraction.  But note that once we move from global stability
+        to region of attraction optimization, we now need to alternate between
+        three sets of variables: $V(\bx), \bK(\bx), \lambda(\bx),$ where
+        $\lambda(\bx)$ was the multiplier polynomial for the S-procedure.  We
+        took exactly this approach in <elib>Majumdar13</elib>.  In that paper,
+        we showed that alternations could increase the certified region of
+        attraction for the Acrobot.</p>
+
+        <p>The alternation approach takes advantage of a structured convex
+        optimization in each step of the alternations, but it is still only a
+        local approach to solving the non-convex joint optimization.  It is
+        subject to local minima. The primary advantage is that, barring
+        numerical issues, we expect recursive feasibility (once we have a
+        controller and Lyapunov function that achieves stability, even with a
+        small region of attraction, we will not lose it) and monotonic
+        improvement on the objective.  It is also possible to attempt to
+        optimize these objectives more directly with other non-convex
+        optimization procedures (like stochastic gradient descent, or
+        sequential quadratic programming <elib>Shen20</elib>), but strict
+        feasibility is harder to guarantee. Oftentimes the Lyapunov conditions
+        are just evaluated at samples, or along sample trajectories.  However,
+        once we "learn" a Lyapunov candidate even by approximate methods, we
+        may once again attempt to rigorously certify the Lyapunov conditions
+        using just a single convex optimization step the with controller
+        fixed.</p>
+
+      </subsubsection>
+
+      <subsubsection><h1>Maximizing the region of attraction</h1>
+      
+        <p>An extension of this approach can be used to design controllers that
+        are certified only over a region of attraction, but this requires some
+        additional care. We can write the search for the
+        maximal region of attraction as: \begin{align*} \max_{\rho, {\bf
+        K}(\bx), V(\bx), \lambda(\bx)}& \qquad \rho \\ \subjto \quad
+        & V(\bx),~\lambda(\bx) \text{ are SOS,} \\ & -\pd{V}{\bx} ({\bf
+        f}_{1}(\bx) + {\bf f}_{2}(\bx){\bf K}(\bx)) + \lambda(\bx)( V(\bx) -
+        \rho) \text{ is SOS,} \\ & V({\bf 0}) = 0, \quad V({\bf 1}) = 1.
+        \end{align*} The last line yields linear constraints which simply fixes
+        the scaling of $V(\bx).$</p>
+    
+        <p>Once again, we find that this optimization is bilinear in the
+        decision variables. But the conditions are linear in $\lambda(\bx)$ and
+        ${\bf K}(\bx)$ for fixed $V(\bx)$, and are linear in $V(\bx)$ for fixed
+        $\lambda(\bx)$ and ${\bf K}(\bx)$. In principle, we could use bilinear
+        alternations, but <elib>Majumdar13</elib> recommended a three-way
+        alternation approach in order to include a step which explicitly
+        optimizes ${\bf K}(\bx)$ with an objective of maximizing $\rho.$
+        Starting with an initial guess for $V(\bx)$ we can repeat the following
+        alternations:
+        <ol>
+          <li>Fix $V(\bx)$ and $\rho$, and solve a feasibility problem for
+          ${\bf K}(\bx)$ and $\lambda(\bx):$ \begin{align*}
+          \textbf{find}_{\lambda(\bx), {\bf K}(\bx)}& \\ \subjto \qquad& 
+          -\pd{V}{\bx} ({\bf f}_{1}(\bx) +
+          {\bf f}_{2}(\bx){\bf K}(x)) + \lambda(\bx)( V(\bx) - \rho) \text{ is
+          SOS.} \end{align*}
+        </li> 
+          <li>Fix $V(\bx)$ and
+        $\lambda(\bx)$ and maximize $\rho$ searching over ${\bf K}(\bx):$
+        \begin{align*}
+        \max_{\rho, {\bf K}(\bx)}\qquad & \rho \\ \subjto \qquad & 
+        \lambda(\bx) \text{ is SOS} \\ & -\pd{V}{\bx} ({\bf f}_{1}(\bx) +
+        {\bf f}_{2}(\bx){\bf K}(x)) + \lambda(\bx)( V(\bx) - \rho) \text{ is
+        SOS.} \end{align*}    </li>
+          <li>Fix $\lambda(\bx)$ and ${\bf K}(\bx)$ and maximize $\rho$ searching
+        over $V(\bx):$         \begin{align*}
+        \max_{\rho, V(\bx)}\qquad & \rho \\ \subjto \qquad & 
+        V(\bx) \text{ is SOS} \\ & -\pd{V}{\bx} ({\bf f}_{1}(\bx) +
+        {\bf f}_{2}(\bx){\bf K}(x)) + \lambda(\bx)( V(\bx) - \rho) \text{ is
+        SOS,} \\ & V({\bf 0}) = 0, \quad V({\bf 1}) = 1.
+        \end{align*}  </li>
+        </ol>
+        </p>
+        </subsubsection>
 
     </subsection>
 
@@ -1947,6 +2033,14 @@ V = RegionOfAttraction(sys, context)
 
   </section>
 
+  <section><h1>Other variations and extensions</h1>
+  
+    <p>The analog of Lyapunov functions for stochastic verification are
+    super-martingales <elib>Steinhardt11a</elib>.  We will discuss that more in
+    the stochastic and robust control chapter.</p>
+
+  </section>
+
   <todo>other topics/ideas: verifying neural network control relation to
   adversarial examples.  make the point that sampling doesn't scale (even with
   polynomials).  "almost lyapunov functions" will happen when we talk about
@@ -2148,88 +2242,9 @@ V = RegionOfAttraction(sys, context)
 
     </exercise>
 
-    <exercise><h1>Control Design Via Alternations</h1>
-
-      <p>In this exercise we carefully investigate the procedure for designing
-      stabilizing controller via alternations.</p>
-        
-      <p>Consider the problem of jointly designing a polynomial control function
-      $u = K(x)$ and Lyapunov certificate $V(x)$ for the dynamic system
-      $$\dot{x} = f_{1}(x) + f_{2}(x)K(x)$$ We can write the search for the
-      maximal region of attraction as: \begin{align*} \max_{\rho, K(x), V(x),
-      \lambda(x)}& \qquad \rho \\ \text{subject to } & \qquad V(x),~\lambda(x)
-      \text{ are SOS} \\ & -\frac{\partial V}{\partial x} (f_{1}(x) +
-      f_{2}(x)K(x)) + \lambda(x)( V(x) - \rho) \text{ is SOS} \end{align*}</p>
-
-      <p>Assume we know some $\rho_{0},~ V_{0}(x),~ K_{0}(x)$, and
-      $\lambda_{0}(x)$ which are feasible for the above program.</p>
-
-      <ol type = "a">
-        <li>Is the above optimization program convex? Why or why not?</li>
-
-        <li>For each of the following combinations decide whether the problem
-        is convex, bilinear, or neither in the decision variables
-          <ol type = "i">
-            <li> 
-              Fix $\rho$ and  $V(x)$ and search for $\lambda(x)$ and $K(x)$
-            </li>
-            <li>
-              Fix $K(x)$ and $\lambda(x)$ and search for $\rho$ and $V(x)$
-            </li>
-            <li>
-              Fix $\lambda(x)$ and $V(x)$ and search $\rho$ and $K(x)$
-            </li>
-            <li> 
-              Fix $K(x)$ and $\rho$ and search for $V(x)$ and $\lambda(x)$
-            </li>
-          </ol>
-        </li>
-
-        <li>Define $(\rho^{\star}, V^{\star}(x))$ as the solutions to the
-        program: \begin{align*} \max_{\rho, V(x)}& \qquad\rho \\ \text{subject
-        to } & \qquad V(x) \text{ is SOS} \\ & -\frac{\partial V}{\partial x}
-        (f_{1}(x) + f_{2}(x)K_{0}(x)) + \lambda_{0}(x)( V(x) - \rho) \text{ is
-        SOS} \end{align*}
-            <ol type = "i">
-              <li>
-                Is the above program guaranteed to be feasible? Why or why not?
-              </li>
-              <li>
-                If $\rho^{\star}$ exists, is it guaranteed to be greater than,
-                less than, or equal to $\rho_{0}$?
-              </li>
-              <li>
-                Consider $x_{0}$ such that $V_{0}(x_{0}) \leq \rho_{0}$. Is it
-                true that $V^{\star}(x_{0}) \leq \rho_{0}$?
-              </li>
-            </ol>
-          </li>
-
-          <li>Define $(\lambda^{\star}(x), K^{\star}(x))$ as solutions to the
-          program: \begin{align*} \textbf{find}&\qquad \lambda(x), K(x) \\
-          \text{subject to } & \qquad \lambda(x) \text{ is SOS} \\ &
-          -\frac{\partial V_{0}}{\partial x} (f_{1}(x) + f_{2}(x)K(x)) +
-          \lambda(x)( V_{0}(x) - \rho_{0}) \text{ is SOS} \end{align*}
-            <ol type = "i">
-              <li>
-                Is the above program guaranteed to be feasible? Why or why not?
-              </li>
-              <li>
-                Are $\lambda_{0}(x)$ and $K_{0}(x)$ optimal for this program?
-                Is there any reason a convex solver should not return
-                $\lambda_{0}(x)$ and $K_{0}(x)$?
-              </li>
-              <li>
-                Describe a procedure that uses the above program to find a
-                $K(x)$ which enlarges the region of attraction certified by
-                $V_{0}(x)$.  Hint: You do not need to change the objective.
-              </li>
-            </ol>
-          </li>
-
-        </ol>
-      </p>
-    </exercise>
+    <!-- Added 2023-03-14. I deleted a problem, but don't want to change the
+    remaining exercise numbers while the pset is out.  -->
+    <div style="counter-increment:exercise_counter;"/>
 
     <exercise><h1>Lyapunov Analysis for Robustness of Pendulum Swing-up
     Controllers</h1>
@@ -2468,6 +2483,13 @@ PhD thesis, Stanford University, June, <span class="year">2002</span>.
 <span class="title">"Lyapunov-stable neural-network control"</span>, 
 <span class="publisher">Robotics: {S}cience and {S}ystems</span> , <span class="year">2021</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Dai21.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Steinhardt11a>
+<span class="author">Jacob Steinhardt and Russ Tedrake</span>, 
+<span class="title">"Finite-time Regional Verification of Stochastic Nonlinear Systems"</span>, 
+<span class="publisher">International Journal of Robotics Research</span>, vol. 31, no. 7, pp. 901-923, June, <span class="year">2012</span>.
+[&nbsp;<a href="http://ijr.sagepub.com/content/31/7/901.abstract">link</a>&nbsp;]
 
 </li><br>
 <li id=Aicardi95>
