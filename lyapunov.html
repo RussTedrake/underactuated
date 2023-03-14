@@ -1777,7 +1777,7 @@ V = RegionOfAttraction(sys, context)
         control-dynamical system $\dot{\bx} = f(\bx, \bu)$, and a fixed
         controller $\pi(\bx)$ we can find a function $V(\bx)$: <ul><li>$\forall
         \bx, \dot{V}^\pi(\bx) \le -\ell(\bx,\pi(\bx))$ to provide an <b>upper
-        bound</b>, or </li><li>$\forall \bx, \dot{V}^\pi(\bx) \ge
+        bound</b>, or </li> <li>$\forall \bx, \dot{V}^\pi(\bx) \ge
         -\ell(\bx,\pi(\bx))$ to provide an <b>lower bound</b>.</li></ul>To see
         this, take the integral of both sides along any <i>solution</i>
         trajectory, $\bx(t), \bu(t)$.  For the upper-bound we get
@@ -1799,16 +1799,114 @@ V = RegionOfAttraction(sys, context)
         the <i>optimal</i> cost-to-go.</p>
 
         <p>You should take a minute to convince yourself that, unfortunately,
-        the same trick does not work for the upper-bound.  Again, we would need
+        the same trick does not work for the upper-bound. Again, we would need
         $\exists$ as the quantifier on $\bu$ instead of $\forall$.</p>
-
-        <p>I've presented the lower-bound approach to dynamic programming with
-        SOS <a href="dp.html#sums_of_squares">in the dynamic programming
-        chapter</a>, with some examples, because it is a natural generalization
-        of the linear programming approach to dynamic programming.</p>
 
       </subsubsection>
 
+      <subsubsection id="LP"><h1>Linear Programming Dynamic Programming</h1>
+
+        <p>For discrete MDPs, value iteration is a magical algorithm because it
+        is simple, but known to converge to the global optimal, $J^*$.
+        However, other important algorithms are known; one of the most
+        important is a solution approach using linear programming.  This
+        formulation provides an alternative view, but may also be more
+        generalizable and even more efficient for some instances of the
+        problem.</p>
+          
+        <p>Recall the optimality conditions from Eq. \eqref{eq:value_update}.
+        If we describe the cost-to-go function as a vector, $J_i = J(s_i)$,
+        then these optimality conditions can be rewritten in vector form as
+        \begin{equation} \bJ = \min_a \left[ {\bf \ell}(a) + \bT(a) \bJ
+        \right], \label{eq:vector_stochastic_dp} \end{equation} where
+        $\ell_i(a) = \ell(s_i,a)$ is the cost vector, and $T_{i,j}(a) =
+        \Pr(s_j|s_i,a)$ is the transition probability matrix.  Let us take
+        $\bJ$ as the vector of decision variables, and replace Eq.
+        (\ref{eq:vector_stochastic_dp}) with the constraints: \begin{equation}
+        \forall a, \bJ \le {\bf \ell}(a) + \bT(a) \bJ.\end{equation}  Clearly,
+        for finite $a$, this is finite list of linear constraints, and for any
+        vector $\bJ$ satisfying these constraints we have $\bJ \le \bJ^*$
+        (elementwise).  Now write the linear program: \begin{gather*}
+        \maximize_\bJ \quad \bc^T \bJ, \\ \subjto \quad \forall a, \bJ \le {\bf
+        \ell}(a) + \bT(a) \bJ, \end{gather*} where $c$ is any positive vector.
+        The solution to this problem is $\bJ = \bJ^*$.</p>
+  
+        <p>Perhaps even more interesting is that this approach can be
+        generalized to linear function approximators.  Taking a vector form of
+        my notation above, now we have a matrix of features with $\bPsi_{i,j} =
+        \psi^T_j(\bx_i)$ and we can write the LP \begin{gather}
+        \maximize_\balpha \quad \bc^T \bPsi \balpha, \\ \subjto \quad \forall
+        a, \bPsi \balpha \le {\bf \ell}(a) + \bT(a) \bPsi \balpha. \end{gather}
+        This time the solution is not necessarily optimal, because $\bPsi
+        \balpha^*$ only approximates $\bJ^*$, and the relative values of the
+        elements of $\bc$ (called the "state-relevance weights") can determine
+        the relative tightness of the approximation for different features
+        <elib>Farias02</elib>.</p>
+  
+        <todo>Add an example here; and perhaps reference the problem set
+        question.</todo>
+  
+      </subsubsection>
+  
+      <subsubsection id="sums_of_squares"><h1>Sums-of-Squares Dynamic
+      Programming</h1>
+  
+        <p>The linear programming approach works natively in discrete (or
+        sampled) time/state/action settings.  Sums-of-squares provides the a
+        beautiful extension to continuous time/state/actions.</p>
+  
+        <p>In the simple case, let us assume that $f(\bx,\bu)$ and
+        $\ell(\bx,\bu)$ are polynomials (this assumption is discussed at length
+        in the Lyapunov chapter).  We can search for a polynomial
+        $\hat{J}_\alpha(\bx)$ which satisfies the HJB inequality $$\forall \bx,
+        \forall \bu, \quad 0 \le \ell(\bx,\bu) + \pd{\hat{J}_\alpha}{\bx}
+        f(\bx,\bu),$$ using the following <i>convex</i> optimization:
+        \begin{align*} \max_\alpha & \int_{\bf X} \hat{J}_\alpha(\bx) d\bx \\
+        \subjto \quad & \ell(\bx,\bu) + \pd{\hat{J}_\alpha}{\bx} f(\bx,\bu)
+        \text{ is SOS }(\forall \bx, \forall \bu) \\ & \hat{J}_\alpha({\bf 0})
+        = 0. \end{align*} Since $\hat{J}_\alpha(\bx)$ is polynomial, the
+        integral objective (over a bounded domain of interest) can be computed
+        exactly, and is still linear in the coefficients $\alpha$. As in the
+        linear programming approach, here the SOS constraint ensures that
+        $\hat{J}$ is a <i>lower</i> bound on the cost to go, and the objective
+        "pushes up" on this lower bound. As we increase the degree of the
+        polynomial representing $\hat{J}$, we expect better and better
+        approximations of the true cost-to-go.</p>
+  
+        <example><h1>Cubic polynomial optimal control</h1>
+  
+          <p>Consider a system with (scalar) dynamics: $$\dot{x} = f(x,u) = x -
+          4x^3 + u, u \in [-1, 1]$$ and the running cost $$\ell(\bx,\bu) = x^2 +
+          u^2.$$  I've provided code that optimizes the cost-to-go over the
+          interval $\bx \in [-1, 1].$</p>
+  
+          <figure><img width="100%"" src="figures/sos_dp_cubic.svg"/></figure>
+  
+          <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="sums_of_squares"))</script>
+  
+        </example>
+  
+        <example><h1>Pendulum swing-up</h1>
+  
+          <p>We can use this approach to design an approximation to the optimal
+          controller for the (torque-limited) swing-up of the pendulum!</p>
+  
+          <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="sums_of_squares"))</script>
+  
+        </example>
+  
+        <p>I've only provided simple implementations above; their effectiveness
+        is limited by the poor numerics of using polynomials with exceedingly
+        high degree ($x^{20}$ is a very small number around $x=0$ and a very
+        large number around $x=2\pi$). We should be able to improve the
+        numerics dramatically by choosing more intelligent polynomial bases.  I
+        personally think this method has a lot of offer and it would be very
+        interesting to see how far it could go with mature implementations.</p>
+  
+      </subsubsection>
+
+    </subsection>
+  
   </section>
 
   <section><h1>Alternative computational approaches</h1>
@@ -1849,7 +1947,12 @@ V = RegionOfAttraction(sys, context)
 
   </section>
 
-  <todo>other topics/ideas: verifying neural network control relation to adversarial examples.  make the point that sampling doesn't scale (even with polynomials).  "almost lyapunov functions" will happen when we talk about robust control.  hopfield enegy function.  scaling (e.g. quadratic in high dimensions with just one strictly negative eigenvalue); would be very hard to verify with samples.</todo>
+  <todo>other topics/ideas: verifying neural network control relation to
+  adversarial examples.  make the point that sampling doesn't scale (even with
+  polynomials).  "almost lyapunov functions" will happen when we talk about
+  robust control.  hopfield enegy function.  scaling (e.g. quadratic in high
+  dimensions with just one strictly negative eigenvalue); would be very hard to
+  verify with samples.</todo>
 
   <section><h1>Exercises</h1>
 
@@ -1859,10 +1962,9 @@ V = RegionOfAttraction(sys, context)
       &=-\frac{6x_1}{(1+x_1^2)^2}+2x_2, \\ \dot x_2
       &=-\frac{2(x_1+x_2)}{(1+x_1^2)^2}, \end{align*} you are given the
       positive definite function $V(\bx) =\frac{x_1^2}{1 + x_1^2}+ x_2^2$
-      (plotted <a
-      href="https://www.geogebra.org/calculator/ynqgesf9">here</a>) and
-      told that, for this system, $\dot V(\bx)$ is negative definite over the
-      entire space. Is $V(\bx)$ a valid Lyapunov function to prove global
+      (plotted <a href="https://www.geogebra.org/calculator/ynqgesf9">here</a>)
+      and told that, for this system, $\dot V(\bx)$ is negative definite over
+      the entire space. Is $V(\bx)$ a valid Lyapunov function to prove global
       asymptotic stability of the origin for the system described by the
       equations above? Motivate your answer.</p>
 
@@ -1870,13 +1972,24 @@ V = RegionOfAttraction(sys, context)
 
     <exercise><h1>Invariant Sets and Regions of Attraction</h1>
 
-      <p>You are given a dynamical system $\dot \bx = f(\bx)$, with $f$ continuous, which has a fixed point at the origin.  Let $B_r$ be a ball of (finite) radius $r > 0$ centered at the origin: $B_r = \{ \bx : \| \bx \| \leq r \}$. Assume you found a continuously-differentiable scalar function $V(\bx)$ such that: $V(0) = 0$, $V(\bx) > 0$ for all $\bx \neq 0$ in $B_r$, and $\dot V(\bx) < 0$ for all $\bx \neq 0$ in $B_r$. Determine whether the following statements are true or false. Briefly justify your answer.</p>
+      <p>You are given a dynamical system $\dot \bx = f(\bx)$, with $f$
+      continuous, which has a fixed point at the origin.  Let $B_r$ be a ball
+      of (finite) radius $r > 0$ centered at the origin: $B_r = \{ \bx : \| \bx
+      \| \leq r \}$. Assume you found a continuously-differentiable scalar
+      function $V(\bx)$ such that: $V(0) = 0$, $V(\bx) > 0$ for all $\bx \neq
+      0$ in $B_r$, and $\dot V(\bx) < 0$ for all $\bx \neq 0$ in $B_r$.
+      Determine whether the following statements are true or false. Briefly
+      justify your answer.</p>
 
       <ol type="a">
 
-        <li>$B_r$ is an invariant set for the given system, i.e.: if the initial state $\bx(0)$ lies in $B_r$, then $\bx(t)$ will belong to $B_r$ for all $t \geq 0$.</li>
+        <li>$B_r$ is an invariant set for the given system, i.e.: if the
+        initial state $\bx(0)$ lies in $B_r$, then $\bx(t)$ will belong to
+        $B_r$ for all $t \geq 0$.</li>
 
-        <li>$B_r$ is a subset of the ROA of the fixed point $\bx = 0$, i.e.: if $\bx(0)$ lies in $B_r$, then $\lim_{t \rightarrow \infty} \bx(t) = 0$.</li>
+        <li>$B_r$ is a subset of the ROA of the fixed point $\bx = 0$, i.e.: if
+        $\bx(0)$ lies in $B_r$, then $\lim_{t \rightarrow \infty} \bx(t) =
+        0$.</li>
 
       </ol>
 
@@ -1902,30 +2015,42 @@ V = RegionOfAttraction(sys, context)
 
     <exercise><h1>Gradient Flow in Euclidean Space</h1>
 
-      <p>We can use Lyapunov analysis to analyze the behavior of optimization algorithms like gradient descent.
-        Consider an objective function $\ell:\mathbf{R}^n\rightarrow \mathbf{R}$, and we want to minimize $\ell(x)$.
-        The gradient flow is a continuous-time analog of gradient descent and is defined as $\dot{x} = -\frac{\partial \ell}{\partial x}$.
+      <p>We can use Lyapunov analysis to analyze the behavior of optimization
+      algorithms like gradient descent. Consider an objective function
+      $\ell:\mathbf{R}^n\rightarrow \mathbf{R}$, and we want to minimize
+      $\ell(x)$. The gradient flow is a continuous-time analog of gradient
+      descent and is defined as $\dot{x} = -\frac{\partial \ell}{\partial x}$.
 
-        <ol type="a">
-          <li>Show that the objective function $\ell(x)-\ell(x^*)$ is a Lyapunov function of the gradient flow where $x^*$ is a unique minimizer.</li>
+      <ol type="a">
+        <li>Show that the objective function $\ell(x)-\ell(x^*)$ is a Lyapunov
+        function of the gradient flow where $x^*$ is a unique minimizer.</li>
 
-          <li>We can use Lyapunov to argue that an optimization problem will converge to a global optimum, even if it is non-convex.
-            Suppose that the Lyapunov function $\ell$, has negative definite $\dot{\ell}$. Show that the objective function $\ell$ has a unique minimizer at the origin.</li>
+        <li>We can use Lyapunov to argue that an optimization problem will
+        converge to a global optimum, even if it is non-convex. Suppose that
+        the Lyapunov function $\ell$, has negative definite $\dot{\ell}$. Show
+        that the objective function $\ell$ has a unique minimizer at the
+        origin.</li>
 
-            <li>Consider the objective function in the figure below. Could this be a valid Lyapunov function for showing global asymptotic stability?</li>
+        <li>Consider the objective function in the figure below. Could this be
+        a valid Lyapunov function for showing global asymptotic stability?</li>
 
-          <figure>
-            <img width="60%" src="figures/exercises/gradient_flow.png"/>
-            <figcaption>Lyapunov function candidate for asymptotic stability.</figcaption>
-          </figure>
+        <figure>
+          <img width="60%" src="figures/exercises/gradient_flow.png"/>
+          <figcaption>Lyapunov function candidate for asymptotic
+          stability.</figcaption>
+        </figure>
 
-          <li>Consider the objective function $\ell(x) = x_1^4-8x_1^3+18x_1^2+x_2^2$ with $x\in\mathbf{R}^2$. Find the largest $\rho$ such that $\{x\mid \ell(x)<\rho \}$ is a valid region of attraction for the origin.</li>
-        </ol>
+        <li>Consider the objective function $\ell(x) =
+        x_1^4-8x_1^3+18x_1^2+x_2^2$ with $x\in\mathbf{R}^2$. Find the largest
+        $\rho$ such that $\{x\mid \ell(x)<\rho \}$ is a valid region of
+        attraction for the origin.</li>
+      </ol>
     </exercise>
 
     <exercise><h1>Control-Lyapunov Function for a Wheeled Robot</h1>
 
-      <p>In this exercise, we examine the idea of a <a href="#control-lyapunov">control-Lyapunov function</a>
+      <p>In this exercise, we examine the idea of a <a
+      href="#control-lyapunov">control-Lyapunov function</a>
       to drive a wheeled robot, implementing the controller proposed in
       <elib>Aicardi95</elib>.</p>
 
@@ -1987,25 +2112,37 @@ V = RegionOfAttraction(sys, context)
 
       <ol type="a">
 
-        <li>Are there positive definite functions that are not representable as sums of squares?</li>
+        <li>Are there positive definite functions that are not representable as
+        sums of squares?</li>
 
-        <li>If a fixed point of our dynamical system does not admit a SOS Lyapunov function, what can we conclude about its stability?</li>
+        <li>If a fixed point of our dynamical system does not admit a SOS
+        Lyapunov function, what can we conclude about its stability?</li>
 
       </ol>
 
     </exercise>
 
-    <exercise id="van_der_pol_roa"><h1>ROA Estimation for the Time-Reversed Van der Pol Oscillator</h1>
+    <exercise id="van_der_pol_roa"><h1>ROA Estimation for the Time-Reversed Van
+    der Pol Oscillator</h1>
 
-      <p>In this exercise you will use SOS optimization to approximate the ROA of the time-reversed Van der Pol oscillator (a variation of the <a href="https://en.wikipedia.org/wiki/Van_der_Pol_oscillator">classical Van der Pol oscillator</a> which evolves backwards in time).  In <script>document.write(notebook_link('van_der_pol', deepnote['exercises/lyapunov'], link_text='this python notebook'))</script>, you are asked to test the following SOS formulations.</p>
+      <p>In this exercise you will use SOS optimization to approximate the ROA
+      of the time-reversed Van der Pol oscillator (a variation of the <a
+      href="https://en.wikipedia.org/wiki/Van_der_Pol_oscillator">classical Van
+      der Pol oscillator</a> which evolves backwards in time). In
+      <script>document.write(notebook_link('van_der_pol', deepnote['exercises/lyapunov'], link_text = 'this python notebook'))</script>
+      , you are asked to test the following SOS formulations.
+      </p>
 
       <ol type="a">
 
-        <li>The one from <a href="#roa_cubic_system">the example above</a>, augmented with a line search that maximizes the area of the ROA.</li>
+        <li>The one from <a href="#roa_cubic_system">the example above</a>,
+        augmented with a line search that maximizes the area of the ROA.</li>
 
-        <li>A single-shot SOS program that can directly maximize the area of the ROA, without any line search.</li>
+        <li>A single-shot SOS program that can directly maximize the area of
+        the ROA, without any line search.</li>
 
-        <li>An improved version of the previous, where less SOS constraints are imposed in the optimization problem.</li>
+        <li>An improved version of the previous, where less SOS constraints are
+        imposed in the optimization problem.</li>
 
       </ol>
 
@@ -2013,84 +2150,79 @@ V = RegionOfAttraction(sys, context)
 
     <exercise><h1>Control Design Via Alternations</h1>
 
-      <p>
-        In this exercise we carefully investigate the procedure for designing stabilizing controller via alternations.
+      <p>In this exercise we carefully investigate the procedure for designing
+      stabilizing controller via alternations.</p>
         
-        Consider the problem of jointly designing a polynomial control function $u = K(x)$ and Lyapunov certificate $V(x)$ for the dynamic system $$\dot{x} = f_{1}(x) + f_{2}(x)K(x)$$ We can write the search for the maximal region of attraction as:
-        \begin{align*}
-        \max_{\rho, K(x), V(x), \lambda(x)}& \qquad \rho
-        \\
-        \text{subject to } & \qquad
-        V(x),~\lambda(x) \text{ are SOS}
-        \\
-        & -\frac{\partial V}{\partial x} (f_{1}(x) + f_{2}(x)K(x)) + \lambda(x)( V(x) - \rho) \text{ is SOS}
-        \end{align*}
+      <p>Consider the problem of jointly designing a polynomial control function
+      $u = K(x)$ and Lyapunov certificate $V(x)$ for the dynamic system
+      $$\dot{x} = f_{1}(x) + f_{2}(x)K(x)$$ We can write the search for the
+      maximal region of attraction as: \begin{align*} \max_{\rho, K(x), V(x),
+      \lambda(x)}& \qquad \rho \\ \text{subject to } & \qquad V(x),~\lambda(x)
+      \text{ are SOS} \\ & -\frac{\partial V}{\partial x} (f_{1}(x) +
+      f_{2}(x)K(x)) + \lambda(x)( V(x) - \rho) \text{ is SOS} \end{align*}</p>
 
-        Assume we know some $\rho_{0},~ V_{0}(x),~ K_{0}(x)$, and $\lambda_{0}(x)$ which are feasible for the above program.
+      <p>Assume we know some $\rho_{0},~ V_{0}(x),~ K_{0}(x)$, and
+      $\lambda_{0}(x)$ which are feasible for the above program.</p>
 
-        <ol type = "a">
-          <li> Is the above optimization program convex? Why or why not?</li>
+      <ol type = "a">
+        <li>Is the above optimization program convex? Why or why not?</li>
 
-          <li>
-            For each of the following combinations decide whether the problem is convex, bilinear, or neither in the decision variables
-            <ol type = "i">
-              <li> 
-                Fix $\rho$ and  $V(x)$ and search for $\lambda(x)$ and $K(x)$
-              </li>
-              <li>
-                Fix $K(x)$ and $\lambda(x)$ and search for $\rho$ and $V(x)$
-              </li>
-              <li>
-                Fix $\lambda(x)$ and $V(x)$ and search $\rho$ and $K(x)$
-              </li>
-              <li> 
-                Fix $K(x)$ and $\rho$ and search for $V(x)$ and $\lambda(x)$
-              </li>
-            </ol>
-          </li>
+        <li>For each of the following combinations decide whether the problem
+        is convex, bilinear, or neither in the decision variables
+          <ol type = "i">
+            <li> 
+              Fix $\rho$ and  $V(x)$ and search for $\lambda(x)$ and $K(x)$
+            </li>
+            <li>
+              Fix $K(x)$ and $\lambda(x)$ and search for $\rho$ and $V(x)$
+            </li>
+            <li>
+              Fix $\lambda(x)$ and $V(x)$ and search $\rho$ and $K(x)$
+            </li>
+            <li> 
+              Fix $K(x)$ and $\rho$ and search for $V(x)$ and $\lambda(x)$
+            </li>
+          </ol>
+        </li>
 
-           <li>
-                  Define $(\rho^{\star}, V^{\star}(x))$ as the solutions to the program:
-                  \begin{align*}
-                  \max_{\rho, V(x)}& \qquad\rho
-                  \\
-                  \text{subject to } &
-                  \qquad V(x) \text{ is SOS}
-                  \\
-                  & -\frac{\partial V}{\partial x} (f_{1}(x) + f_{2}(x)K_{0}(x)) + \lambda_{0}(x)( V(x) - \rho) \text{ is SOS}
-                  \end{align*}
-                  <ol type = "i">
-                    <li>
-                      Is the above program guaranteed to be feasible? Why or why not?
-                    </li>
-                    <li>
-                      If $\rho^{\star}$ exists, is it guaranteed to be greater than, less than, or equal to $\rho_{0}$?
-                    </li>
-                    <li>
-                      Consider $x_{0}$ such that $V_{0}(x_{0}) \leq \rho_{0}$. Is it true that $V^{\star}(x_{0}) \leq \rho_{0}$?
-                    </li>
-                  </ol>
-          </li>
-
-          <li>
-            Define $(\lambda^{\star}(x), K^{\star}(x))$ as solutions to the program:
-            \begin{align*}
-            \textbf{find}&\qquad \lambda(x), K(x)
-            \\
-            \text{subject to } &
-            \qquad \lambda(x) \text{ is SOS}
-            \\
-            & -\frac{\partial V_{0}}{\partial x} (f_{1}(x) + f_{2}(x)K(x)) + \lambda(x)( V_{0}(x) - \rho_{0}) \text{ is SOS}
-            \end{align*}
+        <li>Define $(\rho^{\star}, V^{\star}(x))$ as the solutions to the
+        program: \begin{align*} \max_{\rho, V(x)}& \qquad\rho \\ \text{subject
+        to } & \qquad V(x) \text{ is SOS} \\ & -\frac{\partial V}{\partial x}
+        (f_{1}(x) + f_{2}(x)K_{0}(x)) + \lambda_{0}(x)( V(x) - \rho) \text{ is
+        SOS} \end{align*}
             <ol type = "i">
               <li>
                 Is the above program guaranteed to be feasible? Why or why not?
               </li>
               <li>
-                Are $\lambda_{0}(x)$ and $K_{0}(x)$ optimal for this program? Is there any reason a convex solver should not return $\lambda_{0}(x)$ and $K_{0}(x)$?
+                If $\rho^{\star}$ exists, is it guaranteed to be greater than,
+                less than, or equal to $\rho_{0}$?
               </li>
               <li>
-                Describe a procedure that uses the above program to find a $K(x)$ which enlarges the region of attraction certified by $V_{0}(x)$.  Hint: You do not need to change the objective.
+                Consider $x_{0}$ such that $V_{0}(x_{0}) \leq \rho_{0}$. Is it
+                true that $V^{\star}(x_{0}) \leq \rho_{0}$?
+              </li>
+            </ol>
+          </li>
+
+          <li>Define $(\lambda^{\star}(x), K^{\star}(x))$ as solutions to the
+          program: \begin{align*} \textbf{find}&\qquad \lambda(x), K(x) \\
+          \text{subject to } & \qquad \lambda(x) \text{ is SOS} \\ &
+          -\frac{\partial V_{0}}{\partial x} (f_{1}(x) + f_{2}(x)K(x)) +
+          \lambda(x)( V_{0}(x) - \rho_{0}) \text{ is SOS} \end{align*}
+            <ol type = "i">
+              <li>
+                Is the above program guaranteed to be feasible? Why or why not?
+              </li>
+              <li>
+                Are $\lambda_{0}(x)$ and $K_{0}(x)$ optimal for this program?
+                Is there any reason a convex solver should not return
+                $\lambda_{0}(x)$ and $K_{0}(x)$?
+              </li>
+              <li>
+                Describe a procedure that uses the above program to find a
+                $K(x)$ which enlarges the region of attraction certified by
+                $V_{0}(x)$.  Hint: You do not need to change the objective.
               </li>
             </ol>
           </li>
@@ -2099,23 +2231,61 @@ V = RegionOfAttraction(sys, context)
       </p>
     </exercise>
 
-    <exercise><h1>Lyapunov Analysis for Robustness of Pendulum Swing-up Controllers</h1>
+    <exercise><h1>Lyapunov Analysis for Robustness of Pendulum Swing-up
+    Controllers</h1>
 
-      <p>In this problem, we examine the robustness of the swing-up controller designed for the pendulum in <a href="pend.html#pendulum_energy_shaping">this example</a> using Lyapunov analysis. We consider an undamped pendulum in part (a)-(d), and one with damping ratio $b \neq 0$ in (e). Assume (1) we can measure $\theta$ and $\widetilde{\theta}$ perfectly (2) the pendulum does not start and will not stay at the downright position at any time.</p>
+      <p>In this problem, we examine the robustness of the swing-up controller
+      designed for the pendulum in <a
+      href="pend.html#pendulum_energy_shaping">this example</a> using Lyapunov
+      analysis. We consider an undamped pendulum in part (a)-(d), and one with
+      damping ratio $b \neq 0$ in (e). Assume (1) we can measure $\theta$ and
+      $\widetilde{\theta}$ perfectly (2) the pendulum does not start and will
+      not stay at the downright position at any time.</p>
 
       <ol type="a">
 
-        <li>Suppose we have perfect measurements of mass $m$, length $l$, and the gravitational constant $g$. Is $V(x) = \frac{1}{2}\widetilde{E}^2$ a Lyapunov function for the fixed point at the upright position? Show that the fixed point is attractive using LaSalle's Theorem and the scalar function $V(x)$. </li>
+        <li>Suppose we have perfect measurements of mass $m$, length $l$, and
+        the gravitational constant $g$. Is $V(x) = \frac{1}{2}\widetilde{E}^2$
+        a Lyapunov function for the fixed point at the upright position? Show
+        that the fixed point is attractive using LaSalle's Theorem and the
+        scalar function $V(x)$. </li>
 
-        <li>The swing-up controller is robust with respect to mass measurement. Suppose the mass measurement is incorrect $m_i \neq m$. Show that the controller can still complete the swing-up task, i.e., the fixed point is still attractive.</li>
+        <li>The swing-up controller is robust with respect to mass measurement.
+        Suppose the mass measurement is incorrect $m_i \neq m$. Show that the
+        controller can still complete the swing-up task, i.e., the fixed point
+        is still attractive.</li>
 
-        <li>Consider the case where both mass and length measurements are incorrect, $l_i \neq l$ and $m_i \neq m$. Is the fixed point still attractive? If not, identify conditions $m_i, l_i, \dot{\theta}, \theta, \widetilde{E}$ could satisfy such that $\dot{V} > 0$.</li>
+        <li>Consider the case where both mass and length measurements are
+        incorrect, $l_i \neq l$ and $m_i \neq m$. Is the fixed point still
+        attractive? If not, identify conditions $m_i, l_i, \dot{\theta},
+        \theta, \widetilde{E}$ could satisfy such that $\dot{V} > 0$.</li>
 
-        <li>Suppose in addition to uncertaint mass and length, the gravitational constant is also uncertain, $g_i \neq g$. Suppose the pendulum's small-oscillation period $T = 2\pi\sqrt{\frac{l}{g}}$ can be measured precisely, and the estimated values of length and gravitational constant satisfy $T = 2\pi\sqrt{\frac{l_i}{g_i}}$. Show that the controller can still complete the swing-up task, i.e., the fixed point is still attractive.</li>
+        <li>Suppose in addition to uncertaint mass and length, the
+        gravitational constant is also uncertain, $g_i \neq g$. Suppose the
+        pendulum's small-oscillation period $T = 2\pi\sqrt{\frac{l}{g}}$ can be
+        measured precisely, and the estimated values of length and
+        gravitational constant satisfy $T = 2\pi\sqrt{\frac{l_i}{g_i}}$. Show
+        that the controller can still complete the swing-up task, i.e., the
+        fixed point is still attractive.</li>
 
-        <li>Suppose we have accurate measurements of mass and length, but now the pendulum is damped, i.e., $b \neq 0$, and we have incorrect estimates of the damping ratio $b_i \neq b$. Using a swing-up controller $u = -k\dot{\theta}\widetilde{E} + b_i \dot{\theta}$, show that $V(x) = \frac{1}{2}\widetilde{E}^2$ cannot be used as a Lyapunov function to certify attractivity.</li>
+        <li>Suppose we have accurate measurements of mass and length, but now
+        the pendulum is damped, i.e., $b \neq 0$, and we have incorrect
+        estimates of the damping ratio $b_i \neq b$. Using a swing-up
+        controller $u = -k\dot{\theta}\widetilde{E} + b_i \dot{\theta}$, show
+        that $V(x) = \frac{1}{2}\widetilde{E}^2$ cannot be used as a Lyapunov
+        function to certify attractivity.</li>
 
-        <li>When parametric uncertainties are present, the true values of pendulum parameters $m, g, l$ are unknown. To implement the energy-shaping controller $u = -k\dot{\theta}\widetilde{E}$, in which $\widetilde{E}$ depends on $m, g, l$, we substitute unknown parameters with their estimated values $m_i, g_i, l_i$ online in order to compute an estimate for energy difference $\widetilde{E}_i$. However, when we construct Lyapunov function $V = \frac{1}{2}\widetilde{E}^2$ to analyze robustness of our controller, the expressions of $V$ and $\dot{V}$ still contain unknown parameters $m, g, l$. In order to certify attractivity, is there a need to substitute these parameters with their estimates as well? Explain your reasonings.</li>
+        <li>When parametric uncertainties are present, the true values of
+        pendulum parameters $m, g, l$ are unknown. To implement the
+        energy-shaping controller $u = -k\dot{\theta}\widetilde{E}$, in which
+        $\widetilde{E}$ depends on $m, g, l$, we substitute unknown parameters
+        with their estimated values $m_i, g_i, l_i$ online in order to compute
+        an estimate for energy difference $\widetilde{E}_i$. However, when we
+        construct Lyapunov function $V = \frac{1}{2}\widetilde{E}^2$ to analyze
+        robustness of our controller, the expressions of $V$ and $\dot{V}$
+        still contain unknown parameters $m, g, l$. In order to certify
+        attractivity, is there a need to substitute these parameters with their
+        estimates as well? Explain your reasonings.</li>
 
       </ol>
 
@@ -2285,6 +2455,12 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 <span class="title">"Convex Optimization of Nonlinear Feedback Controllers via Occupation Measures"</span>, 
 <span class="publisher">Proceedings of Robotics: Science and Systems (RSS)</span> , <span class="year">2013</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar13b.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Farias02>
+<span class="author">Daniela Pucci de Farias</span>, 
+<span class="title">"The Linear Programming Approach to Approximate Dynamic Programming: Theory and Application"</span>, 
+PhD thesis, Stanford University, June, <span class="year">2002</span>.
 
 </li><br>
 <li id=Dai21>
