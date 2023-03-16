@@ -15,6 +15,14 @@ rt_py_library(
 )
 
 rt_py_library(
+    name = "sos_and_psd",
+    srcs = [
+        "test_sos_and_psd.py",
+    ],
+    visibility = ["//visibility:public"],
+)
+
+rt_py_library(
     name = "van_der_pol",
     srcs = [
         "test_van_der_pol.py",
