@@ -48,9 +48,11 @@ sys.path.append('/home/russt/drake-install/lib/python3.6/site-packages')
 sys.path.append('/home/russt/manipulation')
 ```
 
-## Sorting imports in VS Code
+## Formatting
 
-First `pip install isort`.  Then in the command pallet, run `Python Refactor:Sort Imports`.
+I use `black` + `isort` + `autoflake`.  `black` and `isort` support jupyter files 
+directly, but `autoflake` does not, so I run `cleanipynb` (which runs `autopep8`), 
+and then rerun `black`.
 
 ## Setting up PyCharm
 
