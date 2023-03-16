@@ -1,6 +1,5 @@
-from matplotlib.widgets import Slider
 from matplotlib.animation import HTMLWriter
-
+from matplotlib.widgets import Slider
 from pydrake.systems.framework import VectorSystem
 
 

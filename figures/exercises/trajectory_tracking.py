@@ -1,5 +1,5 @@
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 # change font size to be in line with the textbook
 plt.rcParams.update({"font.size": 16})

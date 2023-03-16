@@ -1,27 +1,20 @@
-from functools import partial
 import time
+from collections import namedtuple
+from functools import partial
+from inspect import Parameter, signature
 
 import numpy as np
-
-from pydrake.geometry import Cylinder, Rgba, Sphere
-from pydrake.perception import PointCloud, Fields, BaseField
-from pydrake.solvers import BoundingBoxConstraint
-
-# imports for interact
-from inspect import signature, Parameter
 from ipywidgets.widgets.interaction import (
     _get_min_max_value,
     _yield_abbreviations_for_parameter,
 )
-
-# imports for the pose sliders
-from collections import namedtuple
 from pydrake.common.value import AbstractValue
-from pydrake.math import RollPitchYaw, RigidTransform, RotationMatrix
-from pydrake.systems.framework import LeafSystem
-
-# imports for the joint sliders
+from pydrake.geometry import Cylinder, Rgba, Sphere
+from pydrake.math import RigidTransform, RollPitchYaw, RotationMatrix
 from pydrake.multibody.tree import JointIndex
+from pydrake.perception import BaseField, Fields, PointCloud
+from pydrake.solvers import BoundingBoxConstraint
+from pydrake.systems.framework import LeafSystem
 
 from underactuated import running_as_notebook
 

@@ -16,14 +16,29 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
-    name = "trajopt",
-    timeout = "moderate",
-    srcs = ["trajopt.ipynb"],
+    name = "double_integrator",
+    srcs = ["double_integrator.ipynb"],
+    deps = [
+        "//underactuated",
+    ],
+)
+
+rt_ipynb_test(
+    name = "dircol",
+    srcs = ["dircol.ipynb"],
     data = ["//underactuated/models:cartpole.urdf"],
-    tags = ["requires-network"],  # For gurobi license.
     deps = [
         "//underactuated",
         "//underactuated:pendulum",
+    ],
+)
+
+rt_ipynb_test(
+    name = "mi_convex",
+    srcs = ["mi_convex.ipynb"],
+    tags = ["requires-network"],  # For gurobi license.
+    deps = [
+        "//underactuated",
     ],
 )
 

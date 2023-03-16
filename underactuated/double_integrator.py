@@ -1,8 +1,7 @@
-import numpy as np
 import matplotlib.pyplot as plt
-
-from pydrake.systems.pyplot_visualizer import PyPlotVisualizer
+import numpy as np
 from pydrake.systems.framework import PortDataType
+from pydrake.systems.pyplot_visualizer import PyPlotVisualizer
 
 _MIT_RED = "#A31F34"
 

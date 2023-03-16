@@ -1,5 +1,5 @@
-import plotly.graph_objects as go
 import numpy as np
+import plotly.graph_objects as go
 
 q = np.linspace(-10, 10, 51)
 qdot = np.linspace(-3, 3, 41)

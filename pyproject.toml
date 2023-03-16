@@ -21,6 +21,7 @@ exclude = '''
 profile = "black"
 multi_line_output = 3
 line_length = 79
+skip_glob = [".gitignore", "bazel*", ".history"]
 [tool.autoflake]
 in-place = true
 recursive = true
@@ -29,3 +30,4 @@ ignore-init-module-imports = true
 remove-all-unused-imports = true
 remove-duplicate-keys = true
 remove-unused-variables = true
+exclude = ["bazel*", ".history"]

@@ -1,10 +1,11 @@
-import unittest
-from gradescope_utils.autograder_utils.json_test_runner import JSONTestRunner
 import json
-from runpy import run_path
-import nbformat
-from nbconvert import PythonExporter
 import os
+import unittest
+from runpy import run_path
+
+import nbformat
+from gradescope_utils.autograder_utils.json_test_runner import JSONTestRunner
+from nbconvert import PythonExporter
 
 grader_throws = False
 

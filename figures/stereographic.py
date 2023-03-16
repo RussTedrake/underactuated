@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
-from matplotlib.patches import Ellipse
 import numpy as np
+from matplotlib.patches import Ellipse
 
 fig = plt.figure()
 ax = plt.gca()

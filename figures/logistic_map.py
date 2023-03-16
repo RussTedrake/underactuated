@@ -2,10 +2,9 @@ import matplotlib as mp
 
 mp.use("Qt5Agg")  # apt install python3-pyqt5
 
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 from matplotlib.ticker import StrMethodFormatter
-
 from pydrake.all import (
     DiagramBuilder,
     LogVectorOutput,

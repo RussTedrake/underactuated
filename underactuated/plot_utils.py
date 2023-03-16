@@ -1,7 +1,7 @@
 from copy import copy
-import numpy as np
-import matplotlib.pyplot as plt
 
+import matplotlib.pyplot as plt
+import numpy as np
 from pydrake.all import System
 
 

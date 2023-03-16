@@ -1,5 +1,4 @@
 import numpy as np
-
 from pydrake.systems.framework import LeafSystem_, PortDataType
 from pydrake.systems.pyplot_visualizer import PyPlotVisualizer
 from pydrake.systems.scalar_conversion import TemplateSystem

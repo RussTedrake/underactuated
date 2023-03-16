@@ -1,12 +1,11 @@
 import asyncio
 import os
 import sys
-
-from IPython import get_ipython
-from IPython.display import display, HTML
-from ipywidgets.widgets import FloatSlider
 from warnings import warn
 
+from IPython import get_ipython
+from IPython.display import HTML, display
+from ipywidgets.widgets import FloatSlider
 from pydrake.systems.framework import VectorSystem
 
 # Use a global variable here because some calls to IPython will actually case an

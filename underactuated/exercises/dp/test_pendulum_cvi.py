@@ -1,14 +1,13 @@
 import unittest
+
+import numpy as np
 import timeout_decorator
 from gradescope_utils.autograder_utils.decorators import weight
-import numpy as np
 from pydrake.all import (
     DiagramBuilder,
+    LeafSystem,
     SceneGraph,
     Simulator,
-    LeafSystem,
-    DiagramBuilder,
-    SceneGraph,
     ZeroOrderHold,
 )
 from pydrake.examples import PendulumGeometry, PendulumPlant

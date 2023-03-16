@@ -1,6 +1,6 @@
 import sys
-from urllib.request import urlretrieve
 import warnings
+from urllib.request import urlretrieve
 
 assert (
     "google.colab" in sys.modules
