@@ -792,50 +792,82 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       closed-form representation of this policy; it is represented only
       implicitly as the solution of the optimization), there is a bounty of
       theoretical and algorithmic results on MPC
-      <elib>Garcia89+Camacho13</elib>.  And there are a few core ideas that
+      <elib>Garcia89+Camacho13</elib>.  The theoretical and practical aspects of Linear MPC are so well
+      understood today that it is considered the de-facto generalization of LQR
+      for controlling a linear system subject to (linear) constraints.  And there are a few core ideas that
       practitioners should really understand.</p>
 
-      <p>One core idea is the concept of <i>receding-horizon</i> MPC. Since our
-      trajectory optimization problems are formulated over a finite-horizon, we
-      can think each optimization as reasoning about the next $N$ time steps.
-      If our true objective is to optimize the performance over a horizon
-      longer than $N$ (e.g. over the infinite horizon), then it is standard to
-      continue solving for an $N$ step horizon on each evaluation of the
-      controller.  In this sense, the total horizon under consideration
-      continues to move forward in time (e.g. to recede).</p>
+      <subsubsection><h1>Receding-horizon MPC</h1>
+      
+        <p>One core idea is the concept of <i>receding-horizon</i> MPC. Since
+        our trajectory optimization problems are formulated over a
+        finite-horizon, we can think each optimization as reasoning about the
+        next $N$ time steps. If our true objective is to optimize the
+        performance over a horizon longer than $N$ (e.g. over the infinite
+        horizon), then it is standard to continue solving for an $N$ step
+        horizon on each evaluation of the controller.  In this sense, the total
+        horizon under consideration continues to move forward in time (e.g. to
+        recede).</p>
 
-      <p>Some care must be taken in receding-horizon formulations because on
-      each new step we are introducing new costs and constraints into the
-      problem (the ones that would have been associated with time $N+1$ on the
-      previous solve) -- it would be very bad to march forward in time solving
-      convex optimization problems only to suddenly encounter a situation where
-      the solver returns "infeasible!".  One can design MPC formulations that
-      guarantee <i>recursive feasibility</i> -- e.g. guarantee that if a
-      feasible solution is found at time $n$, then the solver will also find a
-      feasible solution at time $n+1$.</p>
+      </subsubsection>
 
-      <p>Perhaps the simplest mechanism for guaranteeing recursive feasibility
-      in an optimization for stabilizing a fixed point, $(\bx^*, \bu^*)$, is to
-      add a final-value constraint to the receding horizon, $\bx[N] = \bx^*$.
-      This idea is simple but important. Considering the
-      trajectories/constraints in absolute time, then on step $k$ of the
-      algorithm, we are optimizing for $\bx[k], ... , \bx[k+N],$ and $\bu[k],
-      ..., \bu[k+N-1]$; let us say that we have found a feasible solution for
-      this problem. The danger in receding-horizon control is that when we shift
-      to the next step ($k+1$) we introduce constraints on the system at
-      $\bx[k+N+1]$ for the first time.  But if our feasible solution in step $k$
-      had $\bx[k+N] = \bx^*$, then we know that setting $\bx[k+N+1] = \bx^*,
-      \bu[k+N] = \bu^*$ is guaranteed to provide a feasible solution to the new
-      optimization problem in step $k+1$.  With feasibility guaranteed, the
-      solver is free to search for a lower-cost solution (which may be available
-      now because we've shifted the final-value constraint further into the
-      future). It is also possible to formulate MPC problems that guarantee
-      recursive feasibility even in the presence of modeling errors and
-      disturbances (c.f. <elib>Bemporad99</elib>).</p>
+      <subsubsection><h1>Recursive feasibility</h1>
 
-      <p>The theoretical and practical aspects of Linear MPC are so well
-      understood today that it is considered the de-facto generalization of LQR
-      for controlling a linear system subject to (linear) constraints.</p>
+        <p>Some care must be taken in receding-horizon formulations because on
+        each new step we are introducing new costs and constraints into the
+        problem (the ones that would have been associated with time $N+1$ on
+        the previous solve) -- it would be very bad to march forward in time
+        solving convex optimization problems only to suddenly encounter a
+        situation where the solver returns "infeasible!".  One can design MPC
+        formulations that guarantee <i>recursive feasibility</i> -- e.g.
+        guarantee that if a feasible solution is found at time $n$, then the
+        solver will also find a feasible solution at time $n+1$.</p>
+
+        <p>Perhaps the simplest mechanism for guaranteeing recursive
+        feasibility in an optimization for stabilizing a fixed point, $(\bx^*,
+        \bu^*)$, is to add a final-value constraint to the receding horizon,
+        $\bx[N] = \bx^*$. This idea is simple but important. Considering the
+        trajectories/constraints in absolute time, then on step $k$ of the
+        algorithm, we are optimizing for $\bx[k], ... , \bx[k+N],$ and $\bu[k],
+        ..., \bu[k+N-1]$; let us say that we have found a feasible solution for
+        this problem. The danger in receding-horizon control is that when we
+        shift to the next step ($k+1$) we introduce constraints on the system
+        at $\bx[k+N+1]$ for the first time.  But if our feasible solution in
+        step $k$ had $\bx[k+N] = \bx^*$, then we know that setting $\bx[k+N+1]
+        = \bx^*, \bu[k+N] = \bu^*$ is guaranteed to provide a feasible solution
+        to the new optimization problem in step $k+1$.  With feasibility
+        guaranteed, the solver is free to search for a lower-cost solution
+        (which may be available now because we've shifted the final-value
+        constraint further into the future). It is also possible to formulate
+        MPC problems that guarantee recursive feasibility even in the presence
+        of modeling errors and disturbances (c.f. <elib>Bemporad99</elib>).</p>
+
+      </subsubsection>
+
+      <subsubsection><h1>MPC and Lyapunov functions</h1>
+
+        <p>Even though the MPC policy is only defined implicitly as the result
+        of an optimization problem, it is still possible to make Lyapunov
+        stability arguments.  If, in the receding-horizon MPC setting, in
+        addition to recursive feasibility (of the <i>constraints</i>) we have
+        the property that the <i>cost</i> added at step $k+N+1$ is less than or
+        equal to the cost removed corresponding to step $k$. Then the optimal
+        cost, $J(\bx,k)$, of the trajectory optimization is a Lyapunov
+        function:  $$\forall \bx, k, \quad J^*(\bx,k+1) \le J^*({\bf f}(\bx,
+        \bu^*), k).$$  Once again, a particularly simple way to achieve this is
+        to have a final-value constraint at the $N$th step of every
+        optimization, which gets me to an equilibrium configuration with zero
+        cost. But, again, there are ways to extend this Lyapunov argument even
+        in the presence of modeling errors and disturbances (c.f.
+        <elib>Bemporad99</elib>).</p>
+        
+        <p>Unlike the nice explicit time-varying quadratic Lyapunov functions
+        that we get from finite-horizon LQR, this Lyapunov function in general
+        does not admit a compact representation (this is the object of study in
+        <a href="#explicit_mpc">explicit MPC</a>), and is more difficult to use
+        with e.g. sums-of-squares optimization.</p>
+
+      </subsubsection>
 
     </subsection>
 
@@ -1329,7 +1361,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     </subsection>
 
-    <subsection><h1>Explicit model-predictive control</h1></subsection>
+    <subsection id="explicit_mpc"><h1>Explicit model-predictive control</h1>
+    
+      <p><elib>Alessio09</elib></p>
+
+    </subsection>
 
   </section>
 
@@ -1714,6 +1750,12 @@ PhD thesis, Massachusetts Institute of Technology, September, <span class="year"
 <span class="title">"Motion Planning around Obstacles with Convex Optimization"</span>, 
 , <span class="year">2022</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Marcucci22.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Alessio09>
+<span class="author">A. Alessio and A. Bemporad</span>, 
+<span class="title">"A survey on explicit model predictive control"</span>, 
+<span class="publisher">Int. Workshop on Assessment and Future Directions of Nonlinear Model Predictive Control</span> , <span class="year">2009</span>.
 
 </li><br>
 <li id=Junge05>
