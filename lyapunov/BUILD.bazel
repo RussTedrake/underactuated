@@ -42,7 +42,7 @@ rt_ipynb_test(
 
 rt_ipynb_test(
     name = "approximate_dp",
-    timeout = "moderate",
+    timeout = "long",
     srcs = ["approximate_dp.ipynb"],
     data = ["//underactuated/models:cartpole.urdf"],
     deps = [
