@@ -169,25 +169,25 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <ul>
 
         <li>Locally <b>stable</b> in the sense of Lyapunov (i.s.L.).  A fixed
-        point, $x^*$ is locally stable i.s.L. if for every $\epsilon > 0$,
-        I can produce a $\delta > 0$ such that if $\| x(0) - x^* \| < \delta$
-        then $\forall t$ $\| x(t) - x^*\| < \epsilon$.  In words, this means
-        that for any ball of size $\epsilon$ around the fixed point, I can
-        create a ball of size $\delta$ which guarantees that if the system is
-        started inside the $\delta$ ball then it will remain inside the
+        point, $x^*$ is locally stable i.s.L. if for every (small) $\epsilon >
+        0$, $\exists~\delta > 0$ such that if $\| x(0) - x^* \| <
+        \delta$ then $\forall t$ $\| x(t) - x^*\| < \epsilon$.  In words, this
+        means that for any ball of size $\epsilon$ around the fixed point, I
+        can create a ball of size $\delta$ which guarantees that if the system
+        is started inside the $\delta$ ball then it will remain inside the
         $\epsilon$ ball for all of time.</li>
 
         <li>Locally <b>attractive</b>.  A fixed point is locally attractive if  
-        $x(0) = x^* + \epsilon$ implies that $\lim_{t\rightarrow \infty} x(t) =
-        x^*$.</li>
+        for every (small) $\epsilon$ we have $x(0) = x^* + \epsilon$ implies
+        that $\lim_{t\rightarrow \infty} x(t) = x^*$.</li>
 
         <li>Locally <b>asymptotically stable</b>.  A fixed point is locally
         asymptotically stable if it is locally stable i.s.L. and locally attractive.</li>
 
         <li>Locally <b>exponentially stable</b>.  A fixed point is locally
-        exponentially stable if $x(0) = x^* + \epsilon$ implies that $\| x(t) -
-        x^* \| < Ce^{-\alpha t}$, for some positive constants $C$ and
-        $\alpha$.</li>
+        exponentially stable if for every (small) $\epsilon$, we have $x(0) =
+        x^* + \epsilon$ implies that $\| x(t) - x^* \| < Ce^{-\alpha t}$, for
+        some positive constants $C$ and $\alpha$.</li>
 
         <li><b>Unstable</b>.  A fixed point is unstable if it is not locally stable i.s.L.</li>
 
