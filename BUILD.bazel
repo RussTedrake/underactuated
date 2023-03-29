@@ -57,6 +57,7 @@ rt_ipynb_test(
     srcs = ["acrobot.ipynb"],
     data = ["//underactuated/models:cartpole.urdf"],
     flaky = True,
+    tags = ["requires-network"], # to download drake-models
     deps = [
         "//underactuated",
         "//underactuated:meshcat_utils",
