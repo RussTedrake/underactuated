@@ -916,10 +916,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         <p>Under the assumption that the Hessian of $\dot{V}(\bx)$ is
         negative-definite at the origin (which is easily checked), we can write
         \begin{align*} \max_{\rho, \lambda(\bx)} & \quad \rho \\ \subjto &
-        \quad (\bx^T\bx)^d (V(\bx) - \rho) + \lambda(\bx) \dot{V}(\bx) \text{
+        \quad (\bx^T\bx)^d (V(\bx) - \rho) + \lambda^T(\bx) \dot{V}(\bx) \text{
         is SOS},\end{align*} with $d$ a fixed positive integer.  As you can
-        see, $\rho$ no longer multiplies the coefficient of $\lambda(\bx)$.
-        But why does this certify a region of attraction?</p>
+        see, $\rho$ no longer multiplies the coefficient of $\lambda(\bx)$. But
+        why does this certify a region of attraction?</p>
 
         <p>You can read the sums-of-squares constraint as certifying the
         implication that whenever $\dot{V}(x) = 0$, we have that either $V(\bx)
@@ -995,10 +995,25 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         \text{and} \quad \lambda(\bx) \text{ is SOS}.$$
         
         Notice that I've replaced $\rho=1$; now that we are 
-        searching for $V$ the scale of the level-set can be set aribtrarily to
+        searching for $V$ the scale of the level-set can be set arbitrarily to
         1.  In fact, it's better to do so -- if we did not set $V(0)=0$ and
         $V(\bx) \le 1$ as the sublevel set, then the optimization problem would
         be under-constrained, and might cause problems for the solver.</p>
+
+        <p>A typical choice for the objective is to maximize the volume of the
+        certified region -- for quadratic Lyapunov functions described in our
+        standard quadratic form, $\bx^T {\bf P} \bx \le 1$, this volume is
+        proportional to $\det({\bf P}^{-\frac{1}{2}}).$ Minimizing this volume
+        is a convex optimization<elib part="&sect;8.4.1">Boyd04a</elib>, but
+        maximizing the volume is, in general, not.  We tend to use a heuristic
+        like minimizing $\tr(\hat{\bf P}^{-1}{\bf P})$ as a surrogate for the
+        true objective
+        <elib part="&sect;6.3.2">Posa17a</elib>, where $\hat{\bf P}$ is the
+        ${\bf P}$ from the previous alternation (or the identity matrix), which
+        is a linearization of the true objective<elib>Fazel03</elib>. For
+        higher-degree Lyapunov functions, typically we (approximately) maximize
+        the volume of a contained ellipse, $$\bx^T {\bf P} \bx \le 1
+        \Rightarrow V(\bx) \le 1,$$ as a surrogate for the true volume.</p>
 
         <p>Unfortunately, the derivative constraint is now nonconvex (bilinear)
         in the decision variables, since we are searching for both the
@@ -1006,18 +1021,28 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         The equality-constrained formulation has the same bilinearity, since
         the coefficients of $V$ also appear in $\dot{V}$.  Here we have to
         resort to some weaker form of optimization.  In practice, we have had
-        good practical success using bilinear alternations: start with an
-        initial $V$ (e.g. from LQR), and search for $\lambda$; then fix
-        $\lambda$ and search for $V$ and repeat until convergence (see, for
-        instance <elib>Tedrake10+Majumdar16a</elib>).  A typical choice for the
-        objective is to maximize the volume of the certified region -- for
-        quadratic Lyapunov functions this is a convex objective (using the
-        determinant of the quadratic form). For higher-degree Lyapunov
-        functions, typically we use the determinant of the quadratic form
-        describing the maximal contained ellipse as a surrogate for the true
-        volume. We often prefer to do those optimizations in the
-        equality-constrained formulation, because we have stronger tools for
-        dealing with that equality constraint <elib>Shen20</elib>.</p>
+        good practical success (see, for instance
+        <elib>Tedrake10+Majumdar16a</elib>) using bilinear alternations: 
+        <ol>
+          <li>Fix $V(\bx)$ and solve for $\rho$ and $\lambda(\bx)$:
+          \begin{align*} \max_{\rho, \lambda(\bx)} & \quad \rho \\ \subjto &
+          \quad (\bx^T\bx)^d (V(\bx) - \rho) + \lambda^T(\bx) \dot{V}(\bx)
+          \text{ is SOS},\end{align*} with $d$ a fixed, positive integer.
+        </li> 
+        <li>Fix $\lambda(\bx)$ and solve for $V(\bx) = \bx^T{\bf P}\bx$:
+        \begin{align*} \min_{{\bf P}} & \quad \tr({\bf P}) \\ \subjto & \quad
+        (\bx^T\bx)^d (V(\bx) - 1) + \lambda^T(\bx) \dot{V}(\bx) \text{ is SOS},
+        \\ & \quad {\bf P} \succeq 0. \end{align*} with $d$ the same fixed,
+        positive integer.
+        </li>
+        </ol>
+        These alternations require a feasible initial $V(\bx)$, which we
+        typically get from solving the quadratic Lyapunov equation or LQR. We
+        often prefer to do those optimizations in the equality-constrained
+        formulation, because we have stronger tools for dealing with that
+        equality constraint <elib>Shen20</elib>, but the basic formulation with
+        line search can be used, too, and in some problems can be numerically
+        more robust.</p>
 
         <p>Barring numerical issues, this algorithm is guaranteed to have
         recursive feasibility and tends to converge in just a few alternations,
@@ -1066,7 +1091,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       </subsubsection>
 
-      <subsubsection id="outer_roa"><h1>Convex outer approximations of the ROA</h1>
+      <subsubsection id="outer_roa"><h1>Convex outer approximations</h1>
 
         <p>All of our region of attraction approximations so far have been
         "inner approximations" -- the certified region is guaranteed to be
@@ -1117,7 +1142,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         we minimize the integral $\int_\bx W(\bx)d\bx$, which can be readily
         computed over a compact set like a ball in $\Re^n$
         <elib>Folland01</elib> and is linear in the coefficients.  More
-        sophisticated alternatives also exist<elib>Henrion09</elib>.</p>
+        sophisticated alternatives also exist<elib>Henrion09</elib>. <elib
+        sect="Ch.~4">Majumdar13f</elib> writes the objective as minimizing the
+        volume of the covering ellipse, which is convex<elib
+        part="&sect;8.4.1">Boyd04a</elib>.</p>
 
         <example><h1>Outer approximation for the cubic polynomial</h1>
 
@@ -1727,25 +1755,23 @@ V = RegionOfAttraction(sys, context)
         <ol>
           <li>Fix $V(\bx)$ and $\rho$, and solve a feasibility problem for
           ${\bf K}(\bx)$ and $\lambda(\bx):$ \begin{align*}
-          \textbf{find}_{\lambda(\bx), {\bf K}(\bx)}& \\ \subjto \qquad& 
-          -\pd{V}{\bx} ({\bf f}_{1}(\bx) +
-          {\bf f}_{2}(\bx){\bf K}(x)) + \lambda(\bx)( V(\bx) - \rho) \text{ is
-          SOS.} \end{align*}
+          \textbf{find}_{\lambda(\bx), {\bf K}(\bx)}& \\ \subjto \qquad&
+          -\pd{V}{\bx} ({\bf f}_{1}(\bx) + {\bf f}_{2}(\bx){\bf K}(x)) +
+          \lambda(\bx)( V(\bx) - \rho) \text{ is SOS.} \end{align*}
         </li> 
-          <li>Fix $V(\bx)$ and
-        $\lambda(\bx)$ and maximize $\rho$ searching over ${\bf K}(\bx):$
-        \begin{align*}
-        \max_{\rho, {\bf K}(\bx)}\qquad & \rho \\ \subjto \qquad & 
-        \lambda(\bx) \text{ is SOS} \\ & -\pd{V}{\bx} ({\bf f}_{1}(\bx) +
-        {\bf f}_{2}(\bx){\bf K}(x)) + \lambda(\bx)( V(\bx) - \rho) \text{ is
-        SOS.} \end{align*}    </li>
-          <li>Fix $\lambda(\bx)$ and ${\bf K}(\bx)$ and maximize $\rho$ searching
-        over $V(\bx):$         \begin{align*}
-        \max_{\rho, V(\bx)}\qquad & \rho \\ \subjto \qquad & 
-        V(\bx) \text{ is SOS} \\ & -\pd{V}{\bx} ({\bf f}_{1}(\bx) +
-        {\bf f}_{2}(\bx){\bf K}(x)) + \lambda(\bx)( V(\bx) - \rho) \text{ is
-        SOS,} \\ & V({\bf 0}) = 0, \quad V({\bf 1}) = 1.
-        \end{align*}  </li>
+          <li>Fix $V(\bx)$ and $\lambda(\bx)$ and maximize $\rho$ searching
+          over ${\bf K}(\bx):$ \begin{align*} \max_{\rho, {\bf K}(\bx)}\qquad &
+          \rho \\ \subjto \qquad & \lambda(\bx) \text{ is SOS} \\ &
+          -\pd{V}{\bx} ({\bf f}_{1}(\bx) + {\bf f}_{2}(\bx){\bf K}(x)) +
+          \lambda(\bx)( V(\bx) - \rho) \text{ is SOS.} \end{align*}    </li>
+          <li>Fix $\lambda(\bx)$ and ${\bf K}(\bx)$ and maximize $\rho$ <!--
+          wouldn't it be better to maximize volume here, like in our search
+          over V above? -->
+          searching over $V(\bx):$         \begin{align*} \max_{\rho,
+          V(\bx)}\qquad & \rho \\ \subjto \qquad & V(\bx) \text{ is SOS} \\ &
+          -\pd{V}{\bx} ({\bf f}_{1}(\bx) + {\bf f}_{2}(\bx){\bf K}(x)) +
+          \lambda(\bx)( V(\bx) - \rho) \text{ is SOS,} \\ & V({\bf 0}) = 0,
+          \quad V({\bf 1}) = 1. \end{align*}  </li>
         </ol>
         </p>
         </subsubsection>
@@ -2383,6 +2409,25 @@ PhD thesis, California Institute of Technology, May 18, <span class="year">2000<
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Shen20.pdf">link</a>&nbsp;]
 
 </li><br>
+<li id=Boyd04a>
+<span class="author">Stephen Boyd and Lieven Vandenberghe</span>, 
+<span class="title">"Convex Optimization"</span>, Cambridge University Press
+, <span class="year">2004</span>.
+
+</li><br>
+<li id=Posa17a>
+<span class="author">Michael Posa</span>, 
+<span class="title">"Optimization for Control and Planning of Multi-contact Dynamic Motion"</span>, 
+PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2017</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Posa17a.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Fazel03>
+<span class="author">Maryam Fazel and Haitham Hindi and Stephen P Boyd</span>, 
+<span class="title">"Log-det heuristic for matrix rank minimization with applications to Hankel and Euclidean distance matrices"</span>, 
+<span class="publisher">American Control Conference, 2003. Proceedings of the 2003</span> , vol. 3, pp. 2156--2162, <span class="year">2003</span>.
+
+</li><br>
 <li id=Tedrake10>
 <span class="author">Russ Tedrake and Ian R. Manchester and Mark M. Tobenkin and John W. Roberts</span>, 
 <span class="title">"{LQR-Trees}: Feedback Motion Planning via Sums of Squares Verification"</span>, 
@@ -2428,6 +2473,13 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 <span class="publisher">SIAM Review</span>, vol. 51, no. 4, pp. 722--743, <span class="year">2009</span>.
 
 </li><br>
+<li id=Majumdar13f>
+<span class="author">Anirudha Majumdar</span>, 
+<span class="title">"Robust Online Motion Planning with Reachable Sets"</span>, 
+, May, <span class="year">2013</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar13f.pdf">link</a>&nbsp;]
+
+</li><br>
 <li id=Wampler11>
 <span class="author">Charles W. Wampler and Andrew J. Sommese</span>, 
 <span class="title">"Numerical algebraic geometry and algebraic kinematics"</span>, 
@@ -2457,13 +2509,6 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 <span class="title">"Invariant Funnels around Trajectories using Sum-of-Squares Programming"</span>, 
 <span class="publisher">Proceedings of the 18th IFAC World Congress, extended version available online: arXiv:1010.3013 [math.DS]</span>, <span class="year">2011</span>.
 [&nbsp;<a href="http://arxiv.org/abs/1010.3013">link</a>&nbsp;]
-
-</li><br>
-<li id=Majumdar13f>
-<span class="author">Anirudha Majumdar</span>, 
-<span class="title">"Robust Online Motion Planning with Reachable Sets"</span>, 
-, May, <span class="year">2013</span>.
-[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar13f.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Lind94>
