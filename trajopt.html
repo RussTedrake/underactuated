@@ -853,9 +853,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         the property that the <i>cost</i> added at step $k+N+1$ is less than or
         equal to the cost removed corresponding to step $k$. Then the optimal
         cost, $J(\bx,k)$, of the trajectory optimization is a Lyapunov
-        function:  $$\forall \bx, k, \quad J^*(\bx,k+1) \le J^*({\bf f}(\bx,
-        \bu^*), k).$$  Once again, a particularly simple way to achieve this is
-        to have a final-value constraint at the $N$th step of every
+        function:  $$\forall \bx, k, \quad J^*({\bf f}(\bx, \bu^*), k+1) \le
+        J^*(\bx, k).$$  Once again, a particularly simple way to achieve this
+        is to have a final-value constraint at the $N$th step of every
         optimization, which gets me to an equilibrium configuration with zero
         cost. But, again, there are ways to extend this Lyapunov argument even
         in the presence of modeling errors and disturbances (c.f.
