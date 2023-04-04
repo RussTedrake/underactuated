@@ -240,10 +240,11 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       region is called the <em>region of attraction</em> (or <em>basin of
       attraction</em>) of the fixed point at $x^* = 0$. Basins of attraction of
       two fixed points cannot overlap, and the manifold separating two basins
-      of attraction is called the
-      <em>separatrix</em>.  Here the unstable fixed points, at $x^* = \{..,
-      -\pi, \pi, 3\pi, ...\}$ form the separatrix between the basins of
-      attraction of the stable fixed points. </p>
+      of attraction is called the <em>separatrix</em>. Here the unstable fixed
+      points, at $x^* = \{.., -\pi, \pi, 3\pi, ...\}$ form the separatrix
+      between the basins of attraction of the stable fixed points. In general,
+      regions of attraction are always open, connected, invariant sets, with
+      boundaries formed by trajectories. </p>
 
       <p> As these plots demonstrate, the behavior of a first-order one
       dimensional system on a line is relatively constrained.  The system will
@@ -614,17 +615,19 @@ complete trajectory.</p>
       </example>
 
       <p>There are a few things that are extremely nice about this controller.
-      Not only is it simple, but it is actually incredibly robust to errors
-      we might have in our estimate of the model parameters, $m,$ $l,$ and $g.$
-      In fact, the only place that the model enters our control equation is in
-      the calculation of $\tilde{E} = \frac{1}{2} m l^2 \dot\theta^2 - mgl(1 +
+      Not only is it simple, but it is actually incredibly robust to errors we
+      might have in our estimate of the model parameters, $m,$ $l,$ and $g.$ In
+      fact, the only place that the model enters our control equation is in the
+      calculation of $\tilde{E} = \frac{1}{2} m l^2 \dot\theta^2 - mgl(1 +
       \cos\theta)$, and the only property of this estimate that impacts
       stability is the location of the orbit when $\tilde{E} = 0$, which is
-      $\frac{1}{2}l\dot\theta^2 = g(\cos\theta + 1).$ This doesn't depend at all
-      on our estimate of the mass, and only linearly on our estimates of the
-      length and gravity (and if one cannot measure the length of the pendulum
-      accurately, then a proper measuring device would make an excellent
-      investment).  This is somewhat amazing; we will develop many
+      $\frac{1}{2}l\dot\theta^2 = g(\cos\theta + 1).$ Therefore, we could have
+      used $\frac{E - E_d}{m} = \frac{1}{2} l^2 \dot\theta^2 - gl(1 +
+      \cos\theta)$ in our controller and obtained the same result. This doesn't
+      depend at all on our estimate of the mass, and only linearly on our
+      estimates of the length and gravity (and if one cannot measure the length
+      of the pendulum accurately, then a proper measuring device would make an
+      excellent investment).  This is somewhat amazing; we will develop many
       optimization-based algorithms capable of swinging up the pendulum, but it
       will take a lot of work to find one that is as insensitive to the model
       parameters.</p>
