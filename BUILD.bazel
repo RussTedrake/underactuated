@@ -68,14 +68,6 @@ rt_ipynb_test(
 rt_html_test(
     srcs = ["simple_legs.html"],
 )
-rt_ipynb_test(
-    name = "simple_legs",
-    srcs = ["simple_legs.ipynb"],
-    deps = [
-        "//underactuated",
-    ],
-)
-
 
 rt_html_test(
     srcs = ["humanoids.html"],

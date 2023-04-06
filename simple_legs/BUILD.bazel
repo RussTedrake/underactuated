@@ -1,0 +1,31 @@
+# -*- mode: python -*-
+# vi: set ft=python :
+
+# Copyright 2020-2022 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+load("//htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
+
+rt_ipynb_test(
+    name="rimless_wheel",
+    srcs=["rimless_wheel.ipynb"],
+    deps=[
+        "//underactuated",
+    ],
+)
+
+rt_ipynb_test(
+    name="compass_gait",
+    srcs=["compass_gait.ipynb"],
+    deps=[
+        "//underactuated",
+    ],
+)
+
+rt_ipynb_test(
+    name="slip",
+    srcs=["slip.ipynb"],
+    deps=[
+        "//underactuated",
+    ],
+)
