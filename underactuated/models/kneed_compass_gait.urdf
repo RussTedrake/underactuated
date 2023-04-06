@@ -1,0 +1,250 @@
+<?xml version="1.0" ?>
+<!-- Let's change-->
+<robot name="kneed_compass_gait">
+
+  <link name="ground">
+    <visual>
+      <origin xyz="0 0 -.25" rpy="0 0 0"/>
+      <geometry>
+        <box size="10 1 .5" />
+      </geometry>
+      <material name="desert sand">
+        <color rgba="0.9297, 0.7930, 0.6758 1" />
+      </material>
+    </visual>
+  </link>
+
+  <joint name="ground_is_world" type="fixed">
+    <parent link="world" />
+    <child link="ground" />
+    <origin xyz="0 0 0" rpy="0 .04 0"/>
+  </joint>
+
+
+  <link name="floating_base_x" />
+
+  <joint name="floating_base_x" type="prismatic">
+    <parent link="ground"/>
+    <child link="floating_base_x"/>
+    <axis xyz="1 0 0"/>
+  </joint>
+
+  <link name="floating_base_z" />
+
+  <joint name="floating_base_z" type="prismatic">
+    <parent link="floating_base_x"/>
+    <child link="floating_base_z"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+<!-- My work-->
+<!-- 
+* All leg/hip link lengths are set to 1 and 
+the masses are placed in the middle of the links
+* Leg masses: 0.1
+* Hip masses: 1
+* Body mass: 1
+-->
+
+  <link name="stance_leg">
+    <inertial>
+      <origin xyz="0 0 .5"/>
+      <mass value=".1"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 .5"/>
+      <geometry>
+        <sphere radius=".05"/>
+      </geometry>
+      <material>
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0 0 .5"/>
+      <geometry>
+        <cylinder length="1" radius=".01"/>
+      </geometry>
+      <material>
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+
+  </link>
+
+  <joint name="floating_base_y" type="continuous">
+    <parent link="floating_base_z"/>
+    <child link="stance_leg"/>
+    <axis xyz="0 -1 0"/>
+  </joint>
+
+
+<!-- Stance hip-->
+  <link name="stance_hip">
+
+    <inertial>
+      <origin xyz="0 0 .5"/>
+      <mass value="1"/>
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 .5"/>
+      <geometry>
+        <sphere radius=".05"/>
+      </geometry>
+      <material>
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+    <visual>
+      <origin xyz="0 0 .5"/>
+      <geometry>
+        <cylinder length="1" radius=".01"/>
+      </geometry>
+      <material>
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+  </link>
+
+<!-- Stance knee joint-->
+  <joint name="stance_knee_joint" type="fixed">
+    <parent link="stance_leg"/>
+    <child link="stance_hip"/>
+    <!-- No need if the joint is fixed-->
+    <!--axis xyz="0 -1 0"/-->
+    <origin xyz="0 0 1"/>
+  </joint> 
+
+<!-- Body-->
+
+  <link name="body">
+
+    <inertial>
+      <origin xyz="0 0 1"/>
+      <mass value="1"/>
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0"/>
+      <geometry>
+        <sphere radius=".1"/>
+      </geometry>
+      <material>
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+
+  </link>
+
+<!-- Stance hip to body joint-->
+  <joint name="stance_hip_to_body" type="fixed">
+    <parent link="stance_hip" />
+    <child link="body" />
+    <origin xyz="0 0 1"/>
+    <!-- If type is changed from fixed to continous-->
+    <!-- axis xyz="0 -1 0"-->
+
+  </joint>
+
+<!-- Swing hip -->
+
+  <link name="swing_hip">
+
+    <inertial>
+      <origin xyz="0 0 -.5"/>
+      <mass value="1"/>
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 -.5"/>
+      <geometry>
+        <sphere radius=".05"/>
+      </geometry>
+      <material>
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+
+    <visual>
+      <origin xyz="0 0 -.5"/>
+      <geometry>
+        <cylinder length="1" radius=".01"/>
+      </geometry>
+      <material>
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+
+  </link>
+
+<!-- Body to swing hip joint-->
+  <joint name="body_to_swing_hip" type="continuous">
+    <parent link="body"/>
+    <child link="swing_hip"/>
+    <axis xyz="0 -1 0"/>
+  </joint>
+
+<!-- Swin leg-->
+  <link name="swing_leg">
+
+    <inertial>
+      <origin xyz="0 0 -.5"/>
+      <mass value=".1"/>
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 -.5"/>
+      <geometry>
+        <sphere radius=".05"/>
+      </geometry>
+      <material>
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+
+    <visual>
+      <origin xyz="0 0 -.5"/>
+      <geometry>
+        <cylinder length="1" radius=".01"/>
+      </geometry>
+      <material>
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+
+  </link>
+
+<!-- Body to swing hip joint-->
+  <joint name="swing_knee_joint" type="continuous">
+    <parent link="swing_hip"/>
+    <child link="swing_leg"/>
+    <axis xyz="0 -1 0"/>
+    <origin xyz="0 0 -1"/>
+  </joint>
+
+
+<!-- Actuators-->
+
+<!-- Stance knee-->
+  <transmission type="SimpleTransmission" name="stance_knee_trans">
+    <actuator name="actuator_stance_knee" />
+    <joint name="stance_knee_joint" />
+    <mechanicalReduction>1</mechanicalReduction>
+  </transmission>
+
+<!-- Stance knee-->
+  <transmission type="SimpleTransmission" name="swing_knee_trans">
+    <actuator name="actuator_swing_knee" />
+    <joint name="swing_knee_joint" />
+    <mechanicalReduction>1</mechanicalReduction>
+  </transmission>
+
+<!-- Swing hip-->
+  <transmission type="SimpleTransmission" name="swing_hip_trans">
+    <actuator name="actuator_swing_hip" />
+    <joint name="stance_knee_joint" />
+    <mechanicalReduction>1</mechanicalReduction>
+  </transmission>
+
+</robot>
