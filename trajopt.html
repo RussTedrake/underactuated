@@ -591,8 +591,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     </subsection>  <!-- gradients -->
 
-    <subsection><h1>The special case of direct shooting without state
-    constraints</h1>
+    <subsection id="backprop_through_time">
+      <h1>The special case of direct shooting without state constraints</h1>
 
       <p>By solving for $\bx(\cdot)$ ourselves, we've removed a large number of
       constraints from the optimization.  If no additional state constraints
@@ -1115,7 +1115,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       principle -- giving <em>necessary conditions</em> for a trajectory to be
       optimal.</p>
 
-      <theorem><h1>Pontryagin's Minimum Principle</h1>
+      <theorem id="pontryagin_ct"><h1>Pontryagin's Minimum Principle</h1>
 
         <p>Adapted from <elib>Bertsekas00a</elib>. Given the initial conditions,
         $\bx_0$, a continuous dynamics, $\dot\bx = f(\bx,\bu)$, and the

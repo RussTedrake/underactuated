@@ -179,89 +179,123 @@ Control through Contact</h1>
 
     <subsection><h1>Hybrid trajectory optimization</h1>
     
-      <p>Using the more general language of modes, guards, and resets, we can begin to formulate the "hybrid trajectory optimization" problem.  In hybrid trajectory optimization, there is a major distinction between trajectory optimization where <i>the mode sequence is known apriori</i> and the optimization is just attempting to solve for the continuous-time trajectories, vs one in which we must also discover the mode sequence.</p>
+      <subsubsection><h1>Multiple shooting</h1>
 
-      <p>For the case when the mode sequence is fixed, then hybrid trajectory
-      optimization is as simple as stitching together multiple individual
-      mathematical programs into a single mathematical program, with the
-      boundary conditions constrained to enforce the guard/reset constraints.
-      Using the shorthand $\bx_k$ for the state in the $k$th segment of the
-      sequence, and $m_k$ for the mode in segment $k$, we can write:
-      \begin{align*} \find_{\bx_k[\cdot],h_k} \quad \subjto \quad & \bx_0[0] =
-      \bx_0, \\ \forall k, \forall n_k \in [0, N_k-1], \quad &
-      \text{collocation constraints}_{m_k}(\bx_k[n_k], \bx_k[n_k+1], h_k[n_k]),
-      \\ & h_{min} \le h_k[n_k] \le h_{max}, \\ \forall k\in[0,K-1] \quad &
-      \phi_{m_k,m_{k+1}}(\bx_k[N_k]) = 0, \\ & \bx_{k+1}[0] = {\bf
-      \Delta}_{m_k,m_{k+1}}(\bx_k[N_k]), \\ \forall k, n_k, m \in G \quad &
-      \phi_{m_k,m}(\bx_k[n_k]) > 0. \end{align*} The constraints in the last
-      line ensure that no trajectories intersect an <i>unscheduled</i> guard,
-      and $G$ is taken to be the tuples of $k,n_k, m$ which list all guards and
-      times <i>except</i> the scheduled ones. It is then natural to add
-      control inputs (as additional decision variables), and to add an
-      objective and any more constraints.
-      </p>
+        <p>Using the more general language of modes, guards, and resets, we can
+        begin to formulate the "hybrid trajectory optimization" problem.  In
+        hybrid trajectory optimization, there is a major distinction between
+        trajectory optimization where <i>the mode sequence is known apriori</i>
+        and the optimization is just attempting to solve for the
+        continuous-time trajectories, vs one in which we must also discover the
+        mode sequence.</p>
 
-      <example><h1>A basketball trick shot.</h1>
-      
-        <p>As a simple example of this hybrid trajectory optimization, I thought it would be fun to see if we can formulate the search for initial conditions that optimizes a basketball "trick shot".  A quick search turned up <a href="https://youtu.be/Mayx9OrXWIM">this video</a> for inspiration.</p>
+        <p>For the case when the mode sequence is fixed, then hybrid trajectory
+        optimization can be as simple as stitching together multiple individual
+        mathematical programs into a single mathematical program, with the
+        boundary conditions constrained to enforce the guard/reset constraints.
+        Using the shorthand $\bx_k$ for the state in the $k$th segment of the
+        sequence, and $m_k$ for the mode in segment $k$, we can write:
+        \begin{align*} \find_{\bx_k[\cdot],h_k} \quad \subjto \quad & \bx_0[0] =
+        \bx_0, \\ \forall k, \forall n_k \in [0, N_k-1], \quad &
+        \text{collocation constraints}_{m_k}(\bx_k[n_k], \bx_k[n_k+1], h_k[n_k]),
+        \\ & h_{min} \le h_k[n_k] \le h_{max}, \\ \forall k\in[0,K-1] \quad &
+        \phi_{m_k,m_{k+1}}(\bx_k[N_k]) = 0, \\ & \bx_{k+1}[0] = {\bf
+        \Delta}_{m_k,m_{k+1}}(\bx_k[N_k]), \\ \forall k, n_k, m \in G \quad &
+        \phi_{m_k,m}(\bx_k[n_k]) > 0. \end{align*} The constraints in the last
+        line ensure that no trajectories intersect an <i>unscheduled</i> guard,
+        and $G$ is taken to be the tuples of $k,n_k, m$ which list all guards and
+        times <i>except</i> the scheduled ones. It is then natural to add control
+        inputs (as additional decision variables), and to add an objective and
+        any more constraints.
+        </p>
 
-        <p>Let's start simpler -- with just a "bounce pass".  We can capture the
-        dynamics of a bouncing ball (in the plane, ignoring spin) with some very
-        simple dynamics: $$\bq = \begin{bmatrix}x \\ z\end{bmatrix}, \qquad
-        \ddot{\bq} = \begin{bmatrix} 0 \\ -g \end{bmatrix}.$$  During any time
-        interval without contact of duration $h$, we can actually integrate
-        these dynamics perfectly: $$\bx(t+h) = \begin{bmatrix} x(t) +
-        h\dot{x}(t) \\ z(t) + h \dot{z}(t) - \frac{1}{2}gh^2 \\ \dot{x}(t) \\
-        \dot{z}(t) - hg \end{bmatrix}.$$  With the bounce pass, we just consider
-        collisions with the ground, so we have a guard, ${\bf \phi}(\bx) = z,$
-        which triggers when $z=0$, and a reset map which assumes an elastic
-        collision with <a
-        href="https://en.wikipedia.org/wiki/Coefficient_of_restitution">coefficient
-        of restitution</a> $e$: $$\bx^+ = {\bf \Delta(\bx^-)} = \begin{bmatrix}
-        x^- & z^- & \dot{x}^- & - e \dot{z}^- \end{bmatrix}^T.$$</p>
-
-        <p>We'll formulate the problem as this:  given an initial ball position
-        $(x = 0, z = 1)$, a final ball position 4m away $(x=4, z=1)$, find the
-        initial velocity to achieve that goal in 5 seconds.  Clearly, this
-        implies that $\dot{x}(0) = 4/5.$  The interesting question is -- what
-        should we do with $\dot{z}(0)$?  There are multiple solutions -- which
-        involve bouncing a different number of times.  We can find them all with
-        a simple hybrid trajectory optimization, using the observation that
-        there are two possible solutions for each number of bounces -- one that
-        starts with a positive $\dot{z}(0)$ and one with a negative
-        $\dot{z}(0)$.</p>
-
-        <script>document.write(notebook_link('contact'))</script>
-            
-        <figure>
-          <img width="100%" src="figures/bounce_pass.svg"/>
-          <figcaption>Trajectory optimization to find solutions for a "bounce
-          pass".  I've plotted all solutions that were found for 2, 3, or 4 bounces... but I think it's best to stick to a single bounce if you're using this on the court.</figcaption>
-        </figure>
-
-        <p>Now let's try our trick shot.  I'll move our goal to $x_f = -1m, z_f
-        = 3m,$ and introduce a vertical wall at $x=0$, and move our initial
-        conditions back to $x_0=-.25m.$  The collision dynamics, which now must
-        take into account the spin of the ball, are <a
-        href="multibody.html#spinning_ball_bouncing">in the appendix</a>.  The
-        first bounce is against the wall, the second is against the floor.  I'll
-        also constrain the final velocity to be down (have to approach the hoop
-        from above).  Try it out.</p>
-
-        <script>document.write(notebook_link('contact'))</script>
-            
-        <figure>
-          <img width="100%" src="figures/trick_shot.svg"/>
-          <figcaption>Trajectory optimization for the "trick shot".  Nothing but
-          the bottom of the net!  The crowd is going wild!</figcaption>
-        </figure>
+        <example><h1>A basketball trick shot.</h1>
         
-        <p>In this example, we could integrate the dynamics in each segment
-        analytically.  That is the exception, not the rule.  But you can take
-        the same steps with a little more code to use, e.g. direct transcription
-        or collocation with multiple break points in each segment.</p>
+          <p>As a simple example of this hybrid trajectory optimization, I thought it would be fun to see if we can formulate the search for initial conditions that optimizes a basketball "trick shot".  A quick search turned up <a href="https://youtu.be/Mayx9OrXWIM">this video</a> for inspiration.</p>
 
-      </example>
+          <p>Let's start simpler -- with just a "bounce pass".  We can capture the
+          dynamics of a bouncing ball (in the plane, ignoring spin) with some very
+          simple dynamics: $$\bq = \begin{bmatrix}x \\ z\end{bmatrix}, \qquad
+          \ddot{\bq} = \begin{bmatrix} 0 \\ -g \end{bmatrix}.$$  During any time
+          interval without contact of duration $h$, we can actually integrate
+          these dynamics perfectly: $$\bx(t+h) = \begin{bmatrix} x(t) +
+          h\dot{x}(t) \\ z(t) + h \dot{z}(t) - \frac{1}{2}gh^2 \\ \dot{x}(t) \\
+          \dot{z}(t) - hg \end{bmatrix}.$$  With the bounce pass, we just consider
+          collisions with the ground, so we have a guard, ${\bf \phi}(\bx) = z,$
+          which triggers when $z=0$, and a reset map which assumes an elastic
+          collision with <a
+          href="https://en.wikipedia.org/wiki/Coefficient_of_restitution">coefficient
+          of restitution</a> $e$: $$\bx^+ = {\bf \Delta(\bx^-)} = \begin{bmatrix}
+          x^- & z^- & \dot{x}^- & - e \dot{z}^- \end{bmatrix}^T.$$</p>
+
+          <p>We'll formulate the problem as this:  given an initial ball position
+          $(x = 0, z = 1)$, a final ball position 4m away $(x=4, z=1)$, find the
+          initial velocity to achieve that goal in 5 seconds.  Clearly, this
+          implies that $\dot{x}(0) = 4/5.$  The interesting question is -- what
+          should we do with $\dot{z}(0)$?  There are multiple solutions -- which
+          involve bouncing a different number of times.  We can find them all with
+          a simple hybrid trajectory optimization, using the observation that
+          there are two possible solutions for each number of bounces -- one that
+          starts with a positive $\dot{z}(0)$ and one with a negative
+          $\dot{z}(0)$.</p>
+
+          <script>document.write(notebook_link('contact'))</script>
+              
+          <figure>
+            <img width="100%" src="figures/bounce_pass.svg"/>
+            <figcaption>Trajectory optimization to find solutions for a "bounce
+            pass".  I've plotted all solutions that were found for 2, 3, or 4 bounces... but I think it's best to stick to a single bounce if you're using this on the court.</figcaption>
+          </figure>
+
+          <p>Now let's try our trick shot.  I'll move our goal to $x_f = -1m, z_f
+          = 3m,$ and introduce a vertical wall at $x=0$, and move our initial
+          conditions back to $x_0=-.25m.$  The collision dynamics, which now must
+          take into account the spin of the ball, are <a
+          href="multibody.html#spinning_ball_bouncing">in the appendix</a>.  The
+          first bounce is against the wall, the second is against the floor.  I'll
+          also constrain the final velocity to be down (have to approach the hoop
+          from above).  Try it out.</p>
+
+          <script>document.write(notebook_link('contact'))</script>
+              
+          <figure>
+            <img width="100%" src="figures/trick_shot.svg"/>
+            <figcaption>Trajectory optimization for the "trick shot".  Nothing but
+            the bottom of the net!  The crowd is going wild!</figcaption>
+          </figure>
+          
+          <p>In this example, we could integrate the dynamics in each segment
+          analytically.  That is the exception, not the rule.  But you can take
+          the same steps with a little more code to use, e.g. direct transcription
+          or collocation with multiple break points in each segment.</p>
+
+        </example>
+
+      </subsubsection>
+
+      <subsubsection><h1>Direct shooting</h1>
+
+        <p>It is also possible to optimize the trajectory in a single shot by
+        taking gradients through the guard/reset map. This method does not
+        require an explicit mode sequence, but is prone to having local minima
+        (since there is no gradient to "pull" the trajectory towards a guard
+        that is not visited along the nominal trajectory).</p>
+
+        <p>In order to achieve this, we need to take the gradient of the cost
+        with respect to the trajectory parameters. The methods we've developed
+        previously for calculating gradients using the adjoint method (e.g.
+        "backpropagation through time") in <a
+        href="trajopt.html#backprop_through_time">discrete</a>
+        and <a href="trajopt.html#pontryagin_ct">continuous</a> time can be
+        combined to handle the hybrid case. The derivation is <i>almost</i> as
+        simple as using the continuous adjoint equation to solve (from the
+        final time forward) for the continuous modes, and the discrete adjoint
+        equation to handle the jump discontinuity. The only detail is that we
+        also have to consider variations relative to the contact time; this gradient is often referred to as the "Saltation matrix".</p>
+
+        <p>TODO: Finish this derivation.</p>
+
+      </subsubsection>
 
     </subsection>
   
@@ -288,24 +322,25 @@ Control through Contact</h1>
     
       <!-- But, actually, it could get more complicated still: in each of the contact modes the foot could be in the static friction regime or could be sliding.  And what if there is rough terrain, so we could make contact at more points.  And what if we -->
 
-      <p>Fortunately, there is an alternative modeling approach for deriving the
-      modes, guards, and resets for contact that is more general (though
-      admittedly also more complex).  We can instead model the robot in the
-      <i>floating-base coordinates</i> -- we add a fictitious six
-      degree-of-freedom "floating-base" joint connecting some part of the robot
-      to the world (in planar models, we use just three degrees-of-freedom, e.g.
-      $(x,z,\theta)$).  We can derive the equations of motion for the
-      floating-base robot once, without considering contact, then add the
-      additional constraints that come from being in contact as contact forces
-      which get applied to the bodies. The resulting manipulator equations take
-      the form \begin{equation}\bM({\bq})\ddot{\bq} + \bC(\bq,\dot{\bq})\dot\bq
-      = \btau_g(\bq) + \bB\bu + \sum_i \bJ_i^T(\bq) \blambda_i,\end{equation}
-      where $\blambda_i$ are the constraint forces and $\bJ_i$ are the
-      constraint Jacobians.  Conveniently, if the guard function in our contact
-      equations is the signed distance from contact, $\phi_i(\bq)$, then this
-      Jacobian is simply $\bJ_i(\bq) = \pd{\phi_i}{\bq}$.  I've written the
-      basic derivations for the common cases (position constraints, velocity
-      constraints, impact equations, etc) in the
+      <p>Fortunately, there is an alternative modeling approach for deriving
+      the modes, guards, and resets for contact that is more general (though it
+      makes the dynamics of each mode a bit more complex).  We can instead
+      model the robot in the <i>floating-base coordinates</i> -- we add a
+      fictitious six degree-of-freedom "floating-base" joint connecting some
+      part of the robot to the world (in planar models, we use just three
+      degrees-of-freedom, e.g. $(x,z,\theta)$).  We can derive the equations of
+      motion for the floating-base robot once, without considering contact,
+      then add the additional constraints that come from being in contact as
+      contact forces which get applied to the bodies. The resulting manipulator
+      equations take the form \begin{equation}\bM({\bq})\ddot{\bq} +
+      \bC(\bq,\dot{\bq})\dot\bq = \btau_g(\bq) + \bB\bu + \sum_i \bJ_i^T(\bq)
+      \blambda_i,\end{equation} where $\blambda_i$ are the constraint forces
+      and $\bJ_i$ are the constraint Jacobians.  Conveniently, if the guard
+      function in our contact equations is the signed distance from contact,
+      $\phi_i(\bq)$, then this Jacobian is simply $\bJ_i(\bq) =
+      \pd{\phi_i}{\bq}$.  I've written the basic derivations for the common
+      cases (position constraints, velocity constraints, impact equations, etc)
+      in the
       <a href="multibody.html">appendix</a>. What is important to understand
       here is that this is an alternative formulation for the equations
       governing the modes, guards, and resets, but that is it no longer a
@@ -316,21 +351,55 @@ Control through Contact</h1>
       still only rotates around the toe when it is in stance and is inside the
       friction cone). This will have implications for our algorithms.</p>
 
+      <p>For completeness, you might also hear the term <i>maximal
+      coordinates</i>. This is the extreme case where every rigid body in the
+      robot is parameterized with its own floating-base, and even the robot
+      joints are implemented as constraints holding the links together. This
+      has been used by some notable simulation engines (e.g. the <a
+      href="https://www.ode.org/">Open Dynamics Engine</a>), and may have
+      advantages for some computational methods. But for our purposes, using
+      the dynamics in floating-base coordinates is typically much more
+      effective.</p>
+
     </subsection>
   
     <todo>Grandia 2019 - Feedback MPC for Torque-controlled Legged Robots looks
     at a relaxation of the friction cone via a barrier certificate for iLQR.
     "In particular, the friction cone is implemented through a perturbed
-    second-order cone constraint. This for- mulation adds a convex penalty to
+    second-order cone constraint. This formulation adds a convex penalty to
     the cost function and avoids numerical ill-conditioning at the origin of the
     cone."  Could go in the playbook, if not here.</todo>
+
+    <subsection id="discrete control"><h1>Discrete control (between events)</h1>
+    
+      <!-- e.g. the slip model. juggling. many quadrupeds. -->
+      <p>In our discussion of the <a href="simple_legs.html#slip">SLIP
+      model</a> of running robots, we introduced a surprisingly simple but
+      effective approach to achieving a <a
+      href="simple_legs.html#slip_control">"deadbeat" controller</a>, with
+      control decisions happening just once per cycle. There is a natural
+      generalization of this idea to more general hybrid systems...</p>
+    
+    </subsection>
+
+    <subsection id="hybrid_lqr"><h1>Hybrid LQR</h1>
+    
+      <p>Coming soon (see <elib>Manchester10</elib>).</p>
+
+    </subsection>
+
+    <subsection id="hybrid_lyapunov"><h1>Hybrid Lyapunov analysis</h1>
+    
+      <p>Coming soon (see <elib>Manchester10a+Manchester10b</elib>).</p>
+
+    </subsection>
 
   </section>
 
   <section id="contact_implicit">
     <h1>Contact-implicit trajectory optimization</h1>
   
-    <p>Coming soon.  (for starters, see <elib>Posa13</elib>).</p>
+    <p>Coming soon.  (for starters, see <elib>Posa13</elib>, or <elib>Wensing22</elib> for a recent survey).</p>
 
   </section>
 
@@ -391,11 +460,36 @@ Control through Contact</h1>
 <div id="references"><section><h1>References</h1>
 <ol>
 
+<li id=Manchester10>
+<span class="author">Ian R. Manchester and Uwe Mettin and Fumiya Iida and Russ Tedrake</span>, 
+<span class="title">"Stable Dynamic Walking Over Uneven Terrain"</span>, 
+<span class="publisher">The International Journal of Robotics Research (IJRR)</span>, vol. 30, no. 3, pp. 265-279, January 24, <span class="year">2011</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Manchester10.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Manchester10a>
+<span class="author">Ian R. Manchester</span>, 
+<span class="title">"Transverse Dynamics and Regions of Stability for Nonlinear Hybrid Limit Cycles"</span>, 
+<span class="publisher">Proceedings of the 18th IFAC World Congress, extended version available online: arXiv:1010.2241 [math.OC]</span>, Aug-Sep, <span class="year">2011</span>.
+
+</li><br>
+<li id=Manchester10b>
+<span class="author">Ian R. Manchester and Mark M. Tobenkin and Michael Levashov and Russ Tedrake</span>, 
+<span class="title">"Regions of Attraction for Hybrid Limit Cycles of Walking Robots"</span>, 
+<span class="publisher">Proceedings of the 18th IFAC World Congress, extended version available online: arXiv:1010.2247 [math.OC]</span>, <span class="year">2011</span>.
+
+</li><br>
 <li id=Posa13>
 <span class="author">Michael Posa and Cecilia Cantu and Russ Tedrake</span>, 
 <span class="title">"A Direct Method for Trajectory Optimization of Rigid Bodies Through Contact"</span>, 
 <span class="publisher">International Journal of Robotics Research</span>, vol. 33, no. 1, pp. 69-81, January, <span class="year">2014</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Posa13.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Wensing22>
+<span class="author">Patrick M Wensing and Micheal Posa and Yue Hu and Adriend Escande and Nicolas Mansard and Andrea Del Prete</span>, 
+<span class="title">"Optimization-based control for dynamic legged robots"</span>, 
+<span class="publisher">arXiv preprint arXiv:2211.11644</span>, <span class="year">2022</span>.
 
 </li><br>
 </ol>
