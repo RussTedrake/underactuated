@@ -185,17 +185,20 @@ Control through Contact</h1>
       optimization is as simple as stitching together multiple individual
       mathematical programs into a single mathematical program, with the
       boundary conditions constrained to enforce the guard/reset constraints.
-      For a simple hybrid system with a given a mode sequence and using the
-      shorthand $\bx_k$, etc, for the state in mode in the $k$th segment of the
-      sequence, we can write: \begin{align*} \find_{\bx_k[\cdot],h_k} \quad
-      \subjto \quad & \bx_0[0] = \bx_0, \\ \forall k \quad &
-      \phi_{k,k+1}(\bx_k[N_k]) = 0, \\ & \bx_{k+1}[0] = {\bf
-      \Delta}_{i,j}(\bx_k[N_k]), \\ & \phi_{k,k'}(\bx_k[n_k]) > 0, \quad \forall
-      n_k \in [0, N_k], \forall k' \\ & h_{min} \le h_k \le h_{max}, \\ &
-      \text{collocation constraints}_k(\bx_k[n_k], \bx_k[n_k+1], h_k), \quad
-      \forall n_k \in [0, N_k-1]. \end{align*} It is then natural to add control
-      inputs (as additional decision variables), and to add an objective and any
-      more constraints.
+      Using the shorthand $\bx_k$ for the state in the $k$th segment of the
+      sequence, and $m_k$ for the mode in segment $k$, we can write:
+      \begin{align*} \find_{\bx_k[\cdot],h_k} \quad \subjto \quad & \bx_0[0] =
+      \bx_0, \\ \forall k, \forall n_k \in [0, N_k-1], \quad &
+      \text{collocation constraints}_{m_k}(\bx_k[n_k], \bx_k[n_k+1], h_k[n_k]),
+      \\ & h_{min} \le h_k[n_k] \le h_{max}, \\ \forall k\in[0,K-1] \quad &
+      \phi_{m_k,m_{k+1}}(\bx_k[N_k]) = 0, \\ & \bx_{k+1}[0] = {\bf
+      \Delta}_{m_k,m_{k+1}}(\bx_k[N_k]), \\ \forall k, n_k, m \in G \quad &
+      \phi_{m_k,m}(\bx_k[n_k]) > 0. \end{align*} The constraints in the last
+      line ensure that no trajectories intersect an <i>unscheduled</i> guard,
+      and $G$ is taken to be the tuples of $k,n_k, m$ which list all guards and
+      times <i>except</i> the scheduled ones. It is then natural to add
+      control inputs (as additional decision variables), and to add an
+      objective and any more constraints.
       </p>
 
       <example><h1>A basketball trick shot.</h1>
