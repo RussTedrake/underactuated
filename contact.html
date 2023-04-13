@@ -380,9 +380,9 @@ Control through Contact</h1>
 
     </exercise>
 
-    <exercise><h1>Time-stepping LCP dynamics for box collision</h1>
+    <exercise><h1>Time-stepping LCP dynamics for block collision</h1>
           <figure> <img width="70%" src="figures/block_collision.png"/>
-    <figcaption>Modeling contact as a hybrid system.</figcaption>
+    <figcaption>Initial conditions for block collision scenario.</figcaption>
     </figure>
 
         <p>
@@ -395,7 +395,7 @@ Control through Contact</h1>
 Hint: See Example B.4 in the Appendix setting up the LCP optimization problem for a single cart and wall under semi-implicit integration. In implicit Euler integration, both the position and velocity are integrated with backward finite differences ($x[n+1] = x[n] + h f[n+1]$), whereas in the semi-implicit integration, only the position is integrated with backward finite differences. <br />
 
 Hint: To solve your LCP by hand, you should use the fact that time-stepping LCP produces perfectly inelastic collisions. What does the perfectly inelastic nature of collision imply about the signed distance during collision?</li>
-<li>Since the block B is stationary, we might expect $q^{(B)}_{1, x} = -1$. Why is this not the case?</li>
+<li>Since the block B is stationary, we might expect $q^{(A)}_{1, x} = -1$. Why is this not the case?</li>
 <li>What would you expect the velocities to be post-collision for perfectly inelastic collision and under conservation of momentum in continuous-time physics? How do these velocities compare with your time-stepped velocities?</li>
         </ol>
     </exercise>
