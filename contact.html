@@ -392,7 +392,7 @@ Control through Contact</h1>
         <ol type="a">
           <li>Derive the positions, velocities, and contact forces at timesteps 1, 2, and 3 for the two block collision scenario described at the start of this problem, under implicit Euler integration. Use timestep $h=1.0$ and block masses $m_1 = m_2 = 1$.<br />
 
-Hint: See Example B.4 setting up the LCP optimization problem for a single cart and wall under semi-implicit integration. In implicit Euler integration, both the position and velocity are integrated with backward finite differences ($x[n+1] = x[n] + h f[n+1]$), whereas in the semi-implicit integration, only the position is integrated with backward finite differences. <br />
+Hint: See Example B.4 in the Appendix setting up the LCP optimization problem for a single cart and wall under semi-implicit integration. In implicit Euler integration, both the position and velocity are integrated with backward finite differences ($x[n+1] = x[n] + h f[n+1]$), whereas in the semi-implicit integration, only the position is integrated with backward finite differences. <br />
 
 Hint: To solve your LCP by hand, you should use the fact that time-stepping LCP produces perfectly inelastic collisions. What does the perfectly inelastic nature of collision imply about the signed distance during collision?</li>
 <li>Since the block B is stationary, we might expect $q^{(B)}_{1, x} = -1$. Why is this not the case?</li>
