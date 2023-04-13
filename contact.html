@@ -179,15 +179,15 @@ Control through Contact</h1>
 
     <subsection><h1>Hybrid trajectory optimization</h1>
     
-      <subsubsection><h1>Multiple shooting</h1>
+      <p>Using the more general language of modes, guards, and resets, we can
+      begin to formulate the "hybrid trajectory optimization" problem.  In
+      hybrid trajectory optimization, there is a major distinction between
+      trajectory optimization where <i>the mode sequence is known apriori</i>
+      and the optimization is just attempting to solve for the
+      continuous-time trajectories, vs one in which we must also discover the
+      mode sequence.</p>
 
-        <p>Using the more general language of modes, guards, and resets, we can
-        begin to formulate the "hybrid trajectory optimization" problem.  In
-        hybrid trajectory optimization, there is a major distinction between
-        trajectory optimization where <i>the mode sequence is known apriori</i>
-        and the optimization is just attempting to solve for the
-        continuous-time trajectories, vs one in which we must also discover the
-        mode sequence.</p>
+      <subsubsection><h1>Given a fixed mode sequence</h1>
 
         <p>For the case when the mode sequence is fixed, then hybrid trajectory
         optimization can be as simple as stitching together multiple individual
@@ -195,49 +195,55 @@ Control through Contact</h1>
         boundary conditions constrained to enforce the guard/reset constraints.
         Using the shorthand $\bx_k$ for the state in the $k$th segment of the
         sequence, and $m_k$ for the mode in segment $k$, we can write:
-        \begin{align*} \find_{\bx_k[\cdot],h_k} \quad \subjto \quad & \bx_0[0] =
-        \bx_0, \\ \forall k, \forall n_k \in [0, N_k-1], \quad &
-        \text{collocation constraints}_{m_k}(\bx_k[n_k], \bx_k[n_k+1], h_k[n_k]),
-        \\ & h_{min} \le h_k[n_k] \le h_{max}, \\ \forall k\in[0,K-1] \quad &
-        \phi_{m_k,m_{k+1}}(\bx_k[N_k]) = 0, \\ & \bx_{k+1}[0] = {\bf
-        \Delta}_{m_k,m_{k+1}}(\bx_k[N_k]), \\ \forall k, n_k, m \in G \quad &
-        \phi_{m_k,m}(\bx_k[n_k]) > 0. \end{align*} The constraints in the last
-        line ensure that no trajectories intersect an <i>unscheduled</i> guard,
-        and $G$ is taken to be the tuples of $k,n_k, m$ which list all guards and
-        times <i>except</i> the scheduled ones. It is then natural to add control
-        inputs (as additional decision variables), and to add an objective and
-        any more constraints.
+        \begin{align*} \find_{\bx_k[\cdot],h_k} \quad \subjto \quad & \bx_0[0]
+        = \bx_0, \\ \forall k, \forall n_k \in [0, N_k-1], \quad &
+        \text{collocation constraints}_{m_k}(\bx_k[n_k], \bx_k[n_k+1],
+        h_k[n_k]), \\ & h_{min} \le h_k[n_k] \le h_{max}, \\ \forall
+        k\in[0,K-1] \quad & \phi_{m_k,m_{k+1}}(\bx_k[N_k]) = 0, \\ &
+        \bx_{k+1}[0] = {\bf \Delta}_{m_k,m_{k+1}}(\bx_k[N_k]), \\ \forall k,
+        n_k, m \in G \quad & \phi_{m_k,m}(\bx_k[n_k]) > 0. \end{align*} The
+        constraints in the last line ensure that no trajectories intersect an
+        <i>unscheduled</i> guard, and $G$ is taken to be the tuples of $k,n_k,
+        m$ which list all guards and times <i>except</i> the scheduled ones. It
+        is then natural to add control inputs (as additional decision
+        variables), and to add an objective and any more constraints.
         </p>
 
         <example><h1>A basketball trick shot.</h1>
         
-          <p>As a simple example of this hybrid trajectory optimization, I thought it would be fun to see if we can formulate the search for initial conditions that optimizes a basketball "trick shot".  A quick search turned up <a href="https://youtu.be/Mayx9OrXWIM">this video</a> for inspiration.</p>
+          <p>As a simple example of this hybrid trajectory optimization, I
+          thought it would be fun to see if we can formulate the search for
+          initial conditions that optimizes a basketball "trick shot".  A quick
+          search turned up <a href="https://youtu.be/Mayx9OrXWIM">this
+          video</a> for inspiration.</p>
 
-          <p>Let's start simpler -- with just a "bounce pass".  We can capture the
-          dynamics of a bouncing ball (in the plane, ignoring spin) with some very
-          simple dynamics: $$\bq = \begin{bmatrix}x \\ z\end{bmatrix}, \qquad
-          \ddot{\bq} = \begin{bmatrix} 0 \\ -g \end{bmatrix}.$$  During any time
-          interval without contact of duration $h$, we can actually integrate
-          these dynamics perfectly: $$\bx(t+h) = \begin{bmatrix} x(t) +
-          h\dot{x}(t) \\ z(t) + h \dot{z}(t) - \frac{1}{2}gh^2 \\ \dot{x}(t) \\
-          \dot{z}(t) - hg \end{bmatrix}.$$  With the bounce pass, we just consider
-          collisions with the ground, so we have a guard, ${\bf \phi}(\bx) = z,$
-          which triggers when $z=0$, and a reset map which assumes an elastic
+          <p>Let's start simpler -- with just a "bounce pass".  We can capture
+          the dynamics of a bouncing ball (in the plane, ignoring spin) with
+          some very simple dynamics: $$\bq = \begin{bmatrix}x \\
+          z\end{bmatrix}, \qquad \ddot{\bq} = \begin{bmatrix} 0 \\ -g
+          \end{bmatrix}.$$  During any time interval without contact of
+          duration $h$, we can actually integrate these dynamics perfectly:
+          $$\bx(t+h) = \begin{bmatrix} x(t) + h\dot{x}(t) \\ z(t) + h
+          \dot{z}(t) - \frac{1}{2}gh^2 \\ \dot{x}(t) \\ \dot{z}(t) - hg
+          \end{bmatrix}.$$  With the bounce pass, we just consider collisions
+          with the ground, so we have a guard, ${\bf \phi}(\bx) = z,$ which
+          triggers when $z=0$, and a reset map which assumes an elastic
           collision with <a
           href="https://en.wikipedia.org/wiki/Coefficient_of_restitution">coefficient
-          of restitution</a> $e$: $$\bx^+ = {\bf \Delta(\bx^-)} = \begin{bmatrix}
-          x^- & z^- & \dot{x}^- & - e \dot{z}^- \end{bmatrix}^T.$$</p>
+          of restitution</a> $e$: $$\bx^+ = {\bf \Delta(\bx^-)} =
+          \begin{bmatrix} x^- & z^- & \dot{x}^- & - e \dot{z}^-
+          \end{bmatrix}^T.$$</p>
 
-          <p>We'll formulate the problem as this:  given an initial ball position
-          $(x = 0, z = 1)$, a final ball position 4m away $(x=4, z=1)$, find the
-          initial velocity to achieve that goal in 5 seconds.  Clearly, this
-          implies that $\dot{x}(0) = 4/5.$  The interesting question is -- what
-          should we do with $\dot{z}(0)$?  There are multiple solutions -- which
-          involve bouncing a different number of times.  We can find them all with
-          a simple hybrid trajectory optimization, using the observation that
-          there are two possible solutions for each number of bounces -- one that
-          starts with a positive $\dot{z}(0)$ and one with a negative
-          $\dot{z}(0)$.</p>
+          <p>We'll formulate the problem as this:  given an initial ball
+          position $(x = 0, z = 1)$, a final ball position 4m away $(x=4,
+          z=1)$, find the initial velocity to achieve that goal in 5 seconds.
+          Clearly, this implies that $\dot{x}(0) = 4/5.$  The interesting
+          question is -- what should we do with $\dot{z}(0)$?  There are
+          multiple solutions -- which involve bouncing a different number of
+          times.  We can find them all with a simple hybrid trajectory
+          optimization, using the observation that there are two possible
+          solutions for each number of bounces -- one that starts with a
+          positive $\dot{z}(0)$ and one with a negative $\dot{z}(0)$.</p>
 
           <script>document.write(notebook_link('contact'))</script>
               
@@ -247,14 +253,14 @@ Control through Contact</h1>
             pass".  I've plotted all solutions that were found for 2, 3, or 4 bounces... but I think it's best to stick to a single bounce if you're using this on the court.</figcaption>
           </figure>
 
-          <p>Now let's try our trick shot.  I'll move our goal to $x_f = -1m, z_f
-          = 3m,$ and introduce a vertical wall at $x=0$, and move our initial
-          conditions back to $x_0=-.25m.$  The collision dynamics, which now must
-          take into account the spin of the ball, are <a
-          href="multibody.html#spinning_ball_bouncing">in the appendix</a>.  The
-          first bounce is against the wall, the second is against the floor.  I'll
-          also constrain the final velocity to be down (have to approach the hoop
-          from above).  Try it out.</p>
+          <p>Now let's try our trick shot.  I'll move our goal to $x_f = -1m,
+          z_f = 3m,$ and introduce a vertical wall at $x=0$, and move our
+          initial conditions back to $x_0=-.25m.$  The collision dynamics,
+          which now must take into account the spin of the ball, are <a
+          href="multibody.html#spinning_ball_bouncing">in the appendix</a>.
+          The first bounce is against the wall, the second is against the
+          floor.  I'll also constrain the final velocity to be down (have to
+          approach the hoop from above).  Try it out.</p>
 
           <script>document.write(notebook_link('contact'))</script>
               
@@ -266,8 +272,9 @@ Control through Contact</h1>
           
           <p>In this example, we could integrate the dynamics in each segment
           analytically.  That is the exception, not the rule.  But you can take
-          the same steps with a little more code to use, e.g. direct transcription
-          or collocation with multiple break points in each segment.</p>
+          the same steps with a little more code to use, e.g. direct
+          transcription or collocation with multiple break points in each
+          segment.</p>
 
         </example>
 
@@ -291,9 +298,23 @@ Control through Contact</h1>
         simple as using the continuous adjoint equation to solve (from the
         final time forward) for the continuous modes, and the discrete adjoint
         equation to handle the jump discontinuity. The only detail is that we
-        also have to consider variations relative to the contact time; this gradient is often referred to as the "Saltation matrix".</p>
+        also have to consider variations relative to the contact time; this
+        gradient is often referred to as the "Saltation matrix".</p>
 
-        <p>TODO: Finish this derivation.</p>
+        <p>Consider the case of two modes and one transition in our canonical
+        hybrid system picture above.  Then one could write the total cost as
+        \begin{gather*} J_\balpha = \int_0^{t_c^-} \ell_1(\bx_1, \bu_\balpha)
+        dt + \int_{t_c^+}^{t_f} \ell_2(\bx_2, \bu_\balpha) dt,\\ \dot{\bx}_1 =
+        {\bf f}_1(\bx_1, \bu_\balpha), \quad \dot{\bx}_2 = {\bf f}_2(\bx_2,
+        \bu_\balpha), \quad \bx_2(t_c^+) = {\bf \Delta}_{1,2}(\bx_1(t_c^-)).
+        \end{gather*} We wish to take the gradient of $J$ with respect to the
+        trajectory parameters, $\alpha$.  The gradient of the first and second
+        integrals is exactly the familiar continuous-time case, but the second
+        integral must be initialized with $\pd{\bx_2(t_c^+)}{\alpha_i},$ which
+        should be related to $\pd{\bx_1(t_c^-)}{\alpha_i}$ via the discrete
+        transition. The important point is to capture the dependence of this
+        transition not only on $\bx$ but also on $t_c$, which both depend on
+        $\balpha.$  Writing it out we have...
 
       </subsubsection>
 
