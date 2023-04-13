@@ -473,25 +473,6 @@ Control through Contact</h1>
 
     </exercise>
 
-    <exercise><h1>Time-stepping LCP dynamics for block collision</h1>
-          <figure> <img width="70%" src="figures/block_collision.png"/>
-    <figcaption>Initial conditions for block collision scenario.</figcaption>
-    </figure>
-
-        <p>
-        Suppose you have a block A of width 1, block B of width 1, interacting on a friction-less surface. The state of a single block in our system is $\vec{x} = \begin{bmatrix}q_x \\ \dot{q}_x \end{bmatrix}$, which represents the horizontal position (where the position point is located at the geometric center of the block) and horizontal velocity of the associated block. We have as our initial condition $\vec{x}^{(A)}_0 = \begin{bmatrix} -2 \\ 3 \end{bmatrix}$ and $\vec{x}^{(B)}_0 = \begin{bmatrix} 0 \\ 0 \end{bmatrix}$. In other words, at timestep $0$ block A is moving towards a stationary block B located at the origin. 
-        </p>
-
-        <ol type="a">
-          <li>Derive the positions, velocities, and contact forces at timesteps 1, 2, and 3 for the two block collision scenario described at the start of this problem, under implicit Euler integration. Use timestep $h=1.0$ and block masses $m_1 = m_2 = 1$.<br />
-
-Hint: See Example B.4 in the Appendix setting up the LCP optimization problem for a single cart and wall under semi-implicit integration. In implicit Euler integration, both the position and velocity are integrated with backward finite differences ($x[n+1] = x[n] + h f[n+1]$), whereas in the semi-implicit integration, only the position is integrated with backward finite differences. <br />
-
-Hint: To solve your LCP by hand, you should use the fact that time-stepping LCP produces perfectly inelastic collisions. What does the perfectly inelastic nature of collision imply about the signed distance during collision?</li>
-<li>Since the block B is stationary, we might expect $q^{(A)}_{1, x} = -1$. Why is this not the case?</li>
-<li>What would you expect the velocities to be post-collision for perfectly inelastic collision and under conservation of momentum in continuous-time physics? How do these velocities compare with your time-stepped velocities?</li>
-        </ol>
-    </exercise>
 </section>
 
 </chapter>
