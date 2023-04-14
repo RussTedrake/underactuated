@@ -9,3 +9,4 @@ docker build -f setup/docker/Dockerfile -t russtedrake/underactuated:$(git rev-p
 docker push russtedrake/underactuated:$(git rev-parse --short HEAD)
 python3 htmlbook/publish_to_deepnote.py $(git rev-parse --short HEAD)
 echo "Remember to log on to deepnote and build the dockerfile in any one of the notebooks"
+echo "https://deepnote.com/workspace/$(cat Deepnote_workspace.txt)"
