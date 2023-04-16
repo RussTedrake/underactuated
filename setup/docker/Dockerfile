@@ -14,7 +14,7 @@
 # docker login
 # docker push russtedrake/underactuated:latest
 
-FROM robotlocomotion/drake:focal
+FROM robotlocomotion/drake:jammy
 ARG DEBIAN_FRONTEND=noninteractive
 ENV SHELL /bin/bash
 # Open ports for meshcat:

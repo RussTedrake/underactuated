@@ -2,7 +2,7 @@
 
 set -e
 
-docker pull robotlocomotion/drake:focal
+docker pull robotlocomotion/drake:jammy
 docker build -f setup/docker/Dockerfile -t russtedrake/underactuated:latest .
 docker push russtedrake/underactuated:latest
 docker build -f setup/docker/Dockerfile -t russtedrake/underactuated:$(git rev-parse --short HEAD) .

@@ -1,0 +1,38 @@
+diff --git a/WORKSPACE.bazel b/WORKSPACE.bazel
+index fe1782c2..25be4f07 100644
+--- a/WORKSPACE.bazel
++++ b/WORKSPACE.bazel
+@@ -34,33 +34,3 @@
+ load("//htmlbook/tools/tidy:repositories.bzl", "tidy_dependencies")
+ 
+ tidy_dependencies()
+-
+-# Set the DRAKE_INSTALL_DIR environment variable to the correct path; if
+-# DRAKE_INSTALL_DIR is not set it will look in "/opt/drake".
+-load("//htmlbook/tools:environ.bzl", "environ_repository")
+-
+-# Allowing PWD to be loaded here is a terrible work-around that allows me to
+-# pass the equivalent of BUILD_WORKSPACE_DIRECTORY as a command line argument
+-# (since it's not available to tests).  This enables *non-hermetic* tests...
+-# which I introduced because it is hard to list all .py and .ipynb  files as
+-# dependencies via bazel's glob since "labels are not allowed to cross the
+-# package boundary and glob does not match files in subpackages."
+-environ_repository(
+-    name = "environ",
+-    vars = [
+-        "DRAKE_INSTALL_DIR",
+-        "PWD",
+-    ],
+-)
+-
+-load("@environ//:environ.bzl", "DRAKE_INSTALL_DIR")
+-
+-new_local_repository(
+-    name = "rules_drake",
+-    build_file_content = "",
+-    path = DRAKE_INSTALL_DIR if DRAKE_INSTALL_DIR else "/opt/drake",
+-)
+-
+-load("@rules_drake//:share/drake/repo.bzl", "drake_repository")
+-
+-drake_repository(name = "drake")

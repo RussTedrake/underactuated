@@ -41,6 +41,26 @@ on:
   schedule:
     - cron: '0 8 * * *'
 jobs:
+  docker:
+    name: dockerfile
+    runs-on: ubuntu-latest
+    container: russtedrake/underactuated:latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: submodule checkout
+        run:  ./setup/submodule_checkout
+        shell: bash
+      - name: post-checkout setup
+        # Force bazel to use user pip instead of re-downloading everything to 
+        # be hermetic:
+        run: |
+          truncate -s0 requirements.txt 
+          sed -i '/PYTHONNOUSERSITE/d' .bazelrc
+        shell: bash
+      - name: test
+        run: ./htmlbook/workflows/ci/jammy/test
+        shell: bash
   focal:
     name: ubuntu 20.04 focal
     runs-on: ubuntu-20.04
@@ -68,25 +88,65 @@ jobs:
       - name: test
         run: ./htmlbook/workflows/ci/focal/test
         shell: bash
-  focal-docker:
-    name: ubuntu 20.04 focal dockerfile
-    runs-on: ubuntu-latest
-    container: russtedrake/underactuated:latest
+  jammy:
+    name: ubuntu 22.04 jammy
+    runs-on: ubuntu-22.04
+    container: ubuntu:22.04
     steps:
+      - name: pre-checkout setup
+        run: |
+          export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 DEBIAN_FRONTEND=noninteractive
+          apt-get update -o APT::Acquire::Retries=4 -qq
+          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends ca-certificates gnupg
+          apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E1DD270288B4E6030699E45FA1715D88E1DF1F24
+          echo 'deb http://ppa.launchpad.net/git-core/ppa/ubuntu focal main' > /etc/apt/sources.list.d/git.list
+          apt-get update -o APT::Acquire::Retries=4 -qq
+          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends git
+          rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*
+        shell: bash
       - name: checkout
         uses: actions/checkout@v2
       - name: submodule checkout
         run:  ./setup/submodule_checkout
         shell: bash
       - name: post-checkout setup
-        # Force bazel to use user pip instead of re-downloading everything to 
-        # be hermetic:
-        run: |
-          truncate -s0 requirements.txt 
-          sed -i '/PYTHONNOUSERSITE/d' .bazelrc
+        run: ./htmlbook/workflows/ci/jammy/setup
         shell: bash
       - name: test
-        run: ./htmlbook/workflows/ci/focal/test
+        run: ./htmlbook/workflows/ci/jammy/test
+        shell: bash
+  jammy-pip:
+    name: pip on jammy
+    runs-on: ubuntu-22.04
+    container: ubuntu:22.04
+    steps:
+      - name: pre-checkout setup
+        run: |
+          apt-get update -o APT::Acquire::Retries=4 -qq
+          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends python3-pip git xvfb
+          pip3 install underactuated
+          # Upgrade drake to the nightlies because of a known issue in 0.14.
+          pip3 install --upgrade https://drake-packages.csail.mit.edu/drake/nightly/drake-0.0.20230416-cp310-cp310-manylinux_2_31_x86_64.whl
+        shell: bash
+      - name: checkout
+        uses: actions/checkout@v2
+      - name: submodule checkout
+        run:  ./setup/submodule_checkout
+        shell: bash
+      - name: post-checkout setup
+        # Force bazel to use user pip instead of re-downloading everything to
+        # be hermetic. Also apply patches to avoid bazel dependency on
+        # installed drake.
+        run: |
+          ./setup/ubuntu/22.04/install_prereqs.sh
+          pip3 install -r requirements.txt
+          truncate -s0 requirements.txt 
+          sed -i '/PYTHONNOUSERSITE/d' .bazelrc
+          git apply setup/pip_ci.patch
+          ( cd htmlbook && git apply workflows/ci/pip_ci.patch )
+        shell: bash
+      - name: test
+        run: DRAKE_RESOURCE_ROOT=`python3 -c "from pathlib import Path; from pydrake.all import GetDrakePath; print(Path(GetDrakePath()).parent)"` ./htmlbook/workflows/ci/jammy/test
         shell: bash
   monterey:
     name: macos monterey 12
