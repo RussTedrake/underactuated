@@ -70,6 +70,17 @@ Robots</h1>
   the "zero-moment point" and footstep planning.  The goal of this chapter is to
   penetrate that world.</p>
 
+  <p>Since our robots are getting more complicated, I'm going to need a bit
+  stronger notation. In Drake we use <a
+  href="https://drake.mit.edu/doxygen_cxx/group__multibody__notation.html">monogram
+  notation</a> and define it's spatial algebra <a
+  href="https://manipulation.csail.mit.edu/pick.html#monogram">here for
+  kinematics</a>, <a
+  href="https://manipulation.csail.mit.edu/pick.html#jacobian">differential
+  kinematics (velocities)</a> and <a
+  href="https://manipulation.csail.mit.edu/clutter.html#spatial_force">here for
+  force</a>.</p>
+
   <section><h1>Centroidal dynamics</h1>
 
     <p>Perhaps one of the most surprising thing about the world of complex
@@ -88,22 +99,26 @@ Robots</h1>
 
       <p>Imagine you have a flying vehicle modeled as a single rigid body in a
       gravity field with some number of force "thrusters" attached.  We'll
-      describe the configuration of the vehicle by its orientation, $\theta$ and
-      the location of its center of mass $(x,z)$.  The vector from the center of
-      mass to thruster $i$ is given by $r_i$, yielding the equations of motion:
-      \begin{align*} m\ddot{x} =& \sum_i F_{i,x},\\ m\ddot{z} =& \sum_i F_{i,z}
-      - mg,\\ I\ddot\theta =& \sum_i \left[ r_i \times F_i \right]_y,
-      \end{align*} where I've used $F_{i,x}$ to represent the component of the
-      force in the $x$ direction and have taken just the $y$-axis component of
-      the cross product on the last line. </p>
+      describe the pose of the body in the world frame, ${}^WX^B$,
+      parameterized by its position $(x,z)$ and orientation $\theta$, and take
+      the center of mass to be at the origin of this body frame. The vector
+      from the center of mass to thruster $i$ in the world frame is given by
+      ${}^Bp^{B_i}_W$, yielding the equations of motion: \begin{align*} m\ddot{x}
+      =& \sum_i f^{B_i}_{W_x},\\ m\ddot{z} =& \sum_i f^{B_i}_{W_z} - mg,\\
+      I\ddot\theta =& \sum_i \left[ {}^Bp^{B_i}_W \times f^{B_i}_W \right]_y,
+      \end{align*} where I've used $f^{B_i}_{W_x}$ to represent the
+      $x$-component of the force applied to $B$ at the location of thruster
+      $i$, expressed in the world frame, and we take the $y$-axis component of
+      the cross product on the last line.
+      </p>
 
       <p>Our goal is to move the spacecraft to a desired position/orientation
-      and to keep it there.  If we take the inputs to be $F_i$, then the
+      and to keep it there.  If we take the inputs to be $f^{B_i}_W$, then the
       dynamics are affine (linear plus a constant term).  As such, we can
       stabilize a stabilizable fixed point using a change of coordinates plus
       LQR or even plan/track a desired trajectory using time-varying LQR.  If I
       were to add additional linear constraints, for instance constraining
-      $F_{min} \le F_i \le F_{max}$, then I can still use linear
+      $f_{min} \le f^{B_i}_W \le f_{max}$, then I can still use linear
       model-predictive control (MPC) to plan and stabilize a desired motion. By
       most accounts, this is a relatively easy control problem. (Note that it
       would be considerably harder if my control input or input constraints
@@ -112,12 +127,15 @@ Robots</h1>
       <p>Now imagine that you have just a small number of thrusters (let's say
       two) each with severe input constraints.  To make things more
       interesting, let us say that you're allowed to move the thrusters, so
-      $\dot{r}_i$ becomes an additional control input, but with some important
-      limitations:  you have to turn the thrusters off when they are moving
-      (e.g. $|F_i||\dot{r}_i| = 0$) and there is a limit to how quickly you can
-      move the thrusters $|\dot{r}|_i \le v_{max}$.  This problem is now a lot
-      more difficult, due especially to the fact that constraints of the form
-      $xy = 0$ are non-convex (the red area in the illustration below represents the feasible set).</p> <center><img width="25%"
+      ${}^B\text{v}^{B_i} = \frac{d}{dt} {}^Bp^{B_i}$ becomes an additional
+      control input, but with some important limitations:  you have to turn the
+      thrusters off when they are moving (e.g. $f^{B_i}{}^B_{W_j}
+      \text{v}^{B_i}_{W_j} = 0$) and there is a limit to how quickly you can
+      move the thrusters $|{}^B\text{v}^{B_i}_{W_j}| \le \text{v}_{max}$.  This
+      problem is now a lot more difficult, due especially to the fact that
+      constraints of the form $xy = 0$ are non-convex (the red area in the
+      illustration below represents the feasible set).</p>
+      <center><img width="25%"
       src="figures/complementarity_constraint.svg"/></center> <p>I find this a
       very useful thought exercise; somehow our controller needs to make an
       effectively discrete decision to turn off a thruster and move it.  The
@@ -131,36 +149,36 @@ Robots</h1>
       few more constraints to make it relevant for legged robots.  Now let's
       say additionally, that the thrusters can only be turned on in certain
       locations, as cartooned here:</p> <center><img width="70%"
-      src="figures/zmp_thrusters_w_regions.svg"/></center> <p>The union
-      of these regions need not form a convex set.  Furthermore, these
-      locations could be specified in the robot frame, but may also be
-      specified in the world frame, which I'll call ${\bf p}_i$: $${\bf p}_i =
-      {\bf r}_i - \begin{bmatrix} x \\ 0 \\ z \end{bmatrix}.$$  This problem
-      still feels like it should be tractable, but it's definitely getting
-      more difficult.</p>
+      src="figures/zmp_thrusters_w_regions.svg"/></center> <p>Even if the
+      individual regions are convex, the union of these regions need not form a
+      convex set.  Furthermore, these locations are often expressed in the
+      world frame, not the robot frame, e.g. $${\bf A}\, {}^W p^{R_i}_W \le {\bf
+      b}.$$</p>
 
     </subsection>
 
     <subsection><h1>Robots with (massless) legs</h1>
 
       <p>In my view, the spacecraft with thrusters problem above is a central
-      component of the walking problem.  If we consider a walking robot with
-      massless legs, then the feet are exactly like movable thrusters.  As
-      above, they are highly constrained - they can only produce force when
-      they are touching the ground, and (typically) they can only produce
-      forces in certain directions, for instance as described by a "friction
-      cone" (you can push on the ground but not pull on the ground, and with
-      Coulomb friction the forces tangential to the ground must be smaller than
-      the forces normal to the ground, as described by a coefficient of
-      friction, e.g. $|F_{\parallel}| < \mu |F_{\perp}|$).</p>
+      component of the walking problem.  If we consider a walking robot as our
+      single rigid body, $B$, with massless legs, then the feet are exactly
+      like movable thrusters.  As above, they are highly constrained - they can
+      only produce force when they are touching the ground, and (typically)
+      they can only produce forces in certain directions, for instance as
+      described by a "friction cone" (you can push on the ground but not pull
+      on the ground, and with Coulomb friction the forces tangential to the
+      ground must be smaller than the forces normal to the ground, as described
+      by a coefficient of friction, e.g. $f^{B_i}_{C_z} \ge 0, |f^{B_i}_{C_x}|
+      < \mu f^{B_i}_{C_z}$) where $C$ is the <a
+      href="multibody.html#contact">contact frame</a>.</p>
 
       <figure><img width="50%" src="figures/hovercraftLegs.svg"/></figure>
 
       <p>The constraints on where you can put your feet / thrusters will depend
       on the kinematics of your leg, and the speed at which you can move them
       will depend on the full dynamics of the leg -- these are difficult
-      constraints to deal with.  But the actual dynamics of the rigid body are
-      actually still affine, and still simple!</p>
+      constraints to deal with.  But the actual dynamics of the rigid body,
+      $B$, are actually still affine, and still simple!</p>
 
     </subsection>
 
@@ -199,11 +217,11 @@ Robots</h1>
       model, then no energy need be lost.</p>
 
       <p>One strategy that many highly-articulated legged robots use is to keep
-      their center of mass at a constant height, $$z = c \quad \Rightarrow \quad
-      \dot{z} = \ddot{z} = 0,$$  and minimize their angular momentum about the
-      center of mass (here $\ddot\theta=0$).  Using this strategy, if the
-      swinging foot lands roughly below the center of mass, then even with a
-      stiff leg there is no energy dissipated in the collision - all of the
+      their <i>center of mass</i> at a constant velocity, $$\dot{z} = c \quad
+      \Rightarrow \quad \ddot{z} = 0,$$  and minimize their angular momentum
+      about the center of mass (here $\ddot\theta=0$).  Using this strategy, if
+      the swinging foot lands roughly below the center of mass, then even with
+      a stiff leg there is no energy dissipated in the collision - all of the
       momentum is conserved.  This often (but does not always) justify ignoring
       the impacts in the center of mass dynamics of the system.</p>
 
@@ -224,40 +242,45 @@ Robots</h1>
       <figcaption>External forces acting on a robot pushing on a flat ground</figcaption>
     </figure>
 
-    <p>First, on flat terrain $F_{i,z}$ represents the force that is normal to
-    the surface at contact point $i$.  If we assume that the robot can only push
-    on the ground (and not pull), then this implies $$\forall i, F_{i,z} \ge 0
-    \Rightarrow \sum_i F_{i,z} \ge 0 \Rightarrow \ddot{z} \ge -g.$$  In other
-    words, if I cannot pull on the ground, then my center of mass cannot
-    accelerate towards the ground faster than gravity.</p>
+    <p>First, on flat terrain $f^{B_i}_{W_z}$ represents the force that is
+    normal to the surface at contact point $i$.  If we assume that the robot
+    can only push on the ground (and not pull), then this implies $$\forall i,
+    f^{B_i}_{W_z} \ge 0 \Rightarrow \sum_i f^{B_i}_{W_z} \ge 0 \Rightarrow
+    \ddot{z} \ge -g.$$  In other words, if I cannot pull on the ground, then my
+    center of mass cannot accelerate towards the ground faster than
+    gravity.</p>
 
     <p>Furthermore, if we use a Coulomb model of friction on the ground, with
-    friction coefficient $\mu$, then $$\forall i, |F_{i,x}| \le \mu F_{i,z}
-    \Rightarrow \sum_i |F_{i,x}| \le \mu \sum_i F_z \Rightarrow |\ddot{x}| \le
-    \mu (\ddot{z} + g).$$  For instance, if I keep my center of mass at a
-    constant height, then $\ddot{z}=0$ and $|\ddot{x}| \le \mu g$; this is a
-    nice reminder of just how important friction is if you want to be able to
-    move around in the world.</p>
+    friction coefficient $\mu$, then $$\forall i, |f^{B_i}_{W_x}| \le \mu
+    f^{B_i}_{W_z} \Rightarrow \sum_i |f^{B_i}_{W_x}| \le \mu \sum_i
+    f^{B_i}_{W_z} \Rightarrow |\ddot{x}| \le \mu (\ddot{z} + g).$$  For
+    instance, if I keep my center of mass height at a constant velocity, then
+    $\ddot{z}=0$ and $|\ddot{x}| \le \mu g$; this is a nice reminder of just
+    how important friction is if you want to be able to move around in the
+    world.</p>
 
-    <p>Even better, let us define the "center of pressure" (CoP) as the point on
-    the ground where $$x_{cop} = \frac{\sum_i p_{i,x} F_{i,z}}{\sum_i
-    F_{i,z}},$$ and since all $p_{i,z}$ are equal on flat terrain, $z_{cop}$ is
-    just the height of the terrain.  It turns out that the center of pressure is
-    a "zero-moment point" (ZMP) -- a property that we will demonstrate below --
-    and moment-balance equation gives us a very important relationship between
-    the location of the CoP and the dynamics of the CoM: \[ (m\ddot{z} + mg)
-    (x_{cop} - x) = (z_{cop} - z) m\ddot{x} - I\ddot\theta. \]  If we use the
-    strategy proposed above for ignoring collision dynamics, $\ddot{z} =
-    \ddot{\theta} = 0$, then we have $z - z_{cop}$ is a constant height $h$, and
-    the result is the famous "ZMP equations": \[ \ddot{x} = -\frac{g}{h}
-    (x_{cop}-x). \]  So the location of the center of pressure completely
-    determines the acceleration of the center of mass, and vice versa!  What's
-    more, this relationship is affine -- a property that we can exploit in a
-    number of ways.  </p>
+    <p>Even better, let us define the "center of pressure" (CoP) as the point
+    on the ground where $$x_{cop} = \frac{\sum_i {}^Wp^{B_i}_{W_x}
+    f^{B_i}_{W_z}}{\sum_i f^{B_i}_{W_z}},$$ and since all ${}^Wp^{B_i}_{W_z}$
+    are equal on flat terrain, $z_{cop}$ is just the height of the terrain.  It
+    turns out that the center of pressure is a "zero-moment point" (ZMP) -- a
+    property that we will demonstrate below -- and moment-balance equation
+    gives us a very important relationship between the location of the CoP and
+    the dynamics of the CoM: \begin{equation} (m\ddot{z} + mg) (x_{cop} - x) =
+    (z_{cop} - z) m\ddot{x} - I\ddot\theta. \label{eq:cop} \end{equation}  If
+    we use the strategy proposed above for ignoring collision dynamics,
+    $\ddot{z} = \ddot{\theta} = 0$, and the result is the famous "ZMP
+    equations": \begin{equation} \ddot{x} = g \frac{(x - x_{cop})}{(z -
+    z_{cop})}. \label{eq:zmp} \end{equation}  So the location of the center of
+    pressure completely determines the acceleration of the center of mass, and
+    vice versa!  What's more, when $z - z_{cop}$ is a constant (the center of
+    mass remains at a constant height relative to the ground) or following a
+    predetermined schedule, the remaining relationship is affine -- a property
+    that we can exploit in a number of ways.</p>
 
     <p> As an example, we can easily relate constraints on the CoP to
-    constraints on $\ddot{x}$. It is easy to verify from the definition that the
-    CoP must live inside the <a
+    constraints on $\ddot{x}$. It is easy to verify from the definition that
+    the CoP must live inside the <a
     href="http://en.wikipedia.org/wiki/Convex_hull">convex hull</a> of the
     ground contact points.  Therefore, if we use the $\ddot{z}=\ddot\theta=0$
     strategy, then this directly implies strict bounds on the possible
@@ -276,40 +299,50 @@ Robots</h1>
       <p>First let us recall that for rigid body systems I can always summarize
       the contributions from many external forces as a single <i>wrench</i>
       (force and torque) on the object -- this is simply because the $F_i$ terms
-      enter our equations of motion linearly.  Specifically, given any point in
-      space, $r$, in coordinates relative to $(x,z)$:</p> <figure><img
-      width="70%" src="figures/zmp_derivation.svg"/></figure> <todo>update
-      diagram to have r instead of p</todo>
+      enter our equations of motion linearly.  Specifically, the position $p^A$ of an arbitrary point $A$:</p> <figure><img
+      width="70%" src="figures/zmp_derivation.svg"/></figure> 
 
       <p>I can re-write the equations of motion as \begin{align*} m\ddot{x} =&
-      \sum_i F_{i,x} = F_{net,x},\\ m\ddot{z} =& \sum_i F_{i,z} - mg =
-      F_{net,z} - mg,\\ I\ddot\theta =& \sum_i \left[ r_i \times F_i \right]_y
-      = ({\bf r} \times {\bf F}_{net})_y + \tau_{net}, \end{align*} where ${\bf
-      F}_{net} = \sum_i {\bf F}_i$ and the value of $\tau_{net}$ depends on the
-      location ${\bf r}$.  For some choices of ${\bf r}$, we can make
-      $\tau_{net}=0$. Examining \[ ({\bf r} \times {\bf F}_{net})_y = r_z
-      F_{net,x} - r_x F_{net,z} = \left[ r_i \times F_i \right]_y, \] we can
-      see that when $F_{net,z} > 0$ there is an entire line of solutions, $r_x
-      = a r_z + b$, including one that will intercept the terrain.  For walking
-      robots, it is this point on the ground from which the external wrench can
-      be described by a single force vector (and no moment) that is the famous
-      "zero-moment point" (ZMP).  Substituting the equations of motion into
-      this equation to replace the individual terms of $F_{net}$, we can see
-      that \[ r_x = \frac{r_z m \ddot{x} - I \ddot\theta}{m\ddot{z} + mg}. \]
-      If we assume that $\ddot{z}=\ddot{\theta}=0$ and replace the relative
-      coordinates with the global coordinates ${\bf r} = {\bf p} - [x,0,z]^T$,
-      then we arrive at precisely the equation presented above.</p>
+      \sum_i f^{B_i}_{W_x} = f^A_{net,W_x},\\ m\ddot{z} =& \sum_i f^{B_i}_{W_z}
+      - mg = f^A_{net,W_z} - mg,\\ I\ddot\theta =& \sum_i \left[ {}^Bp^{B_i}_W
+      \times f^{B_i}_W \right]_y = [{}^Bp^A_W \times f^A_{net,W}]_y +
+      \tau^A_{net,W}, \end{align*} where $f^A_{net} = \sum_i f^{B_i}$ and the
+      value of $\tau^A_{net}$ depends on the position, $p^A$. For some choices
+      of $p^A$, we can make $\tau^A_{net}=0$. We'll call these points
+      $\text{ZMP}$, for which we have \begin{equation} \left[
+      {}^Bp^{\text{ZMP}}_W \times f^{\text{ZMP}}_{net,W} \right]_y =
+      {}^Bp^{\text{ZMP}}_{W_z} f^{\text{ZMP}}_{net,W_x} -
+      {}^Bp^{\text{ZMP}}_{W_x} f^{\text{ZMP}}_{net,W_z} = \sum_i \left[
+      {}^Bp^{B_i}_W \times f^{B_i}_W \right]_y, \label{eq:zmp_def}
+      \end{equation} we can see that whenever we have ground reaction forces
+      ($f^{\text{ZMP}}_{net,W_z} \ne 0$) there is an entire line of solutions,
+      ${}^Bp^{\text{ZMP}}_{W_x} = a\, {}^Bp^{\text{ZMP}}_{W_z} + b$, including
+      one that will intercept the terrain.  For walking robots, it is this
+      point on the ground from which the external wrench can be described by a
+      single force vector (and no moment) that is the famous "zero-moment
+      point" (ZMP).</p>
 
-      <p>Furthermore, since \[\left[ r_i \times F_i \right]_y = \sum_i \left(
-      r_{i,z} F_{i,x} - r_{i,x} F_{i,z} \right), \] and for <i>flat terrain</i>
-      we have \[ r_z F_{net,x} = \sum_i r_{i,z} F_{i,x}, \] then we can see that
-      this ZMP is exactly the CoP: \[ r_x = \frac{\sum_i r_{i,x} F_{i,z}}{
-      F_{net,z} }. \] </p>
+      <p>We can rewrite the equations of motion in terms of the ZMP. Substiting
+      the equations of motion into equation \ref{eq:zmp_def},  to replace the
+      individual terms of $f^{\text{ZMP}}_{net}$, we have \[
+      {}^Bp^{\text{ZMP}}_{W_z} m\ddot{x} - {}^Bp^{\text{ZMP}}_{W_x} (m\ddot{z}
+      + mg) = I \ddot{\theta}. \] But this is precisely the equation
+      \ref{eq:cop} presented above.</p>
+
+      <p>Furthermore, since \[\sum_i \left[ {}^Bp^{B_i}_W \times f^{B_i}_W
+      \right]_y = \sum_i \left( {}^Bp^{B_i}_{W_z} f^{B_i}_{W_x} -
+      {}^Bp^{B_i}_{W_x} f^{B_i}_{W_z} \right), \] and for <i>flat terrain</i>
+      we have \[ \sum_i {}^Bp^{B_i}_{W_z} f^{B_i}_{W_x} =
+      {}^Bp^{\text{ZMP}}_{W_z} \sum_i f^{B_i}_{W_x} = {}^Bp^\text{ZMP}_{W_z}
+      f^\text{ZMP}_{net, W_x}, \] then we can see that this ZMP is exactly the
+      CoP: \[ {}^Bp^\text{ZMP}_{W_x} = \frac{\sum_i {}^Bp^{B_i}_{W_x}
+      f^{B_i}_{W_z}}{\sum_i f^{B_i}_{W_z} }. \] </p>
 
       <p>In three dimensions, we solve for the point on the ground where
-      $\tau_{net,y} = \tau_{net,x} = 0$, but allow $\tau_{net,z} \ne 0$ to
-      extract the analogous equations in the $y$-axis:  \[ r_y = \frac{r_z m
-      \ddot{y} - I \ddot\theta}{m\ddot{z} + mg}. \] </p>
+      $\tau^\text{ZMP}_{net,W_y} = \tau^\text{ZMP}_{net,W_x} = 0$, but allow $\tau^\text{ZMP}_{net,W_z} \ne 0$ to
+      extract the analogous equations in the $y$-axis:  \[
+      {}^Bp^{\text{ZMP}}_{W_z} m\ddot{y} - {}^Bp^{\text{ZMP}}_{W_y} (m\ddot{z}
+      + mg) = I \ddot{\theta}. \] </p>
 
     </subsection>
   </section>
