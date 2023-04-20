@@ -61,16 +61,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <chapter style="counter-reset: chapter 11"><h1>Motion Planning as
 Search</h1>
 
-  <p>The term "motion planning" is a quite general term which almost
-  certainly encompasses the dynamic programming, feedback design, and
-  trajectory optimization algorithms that we have already discussed.  However,
-  there are a number of algorithms and ideas that we have not yet discussed
-  which have grown from the idea of formulating motion planning as a search
-  problem -- for instance searching for a path from a start to a goal in a
-  graph which is too large solve completely with dynamic programming. <!--Some, but
-  certainly not all, of these algorithms sacrifice optimality in order to find
-  any path if it exists, and the notion of a planner being "complete" --
-  guaranteed to find a path if one exists -- is highly valued.-->  </p>
+  <p>The term "motion planning" is a quite general term which almost certainly
+  encompasses the dynamic programming, feedback design, and trajectory
+  optimization algorithms that we have already discussed.  However, there are a
+  number of algorithms and ideas that we have not yet discussed which have
+  grown from the idea of formulating motion planning as a search problem -- for
+  instance searching for a path from a start to a goal in a graph which is too
+  large solve completely with dynamic programming. <!--Some, but certainly not
+  all, of these algorithms sacrifice optimality in order to find any path if it
+  exists, and the notion of a planner being "complete" -- guaranteed to find a
+  path if one exists -- is highly valued.-->  </p>
   
   <p>My goal for this chapter is to introduce these additional tools based on
   search into our toolkit.  For robotics, they will play a particularly
@@ -90,9 +90,10 @@ Search</h1>
   planning problems, <em>motion planning</em> typically refers to problems
   where the planning domain is continuous (e.g. continuous state space,
   continuous action space), but many motion planning algorithms trace their
-  origins back to ideas in discrete domains.  The term <em>kinodynamic motion planning</em> is often used when the plant is subject to
-  dynamic constraints like underactuation, in addition to kinematic constraints
-  like obstacle avoidance.</p>
+  origins back to ideas in discrete domains.  The term <em>kinodynamic motion
+  planning</em> is often used when the plant is subject to dynamic constraints
+  like underactuation, in addition to kinematic constraints like obstacle
+  avoidance.</p>
 
   <!--
   <p>For this chapter, we will consider the following problem formulation:
@@ -104,21 +105,71 @@ Search</h1>
 
   <section><h1>Artificial Intelligence as Search</h1>
 
-    <p>A long history...  some people feel that the route to creating
-    intelligent machines is to collect large ontologies of knowledge, and then
-    perform very efficient search. (The more modern view of AI is focused
-    instead on machine learning, the right answer probably involves pieces of
-    both.)  Samuels checker players, Deep Blue playing chess, theorem proving,
-    Cyc, IBM Watson,...</p>
+    <p>Search algorithms have a long history in AI research -- even before the
+    recent rise of the <a href="https://openai.com/blog/chatgpt">large language
+    models (LLMs)</a>. For decades, many AI researchers felt that the route to
+    creating intelligent machines was to collect large ontologies of knowledge,
+    and then perform very efficient search. Some notable examples from this
+    storied history include Samuel's checker players, theorem proving, Cyc,
+    Deep Blue playing chess, and IBM Watson. Now it seems that LLMs are
+    providing evidence that humans have put enough "knowledge" on the web such
+    that relatively simple learning paradigms like next-word prediction can
+    lead to a surprising level of "intelligence". As of early 2023, the word on
+    the street is that these models are not yet good at long-term reasoning --
+    making multi-step plans with more than a few steps. But they appear to be
+    able to use (software) tools, and <i>maybe</i> the tools that they need are
+    basic planning/search algorithms.</p>
 
-    <p>One of the key ideas is the use of "heuristics" to guide the search.
-    "Is it possible to find and optimal path from the start to a goal without
-    visiting every node?".  $A^*$.  Admissible heuristics. Example: google
-    maps.</p>
+    <p>Indeed, thanks to decades of research, planning algorithms in AI have
+    also scaled to impressive heights, making efficient use of heuristics and
+    factorizations to solve impressively large planning instances. Since 1998,
+    the International Conference on Automated Planning and Scheduling (ICAPS)
+    has been hosting <a
+    href="https://www.icaps-conference.org/competitions/">regular planning
+    competitions</a> which have helped to solidify <a
+    href="https://en.wikipedia.org/wiki/Planning_Domain_Definition_Language">problem
+    specification formats</a> and to benchmark the state of the art.</p>
 
-    <p>Online planning.  $D^*$, $D^*$-Lite.</p>
+    <p>These algorithms have focused on primarily on logical/discrete planning
+    (although they do support "objects", and so can have a sort of open
+    vocabulary).  In the language of underactuated, this connects back to the
+    discrete-state, discrete-action, discrete-time planning problems that we
+    discussed to introduce <a href="dp.html#graph_search">dynamic programming
+    as graph search</a>. Dynamic programming is a very efficient algorithm to
+    solve for the cost-to-go from <i>every</i> state, but if we only need to
+    find an (optimal) path from a single start state to the goal, we can
+    potentially do better.  In particular, in order to scale to very large
+    planning instances, one of the essential ideas is the idea of "incremental"
+    search, which can avoid every putting the entire (often exponentially
+    large) graph into memory.</p>
+    
+    <p>Is it possible to find and optimal path from the start to a goal without
+    visiting every node? Yes! Indeed, one of the key insights that powers these
+    incremental algorithms is the use of <a
+    href="https://en.wikipedia.org/wiki/Admissible_heuristic">admissible
+    heuristics</a> to guide the search -- an approximate cost-to-go which is
+    guaranteed to never over-estimate the cost-to-go. A great example of this
+    would be searching for directions on a map -- the straight-line distance
+    from the start to the goal ("as the crow flies") is guaranteed to never
+    over-estimate the true cost to go (which has to stay on the roads). The
+    most famous search algorithm to leverage these heuristics is <a
+    href="https://en.wikipedia.org/wiki/A*_search_algorithm">A*</a>. In
+    robotics, we often use online planning extensions, such as <a
+    href="https://en.wikipedia.org/wiki/D*">D* and D*-Lite</a>.
+    </p>
 
-    <p>Some of the most visible success stories in deep learning today still make use of planning. For example: DeepMind's
+    <p>There are numerous other heuristics that power state-of-the-art
+    large-scale logical search algorithms. Another important one is
+    factorization. For a robotics example, consider a robot manipulating many
+    possible objects -- it's reasonable to plan the manipulation of one object
+    assuming it's independent of the other objects and then to revise that plan
+    only when the optimal plan ends up putting two objects on intersecting
+    paths. Many of these heuristics are summarized nicely in the Fast Downward
+    paper<elib>Helmert06</elib>; Fast Downward has been at the forefront the
+    ICAPS planning competitions for many years.</p>
+
+    <p>Some of the most visible success stories in deep learning today still
+    make use of planning. For example: DeepMind's
       <a href="https://en.wikipedia.org/wiki/AlphaGo">AlphaGo</a> and <a
         href="https://en.wikipedia.org/wiki/AlphaZero">AlphaZero</a> combine the planning algorithms developed over the
       years in discrete games , notably <a href="https://en.wikipedia.org/wiki/Monte_Carlo_tree_search">Monte-Carlo Tree
@@ -145,27 +196,30 @@ Search</h1>
     cost-to-go function over the entire state space, but it's less compatible
     with search methods which are trying to find just a single path through the
     space.  If I start in node 1, and land between node 2 and node 3, then
-    which node to I continue to expand from?</p>
+    which node do I continue to expand from?</p>
 
-    <p>One approach to avoiding this problem is to build a <em>search tree</em>
-    as the search executes, instead of relying on a predefined mesh
-    discretization.  This tree will contains nodes rooted in the continuous
-    space at exactly the points where system can reach.</p>
+    <p>Fortunately, the incremental search algorithms from logical search
+    already give us a way to think about this -- we can simply build a
+    <em>search tree</em> as the search executes, instead of relying on a
+    predefined mesh discretization.  This tree will contains nodes rooted in
+    the continuous space at exactly the points where system can reach.</p>
 
-    <p>Another other problem with any fixed mesh discretization of a continuous
-    space, or even a fixed discretization of the action space, is that unless
-    we have specific geometric / dynamic insights into our continuous system,
-    it very difficult to provide a <em>complete</em> planning algorithm.  Even
-    if we can show that no path to the goal exists on the tree/graph, how can
-    we be certain that there is no path for the continuous system?  Perhaps a
-    solution would have emerged if we had discretized the system differently,
-    or more finely?</p>
+    <p>Another potential problem with any fixed-mesh discretization of a
+    continuous space, or even a fixed discretization of the action space, is
+    that unless we have specific geometric / dynamic insights into our
+    continuous system, it can be very difficult to provide a <i>complete</i>
+    planning algorithm. A planning algorithm is complete if it always finds a
+    path (from the start to the goal) when a path exists. Even if we can show
+    that no path to the goal exists on the tree/graph, how can we be certain
+    that there is no path for the continuous system?  Perhaps a solution would
+    have emerged if we had discretized the system differently, or more
+    finely?</p>
 
     <p>One approach to addressing this second challenge is to toss out the
-    notion of fixed discretizations, and replace them with random sampling
+    notion of a fixed discretizations, and replace them with random sampling
     (another approach would be to adaptively add resolution to the
     discretization as the algorithm runs).  Random sampling, e.g. of the action
-    space, can yield algorithms that are <em>probabilistically complete</em>
+    space, can yield algorithms that are <i>probabilistically complete</i>
     for the continuous space -- if a solution to the problem exists, then a
     probabilistically complete algorithm will find that solution with
     probability 1 as the number of samples goes to infinity.</p>
@@ -177,7 +231,8 @@ Search</h1>
 
     <example><h1>Planning with a Random Tree</h1>
 
-      <p>Let us denote the data structure which contains the tree as ${\cal T}$.  The algorithm is very simple:
+      <p>Let us denote the data structure which contains the tree as ${\cal
+      T}$.  The algorithm is very simple:
       <ul>
         <li>Initialize the tree with the start state: ${\cal T} \leftarrow \bx_0$.</li>
         <li>On each iteration:
@@ -190,10 +245,12 @@ Search</h1>
           </ul>
         </li>
       </ul>
-      It can be shown that this algorithm is, in fact, probabilistically complete.  However,
-      without strong heuristics to guide the selection of the nodes scheduled for expansion,
-      it can be extremely inefficient.  For a simple example, consider the system $\bx[n] = \bu[n]$ with $\bx \in \Re^2$ and $\bu_i \in [-1,1]$.
-      We'll start at the origin and put the goal region as $\forall i, 15 \le x_i \le 20$.
+      It can be shown that this algorithm is, in fact, probabilistically
+      complete.  However, without strong heuristics to guide the selection of
+      the nodes scheduled for expansion, it can be extremely inefficient.  For
+      a simple example, consider the system $\bx[n] = \bu[n]$ with $\bx \in
+      \Re^2$ and $\bu_i \in [-1,1]$. We'll start at the origin and put the goal
+      region as $\forall i, 15 \le x_i \le 20$.</p>
 
       <!--
       Try it yourself:
@@ -217,21 +274,23 @@ axis([-10,25,-10,25]);
 </code></pre>
 -->
 
-      Again, this algorithm <em>is</em> probabilistically complete.  But after expanding 1000 nodes, the tree is basically a mess of node points all right on top of
-      each other:
+      <p>Although this "straw-man" algorithm is probabilistically complete, it
+      is certainly not efficient. After expanding 1000 nodes, the tree is
+      basically a mess of node points all right on top of each other:
       <figure>
         <img width="70%" src="figures/random_tree.svg"/>
       </figure>
-      <p>We're nowhere close to the goal yet, and it's not exactly a hard problem.
+      <p>We're nowhere close to the goal yet, and this is a particularly easy
+      problem instance.
       </p>
 
     </example>
 
-    <p>
-      While the idea of generating a tree of feasible points has clear advantages, we have lost
-      the ability to cross off a node (and therefore a region of space) once it has been explored.
-      It seems that, to make randomized algorithms effective, we are going to at the very least need some
-      form of heuristic for encouraging the nodes to spread out and explore the space.
+    <p>The idea of generating a tree of feasible points has clear advantages,
+    but it seems that we have lost the ability to mark a region of space as
+    having been sufficiently explored. It seems that, to make randomized
+    algorithms effective, we are going to at the very least need some form of
+    heuristic for encouraging the nodes to spread out and explore the space.
     </p>
 
     <subsection><h1>Rapidly-Exploring Random Trees (RRTs)</h1>
@@ -330,6 +389,12 @@ axis([-10,25,-10,25]);
 <span class="author">Steven M. LaValle</span>, 
 <span class="title">"Planning Algorithms"</span>, Cambridge University Press
 , <span class="year">2006</span>.
+
+</li><br>
+<li id=Helmert06>
+<span class="author">Malte Helmert</span>, 
+<span class="title">"The fast downward planning system"</span>, 
+<span class="publisher">Journal of Artificial Intelligence Research</span>, vol. 26, pp. 191--246, <span class="year">2006</span>.
 
 </li><br>
 </ol>
