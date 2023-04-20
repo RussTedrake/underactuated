@@ -79,7 +79,7 @@ Robots</h1>
   <p>Since our robots are getting more complicated, I'm going to need a bit
   stronger notation. In Drake we use <a
   href="https://drake.mit.edu/doxygen_cxx/group__multibody__notation.html">monogram
-  notation</a> and define it's spatial algebra <a
+  notation</a> and define its spatial algebra <a
   href="https://manipulation.csail.mit.edu/pick.html#monogram">here for
   kinematics</a>, <a
   href="https://manipulation.csail.mit.edu/pick.html#jacobian">differential
@@ -134,7 +134,8 @@ Robots</h1>
       move the thrusters $|{}^B\text{v}^{B_i}_{W_j}| \le \text{v}_{max}$.  This
       problem is now a lot more difficult, due especially to the fact that
       constraints of the form $xy = 0$ are non-convex (the red area in the
-      illustration below represents the feasible set).</p>
+      illustration below represents the feasible set for $x \ge 0, y \ge
+      0$).</p>
       <center><img width="25%"
       src="figures/complementarity_constraint.svg"/></center> <p>I find this a
       very useful thought exercise; somehow our controller needs to make an
@@ -192,7 +193,7 @@ Robots</h1>
   <section><h1>Centroidal dynamics</h1>
 
     <p>It turns out the specific equations that we used in our thought
-    experiment aren't restricting to a single body and massless legs. If we
+    experiment aren't restricted to a single body and massless legs. If we
     simply repurpose the coordinates $x,z$ to describe the location of the
     center of mass (CoM) of the entire robot (not just the center of mass of a
     single body, $B$), and $m$ to represent the entire mass of the robot, then
