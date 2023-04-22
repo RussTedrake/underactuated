@@ -50,9 +50,11 @@ sys.path.append('/home/russt/manipulation')
 
 ## Formatting
 
-I use `black` + `isort` + `autoflake`.  `black` and `isort` support jupyter files 
-directly, but `autoflake` does not, so I run `cleanipynb` (which runs `autopep8`), 
-and then rerun `black`.
+I use `black` + `isort` + `autoflake` as pre-commit hooks.  `black` and `isort`
+support jupyter files directly, but `autoflake` does not, so I run `cleanipynb`
+(which runs `autopep8`), and then rerun `black`.  
+
+Run `pre-commit install` to install the pre-commit hooks.
 
 ## Setting up PyCharm
 
