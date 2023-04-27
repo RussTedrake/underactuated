@@ -93,7 +93,14 @@ with Stochasticity</h1>
   which is a particular useful and common specialization of our general form.
   And this form doesn't give up much -- the disturbance on step $k$ can pass
   through the nonlinear function $f$ on step $k+1$ giving rich results -- but is
-  often much easier to work with. </p>
+  often much easier to work with.</p>
+  
+  <p>When implementing stochastic systems in Drake, we aim to be <a
+  href="https://drake.mit.edu/doxygen_cxx/group__stochastic__systems.html">rigorous
+  about randomness</a>, to facilitate advanced algorithms that are written
+  against stochastic systems and to enable, e.g. random simulation roll outs
+  but still enable deterministic replay (simulation is deterministic given the
+  random seed).</p>
 
   <section><h1>The Master Equation</h1>
 
@@ -122,7 +129,7 @@ with Stochasticity</h1>
       different initial conditions all on the same plot, we will see something
       like the figure below.</p> <figure> <img width="80%"
       src="figures/cubic_bistable_particles_time.svg"/>
-      <figcaption>Simulation of the bistable system with noise ($\sigma = 0.01$)
+      <figcaption>Simulation of the bistable system with noise ($h=0.1, \sigma = 0.3$)
       from many initial conditions.</figcaption> </figure>
 
       <p>During any individual simulation, the state jumps around randomly for
@@ -215,8 +222,8 @@ with Stochasticity</h1>
 
       <figure> <img width="116%" style="margin-left:-8%" src="figures/logistic_map_master.svg"/>
         <figcaption>Plotting the (closed-form) evolution of the master equation
-        for the logistic map, initialized with $p_0(x) = 1$, reveals surprising
-        simplicity, and rapid convergence to a stationary
+        for the logistic map, initialized with $p_0(x) = 1$ for $x\in[0,1]$,
+        reveals surprising simplicity, and rapid convergence to a stationary
         distribution (dashed orange line).</figcaption>
         </figure>
 
@@ -328,9 +335,14 @@ with Stochasticity</h1>
 
       <figure> <img width="80%" src="figures/cubic_histogram.svg"/>
       <figcaption>Histogram of the states of the bistable system with noise
-      ($\sigma = 0.01$) after simulating from random initial conditions until
-      $t=30$. <br/><a href="figures/cubic_histogram.swf">Click here to see the
-      animation</a></figcaption> </figure>
+      ($h=0.1, \sigma = 1.5$) after simulating from random initial conditions
+      until $t=1$.</figcaption> </figure>
+
+      <figure> 
+        <iframe style="border:0;height:300px;width:400px;" src="data/cubic_histogram.html?height=240px" pdf="no"></iframe>
+      <figcaption>Histogram of the states of the bistable system with noise
+      ($\sigma = 1.5$).</figcaption> </figure>
+
 
       <p>Be sure to watch the animation.  Or better yet, run the simulation for
       yourself by changing the sign of the derivative in the bistability example
@@ -338,13 +350,6 @@ with Stochasticity</h1>
 
       <p>You can run this demo for yourself:</p>
       <script>document.write(notebook_link('stochastic'))</script>
-
-      <p>Now try increasing the noise (e.g. pre-multiply the noise input,
-        $w$, in the dynamics by a scalar like 2).</p>
-
-      <p style="text-align:center"><a
-      href="figures/cubic_histogram_more_noise.swf">Click here to see the
-      animation</a></p>
 
       <p>What is the stationary distribution for this system?  In fact, there
       isn't one.  Although we initially collect probability density around the
