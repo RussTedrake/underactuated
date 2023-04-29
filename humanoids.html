@@ -433,7 +433,7 @@ Robots</h1>
 
   <section><h1>Exercises</h1>
 
-    <exercise><h1>Footstep Planning via Mixed-Integer Optimization</h1>
+    <example id="MIQP_footstep_planning"></example><exercise><h1>Footstep Planning via Mixed-Integer Optimization</h1>
 
       <p>In this exercise we implement a simplified version of the footstep
       planning method proposed in <elib>Deits14a</elib>.  You will find all the
@@ -520,6 +520,28 @@ Robots</h1>
 
     </exercise>
 
+    <exercise><h1>Footstep Planning via Graph of Convex Sets (GCS)</h1>
+
+      <p>In this exercise we implement a simplified version of the footstep
+      planning problem formulated as a shortest path problem (SPP) in GCS (proposed in <elib>Marcucci2021</elib>). Compared to the MIQP formulation seen in <a href="humanoids.html#MIQP_footstep_planning">this exercise</a>, the convex relaxation problem using GCS is much more computatioinally efficient and consequently scales better. You will find all the
+      details <script>document.write(notebook_link('footstep_planning_gcs', deepnote['exercises/humanoids'], link_text='this python notebook'))</script>.
+      Your goal is to code most of the components that transcribe the planning task as a shortest path problem in GCS
+      at the core of the footstep planner:</p>
+
+      <ol type="a">
+
+        <li>Construct vertices of the GCS based on the stepping stones.</li>
+
+        <li>Constrcut valid edges of the GCS between vertices.</li>
+
+        <li>Add constraints associated with each edge that reflect the kinematic constraints of the robot.</li>
+
+        <li>Add edge costs that reflect the optimization objective: minimizes the total number of steps.</li>
+
+      </ol>
+
+    </exercise>
+
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 
@@ -570,6 +592,13 @@ Robots</h1>
 <span class="title">"Whole-body Motion Planning with Centroidal Dynamics and Full Kinematics"</span>, 
 <span class="publisher">IEEE-RAS International Conference on Humanoid Robots</span>, <span class="year">2014</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Dai14.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Marcucci2021>
+<span class="author">Marcucci, Tobia and Umenberger, Jack and Parrilo, Pablo A and Tedrake, Russ</span>, 
+<span class="title">"Shortest paths in graphs of convex sets"</span>, 
+<span class="publisher">arXiv preprint arXiv:2101.11565</span>, <span class="year">2021</span>.
+[&nbsp;<a href="https://arxiv.org/abs/2101.11565">link</a>&nbsp;]
 
 </li><br>
 </ol>
