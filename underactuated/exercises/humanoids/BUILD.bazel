@@ -13,3 +13,12 @@ rt_py_library(
     ],
     visibility = ["//visibility:public"],
 )
+
+rt_py_library(
+    name = "footstep_planning_gcs",
+    srcs = [
+        "test_footstep_planning_gcs.py",
+        "footstep_planning_gcs_utils.py",
+    ],
+    visibility = ["//visibility:public"],
+)

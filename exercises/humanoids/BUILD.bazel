@@ -15,3 +15,14 @@ rt_ipynb_test(
         "//underactuated/exercises/humanoids:footstep_planning",
     ],
 )
+
+rt_ipynb_test(
+    name = "footstep_planning_gcs",
+    srcs = ["footstep_planning_gcs.ipynb"],
+    tags = ["no-sandbox"],  # For gurobi license. (This should go away)
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/humanoids:footstep_planning_gcs",
+    ],
+)
