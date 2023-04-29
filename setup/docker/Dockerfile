@@ -35,7 +35,7 @@ COPY underactuated/ /opt/underactuated/underactuated/
 COPY exercises/ /root/underactuated/exercises/
 COPY requirements.txt /tmp/requirements.txt
 COPY setup/docker/pip.conf /root/.config/pip/pip.conf
-COPY setup/ubuntu/20.04/install_prereqs.sh /tmp/
+COPY setup/ubuntu/22.04/install_prereqs.sh /tmp/
 RUN /tmp/install_prereqs.sh
 RUN apt -y install xvfb git nginx-light
 RUN pip3 install -r /tmp/requirements.txt pyvirtualdisplay
