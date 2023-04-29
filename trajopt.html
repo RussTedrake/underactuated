@@ -1479,6 +1479,54 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     </exercise>
 
+    <exercise><h1>Differential Flatness</h1>
+
+      <p> 
+      Consider a planar rigid body of mass $m$ and moment of inertia $I$ moving under the influence 
+      of gravity and forces $F_1$ and $F_2$ acting at point $P$ of the body (shown in image). 
+      The state of the body at any time is defined by $\mathbf{x} = (x, y, \theta)$ where $x$ and $y$ 
+      are the COM positions and $\theta$ is the orientation of the body, respectively. 
+      The equations of motion are given by:
+      
+      \begin{align*}
+          m\ddot{x} &= F_1 \cos \theta + F_2 \sin \theta \\
+          m\ddot{y} &= F_1 \sin \theta - F_2 \cos \theta - mg \\
+          I\ddot{\theta} &= rF_1 
+      \end{align*}
+      </p> 
+
+      <figure> <img width="60%" src="figures/differential_flatness.png"/>
+        <figcaption>Planar rigid body controlled by body fixed forces.</figcaption>
+      </figure>
+  
+      <ol type="a">
+
+        <li>Show that the system is differentially flat in the output $Z$, the center of oscillation, given by $\mathbf{z} = (z_1, z_2)$
+          \begin{equation*}
+          z_1 = x - \frac{I}{mr} \sin \theta \quad \quad
+          z_2 = y + \frac{I}{mr} \cos \theta
+          \end{equation*}
+            
+          In other words, given a sufficiently differentiable trajectory of the center of oscillation, $\mathbf{z}(t)$, 
+          show that we can uniquely determine the body's trajectory $\mathbf{x}(t)$, upto an ambiguity of $\pi$ in $\theta$. <br />
+      
+          <i>Hint:</i> Example 10.3 is a good reference. Eliminate the forces from one of the equations of motion. Use $\ddot{z}_1$ and $\ddot{z}_2$ to substitute for $\ddot{x}$ and $\ddot{y}$. 
+        </li>
+
+        <li>Suppose we can control the magnitude of forces $F_1$ and $F_2$ that act at point $P$, and want to find a trajectory such the 
+          body passes through certain waypoints. Assuming no constraints on $F_1$ and $F_2$, what will be a good choice of decision variables 
+          to find a solution for the trajectory? Justify your answer.
+        </li> 
+      
+        <li>
+          If the magnitude of forces $F_1$ and $F_2$ are constrained to be less than $F_{max}$, how will it affect the above trajectory optimization, 
+          in particular, will the formulation still be convex?
+        </li>
+
+      </ol>
+
+</exercise>
+
   </section>
 
 </chapter>
