@@ -3,6 +3,7 @@ import unittest
 import numpy as np
 import timeout_decorator
 from gradescope_utils.autograder_utils.decorators import weight
+from pydrake.solvers import SnoptSolver
 
 
 class TestFootstepPlanning(unittest.TestCase):
@@ -21,7 +22,7 @@ class TestFootstepPlanning(unittest.TestCase):
         self.notebook_locals = notebook_locals
         Terrain = self.notebook_locals["Terrain"]
         self.footstep_planner = self.notebook_locals["GCS_footstep_planner"]
-        self.solver = self.notebook_locals["solver"]
+        self.solver = SnoptSolver()
 
         # empty solution of the benchmark problems
         self.terrains = {
