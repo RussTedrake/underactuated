@@ -199,12 +199,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     </subsection>
     <subsection><h1>Semidefinite Programming and Linear Matrix Inequalities</h1>
 
-      <example>
-        <h1>Semidefinite programming relaxation of non-convex quadratic
-          constraints</h1>
+      <example id="sdp_relaxation">
+        <h1>Semidefinite programming relaxation of
+        non-convex quadratic constraints</h1>
 
         <p>Consider the problem: \begin{align*} \min_x \quad & \| x - a \|^2 \\
-        \text{subject to} \quad & \| x - b \| \ge 1 \end{align*} We can write
+        \text{subject to} \quad & \| x - b \|^2 \ge 1 \end{align*} We can write
         this as \begin{align*} \min_{x,y} \quad & y - 2ax + a^2 \\
         \text{subject to} \quad & y - 2bx + b^2 \ge 1 \\ & y \ge x^2
         \end{align*} where we write $y \ge x^2$ as the semidefinite constraint
@@ -227,13 +227,46 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         solution. Note that we could have equally well written a quadratic
         equality constraint.</p>
 
+        <!--
         <p>I find this incredibly clever, and only frustrating that it is
         somewhat particular to quadratics. (The fact that the entire exterior of
         the quadratic region could be an optimal solution does not hold if we
         try to use the same approach for e.g. being outside of a polytope).</p>
-
+        -->
         <script>document.write(notebook_link('optimization'))</script>
 
+      </example>
+
+      <example id="sdp_unit_circle">
+        <h1>Semidefinite programming relaxation of the unit circle</h1>
+
+        <p>Another useful example is \begin{align*} \min_\bx \quad & \bx^T{\bf
+        A}\bx + {\bf b}^T \bx, \\ \text{subject to} \quad & \bx^T\bx = 1.
+        \end{align*} We can relax this to \begin{align*} \min_{{\bf Y},\bx}
+        \quad & \trace({\bf AY}) + {\bf b}^T \bx, \\ \text{subject to} \quad &
+        \trace({\bf Y}) = 1, \\ & {\bf Y} \succeq \bx\bx^T, \end{align*} where
+        the PSD constraint is again written using the Schur complement. The PSD
+        constraint gives us that $Y_{11} \ge x_1^2$ and $Y_{22} \ge x_2^2$;
+        combined with the trace constraint this gives us $$Y_{22} = 1-Y_{11}
+        \ge x_2^2 \Rightarrow 1 - x_2^2 \ge Y_{11} \ge x_1^2 \Rightarrow 1 \ge
+        x_1^2 + x_2^2.$$  Once again the picture looks like the affine section of a quadratic bowl (now in higher dimensions).
+        </p>
+
+        <p>Let's compare this to the simpler relaxation, $\bx^T\bx \le 1.$ When
+        the objective is linear (${\bf A}=0, {\bf b} \neq 0$), even this
+        simpler (SOCP) relaxation will be tight. But when the objective is
+        quadratic, if the minimum of the quadratic falls inside the unit disk,
+        then the relaxation will be loose.  In the PSD relaxation, the convex
+        relaxation will be tight, because the objective is now linear (in the
+        lifted coordinates), and will push towards the boundary so long as
+        ${\bf b} \neq 0$.</p>
+
+        <p>I've given a numerical example you can play with in the notebook:
+        <script>document.write(notebook_link('optimization'))</script>
+        What's amazing is that this SDP relaxation even gives the optimal
+        solution when the objective is non-convex.  I've given an example in
+        the notebook with a concave objective (e.g. ${\bf A} \preceq 0$).
+        </p>
       </example>
 
     </subsection>
