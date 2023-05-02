@@ -93,7 +93,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     this potential variability. Although it is certainly possible to work in
     continuous time, and treat $\bw(t)$ as a continuous-time random signal
     (c.f. <a href="https://en.wikipedia.org/wiki/Wiener_process">Wiener
-    process</a>), the notation and intuition is a big simpler when we work with
+    process</a>), the notation and intuition is a bit simpler when we work with
     $\bw[n]$ as a discrete-time random signal. For this reason, we'll devote
     our attention in this chapter to the discrete-time systems.</p>
 
@@ -102,14 +102,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     It is typical to assume the values $\bw[n]$ are independent and identically
     distributed (i.i.d.), meaning that $\bw[i]$ and $\bw[j]$ are uncorrelated
     when $i \neq j$.  As a result, we typically define our distribution via a
-    probability density $p_{\bf w}(\bw[n])$.  This is not as limiting as it may
-    sound... if we wish to treat temporally-correlated noise (e.g. "colored
-    noise") the format of our equations is rich enough to support this by
-    adding additional state variables; we'll give an example below of a
-    "whitening filter" for modeling wind gusts.  The other source of randomness
-    that we will now consider in the equations is randomness in the initial
-    conditions; we will similarly define a probability density
-    $p_\bx(\bx[0]).$</p>
+    probability density $\bw[n] \sim p_\bw(\bw)$<sidenote>The notation $\bw[n]
+    \sim p_\bw(\bw)$ denotes that $\bw[n]$ is "drawn from" the distribution
+    $p_\bw(\bx).$</sidenote>.  This is not as limiting as it may sound... if we
+    wish to treat temporally-correlated noise (e.g. "colored noise") the format
+    of our equations is rich enough to support this by adding additional state
+    variables; we'll give an example below of a "whitening filter" for modeling
+    wind gusts.  The other source of randomness that we will now consider in
+    the equations is randomness in the initial conditions; we will similarly
+    define a probability density $\bx[0] \sim p_0(\bx).$</p>
       
     <p>This modeling framework is rich enough for us to convey the key ideas;
     but it is not quite sufficient for all of the systems I am interested in.
@@ -155,9 +156,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       vacuous bounds; we can do much better by evaluating our performance
       metric relative to the magnitude of the disturbance input.</li>
       <li><b>Value at Risk (VaR)</b> and other related metrics from economics
-      and operations research. $\text{VaR}(p)$ is the maximum cost if we ignore
+      and operations research. $\text{VaR}(\alpha)$ is the maximum cost if we ignore
       the tails of the distribution (worse outcomes whose combined probability
-      is at most $p$). Note that VaR is easy to understand, but the related
+      is at most $\alpha$). Note that VaR is easy to understand, but the related
       quantity "conditional value at risk" (CVaR) has superior mathematical
       properties, including connections to convex optimization
       <elib>Majumdar20</elib>.</li>
@@ -287,9 +288,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       this blow-up by considering discounted-cost formulations,
       $$\sum_{n=0}^\infty \gamma^n \ell(\bx[n], \bu[n]),\quad 0 < \gamma \le
       1,$$ or average-cost formulations, $$\lim_{N\rightarrow \infty}
-      \sum_{n=0}^N \ell(\bx[n], \bu[n]).$$ These are satisfactory solutions to
-      the problem, but please make sure to understand why they <i>must</i> be
-      used.</p>
+      \frac{1}{N} \sum_{n=0}^N \ell(\bx[n], \bu[n]).$$ These are satisfactory
+      solutions to the problem, but please make sure to understand why they
+      <i>must</i> be used.</p>
 
       <subsection><h1>Non-i.i.d. disturbances</h1>
     
@@ -495,7 +496,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       convergence.</p>
 
       <p>Here is the fascinating thing: the $\gamma$ in this robust LQR cost
-      function can be interpreted as an $L_2 gain$ for the system. Recall that
+      function can be interpreted as an $L_2$-gain for the system. Recall that
       when we were making connections between the Bellman equation and Lyapunov
       equations, we observed that the Bellman equation can be written as
       $\forall \bx, \quad \dot{J}^*(\bx) \le -\ell(\bx,\bu)$? Here this yields:
@@ -610,7 +611,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   <section><h1>Trajectory optimization</h1>
   
     <subsection><h1>Monte-carlo trajectory optimization</h1>
-      
+
+      <todo>Bregman divergence ADMM in guided policy search from Sergey?  Abhi recommended this paper for it: https://arxiv.org/abs/1504.00702 <elib>Levine16</elib> </todo>
+
     </subsection>
     <subsection><h1>Iterative $\mathcal{H}_2$/iLQG</h1>
 
@@ -754,6 +757,12 @@ PhD thesis, Massachusetts Institute of Technology, September, <span class="year"
 <span class="author">Dylan Foster and Alexander Rakhlin</span>, 
 <span class="title">"Beyond {UCB}: Optimal and Efficient Contextual Bandits with Regression Oracles"</span>, 
 <span class="publisher">Proceedings of the 37th International Conference on Machine Learning</span> , vol. 119, pp. 3199--3210, 13--18 Jul, <span class="year">2020</span>.
+
+</li><br>
+<li id=Levine16>
+<span class="author">Sergey Levine and Chelsea Finn and Trevor Darrell and Pieter Abbeel</span>, 
+<span class="title">"End-to-end training of deep visuomotor policies"</span>, 
+<span class="publisher">The Journal of Machine Learning Research</span>, vol. 17, no. 1, pp. 1334--1373, <span class="year">2016</span>.
 
 </li><br>
 </ol>
