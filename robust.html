@@ -396,7 +396,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       
       <subsubsection id="dissipation"><h1>Dissipation inequalities</h1>
     
-        <p>One of the mechanisms for certifying an $L_2$-gain for a system
+        <p>One of the mechanisms for certifying an $L_2$ gain for a system
         comes from a generalization of Lyapunov analysis to consider the contributions of system inputs via the so-called "dissipation
         inequalities".  Dissipation inequalities are a general tool, and
         $L_2$-gain analysis is only one application of them; for a broader
@@ -415,7 +415,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         yields: $$\forall \bx(0),\quad V(\bx(T)) \le V(\bx(0)) + \int_0^T
         s(\bx(t), \bw(t))dt.$$ </p>
 
-        <p>To obtain a bound on the $L_2$-gain between input $\bw(t)$ and
+        <p>To obtain a bound on the $L_2$ gain between input $\bw(t)$ and
         output $\bz(t)$, the supply rate of interest is $$s(\bx,\bw) = \gamma^2
         \|\bw\|^2 - \|\bz\|^2,$$ which yields $$\forall \bx(0),\quad V(\bx(T))
         \le V(\bx(0)) + \int_0^T \gamma^2 \|\bw(t)\|^2dt - \int_0^T
@@ -424,7 +424,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         we also have $$0 \le V(\bx(T)) \le \int_0^T \gamma^2 \|\bw(t)\|^2dt -
         \int_0^T \|\bz(t)\|^2dt .$$  Therefore, if we can find a $V$ that
         satisfied the dissipation inequality for this storage function, we have
-        certified the $\gamma$ is an $L_2$-gain for the system: $$
+        certified the $\gamma$ is an $L_2$ gain for the system: $$
         \frac{\int_0^T \| \bz(t) \|^2 dt}{\int_0^T \| \bw(t) \|^2dt} \le
         \gamma^2.$$</p>
   
@@ -440,7 +440,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         
       </subsubsection>
   
-  
+      <subsubsection><h1>Model uncertainty as a special case.</h1>
+
+        <todo>Diagram in my notes (e.g. from 2022). In the special case of w
+        being the output of a Delta block (which is itself a function of the
+        output z), and that uncertainty block has bounded L2 gain, then we can
+        recover deterministic stability.</todo>
+
+      </subsubsection>
 
       <todo>IQCs</todo>
 
@@ -496,21 +503,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       convergence.</p>
 
       <p>Here is the fascinating thing: the $\gamma$ in this robust LQR cost
-      function can be interpreted as an $L_2$-gain for the system. Recall that
+      function can be interpreted as an $L_2$ gain for the system. Recall that
       when we were making connections between the Bellman equation and Lyapunov
       equations, we observed that the Bellman equation can be written as
       $\forall \bx, \quad \dot{J}^*(\bx) \le -\ell(\bx,\bu)$? Here this yields:
       $$\forall \bx, \quad \dot{J}^*(\bx) \le \gamma^2 \bw^T(t)\bw(t) -
       \bx^T(t)\bQ\bx(t) - \bu^T(t) \bR\bu(t).$$ This means that the cost-to-go
       is a valid dissipation inequality for the supply rate that provides an
-      $L_2$-gain for the performance output $\bz = \begin{bmatrix}\sqrt{\bQ}
+      $L_2$ gain for the performance output $\bz = \begin{bmatrix}\sqrt{\bQ}
       \bx \\ \sqrt{\bR} \bu\end{bmatrix}.$  Moreover, we can find the minimal
-      $L_2$-gain by finding the minimal $\gamma > 0$ for which the Riccati
+      $L_2$ gain by finding the minimal $\gamma > 0$ for which the Riccati
       equation has a positive-definite solution. And given the properties of
       the Riccati equation, this can be done with a line search in
       $\gamma$.</p>
 
-      <p>Because the $L_2$-gain is the $\mathcal{H}_\infty$-norm of the system,
+      <p>Because the $L_2$ gain is the $\mathcal{H}_\infty$-norm of the system,
       this recipe of searching for the smallest $\gamma$ and taking the Riccati
       solution is an instance of $\mathcal{H}_\infty$ control design.</p>
     </subsection>
@@ -630,7 +637,8 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
   
     <subsection><h1>Robust MPC</h1>
 
-      <todo>Tube MPC, Sadra</todo>
+      <todo>Tube MPC <elib>Mayne05</elib>, Sadra linear polytopic containment <elib>Sadraddini19a</elib>,
+      ellipsoidal approximations (via SDP relaxations).</todo>
     
     </subsection>
 
@@ -763,6 +771,19 @@ PhD thesis, Massachusetts Institute of Technology, September, <span class="year"
 <span class="author">Sergey Levine and Chelsea Finn and Trevor Darrell and Pieter Abbeel</span>, 
 <span class="title">"End-to-end training of deep visuomotor policies"</span>, 
 <span class="publisher">The Journal of Machine Learning Research</span>, vol. 17, no. 1, pp. 1334--1373, <span class="year">2016</span>.
+
+</li><br>
+<li id=Mayne05>
+<span class="author">D.Q. Mayne and M.M. Seron and SV Rakovic</span>, 
+<span class="title">"Robust model predictive control of constrained linear systems with bounded disturbances"</span>, 
+<span class="publisher">Automatica</span>, vol. 41, no. 2, pp. 219--224, <span class="year">2005</span>.
+
+</li><br>
+<li id=Sadraddini19a>
+<span class="author">Sadra Sadraddini and Russ Tedrake</span>, 
+<span class="title">"Linear Encodings for Polytope Containment Problems"</span>, 
+<span class="publisher">Proceedings of the 2019 IEEE 58th Conference on Decision and Control (CDC)</span> , pp. 8, <span class="year">2019</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Sadraddini19a.pdf">link</a>&nbsp;]
 
 </li><br>
 </ol>
