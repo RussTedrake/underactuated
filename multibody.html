@@ -210,16 +210,22 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     rotations in "minimal coordinates" using this notation without introducing
     kinematic singularities (like the famous "gimbal lock"). For instance, a
     common singularity-free choice for representing a 3D rotation is the unit
-    quaternion, described by 4 real values (plus a norm constraint).  However we
-    can still represent the rotational velocity without singularities using just
-    3 real values.  This means that the length of our velocity vector is no
-    longer the same as the length of our position vector.  For this reason, you
-    will see that most of the software in <drake></drake> uses the more general
-    notation with $\bv$ to represent velocity, $\bq$ to represent positions, and
-    the manipulator equations are written as \begin{equation} \bM(\bq) \dot{\bv}
-    + \bC(\bq,\bv)\bv = \btau_g(\bq) + \bB \bu, \end{equation} which is
-    not necessarily a second-order system.  See <elib>Duindam06</elib> for a
-    nice discussion of this topic.</p>
+    quaternion, described by 4 real values (plus a norm constraint).  However
+    we can still represent the rotational velocity without singularities using
+    just 3 real values.  This means that the length of our velocity vector is
+    no longer the same as the length of our position vector.  For this reason,
+    you will see that most of the software in <drake></drake> uses the more
+    general notation with $\bv$ to represent velocity, $\bq$ to represent
+    positions, and the manipulator equations are written as \begin{equation}
+    \bM(\bq) \dot{\bv} + \bC(\bq,\bv)\bv = \btau_g(\bq) + \bB \bu,
+    \end{equation} which is not necessarily a second-order system. $\bv$ and
+    $\dot\bq$ are related linearly by $\dot\bq = {\bf N}(\bq)\bv$. Although
+    ${\bf N}(\bq)$ is not necessarily square, its left Moore-Penrose
+    pseudo-inverse ${\bf N}^+(\bq)$ can be used to invert that relationship
+    without residual error, provided that $\dot\bq$ is in the range space of
+    ${\bf N}(\bq)$ (that is, if it could have been produced as $\dot{\bq}= {\bf
+    N}(\bq)\bv$ for some $\bv$). See <elib>Duindam06</elib> for a nice
+    discussion of this topic.</p>
 
     <subsection><h1>Recursive Dynamics Algorithms</h1>
 
@@ -251,47 +257,53 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       0.\end{equation}  For the case of the kinematic closed-chain, this can be
       the kinematic constraint that the location of one end of the chain is
       equal to the location of the other end of the chain. The equations of
-      motion can be written \begin{equation}\bM({\bq})\ddot{\bq} +
-      \bC(\bq,\dot{\bq})\dot\bq = \btau_g(\bq) + \bB\bu + \bH^T(\bq)
+      motion can be written \begin{equation}\bM({\bq})\dot{\bv} +
+      \bC(\bq,\bv)\bv = \btau_g(\bq) + \bB\bu + \bH^T(\bq)
       \blambda,\label{eq:constrained_manip}\end{equation} where $\bH(\bq) =
-      \pd\bh{\bq}$ and ${\blambda}$ is the constraint force.  Let's use the
-      shorthand \begin{equation} \bM({\bq})\ddot{\bq} = \btau(q,\dot{q},u) +
-      \bH^T(\bq) \blambda. \label{eq:manip_short} \end{equation}</p>
+      \pd{\bh}{\bq}{\bf N}(\bq)$ is the "<a
+        href="https://drake.mit.edu/doxygen_cxx/namespacedrake_1_1multibody.html#ad95b5f6a8d72582ad91a1aca26d76658">Jacobian
+        with respect to $\bv$</a>" and ${\blambda}$ is the constraint force. Let's use the
+      shorthand \begin{equation} \bM({\bq})\dot{\bv} =
+      \btau(\bq,\dot{\bq},\bu) + \bH^T(\bq) \blambda. \label{eq:manip_short}
+      \end{equation}</p>
 
-      <p>Using \begin{gather}\dot\bh = \bH\dot\bq,\\ \ddot\bh = \bH \ddot\bq +
-      \dot\bH \dot\bq, \label{eq:ddoth} \end{gather} we can solve for
-      $\blambda$, by observing that when the constraint is imposed, $\bh=0$ and
-      therefore $\dot\bh=0$ and $\ddot\bh=0$.  Inserting the dynamics
-      (\ref{eq:manip_short}) into (\ref{eq:ddoth}) yields
-      \begin{equation}\blambda =- (\bH \bM^{-1} \bH^T)^+ (\bH \bM^{-1} \btau +
-      \dot\bH\dot\bq).\label{eq:lambda_from_h}\end{equation} The $^+$ notation refers to a Moore-Penrose
-      pseudo-inverse.  In many cases, this matrix will be full rank (for
-      instance, in the case of multiple independent four-bar linkages) and the
-      traditional inverse could have been used.  When the matrix drops rank
-      (multiple solutions), then the pseudo-inverse will select the solution
-      with the smallest constraint forces in the least-squares sense.</p>
+      <p>Using \begin{gather}\dot\bh = \bH\bv,\\ \ddot\bh = \bH \dot\bv +
+      \dot\bH \bv, \label{eq:ddoth} \end{gather} we can solve for $\blambda$,
+      by observing that when the constraint is imposed, $\bh=0$ and therefore
+      $\dot\bh=0$ and $\ddot\bh=0$. Note that $\dot{\bH}\bv$ is <a
+      href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1multibody_1_1_multibody_plant.html#aa238d2cebe527f4da55e0ec5d75e8dda">best
+      calculated directly</a> (rather than trying to solve for $\dot{\bH}$ as an
+      object by itself). Inserting the dynamics (\ref{eq:manip_short}) into
+      (\ref{eq:ddoth}) yields \begin{equation}\blambda =- (\bH \bM^{-1}
+      \bH^T)^+ (\bH \bM^{-1} \btau +
+      \dot\bH\bv).\label{eq:lambda_from_h}\end{equation}  In many cases, this matrix
+      will be full rank (for instance, in the case of multiple independent
+      four-bar linkages) and the traditional inverse could have been used.
+      When the matrix drops rank (multiple solutions), then the pseudo-inverse
+      will select the solution with the smallest constraint forces in the
+      least-squares sense.</p>
 
       <p>To combat numerical "constraint drift", one might like to add a
       restoring force in the event that the constraint is not satisfied to
       numerical precision.  To accomplish this, rather than solving for
       $\ddot\bh = 0$ as above, we can instead solve for \begin{equation}\ddot\bh
-      = \bH\ddot\bq + \dot\bH\dot\bq = -2\alpha \dot\bh - \alpha^2
+      = \bH\dot\bv + \dot\bH\bv = -2\alpha \dot\bh - \alpha^2
       \bh,\end{equation} where $\alpha>0$ is a stiffness parameter. This is
       known as Baumgarte's stabilization technique, implemented here with a
       single parameter to provide a critically-damped response. Carrying this
       through yields \begin{equation} \blambda =- (\bH \bM^{-1} \bH^T)^+ (\bH
-      \bM^{-1} \btau + (\dot{\bH} + 2\alpha \bH)\dot{\bq} + \alpha^2 \bh).
+      \bM^{-1} \btau + \dot{\bH}\bv + 2\alpha \bH\bv + \alpha^2 \bh).
       \end{equation}</p>
 
       <p>There is an important optimization-based derivation/interpretation of
       these equations, which we will build on below, using <a
       href="https://en.wikipedia.org/wiki/Gauss%27s_principle_of_least_constraint">Gauss's
       Principle of Least Constraint</a>.  This principle says that we can
-      derive the constrained dynamics as : \begin{align} \min_\ddot{\bq} \quad
-      & \frac{1}{2} (\ddot{\bq} - \ddot{\bq}_{uc})^T \bM (\ddot{\bq} -
-      \ddot{\bq}_{uc}), \label{eq:least_constraint} \\ \subjto \quad &
-      \ddot{\bh}(\bq,\dot\bq,\ddot\bq) = 0 = \bH \ddot{\bq} + \dot\bH \dot{\bq},
-      \nonumber \end{align} where $\ddot{\bq}_{uc} = \bM^{-1}\tau$ is the
+      derive the constrained dynamics as : \begin{align} \min_\dot{\bv} \quad
+      & \frac{1}{2} (\dot{\bv} - \dot{\bv}_{uc})^T \bM (\dot{\bv} -
+      \dot{\bv}_{uc}), \label{eq:least_constraint} \\ \subjto \quad &
+      \ddot{\bh}(\bq,\bv,\dot\bv) = 0 = \bH \dot{\bv} + \dot\bH \bv,
+      \nonumber \end{align} where $\dot{\bv}_{uc} = \bM^{-1}\tau$ is the
       "unconstrained acceleration"
       <elib>Udwadia92</elib>. Equation \eqref{eq:constrained_manip} comes right
       out of the optimality conditions with $\lambda$ acting precisely as the
@@ -300,7 +312,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       \eqref{eq:lambda_from_h} above.  It is also illustrative to look at the
       dual formulation of this optimization, which can be written as
       $$\min_\lambda \frac{1}{2} \lambda^T \bH \bM^{-1} \bH^T \lambda -
-      \lambda^T (\bH \bM^{-1}\btau + \dot\bH \dot{\bq}).$$  Observe that the
+      \lambda^T (\bH \bM^{-1}\btau + \dot\bH \bv).$$  Observe that the
       linear term is contains the acceleration of $\bh$ if the dynamics evolved
       without the constraint forces applied; let's call that $\ddot\bh_{uc}$:
       $$\min_\lambda \frac{1}{2} \lambda^T \bH \bM^{-1} \bH^T \lambda -
@@ -313,23 +325,67 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <subsection><h1>Bilateral Velocity Constraints</h1>
 
-      <p>Consider the constraint equation \begin{equation}\bh_v(\bq,\dot{\bq}) =
-      0,\end{equation} where $\pd{\bh_v}{\dot{\bq}} \ne 0.$  These are less
+      <p>Consider the constraint equation \begin{equation}\bh_v(\bq,\bv) =
+      0,\end{equation} where $\pd{\bh_v}{\bv} \ne 0.$  These are less
       common, but arise when, for instance, a joint is driven through a
       prescribed motion. Here, the manipulator equations are given by
-      \begin{equation}\bM\ddot{\bq}  = \btau + \pd{\bh_v}{\dot{\bq}}^T
+      \begin{equation}\bM\dot{\bv}  = \btau + \pd{\bh_v}{\bv}^T
       \blambda.\end{equation} Using \begin{equation} \dot\bh_v = \pd{\bh_v}{\bq}
-      \dot{\bq} + \pd{\bh_v}{\dot{\bq}}\ddot{\bq},\end{equation} setting
+      {\bf N}(\bq)\bv + \pd{\bh_v}{\bv}\dot{\bv},\end{equation} setting
       $\dot\bh_v = 0$ yields \begin{equation}\blambda = - \left(
-      \pd{\bh_v}{\dot{\bq}} \bM^{-1} \pd{\bh_v}{\dot{\bq}} \right)^+ \left[
-      \pd{\bh_v}{\dot{\bq}} \bM^{-1} \btau + \pd{\bh_v}{\bq} \dot{\bq}
+      \pd{\bh_v}{\bv} \bM^{-1} \pd{\bh_v}{\bv} \right)^+ \left[
+      \pd{\bh_v}{\bv} \bM^{-1} \btau + \pd{\bh_v}{\bq} {\bf N}(\bq) \bv
       \right].\end{equation}</p>
 
       <p>Again, to combat constraint drift, we can ask instead for $\dot\bh_v =
       -\alpha \bh_v$, which yields \begin{equation}\blambda = - \left(
-      \pd{\bh_v}{\dot{\bq}} \bM^{-1} \pd{\bh_v}{\dot{\bq}} \right)^+ \left[
-      \pd{\bh_v}{\dot{\bq}} \bM^{-1} \btau + \pd{\bh_v}{\bq} \dot{\bq} + \alpha
+      \pd{\bh_v}{\bv} \bM^{-1} \pd{\bh_v}{\bv} \right)^+ \left[
+      \pd{\bh_v}{\bv} \bM^{-1} \btau + \pd{\bh_v}{\bq} {\bf N}(\bq) \bv + \alpha
       \bh_v \right].\end{equation}</p>
+
+    </subsection>
+
+    <subsection><h1>Hybrid models via constraint forces</h1>
+
+      <p>For hybrid models of contact, it can be useful to work with a
+      description of the dynamics in the <a
+      href="contact.html#floating_base">floating-base coordinates</a> and solve
+      for the contact forces which enforce the constraints in each mode. We'll
+      define a mode by a list of pairs of contact geometries that are in
+      contact, and even define whether each contact is in sticking contact
+      (with zero relative tangential velocity) or sliding contact. We can <a
+      href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1geometry_1_1_query_object.html#a7a66a8b3fc43f34d11a9cd475fb77ee1">ask
+      our geometry engine</a> to return the contact points on the bodies,
+      ${}^A{\bf p}^{C_a}$ and ${}^B{\bf p}^{C_b},$ where $C_a$ is the contact
+      point (or closest point to contact) in body $A$ and $C_b$ is the contact
+      point (or closest point to contact) in body $B$. More generally, we will
+      refer to $C_a$ and $C_b$ as contact frames with their origins at these
+      points, their $z$-axis pointing out along the contact normal, and their
+      $x-y$-axes chosen as an orthonormal basis orthogonal to the normal.</p>
+      
+      <p>For each sticking contact, we have a bilateral position constraint of
+      the form $${\bf h}_{A,B}(\bq) = {}^W{\bf p}^{C_a}_{C_a} - {}^W{\bf
+      p}^{C_b}_{C_a} = 0.$$ We can assemble all of these constraints into a
+      single bilateral constraint vector ${\bf h}(\bq) = 0,$ and use almost
+      precisely the recipe above. Note that the Baumgarte stabilization only
+      does work in the normal direction, by definition the vector between the
+      two points, which is consistent with having a zero-velocity constraint in
+      the tangential direction. For sliding contacts, we have just the scalar
+      constraint, $${\bf h}_{A,B}(\bq) = {}^W{\bf p}^{C_a}_{C_{a;z}} - {}^W{\bf
+      p}^{C_b}_{C_{a;z}} = 0,$$ which says that the distance is zero in the
+      normal direction, plus a constraint the imposes maximum dissipation
+      $${\bf \lambda}^{C_a}_{C_{a;x,y}} = -\mu {\bf
+      \lambda}^{C_a}_{C_{a;z}}\frac{{}^W{\bf
+      \text{v}}^{C_a}_{C_{a;x,y}}}{|{}^W{\bf \text{v}}^{C_a}_{C_{a;x,y}}|},$$
+      that can be accommodated when we solve for $\lambda$.
+      </p>
+
+      <!-- Actually, to get rolling, we'll need the actual gradient of the
+      signed distance function (not just taking a local linearization of the
+      surface); but that's a problem since I can't take gradients through the
+      gradient. And I'll probably need to only enforce that the tangential
+      velocity = 0, not that the positions are equal. -->
+      </p>
 
     </subsection>
 
