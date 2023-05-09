@@ -367,15 +367,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       the form $${\bf h}_{A,B}(\bq) = {}^W{\bf p}^{C_a}_{C_a} - {}^W{\bf
       p}^{C_b}_{C_a} = 0.$$ We can assemble all of these constraints into a
       single bilateral constraint vector ${\bf h}(\bq) = 0,$ and use almost
-      precisely the recipe above. Note that the Baumgarte stabilization only
-      does work in the normal direction, by definition the vector between the
-      two points, which is consistent with having a zero-velocity constraint in
-      the tangential direction. For sliding contacts, we have just the scalar
-      constraint, $${\bf h}_{A,B}(\bq) = {}^W{\bf p}^{C_a}_{C_{a;z}} - {}^W{\bf
-      p}^{C_b}_{C_{a;z}} = 0,$$ which says that the distance is zero in the
-      normal direction, plus a constraint the imposes maximum dissipation
-      $${\bf \lambda}^{C_a}_{C_{a;x,y}} = -\mu {\bf
-      \lambda}^{C_a}_{C_{a;z}}\frac{{}^W{\bf
+      precisely the recipe above. Note that applying Baumgarte stabilization
+      here would only stabilize in the normal direction, by definition the
+      vector between the two points, which is consistent with having (only) a
+      zero-velocity constraint in the tangential direction. For sliding
+      contacts, we have just the scalar constraint, $${\bf h}_{A,B}(\bq) =
+      {}^W{\bf p}^{C_a}_{C_{a;z}} - {}^W{\bf p}^{C_b}_{C_{a;z}} = 0,$$ which
+      says that the distance is zero in the normal direction, plus a constraint
+      the imposes maximum dissipation $${\bf \lambda}^{C_a}_{C_{a;x,y}} = -\mu
+      {\bf \lambda}^{C_a}_{C_{a;z}}\frac{{}^W{\bf
       \text{v}}^{C_a}_{C_{a;x,y}}}{|{}^W{\bf \text{v}}^{C_a}_{C_{a;x,y}}|},$$
       that can be accommodated when we solve for $\lambda$.
       </p>
@@ -568,19 +568,22 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <p>We can add friction at the contact.  Rigid bodies will almost always
         experience contact at only a point, so we typically ignore torsional
-        friction <elib>Featherstone07</elib>, and model only tangential friction
-        by extending ${\bf n}$ to a matrix $$\bJ = \begin{bmatrix} {\bf n}\\
-        {\bf t}_1\\ {\bf t}_2 \end{bmatrix},$$ to capture the gradient of the
-        contact location tangent to the contact surface. Then $\blambda$ becomes
-        a Cartesian vector representing the contact impulse, and (for infinite
-        friction) the post-impact velocity condition becomes ${\bf J}\dot{\bq}^+
-        = \text{diag}(-e, 0, 0) {\bf J}\dot{\bq}^-,$ resulting in the equations:
-        \begin{equation}\dot{\bq}^+ = \left[ \bI - \bM^{-1} \bJ^T
-        \text{diag}(1+e, 1, 1) \left[\bJ \bM^{-1} \bJ^T \right]^\# \bJ
-        \right]\dot{\bq}^-.\end{equation} If $\blambda$ is restricted to a
-        friction cone, as in Coulomb friction, in general we have to solve an
-        optimization to solve for $\dot\bq^+$ subject to the inequality
-        constraints.</p>
+        friction <elib>Featherstone07</elib>, and model only tangential
+        friction by extending ${\bf n}$ to a matrix $$\bJ = \begin{bmatrix}
+        {\bf n}\\ {\bf t}_1\\ {\bf t}_2 \end{bmatrix},$$ to capture the
+        gradient of the contact location tangent to the contact surface. Then
+        $\blambda$ becomes a Cartesian vector representing the contact impulse,
+        and (for infinite friction) the post-impact velocity condition becomes
+        ${\bf J}\dot{\bq}^+ = \text{diag}(-e, 0, 0) {\bf J}\dot{\bq}^-,$
+        resulting in the equations: \begin{equation}\dot{\bq}^+ = \left[ \bI -
+        \bM^{-1} \bJ^T \text{diag}(1+e, 1, 1) \left[\bJ \bM^{-1} \bJ^T
+        \right]^\# \bJ \right]\dot{\bq}^-.\end{equation} Often in optimization,
+        we can directly use the implicit form \begin{gather*}\bM(\dot{\bq}^+ -
+        \dot{\bq}^-) = \bJ^T {\bf \Lambda} \\ {\bf J}\dot{\bq}^+ =
+        \text{diag}(-e, 0, 0) {\bf J}\dot{\bq}^- \end{gather*} If $\blambda$ is
+        restricted to a friction cone, as in Coulomb friction, in general we
+        have to solve an optimization to solve for $\dot\bq^+$ subject to the
+        inequality constraints.</p>
 
         <example id="spinning_ball_bouncing"><h1>A spinning ball bouncing on the
         ground.</h1>
