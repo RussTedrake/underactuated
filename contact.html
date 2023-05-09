@@ -373,6 +373,16 @@ Control through Contact</h1>
       still only rotates around the toe when it is in stance and is inside the
       friction cone). This will have implications for our algorithms.</p>
 
+      <p>Note that there are some subtleties about using direct collocation
+      methods with systems parameterized in the floating-base coordinates with
+      additional contact constraints -- the naive implementation of direct
+      collocation may not have enough degrees of freedom in the spline to
+      satisfy the dynamics constraints exactly at the knot points and the
+      collocation points. <elib>Posa15</elib> shows the natural extension of
+      direct collocation to constrained systems; and describes more completely
+      the advantages of parameterizing contact forces as decision
+      variables.</p>
+
       <p>For completeness, you might also hear the term <i>maximal
       coordinates</i>. This is the extreme case where every rigid body in the
       robot is parameterized with its own floating-base, and even the robot
@@ -482,6 +492,13 @@ Control through Contact</h1>
 <div id="references"><section><h1>References</h1>
 <ol>
 
+<li id=Posa15>
+<span class="author">Michael Posa and Scott Kuindersma and Russ Tedrake</span>, 
+<span class="title">"Optimization and stabilization of trajectories for constrained dynamical systems"</span>, 
+<span class="publisher">Proceedings of the International Conference on Robotics and Automation (ICRA)</span> , pp. 1366-1373, May, <span class="year">2016</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Posa15.pdf">link</a>&nbsp;]
+
+</li><br>
 <li id=Manchester10>
 <span class="author">Ian R. Manchester and Uwe Mettin and Fumiya Iida and Russ Tedrake</span>, 
 <span class="title">"Stable Dynamic Walking Over Uneven Terrain"</span>, 

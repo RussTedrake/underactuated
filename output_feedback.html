@@ -213,20 +213,31 @@ Output Feedback (aka Pixels-to-Torques)</h1>
       search</a>.  If we do policy search on a class of static output feedback
       policies, how well does it perform?  Of course, the answer depends on the
       particular governing equations (for instance, $\by = \bx$ is a perfectly
-      reasonable output, and in this case the policy can be optimal).</p>
-
+      reasonable output, and in this case the policy can be optimal).  But we
+      also have very simple <a
+      href="policy_search.html#static_output_feedback">counter-examples</a>
+      which demonstrate that the set of even stabilizing static output feedback
+      controllers can form a disconnected set.</p>
 
       <todo>Jack had another nice example in his poly search lecture:
       https://youtu.be/JhjROrZxBhM?t=1099 and "what goes wrong in output
       feedback?" https://youtu.be/JhjROrZxBhM?t=5066</todo>
 
-      <p>Bilinear alternations with SOS, Policy search with SGD, ...</p>
+      <todo>Bilinear alternations with SOS</todo>
     
     </subsection>
   
   </section>
   
   <section><h1>Observer-based Feedback</h1>
+
+    <p>Since we know so much about designing full-state feedback controllers,
+    one of the most natural (and dominant) approaches to control is to first <a
+    href="state_estimation.html">design an observer</a> (aka "state
+    estimator"), and then to use state feedback. Famously, this approach is
+    actually optimal for the quadratic regular objective on linear-Gaussian
+    systems (LQG) -- this is known as the "separation principle". But it is
+    certainly not optimal in general!</p>
 
     <subsection><h1>Luenberger Observer</h1></subsection>
 
@@ -240,61 +251,118 @@ Output Feedback (aka Pixels-to-Torques)</h1>
     </subsection>
 
     <subsection><h1>Trajectory optimization with Iterative LQG</h1></subsection>
+    <todo>Note: I also have a <a href="belief.html">draft chapter on planning
+    under uncertainty</a></todo>
 
   </section>
-
-  <todo>
-    Russ Tedrake  11:28 AM
-so we have three broad approaches to searching for linear dynamical controllers (for linear dynamical plants): 1) gradient descent in the original parameters.  you have asymptotic convergence, but not a guaranteed rate.
-2) convex reparameterizations (e.g. from scherer).  in here there is a rank condition is trivially satisfied, and therefore disappears, when dim(xc) >= dim(x)
-3) Youla/SLS, which in the time-domain is a finite-time synthesis but can be used to recover the LDC to arbitrary precision (e.g. via Ho-Kalman).
-is that a reasonable summary? 
-
-jack  11:36 AM
-I think this is reasonable :slightly_smiling_face: I would probably add the Riccati solutions of the famous DGKF paper https://authors.library.caltech.edu/3087/1/DOYieeetac89.pdf (if you wanted “completeness”)
-gradient descent in original parameters; no suboptimal stationary points for minimal controllers
-finite dimensional convex reparametrizations from Scherer, as you wrote
-DGKF solution: solve two Riccati equations
-Disturbance feedback: Youla/Q/SLS, etc. Synthesis problem is convex, but the decision variable(s) are infinite dimensional, but stable, transfer functions. Various approximations can be used (most common these days, for academic examples and learning theorists, is FIR).
-11:37
-I would be a bit cautious about recovering the LDC with Ho-Kalman. Nik Matni and James Anderson had a paper https://ieeexplore.ieee.org/abstract/document/8262844 about recovering state-space controllers from FIRs, in the SLS setting. According to James, I don’t think they meant it as a serious paper (i.e. something that you would ever actually implement), just an investigation.
-I suppose I should re-read that paper, but there was no dimensionality reduction going on, when recovering a state-space representation of the FIR
-  </todo>
 
   <section><h1>Disturbance-based feedback</h1>
   
-    <todo>State-space models.  ARX Models.</todo>
+    <p>There is an interesting alternative to trying to observe/estimate the
+    true state of the system, which can in some cases lead to convex
+    formulations of the output-feedback objective. Rather than estimate the
+    state (or belief state), one can try to estimate instead the
+    <i>disturbances</i> which cause the state to deviate from the nominal
+    trajectory, and design a feedback controller as a function of the
+    disturbance. This is an old but important idea which was made famous first
+    as the <a
+    href="https://en.wikipedia.org/wiki/Youla%E2%80%93Kucera_parametrization">Youla
+    parameterization</a> (alternatively "Q-parameterization"). In the time
+    domain this typically leads to controllers which are "unrolled in time" and
+    depend on a potentially infinite history of disturbances; common practice
+    it to approximate these with a finite-impulse response (FIR) truncation.
+    One could imagine extracting a state-space realization of these FIR
+    responses using the techniques from <a href="sysid.html#linear">linear
+    system identification</a> <elib>Anderson17</elib>.</p>
 
-  <p>Here is a simple extension of the <a href="lqr.html#sls">LQR with
-  least-squares derivation</a>... (it's a work in progress!)</p>
-  
-  <p>Given the state space equations: \begin{gather*} \bx[n+1] = \bA\bx[n] +
-  \bB\bu[n] + \bw[n],\end{gather*} Consider parametrizing an output feedback
-  policy of the form $$\bu[n] = \bK_0[n] \bx_0 +
-  \sum_{i=1}^{n-1}\bK_i[n]\bw[n-i],$$ then the closed-loop state is convex in
-  the control parameters, $\bK$: \begin{align*}\bx[n] =& \left( {\bf A}^n +
-  \sum_{i=0}^{n-1}{\bf A}^{n-i-1}{\bf B}{\bf K}_0[i] \right) \bx_0 +
-  \sum_{j=0}^{n-1} \sum_{i=0}^{n-1}{\bf A}^{n-i-1}{\bf B}{\bf K}_{j}[i]
-  \bw[i-j],\end{align*} and therefore objectives that are convex in $\bx$ and
-  $\bu$ (like LQR) are also convex in $\bK$.  Moreover, we can calculate
-  $\bw[n]$ by the time that it is needed given our observations of $\bx[n+1],
-  \bx[n],$ and knowledge of $\bu[n].$</p>
+    <p>We can understand the essence of this idea with a simple extension of
+    the <a href="lqr.html#sls">LQR with least-squares derivation</a>... (it's a
+    work in progress!)</p>
+    
+    <p>Given the state space equations: \begin{gather*} \bx[n+1] = \bA\bx[n] +
+    \bB\bu[n] + \bw[n],\end{gather*} Consider parameterizing an output feedback
+    policy of the form $$\bu[n] = \bK_0[n] \bx_0 +
+    \sum_{i=1}^{n-1}\bK_i[n]\bw[n-i],$$ then the closed-loop state is convex in
+    the control parameters, $\bK$: \begin{align*}\bx[n] =& \left( {\bf A}^n +
+    \sum_{i=0}^{n-1}{\bf A}^{n-i-1}{\bf B}{\bf K}_0[i] \right) \bx_0 +
+    \sum_{j=0}^{n-1} \sum_{i=0}^{n-1}{\bf A}^{n-i-1}{\bf B}{\bf K}_{j}[i]
+    \bw[i-j],\end{align*} and therefore objectives that are convex in $\bx$ and
+    $\bu$ (like LQR) are also convex in $\bK$.  Moreover, we can calculate
+    $\bw[n]$ by the time that it is needed given our observations of $\bx[n+1],
+    \bx[n],$ and knowledge of $\bu[n].$</p>
 
-  <p>We can extend this to output disturbance-based feedback: \begin{gather*}
-  \bx[n+1] = \bA\bx[n] + \bB\bu[n] + \bw[n],\\ \by[n] = \bC\bx[n] + \bv[n],
-  \end{gather*} by parametrizing an output feedback policy of the form
-  $$\bu[n] = \bK_0[n] \by[0] + \sum_{i=1}^{n-1}\bK_i[n]{\bf e}[n-i],$$ where ${\bf e}[n] = ...$ <elib>Sadraddini20</elib>.</p>
+    <p>We can extend this to output disturbance-based feedback: \begin{gather*}
+    \bx[n+1] = \bA\bx[n] + \bB\bu[n] + \bw[n],\\ \by[n] = \bC\bx[n] + \bv[n],
+    \end{gather*} by parameterizing an output feedback policy of the form
+    $$\bu[n] = \bK_0[n] \by[0] + \sum_{i=1}^{n-1}\bK_i[n]{\bf e}[n-i],$$ where ${\bf e}[n] = ...$ <elib>Sadraddini20</elib>.</p>
 
-  <subsection><h1>System-Level Synthesis</h1></subsection>
+    <subsection><h1>System-Level Synthesis</h1></subsection>
   
   </section>
 
-  <todo>Task-relevant variables / learning state representations</todo>
+  <section><h1>Optimizing dynamic policies</h1>
+  
+    <todo>State-space models.  ARX Models.</todo>
 
-  <section><h1>Feedback from Pixels</h1></section>
+    <subsection>
+      <h1>Convex reparameterizations of $H_2$, $H_\infty$, and LQG</h1>
 
-  <todo>Should I even mention teacher-student (as used by Marco Hutter/Pulkit)?
-  Put it in context?</todo>
+      <p>DGKF (solving two Riccati equations)<elib>Doyle88</elib></p>
+
+      <p>Scherer's convex reparameterizations of LQG<elib
+      part="&sect;4.2">Scherer15</elib>.
+      </p>
+
+    </subsection>
+
+    <subsection><h1>Policy gradient for LQG</h1>
+    
+    </subsection>
+
+    <subsection><h1>Sums-of-squares alternations</h1>
+
+      <p>Coming soon.  See, for instance, <elib>Chou23</elib>.</p>
+    
+    </subsection>
+
+    <subsection><h1>Teacher-student learning</h1>
+
+      <todo>as seen in Marco Hutter, Pulkit, ...</todo>
+
+    </subsection>
+    
+        
+  </section>
+
+  <todo>Task-relevant variables / learning state representations (reference "task-relevant models" section of the sysid notes.</todo>
+
+  <section><h1>Feedback from pixels</h1>
+  
+    <p>In my opinion, one of the most important advances in control in the last
+    decade has been the introduction of high-rate feedback from cameras. This
+    advance was enabled by the revolution in computer vision that came with
+    deep learning. Especially in the domain of robotic manipulation, the value
+    of this feedback is undeniable. Unfortunately, these sensors break many of
+    the synthesis tools that we've discussed in the notes -- not only are they
+    very high dimensional, but the space of RGB images is horrible and
+    non-smooth. As of this writing, conventional wisdom is that model-based
+    control does not have a lot to offer to this problem -- to design control
+    from cameras, we are often limited to either imitation learning or
+    black-box reinforcement learning. (I personally think that we have <a
+    href="https://en.wikipedia.org/wiki/Don%27t_throw_the_baby_out_with_the_bathwater">thrown
+    the baby out with the bathwater</a>, and consider a highly important
+    research area to close this gap.)</p>
+  
+    <subsection><h1>Visuomotor policies</h1>
+    
+      <p>Visuomotor policies.  <todo>Sergey's original paper; Pete/Lucas paper...</todo></p>
+
+      <p>Diffusion policies <elib>Chi23</elib>. Transformer parameterizations
+      <elib>Zhao23</elib>.</p>
+    
+    </subsection>
+
+  </section>
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
@@ -320,11 +388,48 @@ I suppose I should re-read that paper, but there was no dimensionality reduction
 <span class="publisher">SIAM journal on control and optimization</span>, vol. 35, no. 6, pp. 2118--2127, <span class="year">1997</span>.
 
 </li><br>
+<li id=Anderson17>
+<span class="author">James Anderson and Nikolai Matni</span>, 
+<span class="title">"Structured state space realizations for SLS distributed controllers"</span>, 
+<span class="publisher">2017 55th Annual Allerton Conference on Communication, Control, and Computing (Allerton)</span> , pp. 982-987, <span class="year">2017</span>.
+
+</li><br>
 <li id=Sadraddini20>
 <span class="author">Sadra Sadraddini and Russ Tedrake</span>, 
 <span class="title">"Robust Output Feedback Control with Guaranteed Constraint Satisfaction"</span>, 
 <span class="publisher">In the Proceedings of 23rd ACM International Conference on Hybrid Systems: Computation and Control</span> , pp. 12, April, <span class="year">2020</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Sadraddini20.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Doyle88>
+<span class="author">John Doyle and Keith Glover and Pramod Khargonekar and Bruce Francis</span>, 
+<span class="title">"State-space solutions to standard H 2 and H&#8734; control problems"</span>, 
+<span class="publisher">1988 American Control Conference</span> , pp. 1691--1696, <span class="year">1988</span>.
+
+</li><br>
+<li id=Scherer15>
+<span class="author">Carsten Scherer and Siep Weiland</span>, 
+<span class="title">"Linear {Matrix} {Inequalities} in {Control}"</span>, Online Draft
+, pp. 293, <span class="year">2015</span>.
+
+</li><br>
+<li id=Chou23>
+<span class="author">Glen Chou and Russ Tedrake</span>, 
+<span class="title">"Synthesizing Stable Reduced-Order Visuomotor Policies for Nonlinear Systems via Sums-of-Squares Optimization"</span>, 
+<span class="publisher">Under review</span> , <span class="year">2023</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Chou23.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Chi23>
+<span class="author">Cheng Chi and Siyuan Feng and Yilun Du and Zhenjia Xu and Eric Cousineau and Benjamin Burchfiel and Shuran Song</span>, 
+<span class="title">"Diffusion Policy: Visuomotor Policy Learning via Action Diffusion"</span>, 
+<span class="publisher">arXiv preprint arXiv:2303.04137</span>, <span class="year">2023</span>.
+
+</li><br>
+<li id=Zhao23>
+<span class="author">Tony Z Zhao and Vikash Kumar and Sergey Levine and Chelsea Finn</span>, 
+<span class="title">"Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"</span>, 
+<span class="publisher">arXiv preprint arXiv:2304.13705</span>, <span class="year">2023</span>.
 
 </li><br>
 </ol>
