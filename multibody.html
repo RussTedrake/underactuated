@@ -326,15 +326,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     <subsection><h1>Bilateral Velocity Constraints</h1>
 
       <p>Consider the constraint equation \begin{equation}\bh_v(\bq,\bv) =
-      0,\end{equation} where $\pd{\bh_v}{\bv} \ne 0.$  These are less
-      common, but arise when, for instance, a joint is driven through a
-      prescribed motion. Here, the manipulator equations are given by
+      0,\end{equation} where $\pd{\bh_v}{\bv} \ne 0.$  These are less common,
+      but arise when, for instance, a joint is driven through a prescribed
+      motion. Here, the manipulator equations are given by
       \begin{equation}\bM\dot{\bv}  = \btau + \pd{\bh_v}{\bv}^T
-      \blambda.\end{equation} Using \begin{equation} \dot\bh_v = \pd{\bh_v}{\bq}
-      {\bf N}(\bq)\bv + \pd{\bh_v}{\bv}\dot{\bv},\end{equation} setting
-      $\dot\bh_v = 0$ yields \begin{equation}\blambda = - \left(
-      \pd{\bh_v}{\bv} \bM^{-1} \pd{\bh_v}{\bv} \right)^+ \left[
-      \pd{\bh_v}{\bv} \bM^{-1} \btau + \pd{\bh_v}{\bq} {\bf N}(\bq) \bv
+      \blambda.\end{equation} Using \begin{equation} \dot\bh_v =
+      \pd{\bh_v}{\bq} {\bf N}(\bq)\bv + \pd{\bh_v}{\bv}\dot{\bv} =
+      0,\label{eq:hvdot} \end{equation} yields \begin{equation}\blambda = - \left(
+      \pd{\bh_v}{\bv} \bM^{-1} \pd{\bh_v}{\bv} \right)^+ \left[ \pd{\bh_v}{\bv}
+      \bM^{-1} \btau + \pd{\bh_v}{\bq} {\bf N}(\bq) \bv
       \right].\end{equation}</p>
 
       <p>Again, to combat constraint drift, we can ask instead for $\dot\bh_v =
@@ -342,6 +342,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       \pd{\bh_v}{\bv} \bM^{-1} \pd{\bh_v}{\bv} \right)^+ \left[
       \pd{\bh_v}{\bv} \bM^{-1} \btau + \pd{\bh_v}{\bq} {\bf N}(\bq) \bv + \alpha
       \bh_v \right].\end{equation}</p>
+
+      <example><h1>Joint locking</h1>
+      
+        <p>Consider the simple, but important, case of "locking" a joint
+        (making a particular joint act as if it is welded in the current
+        configuration). One could write this as a bilateral velocity constraint
+        ${\bf h}_v(\bq,\bv) = v_i = 0.$ Since $\pd{{\bf h}_v}{\bv} = {\bf
+        e}_i,$ (the vector with $1$ in the $i$th element and zero everywhere
+        else, equation (\ref{eq:hvdot}) reduces to $\dot{v}_i = 0$, and
+        $\pd{\bh_v}{\bv}^T \blambda$ has no effect on the other elements of
+        $\dot{\bv}.$  As a result, the equations can be simulated by simply
+        removing the terms associated with $v_i$ from the manipulator
+        dynamics.</p>
+      
+      </example>
 
     </subsection>
 
@@ -540,31 +555,31 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <p>The collision event is described by the zero-crossings (from positive
         to negative) of $\phi$. Let us start by assuming frictionless
-        collisions, allowing us to write \begin{equation}\bM\ddot{\bq} = \btau +
+        collisions, allowing us to write \begin{equation}\bM\dot{\bv} = \btau +
         \lambda {\bf n}^T,\end{equation} where ${\bf n}$ is the "contact normal"
         we defined above and $\lambda \ge 0$ is now a (scalar) impulsive force
         that is well-defined when integrated over the time of the collision
         (denoted $t_c^-$ to $t_c^+$). Integrate both sides of the equation over
         that (instantaneous) interval: \begin{align*}\int_{t_c^-}^{t_c^+}
-        dt\left[\bM \ddot{\bq} \right] = \int_{t_c^-}^{t_c^+} dt \left[ \btau +
+        dt\left[\bM \dot{\bv} \right] = \int_{t_c^-}^{t_c^+} dt \left[ \btau +
         \lambda {\bf n}^T \right] \end{align*} Since $\bM$, $\btau$, and ${\bf
-        n}$ are constants over this interval, we are left with $$\bM\dot{\bq}^+
-        - \bM\dot{\bq}^- = {\bf n}^T \int_{t_c^-}^{t_c^+} \lambda dt,$$ where
-        $\dot{\bq}^+$ is short-hand for $\dot{\bq}(t_c^+)$. Multiplying both
-        sides by ${\bf n} \bM^{-1}$, we have $$ {\bf n} \dot{\bq}^+ - {\bf
-        n}\dot{\bq}^- = {\bf n} \bM^{-1} {\bf n}^T \int_{t_c^-}^{t_c^+}
+        n}$ are constants over this interval, we are left with $$\bM{\bv}^+
+        - \bM{\bv}^- = {\bf n}^T \int_{t_c^-}^{t_c^+} \lambda dt,$$ where
+        $\bv^+$ is short-hand for $\bv(t_c^+)$. Multiplying both
+        sides by ${\bf n} \bM^{-1}$, we have $$ {\bf n} \bv^+ - {\bf
+        n}\bv^- = {\bf n} \bM^{-1} {\bf n}^T \int_{t_c^-}^{t_c^+}
         \lambda dt.$$ After the collision, we have $\dot\phi^+ = -e \dot\phi^-$,
         with $0 \le e \le 1$ denoting the <a
         href="https://en.wikipedia.org/wiki/Coefficient_of_restitution">
-        coefficient of restitution</a>, yielding: $$ {\bf n} \dot{\bq}^+ -
-        {\bf n}\dot{\bq}^- = -(1+e){\bf n}\dot{\bq}^-,$$ and therefore
+        coefficient of restitution</a>, yielding: $$ {\bf n} \bv^+ -
+        {\bf n}\bv^- = -(1+e){\bf n}\bv^-,$$ and therefore
         $$\int_{t_c^-}^{t_c^+} \lambda dt = - (1+e)\left[ {\bf n} \bM^{-1}
-        {\bf n}^T \right]^\# {\bf n} \dot{\bq}^-.$$ I've used the notation
+        {\bf n}^T \right]^\# {\bf n} \bv^-.$$ I've used the notation
         $A^\#$ here to denote the pseudoinverse of $A$ (I would normally write
         $A^+,$ but have changed it for this section to avoid confusion).
-        Substituting this back in above results in \begin{equation}\dot{\bq}^+ =
+        Substituting this back in above results in \begin{equation}\bv^+ =
         \left[ \bI - (1+e)\bM^{-1} {\bf n}^T \left[{\bf n} \bM^{-1} {\bf n}^T
-        \right]^\# {\bf n} \right] \dot{\bq}^-.\end{equation}</p>
+        \right]^\# {\bf n} \right] \bv^-.\end{equation}</p>
 
         <p>We can add friction at the contact.  Rigid bodies will almost always
         experience contact at only a point, so we typically ignore torsional
@@ -574,16 +589,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         gradient of the contact location tangent to the contact surface. Then
         $\blambda$ becomes a Cartesian vector representing the contact impulse,
         and (for infinite friction) the post-impact velocity condition becomes
-        ${\bf J}\dot{\bq}^+ = \text{diag}(-e, 0, 0) {\bf J}\dot{\bq}^-,$
-        resulting in the equations: \begin{equation}\dot{\bq}^+ = \left[ \bI -
+        ${\bf J}\bv^+ = \text{diag}(-e, 0, 0) {\bf J}\bv^-,$
+        resulting in the equations: \begin{equation}\bv^+ = \left[ \bI -
         \bM^{-1} \bJ^T \text{diag}(1+e, 1, 1) \left[\bJ \bM^{-1} \bJ^T
-        \right]^\# \bJ \right]\dot{\bq}^-.\end{equation} Often in optimization,
-        we can directly use the implicit form \begin{gather*}\bM(\dot{\bq}^+ -
-        \dot{\bq}^-) = \bJ^T {\bf \Lambda} \\ {\bf J}\dot{\bq}^+ =
-        \text{diag}(-e, 0, 0) {\bf J}\dot{\bq}^- \end{gather*} If $\blambda$ is
+        \right]^\# \bJ \right]\bv^-.\end{equation} Often in optimization,
+        we can directly use the implicit form \begin{gather*}\bM(\bv^+ -
+        \bv^-) = \bJ^T {\bf \Lambda} \\ {\bf J}\bv^+ =
+        \text{diag}(-e, 0, 0) {\bf J}\bv^- \end{gather*} If ${\bf \Lambda}$ is
         restricted to a friction cone, as in Coulomb friction, in general we
-        have to solve an optimization to solve for $\dot\bq^+$ subject to the
-        inequality constraints.</p>
+        have to solve an optimization to solve for $\bv^+$ subject to the
+        friction cone constraints on ${\bf \Lambda}.$</p>
 
         <example id="spinning_ball_bouncing"><h1>A spinning ball bouncing on the
         ground.</h1>
