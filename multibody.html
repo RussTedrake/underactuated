@@ -254,34 +254,40 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       ensure that the constraint is always satisfied. </p>
 
       <p>Consider the constraint equation \begin{equation}\bh(\bq) =
-      0.\end{equation}  For the case of the kinematic closed-chain, this can be
-      the kinematic constraint that the location of one end of the chain is
-      equal to the location of the other end of the chain. The equations of
-      motion can be written \begin{equation}\bM({\bq})\dot{\bv} +
-      \bC(\bq,\bv)\bv = \btau_g(\bq) + \bB\bu + \bH^T(\bq)
-      \blambda,\label{eq:constrained_manip}\end{equation} where $\bH(\bq) =
+      0.\end{equation}  For example, in the case of the kinematic closed-chain,
+      this can be the kinematic constraint that the location of one end of the
+      chain is equal to the location of the other end of the chain. In the
+      following derivation, we'll be using the time derivatives of this
+      constraint: \begin{gather}\dot\bh = \bH\bv = 0,\\ \ddot\bh = \bH \dot\bv
+      + \dot\bH \bv = 0, \label{eq:ddoth} \end{gather} where $\bH(\bq) =
       \pd{\bh}{\bq}{\bf N}(\bq)$ is the "<a
-        href="https://drake.mit.edu/doxygen_cxx/namespacedrake_1_1multibody.html#ad95b5f6a8d72582ad91a1aca26d76658">Jacobian
-        with respect to $\bv$</a>" and ${\blambda}$ is the constraint force. Let's use the
-      shorthand \begin{equation} \bM({\bq})\dot{\bv} =
-      \btau(\bq,\dot{\bq},\bu) + \bH^T(\bq) \blambda. \label{eq:manip_short}
-      \end{equation}</p>
-
-      <p>Using \begin{gather}\dot\bh = \bH\bv,\\ \ddot\bh = \bH \dot\bv +
-      \dot\bH \bv, \label{eq:ddoth} \end{gather} we can solve for $\blambda$,
-      by observing that when the constraint is imposed, $\bh=0$ and therefore
-      $\dot\bh=0$ and $\ddot\bh=0$. Note that $\dot{\bH}\bv$ is <a
+      href="https://drake.mit.edu/doxygen_cxx/namespacedrake_1_1multibody.html#ad95b5f6a8d72582ad91a1aca26d76658">Jacobian
+      with respect to $\bv$</a>". Note that $\dot{\bH}\bv$ is <a
       href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1multibody_1_1_multibody_plant.html#aa238d2cebe527f4da55e0ec5d75e8dda">best
-      calculated directly</a> (rather than trying to solve for $\dot{\bH}$ as an
-      object by itself). Inserting the dynamics (\ref{eq:manip_short}) into
+      calculated directly</a> (rather than trying to solve for $\dot{\bH}$ as
+      an object by itself).</p>
+      
+      <p>The equations of motion can be written
+      \begin{equation}\bM({\bq})\dot{\bv} + \bC(\bq,\bv)\bv = \btau_g(\bq) +
+      \bB\bu + \bH^T(\bq) \blambda,\label{eq:constrained_manip}\end{equation}
+      where ${\blambda}$ is the constraint force. Let's use the shorthand
+      \begin{equation} \bM({\bq})\dot{\bv} = \btau(\bq,\dot{\bq},\bu) +
+      \bH^T(\bq) \blambda. \label{eq:manip_short} \end{equation} In an
+      optimization-based formulation (for instance, to implement this
+      constraint in a trajectory optimization), we can simply make $\blambda$ a
+      decision variable, and use equations (\ref{eq:ddoth}) and
+      (\ref{eq:manip_short}) as constraints.</p>
+
+      <p>In other cases, it can be desirable to solve explicitly for
+      $\blambda$.  Inserting the dynamics (\ref{eq:manip_short}) into
       (\ref{eq:ddoth}) yields \begin{equation}\blambda =- (\bH \bM^{-1}
       \bH^T)^+ (\bH \bM^{-1} \btau +
-      \dot\bH\bv).\label{eq:lambda_from_h}\end{equation}  In many cases, this matrix
-      will be full rank (for instance, in the case of multiple independent
-      four-bar linkages) and the traditional inverse could have been used.
-      When the matrix drops rank (multiple solutions), then the pseudo-inverse
-      will select the solution with the smallest constraint forces in the
-      least-squares sense.</p>
+      \dot\bH\bv).\label{eq:lambda_from_h}\end{equation}  In many cases, this
+      matrix will be full rank (for instance, in the case of multiple
+      independent four-bar linkages) and the traditional inverse could have
+      been used. When the matrix drops rank (multiple solutions), then the
+      pseudo-inverse will select the solution with the smallest constraint
+      forces in the least-squares sense.</p>
 
       <p>To combat numerical "constraint drift", one might like to add a
       restoring force in the event that the constraint is not satisfied to
@@ -328,13 +334,15 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <p>Consider the constraint equation \begin{equation}\bh_v(\bq,\bv) =
       0,\end{equation} where $\pd{\bh_v}{\bv} \ne 0.$  These are less common,
       but arise when, for instance, a joint is driven through a prescribed
-      motion. Here, the manipulator equations are given by
-      \begin{equation}\bM\dot{\bv}  = \btau + \pd{\bh_v}{\bv}^T
-      \blambda.\end{equation} Using \begin{equation} \dot\bh_v =
+      motion. Again, we will use the derivatives, \begin{equation} \dot\bh_v =
       \pd{\bh_v}{\bq} {\bf N}(\bq)\bv + \pd{\bh_v}{\bv}\dot{\bv} =
-      0,\label{eq:hvdot} \end{equation} yields \begin{equation}\blambda = - \left(
-      \pd{\bh_v}{\bv} \bM^{-1} \pd{\bh_v}{\bv} \right)^+ \left[ \pd{\bh_v}{\bv}
-      \bM^{-1} \btau + \pd{\bh_v}{\bq} {\bf N}(\bq) \bv
+      0,\label{eq:hvdot} \end{equation} and, the manipulator equations given by
+      \begin{equation}\bM\dot{\bv}  = \btau + \pd{\bh_v}{\bv}^T
+      \blambda.\end{equation} These constraints can be added directly to an
+      optimization with $\blambda$ as a decision variable. Alternatively, we
+      can solve for $\blambda$ explicitly yielding \begin{equation}\blambda = -
+      \left( \pd{\bh_v}{\bv} \bM^{-1} \pd{\bh_v}{\bv} \right)^+ \left[
+      \pd{\bh_v}{\bv} \bM^{-1} \btau + \pd{\bh_v}{\bq} {\bf N}(\bq) \bv
       \right].\end{equation}</p>
 
       <p>Again, to combat constraint drift, we can ask instead for $\dot\bh_v =
@@ -348,13 +356,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         <p>Consider the simple, but important, case of "locking" a joint
         (making a particular joint act as if it is welded in the current
         configuration). One could write this as a bilateral velocity constraint
-        ${\bf h}_v(\bq,\bv) = v_i = 0.$ Since $\pd{{\bf h}_v}{\bv} = {\bf
+        $${\bf h}_v(\bq,\bv) = v_i = 0.$$ Since $\pd{{\bf h}_v}{\bv} = {\bf
         e}_i,$ (the vector with $1$ in the $i$th element and zero everywhere
         else, equation (\ref{eq:hvdot}) reduces to $\dot{v}_i = 0$, and
-        $\pd{\bh_v}{\bv}^T \blambda$ has no effect on the other elements of
-        $\dot{\bv}.$  As a result, the equations can be simulated by simply
-        removing the terms associated with $v_i$ from the manipulator
-        dynamics.</p>
+        $\pd{\bh_v}{\bv}^T \blambda$ impacts the equation for $\dot{v}_i$ and
+        \emph{only} the equation for $\dot{v}_i$. The resulting equations
+        can be obtained by simply removing the terms associated with $v_i$
+        from the manipulator dynamics (and setting $\dot{v}_i = 0$).</p>
       
       </example>
 
