@@ -131,12 +131,6 @@ rt_html_test(
     srcs = ["contact.html"],
 )
 
-rt_ipynb_test(
-    name = "contact",
-    srcs = ["contact.ipynb"],
-    deps = ["//underactuated"],
-)
-
 rt_html_test(
     srcs = ["sysid.html"],
 )
