@@ -115,7 +115,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       REINFORCE)</h1>
 
       <p>Let's start with a simpler optimization over a stochastic function:
-      $$\min_\alpha E\left[ \ell(\bx) \right] \text{ with } \bx \sim p_\alpha(\bx)
+      $$\min_\alpha E\left[ g(\bx) \right] \text{ with } \bx \sim p_\alpha(\bx)
       $$  I hope the notation is clear?  $\bx$ is a random vector, drawn from
       the distribution $p_\alpha(\bx)$, with the subscript indicating that the
       distribution depends on the parameter vector $\alpha$.  What is the
@@ -144,12 +144,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       E\left[ \left(\sum_{n=0}^N \ell(\bx[n],\bu[n])\right)
       \frac{\partial}{\partial \alpha} \log p_\alpha(\bx[\cdot],\bu[\cdot])
       \right], \end{align*} where $\bx[\cdot]$ is shorthand for the entire
-      trajectory $\bx[0], ..., \bx[n]$, and $$ p_\alpha(\bx[\cdot],\bu[\cdot]) =
-      p_0(\bx[0]) \left(\prod_{n=1}^N p\left(\bx[n] \Big{|} \bx[n-1],\bu[n-1]\right) \right)
-      \left(\prod_{n=0}^N p_\alpha(\bu[n] \Big{|} \bx[n]) \right).$$ Taking the $\log$
+      trajectory $\bx[0], ..., \bx[N]$, and $$ p_\alpha(\bx[\cdot],\bu[\cdot]) =
+      p_0(\bx[0]) \left(\prod_{k=1}^N p\left(\bx[k] \Big{|} \bx[k-1],\bu[k-1]\right) \right)
+      \left(\prod_{k=0}^N p_\alpha(\bu[k] \Big{|} \bx[k]) \right).$$ Taking the $\log$
       we have $$\log p_\alpha\left(\bx[\cdot],\bu[\cdot]\right) = \log p_0(\bx[0]) +
-      \sum_{n=1}^N \log p(\bx[n] \Big{|} \bx[n-1],\bu[n-1]) + \sum_{n=0}^n \log
-      p_\alpha(\bu[n] \Big{|} \bx[n]).$$  Only the last terms depend on $\alpha$,
+      \sum_{k=1}^N \log p(\bx[k] \Big{|} \bx[k-1],\bu[k-1]) + \sum_{k=0}^N \log
+      p_\alpha(\bu[k] \Big{|} \bx[k]).$$  Only the last terms depend on $\alpha$,
       which yields \begin{align*} \frac{\partial}{\partial \alpha} E \left[
       \sum_{n=0}^N \ell(\bx[n], \bu[n]) \right] &= E\left[ \left( \sum_{n=0}^N
       \ell(\bx[n],\bu[n]) \right) \left(\sum_{k=0}^N \frac{\partial}{\partial
