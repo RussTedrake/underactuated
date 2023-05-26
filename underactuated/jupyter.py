@@ -102,7 +102,7 @@ def setup_matplotlib_backend(**kwargs):
 # Inspired by https://github.com/Kirill888/jupyter-ui-poll but there *must* be a
 # better way. Ideas:
 #  - provide init() and cleanup() methods that could be called to pull out and
-#    replace the irrelevant events just once (instead of on every timestep).
+#    replace the irrelevant events just once (instead of on every time step).
 #    E.g. init(), simulator.AdvanceTo(10), cleanup().
 #  - whitelist widget events and only process them (instead of black-listing the
 #    execute_request).
