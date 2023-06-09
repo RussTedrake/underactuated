@@ -206,9 +206,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       decision variables was not strictly necessary.  If we know $\bx[0]$ and
       we know $\bu[\cdot]$, then we should be able to solve for $\bx[n]$ using
       forward simulation.  For our discrete-time linear systems, this is
-      particularly nice: \begin{align*}\bx[1] =& \bA\bx[0] + \bB\bu[0] \\
+      particularly nice: \begin{align*} \bx[1] =& \bA\bx[0] + \bB\bu[0] \\
       \bx[2] =& \bA(\bA\bx[0] + \bB\bu[0]) + \bB\bu[1] \\ \bx[n] =& \bA^n\bx[0]
-      + \sum_{k=0}^{n-1} \bA^{n-1-k}\bB\bu[k].\end{align*}  What's more, the
+      + \sum_{k=0}^{n-1} \bA^{n-1-k}\bB\bu[k]. \end{align*}  What's more, the
       solution is still linear in $\bu[\cdot]$.  This is amazing... we can get
       rid of a bunch of decision variables, and turn a constrained optimization
       problem into an unconstrained optimization problem (assuming we don't
@@ -1325,7 +1325,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         of the plant dynamics instead of a first-order (linear) one.  The
         conventional wisdom is that taking these extra plant derivatives is
         probably not worth the extra cost of computing them; in most cases iLQR
-        converges just as quickly (though the details will be problem
+        converges just as quickly as DDP (though the details will be problem
         dependent).  Unfortunately, despite the distinction between these
         algorithms being unambiguous and uncontroversial, you will find many
         papers that incorrectly write DDP when they are actually using

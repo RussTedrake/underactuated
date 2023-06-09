@@ -143,7 +143,7 @@ Search</h1>
     search, which can avoid every putting the entire (often exponentially
     large) graph into memory.</p>
     
-    <p>Is it possible to find and optimal path from the start to a goal without
+    <p>Is it possible to find an optimal path from the start to a goal without
     visiting every node? Yes! Indeed, one of the key insights that powers these
     incremental algorithms is the use of <a
     href="https://en.wikipedia.org/wiki/Admissible_heuristic">admissible
@@ -165,7 +165,7 @@ Search</h1>
     assuming it's independent of the other objects and then to revise that plan
     only when the optimal plan ends up putting two objects on intersecting
     paths. Many of these heuristics are summarized nicely in the Fast Downward
-    paper<elib>Helmert06</elib>; Fast Downward has been at the forefront the
+    paper<elib>Helmert06</elib>; Fast Downward has been at the forefront of the
     ICAPS planning competitions for many years.</p>
 
     <p>Some of the most visible success stories in deep learning today still
@@ -184,7 +184,7 @@ Search</h1>
     discretizing the state space.  Let's assume that we have discretized the
     continuous space into some finite set of discrete nodes in our graph.  Even
     if we are willing to discretize the action space for the robot (this might
-    be even be acceptable in practice), we had a problem where discrete actions
+    even be acceptable in practice), we had a problem where discrete actions
     from one node in the graph, integrated over some finite interval $h$, are
     extremely unlikely to land exactly on top of another node in the graph.  To
     combat this, we had to start working on methods for interpolating the value
@@ -201,7 +201,7 @@ Search</h1>
     <p>Fortunately, the incremental search algorithms from logical search
     already give us a way to think about this -- we can simply build a
     <em>search tree</em> as the search executes, instead of relying on a
-    predefined mesh discretization.  This tree will contains nodes rooted in
+    predefined mesh discretization.  This tree will contain nodes rooted in
     the continuous space at exactly the points where system can reach.</p>
 
     <p>Another potential problem with any fixed-mesh discretization of a
@@ -225,8 +225,8 @@ Search</h1>
     probability 1 as the number of samples goes to infinity.</p>
 
     <p>With these motivations in mind, we can build what is perhaps the
-    simplest probabilistically complete algorithm for finding a path from the a
-    starting state to some goal region with in a continuous state and action
+    simplest probabilistically complete algorithm for finding a path from a 
+    starting state to some goal region within a continuous state and action
     space:</p>
 
     <example><h1>Planning with a Random Tree</h1>

@@ -303,7 +303,7 @@ print("S = " + str(S))</code></pre></div>
       first-order Taylor expansion to $$\dot{\bar\bx} \approx f(\bx_0,\bu_0) +
       \pd{f(\bx_0,\bu_0)}{\bx} (\bx - \bx_0) + \pd{f(\bx_0,\bu_0)}{\bu} (\bu -
       \bu_0) - f(\bx_0,\bu_0) = {\bf A}(t)\bar{\bx} + \bB(t)\bar\bu.$$  This
-      very similar to using LQR to stablize a fixed-point, but with some
+      is very similar to using LQR to stabilize a fixed-point, but with some
       important differences.  First, the linearization is time-varying.
       Second, our linearization is valid for any state along a feasible
       trajectory (not just fixed-points), because the coordinate system is
@@ -567,14 +567,15 @@ print("S = " + str(S))</code></pre></div>
       optimization chapter</a>.</p>
         
       <p>We do actually understand what the optimal policy of the
-      inequality-constrained LQR problem looks like, thanks to work on "explicit
-      MPC" <elib>Alessio09</elib> -- the optimal policy is now piecewise-linear
-      (though still continuous), with each piece describe by a polytope, and the
-      optimal cost-to-go is piecewise-quadratic on the same polytopes.
-      Unfortunately, the number of pieces grows exponentially with the number of
-      constraints and the horizon of the problem, making it impractical to
-      compute for all but very small problems.  There are, howeer, a number of
-      promising approaches to approximate explicit MPC (c.f.
+      inequality-constrained LQR problem looks like, thanks to work on
+      "explicit MPC" <elib>Alessio09</elib> -- the optimal policy is now
+      piecewise-linear (though still continuous), with each piece described by
+      a polytope, and the optimal cost-to-go is piecewise-quadratic on the same
+      polytopes. Unfortunately, the number of pieces grows exponentially with
+      the number of constraints and the horizon of the problem, making it
+      impractical to compute for all but very small problems.  There are,
+      howeer, a number of promising approaches to approximate explicit MPC
+      (c.f.
       <elib>Marcucci17</elib>).</p>
 
     </subsection>
@@ -622,7 +623,7 @@ print("S = " + str(S))</code></pre></div>
         purposes of simulation, one can simply construct the ground, the ball,
         and the bot with appropriate collision geometry, and drop it into
         <code>MultibodyPlant</code>. The frictional contact between the ball
-        and the ground generate the expected dynamics.</p>
+        and the ground generates the expected dynamics.</p>
 
         <p>Designing the LQR controller is another story. We will use a
         <code>PlanarJoint</code> for the floating base, giving us 4 degrees of
