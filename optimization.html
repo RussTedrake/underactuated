@@ -204,8 +204,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         non-convex quadratic constraints</h1>
 
         <p>Consider the problem: \begin{align*} \min_x \quad & \| x - a \|^2 \\
-        \text{subject to} \quad & \| x - b \|^2 \ge 1 \end{align*} We can write
-        this as \begin{align*} \min_{x,y} \quad & y - 2ax + a^2 \\
+        \text{subject to} \quad & \| x - b \|^2 \ge 1 \end{align*} This problem is non-convex, however we can write a convex relaxation of the problem using the semidefinite-programming relaxation:\begin{align*} \min_{x,y} \quad & y - 2ax + a^2 \\
         \text{subject to} \quad & y - 2bx + b^2 \ge 1 \\ & y \ge x^2
         \end{align*} where we write $y \ge x^2$ as the semidefinite constraint
         $\begin{bmatrix} y & x \\ x & 1 \end{bmatrix}.$
@@ -220,12 +219,13 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         <p>I've plotted the feasible region and the objective with an arrow. As
         you can see, the feasible region is the epigraph of $y=x^2$ intersected
         with the linear constraint. Now here is the key point: for linear
-        objectives, the optimal solution will lie on the boundary only if the
-        cost is directly orthogonal to the objective; otherwise it will lie at a
-        vertex. So in this case, the solution will only lie on the interior if
-        $a = b;$ for every other value, this relaxation will give the optimal
-        solution. Note that we could have equally well written a quadratic
-        equality constraint.</p>
+        objectives, the optimal solution will (almost) never be active on the
+        linear constraint unless it's at a vertex of the feasible set (this is
+        related to the classical picture from linear programming). In this
+        example specifically, the constraint $y=x^2$ will be inactive only if
+        $a = b;$ for every other objective, this relaxation will give $y=x^2$,
+        and will give the optimal solution to the original problem. Note that
+        we could have equally well written a quadratic equality constraint.</p>
 
         <!--
         <p>I find this incredibly clever, and only frustrating that it is
@@ -242,24 +242,36 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <p>Another useful example is \begin{align*} \min_\bx \quad & \bx^T{\bf
         A}\bx + {\bf b}^T \bx, \\ \text{subject to} \quad & \bx^T\bx = 1.
-        \end{align*} We can relax this to \begin{align*} \min_{{\bf Y},\bx}
-        \quad & \trace({\bf AY}) + {\bf b}^T \bx, \\ \text{subject to} \quad &
-        \trace({\bf Y}) = 1, \\ & {\bf Y} \succeq \bx\bx^T, \end{align*} where
-        the PSD constraint is again written using the Schur complement. The PSD
-        constraint gives us that $Y_{11} \ge x_1^2$ and $Y_{22} \ge x_2^2$;
-        combined with the trace constraint this gives us $$Y_{22} = 1-Y_{11}
-        \ge x_2^2 \Rightarrow 1 - x_2^2 \ge Y_{11} \ge x_1^2 \Rightarrow 1 \ge
-        x_1^2 + x_2^2.$$  Once again the picture looks like the affine section of a quadratic bowl (now in higher dimensions).
+        \end{align*} Again this optimization is non-convex, but we can write
+        the semidefinite-programming relaxation as \begin{align*} \min_{{\bf
+        Y},\bx} \quad & \trace({\bf AY}) + {\bf b}^T \bx, \\ \text{subject to}
+        \quad & \trace({\bf Y}) = 1, \\ & {\bf Y} \succeq \bx\bx^T,
+        \end{align*} where the PSD constraint is again written using the Schur
+        complement. For the case where $\bx\in\Re^2,$  the PSD constraint gives
+        us that $Y_{11} \ge x_1^2$ and $Y_{22} \ge x_2^2$; combined with the
+        trace constraint this gives us $$Y_{22} = 1-Y_{11} \ge x_2^2
+        \Rightarrow 1 - x_2^2 \ge Y_{11} \ge x_1^2 \Rightarrow 1 \ge x_1^2 +
+        x_2^2.$$  Once again the picture looks like the affine section of a
+        cone (now in higher dimensions). Given the linear objective, we expect
+        the optimal solution to be unbounded, or active on one ore more of the
+        constraints. Almost always the constraint $${\bf Y} \succeq \bx \bx^T$$
+        will be active, and when ${\bf Y} = \bx\bx^T$ we have $\bx^T\bx = 1.$
+        When the convex relaxation gives the optimal solution to the original
+        problem, we say that the convex relaxation is "tight".
         </p>
 
-        <p>Let's compare this to the simpler relaxation, $\bx^T\bx \le 1.$ When
-        the objective is linear (${\bf A}=0, {\bf b} \neq 0$), even this
-        simpler (SOCP) relaxation will be tight. But when the objective is
-        quadratic, if the minimum of the quadratic falls inside the unit disk,
-        then the relaxation will be loose.  In the PSD relaxation, the convex
-        relaxation will be tight, because the objective is now linear (in the
-        lifted coordinates), and will push towards the boundary so long as
-        ${\bf b} \neq 0$.</p>
+        <p>Let's compare this to the simpler relaxation, \begin{align*}
+        \min_\bx \quad & \bx^T{\bf A}\bx + {\bf b}^T \bx, \\ \text{subject to}
+        \quad & \bx^T\bx \le 1, \end{align*} which can be written as a
+        second-order cone program (SOCP). When the objective is linear $({\bf
+        A}=0, {\bf b} \neq 0)$, even this simpler relaxation will be tight. But
+        when the objective is quadratic, if the minimum of the quadratic falls
+        inside the unit disk, then the relaxation will not be tight (it will be
+        "loose") -- the optimal solution will satisfy the constraints $\bx^T\bx
+        \le 1$, but will not have $\bx^T \bx = 1.$  In the PSD relaxation, the
+        convex relaxation will be tight, because the objective is now linear
+        (in the lifted coordinates), and will push towards the boundary so long
+        as ${\bf b} \neq 0$.</p>
 
         <p>I've given a numerical example you can play with in the notebook:
         <script>document.write(notebook_link('optimization'))</script>
