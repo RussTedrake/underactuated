@@ -267,18 +267,18 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <subsection><h1>Continuous Time</h1>
 
-      <p>If we wish to solve the continuous-time version of the problem, then we
-      can discretize time and use the formulations above.  The most important
-      decision is the discretization / numerical integration scheme.  For linear
-      systems, if we assume that the control inputs are held constant for each
-      time step (aka <a
-      href="https://en.wikipedia.org/wiki/Zero-order_hold">zero-order hold</a>),
-      then we can integrate the dynamics perfectly: $$\bx[n+1] = \bx[n] +
-      \int_{t_n}^{t_n + h} \left[ {\bf A} \bx(t) + {\bf B}\bu \right]dt =
-      e^{{\bf A}h}\bx[n] + {\bf A}^{-1}(e^{{\bf A}h} - {\bf I}){\bf B}\bu[n],$$
-      is the simple case (when ${\bf A}$ is invertible). But in general, we can
-      use any finitely-parameterized representation of $\bu(t)$ and any
-      numerical integration scheme to obtain $\bx[n+1]={\bf f}(\bx[n],
+      <p>If we wish to solve the continuous-time version of the problem, then
+      we can discretize time and use the formulations above.  The most
+      important decision is the discretization / numerical integration scheme.
+      For linear systems, if we assume that the control inputs are held
+      constant for each time step (aka <a
+      href="https://en.wikipedia.org/wiki/Zero-order_hold">zero-order
+      hold</a>), then we can integrate the dynamics perfectly: $$\bx[n+1] =
+      \bx[n] + \int_{t_n}^{t_n + h} \left[ {\bf A} \bx(t) + {\bf B}\bu[n]
+      \right]dt = e^{{\bf A}h}\bx[n] + {\bf A}^{-1}(e^{{\bf A}h} - {\bf I}){\bf
+      B}\bu[n],$$ is the simple case (when ${\bf A}$ is invertible). But in
+      general, we can use any finitely-parameterized representation of $\bu(t)$
+      and any numerical integration scheme to obtain $\bx[n+1]={\bf f}(\bx[n],
       \bu[n])$.</p>
 
     </subsection>
