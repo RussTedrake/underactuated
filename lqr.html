@@ -430,23 +430,6 @@ print("S = " + str(S))</code></pre></div>
 
   <section><h1>Variations and extensions</h1>
 
-    <!--
-    <subsection><h1>Minimum-time LQR</h1>
-
-      \begin{gather*}
-      \dot{\bx} = {\bf A}\bx + \bB\bu \\
-      h(\bx) = \bx^T {\bf Q}_f \bx,
-      \quad {\bf Q}_f = {\bf Q}_f^T \succeq 0 \\
-      \ell(\bx,\bu,t) = 1 + \bx^T {\bf Q} \bx + \bu {\bf R} \bu,\\
-      {\bf Q} = {\bf
-      Q}^T \succeq 0, {\bf R}={\bf R}^T  \succ 0
-      \end{gather*}
-
-      Cite GCS paper/trajopt chapter for a more general solution.
-
-    </subsection>
-    -->
-
     <subsection id="dt_riccati"><h1>Discrete-time Riccati Equations</h1>
 
       <p>Essentially all of the results above have a natural correlate for
@@ -799,10 +782,41 @@ print("S = " + str(S))</code></pre></div>
     </subsection>
     
     <subsection><h1>Minimum-time LQR</h1>
+
+          <!--
+      \begin{gather*}
+      \dot{\bx} = {\bf A}\bx + \bB\bu \\
+      h(\bx) = \bx^T {\bf Q}_f \bx,
+      \quad {\bf Q}_f = {\bf Q}_f^T \succeq 0 \\
+      \ell(\bx,\bu,t) = 1 + \bx^T {\bf Q} \bx + \bu {\bf R} \bu,\\
+      {\bf Q} = {\bf
+      Q}^T \succeq 0, {\bf R}={\bf R}^T  \succ 0
+      \end{gather*}
+        -->
+
       Coming soon.  The basic result can be found in <elib>Verriest91</elib>,
       and some robotics applications in, for instance,
       <elib>Glassman10+Liu17</elib>.  For discrete-time systems, <elib>Marcucci21</elib> provides a new computational approach.
     </subsection>
+
+    <subsection><h1>Parameterized Riccati Equations</h1>
+
+      <p>When we are designing LQR controllers based on a linearization (around
+      some operating state or trajectory) of a nonlinear system, then it is
+      interesting to ask: how does the LQR solution change as you change the
+      nominal point (or trajectory)? If the nonlinear dynamics are smooth, does
+      the solution also change smoothly?</p>
+
+      <p>The answer is yes -- the Riccati solution does change smoothly, and
+      its local variation can be obtained with a little bit of work by taking
+      Taylor approximation of the $\bA$ and $\bB$ matrices
+      <elib>Majumdar12</elib>.</p>
+      
+    </subsection>
+
+    <todo>
+      LQR with binary inputs. https://www.mit.edu/~parrilo/ecc03_course/02_qcqp.pdf
+    </todo>
     
   </section>
 
@@ -971,6 +985,13 @@ print("S = " + str(S))</code></pre></div>
 <span class="title">"Shortest Paths in Graphs of Convex Sets"</span>, 
 <span class="publisher">arXiv preprint</span>, <span class="year">2022</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Marcucci21.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Majumdar12>
+<span class="author">Anirudha Majumdar and Mark Tobenkin and Russ Tedrake</span>, 
+<span class="title">"Algebraic Verification for Parameterized Motion Planning Libraries"</span>, 
+<span class="publisher">Proceedings of the 2012 American Control Conference (ACC)</span> , pp. 8, June, <span class="year">2012</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar12.pdf">link</a>&nbsp;]
 
 </li><br>
 </ol>
