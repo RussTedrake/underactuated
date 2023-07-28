@@ -128,7 +128,7 @@ jobs:
           # Upgrade drake to the nightlies to avoid deprecation errors.
           # TODO(russt): point to the nightly in setup.cfg, pending
           # https://github.com/RobotLocomotion/drake/issues/18792
-          pip3 install --upgrade https://drake-packages.csail.mit.edu/drake/nightly/drake-0.0.20230529-cp310-cp310-manylinux_2_31_x86_64.whl
+          # pip3 install --upgrade https://drake-packages.csail.mit.edu/drake/nightly/drake-0.0.20230529-cp310-cp310-manylinux_2_31_x86_64.whl
         shell: bash
       - name: checkout
         uses: actions/checkout@v2
