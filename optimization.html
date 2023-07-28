@@ -211,9 +211,10 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         \bB\bx \ge {\bf 0}, \\& \bx = \begin{bmatrix} 1 \\ \by \end{bmatrix}.
         \end{align*} In the following, we won't make any assumptions about
         $\bQ$ or $\bA_i$ being PSD. For instance, quadratic equality
-        constraints of the form $\bx\bA\bx=0$ (which are generically nonconvex)
-        can be encoded with two constraints: $ \bx^T\bA\bx \ge 0$ and
-        $-\bx^T\bA\bx \ge 0.$ The SDP relaxation <elib>Parrilo23+Park17</elib>
+        constraints of the form $\bx^T\bA\bx=0$ (which are generically
+        nonconvex) can be encoded with two constraints: $ \bx^T\bA\bx \ge 0$
+        and $-\bx^T\bA\bx \ge 0.$ The SDP relaxation
+        <elib>Parrilo23+Park17</elib>
         is given by \begin{align*} \min_{\bf X} \quad & \trace({\bf QX}) \\
         \subjto \quad & {\bf e}_1^T {\bf X} {\bf e}_1 = 1 \\ & \trace(\bA_i{\bf
         X}) \ge 0, \\ & \bB{\bf X}{\bf e}_1 \ge {\bf 0}, \\& {\bf BXB}^T \ge
