@@ -26,11 +26,17 @@ def AddShape(plant, shape, name, mass=1, mu=1, color=[0.5, 0.5, 0.9, 1.0]):
             shape.width(), shape.depth(), shape.height()
         )
     elif isinstance(shape, Cylinder):
-        inertia = UnitInertia.SolidCylinder(shape.radius(), shape.length())
+        inertia = UnitInertia.SolidCylinder(
+            shape.radius(), shape.length(), [0, 0, 1]
+        )
     elif isinstance(shape, Sphere):
         inertia = UnitInertia.SolidSphere(shape.radius())
+    elif isinstance(shape, Capsule):
+        inertia = UnitInertia.SolidCapsule(
+            shape.radius(), shape.length(), [0, 0, 1]
+        )
     else:
-        raise RunTimeError(
+        raise RuntimeError(
             f"need to write the unit inertia for shapes of type {shape}"
         )
     body = plant.AddRigidBody(
