@@ -283,11 +283,13 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
           \Rightarrow 1 \ge x_1^2 + x_2^2.$$  Once again the picture looks like
           the affine section of a cone (now in higher dimensions). Given the
           linear objective, we expect the optimal solution to be unbounded, or
-          active on one ore more of the constraints. Almost always the
-          constraint $${\bf Y} \succeq \bx \bx^T$$ will be active, and when
-          ${\bf Y} = \bx\bx^T$ we have $\bx^T\bx = 1.$ When the convex
-          relaxation gives the optimal solution to the original problem, we say
-          that the convex relaxation is "tight".
+          active on one ore more of the constraints. Whenever the optimal
+          solution is unique, the optimization will obtain the rank one
+          solution for the PSD constraint (the matrix $Y$ is rank one, and the
+          Schur complement matrix is also rank one), which implies that ${\bf
+          Y} = \bx\bx^T$ and we have $\bx^T\bx = 1.$ When the convex relaxation
+          gives the optimal solution to the original problem, we say that the
+          convex relaxation is "tight".
           </p>
 
           <p>Let's compare this to the simpler relaxation, \begin{align*}
