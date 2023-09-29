@@ -531,7 +531,7 @@ print("S = " + str(S))</code></pre></div>
 
     </subsection>
 
-    <subsection><h1>LQR with input and state constraints</h1>
+    <subsection id="linear_mpc"><h1>LQR with input and state constraints</h1>
       <p>A natural extension for linear optimal control is the consideration of
       strict constraints on the inputs or state trajectory.  Most common are
       linear inequality constraints, such as $\forall n, |\bu[n]| \le 1$ or
@@ -548,18 +548,6 @@ print("S = " + str(S))</code></pre></div>
       is famously known as model-predictive control (MPC).  We will provide the
       details in the <a href="trajopt.html">trajectory
       optimization chapter</a>.</p>
-        
-      <p>We do actually understand what the optimal policy of the
-      inequality-constrained LQR problem looks like, thanks to work on
-      "explicit MPC" <elib>Alessio09</elib> -- the optimal policy is now
-      piecewise-linear (though still continuous), with each piece described by
-      a polytope, and the optimal cost-to-go is piecewise-quadratic on the same
-      polytopes. Unfortunately, the number of pieces grows exponentially with
-      the number of constraints and the horizon of the problem, making it
-      impractical to compute for all but very small problems.  There are,
-      howeer, a number of promising approaches to approximate explicit MPC
-      (c.f.
-      <elib>Marcucci17</elib>).</p>
 
     </subsection>
 
@@ -910,19 +898,6 @@ print("S = " + str(S))</code></pre></div>
 <div id="references"><section><h1>References</h1>
 <ol>
 
-<li id=Alessio09>
-<span class="author">A. Alessio and A. Bemporad</span>, 
-<span class="title">"A survey on explicit model predictive control"</span>, 
-<span class="publisher">Int. Workshop on Assessment and Future Directions of Nonlinear Model Predictive Control</span> , <span class="year">2009</span>.
-
-</li><br>
-<li id=Marcucci17>
-<span class="author">Tobia Marcucci and Robin Deits and Marco Gabiccini and Antonio Bicchi and Russ Tedrake</span>, 
-<span class="title">"Approximate Hybrid Model Predictive Control for Multi-Contact Push Recovery in Complex Environments"</span>, 
-<span class="publisher">Humanoid Robots (Humanoids), 2017 IEEE-RAS 17th International Conference on</span> , <span class="year">2017</span>.
-[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Marcucci17.pdf">link</a>&nbsp;]
-
-</li><br>
 <li id=Posa15>
 <span class="author">Michael Posa and Scott Kuindersma and Russ Tedrake</span>, 
 <span class="title">"Optimization and stabilization of trajectories for constrained dynamical systems"</span>, 

@@ -1363,8 +1363,17 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <subsection id="explicit_mpc"><h1>Explicit model-predictive control</h1>
     
-      <p><elib>Alessio09</elib></p>
-
+      <p>We do actually understand what the optimal policy of the
+      inequality-constrained LQR problem looks like, thanks to work on
+      "explicit MPC" <elib>Alessio09</elib> -- the optimal policy is now
+      piecewise-linear (though still continuous), with each piece described by
+      a polytope, and the optimal cost-to-go is piecewise-quadratic on the same
+      polytopes. Unfortunately, the number of pieces grows exponentially with
+      the number of constraints and the horizon of the problem, making it
+      impractical to compute for all but very small problems.  There are,
+      however, a number of promising approaches to approximate explicit MPC
+      (c.f. <elib>Marcucci17</elib>).</p>
+        
     </subsection>
 
   </section>
@@ -1804,6 +1813,13 @@ PhD thesis, Massachusetts Institute of Technology, September, <span class="year"
 <span class="author">A. Alessio and A. Bemporad</span>, 
 <span class="title">"A survey on explicit model predictive control"</span>, 
 <span class="publisher">Int. Workshop on Assessment and Future Directions of Nonlinear Model Predictive Control</span> , <span class="year">2009</span>.
+
+</li><br>
+<li id=Marcucci17>
+<span class="author">Tobia Marcucci and Robin Deits and Marco Gabiccini and Antonio Bicchi and Russ Tedrake</span>, 
+<span class="title">"Approximate Hybrid Model Predictive Control for Multi-Contact Push Recovery in Complex Environments"</span>, 
+<span class="publisher">Humanoid Robots (Humanoids), 2017 IEEE-RAS 17th International Conference on</span> , <span class="year">2017</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Marcucci17.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Junge05>
