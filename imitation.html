@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+
+<html>
+
+  <head>
+    <title>Ch. DRAFT - Imitation Learning</title>
+    <meta name="Ch. DRAFT - Imitation Learning" content="text/html; charset=utf-8;" />
+    <link rel="canonical" href="http://underactuated.mit.edu/imitation.html" />
+
+    <script src="https://hypothes.is/embed.js" async></script>
+    <script type="text/javascript" src="chapters.js"></script>
+    <script type="text/javascript" src="htmlbook/book.js"></script>
+
+    <script src="htmlbook/mathjax-config.js" defer></script>
+    <script type="text/javascript" id="MathJax-script" defer
+      src="htmlbook/MathJax/es5/tex-chtml.js">
+    </script>
+    <script>window.MathJax || document.write('<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js" defer><\/script>')</script>
+
+    <link rel="stylesheet" href="htmlbook/highlight/styles/default.css">
+    <script src="htmlbook/highlight/highlight.pack.js"></script> <!-- http://highlightjs.readthedocs.io/en/latest/css-classes-reference.html#language-names-and-aliases -->
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <link rel="stylesheet" type="text/css" href="htmlbook/book.css" />
+  </head>
+
+<body onload="loadChapter('underactuated');">
+
+<div data-type="titlepage">
+  <header>
+    <h1><a href="index.html" style="text-decoration:none;">Underactuated Robotics</a></h1>
+    <p data-type="subtitle">Algorithms for Walking, Running, Swimming, Flying, and Manipulation</p>
+    <p style="font-size: 18px;"><a href="http://people.csail.mit.edu/russt/">Russ Tedrake</a></p>
+    <p style="font-size: 14px; text-align: right;">
+      &copy; Russ Tedrake, 2023<br/>
+      Last modified <span id="last_modified"></span>.</br>
+      <script>
+      var d = new Date(document.lastModified);
+      document.getElementById("last_modified").innerHTML = d.getFullYear() + "-" + (d.getMonth()+1) + "-" + d.getDate();</script>
+      <a href="misc.html">How to cite these notes, use annotations, and give feedback.</a><br/>
+    </p>
+  </header>
+</div>
+
+<p><b>Note:</b> These are working notes used for <a
+href="https://underactuated.csail.mit.edu/Spring2023/">a course being taught
+at MIT</a>. They will be updated throughout the Spring 2023 semester.  <a
+href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos are available on YouTube</a>.</p>
+
+<table style="width:100%;"><tr style="width:100%">
+  <td style="width:33%;text-align:left;"><a class="previous_chapter"></a></td>
+  <td style="width:33%;text-align:center;"><a href=index.html>Table of contents</a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter"></a></td>
+</tr></table>
+
+<script type="text/javascript">document.write(notebook_header('imitation'))
+</script>
+<!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+<chapter style="counter-reset: chapter 100"><h1>Imitation Learning</h1>
+
+  <p>Two dominant approaches to imitation learning are <i>behavioral cloning</i> and <i>inverse reinforcement learning</i>...
+  </p>
+
+  <section><h1>Diffusion Policy</h1>
+  
+    <p>One particularly successful form of behavior cloning for visuomotor
+    policies with continuous action spaces is the <a
+    href="https://diffusion-policy.cs.columbia.edu/">Diffusion Policy</a>
+    <elib>Chi23</elib>. The dexterous manipulation team at TRI had been working
+    on behavior cloning for some time, but the Diffusion Policy (which started
+    as a summer intern project!) architecture has allowed us to very reliably
+    train <a href="https://www.youtube.com/watch?v=w-CGSQAO5-Q">incredibly
+    dexterous tasks</a> and really start to scale up our ambitions for
+    manipulation.</p>
+
+    <subsection><h1>Diffusion Policy for LQG</h1>
+    
+      <p>Let me be clear, it almost certainly does <i>not</i> make sense to use
+      a diffusion policy to implement LQG control. But because we understand
+      LQG so well at this point, it can be helpful to understand what the
+      Diffusion Policy looks like in this extremely simplified case.</p>
+
+      <p>Consider the case where we have the standard linear-Gaussian dynamical
+      system: \begin{gather*} \bx[n+1] = \bA\bx[n] + \bB\bu[n] + \bw[n], \\
+      \by[n] = \bC\bx[n] + \bD\bu[n] + \bv[n], \\ \bw[n] \sim \mathcal{N}({\bf
+      0}, {\bf \Sigma}_w), \quad \bv[n] \sim \mathcal{N}({\bf 0}, {\bf
+      \Sigma}_v). \end{gather*} Imagine that we create a dataset by rolling out
+      trajectory demonstrations using the optimal LQG policy. The question is:
+      what (exactly) does the diffusion policy learn?</p>
+    
+    </subsection>
+  
+  </section>
+
+</chapter>
+<!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
+
+<div id="references"><section><h1>References</h1>
+<ol>
+
+<li id=Chi23>
+<span class="author">Cheng Chi and Siyuan Feng and Yilun Du and Zhenjia Xu and Eric Cousineau and Benjamin Burchfiel and Shuran Song</span>, 
+<span class="title">"Diffusion Policy: Visuomotor Policy Learning via Action Diffusion"</span>, 
+<span class="publisher">Proceedings of Robotics: Science and Systems</span> , <span class="year">2023</span>.
+
+</li><br>
+</ol>
+</section><p/>
+</div>
+
+<table style="width:100%;"><tr style="width:100%">
+  <td style="width:33%;text-align:left;"><a class="previous_chapter"></a></td>
+  <td style="width:33%;text-align:center;"><a href=index.html>Table of contents</a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter"></a></td>
+</tr></table>
+
+<div id="footer">
+  <hr>
+  <table style="width:100%;">
+    <tr><td><a href="https://accessibility.mit.edu/">Accessibility</a></td><td style="text-align:right">&copy; Russ
+      Tedrake, 2023</td></tr>
+  </table>
+</div>
+
+
+</body>
+</html>

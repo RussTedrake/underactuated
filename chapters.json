@@ -34,6 +34,7 @@
     "drake": "Appendix"
   },
   "draft_chapter_ids": [
-    "belief"
+    "belief",
+    "imitation"
   ]
 }
