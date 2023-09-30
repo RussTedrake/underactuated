@@ -68,10 +68,54 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     href="https://diffusion-policy.cs.columbia.edu/">Diffusion Policy</a>
     <elib>Chi23</elib>. The dexterous manipulation team at TRI had been working
     on behavior cloning for some time, but the Diffusion Policy (which started
-    as a summer intern project!) architecture has allowed us to very reliably
-    train <a href="https://www.youtube.com/watch?v=w-CGSQAO5-Q">incredibly
-    dexterous tasks</a> and really start to scale up our ambitions for
-    manipulation.</p>
+    as a summer internship project!) architecture has allowed us to very
+    reliably train <a
+    href="https://www.youtube.com/watch?v=w-CGSQAO5-Q">incredibly dexterous
+    tasks</a> and really start to scale up our ambitions for manipulation.</p>
+
+    <subsection><h1>Score-matching diffusion</h1>
+    
+      <p>"Diffusion" models are an approach to generative AI which have
+      principled foundations in statistics. The goal of a diffusion model is to
+      model a probability distribution, but instead of estimating the
+      probability density directly, we instead estimate the gradient of the log
+      probability with respect to the random variable $\bx \in \Re^n$ (referred
+      to in this literature as the "score function")<elib>Hyvarinen05</elib>.
+      If $p(\bx; {\bf \theta})$ is a probability density function over random
+      vector variables $\bx$ parameterized by a vector ${\bf \theta},$ then the
+      score function we refer to here is $${\bf \psi}(\bx; {\bf \theta}) =
+      \pd{p(\bx; \theta)}{\bx},$$ which is a parameterized function from
+      $\Re^n$ to $\Re^n.$</p>
+
+      <p>Let's say that we obtain a dataset $\mathcal{D}$ of samples $\bx$.
+      Denoting the probability density function on the data as
+      $p_\mathcal{D}(\bx),$ and the score function of the data as ${\bf
+      \psi}_\mathcal{D}(\bx)$, our goal is to find ${\bf \theta}$ which is the
+      minimizer of $$\min_{\bf \theta} \frac{1}{2}\int_{\bx} p_\mathcal{D}(\bx)
+      || {\bf \psi}(\bx; {\bf \theta}) - {\bf \psi}_\mathcal{D}(\bx) ||^2
+      d\bx.$$</p>
+
+      <p><elib>Hyvarinen05</elib> showed that in practice, we can estimate this
+      from $T$ samples, $\bx(1), ..., \bx(T)$, using $$\min_\theta \frac{1}{T}
+      \sum_{t=1}^T \sum_{i=1}^n \left[ \pd{{\bf \psi}(\bx(t); {\bf
+      \theta})}{\bx_i} + \frac{1}{2}\pd{{\bf \psi}(\bx(t); {\bf
+      \theta})}{\bx_i}^2\right].$$ </p>
+    
+      <todo>Simple examples implemented here.</todo>
+
+      <p>The term "diffusion" came from a paper <elib>Sohl-Dickstein15</elib>
+      which used an analogy from thermodynamics to use a prescribed diffusion
+      process to slowly transform data into random noise, and then learned to
+      reverse this procedure by training an inverse diffusion. 
+      <elib>Song19</elib> combined this idea with score matching and made it a
+      convincing approach to generative modeling, followed quickly by
+      <elib>Ho20</elib> (introducing DDPM) and <elib>Song20</elib> (introducing
+      DDIM).</p>
+
+    </subsection>
+
+    <subsection><h1>Diffusion Policy</h1>
+    </subsection>
 
     <subsection><h1>Diffusion Policy for LQG</h1>
     
@@ -102,6 +146,36 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <span class="author">Cheng Chi and Siyuan Feng and Yilun Du and Zhenjia Xu and Eric Cousineau and Benjamin Burchfiel and Shuran Song</span>, 
 <span class="title">"Diffusion Policy: Visuomotor Policy Learning via Action Diffusion"</span>, 
 <span class="publisher">Proceedings of Robotics: Science and Systems</span> , <span class="year">2023</span>.
+
+</li><br>
+<li id=Hyvarinen05>
+<span class="author">Aapo Hyvarinen</span>, 
+<span class="title">"Estimation of {Non}-{Normalized} {Statistical} {Models} by {Score} {Matching}"</span>, 
+<span class="publisher">Journal of Machine Learning Research</span>, vol. 6, pp. 695–708, <span class="year">2005</span>.
+
+</li><br>
+<li id=Sohl-Dickstein15>
+<span class="author">Jascha Sohl-Dickstein and Eric Weiss and Niru Maheswaranathan and Surya Ganguli</span>, 
+<span class="title">"Deep unsupervised learning using nonequilibrium thermodynamics"</span>, 
+<span class="publisher">International conference on machine learning</span> , pp. 2256--2265, <span class="year">2015</span>.
+
+</li><br>
+<li id=Song19>
+<span class="author">Yang Song and Stefano Ermon</span>, 
+<span class="title">"Generative Modeling by Estimating Gradients of the Data Distribution"</span>, 
+<span class="publisher">Advances in Neural Information Processing Systems</span> , vol. 32, <span class="year">2019</span>.
+
+</li><br>
+<li id=Ho20>
+<span class="author">Jonathan Ho and Ajay Jain and Pieter Abbeel</span>, 
+<span class="title">"Denoising diffusion probabilistic models"</span>, 
+<span class="publisher">Advances in neural information processing systems</span>, vol. 33, pp. 6840--6851, <span class="year">2020</span>.
+
+</li><br>
+<li id=Song20>
+<span class="author">Jiaming Song and Chenlin Meng and Stefano Ermon</span>, 
+<span class="title">"Denoising Diffusion Implicit Models"</span>, 
+<span class="publisher">International Conference on Learning Representations</span> , <span class="year">2020</span>.
 
 </li><br>
 </ol>
