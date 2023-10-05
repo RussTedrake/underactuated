@@ -81,25 +81,30 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       probability density directly, we instead estimate the gradient of the log
       probability with respect to the random variable $\bx \in \Re^n$ (referred
       to in this literature as the "score function")<elib>Hyvarinen05</elib>.
-      If $p(\bx; {\bf \theta})$ is a probability density function over random
-      vector variables $\bx$ parameterized by a vector ${\bf \theta},$ then the
-      score function we refer to here is $${\bf \psi}(\bx; {\bf \theta}) =
-      \pd{p(\bx; \theta)}{\bx},$$ which is a parameterized function from
+      If $p(\bx; {\bf \theta})$ is a model probability density function over
+      random vector variables $\bx$ parameterized by a vector ${\bf \theta},$
+      then the score function we refer to here is $${\bf s}(\bx; {\bf \theta})
+      = \pd{\log p(\bx; \theta)}{\bx},$$ which is a parameterized function from
       $\Re^n$ to $\Re^n.$</p>
 
       <p>Let's say that we obtain a dataset $\mathcal{D}$ of samples $\bx$.
       Denoting the probability density function on the data as
       $p_\mathcal{D}(\bx),$ and the score function of the data as ${\bf
-      \psi}_\mathcal{D}(\bx)$, our goal is to find ${\bf \theta}$ which is the
-      minimizer of $$\min_{\bf \theta} \frac{1}{2}\int_{\bx} p_\mathcal{D}(\bx)
-      || {\bf \psi}(\bx; {\bf \theta}) - {\bf \psi}_\mathcal{D}(\bx) ||^2
-      d\bx.$$</p>
-
-      <p><elib>Hyvarinen05</elib> showed that in practice, we can estimate this
-      from $T$ samples, $\bx(1), ..., \bx(T)$, using $$\min_\theta \frac{1}{T}
-      \sum_{t=1}^T \sum_{i=1}^n \left[ \pd{{\bf \psi}(\bx(t); {\bf
-      \theta})}{\bx_i} + \frac{1}{2}\pd{{\bf \psi}(\bx(t); {\bf
-      \theta})}{\bx_i}^2\right].$$ </p>
+      s}_\mathcal{D}(\bx)$, our goal is to find ${\bf \theta}$ which is the
+      minimizer of $$\min_{\bf \theta} \frac{1}{2} \mathbb{E}_\mathcal{D}
+      \left[ || {\bf s}(\bx; {\bf \theta}) - {\bf s}_\mathcal{D}(\bx)
+      ||^2 \right].$$ <elib>Hyvarinen05</elib> showed that this objective is
+      equivalent (up to a constant) to $$\mathbb{E}_\mathcal{D} \left[
+      \tr\left(\pd{{\bf s}(\bx, {\bf \theta})}{\bx}\right) + \frac{1}{2} ||{\bf
+      s}(\bx, {\bf \theta})||^2 \right].$$ The gradient in the first term is
+      expensive to compute for deep networks, but <elib>Vincent11</elib>
+      introduced "denoising score matching" which gets around this by
+      perturbing all of the data with a pre-specified noise distribution,
+      $q_\sigma(\tilde{\bx} | \bx),$ and optimizing the objective:
+      $$\frac{1}{2}\mathbb{E}_\sigma \left[ \left|\left|{\bf s}(\tilde\bx; {\bf
+      \theta}) - \pd{\log q_\sigma (\tilde\bx | \bx)}{\tilde\bx}
+      \right|\right|^2 \right],$$ which they showed converges to the score
+      function of the perturbed data distribution.</p>
     
       <todo>Simple examples implemented here.</todo>
 
@@ -107,14 +112,21 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       which used an analogy from thermodynamics to use a prescribed diffusion
       process to slowly transform data into random noise, and then learned to
       reverse this procedure by training an inverse diffusion. 
-      <elib>Song19</elib> combined this idea with score matching and made it a
-      convincing approach to generative modeling, followed quickly by
-      <elib>Ho20</elib> (introducing DDPM) and <elib>Song20</elib> (introducing
-      DDIM).</p>
+      <elib>Song19</elib> put all of this together beautifully and combined it
+      with deep learning to propose denoising diffusion as a generative
+      modeling techinque. They learned a single network that was conditioned on
+      the noise level. This was followed quickly by <elib>Ho20</elib> which
+      showed results competitive with other leading generative modeling
+      techniques and <elib>Song20</elib> introducing denoising diffusion
+      implicit models (DDIM).</p>
+
+      <todo>Examples! Something like Figure 1 from Sohl-Dickstein15 would be
+      good.</todo>
 
     </subsection>
 
     <subsection><h1>Diffusion Policy</h1>
+
     </subsection>
 
     <subsection><h1>Diffusion Policy for LQG</h1>
@@ -152,6 +164,12 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <span class="author">Aapo Hyvarinen</span>, 
 <span class="title">"Estimation of {Non}-{Normalized} {Statistical} {Models} by {Score} {Matching}"</span>, 
 <span class="publisher">Journal of Machine Learning Research</span>, vol. 6, pp. 695–708, <span class="year">2005</span>.
+
+</li><br>
+<li id=Vincent11>
+<span class="author">Pascal Vincent</span>, 
+<span class="title">"A connection between score matching and denoising autoencoders"</span>, 
+<span class="publisher">Neural computation</span>, vol. 23, no. 7, pp. 1661--1674, <span class="year">2011</span>.
 
 </li><br>
 <li id=Sohl-Dickstein15>
