@@ -124,11 +124,7 @@ jobs:
         run: |
           apt-get update -o APT::Acquire::Retries=4 -qq
           apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends python3-pip git xvfb
-          pip3 install underactuated
-          # Upgrade drake to the nightlies to avoid deprecation errors.
-          # TODO(russt): point to the nightly in setup.cfg, pending
-          # https://github.com/RobotLocomotion/drake/issues/18792
-          pip3 install --upgrade https://drake-packages.csail.mit.edu/drake/nightly/drake-0.0.20230903-cp310-cp310-manylinux_2_31_x86_64.whl
+          pip3 install underactuated --extra-index-url https://drake-packages.csail.mit.edu/whl/nightly/
         shell: bash
       - name: checkout
         uses: actions/checkout@v2

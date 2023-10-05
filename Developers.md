@@ -29,12 +29,10 @@ for now a work-around is:
 
 ## To update the pip wheels
 
-Update the version number in `setup.cfg`, then from the root directory, run:
+Update the version number in `pyproject.toml`, then from the root directory, run:
 ```
 rm -rf dist/*
-python3 -m pip install --upgrade build twine
-python3 -m build
-python3 -m twine upload dist/* -u __token__ 
+poetry publish --build
 ``` 
 
 ## Tips for developers
