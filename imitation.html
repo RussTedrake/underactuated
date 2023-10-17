@@ -73,59 +73,91 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     href="https://www.youtube.com/watch?v=w-CGSQAO5-Q">incredibly dexterous
     tasks</a> and really start to scale up our ambitions for manipulation.</p>
 
-    <subsection><h1>Score-matching diffusion</h1>
+    <subsection><h1>Denoising Diffusion models</h1>
     
-      <p>"Diffusion" models are an approach to generative AI which have
-      principled foundations in statistics. The goal of a diffusion model is to
-      model a probability distribution, but instead of estimating the
-      probability density directly, we instead estimate the gradient of the log
-      probability with respect to the random variable $\bx \in \Re^n$ (referred
-      to in this literature as the "score function")<elib>Hyvarinen05</elib>.
-      If $p(\bx; {\bf \theta})$ is a model probability density function over
-      random vector variables $\bx$ parameterized by a vector ${\bf \theta},$
-      then the score function we refer to here is $${\bf s}(\bx; {\bf \theta})
-      = \pd{\log p(\bx; \theta)}{\bx},$$ which is a parameterized function from
-      $\Re^n$ to $\Re^n.$</p>
+      <p>"Denoising Diffusion" models are an approach to generative AI, made
+      famous by their ability to generate high-resolution photorealistic
+      images. Inspired by the "manifold hypothesis" (e.g. the idea that
+      realistic images live on a low-dimensional manifold in pixel space), the
+      intuition behind denoising diffusion is that we train a model by adding
+      noise to samples drawn from the data distribution, then learn to predict
+      the noise from the noisy images, in order to "denoise" random images back
+      on to the manifold. While image generation made these models famous, they
+      have proven to be highly capable in generating samples from a wide
+      variety of high-dimension continuous distributions, even distributions
+      that are conditioned on high-dimensional inputs.</p>
+      
+      <p>Let's consider samples $\bu \in \Re^m$ drawn from a training dataset
+      $\mathcal{D}.$ Diffusion models are trained to estimate a noise vector
+      ${\bf \epsilon} \in \Re^m$ to minimize the loss function $$\ell(\theta) =
+      \mathbb{E}_{\bu, {\bf \epsilon}, \sigma} || {\bf f}_\theta(\bu + \sigma
+      {\bf \epsilon}, \sigma ) - {\bf \epsilon} ||^2,$$ where $\theta$ is the
+      parameter vector, and $f_\theta$ is typically some high-capacity neural
+      network. In practice, training is done by randomly sampling $\bu$ from
+      $\mathcal{D}$, ${\bf \epsilon}$ from $\mathcal{N}({\bf 0}_m, {\bf I}_{m
+      \times m})$, and $\sigma$ from a uniform distribution over a positive set
+      of numbers denoted as $\{\sigma_k\}_{k=0}^K,$ where we have $\sigma_k >
+      \sigma_{k-1}.$</p>
 
-      <p>Let's say that we obtain a dataset $\mathcal{D}$ of samples $\bx$.
-      Denoting the probability density function on the data as
-      $p_\mathcal{D}(\bx),$ and the score function of the data as ${\bf
-      s}_\mathcal{D}(\bx)$, our goal is to find ${\bf \theta}$ which is the
-      minimizer of $$\min_{\bf \theta} \frac{1}{2} \mathbb{E}_\mathcal{D}
-      \left[ || {\bf s}(\bx; {\bf \theta}) - {\bf s}_\mathcal{D}(\bx)
-      ||^2 \right].$$ <elib>Hyvarinen05</elib> showed that this objective is
-      equivalent (up to a constant) to $$\mathbb{E}_\mathcal{D} \left[
-      \tr\left(\pd{{\bf s}(\bx, {\bf \theta})}{\bx}\right) + \frac{1}{2} ||{\bf
-      s}(\bx, {\bf \theta})||^2 \right].$$ The gradient in the first term is
-      expensive to compute for deep networks, but <elib>Vincent11</elib>
-      introduced "denoising score matching" which gets around this by
-      perturbing all of the data with a pre-specified noise distribution,
-      $q_\sigma(\tilde{\bx} | \bx),$ and optimizing the objective:
-      $$\frac{1}{2}\mathbb{E}_\sigma \left[ \left|\left|{\bf s}(\tilde\bx; {\bf
-      \theta}) - \pd{\log q_\sigma (\tilde\bx | \bx)}{\tilde\bx}
-      \right|\right|^2 \right],$$ which they showed converges to the score
-      function of the perturbed data distribution.</p>
-    
-      <todo>Simple examples implemented here.</todo>
-
-      <p>The term "diffusion" came from a paper <elib>Sohl-Dickstein15</elib>
+      <p>To sample a new output from the model, the denoising diffusion
+      implicit models (DDIM) sampler <elib>Song20</elib> takes multiple steps:
+      $$\bu_{k-1} = \bu_k + (\sigma_{k-1} - \sigma_k)f_\theta(\bu_k,
+      \sigma_k).$$ This specific parameterization of the update (and my
+      preferred notation more generally) comes from
+      <elib>Permenter23</elib>.</p>
+      
+      <p>Diffusion models have a slightly convoluted history. The term
+      "diffusion" came from a paper <elib>Sohl-Dickstein15</elib>
       which used an analogy from thermodynamics to use a prescribed diffusion
       process to slowly transform data into random noise, and then learned to
-      reverse this procedure by training an inverse diffusion. 
+      reverse this procedure by training an inverse diffusion. Well before
+      that, a series of work starting with <elib>Hyvarinen05</elib> studied the
+      problem of learning the score function (the gradient of the log
+      probability of a distribution) of a data distribution, and
+      <elib>Vincent11</elib> made a connection to denoising autoencoders. 
       <elib>Song19</elib> put all of this together beautifully and combined it
       with deep learning to propose denoising diffusion as a generative
       modeling techinque. They learned a single network that was conditioned on
-      the noise level. This was followed quickly by <elib>Ho20</elib> which
-      showed results competitive with other leading generative modeling
-      techniques and <elib>Song20</elib> introducing denoising diffusion
-      implicit models (DDIM).</p>
-
+      the noise level. This was followed quickly by <elib>Ho20</elib>
+      which introduced denoise diffusion probabilistic models (DDPM) using an
+      even simpler update and showed results competitive with other leading
+      generative modeling techniques leading to <elib>Song20</elib> giving us
+      the DDIM update above. <elib>Permenter23</elib> gives a deterministic
+      interpretation as learning the distance function from the data manifold,
+      and sampling as performing approximate gradient descent on this
+      function.</p>
+        
       <todo>Examples! Something like Figure 1 from Sohl-Dickstein15 would be
       good.</todo>
+
+      <p>It is straight-forward to condition the generative model on an
+      exogeneous input, by simply adding an additional signal, $\by$, to the
+      denoiser: $f_\theta(\bu, \sigma, \by).$ </p>
 
     </subsection>
 
     <subsection><h1>Diffusion Policy</h1>
+
+      <p>Behavior cloning is perhaps the simplest form of imitation learning --
+      it simply attempts learn a policy using supervised learning to match
+      expert demonstrations. While it is tempting to learn deterministic
+      output-feedback policies (maps from history of observations to actions),
+      one quickly finds that human demonstrations are typically not unique.
+      Perhaps this is not surprising, as we know that optimal feedback policies
+      in general are not unique! To address this non-uniqueness /
+      multi-modality in the human demonstrations, it's well understood that
+      behavior cloning benefits from learning a conditional
+      <i>distribution</i> over actions.</p>
+      
+      <p>Diffusion Policy is the natural application of (conditional) denoising
+      diffusion models to learning these policies. It was inspired, in
+      particular, but the modeling choices in Diffuser<elib>Janner22</elib>. In
+      particular, rather than generating a single action, the denoiser in
+      diffusion policy outputs a sequence of actions with horizon $H_u$; like
+      <elib>Zhao23</elib> we found experimentally that this leads to more
+      stable roll-outs. <elib>Block23b</elib> provides some possible
+      theoretical justification for this choice. We condition the input on a
+      history of observations of length $H_y.$</p>
 
     </subsection>
 
@@ -144,6 +176,31 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       trajectory demonstrations using the optimal LQG policy. The question is:
       what (exactly) does the diffusion policy learn?</p>
     
+      <p>Let's start with the $\mathcal{H}_2$ problem (e.g. <a
+      href="policy_search.html#lqr">LQR with Gaussian noise</a>), where the
+      observation and prediction horizons are limited to a single step, $H_y =
+      H_u = 1$, and the denoiser is conditioned directly on state observations.
+      We will generate roll-outs using the optimal policy, $\bu = - \bK^*\bx$,
+      given a Gaussian distribution of intial conditions and Gaussian process
+      noise. In this case, the training loss function reduces to $$\ell(\theta)
+      = \mathbb{E}_{\bx, {\bf \epsilon}, \sigma} || {\bf f}_\theta(-\bK\bx +
+      \sigma {\bf \epsilon}, \sigma, \bx) - {\bf \epsilon} ||^2,$$ where the
+      expectation in $\bx$ is over the <a
+      href="policy_search.html#lqr">stationary distribution of the optimal
+      policy</a>. In this case, we don't need a neural network; take $f_\theta$
+      to be a simple function. In particular the optimal denoiser is given by
+      $${\bf f}_\theta(\bu, \sigma, \bx) = \frac{1}{\sigma}\left[\bu +
+      \bK\bx\right].$$ At evaluation time, the sampling iterations, $$\bu_{k-1}
+      = \bu_k + \frac{\sigma_{k-1} - \sigma_k}{\sigma_k}\left[\bu_k +
+      \bK\bx\right],$$ will converge on $\bu_0 = -\bK\bx.$ (Clearly $\bu_k =
+      -\bK\bx$ is a fixed point of the iteration, and the $\frac{\sigma_{k-1} -
+      \sigma_k}{\sigma_k}$ term is like the step-size of gradient descent.)</p>
+
+      <p>Returning to LQG, the diffusion policy architecture will be learning a
+      denoiser conditioned on a finite history of actions and observations,
+      $f_\theta(\bu[n], \sigma, \by[n-1], \bu[n-1], ..., \by[n-H_y],
+      \bu[n-H_y]).$</p>
+
     </subsection>
   
   </section>
@@ -160,6 +217,24 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <span class="publisher">Proceedings of Robotics: Science and Systems</span> , <span class="year">2023</span>.
 
 </li><br>
+<li id=Song20>
+<span class="author">Jiaming Song and Chenlin Meng and Stefano Ermon</span>, 
+<span class="title">"Denoising Diffusion Implicit Models"</span>, 
+<span class="publisher">International Conference on Learning Representations</span> , <span class="year">2020</span>.
+
+</li><br>
+<li id=Permenter23>
+<span class="author">Frank Permenter and Chenyang Yuan</span>, 
+<span class="title">"Interpreting and Improving Diffusion Models Using the Euclidean Distance Function"</span>, 
+<span class="publisher">arXiv preprint arXiv:2306.04848</span>, <span class="year">2023</span>.
+
+</li><br>
+<li id=Sohl-Dickstein15>
+<span class="author">Jascha Sohl-Dickstein and Eric Weiss and Niru Maheswaranathan and Surya Ganguli</span>, 
+<span class="title">"Deep unsupervised learning using nonequilibrium thermodynamics"</span>, 
+<span class="publisher">International conference on machine learning</span> , pp. 2256--2265, <span class="year">2015</span>.
+
+</li><br>
 <li id=Hyvarinen05>
 <span class="author">Aapo Hyvarinen</span>, 
 <span class="title">"Estimation of {Non}-{Normalized} {Statistical} {Models} by {Score} {Matching}"</span>, 
@@ -170,12 +245,6 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <span class="author">Pascal Vincent</span>, 
 <span class="title">"A connection between score matching and denoising autoencoders"</span>, 
 <span class="publisher">Neural computation</span>, vol. 23, no. 7, pp. 1661--1674, <span class="year">2011</span>.
-
-</li><br>
-<li id=Sohl-Dickstein15>
-<span class="author">Jascha Sohl-Dickstein and Eric Weiss and Niru Maheswaranathan and Surya Ganguli</span>, 
-<span class="title">"Deep unsupervised learning using nonequilibrium thermodynamics"</span>, 
-<span class="publisher">International conference on machine learning</span> , pp. 2256--2265, <span class="year">2015</span>.
 
 </li><br>
 <li id=Song19>
@@ -190,10 +259,22 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 <span class="publisher">Advances in neural information processing systems</span>, vol. 33, pp. 6840--6851, <span class="year">2020</span>.
 
 </li><br>
-<li id=Song20>
-<span class="author">Jiaming Song and Chenlin Meng and Stefano Ermon</span>, 
-<span class="title">"Denoising Diffusion Implicit Models"</span>, 
-<span class="publisher">International Conference on Learning Representations</span> , <span class="year">2020</span>.
+<li id=Janner22>
+<span class="author">Michael Janner and Yilun Du and Joshua Tenenbaum and Sergey Levine</span>, 
+<span class="title">"Planning with Diffusion for Flexible Behavior Synthesis"</span>, 
+<span class="publisher">International Conference on Machine Learning</span> , pp. 9902--9915, <span class="year">2022</span>.
+
+</li><br>
+<li id=Zhao23>
+<span class="author">Tony Z Zhao and Vikash Kumar and Sergey Levine and Chelsea Finn</span>, 
+<span class="title">"Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"</span>, 
+<span class="publisher">arXiv preprint arXiv:2304.13705</span>, <span class="year">2023</span>.
+
+</li><br>
+<li id=Block23b>
+<span class="author">Adam Block and Daniel Pfrommer and Max Simchowitz</span>, 
+<span class="title">"Provable Guarantees for Generative Behavior Cloning: Bridging Low-Level Stability and High-Level Behavior"</span>, 
+, <span class="year">2023</span>.
 
 </li><br>
 </ol>
