@@ -50,16 +50,30 @@ url = "https://drake-packages.csail.mit.edu/whl/nightly/"
 priority = "explicit"
 
 [tool.poetry.dependencies]
-python = ">=3.8"
+python = "<3.12,>=3.10"  # <3.12 is for the newer versions of scipy
 #drake = { version = "==0.0.20231004", source = "drake-nightly" }
 drake = ">=1.23.0"
 gradescope-utils = ">=0.4.0"
 mpld3 = ">=0.5.1"
 pydot = ">=1.3.0"
+scipy = ">=1.10.0"  # From github dependabot
 timeout-decorator = ">=0.4.1"
 
-[tool.poetry.dev-dependencies]
-# Add any development-specific dependencies here.
+[tool.poetry.group.dev.dependencies]
+beautifulsoup4 = ">=4.6.3"
+black = { version = ">=23.*", extras = ["jupyter"] }
+lxml = ">=4.9.2" # seems to be needed on python 3.11
+# Blocked on poetry known issue; see Developers.md
+#matplotlib = [ 
+#  {platform="darwin", version=">=3.7.0"}, # old versions don't build in XCode
+#  {platform="linux", version="3.5.1"}, # https://github.com/RobotLocomotion/drake/issues/14250 
+#]
+mysql-connector-python = ">=8.0.23"
+nbconvert = [ 
+  {platform="darwin", version="7.0.0"},
+  {platform="linux", version="6.4.0"},
+]
+requests = ">=2.25.1"
 
 [tool.black]
 line-length = 79
