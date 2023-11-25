@@ -51,7 +51,8 @@ priority = "explicit"
 
 [tool.poetry.dependencies]
 python = ">=3.8"
-drake = { version = "==0.0.20231004", source = "drake-nightly" }
+#drake = { version = "==0.0.20231004", source = "drake-nightly" }
+drake = ">=1.23.0"
 gradescope-utils = ">=0.4.0"
 mpld3 = ">=0.5.1"
 pydot = ">=1.3.0"

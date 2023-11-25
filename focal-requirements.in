@@ -1,7 +1,0 @@
--r htmlbook/focal-requirements.in
--c htmlbook/focal-constraints.txt
-gradescope-utils>=0.4.0
-mpld3>=0.5.1
-pandas
-scipy # See underactuated issue #496
-timeout-decorator>=0.4.1

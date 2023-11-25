@@ -24,7 +24,7 @@ load("@rules_python//python:pip.bzl", "pip_install")
 
 pip_install(
     name = "pip",
-    requirements = "//:requirements.txt",
+    requirements = "//:requirements-bazel.txt",
 )
 
 load("//htmlbook/tools/buildifier:repositories.bzl", "buildifier_dependencies")
@@ -35,32 +35,28 @@ load("//htmlbook/tools/tidy:repositories.bzl", "tidy_dependencies")
 
 tidy_dependencies()
 
-# Set the DRAKE_INSTALL_DIR environment variable to the correct path; if
-# DRAKE_INSTALL_DIR is not set it will look in "/opt/drake".
-load("//htmlbook/tools:environ.bzl", "environ_repository")
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-# Allowing PWD to be loaded here is a terrible work-around that allows me to
-# pass the equivalent of BUILD_WORKSPACE_DIRECTORY as a command line argument
-# (since it's not available to tests).  This enables *non-hermetic* tests...
-# which I introduced because it is hard to list all .py and .ipynb  files as
-# dependencies via bazel's glob since "labels are not allowed to cross the
-# package boundary and glob does not match files in subpackages."
-environ_repository(
-    name = "environ",
-    vars = [
-        "DRAKE_INSTALL_DIR",
-        "PWD",
+http_archive(
+    name = "drake_models",
+    urls = [
+        "https://github.com/RobotLocomotion/models/archive/fe5326c5ffc36fda12c58883d22d29dc86009d65.tar.gz",
+        "https://drake-mirror.csail.mit.edu/github/RobotLocomotion/models/fe5326c5ffc36fda12c58883d22d29dc86009d65.tar.gz",
+        "https://s3.amazonaws.com/drake-mirror/github/RobotLocomotion/models/fe5326c5ffc36fda12c58883d22d29dc86009d65.tar.gz",
     ],
+    sha256 = "2a232f7da8d575fe1fcc6ad396f634d1adc1c9ee856168f011fbeb42a01c76b1",
+    strip_prefix = "models-fe5326c5ffc36fda12c58883d22d29dc86009d65",
+    build_file_content = """
+package(default_visibility = ["//visibility:public"])
+
+_SRCS = glob(["**/*"])
+
+exports_files(_SRCS)
+
+filegroup(
+    name = "drake_models",
+    srcs = _SRCS,
 )
 
-load("@environ//:environ.bzl", "DRAKE_INSTALL_DIR")
-
-new_local_repository(
-    name = "rules_drake",
-    build_file_content = "",
-    path = DRAKE_INSTALL_DIR if DRAKE_INSTALL_DIR else "/opt/drake",
+""",
 )
-
-load("@rules_drake//:share/drake/repo.bzl", "drake_repository")
-
-drake_repository(name = "drake")

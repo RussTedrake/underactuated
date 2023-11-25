@@ -10,9 +10,23 @@ Then run
 bazel test //...
 ```
 
-If you would like to `bazel` to use a local installation of drake, you can set
-the `DRAKE_INSTALL_DIR` environment variable. Otherwise it will look in
-`/opt/drake`.
+## To install poetry
+
+Install poetry using the [official installer](https://python-poetry.org/docs/#installing-with-the-official-installer); not brew nor apt.
+Install the poetry export plugin:
+```
+pip3 install poetry-plugin-export
+```
+
+## To update poetry
+
+```
+./htmlbook/PoetryExport.sh
+```
+One may want to also run
+```
+poetry install
+```
 
 ## Additional setup on macos arm64
 
