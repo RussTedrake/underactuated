@@ -55,6 +55,7 @@ python = "<3.12,>=3.10"  # <3.12 is for the newer versions of scipy
 drake = ">=1.23.0"
 gradescope-utils = ">=0.4.0"
 mpld3 = ">=0.5.1"
+pandas = ">=1.0.0"
 pydot = ">=1.3.0"
 scipy = ">=1.10.0"  # From github dependabot
 timeout-decorator = ">=0.4.1"
