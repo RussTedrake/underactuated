@@ -485,7 +485,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       motion, up to the threshold $\mu_{static} f_n.$ But once this threshold is
       exceeding, we have slip (non-zero contact tangential velocity); during
       slip friction will produce a constant drag force $|f_t| = \mu_{dynamic}
-      f_n$ in the direction opposing the motion.  This behaviour is not a simple
+      f_n$ in the direction opposing the motion.  This behavior is not a simple
       function of the current state, but we can approximate it with a continuous
       function as pictured below.</p>
 
@@ -513,6 +513,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       use of special-purpose numerical integration recipes (e.g.
       <elib>Castro20</elib>) and compliant contact models are often difficult to
       use in e.g. trajectory/feedback optimization.</p>
+
+      <p>Note that there is one other type of friction that we talk about in
+      robotics. In joints we also, additionally, model joint damping, often as
+      a linear force proportional to the velocity which resists motion.
+      Phenomenologically, this is due to a viscous (fluid) drag force produced
+      by lubricants in the joint. The static and dynamic friction described
+      above are sometimes collectively referred to as "dry" friction.
+      </p>
 
       <p>But there is another serious numerical challenge with the basic
       implementation of this model.  Computing the signed-distance function,
