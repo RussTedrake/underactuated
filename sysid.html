@@ -444,6 +444,16 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       
       </example>
 
+      <p>Solving the least-squares optimizations described here subject to
+      convex (semidefinite) constraints requires solving small semidefinite
+      programs. There has been some nice work on parameterizations which lead
+      to unconstrained, smooth, but nonconvex, optimization problems which can
+      be solved with e.g. gradient descent <elib>Rucker22</elib>. In some
+      cases, one can still guarantee that all local minima are global minima.
+      But my impression from talking to the authors is that numerics of the
+      semidefinite programming formulation can be notable better, and that it
+      should be preferred if SDP solvers are available.</p>
+
     </subsection>
 
     <subsection><h1>Simultaneous kinematic and inertial identification via
@@ -1528,6 +1538,12 @@ control (Proctor et al., 2016b).-->
 <span class="author">Taeyoon Lee and Patrick M Wensing and Frank C Park</span>, 
 <span class="title">"Geometric robot dynamic identification: A convex programming approach"</span>, 
 <span class="publisher">IEEE Transactions on Robotics</span>, vol. 36, no. 2, pp. 348--365, <span class="year">2019</span>.
+
+</li><br>
+<li id=Rucker22>
+<span class="author">Caleb Rucker and Patrick M Wensing</span>, 
+<span class="title">"Smooth parameterization of rigid-body inertia"</span>, 
+<span class="publisher">IEEE Robotics and Automation Letters</span>, vol. 7, no. 2, pp. 2771--2778, <span class="year">2022</span>.
 
 </li><br>
 <li id=Gautier97>
