@@ -10,6 +10,7 @@
   "lyapunov": "e5ec0aeb-d006-4689-a009-180923e76318",
   "trajopt": "05031f8c-3586-4b47-be79-7f4893cf2f9d",
   "policy_search": "580a0aa5-3a4d-4c74-a50f-aeda83251fdc",
+  "planning": "c220fdc2-64f5-486f-9004-26894df6dd29",
   "limit_cycles": "b03c5019-403b-4693-8305-f864177e89c3",
   "contact": "41a6fb3f-9ceb-4752-883b-7dbcea779f49",
   "sysid": "8f8d3fd5-f29b-43b9-a0d4-4cee1c8b244e",

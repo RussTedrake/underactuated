@@ -1019,7 +1019,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <exercise><h1>Cart-Pole: Linearization and Balancing</h1>
 
-      <p>For this exercise you will work exclusively in <script>document.write(notebook_link('cartpole_balancing', deepnote['exercises/acrobot'], link_text='this notebook'))</script>.  You will be asked to complete the following steps.</p>
+      <p>For this exercise you will work exclusively in <script>document.write(notebook_link('acrobot', 'cartpole_balancing', link_text='this notebook'))</script>.  You will be asked to complete the following steps.</p>
 
       <ol type="a">
 
@@ -1037,7 +1037,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <exercise><h1>Cart-Poles: Writing URDFs and balancing with LQR</h1>
 
-      <p>For this exercise you will work in <script>document.write(notebook_link('cartpoles_urdf', deepnote['exercises/acrobot'], link_text='this notebook'))</script>.  You will complete the following steps.</p>
+      <p>For this exercise you will work in <script>document.write(notebook_link('acrobot', 'cartpoles_urdf', link_text='this notebook'))</script>.  You will complete the following steps.</p>
 
       <ol type="a">
 
@@ -1216,7 +1216,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         <li>Let's first look at an undamped pendulum $b = 0$.
           <ol>
             <li>
-              Using <script>document.write(notebook_link('attractivity_vs_stability', deepnote['exercises/pend'], link_text='this notebook'))</script> as an example, draw the phase portrait using <code>plot_2d_phase_portrait</code> function around equilibrium $\bx^*$. Is the nonlinear undamped pendulum stable i.s.L.? asymptotically stable? exponentially stable?
+              Using <script>document.write(notebook_link('pend', 'attractivity_vs_stability', link_text='this notebook'))</script> as an example, draw the phase portrait using <code>plot_2d_phase_portrait</code> function around equilibrium $\bx^*$. Is the nonlinear undamped pendulum stable i.s.L.? asymptotically stable? exponentially stable?
             </li>
             <li>
               Derive the linearization of the undamped nonlinear pendulum around equilibrium $\bx^*$. Compute the eigenvalues of the Jacobian $\left[\frac{\partial {\bf f}}{\partial \bx} \right]_{\bx = \bx^*}$, what are the signs of the real parts of these two eigenvalues, $\text{sign}(Re(\lambda_1))$, $\text{sign}(Re(\lambda_2))$?
@@ -1230,7 +1230,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         <li> Now let's consider a pendulum with damping coefficient $b = 1$. 
           <ol>
             <li>
-              Using <script>document.write(notebook_link('attractivity_vs_stability', deepnote['exercises/pend'], link_text='this notebook'))</script> as an example, draw the phase portrait using <code>plot_2d_phase_portrait</code> function around equilibrium $\bx^*$. Is the nonlinear damped pendulum stable i.s.L.? asymptotically stable? exponentially stable?
+              Using <script>document.write(notebook_link('pend','attractivity_vs_stability', link_text='this notebook'))</script> as an example, draw the phase portrait using <code>plot_2d_phase_portrait</code> function around equilibrium $\bx^*$. Is the nonlinear damped pendulum stable i.s.L.? asymptotically stable? exponentially stable?
             </li>
             <li>
               Derive the linearization of the damped nonlinear pendulum around equilibrium $\bx^*$. Compute the eigenvalues of the Jacobian $\left[\frac{\partial {\bf f}}{\partial \bx} \right]_{\bx = \bx^*}$, what are the signs of the real parts of these two eigenvalues, $\text{sign}(Re(\lambda_1))$, $\text{sign}(Re(\lambda_2))$?

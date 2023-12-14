@@ -369,7 +369,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         every other state has a cost of 1.</figcaption>
       </figure>
 
-      <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="grid_world"))</script>
+      <script>document.write(notebook_link('dp', 'grid_world'))</script>
 
     </example> <!-- end grid world -->
 
@@ -382,7 +382,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       barycentric interpolation to interpolate between nodes) in <drake></drake>
       using: </p>
 
-      <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="on_a_mesh"))</script>
+      <script>document.write(notebook_link('dp', 'on_a_mesh'))</script>
 
       <p>Please do take some time to try different cost functions by
       editing the code yourself.</p>
@@ -414,7 +414,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <p>You can run value iteration for the simple pendulum (using barycentric
       interpolation to interpolate between nodes) in <drake></drake> using:</p>
 
-      <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="on_a_mesh"))</script>
+      <script>document.write(notebook_link('dp', 'on_a_mesh'))</script>
 
     <p>Again, you can easily try different cost functions by
       editing the code yourself.</p>
@@ -803,7 +803,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
           <p>Let us try reproducing our double-integrator value iteration
           examples using neural networks:</p>
     
-          <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="mlp"))</script>
+          <script>document.write(notebook_link('dp', 'mlp'))</script>
     
           <!--
           <p>In this example, you'll see that we use two different approaches to
@@ -818,7 +818,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         
         <example><h1>Continuous Neural Fitted Value Iteration</h1>
     
-          <script>document.write(notebook_link('dp', d=deepnote, link_text="", notebook="mlp"))</script>
+          <script>document.write(notebook_link('dp', 'mlp'))</script>
           
         </example>        
         
@@ -1194,7 +1194,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       <p>In this exercise we analyze the performance of the value-iteration
       algorithm, considering its application to the <a
       href="#minimum_time_double_integrator">minimum time problem for the
-      double integrator</a>.  <script>document.write(notebook_link('minimum_time', deepnote['exercises/dp'], link_text='In this python notebook'))</script>, you will find everything you
+      double integrator</a>.  <script>document.write(notebook_link('dp', 'minimum_time', link_text='In this python notebook'))</script>, you will find everything you
       need for this analysis.  Take the time to go through the notebook and
       understand the code in it, then answer the following questions.</p>
 
@@ -1242,7 +1242,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       <p>In this exercise we solve the dynamic programming using a linear
       program, considering its application to the <a href="#grid_world">grid
-      world</a>.  <script>document.write(notebook_link('lp_dp', deepnote['exercises/dp'], link_text='In this python notebook'))</script>, you will write a linear
+      world</a>.  <script>document.write(notebook_link('dp', 'lp_dp', link_text='In this python notebook'))</script>, you will write a linear
       program for solving the optimal cost-to-go in the grid world. </p>
 
     </exercise>
@@ -1253,7 +1253,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       time system with continuous actions and states. We will achieve by
       training a neural network to approximate our value function. You will
       work exclusively in
-      <script>document.write(notebook_link('pendulum_cvi', deepnote['exercises/dp'], link_text='this python notebook'))</script> 
+      <script>document.write(notebook_link('dp', 'pendulum_cvi', link_text='this python notebook'))</script> 
          to implement the algorithms described in <a href="#continuous">the
          Continuous Dynamic Programming</a> section.</p>
     </exercise>

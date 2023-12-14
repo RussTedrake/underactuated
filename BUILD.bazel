@@ -37,32 +37,12 @@ rt_html_test(
     srcs = ["intro.html"],
 )
 
-rt_ipynb_test(
-    name = "intro",
-    srcs = ["intro.ipynb"],
-    data = ["//underactuated/models:double_pendulum.urdf"],
-    deps = ["//underactuated"],
-)
-
 rt_html_test(
     srcs = ["pend.html"],
 )
 
 rt_html_test(
     srcs = ["acrobot.html"],
-)
-
-rt_ipynb_test(
-    name = "acrobot",
-    srcs = ["acrobot.ipynb"],
-    data = ["//underactuated/models:cartpole.urdf"],
-    flaky = True,
-    tags = ["requires-network"], # to download drake-models
-    deps = [
-        "//underactuated",
-        "//underactuated:meshcat_utils",
-        "//underactuated:quadrotor2d",
-    ],
 )
 
 rt_html_test(
@@ -135,15 +115,6 @@ rt_html_test(
     srcs = ["sysid.html"],
 )
 
-rt_ipynb_test(
-    name = "sysid",
-    srcs = ["sysid.ipynb"],
-    data = ["//underactuated/models:cartpole.urdf"],
-    deps = [
-        "//underactuated",
-    ],
-)
-
 rt_html_test(
     srcs = ["state_estimation.html"],
 )
@@ -185,5 +156,12 @@ rt_html_test(
 filegroup(
     name = "chapters",
     srcs = ["chapters.json"],
+    visibility = ["//visibility:public"],
+)
+
+# Some methods look for this file to find the root directory.
+filegroup(
+    name = "workspace",
+    srcs = ["WORKSPACE.bazel"],
     visibility = ["//visibility:public"],
 )

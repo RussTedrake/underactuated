@@ -97,7 +97,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       <p>You can experiment with this system in <drake></drake> using</p>
 
-      <script>document.write(notebook_link('pend', d=deepnote, link_text="", notebook="pend"))</script>
+      <script>document.write(notebook_link('pend'))</script>
 
     </example>
 
@@ -272,14 +272,14 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         and $w$ is the weight of the synaptic feedback.</p>
 
         <p>Experiment with it for yourself:</p>
-        <script>document.write(notebook_link('pend', d=deepnote, link_text="", notebook="autapse"))</script>
+        <script>document.write(notebook_link('pend', "autapse"))</script>
   
         <p>As I've also provided the equations of an <a
         href="https://en.wikipedia.org/wiki/Long_short-term_memory">LSTM</a>
         unit that you can also experiment with.  See if you can figure it
         out!</p>
 
-        <script>document.write(notebook_link('pend', d=deepnote, link_text="", notebook="lstm"))</script>
+        <script>document.write(notebook_link('pend', "lstm"))</script>
 
         <p>Architectures like the <a
         href="https://en.wikipedia.org/wiki/Transformer_(machine_learning_model)">Transformer</a>
@@ -605,7 +605,7 @@ complete trajectory.</p>
       <p>Take a minute to play around with the energy-shaping controller for
       swinging up the pendulum</p>
 
-      <script>document.write(notebook_link('pend', d=deepnote, link_text="", notebook="energy_shaping"))</script>
+      <script>document.write(notebook_link('pend', "energy_shaping"))</script>
 
       <p>Make sure that you take a minute to look at the code which runs during
       these examples.  Note the somewhat arbitrary threshold for switching to
@@ -692,7 +692,7 @@ complete trajectory.</p>
       (1-|\bx|) + x_2 \frac{x_1-|\bx|}{2|\bx|}, \\ \dot x_2 &= x_2 (1-|\bx|) -
       x_1 \frac{x_1-|\bx|}{2|\bx|}, \end{align*} where $|\bx| =
       \sqrt{x_1^2+x_2^2}$.  To help you with the analysis of this system, we
-      set up <script>document.write(notebook_link('attractivity_vs_stability', deepnote['exercises/pend'], link_text='this python notebook'))</script>.  Take your time to understand
+      set up <script>document.write(notebook_link('pend', 'attractivity_vs_stability', link_text='this python notebook'))</script>.  Take your time to understand
       the code in it, and then answer the following questions.
 
       <ol type="a">
@@ -717,7 +717,7 @@ complete trajectory.</p>
 
         <li>Use feedback cancellation to design a control law $u = \pi(\theta, \dot \theta, t)$ that makes the closed-loop dynamics coincide with the one chosen at the previous point.</li>
 
-        <li><script>document.write(notebook_link('vibrating_pendulum', deepnote['exercises/pend'], link_text='In this python notebook'))</script>, we set up a simulation environment to test your control law.  Try to understand the structure of the code: this workflow is quite general, and it could be a good starting point for your future Drake projects.  Implement your control law in the dedicated cell, and check your work using the animation and the plots at the end of the notebook.</li>
+        <li><script>document.write(notebook_link('pend', 'vibrating_pendulum', link_text='In this python notebook'))</script>, we set up a simulation environment to test your control law.  Try to understand the structure of the code: this workflow is quite general, and it could be a good starting point for your future Drake projects.  Implement your control law in the dedicated cell, and check your work using the animation and the plots at the end of the notebook.</li>
 
       </ol>
 
@@ -736,7 +736,7 @@ complete trajectory.</p>
         <li> Draw the phase portrait of the system with constants $\beta=5$ and $A=\begin{bmatrix}1&0 \\ 0&1 \\ -1&-1\end{bmatrix}$. </li>
         <li> Identify (approximately by looking at the phase portrait) equilibriums of the above system. What are the stable and unstable equilibriums? </li>
         <li> How are the stable equilibriums related to the matrix $A$? </li>
-        <li> Using <script>document.write(notebook_link('hopfield_network', deepnote['exercises/pend'], link_text='this python notebook'))</script>, implement an image recovery algorithm using Hopfield network. Modify the dynamical system above to memorize a subset of MNIST data set. Using a corrupted image as the initial condition, simulate the dynamical system to restore images. </li>
+        <li> Using <script>document.write(notebook_link('pend', 'hopfield_network', link_text='this python notebook'))</script>, implement an image recovery algorithm using Hopfield network. Modify the dynamical system above to memorize a subset of MNIST data set. Using a corrupted image as the initial condition, simulate the dynamical system to restore images. </li>
       </ol>
     
     </exercise>

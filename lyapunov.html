@@ -648,7 +648,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
         <p> You can try this example for yourself in <drake></drake>.</p>
 
-        <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="common_lyap_linear"))</script>
+        <script>document.write(notebook_link('lyapunov', "common_lyap_linear"))</script>
 
         <p>As always, make sure that you open up the code and take a look.</p>
 
@@ -737,7 +737,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         <p>The numerical solution can be written in a few lines of code, and
         is a convex optimization.</p>
 
-        <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="global_polynomial"))</script>
+        <script>document.write(notebook_link('lyapunov', "global_polynomial"))</script>
 
       </example>
 
@@ -765,7 +765,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         = 1$.  Then we write: \begin{align*} \find_{\bc} \ \ \subjto \ \ &
         V\text{ is sos, } \\ & -\dot{V} \text{ is sos.}\end{align*}</p>
 
-        <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="global_polynomial"))</script>
+        <script>document.write(notebook_link('lyapunov', "global_polynomial"))</script>
 
         <p>Up to numerical convergence tolerance, it discovers the same
         coefficients that we chose above (zeroing out the unnecessary
@@ -876,7 +876,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
           <p>You can try these examples for yourself in <drake></drake>.</p>
 
-          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="cubic_poly"))</script>
+          <script>document.write(notebook_link('lyapunov', "cubic_poly"))</script>
 
         </example>
 
@@ -957,7 +957,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
           zero-degree $\lambda(x)$ (just a constant) can be sufficient here.
           Our numerical experiments confirm that this is indeed the case:</p>
 
-          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="cubic_poly"))</script>
+          <script>document.write(notebook_link('lyapunov', "cubic_poly"))</script>
   
         </example>
 
@@ -1087,7 +1087,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
           <todo>Figures here</todo>
         
-          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="star_convex"))</script>
+          <script>document.write(notebook_link('lyapunov', "star_convex"))</script>
 
         </example>
 
@@ -1177,7 +1177,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
           quite far from that here, but nevertheless have a tight approximation
           from $\mathcal{B}(\bx) \ge 0$).</p>
 
-          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="outer_approx"))</script>
+          <script>document.write(notebook_link('lyapunov', notebook="outer_approx"))</script>
 
         </example>
 
@@ -1201,7 +1201,7 @@ context = sys.CreateDefaultContext()
 V = RegionOfAttraction(sys, context)
           </code></pre>
 
-          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="cubic_poly"))</script>
+          <script>document.write(notebook_link('lyapunov', "cubic_poly"))</script>
 
           <p>Remember that although we have tried to make it convenient to call
           these functions, they are not a black box.  I highly recommend
@@ -1232,7 +1232,7 @@ V = RegionOfAttraction(sys, context)
 
           <todo>Figure here</todo>
 
-          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="van_der_pol"))</script>
+          <script>document.write(notebook_link('lyapunov', "van_der_pol"))</script>
 
           <p>I've provided an example here for solving this problem with the
           <code>RegionOfAttraction</code> in Drake, but we will also work you
@@ -1348,7 +1348,7 @@ V = RegionOfAttraction(sys, context)
         for style points, in the code example in <drake></drake> we ask for
         exponential stability:</p>
 
-        <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="global_pend"))</script>
+        <script>document.write(notebook_link('lyapunov', "global_pend"))</script>
 
         <p>As always, make sure that you open up the code and take a look.  The
           result is a Lyapunov function that looks familiar (visualized as a
@@ -1994,7 +1994,7 @@ V = RegionOfAttraction(sys, context)
   
           <figure><img width="100%"" src="figures/sos_dp_cubic.svg"/></figure>
   
-          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="approximate_dp"))</script>
+          <script>document.write(notebook_link('lyapunov', "approximate_dp"))</script>
   
         </example>
   
@@ -2003,7 +2003,7 @@ V = RegionOfAttraction(sys, context)
           <p>We can use this approach to design an approximation to the optimal
           controller for the (torque-limited) swing-up of the pendulum!</p>
   
-          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="approximate_dp"))</script>
+          <script>document.write(notebook_link('lyapunov', "approximate_dp"))</script>
   
         </example>
 
@@ -2011,7 +2011,7 @@ V = RegionOfAttraction(sys, context)
         
           <p>This final example is adapted from <elib>Yang23</elib>.  Even the lower-bound controller can effectively swing-up the cart-pole system!</p>
 
-          <script>document.write(notebook_link('lyapunov', d=deepnote, link_text="", notebook="approximate_dp"))</script>
+          <script>document.write(notebook_link('lyapunov', "approximate_dp"))</script>
 
         </example>
   
@@ -2227,7 +2227,7 @@ V = RegionOfAttraction(sys, context)
         \pi(\bx))$.  Use LaSalle's theorem to show (global) asymptotic stability
         of the closed-loop system.</li>
 
-        <li>In <script>document.write(notebook_link('control', deepnote['exercises/lyapunov'], link_text = 'this python notebook'))</script>
+        <li>In <script>document.write(notebook_link('lyapunov', 'control', link_text = 'this python notebook'))</script>
         we set up a simulation environment for you to try the controller we
         just derived.  Type the control law from point (b) in the dedicated
         cell, and use the notebook plot to check your work.</li>
@@ -2241,7 +2241,7 @@ V = RegionOfAttraction(sys, context)
       <ol type="a">
 
         <li>For each of the following polynomials, using
-        <script>document.write(notebook_link('sos_and_psd', deepnote['exercises/lyapunov'], link_text = 'this python notebook'))</script>,
+        <script>document.write(notebook_link('lyapunov', 'sos_and_psd', link_text = 'this python notebook'))</script>,
         find whether they (1) admit a sum of squares formulation, and (2) are 
         positive semi-definite functions:
           

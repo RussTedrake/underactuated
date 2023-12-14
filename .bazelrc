@@ -6,7 +6,6 @@ build --action_env=MOSEKLM_LICENSE_FILE
 
 build --coverage_report_generator=//htmlbook/tools/coverage:coverage_report_generator
 build --coverage_support=//htmlbook/tools/coverage:coverage_support
-build --distinct_host_configuration=no
 build --enable_platform_specific_config=yes
 
 build --incompatible_disable_target_provider_fields=yes
@@ -14,7 +13,6 @@ build --incompatible_load_python_rules_from_bzl=yes
 #build --incompatible_no_rule_outputs_param=yes
 build --incompatible_run_shell_command_string=yes
 build --incompatible_strict_action_env=yes
-build --incompatible_use_platforms_repo_for_constraints=yes
 build --incompatible_visibility_private_attributes_at_definition=yes
 
 build --legacy_external_runfiles=no

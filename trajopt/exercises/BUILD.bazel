@@ -29,6 +29,7 @@ rt_ipynb_test(
 rt_ipynb_test(
     name = "shooting_vs_transcription",
     srcs = ["shooting_vs_transcription.ipynb"],
+    timeout = "moderate",
     deps = [
         "//underactuated",
         "//underactuated/exercises",

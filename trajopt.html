@@ -176,7 +176,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         evaluate them using convex optimization!  The limitation, of course, is
         that we are only solving them for one initial condition at a time.</p>
 
-        <script>document.write(notebook_link('trajopt', d=deepnote, link_text="", notebook="double_integrator"))</script>
+        <script>document.write(notebook_link('trajopt', "double_integrator"))</script>
 
       </example>
 
@@ -437,7 +437,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
         the pendulum, Acrobot, and cart-pole system.  Try it for
         yourself:</p>
 
-        <script>document.write(notebook_link('trajopt', d=deepnote, link_text="", notebook="dircol"))</script>
+        <script>document.write(notebook_link('trajopt', "dircol"))</script>
 
         As always, make sure you take a look at the code!
       </example>
@@ -1000,7 +1000,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <subsection><h1>Trajectory optimization</h1>
 
-      <script>document.write(notebook_link('trajopt', d=deepnote, link_text="", notebook="perching"))</script>
+      <script>document.write(notebook_link('trajopt', "perching"))</script>
 
     </subsection>
 
@@ -1012,7 +1012,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
           regulator.</figcaption>
       </figure>
 
-      <script>document.write(notebook_link('trajopt', d=deepnote, link_text="", notebook="perching"))</script>
+      <script>document.write(notebook_link('trajopt', "perching"))</script>
 
       <figure>
         <img width="100%" src="figures/perching_controllability.svg">
@@ -1340,7 +1340,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
       <example><h1>Mixed-integer planning around obstacles</h1>
 
-        <script>document.write(notebook_link('trajopt', d=deepnote, link_text="", notebook="mi_convex"))</script>
+        <script>document.write(notebook_link('trajopt', "mi_convex"))</script>
 
       </example>
 
@@ -1422,7 +1422,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <exercise><h1>Direct Shooting vs Direct Transcription</h1>
 
-      <p>In this coding exercise we explore in detail the <a href="#computational_considerations">computational advantages of direct transcription over direct shooting methods</a>.  The exercise can be completed entirely in <script>document.write(notebook_link('shooting_vs_transcription', deepnote['exercises/trajopt'], link_text = 'this python notebook'))</script>.  To simplify the analysis, we will apply these two methods to a finite-horizon LQR problem.  You are asked to complete four pieces of code:</p>
+      <p>In this coding exercise we explore in detail the <a href="#computational_considerations">computational advantages of direct transcription over direct shooting methods</a>.  The exercise can be completed entirely in <script>document.write(notebook_link('trajopt', 'shooting_vs_transcription', link_text = 'this python notebook'))</script>.  To simplify the analysis, we will apply these two methods to a finite-horizon LQR problem.  You are asked to complete four pieces of code:</p>
 
       <ol type="a">
 
@@ -1442,7 +1442,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
     <exercise><h1>Orbital Transfer via Trajectory Optimization</h1>
 
-      <p>For this exercise you will work exclusively in <script>document.write(notebook_link('orbital_transfer', deepnote['exercises/trajopt'], link_text='this notebook'))</script>.  You are asked to find, via nonlinear trajectory optimization, a path that efficiently transfers a rocket from the Earth to Mars, while avoiding a cloud of asteroids.  The skeleton of the optimization problem is already there, but several important pieces are missing.  More details are in the notebook, but you will need to:</p>
+      <p>For this exercise you will work exclusively in <script>document.write(notebook_link('trajopt', 'orbital_transfer', link_text='this notebook'))</script>.  You are asked to find, via nonlinear trajectory optimization, a path that efficiently transfers a rocket from the Earth to Mars, while avoiding a cloud of asteroids.  The skeleton of the optimization problem is already there, but several important pieces are missing.  More details are in the notebook, but you will need to:</p>
 
       <ol type="a">
 
@@ -1461,7 +1461,7 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
     <exercise><h1>Iterative Linear Quadratic Regulator</h1>
 
       <p>The exercise is self-contained in
-        <script>document.write(notebook_link('ilqr_driving', deepnote['exercises/trajopt'], link_text='this notebook'))</script>.
+        <script>document.write(notebook_link('trajopt', 'ilqr_driving', link_text='this notebook'))</script>.
         In this exercise you will derive and implement the iterative Linear Quadratic Regulator (iLQR).
         You will evaluate it's functionality by planning trajectories for an autonomous vehicle.
         You will need to:</p>

@@ -409,7 +409,7 @@ of Walking and Running</h1>
 
         <example><h1>Numerical simulation of the rimless wheel</h1>
 
-          <script>document.write(notebook_link('simple_legs'))</script>
+          <script>document.write(notebook_link('simple_legs', 'rimless_wheel'))</script>
       
           <p>I've setup the notebook to make it easy for you to try a handful of
           interesting initial conditions.  And even made an interactive widget
@@ -599,7 +599,7 @@ of Walking and Running</h1>
 
         <p>You can simulate the passive compass gait using:</p>
 
-        <script>document.write(notebook_link('simple_legs'))</script>
+        <script>document.write(notebook_link('simple_legs', 'compass_gait'))</script>
 
         <p>Try playing with the initial conditions.  You'll find this system is
         <i>much</i> more sensitive to initial conditions than the rimless wheel.
@@ -823,7 +823,7 @@ of Walking and Running</h1>
 
         <p>You can simulate the spring-loaded inverted pendulum using:</p>
 
-        <script>document.write(notebook_link('simple_legs'))</script>
+        <script>document.write(notebook_link('simple_legs', 'slip'))</script>
 
         <p>Take a moment to read the code that defines the
         <code>SpringLoadedInvertedPendulum</code> system.  You can see that we
@@ -892,7 +892,7 @@ of Walking and Running</h1>
           <p>As always, you should run this code yourself to make sure you
           understand:</p>
 
-          <script>document.write(notebook_link('simple_legs'))</script>
+          <script>document.write(notebook_link('simple_legs', 'slip'))</script>
 
           <p>I'd also recommend running the simulation using initial conditions
           at various points on this plot.  You should ask: why does the plot
@@ -1078,7 +1078,7 @@ of Walking and Running</h1>
 
     <exercise><h1>One-Dimensional Hopper</h1>
 
-      <p>In this exercise we implement a one-dimensional version of the controller proposed in <elib>Raibert84</elib>.  The goal is to control the vertical motion of a hopper by generating a stable resonant oscillation that causes the system to hop off the ground at a given height.  We accomplish this via a careful energy analysis of the hopping cycle: all the details are in <script>document.write(notebook_link('one_d_hopper', deepnote['exercises/simple_legs'], link_text = 'this notebook'))</script>.  Besides understanding in detail the dynamics of the hopping system, in the notebook, you are asked to write two pieces of code:</p>
+      <p>In this exercise we implement a one-dimensional version of the controller proposed in <elib>Raibert84</elib>.  The goal is to control the vertical motion of a hopper by generating a stable resonant oscillation that causes the system to hop off the ground at a given height.  We accomplish this via a careful energy analysis of the hopping cycle: all the details are in <script>document.write(notebook_link('simple_legs', 'one_d_hopper', link_text = 'this notebook'))</script>.  Besides understanding in detail the dynamics of the hopping system, in the notebook, you are asked to write two pieces of code:</p>
 
       <ol type="a">
 
