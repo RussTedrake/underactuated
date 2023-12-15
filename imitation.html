@@ -196,10 +196,33 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
       -\bK\bx$ is a fixed point of the iteration, and the $\frac{\sigma_{k-1} -
       \sigma_k}{\sigma_k}$ term is like the step-size of gradient descent.)</p>
 
-      <p>Returning to LQG, the diffusion policy architecture will be learning a
-      denoiser conditioned on a finite history of actions and observations,
-      $f_\theta(\bu[n], \sigma, \by[n-1], \bu[n-1], ..., \by[n-H_y],
-      \bu[n-H_y]).$</p>
+      <p>Returning to LQG, the diffusion policy architecture (with $H_u=1$)
+      will be learning a denoiser conditioned on a finite history of actions
+      and observations, \begin{gather*}f_\theta(\bu[n], \sigma,
+      \bar{\by}_{H_y}, \bar{\bu}_{H_y}), \\ \bar{\by}_{H_y} =
+      \left[\by[n-1],... ,\by[n-H_y]\right], \\ \bar{\bu}_{H_y} =
+      \left[\bu[n-1],... ,\bu[n-H_y]\right].\end{gather*} We know that for <a
+      href="output_feedback.html#lqg">LQG</a>, the optimal actor that we will
+      use for generating training data takes the form of a Kalman filter
+      followed by LQR feedback on the estimated state. We can <a
+      href="output_feedback.html#disturbance_based">"unroll" the (truncated)
+      Kalman filter</a> into a linear function of the history of actions and
+      observations; for observable and stabilizable linear systems we know that
+      this truncation error will converge to zero as we increase $H_y$. Let's
+      call this unrolled policy $\bu[n] = \hat{\pi}_{LQG}(\bar{\by}_{H_y},
+      \bar{\bu}_{H_y}).$ With some care, it can be shown that the optimal
+      denoiser is given by $${\bf f}_\theta(\bu, \sigma, \bar{\by}_{H_y},
+      \bar{\bu}_{H_y}) = \frac{1}{\sigma}\left[\bu +
+      \hat{\pi}_{LQG}(\bar{\by}_{H_y}, \bar{\bu}_{H_y})\right],$$ which will
+      converge onto the truncated Kalman filter.</p>
+
+      <todo>Notebook example</todo>
+
+      <p>Predicting actions multiple steps into the future is a fundamentally
+      important aspect of the Diffusion Policy architecture
+      <elib>Block23b</elib>. For LQG, ...</p>  
+
+      <todo>Reduced-order LQG</todo>
 
     </subsection>
   
@@ -272,9 +295,9 @@ href="https://www.youtube.com/channel/UChfUOAhz7ynELF-s_1LPpWg">Lecture videos a
 
 </li><br>
 <li id=Block23b>
-<span class="author">Adam Block and Daniel Pfrommer and Max Simchowitz</span>, 
+<span class="author">Adam Block and Ali Jadbabaie and Daniel Pfrommer and Max Simchowitz and Russ Tedrake</span>, 
 <span class="title">"Provable Guarantees for Generative Behavior Cloning: Bridging Low-Level Stability and High-Level Behavior"</span>, 
-, <span class="year">2023</span>.
+<span class="publisher">Thirty-seventh Conference on Neural Information Processing Systems</span> , <span class="year">2023</span>.
 
 </li><br>
 </ol>
