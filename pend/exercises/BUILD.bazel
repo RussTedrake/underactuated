@@ -18,8 +18,11 @@ rt_ipynb_test(
 rt_ipynb_test(
     name = "hopfield_network",
     srcs = ["hopfield_network.ipynb"],
-    data = ["//underactuated/exercises/pend:mnist"],
-    # Downloads data from upload.wikimedia.org
+    data = [
+      "//underactuated/exercises/pend:mnist", 
+      "//data:pokemon",
+    ],
+    # Potentially downloads from data.
     tags = ["requires-network"],
     deps = [
         "//underactuated",
