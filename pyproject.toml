@@ -73,6 +73,8 @@ nbconvert = [
   {platform="darwin", version="7.0.0"},
   {platform="linux", version="6.4.0"},
 ]
+pre-commit = "^3.4.0"
+poetry-pre-commit-plugin = "^0.1.2"
 requests = ">=2.25.1"
 
 [tool.black]
