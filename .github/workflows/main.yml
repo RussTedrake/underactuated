@@ -59,7 +59,7 @@ jobs:
           sed -i '/PYTHONNOUSERSITE/d' .bazelrc
         shell: bash
       - name: test
-        run: ./htmlbook/workflows/ci/jammy/test
+        run: ./book/htmlbook/workflows/ci/jammy/test
         shell: bash
   jammy:
     name: ubuntu 22.04 jammy
@@ -83,10 +83,10 @@ jobs:
         run:  ./setup/submodule_checkout
         shell: bash
       - name: post-checkout setup
-        run: ./htmlbook/workflows/ci/jammy/setup
+        run: ./book/htmlbook/workflows/ci/jammy/setup
         shell: bash
       - name: test
-        run: ./htmlbook/workflows/ci/jammy/test
+        run: ./book/htmlbook/workflows/ci/jammy/test
         shell: bash
   jammy-pip:
     name: pip on jammy
@@ -115,7 +115,7 @@ jobs:
           sed -i '/PYTHONNOUSERSITE/d' .bazelrc
         shell: bash
       - name: test
-        run: DRAKE_RESOURCE_ROOT=`python3 -c "from pathlib import Path; from pydrake.all import GetDrakePath; print(Path(GetDrakePath()).parent)"` ./htmlbook/workflows/ci/jammy/test
+        run: DRAKE_RESOURCE_ROOT=`python3 -c "from pathlib import Path; from pydrake.all import GetDrakePath; print(Path(GetDrakePath()).parent)"` ./book/htmlbook/workflows/ci/jammy/test
         shell: bash
   monterey:
     name: macos monterey 12
@@ -127,9 +127,21 @@ jobs:
         run:  ./setup/submodule_checkout
         shell: zsh -efuo pipefail {0}
       - name: setup
-        run: ./htmlbook/workflows/ci/monterey/setup
+        run: ./book/htmlbook/workflows/ci/monterey/setup
         shell: zsh -efuo pipefail {0}
       - name: test
-        run: ./htmlbook/workflows/ci/monterey/test
+        run: ./book/htmlbook/workflows/ci/monterey/test
         shell: zsh -efuo pipefail {0}
-...
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout repo
+        uses: actions/checkout@v3
+      - name: setup python
+        uses: actions/setup-python@v4
+      - name: black
+        uses: psf/black@stable
+      - name: isort
+        uses: isort/isort-action@master
+        with:
+            configuration: "--profile black"
