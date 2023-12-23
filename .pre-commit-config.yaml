@@ -12,6 +12,11 @@ repos:
   rev: v2.0.2
   hooks:
     - id: autoflake
+- repo: https://github.com/nbQA-dev/nbQA # for jupyter notebooks
+  rev: 1.3.1
+  hooks:
+    - id: nbqa-isort 
+    # Note: autoflake is not supported https://github.com/nbQA-dev/nbQA/issues/755
 - repo: https://github.com/floatingpurr/sync_with_poetry
   rev: 1.1.0
   hooks:
@@ -19,7 +24,3 @@ repos:
       args: [
           '--all',  # Scan all dependencies in poetry.lock (main and dev)
       ]
-- repo: https://github.com/nbQA-dev/nbQA
-  rev: 1.3.1
-  hooks:
-    - id: nbqa-isort # isort for jupyter
