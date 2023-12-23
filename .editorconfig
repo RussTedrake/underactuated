@@ -20,4 +20,4 @@ trim_trailing_whitespace = false
 
 [*.py]
 indent_size = 4
-max_line_length = 79
+max_line_length = 88

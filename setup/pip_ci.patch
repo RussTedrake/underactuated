@@ -3,13 +3,13 @@ index fe1782c2..25be4f07 100644
 --- a/WORKSPACE.bazel
 +++ b/WORKSPACE.bazel
 @@ -34,33 +34,3 @@
- load("//htmlbook/tools/tidy:repositories.bzl", "tidy_dependencies")
+ load("//book/htmlbook/tools/tidy:repositories.bzl", "tidy_dependencies")
  
  tidy_dependencies()
 -
 -# Set the DRAKE_INSTALL_DIR environment variable to the correct path; if
 -# DRAKE_INSTALL_DIR is not set it will look in "/opt/drake".
--load("//htmlbook/tools:environ.bzl", "environ_repository")
+-load("//book/htmlbook/tools:environ.bzl", "environ_repository")
 -
 -# Allowing PWD to be loaded here is a terrible work-around that allows me to
 -# pass the equivalent of BUILD_WORKSPACE_DIRECTORY as a command line argument

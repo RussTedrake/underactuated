@@ -1,0 +1,43 @@
+# -*- mode: python -*-
+# vi: set ft=python :
+
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+load("//book/htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
+
+rt_ipynb_test(
+    name = "minimum_time",
+    srcs = ["minimum_time.ipynb"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/dp:minimum_time",
+        "//underactuated/exercises/dp:minimum_time_utils",
+    ],
+)
+
+rt_ipynb_test(
+    name = "lp_dp",
+    srcs = ["lp_dp.ipynb"],
+    tags = ["no-sandbox"],  # For gurobi license.
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/dp:lp_dp",
+    ],
+)
+
+rt_ipynb_test(
+    name = "pendulum_cvi",
+    data = ["//underactuated/models:cartpole.urdf"],
+    srcs = ["pendulum_cvi.ipynb"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated:meshcat_utils",
+        "//underactuated:optimizers",
+        "//underactuated:pendulum",
+        "//underactuated/exercises/dp:pendulum_cvi",
+    ],
+)

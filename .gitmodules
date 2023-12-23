@@ -1,7 +1,7 @@
 [submodule "htmlbook"]
-	path = htmlbook
+	path = book/htmlbook
 	url = https://github.com/RussTedrake/htmlbook
 [submodule "data"]
-	path = data
+	path = book/data
 	url = https://github.com/RussTedrake/underactuated-data
 	shallow = True

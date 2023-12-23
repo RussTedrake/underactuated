@@ -1,7 +1,0 @@
-.git
-.idea
-.ijwb
-.venv
-.vscode
-bazel-*
-third_party

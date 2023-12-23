@@ -7,7 +7,7 @@
 workspace(name = "underactuated")
 
 load(
-    "//htmlbook/tools:repositories.bzl",
+    "//book/htmlbook/tools:repositories.bzl",
     "rt_dependencies",
     "rt_toolchains",
 )
@@ -27,11 +27,11 @@ pip_install(
     requirements = "//:requirements-bazel.txt",
 )
 
-load("//htmlbook/tools/buildifier:repositories.bzl", "buildifier_dependencies")
+load("//book/htmlbook/tools/buildifier:repositories.bzl", "buildifier_dependencies")
 
 buildifier_dependencies()
 
-load("//htmlbook/tools/tidy:repositories.bzl", "tidy_dependencies")
+load("//book/htmlbook/tools/tidy:repositories.bzl", "tidy_dependencies")
 
 tidy_dependencies()
 

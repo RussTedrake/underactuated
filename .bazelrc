@@ -4,8 +4,8 @@ build --action_env=GRB_LICENSE_FILE
 # Location of the MOSEK license file, typically named "mosek.lic"
 build --action_env=MOSEKLM_LICENSE_FILE
 
-build --coverage_report_generator=//htmlbook/tools/coverage:coverage_report_generator
-build --coverage_support=//htmlbook/tools/coverage:coverage_support
+build --coverage_report_generator=//book/htmlbook/tools/coverage:coverage_report_generator
+build --coverage_support=//book/htmlbook/tools/coverage:coverage_support
 build --enable_platform_specific_config=yes
 
 build --incompatible_disable_target_provider_fields=yes

@@ -1,0 +1,36 @@
+# -*- mode: python -*-
+# vi: set ft=python :
+
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+load("//book/htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
+
+rt_ipynb_test(
+    name = "control",
+    srcs = ["control.ipynb"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/lyapunov:control",
+    ],
+)
+
+rt_ipynb_test(
+    name = "sos_and_psd",
+    srcs = ["sos_and_psd.ipynb"],
+    deps = [
+        "//underactuated/exercises",
+        "//underactuated/exercises/lyapunov:sos_and_psd",
+    ],
+)
+
+rt_ipynb_test(
+    name = "van_der_pol",
+    srcs = ["van_der_pol.ipynb"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/lyapunov:van_der_pol",
+    ],
+)

@@ -1,0 +1,38 @@
+# -*- mode: python -*-
+# vi: set ft=python :
+
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+load("//book/htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
+
+rt_ipynb_test(
+    name = "ilqr_driving",
+    srcs = ["ilqr_driving.ipynb"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/trajopt:ilqr_driving",
+    ],
+)
+
+rt_ipynb_test(
+    name = "orbital_transfer",
+    srcs = ["orbital_transfer.ipynb"],
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/trajopt:orbital_transfer",
+    ],
+)
+
+rt_ipynb_test(
+    name = "shooting_vs_transcription",
+    srcs = ["shooting_vs_transcription.ipynb"],
+    timeout = "moderate",
+    deps = [
+        "//underactuated",
+        "//underactuated/exercises",
+        "//underactuated/exercises/trajopt:shooting_vs_transcription",
+    ],
+)

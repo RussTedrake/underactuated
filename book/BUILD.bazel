@@ -1,0 +1,165 @@
+# -*- mode: python -*-
+# vi: set ft=python :
+
+# Copyright 2020 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+load("//book/htmlbook/tools/html:defs.bzl", "rt_html_test")
+load("//book/htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
+load("//book/htmlbook/tools/tidy:def.bzl", "html_tidy_test")
+
+filegroup(
+    name = "html",
+    srcs = glob([
+        "*.html",
+        "*.html.in",
+    ]),
+    visibility = ["//:__subpackages__"],
+)
+
+html_tidy_test(
+    name = "html_tidy",
+    srcs = [":html"],
+    config = ".tidy.config",
+)
+
+rt_html_test(
+    srcs = ["intro.html"],
+    data = [
+      "//book/data:double_pendulum_passive.html",
+    ],
+)
+
+rt_html_test(
+    srcs = ["pend.html"],
+)
+
+rt_html_test(
+    srcs = ["acrobot.html"],
+    data = [
+      "//book/data:quadrotor2d_lqr.html",
+    ],
+)
+
+rt_html_test(
+    srcs = ["simple_legs.html"],
+)
+
+rt_html_test(
+    srcs = ["humanoids.html"],
+)
+
+rt_html_test(
+    srcs = ["stochastic.html"],
+)
+rt_ipynb_test(
+    name = "stochastic",
+    srcs = ["stochastic.ipynb"],
+    deps = ["//underactuated"],
+)
+
+rt_html_test(
+    srcs = ["dp.html"],
+    data = [
+      "//book/data:grid_world.html",
+    ],
+)
+
+rt_html_test(
+    srcs = ["lqr.html"],
+)
+
+rt_html_test(
+    srcs = ["lyapunov.html"],
+)
+
+rt_html_test(
+    srcs = ["trajopt.html"],
+)
+
+rt_html_test(
+    srcs = ["planning.html"],
+    data = [
+      "//book/figures:rrt_voronoi.swf",
+    ],
+)
+
+rt_html_test(
+    srcs = ["feedback_motion_planning.html"],
+)
+
+rt_html_test(
+    srcs = ["policy_search.html"],
+    data = [
+      "//book/policy_search:pl_inequality.py",
+    ],
+)
+
+rt_html_test(
+    srcs = ["robust.html"],
+)
+
+rt_html_test(
+    srcs = ["output_feedback.html"],
+)
+
+rt_html_test(
+    srcs = ["limit_cycles.html"],
+)
+rt_ipynb_test(
+    name = "limit_cycles",
+    srcs = ["limit_cycles.ipynb"],
+    deps = ["//underactuated"],
+)
+
+rt_html_test(
+    srcs = ["contact.html"],
+)
+
+rt_html_test(
+    srcs = ["sysid.html"],
+)
+
+rt_html_test(
+    srcs = ["state_estimation.html"],
+)
+
+rt_html_test(
+    srcs = ["rl_policy_search.html"],
+)
+
+rt_html_test(
+    srcs = ["drake.html"],
+)
+
+rt_html_test(
+    srcs = ["multibody.html"],
+)
+
+rt_ipynb_test(
+    name = "multibody",
+    srcs = ["multibody.ipynb"],
+)
+
+rt_html_test(
+    srcs = ["optimization.html"],
+)
+rt_ipynb_test(
+    name = "optimization",
+    srcs = ["optimization.ipynb"],
+)
+
+
+rt_html_test(
+    srcs = ["playbook.html"],
+)
+
+rt_html_test(
+    srcs = ["misc.html"],
+)
+
+filegroup(
+    name = "chapters",
+    srcs = ["chapters.json"],
+    visibility = ["//visibility:public"],
+)

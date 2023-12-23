@@ -1,0 +1,38 @@
+# -*- mode: python -*-
+# vi: set ft=python :
+
+# Copyright 2020-2022 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+load("//book/htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
+
+
+rt_ipynb_test(
+    name = "grid_world",
+    srcs = ["grid_world.ipynb"],
+    deps = [
+      "//underactuated",
+    ],
+)
+
+rt_ipynb_test(
+    name = "on_a_mesh",
+    srcs = ["on_a_mesh.ipynb"],
+    deps = [
+      "//underactuated",
+      "//underactuated:double_integrator",
+      "//underactuated:meshcat_utils",
+      "//underactuated:pendulum",
+    ],
+)
+
+rt_ipynb_test(
+    name = "mlp",
+    srcs = ["mlp.ipynb"],
+    deps = [
+      "//underactuated",
+      "//underactuated:meshcat_utils",
+      "//underactuated:optimizers",
+    ],
+)
+
