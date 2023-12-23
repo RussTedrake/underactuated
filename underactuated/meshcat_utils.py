@@ -102,8 +102,6 @@ class MeshcatSliders(LeafSystem):
     """
     A system that outputs the ``value``s from meshcat sliders.
 
-    .. pydrake_system::
-
       name: MeshcatSliderSystem
       output_ports:
       - slider_group_0

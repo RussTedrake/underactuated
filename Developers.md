@@ -67,7 +67,7 @@ pip3 install sphinx myst-parser sphinx_rtd_theme
 
 From the root directory, run
 ```
-rm -rf book/python && sphinx-build -M html manipulation /tmp/manip_doc && cp -r /tmp/manip_doc/html book/python
+rm -rf book/python && sphinx-build -M html underactuated /tmp/underactuated_doc && cp -r /tmp/underactuated_doc/html book/python
 ```
 
 
