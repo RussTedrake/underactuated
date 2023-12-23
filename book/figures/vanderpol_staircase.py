@@ -28,9 +28,7 @@ class VanDerPolOscillator(LeafSystem):
 
     def record_poincare(self, context, event, state):
         if self.last_poincare is None:
-            self.last_poincare = (
-                context.get_continuous_state_vector().GetAtIndex(1)
-            )
+            self.last_poincare = context.get_continuous_state_vector().GetAtIndex(1)
 
     def DoGetWitnessFunctions(self, context):
         return [self.poincare_witness]

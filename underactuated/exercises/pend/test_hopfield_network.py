@@ -56,10 +56,7 @@ class TestHopfield(unittest.TestCase):
         A_calc = calc_A(self.notebook_locals["training_data"])
 
         self.assertTrue(
-            all(
-                abs(i - j) <= 1e-4
-                for i, j in zip(A_target.shape, A_calc.shape)
-            ),
+            all(abs(i - j) <= 1e-4 for i, j in zip(A_target.shape, A_calc.shape)),
             msg="Expecting the shape of A to be {}, but got {}.".format(
                 A_target.shape, A_calc.shape
             ),

@@ -81,9 +81,7 @@ for i in range(3):
     ax[i].set_xlim([0, 1])
     ax[i].set_ylim([0, 2.2])
     ax[i].set_xlabel("x")
-    ax[i].yaxis.set_major_formatter(
-        StrMethodFormatter("{x:,.1f}")
-    )  # No decimal places
+    ax[i].yaxis.set_major_formatter(StrMethodFormatter("{x:,.1f}"))  # No decimal places
 
 ax[0].set_title("p₀(x)")
 ax[1].set_title("p₁(x)")

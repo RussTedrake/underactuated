@@ -235,9 +235,7 @@ class MeshcatPoseSliders(LeafSystem):
         self._value[2] = rpy.yaw_angle()
         for i in range(3):
             if self._visible[i]:
-                self._meshcat.SetSliderValue(
-                    self._visible._fields[i], self._value[i]
-                )
+                self._meshcat.SetSliderValue(self._visible._fields[i], self._value[i])
 
     def SetXyz(self, xyz):
         """
@@ -249,18 +247,14 @@ class MeshcatPoseSliders(LeafSystem):
         self._value[3:] = xyz
         for i in range(3, 6):
             if self._visible[i]:
-                self._meshcat.SetSliderValue(
-                    self._visible._fields[i], self._value[i]
-                )
+                self._meshcat.SetSliderValue(self._visible._fields[i], self._value[i])
 
     def _update_values(self):
         changed = False
         for i in range(6):
             if self._visible[i]:
                 old_value = self._value[i]
-                self._value[i] = self._meshcat.GetSliderValue(
-                    self._visible._fields[i]
-                )
+                self._value[i] = self._meshcat.GetSliderValue(self._visible._fields[i])
                 changed = changed or self._value[i] != old_value
         return changed
 
@@ -281,9 +275,7 @@ class MeshcatPoseSliders(LeafSystem):
         if not running_as_notebook:
             return
 
-        publishing_context = publishing_system.GetMyContextFromRoot(
-            root_context
-        )
+        publishing_context = publishing_system.GetMyContextFromRoot(root_context)
 
         print("Press the 'Stop PoseSliders' button in Meshcat to continue.")
         self._meshcat.AddButton("Stop PoseSliders")
@@ -299,9 +291,7 @@ class MeshcatPoseSliders(LeafSystem):
 class WsgButton(LeafSystem):
     def __init__(self, meshcat):
         LeafSystem.__init__(self)
-        port = self.DeclareVectorOutputPort(
-            "wsg_position", 1, self.DoCalcOutput
-        )
+        port = self.DeclareVectorOutputPort("wsg_position", 1, self.DoCalcOutput)
         port.disable_caching_by_default()
         self._meshcat = meshcat
         self._button = "Open/Close Gripper"
@@ -438,9 +428,7 @@ class MeshcatJointSliders(LeafSystem):
         self._meshcat.AddButton("Stop JointSliders")
 
         plant_context = self._plant.GetMyContextFromRoot(root_context)
-        publishing_context = publishing_system.GetMyContextFromRoot(
-            root_context
-        )
+        publishing_context = publishing_system.GetMyContextFromRoot(root_context)
 
         publishing_system.Publish(publishing_context)
         while self._meshcat.GetButtonClicks("Stop JointSliders") < 1:
@@ -463,18 +451,14 @@ def AddMeshcatTriad(
 ):
     meshcat.SetTransform(path, X_PT)
     # x-axis
-    X_TG = RigidTransform(
-        RotationMatrix.MakeYRotation(np.pi / 2), [length / 2.0, 0, 0]
-    )
+    X_TG = RigidTransform(RotationMatrix.MakeYRotation(np.pi / 2), [length / 2.0, 0, 0])
     meshcat.SetTransform(path + "/x-axis", X_TG)
     meshcat.SetObject(
         path + "/x-axis", Cylinder(radius, length), Rgba(1, 0, 0, opacity)
     )
 
     # y-axis
-    X_TG = RigidTransform(
-        RotationMatrix.MakeXRotation(np.pi / 2), [0, length / 2.0, 0]
-    )
+    X_TG = RigidTransform(RotationMatrix.MakeXRotation(np.pi / 2), [0, length / 2.0, 0])
     meshcat.SetTransform(path + "/y-axis", X_TG)
     meshcat.SetObject(
         path + "/y-axis", Cylinder(radius, length), Rgba(0, 1, 0, opacity)
@@ -488,9 +472,7 @@ def AddMeshcatTriad(
     )
 
 
-def draw_open3d_point_cloud(
-    meshcat, path, pcd, normals_scale=0.0, point_size=0.001
-):
+def draw_open3d_point_cloud(meshcat, path, pcd, normals_scale=0.0, point_size=0.001):
     pts = np.asarray(pcd.points)
     assert pcd.has_colors()  # TODO(russt): handle this case better
     cloud = PointCloud(pts.shape[0], Fields(BaseField.kXYZs | BaseField.kRGBs))
@@ -500,9 +482,7 @@ def draw_open3d_point_cloud(
     if pcd.has_normals() and normals_scale > 0.0:
         assert "need to implement LineSegments in meshcat c++"
         normals = np.asarray(pcd.normals)
-        vertices = (
-            np.hstack((pts, pts + normals_scale * normals)).reshape(-1, 3).T
-        )
+        vertices = np.hstack((pts, pts + normals_scale * normals)).reshape(-1, 3).T
         meshcat["normals"].set_object(
             g.LineSegments(
                 g.PointsGeometry(vertices), g.MeshBasicMaterial(color=0x000000)
@@ -545,9 +525,7 @@ def plot_surface(
     )
 
 
-def plot_mathematical_program(
-    meshcat, path, prog, X, Y, result=None, point_size=0.05
-):
+def plot_mathematical_program(meshcat, path, prog, X, Y, result=None, point_size=0.05):
     assert prog.num_vars() == 2
     assert X.size == Y.size
 
@@ -627,7 +605,5 @@ def plot_mathematical_program(
         x_solution = result.get_x_val()
         meshcat.SetTransform(
             v,
-            RigidTransform(
-                [x_solution[0], x_solution[1], result.get_optimal_cost()]
-            ),
+            RigidTransform([x_solution[0], x_solution[1], result.get_optimal_cost()]),
         )

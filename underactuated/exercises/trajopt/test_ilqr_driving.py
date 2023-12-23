@@ -18,19 +18,11 @@ class TestIlqrDriving(unittest.TestCase):
         f = self.notebook_locals["discrete_dynamics"]
 
         f_target = [
-            np.array(
-                [0.14181286, 0.81062987, 0.54580749, 0.77731476, 1.02810156]
-            ),
+            np.array([0.14181286, 0.81062987, 0.54580749, 0.77731476, 1.02810156]),
             np.array([0.131663, 0.300996, 0.57034388, 0.71732411, 0.81033267]),
-            np.array(
-                [0.33233256, 0.91916814, 0.27416228, 0.45461388, 0.99126091]
-            ),
-            np.array(
-                [1.02770659, 0.27770476, 0.56066881, 0.96146963, 0.20821043]
-            ),
-            np.array(
-                [0.71706372, 0.47773599, 0.22401885, 0.538506, 0.40897373]
-            ),
+            np.array([0.33233256, 0.91916814, 0.27416228, 0.45461388, 0.99126091]),
+            np.array([1.02770659, 0.27770476, 0.56066881, 0.96146963, 0.20821043]),
+            np.array([0.71706372, 0.47773599, 0.22401885, 0.538506, 0.40897373]),
         ]
 
         np.random.seed(7)
@@ -69,16 +61,12 @@ class TestIlqrDriving(unittest.TestCase):
             n_u = 2
             x0 = np.array([1, 0, 0, 1, 0])
             u_trj = np.random.randn(N - 1, n_u) * 0.4
-            f_eval_test = (
-                np.random.randn(N) @ f(x0, u_trj) @ np.random.randn(N)
-            )
+            f_eval_test = np.random.randn(N) @ f(x0, u_trj) @ np.random.randn(N)
             msg = (
                 f"The discrete dynamics are incorrect."
                 + "Expected output {f_target_test_target[i]} got {f_eval_test}"
             )
-            self.assertAlmostEqual(
-                f_eval_test, f_target_test_target[i], msg=msg
-            )
+            self.assertAlmostEqual(f_eval_test, f_target_test_target[i], msg=msg)
 
     @weight(1)
     @timeout_decorator.timeout(1.0)
@@ -135,19 +123,13 @@ class TestIlqrDriving(unittest.TestCase):
         Q_x_test_val = Q_x @ np.random.randn(Q_x.shape[0])
         Q_u_test_val = Q_u @ np.random.randn(Q_u.shape[0])
         Q_xx_test_val = (
-            np.random.randn(Q_xx.shape[0])
-            @ Q_xx
-            @ np.random.randn(Q_xx.shape[0])
+            np.random.randn(Q_xx.shape[0]) @ Q_xx @ np.random.randn(Q_xx.shape[0])
         )
         Q_ux_test_val = (
-            np.random.randn(Q_ux.shape[0])
-            @ Q_ux
-            @ np.random.randn(Q_ux.shape[1])
+            np.random.randn(Q_ux.shape[0]) @ Q_ux @ np.random.randn(Q_ux.shape[1])
         )
         Q_uu_test_val = (
-            np.random.randn(Q_uu.shape[0])
-            @ Q_uu
-            @ np.random.randn(Q_uu.shape[0])
+            np.random.randn(Q_uu.shape[0]) @ Q_uu @ np.random.randn(Q_uu.shape[0])
         )
 
         Q_x_test_target = 1.1817013977437874
@@ -156,21 +138,11 @@ class TestIlqrDriving(unittest.TestCase):
         Q_ux_test_target = 0.5156605288974515
         Q_uu_test_target = -0.28166353613679074
 
-        self.assertAlmostEqual(
-            Q_x_test_val, Q_x_test_target, msg="Incorrect Q_x"
-        )
-        self.assertAlmostEqual(
-            Q_u_test_val, Q_u_test_target, msg="Incorrect Q_u"
-        )
-        self.assertAlmostEqual(
-            Q_xx_test_val, Q_xx_test_target, msg="Incorrect Q_xx"
-        )
-        self.assertAlmostEqual(
-            Q_ux_test_val, Q_ux_test_target, msg="Incorrect Q_ux"
-        )
-        self.assertAlmostEqual(
-            Q_uu_test_val, Q_uu_test_target, msg="Incorrect Q_uu"
-        )
+        self.assertAlmostEqual(Q_x_test_val, Q_x_test_target, msg="Incorrect Q_x")
+        self.assertAlmostEqual(Q_u_test_val, Q_u_test_target, msg="Incorrect Q_u")
+        self.assertAlmostEqual(Q_xx_test_val, Q_xx_test_target, msg="Incorrect Q_xx")
+        self.assertAlmostEqual(Q_ux_test_val, Q_ux_test_target, msg="Incorrect Q_ux")
+        self.assertAlmostEqual(Q_uu_test_val, Q_uu_test_target, msg="Incorrect Q_uu")
 
     @weight(3)
     @timeout_decorator.timeout(1.0)
@@ -191,13 +163,9 @@ class TestIlqrDriving(unittest.TestCase):
         k_test_val = (k @ test_inputs).sum()
         K_test_val = (test_inputs.T @ K).sum()
 
-        self.assertAlmostEqual(
-            k_test_val, 10.712481345027399, msg="Incorrect k gain"
-        )
+        self.assertAlmostEqual(k_test_val, 10.712481345027399, msg="Incorrect k gain")
 
-        self.assertAlmostEqual(
-            K_test_val, -12.949530490536842, msg="Incorrect K gain"
-        )
+        self.assertAlmostEqual(K_test_val, -12.949530490536842, msg="Incorrect K gain")
 
     @weight(3)
     @timeout_decorator.timeout(1.0)
@@ -223,13 +191,9 @@ class TestIlqrDriving(unittest.TestCase):
         V_x_test_val = V_x @ test_inputs
         V_xx_test_val = test_inputs @ V_xx @ test_inputs
 
-        self.assertAlmostEqual(
-            V_x_test_val, -2.113959925580339, msg="Incorrect V_x"
-        )
+        self.assertAlmostEqual(V_x_test_val, -2.113959925580339, msg="Incorrect V_x")
 
-        self.assertAlmostEqual(
-            V_xx_test_val, 35.931091753768, msg="Incorrect V_xx"
-        )
+        self.assertAlmostEqual(V_xx_test_val, 35.931091753768, msg="Incorrect V_xx")
 
         # this tests whether the student simplified the V_terms expression
         k2, K2 = 10 * np.random.randn(*k.shape), 10 * np.random.randn(*K.shape)
@@ -251,13 +215,9 @@ class TestIlqrDriving(unittest.TestCase):
             Do not do this""",
         )
 
-        self.assertAlmostEqual(
-            V_x2_test_val, -6.043415622930539, msg="Incorrect V_x"
-        )
+        self.assertAlmostEqual(V_x2_test_val, -6.043415622930539, msg="Incorrect V_x")
 
-        self.assertAlmostEqual(
-            V_xx2_test_val, -52.01732694080634, msg="Incorrect V_xx"
-        )
+        self.assertAlmostEqual(V_xx2_test_val, -52.01732694080634, msg="Incorrect V_xx")
 
     @weight(2)
     @timeout_decorator.timeout(1.0)
@@ -312,14 +272,10 @@ class TestIlqrDriving(unittest.TestCase):
         l_test = 10 * np.random.randn(k_trj.shape[0])
 
         k_trj_test_val = l_test @ k_trj @ r_test
-        K_trj_test_val = np.einsum(
-            "i, ijk, j -> k", l_test, K_trj, r_test
-        ).sum()
+        K_trj_test_val = np.einsum("i, ijk, j -> k", l_test, K_trj, r_test).sum()
 
         self.assertAlmostEqual(
             k_trj_test_val, -5.380572857461254, msg="Incorrect k_trj"
         )
 
-        self.assertAlmostEqual(
-            K_trj_test_val, 3.770894929116537, msg="Incorrect K_trj"
-        )
+        self.assertAlmostEqual(K_trj_test_val, 3.770894929116537, msg="Incorrect K_trj")

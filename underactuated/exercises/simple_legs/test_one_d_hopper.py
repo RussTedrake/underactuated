@@ -27,8 +27,7 @@ class TestOneDHopper(unittest.TestCase):
         # check size of E
         self.assertFalse(
             isinstance(E, (float, int)),
-            msg=f"The function mechanical_energy does not take vectorized "
-            + "inputs.",
+            msg=f"The function mechanical_energy does not take vectorized " + "inputs.",
         )
         self.assertTrue(
             E.size == N,

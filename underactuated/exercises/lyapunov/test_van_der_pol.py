@@ -96,13 +96,9 @@ class TestVanDerPol(unittest.TestCase):
         # to retrieve rho, find the only optimization variable in the cost
         prog = self.notebook_locals["prog2"]
         costs = prog.GetAllCosts()
-        self.assertEqual(
-            len(costs), 1, "prog2 has more than one cost function."
-        )
+        self.assertEqual(len(costs), 1, "prog2 has more than one cost function.")
         variables = prog.GetAllCosts()[0].variables()
-        self.assertEqual(
-            len(variables), 1, "The cost function of prog2 is incorrect."
-        )
+        self.assertEqual(len(variables), 1, "The cost function of prog2 is incorrect.")
         rho = variables[0]
         result = Solve(prog)
         self.assertAlmostEqual(
@@ -130,13 +126,9 @@ class TestVanDerPol(unittest.TestCase):
         # to retrieve rho, find the only optimization variable in the cost
         prog = self.notebook_locals["prog3"]
         costs = prog.GetAllCosts()
-        self.assertEqual(
-            len(costs), 1, "prog3 has more than one cost function."
-        )
+        self.assertEqual(len(costs), 1, "prog3 has more than one cost function.")
         variables = prog.GetAllCosts()[0].variables()
-        self.assertEqual(
-            len(variables), 1, "The cost function of prog3 is incorrect."
-        )
+        self.assertEqual(len(variables), 1, "The cost function of prog3 is incorrect.")
         rho = variables[0]
         result = Solve(prog)
         self.assertAlmostEqual(

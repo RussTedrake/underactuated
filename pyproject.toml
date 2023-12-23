@@ -77,7 +77,6 @@ nbconvert = [
 requests = ">=2.25.1"
 
 [tool.black]
-line-length = 79
 include = '\.ipynb?$|\.pyi?$'
 exclude = '''
 /(
@@ -93,7 +92,15 @@ exclude = '''
 [tool.isort]
 profile = "black"
 multi_line_output = 3
-line_length = 79
+skip_glob = [
+  "**/.git/**",
+  "**/.history/**",
+  "bazel-*",
+  "**/.venv/**",
+  "**/build/**",
+  "**/dist/**",
+]
+
 [tool.autoflake]
 in-place = true
 recursive = true

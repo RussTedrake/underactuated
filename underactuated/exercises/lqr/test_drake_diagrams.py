@@ -18,21 +18,15 @@ class TestDrakeDiagrams(unittest.TestCase):
 
         actuator_model = self.notebook_locals["actuator_model"]
 
-        assert isinstance(
-            actuator_model, System
-        ), "actuator_model must be a System"
+        assert isinstance(actuator_model, System), "actuator_model must be a System"
         assert (
             actuator_model.ToAutoDiffXdMaybe()
         ), "Your system isn't compatible with Drake's AutoDiffXd; see the note above."  # noqa
-        assert (
-            actuator_model.num_input_ports() == 1
-        ), "must have exactly one input port"
+        assert actuator_model.num_input_ports() == 1, "must have exactly one input port"
         assert (
             actuator_model.get_input_port().size() == 1
         ), "input port must have size 1"
-        assert (
-            actuator_model.num_output_ports() == 1
-        ), "must have only one output port"
+        assert actuator_model.num_output_ports() == 1, "must have only one output port"
         assert (
             actuator_model.get_output_port().size() == 1
         ), "output port should have size 1"
@@ -97,9 +91,7 @@ class TestDrakeDiagrams(unittest.TestCase):
         actuator_model = self.notebook_locals["actuator_model"]
         context = self.notebook_locals["diagram_context"]
 
-        double_integrator_context = double_integrator.GetMyContextFromRoot(
-            context
-        )
+        double_integrator_context = double_integrator.GetMyContextFromRoot(context)
         np.testing.assert_almost_equal(
             double_integrator_context.get_continuous_state_vector().get_value(),
             [1.2, 0],

@@ -32,14 +32,10 @@ class TestRRTPlanning(unittest.TestCase):
         bounds = np.array([-2, 15])
 
         np.random.seed(7)
-        rrt = RRT(
-            start=start, goal=goal, bounds=bounds, obstacle_list=obstacles
-        )
+        rrt = RRT(start=start, goal=goal, bounds=bounds, obstacle_list=obstacles)
         path = rrt.plan()
 
-        self.assertFalse(
-            path is None, "The plan method is not implemented correctly"
-        )
+        self.assertFalse(path is None, "The plan method is not implemented correctly")
 
         np.testing.assert_array_almost_equal(
             start,
@@ -59,9 +55,7 @@ class TestRRTPlanning(unittest.TestCase):
             is_in_collision = RRT.collision(
                 RRT.Node(path[i]), RRT.Node(path[i + 1]), obstacles
             )
-            self.assertFalse(
-                is_in_collision, "The path is colliding with obstacles"
-            )
+            self.assertFalse(is_in_collision, "The path is colliding with obstacles")
 
     @weight(7)
     @timeout_decorator.timeout(20.0)
@@ -167,9 +161,7 @@ class TestRRTPlanning(unittest.TestCase):
             is_in_collision = RRTStar.collision(
                 RRTStar.Node(path[i]), RRTStar.Node(path[i + 1]), obstacles
             )
-            self.assertFalse(
-                is_in_collision, "The path is colliding with obstacles"
-            )
+            self.assertFalse(is_in_collision, "The path is colliding with obstacles")
 
         def path_cost(path):
             total = 0

@@ -37,9 +37,7 @@ class TestFootstepPlanning(unittest.TestCase):
             (
                 self.plans[plan]["vars"],
                 self.plans[plan]["cost"],
-            ) = self.footstep_planner(
-                self.terrains[plan], self.n_steps, self.step_span
-            )
+            ) = self.footstep_planner(self.terrains[plan], self.n_steps, self.step_span)
 
     @weight(4)
     @timeout_decorator.timeout(30.0)
@@ -107,7 +105,9 @@ class TestFootstepPlanning(unittest.TestCase):
                 position_right,
                 stone_left,
                 stone_right,
-            ) = self.plans[plan]["vars"][:4]
+            ) = self.plans[
+                plan
+            ]["vars"][:4]
             for t in range(self.n_steps + 1):
                 # left foot
                 i = np.where(np.isclose(stone_left[t], 1, atol=tol))[0][0]

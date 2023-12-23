@@ -19,19 +19,13 @@ class Adam:
             raise ValueError("Invalid epsilon value: {}".format(eps))
         self.eps = eps
         if not 0.0 <= betas[0] < 1.0:
-            raise ValueError(
-                "Invalid beta parameter at index 0: {}".format(betas[0])
-            )
+            raise ValueError("Invalid beta parameter at index 0: {}".format(betas[0]))
         if not 0.0 <= betas[1] < 1.0:
-            raise ValueError(
-                "Invalid beta parameter at index 1: {}".format(betas[1])
-            )
+            raise ValueError("Invalid beta parameter at index 1: {}".format(betas[1]))
         self.beta1 = betas[0]
         self.beta2 = betas[1]
         if not 0.0 <= weight_decay:
-            raise ValueError(
-                "Invalid weight_decay value: {}".format(weight_decay)
-            )
+            raise ValueError("Invalid weight_decay value: {}".format(weight_decay))
         self.weight_decay = weight_decay
         self.amsgrad = amsgrad
 
@@ -65,8 +59,6 @@ class Adam:
                 np.sqrt(self.max_exp_avgs_sqs) / np.sqrt(bias_correction2)
             ) + self.eps
         else:
-            denom = (
-                np.sqrt(self.exp_avgs_sqs) / np.sqrt(bias_correction2)
-            ) + self.eps
+            denom = (np.sqrt(self.exp_avgs_sqs) / np.sqrt(bias_correction2)) + self.eps
         step_size = self.lr / bias_correction1
         self.params -= step_size * self.exp_avgs / denom

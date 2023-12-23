@@ -26,8 +26,7 @@ class TestShootingVsTranscription(unittest.TestCase):
         bits_type = [isinstance(bits, (float, int)) for bits in lost_bits]
         self.assertTrue(
             all(bits_type),
-            "Some entries in lost_bits_shooting are neither"
-            + "floats nor ints.",
+            "Some entries in lost_bits_shooting are neither" + "floats nor ints.",
         )
 
         # check values
@@ -167,14 +166,12 @@ class TestShootingVsTranscription(unittest.TestCase):
         self.assertEqual(
             len(J_star_N),
             45,
-            "The list J_star_N_transcription must have length"
-            + "equal to 100.",
+            "The list J_star_N_transcription must have length" + "equal to 100.",
         )
         J_star_type = [isinstance(J, (float, int)) for J in J_star_N]
         self.assertTrue(
             all(J_star_type),
-            "Some entries in J_star_N_transcription are neither"
-            + "floats nor ints.",
+            "Some entries in J_star_N_transcription are neither" + "floats nor ints.",
         )
 
         # check values
@@ -191,14 +188,12 @@ class TestShootingVsTranscription(unittest.TestCase):
         self.assertEqual(
             len(lost_bits),
             45,
-            "The list lost_bits_transcription must have length"
-            + "equl to 100.",
+            "The list lost_bits_transcription must have length" + "equl to 100.",
         )
         bits_type = [isinstance(bits, (float, int)) for bits in lost_bits]
         self.assertTrue(
             all(bits_type),
-            "Some entries in lost_bits_transcription are neither"
-            + "floats nor ints.",
+            "Some entries in lost_bits_transcription are neither" + "floats nor ints.",
         )
 
         # check values
@@ -257,8 +252,7 @@ class TestShootingVsTranscription(unittest.TestCase):
         J_star_type = [isinstance(J, (float, int)) for J in J_star_N]
         self.assertTrue(
             all(J_star_type),
-            "Some entries in J_star_N_riccati are neither floats"
-            + "nor ints.",
+            "Some entries in J_star_N_riccati are neither floats" + "nor ints.",
         )
 
         # check values

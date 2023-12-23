@@ -47,9 +47,7 @@ class TestCartPolesURDF(unittest.TestCase):
     def test_single_pendulum_urdf(self):
         """Test single-pendulum cart-pole dynamics"""
         # note: all prints here go to the output item in the json file
-        obtained_single_pend_urdf = self.notebook_locals[
-            "single_pendulum_urdf"
-        ]
+        obtained_single_pend_urdf = self.notebook_locals["single_pendulum_urdf"]
         cartpole_fn = self.notebook_locals["cartpole_balancing"]
         x_star = np.array([0, np.pi, 0, 0])
         Q = np.diag((10.0, 10.0, 1.0, 1.0))
@@ -70,9 +68,7 @@ class TestCartPolesURDF(unittest.TestCase):
         result_lst = []
         for state in state_lst:
             context.SetContinuousState(state)
-            result_lst.append(
-                cartpole.EvalTimeDerivatives(context).CopyToVector()
-            )
+            result_lst.append(cartpole.EvalTimeDerivatives(context).CopyToVector())
         result = np.array(result_lst)
         target_derivatives = np.array(
             [
@@ -110,9 +106,7 @@ class TestCartPolesURDF(unittest.TestCase):
     def test_double_pendulum_urdf(self):
         """Test double-pendulum cart-pole dynamics"""
         # note: all prints here go to the output item in the json file
-        obtained_double_pend_urdf = self.notebook_locals[
-            "double_pendulum_urdf"
-        ]
+        obtained_double_pend_urdf = self.notebook_locals["double_pendulum_urdf"]
         cartpole_fn = self.notebook_locals["cartpole_balancing"]
         x_star = np.array([0, np.pi, np.pi, 0, 0, 0])
         Q = np.diag((10.0, 10.0, 10.0, 1.0, 1.0, 1.0))
@@ -133,9 +127,7 @@ class TestCartPolesURDF(unittest.TestCase):
         result_lst = []
         for state in state_lst:
             context.SetContinuousState(state)
-            result_lst.append(
-                cartpole.EvalTimeDerivatives(context).CopyToVector()
-            )
+            result_lst.append(cartpole.EvalTimeDerivatives(context).CopyToVector())
         result = np.array(result_lst)
         target_derivatives = np.array(
             [
@@ -193,9 +185,7 @@ class TestCartPolesURDF(unittest.TestCase):
     def test_single_pendulum_lqr(self):
         """Test single-pendulum cart-pole LQR states"""
         # note: all prints here go to the output item in the json file
-        obtained_single_pend_urdf = self.notebook_locals[
-            "single_pendulum_urdf"
-        ]
+        obtained_single_pend_urdf = self.notebook_locals["single_pendulum_urdf"]
         cartpole_fn = self.notebook_locals["cartpole_balancing"]
         x_star = np.array([0, np.pi, 0, 0])
         Q = np.diag((10.0, 10.0, 1.0, 1.0))
@@ -214,9 +204,7 @@ class TestCartPolesURDF(unittest.TestCase):
         context = diagram.CreateDefaultContext()
         for state in state_lst:
             context.SetContinuousState(state)
-            result_lst.append(
-                diagram.EvalTimeDerivatives(context).CopyToVector()
-            )
+            result_lst.append(diagram.EvalTimeDerivatives(context).CopyToVector())
         result = np.array(result_lst)
         target_derivatives = np.array(
             [
@@ -259,9 +247,7 @@ class TestCartPolesURDF(unittest.TestCase):
     def test_double_pendulum_lqr(self):
         """Test double-pendulum cart-pole LQR states"""
         # note: all prints here go to the output item in the json file
-        obtained_double_pend_urdf = self.notebook_locals[
-            "double_pendulum_urdf"
-        ]
+        obtained_double_pend_urdf = self.notebook_locals["double_pendulum_urdf"]
         diagram_fn = self.notebook_locals["cartpole_balancing"]
         x_star = np.array([0, np.pi, np.pi, 0, 0, 0])
         Q = np.diag((10.0, 10.0, 10.0, 1.0, 1.0, 1.0))
@@ -281,9 +267,7 @@ class TestCartPolesURDF(unittest.TestCase):
         context = diagram.CreateDefaultContext()
         for state in state_lst:
             context.SetContinuousState(state)
-            result_lst.append(
-                diagram.EvalTimeDerivatives(context).CopyToVector()
-            )
+            result_lst.append(diagram.EvalTimeDerivatives(context).CopyToVector())
         result = np.array(result_lst)
         target_derivatives = np.array(
             [

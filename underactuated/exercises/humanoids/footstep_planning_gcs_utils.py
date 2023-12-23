@@ -1,9 +1,9 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from IPython.display import HTML
-from IPython.display import IFrame, display
-from matplotlib.patches import Rectangle
+from IPython.display import HTML, display
 from matplotlib.animation import FuncAnimation
+from matplotlib.patches import Rectangle
+
 
 # helper function that plots a rectangle with given center, width, and height
 def plot_rectangle(center, width, height, ax=None, frame=0.1, **kwargs):
@@ -36,6 +36,7 @@ def plot_rectangle(center, width, height, ax=None, frame=0.1, **kwargs):
     ax.set_aspect("equal")
 
     return rect
+
 
 # helper function that generates an animation of planned footstep positions
 def animate_footstep_plan(

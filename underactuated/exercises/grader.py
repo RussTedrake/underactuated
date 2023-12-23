@@ -20,9 +20,7 @@ class Grader:
         pass
 
     @staticmethod
-    def grade_from_notebooks(
-        test_cases_list, notebook_ipynb_list, results_json
-    ):
+    def grade_from_notebooks(test_cases_list, notebook_ipynb_list, results_json):
         """
         Running notebooks in notebook_ipynb_list and evaluating
         them on test_cases_list. Result is written into results_json
@@ -30,35 +28,24 @@ class Grader:
         try:
             notebook_locals_list = []
             for notebook_ipynb in notebook_ipynb_list:
-                notebook_locals_list.append(
-                    Grader.locals_from_notebook(notebook_ipynb)
-                )
+                notebook_locals_list.append(Grader.locals_from_notebook(notebook_ipynb))
         except Exception as e:
             Grader.global_fail_with_error_message(
-                "Exception when running file: "
-                + notebook_ipynb
-                + ", "
-                + str(e),
+                "Exception when running file: " + notebook_ipynb + ", " + str(e),
                 results_json,
             )
             raise
 
         # Grade notebook_locals_list on test_cases_list
-        Grader.grade_output(
-            test_cases_list, notebook_locals_list, results_json
-        )
+        Grader.grade_output(test_cases_list, notebook_locals_list, results_json)
 
     @staticmethod
     def grade_output(test_case_list, notebook_locals_list, results_json):
         """Grading the notebook_locals with the provided test_cases"""
         # setup test suite for gradescope
         suite = unittest.TestSuite()
-        for test_case, notebook_locals in zip(
-            test_case_list, notebook_locals_list
-        ):
-            test_case_names = unittest.defaultTestLoader.getTestCaseNames(
-                test_case
-            )
+        for test_case, notebook_locals in zip(test_case_list, notebook_locals_list):
+            test_case_names = unittest.defaultTestLoader.getTestCaseNames(test_case)
             for test_case_name in test_case_names:
                 suite.addTest(test_case(test_case_name, notebook_locals))
 

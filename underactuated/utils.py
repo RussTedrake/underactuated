@@ -33,9 +33,7 @@ def FindDataResource(filename: str):
     path = os.path.join(data, filename)
     if not os.path.exists(path):
         print(f"{path} was not found locally; downloading it now...")
-        urlretrieve(
-            f"https://underactuated.csail.mit.edu/data/{filename}", path
-        )
+        urlretrieve(f"https://underactuated.csail.mit.edu/data/{filename}", path)
     return path
 
 
@@ -57,9 +55,7 @@ def Rgba2Hex(rgb):
     return val
 
 
-def MakeNamedViewPositions(
-    mbp, view_name, add_suffix_if_single_position=False
-):
+def MakeNamedViewPositions(mbp, view_name, add_suffix_if_single_position=False):
     print(
         "MakeNamedViewPositions() is deprecated.  Use `namedview(view_name, plant.GetPositionNames())` instead)"
     )
@@ -72,9 +68,7 @@ def MakeNamedViewPositions(
     )
 
 
-def MakeNamedViewVelocities(
-    mbp, view_name, add_suffix_if_single_velocity=False
-):
+def MakeNamedViewVelocities(mbp, view_name, add_suffix_if_single_velocity=False):
     print(
         "MakeNamedViewVelocities() is deprecated.  Use `namedview(view_name, plant.GetVelocityNames())` instead)"
     )

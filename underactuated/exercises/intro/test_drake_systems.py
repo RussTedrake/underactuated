@@ -20,12 +20,8 @@ class TestDrakeSystems(unittest.TestCase):
 
         assert isinstance(system, System), "pendulum_system is not a System"
         assert system.num_input_ports() == 1, "should have 1 input port"
-        assert (
-            system.get_input_port(0).size() == 1
-        ), "the input port is the wrong size"
-        assert (
-            system.num_continuous_states() == 2
-        ), "wrong size for the state vector"
+        assert system.get_input_port(0).size() == 1, "the input port is the wrong size"
+        assert system.num_continuous_states() == 2, "wrong size for the state vector"
         assert (
             system.num_discrete_state_groups() == 0
         ), "your system should not have discrete states"

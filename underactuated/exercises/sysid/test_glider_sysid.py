@@ -30,18 +30,10 @@ class TestGliderSysid(unittest.TestCase):
         last_x = trajectories_fit[0][-1][0]
         last_z = trajectories_fit[0][-1][1]
         last_th = trajectories_fit[0][-1][2]
-        self.assertLessEqual(
-            last_x, 3.36, msg="Simulated trajectory x is incorrect"
-        )
-        self.assertGreaterEqual(
-            last_x, 3.34, msg="Simulated trajectory x is incorrect"
-        )
-        self.assertLessEqual(
-            last_z, 5.10, msg="Simulated trajectory z is incorrect"
-        )
-        self.assertGreaterEqual(
-            last_z, 4.99, msg="Simulated trajectory z is incorrect"
-        )
+        self.assertLessEqual(last_x, 3.36, msg="Simulated trajectory x is incorrect")
+        self.assertGreaterEqual(last_x, 3.34, msg="Simulated trajectory x is incorrect")
+        self.assertLessEqual(last_z, 5.10, msg="Simulated trajectory z is incorrect")
+        self.assertGreaterEqual(last_z, 4.99, msg="Simulated trajectory z is incorrect")
         self.assertLessEqual(
             last_th, -0.52, msg="Simulated trajectory theta is incorrect"
         )

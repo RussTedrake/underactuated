@@ -22,29 +22,19 @@ def AddShape(plant, shape, name, mass=1, mu=1, color=[0.5, 0.5, 0.9, 1.0]):
     # TODO: Add a method to UnitInertia that accepts a geometry shape (unless
     # that dependency is somehow gross) and does this.
     if isinstance(shape, Box):
-        inertia = UnitInertia.SolidBox(
-            shape.width(), shape.depth(), shape.height()
-        )
+        inertia = UnitInertia.SolidBox(shape.width(), shape.depth(), shape.height())
     elif isinstance(shape, Cylinder):
-        inertia = UnitInertia.SolidCylinder(
-            shape.radius(), shape.length(), [0, 0, 1]
-        )
+        inertia = UnitInertia.SolidCylinder(shape.radius(), shape.length(), [0, 0, 1])
     elif isinstance(shape, Sphere):
         inertia = UnitInertia.SolidSphere(shape.radius())
     elif isinstance(shape, Capsule):
-        inertia = UnitInertia.SolidCapsule(
-            shape.radius(), shape.length(), [0, 0, 1]
-        )
+        inertia = UnitInertia.SolidCapsule(shape.radius(), shape.length(), [0, 0, 1])
     else:
-        raise RuntimeError(
-            f"need to write the unit inertia for shapes of type {shape}"
-        )
+        raise RuntimeError(f"need to write the unit inertia for shapes of type {shape}")
     body = plant.AddRigidBody(
         name,
         instance,
-        SpatialInertia(
-            mass=mass, p_PScm_E=np.array([0.0, 0.0, 0.0]), G_SP_E=inertia
-        ),
+        SpatialInertia(mass=mass, p_PScm_E=np.array([0.0, 0.0, 0.0]), G_SP_E=inertia),
     )
     if plant.geometry_source_is_registered():
         if isinstance(shape, Box):
@@ -76,9 +66,7 @@ def AddShape(plant, shape, name, mass=1, mu=1, color=[0.5, 0.5, 0.9, 1.0]):
                 body, RigidTransform(), shape, name, CoulombFriction(mu, mu)
             )
 
-        plant.RegisterVisualGeometry(
-            body, RigidTransform(), shape, name, color
-        )
+        plant.RegisterVisualGeometry(body, RigidTransform(), shape, name, color)
 
     return instance
 
@@ -90,21 +78,15 @@ def AddFloatingRpyJoint(plant, frame, instance, use_ball_rpy=True):
     )
     x_body = plant.AddRigidBody("x", instance, inertia)
     plant.AddJoint(
-        PrismaticJoint(
-            "x", plant.world_frame(), x_body.body_frame(), [1, 0, 0]
-        )
+        PrismaticJoint("x", plant.world_frame(), x_body.body_frame(), [1, 0, 0])
     )
     y_body = plant.AddRigidBody("y", instance, inertia)
     plant.AddJoint(
-        PrismaticJoint(
-            "y", x_body.body_frame(), y_body.body_frame(), [0, 1, 0]
-        )
+        PrismaticJoint("y", x_body.body_frame(), y_body.body_frame(), [0, 1, 0])
     )
     z_body = plant.AddRigidBody("z", instance, inertia)
     plant.AddJoint(
-        PrismaticJoint(
-            "z", y_body.body_frame(), z_body.body_frame(), [0, 0, 1]
-        )
+        PrismaticJoint("z", y_body.body_frame(), z_body.body_frame(), [0, 0, 1])
     )
     if use_ball_rpy:
         plant.AddJoint(BallRpyJoint("ball", z_body.body_frame(), frame))
@@ -112,16 +94,10 @@ def AddFloatingRpyJoint(plant, frame, instance, use_ball_rpy=True):
         # RollPitchYaw is body z-y-x
         rz_body = plant.AddRigidBody("rz", instance, inertia)
         plant.AddJoint(
-            RevoluteJoint(
-                "rz", z_body.body_frame(), rz_body.body_frame(), [0, 0, 1]
-            )
+            RevoluteJoint("rz", z_body.body_frame(), rz_body.body_frame(), [0, 0, 1])
         )
         ry_body = plant.AddRigidBody("ry", instance, inertia)
         plant.AddJoint(
-            RevoluteJoint(
-                "ry", rz_body.body_frame(), ry_body.body_frame(), [0, 1, 0]
-            )
+            RevoluteJoint("ry", rz_body.body_frame(), ry_body.body_frame(), [0, 1, 0])
         )
-        plant.AddJoint(
-            RevoluteJoint("rx", ry_body.body_frame(), frame, [1, 0, 0])
-        )
+        plant.AddJoint(RevoluteJoint("rx", ry_body.body_frame(), frame, [1, 0, 0]))

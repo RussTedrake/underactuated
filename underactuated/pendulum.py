@@ -12,9 +12,7 @@ class PendulumVisualizer(PyPlotVisualizer):
     aw = 0.01
     base_x = rb * np.concatenate(([1], np.cos(av), [-1]))
     base_y = np.concatenate(([-hb], rb * np.sin(av), [-hb]))
-    arm_x = np.concatenate(
-        (aw * np.sin(av - np.pi / 2), aw * np.sin(av + np.pi / 2))
-    )
+    arm_x = np.concatenate((aw * np.sin(av - np.pi / 2), aw * np.sin(av + np.pi / 2)))
     arm_y = np.concatenate(
         (aw * np.cos(av - np.pi / 2), -a1 + aw * np.cos(av + np.pi / 2))
     )
@@ -57,12 +55,8 @@ class PendulumVisualizer(PyPlotVisualizer):
             self.ax.set_title("")
 
         path = self.arm[0].get_path()
-        path.vertices[:, 0] = self.arm_x * np.cos(theta) - self.arm_y * np.sin(
-            theta
-        )
-        path.vertices[:, 1] = self.arm_x * np.sin(theta) + self.arm_y * np.cos(
-            theta
-        )
+        path.vertices[:, 0] = self.arm_x * np.cos(theta) - self.arm_y * np.sin(theta)
+        path.vertices[:, 1] = self.arm_x * np.sin(theta) + self.arm_y * np.cos(theta)
         self.center_of_mass[0].set_data(
             self.ac1 * np.sin(theta), -self.ac1 * np.cos(theta)
         )

@@ -28,13 +28,11 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
         for t in range(T):
             self.assertTrue(
                 h_opt[t] >= h_min - tol,
-                msg=f"Time interval lower bound violated at time "
-                + f"step {t}.",
+                msg=f"Time interval lower bound violated at time " + f"step {t}.",
             )
             self.assertTrue(
                 h_opt[t] <= h_max + tol,
-                msg=f"Time interval upper bound violated at time "
-                + f"step {t}.",
+                msg=f"Time interval upper bound violated at time " + f"step {t}.",
             )
 
     @weight(0)
@@ -88,9 +86,7 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
         qd = self.notebook_locals["qd_opt"]
         qd_post = self.notebook_locals["qd_post_opt"]
         imp = self.notebook_locals["imp_opt"]
-        reset_velocity_heelstrike = self.notebook_locals[
-            "reset_velocity_heelstrike"
-        ]
+        reset_velocity_heelstrike = self.notebook_locals["reset_velocity_heelstrike"]
 
         # link pre and post impact velocities
         vars = np.concatenate((q[-1], qd[-1], qd_post, imp))
@@ -128,8 +124,7 @@ class TestCompassGaitLimitCycle(unittest.TestCase):
             np.array([0, 0, qd_post[2] + qd_post[3], -qd_post[3]]),
             atol=1e-5,
             rtol=1e-5,
-            err_msg="Velocity vector qd does not verify periodicity "
-            + "conditions.",
+            err_msg="Velocity vector qd does not verify periodicity " + "conditions.",
         )
 
     # tests constraints implemented by the students

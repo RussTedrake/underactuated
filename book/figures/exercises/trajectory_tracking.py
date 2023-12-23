@@ -25,9 +25,7 @@ strm = plt.quiver(
 # initial states as dots and trajecories as arrows
 initial_states = [(np.array([2, 0.5]), "b"), (np.array([2, -0.5]), "r")]
 for x, c in initial_states:
-    plt.scatter(
-        *x, c=c, label=r"$\mathbf{x}(0)=[%s,%s]^T$" % (str(x[0]), str(x[1]))
-    )
+    plt.scatter(*x, c=c, label=r"$\mathbf{x}(0)=[%s,%s]^T$" % (str(x[0]), str(x[1])))
     plt.arrow(
         *x,
         *-x,

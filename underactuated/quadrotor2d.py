@@ -100,34 +100,24 @@ class Quadrotor2DVisualizer(PyPlotVisualizer):
 
     def draw(self, context):
         x = self.EvalVectorInput(context, 0).CopyToVector()
-        R = np.array(
-            [[np.cos(x[2]), -np.sin(x[2])], [np.sin(x[2]), np.cos(x[2])]]
-        )
+        R = np.array([[np.cos(x[2]), -np.sin(x[2])], [np.sin(x[2]), np.cos(x[2])]])
 
         p = np.dot(R, self.base)
         self.base_fill[0].get_path().vertices[:, 0] = x[0] + p[0, :]
         self.base_fill[0].get_path().vertices[:, 1] = x[1] + p[1, :]
 
-        p = np.dot(
-            R, np.vstack((-self.length + self.pin[0, :], self.pin[1, :]))
-        )
+        p = np.dot(R, np.vstack((-self.length + self.pin[0, :], self.pin[1, :])))
         self.left_pin_fill[0].get_path().vertices[:, 0] = x[0] + p[0, :]
         self.left_pin_fill[0].get_path().vertices[:, 1] = x[1] + p[1, :]
-        p = np.dot(
-            R, np.vstack((self.length + self.pin[0, :], self.pin[1, :]))
-        )
+        p = np.dot(R, np.vstack((self.length + self.pin[0, :], self.pin[1, :])))
         self.right_pin_fill[0].get_path().vertices[:, 0] = x[0] + p[0, :]
         self.right_pin_fill[0].get_path().vertices[:, 1] = x[1] + p[1, :]
 
-        p = np.dot(
-            R, np.vstack((-self.length + self.prop[0, :], self.prop[1, :]))
-        )
+        p = np.dot(R, np.vstack((-self.length + self.prop[0, :], self.prop[1, :])))
         self.left_prop_fill[0].get_path().vertices[:, 0] = x[0] + p[0, :]
         self.left_prop_fill[0].get_path().vertices[:, 1] = x[1] + p[1, :]
 
-        p = np.dot(
-            R, np.vstack((self.length + self.prop[0, :], self.prop[1, :]))
-        )
+        p = np.dot(R, np.vstack((self.length + self.prop[0, :], self.prop[1, :])))
         self.right_prop_fill[0].get_path().vertices[:, 0] = x[0] + p[0, :]
         self.right_prop_fill[0].get_path().vertices[:, 1] = x[1] + p[1, :]
 

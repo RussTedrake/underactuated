@@ -3,13 +3,7 @@ import unittest
 import numpy as np
 import timeout_decorator
 from gradescope_utils.autograder_utils.decorators import weight
-from pydrake.all import (
-    DiagramBuilder,
-    LeafSystem,
-    SceneGraph,
-    Simulator,
-    ZeroOrderHold,
-)
+from pydrake.all import DiagramBuilder, LeafSystem, SceneGraph, Simulator, ZeroOrderHold
 from pydrake.examples import PendulumGeometry, PendulumPlant
 
 
@@ -42,9 +36,7 @@ class TestPendulumCVI(unittest.TestCase):
             ),
         )
 
-        cost = compute_state_cost(
-            Q, target_state, np.array([0, 0]).reshape(-1, 1)
-        )
+        cost = compute_state_cost(Q, target_state, np.array([0, 0]).reshape(-1, 1))
         target = np.pi**2 * 20.0
         self.assertLessEqual(
             np.abs(cost - target), tol, msg="Cost at state = 0 is incorrect"
@@ -159,9 +151,7 @@ class TestPendulumCVI(unittest.TestCase):
             simulator.Initialize()
             simulator.AdvanceTo(duration)
             final_state_vector = (
-                simulator_context.get_continuous_state()
-                .get_vector()
-                .CopyToVector()
+                simulator_context.get_continuous_state().get_vector().CopyToVector()
             )
             theta_wrapped = np.arccos(np.cos(final_state_vector[0]))
             errors.append(np.abs(theta_wrapped - np.pi))
@@ -220,12 +210,8 @@ class TestPendulumCVI(unittest.TestCase):
         closed_loop_builder.Connect(
             plant_cl.get_output_port(), controller.get_input_port()
         )
-        closed_loop_builder.Connect(
-            controller.get_output_port(), zoh.get_input_port()
-        )
-        closed_loop_builder.Connect(
-            zoh.get_output_port(), plant_cl.get_input_port()
-        )
+        closed_loop_builder.Connect(controller.get_output_port(), zoh.get_input_port())
+        closed_loop_builder.Connect(zoh.get_output_port(), plant_cl.get_input_port())
 
         diagram_closed_loop = closed_loop_builder.Build()
 
@@ -289,19 +275,13 @@ class ContinuousFittedValueIterationPolicyComputeUStar(LeafSystem):
             u[i] = 1
             self._plant_input_port.FixValue(self._plant_context, u)
             dstate_dynamics_du[:, :, i] = (
-                self._plant.EvalTimeDerivatives(
-                    self._plant_context
-                ).CopyToVector()
+                self._plant.EvalTimeDerivatives(self._plant_context).CopyToVector()
                 - state_dynamics_x
             ).reshape(-1, 1)
             u[i] = 0
 
-        u_star = self.compute_u_star(
-            self.R_diag, self.dJdX, dstate_dynamics_du
-        )[:, 0]
+        u_star = self.compute_u_star(self.R_diag, self.dJdX, dstate_dynamics_du)[:, 0]
         if self.input_limits is not None:
-            u_star = np.clip(
-                u_star, self.input_limits[0], self.input_limits[1]
-            )
+            u_star = np.clip(u_star, self.input_limits[0], self.input_limits[1])
         for i in range(num_inputs):
             output.SetAtIndex(i, u_star[i])

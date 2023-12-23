@@ -46,9 +46,7 @@ Autapse = np.vectorize(autapse)
 x = np.arange(-2.0, 2.0, 0.01)
 
 
-@app.callback(
-    Output("graph", "figure"), [Input("w", "value"), Input("u", "value")]
-)
+@app.callback(Output("graph", "figure"), [Input("w", "value"), Input("u", "value")])
 def update_figure(w, u):
     return {
         "data": [
