@@ -34,8 +34,7 @@ exclude = [
     "**/*.bazel",
     "**/test/**",
     "bazel-*",
-    "htmlbook/**",
-    "data/**",
+    "book/**",
     "solutions/**",
     "figures/**"
 ]

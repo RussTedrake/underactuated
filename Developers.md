@@ -21,7 +21,7 @@ pip3 install poetry-plugin-export
 ## To update poetry
 
 ```
-./htmlbook/PoetryExport.sh
+./book/htmlbook/PoetryExport.sh
 ```
 One may want to also run
 ```
