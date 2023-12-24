@@ -28,6 +28,16 @@ pip3 install pre-commit
 pre-commit install
 ```
 
+## Autoflake for notebooks
+
+`autoflake`` is not officially supported by nbqa because it has some risks:
+https://github.com/nbQA-dev/nbQA/issues/755 But it can be valuable to run it
+manually and check the results.
+
+```
+nbqa autoflake --remove-all-unused-imports --in-place .
+```
+
 ## To Run the Unit Tests
 
 Install the prerequisites:
