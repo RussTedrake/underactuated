@@ -100,13 +100,7 @@ def interact(meshcat, callback, **kwargs):
 
 class MeshcatSliders(LeafSystem):
     """
-    A system that outputs the ``value``s from meshcat sliders.
-
-      name: MeshcatSliderSystem
-      output_ports:
-      - slider_group_0
-      - ...
-      - slider_group_{N-1}
+    A system that outputs the values from meshcat sliders.
     """
 
     def __init__(self, meshcat, slider_names):
@@ -141,11 +135,6 @@ class MeshcatPoseSliders(LeafSystem):
     one slider for each of roll, pitch, yaw, x, y, and z.  This can be used,
     for instance, as an interface to teleoperate the end-effector of a robot.
 
-    .. pydrake_system::
-
-        name: PoseSliders
-        output_ports:
-        - pose
     """
 
     # TODO(russt): Use namedtuple defaults parameter once we are Python >= 3.7.
@@ -312,12 +301,6 @@ class MeshcatJointSliders(LeafSystem):
     Adds one slider per joint of the MultibodyPlant.  Any positions that are
     not associated with joints (e.g. floating-base "mobilizers") are held
     constant at the default value obtained from robot.CreateDefaultContext().
-
-    .. pydrake_system::
-
-        name: JointSliders
-        output_ports:
-        - positions
 
     In addition to being used inside a Diagram that is being simulated with
     Simulator, this class also offers a `Run` method that runs its own simple

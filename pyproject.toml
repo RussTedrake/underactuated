@@ -59,6 +59,18 @@ pydot = ">=1.3.0"
 scipy = ">=1.10.0"  # From github dependabot
 timeout-decorator = ">=0.4.1"
 
+[tool.poetry.group.docs]
+optional = true
+
+# Must include all dependencies required to build the docs with sphinx + autodoc.
+[tool.poetry.group.docs.dependencies]
+drake = ">=1.23.0"  # Should match drake version above.
+ipython = ">=7.8.0"
+ipywidgets = ">7"
+sphinx = ">=7.2.6"
+myst-parser = ">=2.0.0"
+sphinx_rtd_theme = ">=2.0.0"
+
 [tool.poetry.group.dev.dependencies]
 beautifulsoup4 = ">=4.6.3"
 black = { version = ">=23.*", extras = ["jupyter"] }

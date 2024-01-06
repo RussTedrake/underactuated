@@ -6,7 +6,7 @@ from pydrake.all import namedview
 running_as_test = False
 
 
-def set_running_as_test(value):
+def _set_running_as_test(value):
     """[INTERNAL USE ONLY]: Set the global variable `running_as_test` to
     `value`.
 

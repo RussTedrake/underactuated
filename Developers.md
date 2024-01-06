@@ -72,12 +72,12 @@ poetry publish --build
 
 You will need to install `sphinx`:
 ```
-pip3 install sphinx myst-parser sphinx_rtd_theme
+poetry install --with docs
 ```
 
 From the root directory, run
 ```
-rm -rf book/python && sphinx-build -M html underactuated /tmp/underactuated_doc && cp -r /tmp/underactuated_doc/html book/python
+rm -rf book/python && sphinx-build -M html underactuated /tmp/manip_doc && cp -r /tmp/manip_doc/html book/python
 ```
 
 
@@ -89,5 +89,5 @@ These are things that I often add to my preamble of the notebook (ever since vs 
 %autoreload 2
 import sys
 sys.path.append('/home/russt/drake-install/lib/python3.6/site-packages')
-sys.path.append('/home/russt/manipulation')
+sys.path.append('/home/russt/underactuated')
 ```
