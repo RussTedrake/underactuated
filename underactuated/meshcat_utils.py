@@ -1,5 +1,5 @@
 import time
-from collections import namedtuple
+import typing
 from functools import partial
 from inspect import Parameter, signature
 
@@ -8,20 +8,22 @@ from ipywidgets.widgets.interaction import (
     _get_min_max_value,
     _yield_abbreviations_for_parameter,
 )
-from pydrake.common.value import AbstractValue
-from pydrake.geometry import Cylinder, Rgba, Sphere
-from pydrake.math import RigidTransform, RollPitchYaw, RotationMatrix
-from pydrake.multibody.tree import JointIndex
-from pydrake.perception import BaseField, Fields, PointCloud
-from pydrake.solvers import BoundingBoxConstraint
-from pydrake.systems.framework import LeafSystem
+from pydrake.geometry import Cylinder, Meshcat, MeshcatVisualizer, Rgba, Sphere
+from pydrake.math import RigidTransform, RotationMatrix
+from pydrake.multibody.plant import MultibodyPlant
+from pydrake.solvers import (
+    BoundingBoxConstraint,
+    MathematicalProgram,
+    MathematicalProgramResult,
+)
+from pydrake.systems.framework import Context, EventStatus, LeafSystem
+from pydrake.trajectories import Trajectory
 
 from underactuated import running_as_notebook
 
-# Some GUI code that will be moved into Drake.
 
-
-def interact(meshcat, callback, **kwargs):
+# This class is scheduled for removal.  Use meshcat interaction methods instead.
+def _interact(meshcat, callback, **kwargs):
     """
     A poor-person's implementation of a functionality like ipywidgets interact
     https://ipywidgets.readthedocs.io/en/latest/examples/Using%20Interact.html#Basic-interact
@@ -101,17 +103,16 @@ def interact(meshcat, callback, **kwargs):
 class MeshcatSliders(LeafSystem):
     """
     A system that outputs the values from meshcat sliders.
+
+    An output port is created for each element in the list `slider_names`.
+    Each element of `slider_names` must itself be an iterable collection
+    (list, tuple, set, ...) of strings, with the names of sliders that have
+    *already* been added to Meshcat via Meshcat.AddSlider().
+
+    The same slider may be used in multiple ports.
     """
 
-    def __init__(self, meshcat, slider_names):
-        """
-        An output port is created for each element in the list `slider_names`.
-        Each element of `slider_names` must itself be an iterable collection
-        (list, tuple, set, ...) of strings, with the names of sliders that have
-        *already* been added to Meshcat via Meshcat.AddSlider().
-
-        The same slider may be used in multiple ports.
-        """
+    def __init__(self, meshcat: Meshcat, slider_names: typing.List[str]):
         LeafSystem.__init__(self)
 
         self._meshcat = meshcat
@@ -120,316 +121,103 @@ class MeshcatSliders(LeafSystem):
             port = self.DeclareVectorOutputPort(
                 f"slider_group_{i}",
                 len(slider_iterable),
-                partial(self.DoCalcOutput, port_index=i),
+                partial(self._DoCalcOutput, port_index=i),
             )
             port.disable_caching_by_default()
 
-    def DoCalcOutput(self, context, output, port_index):
+    def _DoCalcOutput(self, context, output, port_index):
         for i, slider in enumerate(self._sliders[port_index]):
             output[i] = self._meshcat.GetSliderValue(slider)
 
 
-class MeshcatPoseSliders(LeafSystem):
-    """
-    Provides a set of ipywidget sliders (to be used in a Jupyter notebook) with
-    one slider for each of roll, pitch, yaw, x, y, and z.  This can be used,
-    for instance, as an interface to teleoperate the end-effector of a robot.
-
-    """
-
-    # TODO(russt): Use namedtuple defaults parameter once we are Python >= 3.7.
-    Visible = namedtuple("Visible", ("roll", "pitch", "yaw", "x", "y", "z"))
-    Visible.__new__.__defaults__ = (True, True, True, True, True, True)
-    MinRange = namedtuple("MinRange", ("roll", "pitch", "yaw", "x", "y", "z"))
-    MinRange.__new__.__defaults__ = (-np.pi, -np.pi, -np.pi, -1.0, -1.0, -1.0)
-    MaxRange = namedtuple("MaxRange", ("roll", "pitch", "yaw", "x", "y", "z"))
-    MaxRange.__new__.__defaults__ = (np.pi, np.pi, np.pi, 1.0, 1.0, 1.0)
-    Value = namedtuple("Value", ("roll", "pitch", "yaw", "x", "y", "z"))
-    Value.__new__.__defaults__ = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-
-    def __init__(
-        self,
-        meshcat,
-        visible=Visible(),
-        min_range=MinRange(),
-        max_range=MaxRange(),
-        value=Value(),
-    ):
-        """
-        Args:
-            meshcat: A Meshcat instance.
-            visible: An object with boolean elements for 'roll', 'pitch',
-                     'yaw', 'x', 'y', 'z'; the intention is for this to be the
-                     PoseSliders.Visible() namedtuple.  Defaults to all true.
-            min_range, max_range, value: Objects with float values for 'roll',
-                      'pitch', 'yaw', 'x', 'y', 'z'; the intention is for the
-                      caller to use the PoseSliders.MinRange, MaxRange, and
-                      Value namedtuples.  See those tuples for default values.
-        """
-        LeafSystem.__init__(self)
-        port = self.DeclareAbstractOutputPort(
-            "pose",
-            lambda: AbstractValue.Make(RigidTransform()),
-            self.DoCalcOutput,
-        )
-
-        # The widgets themselves have undeclared state.  For now, we accept it,
-        # and simply disable caching on the output port.
-        # TODO(russt): consider implementing the more elaborate methods seen
-        # in, e.g., LcmMessageSubscriber.
-        port.disable_caching_by_default()
-
-        self._meshcat = meshcat
-        self._visible = visible
-        self._value = list(value)
-
-        for i in range(6):
-            if visible[i]:
-                meshcat.AddSlider(
-                    min=min_range[i],
-                    max=max_range[i],
-                    value=value[i],
-                    step=0.01,
-                    name=value._fields[i],
-                )
-
-    def __del__(self):
-        for s in ["roll", "pitch", "yaw", "x", "y", "z"]:
-            if visible[s]:
-                self._meshcat.DeleteSlider(s)
-
-    def SetPose(self, pose):
-        """
-        Sets the current value of the sliders.
-
-        Args:
-            pose: Any viable argument for the RigidTransform
-                  constructor.
-        """
-        tf = RigidTransform(pose)
-        self.SetRpy(RollPitchYaw(tf.rotation()))
-        self.SetXyz(tf.translation())
-
-    def SetRpy(self, rpy):
-        """
-        Sets the current value of the sliders for roll, pitch, and yaw.
-
-        Args:
-            rpy: An instance of drake.math.RollPitchYaw
-        """
-        self._value[0] = rpy.roll_angle()
-        self._value[1] = rpy.pitch_angle()
-        self._value[2] = rpy.yaw_angle()
-        for i in range(3):
-            if self._visible[i]:
-                self._meshcat.SetSliderValue(self._visible._fields[i], self._value[i])
-
-    def SetXyz(self, xyz):
-        """
-        Sets the current value of the sliders for x, y, and z.
-
-        Args:
-            xyz: A 3 element iterable object with x, y, z.
-        """
-        self._value[3:] = xyz
-        for i in range(3, 6):
-            if self._visible[i]:
-                self._meshcat.SetSliderValue(self._visible._fields[i], self._value[i])
-
-    def _update_values(self):
-        changed = False
-        for i in range(6):
-            if self._visible[i]:
-                old_value = self._value[i]
-                self._value[i] = self._meshcat.GetSliderValue(self._visible._fields[i])
-                changed = changed or self._value[i] != old_value
-        return changed
-
-    def _get_transform(self):
-        return RigidTransform(
-            RollPitchYaw(self._value[0], self._value[1], self._value[2]),
-            self._value[3:],
-        )
-
-    def DoCalcOutput(self, context, output):
-        """Constructs the output values from the sliders."""
-        self._update_values()
-        output.set_value(self._get_transform())
-
-    def Run(self, publishing_system, root_context, callback):
-        # Calls callback(root_context, pose), then publishing_system.Publish()
-        # each time the sliders change value.
-        if not running_as_notebook:
-            return
-
-        publishing_context = publishing_system.GetMyContextFromRoot(root_context)
-
-        print("Press the 'Stop PoseSliders' button in Meshcat to continue.")
-        self._meshcat.AddButton("Stop PoseSliders")
-        while self._meshcat.GetButtonClicks("Stop PoseSliders") < 1:
-            if self._update_values():
-                callback(root_context, self._get_transform())
-                publishing_system.Publish(publishing_context)
-            time.sleep(0.1)
-
-        self._meshcat.DeleteButton("Stop PoseSliders")
-
-
 class WsgButton(LeafSystem):
-    def __init__(self, meshcat):
+    """Adds a button named `Open/Close Gripper` to the meshcat GUI, and registers the Space key to press it. Pressing this button will toggle the value of the output port from a wsg position command corresponding to an open position or a closed position.
+
+    Args:
+        meshcat: The meshcat instance in which to register the button.
+    """
+
+    def __init__(self, meshcat: Meshcat):
         LeafSystem.__init__(self)
-        port = self.DeclareVectorOutputPort("wsg_position", 1, self.DoCalcOutput)
+        port = self.DeclareVectorOutputPort("wsg_position", 1, self._DoCalcOutput)
         port.disable_caching_by_default()
         self._meshcat = meshcat
         self._button = "Open/Close Gripper"
-        meshcat.AddButton(self._button)
+        meshcat.AddButton(self._button, "Space")
+        print("Press Space to open/close the gripper")
 
     def __del__(self):
         self._meshcat.DeleteButton(self._button)
 
-    def DoCalcOutput(self, context, output):
+    def _DoCalcOutput(self, context, output):
         position = 0.107  # open
         if (self._meshcat.GetButtonClicks(self._button) % 2) == 1:
             position = 0.002  # close
         output.SetAtIndex(0, position)
 
 
-# TODO(russt): Add floating base support (as in manipulation.jupyter_widgets
-# MakeJointSlidersThatPublish)
-class MeshcatJointSliders(LeafSystem):
-    """
-    Adds one slider per joint of the MultibodyPlant.  Any positions that are
-    not associated with joints (e.g. floating-base "mobilizers") are held
-    constant at the default value obtained from robot.CreateDefaultContext().
+class StopButton(LeafSystem):
+    """Adds a button named `Stop Simulation` to the meshcat GUI, and registers
+    the `Escape` key to press it. Pressing this button will terminate the
+    simulation.
 
-    In addition to being used inside a Diagram that is being simulated with
-    Simulator, this class also offers a `Run` method that runs its own simple
-    event loop, querying the slider values and calling `Publish`.  It does not
-    simulate any state dynamics.
+    Args:
+        meshcat: The meshcat instance in which to register the button.
+        check_interval: The period at which to check for button presses.
     """
 
-    def __init__(
-        self,
-        meshcat,
-        plant,
-        root_context=None,
-        lower_limit=-10.0,
-        upper_limit=10.0,
-        resolution=0.01,
-    ):
-        """
-        Creates an meshcat slider for each joint in the plant.
-
-        Args:
-            meshcat:      A Meshcat instance.
-            plant:        A MultibodyPlant. publishing_system: The System whose
-                          Publish method will be called.  Can be the entire
-                          Diagram, but can also be a subsystem.
-            root_context: A mutable root Context of the Diagram containing the
-                          ``plant``; we will extract the subcontext's using
-                          `GetMyContextFromRoot`.
-            lower_limit:  A scalar or vector of length robot.num_positions().
-                          The lower limit of the slider will be the maximum
-                          value of this number and any limit specified in the
-                          Joint.
-
-            upper_limit:  A scalar or vector of length robot.num_positions().
-                          The upper limit of the slider will be the minimum
-                          value of this number and any limit specified in the
-                          Joint.
-
-            resolution:   A scalar or vector of length robot.num_positions()
-                          that specifies the step argument of the FloatSlider.
-        """
+    def __init__(self, meshcat: Meshcat, check_interval: float = 0.1):
         LeafSystem.__init__(self)
-
-        def _broadcast(x, num):
-            x = np.array(x)
-            assert len(x.shape) <= 1
-            return np.array(x) * np.ones(num)
-
-        lower_limit = _broadcast(lower_limit, plant.num_positions())
-        upper_limit = _broadcast(upper_limit, plant.num_positions())
-        resolution = _broadcast(resolution, plant.num_positions())
-
         self._meshcat = meshcat
-        self._plant = plant
-        plant_context = (
-            plant.GetMyContextFromRoot(root_context)
-            if root_context
-            else plant.CreateDefaultContext()
-        )
+        self._button = "Stop Simulation"
 
-        self._sliders = {}
-        self._positions = plant.GetPositions(plant_context)
-        slider_num = 0
-        for i in range(plant.num_joints()):
-            joint = plant.get_joint(JointIndex(i))
-            low = joint.position_lower_limits()
-            upp = joint.position_upper_limits()
-            for j in range(joint.num_positions()):
-                index = joint.position_start() + j
-                description = joint.name()
-                if joint.num_positions() > 1:
-                    description += "_" + joint.position_suffix(j)
-                meshcat.AddSlider(
-                    value=self._positions[index],
-                    min=max(low[j], lower_limit[slider_num]),
-                    max=min(upp[j], upper_limit[slider_num]),
-                    step=resolution[slider_num],
-                    name=description,
-                )
-                self._sliders[index] = description
-                slider_num += 1
+        self.DeclareDiscreteState([0])  # button click count
+        self.DeclareInitializationDiscreteUpdateEvent(self._Initialize)
+        self.DeclarePeriodicDiscreteUpdateEvent(check_interval, 0, self._CheckButton)
 
-        port = self.DeclareVectorOutputPort(
-            "positions", plant.num_positions(), self.DoCalcOutput
-        )
-        port.disable_caching_by_default()
+        # Create the button now (rather than at initialization) so that the
+        # CheckButton method will work even if Initialize has never been
+        # called.
+        meshcat.AddButton(self._button, "Escape")
 
-    def DoCalcOutput(self, context, output):
-        output.SetFromVector(self._positions)
-        for i, s in self._sliders.items():
-            output[i] = self._meshcat.GetSliderValue(s)
+    def __del__(self):
+        # TODO(russt): Provide a nicer way to check if the button is currently
+        # registered.
+        try:
+            self._meshcat.DeleteButton(self._button)
+        except:
+            pass
 
-    def Run(self, publishing_system, root_context, callback=None):
-        """
-        Args:
-            publishing_system:  The system to call publish on.  Probably a
-                          MeshcatVisualizer.
-            root_context: A mutable root Context of the Diagram containing both
-                          the ``plant`` and the ``publishing_system``; we will
-                          extract the subcontext's using `GetMyContextFromRoot`.
-            callback: callback(plant_context) will be called whenever the
-                      slider values change.
-        """
-        if not running_as_notebook:
-            return
-        print("Press the 'Stop JointSliders' button in Meshcat to continue.")
-        self._meshcat.AddButton("Stop JointSliders")
+    def _Initialize(self, context, discrete_state):
+        print("Press Escape to stop the simulation")
+        discrete_state.set_value([self._meshcat.GetButtonClicks(self._button)])
 
-        plant_context = self._plant.GetMyContextFromRoot(root_context)
-        publishing_context = publishing_system.GetMyContextFromRoot(root_context)
-
-        publishing_system.Publish(publishing_context)
-        while self._meshcat.GetButtonClicks("Stop JointSliders") < 1:
-            old_positions = self._plant.GetPositions(plant_context)
-            positions = self._positions
-            for i, s in self._sliders.items():
-                positions[i] = self._meshcat.GetSliderValue(s)
-            if not np.array_equal(positions, old_positions):
-                self._plant.SetPositions(plant_context, positions)
-                if callback:
-                    callback(plant_context)
-                publishing_system.Publish(publishing_context)
-            time.sleep(0.1)
-
-        self._meshcat.DeleteButton("Stop JointSliders")
+    def _CheckButton(self, context, discrete_state):
+        clicks_at_initialization = context.get_discrete_state().value()[0]
+        if self._meshcat.GetButtonClicks(self._button) > clicks_at_initialization:
+            self._meshcat.DeleteButton(self._button)
+            return EventStatus.ReachedTermination(self, "Termination requested by user")
+        return EventStatus.DidNothing()
 
 
 def AddMeshcatTriad(
-    meshcat, path, length=0.25, radius=0.01, opacity=1.0, X_PT=RigidTransform()
+    meshcat: Meshcat,
+    path: str,
+    length: float = 0.25,
+    radius: float = 0.01,
+    opacity: float = 1.0,
+    X_PT: RigidTransform = RigidTransform(),
 ):
+    """Adds an X-Y-Z triad to the meshcat scene.
+
+    Args:
+        meshcat: A Meshcat instance.
+        path: The Meshcat path on which to attach the triad. Using relative paths will attach the triad to the path's coordinate system.
+        length: The length of the axes in meters.
+        radius: The radius of the axes in meters.
+        opacity: The opacity of the axes in [0, 1].
+        X_PT: The pose of the triad relative to the path.
+    """
     meshcat.SetTransform(path, X_PT)
     # x-axis
     X_TG = RigidTransform(RotationMatrix.MakeYRotation(np.pi / 2), [length / 2.0, 0, 0])
@@ -453,34 +241,28 @@ def AddMeshcatTriad(
     )
 
 
-def draw_open3d_point_cloud(meshcat, path, pcd, normals_scale=0.0, point_size=0.001):
-    pts = np.asarray(pcd.points)
-    assert pcd.has_colors()  # TODO(russt): handle this case better
-    cloud = PointCloud(pts.shape[0], Fields(BaseField.kXYZs | BaseField.kRGBs))
-    cloud.mutable_xyzs()[:] = pts.T
-    cloud.mutable_rgbs()[:] = 255 * np.asarray(pcd.colors).T
-    meshcat.SetObject(path, cloud, point_size=point_size)
-    if pcd.has_normals() and normals_scale > 0.0:
-        assert "need to implement LineSegments in meshcat c++"
-        normals = np.asarray(pcd.normals)
-        vertices = np.hstack((pts, pts + normals_scale * normals)).reshape(-1, 3).T
-        meshcat["normals"].set_object(
-            g.LineSegments(
-                g.PointsGeometry(vertices), g.MeshBasicMaterial(color=0x000000)
-            )
-        )
-
-
 def plot_surface(
-    meshcat,
-    path,
-    X,
-    Y,
-    Z,
-    rgba=Rgba(0.87, 0.6, 0.6, 1.0),
-    wireframe=False,
-    wireframe_line_width=1.0,
+    meshcat: Meshcat,
+    path: str,
+    X: np.ndarray,
+    Y: np.ndarray,
+    Z: np.ndarray,
+    rgba: Rgba = Rgba(0.87, 0.6, 0.6, 1.0),
+    wireframe: bool = False,
+    wireframe_line_width: float = 1.0,
 ):
+    """Plot a surface in meshcat.
+
+    Args:
+        meshcat: A Meshcat instance.
+        path: The Meshcat path to the surface.
+        X: A 2D array of x values.
+        Y: A 2D array of y values.
+        Z: A 2D array of z values.
+        rgba: The color of the surface.
+        wireframe: If true, plot the surface as a wireframe.
+        wireframe_line_width: The width of the wireframe lines.
+    """
     (rows, cols) = Z.shape
     assert np.array_equal(X.shape, Y.shape)
     assert np.array_equal(X.shape, Z.shape)
@@ -506,7 +288,27 @@ def plot_surface(
     )
 
 
-def plot_mathematical_program(meshcat, path, prog, X, Y, result=None, point_size=0.05):
+def plot_mathematical_program(
+    meshcat: Meshcat,
+    path: str,
+    prog: MathematicalProgram,
+    X: np.ndarray,
+    Y: np.ndarray,
+    result: MathematicalProgramResult = None,
+    point_size: float = 0.05,
+):
+    """Visualize a MathematicalProgram in Meshcat.
+
+    Args:
+        meshcat: A Meshcat instance.
+        path: The Meshcat path to the visualization.
+        prog: A MathematicalProgram instance.
+        X: A 2D array of x values.
+        Y: A 2D array of y values.
+        result: A MathematicalProgramResult instance; if provided then the
+            solution is visualized as a point.
+        point_size: The size of the solution point.
+    """
     assert prog.num_vars() == 2
     assert X.size == Y.size
 
@@ -588,3 +390,37 @@ def plot_mathematical_program(meshcat, path, prog, X, Y, result=None, point_size
             v,
             RigidTransform([x_solution[0], x_solution[1], result.get_optimal_cost()]),
         )
+
+
+def PublishPositionTrajectory(
+    trajectory: Trajectory,
+    root_context: Context,
+    plant: MultibodyPlant,
+    visualizer: MeshcatVisualizer,
+    time_step: float = 1.0 / 33.0,
+):
+    """
+    Publishes an animation to Meshcat of a MultibodyPlant using a trajectory of the plant positions.
+
+    Args:
+        trajectory: A Trajectory instance.
+        root_context: The root context of the diagram containing plant.
+        plant: A MultibodyPlant instance.
+        visualizer: A MeshcatVisualizer instance.
+        time_step: The time step between published frames.
+    """
+    plant_context = plant.GetMyContextFromRoot(root_context)
+    visualizer_context = visualizer.GetMyContextFromRoot(root_context)
+
+    visualizer.StartRecording(False)
+
+    for t in np.append(
+        np.arange(trajectory.start_time(), trajectory.end_time(), time_step),
+        trajectory.end_time(),
+    ):
+        root_context.SetTime(t)
+        plant.SetPositions(plant_context, trajectory.value(t))
+        visualizer.ForcedPublish(visualizer_context)
+
+    visualizer.StopRecording()
+    visualizer.PublishRecording()
