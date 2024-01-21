@@ -15,6 +15,7 @@ poetry install
 
 To generate it, run
 ```
+poetry export
 ./book/htmlbook/PoetryExport.sh
 ```
 
