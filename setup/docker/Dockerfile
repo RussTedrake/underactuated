@@ -35,6 +35,10 @@ COPY setup/docker/pip.conf /root/.config/pip/pip.conf
 COPY setup/ubuntu/22.04/install_prereqs.sh /tmp/
 RUN /tmp/install_prereqs.sh
 RUN apt -y install xvfb git nginx-light
+# We still pip install the requirements, because otherwise deepnote will
+# install old versions of e.g. scipy which cannot be upgraded in the
+# Init notebook.  Drake is also installed in /opt/drake, but is not used (since 
+# I've not added it to the path / pythonpath).
 RUN pip3 install -r /tmp/requirements.txt pyvirtualdisplay underactuated
 RUN rm -rf /root/.cache /root/.config
 RUN rm -f /tmp/install_prereqs.sh
