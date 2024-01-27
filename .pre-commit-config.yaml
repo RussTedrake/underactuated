@@ -1,11 +1,11 @@
 repos:
 - repo: https://github.com/psf/black
-  rev: 23.12.1
+  rev: 23.12.1  # NOTE: If updating, also update the version in .github/workflows/*
   hooks:
     - id: black-jupyter
       types_or: ["python","jupyter"] 
 - repo: https://github.com/pycqa/isort
-  rev: 5.12.0
+  rev: 5.12.0  # NOTE: If updating, also update the version in .github/workflows/*
   hooks:
     - id: isort
 - repo: https://github.com/PyCQA/autoflake

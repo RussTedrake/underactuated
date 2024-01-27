@@ -92,10 +92,19 @@ jobs:
         uses: actions/setup-python@v4
       - name: black
         uses: psf/black@stable
+        with:
+          version: 23.12.1
+          jupyter: true
       - name: isort
         uses: isort/isort-action@master
         with:
             configuration: "--profile black"
+            isort-version: 5.12.0
+      - name: autoflake
+        uses: creyD/autoflake_action@master
+        with:
+            options: --remove-all-unused-imports --in-place
+            # Pegging version s.t. https://github.com/creyD/autoflake_action/issues/1
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
