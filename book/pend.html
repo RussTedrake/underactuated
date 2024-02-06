@@ -713,9 +713,12 @@ complete trajectory.</p>
 
       <ol type="a">
 
-        <li>Identify a desired closed-loop dynamics $\ddot \theta = f(\dot \theta)$, whose unique equilibrium point is stable and is located in $\dot \theta = 1$.</li>
+        <li>Identify the family of dynamics functions $\ddot \theta = f(\dot \theta)$ whose unique equilibrium point is stable and is located at $\dot \theta = 1$.</li>
 
-        <li>Use feedback cancellation to design a control law $u = \pi(\theta, \dot \theta, t)$ that makes the closed-loop dynamics coincide with the one chosen at the previous point.</li>
+        <li>Consider an actuated pendulum whose base (pivot of the rod) is forced to oscillate horizontally according to the harmonic law $h \sin(\omega t)$, where $h$ denotes the amplitude of the oscillation and $\omega$ the frequency.  The equation of motion for this system is $$m l^2 \ddot \theta + m g l \sin \theta = m l \omega^2 h \sin (\omega t) \cos \theta + u.$$  (If this equation seems obscure to you, try to derive it using the <a href="multibody.html">Lagrangian approach</a>; but be careful, the kinetic energy $T(\theta, \dot \theta, t)$ of this system depends explicitly on time.)  Our goal is to design a time-dependent control law $u = \pi (\theta, \dot \theta, t)$ that makes the pendulum spin at constant velocity $\dot \theta = 1$.
+          <br>
+          Use feedback cancellation to design a control law $u = \pi(\theta, \dot \theta, t)$ that makes the closed-loop dynamics fall into the family of functions from part (a).
+        </li>
 
         <li><script>document.write(notebook_link('pend', 'vibrating_pendulum', link_text='In this python notebook'))</script>, we set up a simulation environment to test your control law.  Try to understand the structure of the code: this workflow is quite general, and it could be a good starting point for your future Drake projects.  Implement your control law in the dedicated cell, and check your work using the animation and the plots at the end of the notebook.</li>
 
