@@ -93,7 +93,7 @@ jobs:
       - name: black
         uses: psf/black@stable
         with:
-          version: 23.12.1
+          version: 24.1.1
           jupyter: true
       - name: isort
         uses: isort/isort-action@master

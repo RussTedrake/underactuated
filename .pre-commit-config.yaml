@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/psf/black
-  rev: 23.12.1  # NOTE: If updating, also update the version in .github/workflows/*
+  rev: 24.1.1  # NOTE: If updating, also update the version in .github/workflows/*
   hooks:
     - id: black-jupyter
       types_or: ["python","jupyter"] 
