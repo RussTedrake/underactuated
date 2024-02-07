@@ -688,10 +688,18 @@ complete trajectory.</p>
 
     <exercise><h1>Attractivity vs Stability</h1>
 
-      Consider the dynamical system given by \begin{align*} \dot x_1 &= x_1
-      (1-|\bx|) + x_2 \frac{x_1-|\bx|}{2|\bx|}, \\ \dot x_2 &= x_2 (1-|\bx|) -
-      x_1 \frac{x_1-|\bx|}{2|\bx|}, \end{align*} for $\bx\neq [0,0]^\top$, and $\dot \bx = [0,0]^\top$ for $\bx = [0,0]^\top$, where $|\bx| =
-      \sqrt{x_1^2+x_2^2}$.  To help you with the analysis of this system, we
+      Consider the dynamical system given by 
+      \begin{align*} 
+      \dot x_1 &= \begin{cases} 
+      x_1 (1-|\bx|) + x_2 \frac{x_1-|\bx|}{2|\bx|}, & \text{if }\ |\bx| \neq 0, \\   
+      0, & \text{if }\ |\bx| = 0,  
+      \end{cases}\\
+      \dot x_2 &= \begin{cases} 
+      x_2 (1-|\bx|) - x_1 \frac{x_1-|\bx|}{2|\bx|}, & \text{if }\ |\bx| \neq 0, \\   
+      0, & \text{if }\ |\bx| = 0,  
+      \end{cases}\\, 
+      \end{align*}
+      where $|\bx| = \sqrt{x_1^2+x_2^2}$. To help you with the analysis of this system, we
       set up <script>document.write(notebook_link('pend', 'attractivity_vs_stability', link_text='this python notebook'))</script>.  Take your time to understand
       the code in it, and then answer the following questions.
 
