@@ -77,6 +77,8 @@ class Grader:
         source, meta = exporter.from_notebook_node(
             nbformat.reads(json.dumps(ipynb), nbformat.NO_CONVERT)
         )
+        # HACK to work-around drake issue #20914
+        source = source.replace("plot_system_graphviz", "#plot_system_graphviz")
         with open("./cleaned_notebook.py", "w") as fh:
             fh.write(source)
 
