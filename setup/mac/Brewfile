@@ -1,7 +1,7 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
-brew "bazel"
+brew "bazelisk"
 brew "python@3.11"
 brew "tidy-html5"
 brew "gprof2dot" # Supplies dot for pydot
