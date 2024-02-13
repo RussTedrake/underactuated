@@ -265,7 +265,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         </figure>
 
         <p>These equations are not arbitrary - they are actually a model for one
-        of the simplest neural networks, and one of the simplest model of
+        of the simplest neural networks, and one of the simplest models of
         persistent memory<elib>Seung00</elib>.  In the equation $x$ models the
         firing rate of a single neuron, which has a feedback connection to
         itself.  $\tanh$ is the activation (sigmoidal) function of the neuron,
@@ -325,12 +325,10 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
       <p> Consider again the system $$ml^2 \ddot\theta = u_0 - mgl \sin\theta -
       b\dot\theta,$$ this time with $b = 0$.  This time the system dynamics are
-      truly second-order.  We can always think of any second-order system as
-      (coupled) first-order system with twice as many variables. Consider a
-      general, autonomous (not dependent on time), second-order system,
-      $$\ddot{q} = f(q,\dot q,u).$$ This system is equivalent to the
+      truly second-order.  We can always think of any second-order system, $$\ddot{\theta} = f(\theta,\dot\theta),$$ as
+      (coupled) first-order system with twice as many variables. This system is equivalent to the
       two-dimensional first-order system \begin{align*} \dot x_1 =& x_2 \\ \dot
-      x_2 =& f(x_1,x_2,u), \end{align*} where $x_1 = q$ and $x_2 = \dot q$.
+      x_2 =& f(x_1,x_2), \end{align*} where $x_1 = \theta$ and $x_2 = \dot \theta$.
       Therefore, the graphical depiction of this system is not a line, but a
       vector field where the vectors $[\dot x_1, \dot x_2]^T$ are plotted over
       the domain $(x_1,x_2)$.  This vector field is known as the <em>phase
@@ -378,7 +376,10 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         verify that differentiating this equation with respect to time indeed
         results in the equations of motion.</p>
 
-        <p>The particular orbit defined by $E = mgl$ is special -- this is the orbit that visits the (unstable) equilibrium at the upright.  It is known as the <a href="https://en.wikipedia.org/wiki/Homoclinic_orbit">homoclinic orbit</a>.</p>
+        <p>The particular orbit defined by $E = mgl$ is special -- this is the
+        orbit that visits the (unstable) equilibrium at the upright.  This is
+        the <a href="https://en.wikipedia.org/wiki/Homoclinic_orbit">homoclinic
+        orbit</a> of the pendulum.</p>
 
       </subsubsection>
 
@@ -522,8 +523,9 @@ complete trajectory.</p>
       shape the natural dynamics - at each point pick a $u$ from the stack of
       phase plots - to stabilize the vertical fixed point <em>with minimal
       torque effort</em>?  This is exactly the way that I would like you to
-      think about control system design.  And we'll give you your first solution
-      techniques -- using dynamic programming -- in the next lecture.</p>
+      think about control system design.  And in the <a href="dp.html">dynamic
+      programming chapter</a>, we'll start to develop our computational
+      solution techniques.</p>
 
     </subsection> <!-- damped pend -->
 
