@@ -241,53 +241,6 @@ def AddMeshcatTriad(
     )
 
 
-def plot_surface(
-    meshcat: Meshcat,
-    path: str,
-    X: np.ndarray,
-    Y: np.ndarray,
-    Z: np.ndarray,
-    rgba: Rgba = Rgba(0.87, 0.6, 0.6, 1.0),
-    wireframe: bool = False,
-    wireframe_line_width: float = 1.0,
-):
-    """Plot a surface in meshcat.
-
-    Args:
-        meshcat: A Meshcat instance.
-        path: The Meshcat path to the surface.
-        X: A 2D array of x values.
-        Y: A 2D array of y values.
-        Z: A 2D array of z values.
-        rgba: The color of the surface.
-        wireframe: If true, plot the surface as a wireframe.
-        wireframe_line_width: The width of the wireframe lines.
-    """
-    (rows, cols) = Z.shape
-    assert np.array_equal(X.shape, Y.shape)
-    assert np.array_equal(X.shape, Z.shape)
-
-    vertices = np.empty((rows * cols, 3), dtype=np.float32)
-    vertices[:, 0] = X.reshape((-1))
-    vertices[:, 1] = Y.reshape((-1))
-    vertices[:, 2] = Z.reshape((-1))
-
-    # Vectorized faces code from https://stackoverflow.com/questions/44934631/making-grid-triangular-mesh-quickly-with-numpy  # noqa
-    faces = np.empty((rows - 1, cols - 1, 2, 3), dtype=np.uint32)
-    r = np.arange(rows * cols).reshape(rows, cols)
-    faces[:, :, 0, 0] = r[:-1, :-1]
-    faces[:, :, 1, 0] = r[:-1, 1:]
-    faces[:, :, 0, 1] = r[:-1, 1:]
-    faces[:, :, 1, 1] = r[1:, 1:]
-    faces[:, :, :, 2] = r[1:, :-1, None]
-    faces.shape = (-1, 3)
-
-    # TODO(Russ): support per vertex / Colormap colors.
-    meshcat.SetTriangleMesh(
-        path, vertices.T, faces.T, rgba, wireframe, wireframe_line_width
-    )
-
-
 def plot_mathematical_program(
     meshcat: Meshcat,
     path: str,
@@ -341,8 +294,7 @@ def plot_mathematical_program(
             v = f"{cv}/{type(c).__name__}"
             Zc = np.zeros(Z.shape)
             Zc[satisfied] = np.nan
-            plot_surface(
-                meshcat,
+            meshcat.PlotSurface(
                 v,
                 X,
                 Y,
@@ -361,8 +313,7 @@ def plot_mathematical_program(
                 infeasible = np.logical_or(
                     Zc[index, :] < low[index], Zc[index, :] > up[index]
                 )
-                plot_surface(
-                    meshcat,
+                meshcat.PlotSurface(
                     f"{cvb}/{index}",
                     X,
                     Y,
@@ -372,8 +323,7 @@ def plot_mathematical_program(
                 )
 
     if costs:
-        plot_surface(
-            meshcat,
+        meshcat.PlotSurface(
             f"{path}/objective",
             X,
             Y,

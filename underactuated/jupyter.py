@@ -5,8 +5,6 @@ from warnings import warn
 
 from IPython import get_ipython
 from IPython.display import HTML, display
-from ipywidgets.widgets import FloatSlider
-from pydrake.systems.framework import VectorSystem
 
 # Use a global variable here because some calls to IPython will actually case an
 # interpreter to be created.  This file needs to be imported BEFORE that
@@ -149,25 +147,3 @@ def update_widgets(num_ui_events_to_process=1):
             "Automatic execution of scheduled cells only works with "
             "asyncio-based ipython"
         )
-
-
-# TODO(russt): generalize this to e.g. WidgetSystem (should work for any widget,
-# or list of widgets).
-class SliderSystem(VectorSystem):
-    def __init__(self, min, max, value=0, description=""):
-        # 0 inputs, 1 output.
-        VectorSystem.__init__(self, 0, 1)
-        self.slider = FloatSlider(
-            value=value,
-            description=description,
-            min=min,
-            max=max,
-            continuous_update=True,
-        )
-
-        if get_ipython() is not None:
-            display(self.slider)
-
-    def DoCalcVectorOutput(self, context, unused, unused2, output):
-        update_widgets()
-        output[:] = self.slider.value
