@@ -1916,51 +1916,19 @@ V = RegionOfAttraction(sys, context)
 
       </subsubsection>
 
-      <subsubsection id="LP"><h1>Linear Programming Dynamic Programming</h1>
+      <subsubsection><h1>Linear Programming Dynamic Programming</h1>
 
-        <p>For discrete MDPs, value iteration is a magical algorithm because it
-        is simple, but known to converge to the global optimal, $J^*$.
-        However, other important algorithms are known; one of the most
-        important is a solution approach using linear programming.  This
-        formulation provides an alternative view, but may also be more
-        generalizable and even more efficient for some instances of the
-        problem.</p>
-          
-        <p>Recall the optimality conditions from Eq. \eqref{eq:value_update}.
-        If we describe the cost-to-go function as a vector, $J_i = J(s_i)$,
-        then these optimality conditions can be rewritten in vector form as
-        \begin{equation} \bJ = \min_a \left[ {\bf \ell}(a) + \bT(a) \bJ
-        \right], \label{eq:vector_stochastic_dp} \end{equation} where
-        $\ell_i(a) = \ell(s_i,a)$ is the cost vector, and $T_{i,j}(a) =
-        \Pr(s_j|s_i,a)$ is the transition probability matrix.  Let us take
-        $\bJ$ as the vector of decision variables, and replace Eq.
-        (\ref{eq:vector_stochastic_dp}) with the constraints: \begin{equation}
-        \forall a, \bJ \le {\bf \ell}(a) + \bT(a) \bJ.\end{equation}  Clearly,
-        for finite $a$, this is finite list of linear constraints, and for any
-        vector $\bJ$ satisfying these constraints we have $\bJ \le \bJ^*$
-        (elementwise).  Now write the linear program: \begin{gather*}
-        \maximize_\bJ \quad \bc^T \bJ, \\ \subjto \quad \forall a, \bJ \le {\bf
-        \ell}(a) + \bT(a) \bJ, \end{gather*} where $c$ is any positive vector.
-        The solution to this problem is $\bJ = \bJ^*$.</p>
-  
-        <p>Perhaps even more interesting is that this approach can be
-        generalized to linear function approximators.  Taking a vector form of
-        my notation above, now we have a matrix of features with $\bPsi_{i,j} =
-        \psi^T_j(\bx_i)$ and we can write the LP \begin{gather}
-        \maximize_\balpha \quad \bc^T \bPsi \balpha, \\ \subjto \quad \forall
-        a, \bPsi \balpha \le {\bf \ell}(a) + \bT(a) \bPsi \balpha. \end{gather}
-        This time the solution is not necessarily optimal, because $\bPsi
-        \balpha^*$ only approximates $\bJ^*$, and the relative values of the
-        elements of $\bc$ (called the "state-relevance weights") can determine
-        the relative tightness of the approximation for different features
-        <elib>Farias02</elib>.</p>
-  
-        <todo>Add an example here; and perhaps reference the problem set
-        question.</todo>
+        <p>In the dynamic programming chapter, we introduced the <a
+        href="dp.html#lp_dp">linear programming approach to dynamic
+        programming</a>. This was exactly using the idea of pushing up on a
+        lower bound on the cost-to-go. In the case of a discrete state, then
+        this lower bound will be tight (and we obtain the true cost-to-go
+        function); in the case of linear function approximators, then we hope
+        for a tight lower bound.</p>
   
       </subsubsection>
   
-      <subsubsection id="sums_of_squares"><h1>Sums-of-Squares Dynamic
+      <subsubsection id="sos_dp"><h1>Sums-of-Squares Dynamic
       Programming</h1>
   
         <p>The linear programming approach works natively in discrete (or
@@ -2543,12 +2511,6 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 <span class="title">"Convex Optimization of Nonlinear Feedback Controllers via Occupation Measures"</span>, 
 <span class="publisher">Proceedings of Robotics: Science and Systems (RSS)</span> , <span class="year">2013</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar13b.pdf">link</a>&nbsp;]
-
-</li><br>
-<li id=Farias02>
-<span class="author">Daniela Pucci de Farias</span>, 
-<span class="title">"The Linear Programming Approach to Approximate Dynamic Programming: Theory and Application"</span>, 
-PhD thesis, Stanford University, June, <span class="year">2002</span>.
 
 </li><br>
 <li id=Yang23>
