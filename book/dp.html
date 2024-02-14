@@ -1279,14 +1279,14 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       <ol type="a">
         <li>Suppose we represent our dynamics with a graph $G = (V, E)$ where the vertices represent the states and edges represent the available actions/state transitions. 
       
-      Calculate the batched value iteration tables until convergence for the following directed acyclic graph (DAG), and calculate the total number of individual Bellman updates.      
+      Calculate the batched value iteration tables until convergence for the following directed acyclic graph (DAG), and calculate the total number of individual Bellman updates. Note: You do not need to include the updates required to check convergence.
 
       <figure>
         <img src="figures/exercises/order_of_value_iteration_updates.svg"/>
       </figure>
       </li>
 
-      <li>Suppose we are performing asynchronous value iteration with a hand-specified update order. Produce the update order for the above graph that minimizes the number of individual Bellman updates till convergence, and calculate the total number of individual updates. </li>
+      <li>Suppose we are performing asynchronous value iteration with a hand-specified update order. Produce the update order for the above graph that minimizes the number of individual Bellman updates till convergence, and calculate the total number of individual updates. Note: You do not need to include the updates required to check convergence. </li>
 
       <li>Generalize the update order in part (b) to arbitrary DAGs with a single start node and single goal node by defining the set of states to be updated at iteration $n+1$ in terms of the set of states that were updated at iteration $n$. Note: Describe the update sequence iteratively in terms of sets of states instead of individual states (as defined by asynchronous VI) because this simplifies the description of the update sequence.</li>
       
