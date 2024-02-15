@@ -61,12 +61,12 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
   <p>While solving the dynamic programming problem for continuous systems is
   very hard in general, there are a few very important special cases where the
   solutions are very accessible. Most of these involve variants on the case of
-  linear dynamics and quadratic cost.  The simplest case, called the linear
-  quadratic regulator (LQR), is formulated as stabilizing a time-invariant
-  linear system to the origin.</p>
+  linear dynamics and convex (e.g. positive quadratic) cost.  The simplest
+  case, called the linear quadratic regulator (LQR), is formulated as
+  stabilizing a time-invariant linear system to the origin.</p>
 
   <p>The linear quadratic regulator is likely the most important and influential
-  result in optimal control theory to date.  In this chapter we will derive the
+  result in optimal control theory to date. In this chapter we will derive the
   basic algorithm and a variety of useful extensions.</p>
 
   <section><h1>Basic Derivation</h1>
@@ -104,7 +104,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     important equation is a version of the <em>algebraic Riccati equation</em>.
     Note that it is quadratic in ${\bf S}$, making its solution non-trivial, but
     it is well known that the equation has a single positive-definite solution
-    if and only if the system is controllable and there are good numerical
+    if and only if the system is controllable. Moreover, there are good numerical
     methods for finding that solution, even in high-dimensional problems.  Both
     the optimal policy and optimal cost-to-go function are available from
     <drake></drake> by calling <code> (K,S) =
@@ -117,17 +117,18 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     cost takes the form $J=\bx^T(0) {\bf S} \bx(0)$.</p>
 
     <p>It is worth examining the form of the optimal policy more closely. Since
-    the value function represents cost-to-go, it would be sensible to move down
-    this landscape as quickly as possible.  Indeed, $-{\bf S}\bx$ is in the
-    direction of steepest descent of the value function. However, not all
+    the value function represents cost-to-go, the optimal actions will move
+    down this landscape as quickly as possible.  Indeed, $-{\bf S}\bx$ is in
+    the direction of steepest descent of the value function. However, not all
     directions are possible to achieve in state-space. $-\bB^T {\bf S} \bx$
-    represents precisely the projection of the steepest descent onto the control
-    space, and is the steepest descent achievable with the control inputs $\bu$.
-    Finally, the pre-scaling by the matrix ${\bf R}^{-1}$ biases the direction
-    of descent to account for relative weightings that we have placed on the
-    different control inputs.  Note that although this interpretation is
-    straight-forward, the slope that we are descending (in the value function,
-    ${\bf S}$) is a complicated function of the dynamics and cost.</p>
+    represents precisely the projection of the steepest descent onto the action
+    space, and is the steepest descent achievable with the control inputs
+    $\bu$. Finally, the pre-scaling by the matrix ${\bf R}^{-1}$ biases the
+    direction of descent to account for relative cost weightings that we have
+    placed on the different control inputs.  Note that although this
+    interpretation is straight-forward, the slope that we are descending (in
+    the value function, ${\bf S}$) is a function that takes into account the
+    <i>long-term</i> dynamics and cost.</p>
 
     <example><h1>LQR for the Double Integrator</h1>
 
