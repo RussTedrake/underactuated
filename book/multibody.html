@@ -196,12 +196,14 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     we know that the $i$ element of $\bC\dot{\bq}$ is given by <elib
     part="&sect;5.2.3">Asada86</elib>: $$\left[\bC(\bq,\dot\bq)\dot\bq
     \right]_i = \dot{\bq}^T \bar{\bf C}_i \dot{\bq} , \qquad
-    \bar{C}_{i;j,k}(\bq) =  \pd{M_{ij}}{q_k} - \frac{1}{2} \pd{M_{jk}}{q_i},$$
+    \bar{C}_{i;j,k}(\bq) =  \frac{1}{2}\left[\pd{M_{ij}}{q_k} + \pd{M_{ik}}{q_j} - \pd{M_{jk}}{q_i}\right],$$
     (e.g. it also quadratic in $\dot{\bq}$). For the appropriate choice of
-    $\bC$, we have that $\bM(\bq) - 2\bC(\bq,\dot{\bq})$ is
-    skew-symmetric<elib>Slotine90</elib>. </p>
+    $\bC$, we have that $\dot{\bM}(\bq) - 2\bC(\bq,\dot{\bq})$ is
+    skew-symmetric<elib part="&sect;9.1">Slotine90</elib>. </p>
 
-    <!-- Khalil and Dombre have c_{ijk} = \frac{1}{2}[\pd{H_{ij}}{q_k} + \pd{H_{ik}}{q_j} - \pd{H_{jk}}{q_i}], which is slightly different... -->
+    <!-- One could also write 
+    \bar{C}_{i;j,k}(\bq) =  \pd{M_{ij}}{q_k} - \frac{1}{2} \pd{M_{jk}}{q_i}
+    but things are not skew-symmetric in that form. -->
 
     <p>Note that we have chosen to use the notation of second-order systems
     (with $\dot{\bq}$ and $\ddot{\bq}$ appearing in the equations) throughout
@@ -784,7 +786,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         with the standard transcription of Coulomb friction.  In the limit of
         infinite friction, then we could add an additional constraint that the
         tangential velocity at each contact point was equal to zero (but these
-        equation may not always have a feasible solution).  Once we admit limits on the magnitude of the friction forces, the non-convexity of the disjunctive form rear's it's ugly head.</p>
+        equation may not always have a feasible solution).  Once we admit limits on the magnitude of the friction forces, the non-convexity of the disjunctive form rear's its ugly head.</p>
 
         <example><h1>Time-stepping LCP: Coulomb Friction</h1>
 
@@ -848,7 +850,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         <elib>Stewart96</elib>).  Importantly, for each ${\bf d}_i$ we must also
         have $-{\bf d}_i$ in the set.  By writing the Lagrangian, $$L(\bv', {\bf
         \beta}) = \frac{1}{2}(\bv' - \bv^-)^T\bM(\bv' - \bv^-) - \sum_i \beta_i
-        \left(\frac{1}{h}\phi(\bq) + ({\bf n} + \mu {\bf d})\bv'\right),$$ and checking the
+        \left(\frac{1}{h}\phi(\bq) + ({\bf n} + \mu {\bf d}_i)\bv'\right),$$ and checking the
         stationarity condition: $$\pd{L}{\bv'}^T = \bM(\bv' - \bv) - h\btau -
         \sum_i \beta_i ({\bf n} + \mu{\bf d}_i)^T = 0,$$ we can see that the
         Lagrange multiplier, $\beta_i \ge 0$, associated with the $i$th
@@ -871,12 +873,12 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         approximation to me, especially for small $h$!</p>
 
         <p>Let's continue on and write the dual program.  To make the notation a
-        little better, the us stack the Jacobian vectors into $\bJ_\beta$, such
+        little better, let us stack the Jacobian vectors into $\bJ_\beta$, such
         that the $i$th row is ${\bf n} + \mu{\bf d_i}$, so that we have
         $$\pd{L}{\bv'}^T = \bM(\bv' - \bv) - h\btau - \bJ_\beta^T \beta = 0.$$
         Substituting this back into the Lagrangian give us the dual program:
         $$\min_{\beta \ge 0} \frac{1}{2} \beta^T \bJ_\beta \bM^{-1} \bJ_\beta^T
-        \beta +  \frac{1}{h}\phi(\bq) \sum_i \beta_i.$$</p>
+        \beta + \frac{1}{h}\phi(\bq) \sum_i \beta_i + \beta^T \bJ_\beta \bv^{-}.$$</p>
 
         <p>One final note: I've written just one contact point here to simplify
         the notation, but of course we repeat the constraint(s) for each contact
