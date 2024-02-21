@@ -1066,8 +1066,9 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
             represent state vector values ($\bx = s_{i, j}$ means $x_1 = i, x_2
             = j$) and edges are state transitions defined by a control law. In
             the following truncated graph, draw the edges when $u = -1$, $u=0$,
-            and $u=1$. (Please include all outgoing edges from the nodes in the
-            truncated graph, along with their ending nodes)
+            and $u=1$. (Please draw edges for all the nine nodes in
+            the truncated graph. If a node trainsitions to another node outside
+            the graph, please draw the destination node as well.)
               <figure>
                 <img src="figures/exercises/2d_grid_double_integrator.svg"/>
               </figure>
@@ -1075,11 +1076,11 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
             </li> 
             <li>
               Suppose we start from $s_{0, 0}$, construct a control input
-              sequence ($u[n]$ could be a function of time step) to reach an
-              arbitrary state $s_{i, j}$ that satisfies $j > i > 0$. What would
-              be the minimal number of time steps needed to reach any $s_{i,
-              j}$ that satisfies $j > i > 0$? Show that the number you've
-              chosen is indeed minimum.
+              sequence ($u[n]$ could be a function of time step and is no longer
+              bounded between -1 and 1) to reach an arbitrary state
+              $s_{i, j}$ that satisfies $j > i > 0$. What would be the minimal
+              number of time steps needed to reach any $s_{i,j}$ that satisfies
+              $j > i > 0$? Show that the number you've chosen is indeed minimum.
             </li>
             <li>
               Now consider a more general case, from an arbitrary initial state
@@ -1092,41 +1093,42 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
         </li>
         <li>
-          Considering linear systems $$\dot{\bx} = {\bf A} \bx + {\bf B} \bu,$$
-          are the following linear systems controllable? 
-          \begin{align*}
-            {\bf A}_1 = \begin{bmatrix}
-                1 & 0 \\ 0 & 1
-            \end{bmatrix}, {\bf B}_1 = \begin{bmatrix}
-                0 \\ 1
-            \end{bmatrix};\qquad {\bf A}_2 = \begin{bmatrix}
-                1 & 0 \\ 0 & 1
-            \end{bmatrix}, {\bf B}_2 = \begin{bmatrix}
-                1\\ 1
-            \end{bmatrix}; \\ \\
-            {\bf A}_3 = \begin{bmatrix}
-                1 & 0 \\ 0 & 1
-            \end{bmatrix}, {\bf B}_3 = \begin{bmatrix}
-                1 & 0 \\ 0 & 1
-            \end{bmatrix};\qquad {\bf A}_4 = \begin{bmatrix}
-                0 & 1 \\ 0 & 0
-            \end{bmatrix}, {\bf B}_4 = \begin{bmatrix}
-                0 \\ 1
-            \end{bmatrix}.
-        \end{align*}
-
-        <p>Can you make a
-          conclusion whether these systems are underactuated? (Note that the
-          definition requires the system to be interpreted as a second-order
-          system with, i.e., $\bx = [q, \dot{q}]^T$)</p>
-
-        <p>You should only need the conditions described <a
-        href="#controllability_def">the definition of controllability</a> to
-        explain your conclusion. (Hint: Think about the similarity between
-        system $({\bf A}_4, {\bf B}_4)$ and the grid-world discrete-time system
-        in (b)). The more general tools found in <a
-        href="#controllability_matrix">this collapsable section</a> will
-        certainly work, too.</p>
+          <ol>
+            <li>
+              Considering linear systems $$\dot{\bx} = {\bf A} \bx + {\bf B} \bu,$$
+              are the following linear systems controllable? 
+              \begin{align*}
+                {\bf A}_1 = \begin{bmatrix}
+                    1 & 0 \\ 0 & 1
+                \end{bmatrix}, {\bf B}_1 = \begin{bmatrix}
+                    0 \\ 1
+                \end{bmatrix};\qquad {\bf A}_2 = \begin{bmatrix}
+                    1 & 0 \\ 0 & 1
+                \end{bmatrix}, {\bf B}_2 = \begin{bmatrix}
+                    1\\ 1
+                \end{bmatrix}; \\ \\
+                {\bf A}_3 = \begin{bmatrix}
+                    0 & 1 \\ 0 & 0
+                \end{bmatrix}, {\bf B}_3 = \begin{bmatrix}
+                    0 \\ 1
+                \end{bmatrix};\qquad {\bf A}_4 = \begin{bmatrix}
+                    0 & 0 & 1 & 0 \\ 0 & 0 & 0 & 1 \\ 0 & 1 & 0 & 0 \\ 0 & 2 & 0 & 0
+                \end{bmatrix}, {\bf B}_4 = \begin{bmatrix}
+                    0 \\ 0 \\ 1 \\ 1
+                \end{bmatrix}.
+              \end{align*}
+              <p>For systems with a 2 by 2 ${\bf A}$ matrix, you should only need the conditions described in <a
+                href="#controllability_def">the definition of controllability</a> to
+                explain your conclusion. You can use the more general tools found in <a
+                href="#controllability_matrix">this collapsable section</a> for the 4 by 4 ${\bf A}$ matrix.</p>
+            </li>
+            <li>
+              <p>Consider the two systems, $({\bf A}_3, {\bf B}_3)$ and $({\bf A}_4, {\bf B}_4)$.
+                Can you make a conclusion whether these two systems are underactuated? (Note that the
+                definition requires the system to be interpreted as a second-order
+                system with, i.e., $\bx = [\bq, \dot{\bq}]^T$)</p>
+            </li>
+          </ol>
         </li>
       </ol>
 
