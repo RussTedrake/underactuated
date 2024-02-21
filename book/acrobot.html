@@ -899,16 +899,16 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       <p> Let's try to apply the energy-shaping ideas to the cart-pole system.
       The basic idea, from <elib>Chung95</elib>, is to use collocated PFL to
       simplify the dynamics, use energy shaping to regulate the pendulum to its
-      homoclinic orbit, then to add a few terms to make sure that the cart stays
-      near the origin.  This is a bit surprising... if we want to control the
-      pendulum, shouldn't we use the non-collocated version?  Actually, we
+      homoclinic orbit, then to add a few terms to make sure that the cart
+      stays near the origin.  This is a bit surprising... if we want to control
+      the pendulum, shouldn't we use the non-collocated version?  Actually, we
       ultimately want to control both the cart and the pole, and we will build
       on the collocated version both because it avoids inverting the
-      $\cos\theta$ term that can go to zero and because (when all parameters are
-      set to 1) we were left with a particularly simple form of the equations:
-      \begin{gather} \ddot{x} = u \\ \ddot\theta = - u c - s. %\ddot\theta =
-      -\frac{1}{l}( u c + g s ) \end{gather} The first equation is clearly
-      simple, but even the second equation is exactly the equations of a
+      $\cos\theta$ term that can go to zero and because (when all parameters
+      are set to 1) we were left with a particularly simple form of the
+      equations: \begin{gather} \ddot{x} = u \\ \ddot\theta = - u c -
+      s.\end{gather} The first equation is clearly simple, but even the second
+      equation is exactly the equations of a
       <i>decoupled</i> pendulum, just with a slightly odd control input that is
       modulated by $\cos\theta$.</p>
 
