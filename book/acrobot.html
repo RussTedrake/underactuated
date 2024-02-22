@@ -1076,8 +1076,8 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
             </li> 
             <li>
               Suppose we start from $s_{0, 0}$, construct a control input
-              sequence ($u[n]$ could be a function of time step and is no longer
-              bounded between -1 and 1) to reach an arbitrary state
+              sequence ($u[n]$ could be a function of time step and can take
+              any arbitrary intger values) to reach an arbitrary state
               $s_{i, j}$ that satisfies $j > i > 0$. What would be the minimal
               number of time steps needed to reach any $s_{i,j}$ that satisfies
               $j > i > 0$? Show that the number you've chosen is indeed minimum.
@@ -1117,16 +1117,17 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
                     0 \\ 0 \\ 1 \\ 1
                 \end{bmatrix}.
               \end{align*}
-              <p>For systems with a 2 by 2 ${\bf A}$ matrix, you should only need the conditions described in <a
+              <p>You should only need the conditions described in <a
                 href="#controllability_def">the definition of controllability</a> to
-                explain your conclusion. You can use the more general tools found in <a
-                href="#controllability_matrix">this collapsable section</a> for the 4 by 4 ${\bf A}$ matrix.</p>
+                explain your conclusion. You can also use the more general tools found in <a
+                href="#controllability_matrix">this collapsable section</a>; these will prove
+                especially for the $({\bf A}_4, {\bf B}_4)$ matrix pair.</p>
             </li>
             <li>
               <p>Consider the two systems, $({\bf A}_3, {\bf B}_3)$ and $({\bf A}_4, {\bf B}_4)$.
                 Can you make a conclusion whether these two systems are underactuated? (Note that the
-                definition requires the system to be interpreted as a second-order
-                system with, i.e., $\bx = [\bq, \dot{\bq}]^T$)</p>
+                definition of underactuation requires the system to be interpreted as a second-order
+                system, i.e., $\bx = [\bq, \dot{\bq}]^T$)</p>
             </li>
           </ol>
         </li>
