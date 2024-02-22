@@ -264,7 +264,10 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     but to be efficient in forward flight you probably want to have an airfoil.
     Wings are a really good idea!  But I was wrong -- quadrotors have
     completely dominated fixed-wings for commercial UAVs.  Perhaps it's only
-    because they are easier to control?  Maybe there is still hope...</p>
+    because they are easier to control? I suspect that as the field matures and
+    achieving core functionality is not the primary obstacle, then people will
+    eventually start worrying again about efficiency (a bit like we think about
+    efficiency for automobiles).</p>
 
     <subsection id="planar_quadrotor"><h1>The Planar Quadrotor</h1>
 
@@ -299,9 +302,9 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       href="https://github.com/RobotLocomotion/drake/blob/53571e1d65d1716d8b4b72ae8d3571ee89fa36cf/examples/quadrotor/quadrotor_plant.cc#L55"><code>QuadrotorPlant</code></a>
       example in Drake is almost as readable as a LaTeX derivation.  The most
       interesting feature of this model that we include the
-      <i>moment</i> produced by the rotating propellers.  Surprisingly, without
-      these moments, the system linearized about the hovering configuration is
-      actually not controllable.</p>
+      <i>moment</i> produced by the rotating propellers.  Interestingly,
+      without these moments, the system linearized about the hovering
+      configuration is actually not controllable.</p>
 
       <p>The <code>QuadrotorPlant</code> example implements the simple model.
       But often you may want to add extra features to the quadrotor model.  For
@@ -326,8 +329,9 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       added a "roll-pitch-yaw" floating base to the model.  This keeps
       linearization simple but does introduce a singularity at "gimble lock".
       I've tried to mostly avoid dealing with 3D rotations throughout these
-      notes, but I do have a few more notes about this <a
-      href="https://manipulation.csail.mit.edu/pick.html#floating-base">here</a>.</p>
+      notes, but my <a
+      href="https://manipulation.csail.mit.edu/pick.html#floating-base">notes
+      on manipulation cover 3D rotations</a> in a bit more detail.</p>
 
     </subsection>
 
@@ -562,14 +566,40 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
       </subsubsection>
 
+      <subsubsection><h1>Stabilizability of a linear system</h1>
+
+        <p>Closely related to controllability is the notion of
+        <i>stabilizability</i>. Stabilizability is a weaker condition that
+        controllability (a system can be stabilizable but not controllable, but
+        not the other way around).</p>
+
+        <definition id="stabilizability_def"><h1>Stabilizability of a linear
+        system</h1>
+        A control system of the form $$\dot{\bx} = \bA\bx + \bB
+        \bu$$ is called <em>stabilizable</em> if it is possible to construct an unconstrained
+        input signal, $\bu(t)$, $t \in [0,\infty],$ which results in $$\lim_{t \rightarrow \infty} \bx(t) = 0.$$ </definition>   
+
+        <p>Controllability requires that we arrive at the origin in a finite
+        time, stabilizability allows for asympotitic convergence. Essentially,
+        a system can still be stabilizable if the uncontrollable subspace is
+        naturally stable.</p>
+
+        <p>Interestingly, for nonlinear systems the relationship between
+        stabilizability and controllability is much more subtle. In a famous
+        (sometimes misquoted) result from Roger Brockett states that nonlinear
+        controllability does not necessarily imply stabilizability by
+        differentiable control policies<elib>Brockett83</elib>.</p>
+
+      </subsubsection>
+
     </subsection> <!-- end controllability -->
 
     <subsection><h1>LQR feedback</h1>
 
-      <p> Controllability tells us that a trajectory to the fixed point exists,
-      but does not tell us which one we should take or what control inputs cause
-      it to occur.  Why not?  There are potentially infinitely many solutions.
-      We have to pick one.</p>
+      <p>Controllability and stabilizability tell us that a trajectory to the
+      fixed point exists, but does not tell us which one we should take or what
+      control inputs cause it to occur.  Why not?  There are potentially
+      infinitely many solutions. We have to pick one.</p>
 
       <p> The tools for controller design in linear systems are very advanced.
       In particular, as we describe in the <a href="lqr.html">linear
@@ -593,6 +623,12 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       R}$ are positive diagonal matrices, where the entries $Q_{ii}$ penalize
       the relative errors in state variable $x_i$ compared to the other state
       variables, and the entries $R_{ii}$ penalize actions in $u_i$.</p>
+
+      <p>Take a moment to appreciate this. If the linearized system is
+      stabilizable, then for any (positive semi-definite) $\bQ$ and (positive
+      definite) $\bR$ matrices, LQR will give us a stabilizing controller. If
+      the system is not stabilizable, then LQR will tell us that no linear
+      controller exists. Pretty amazing!</p>
 
       <example><h1>LQR for the Acrobot and Cart-Pole</h1>
 
