@@ -252,14 +252,14 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     light-weight, and inexpensive!  They are strong enough to carry an
     interesting payload (e.g. of sensors for mapping / photographing the
     environment), but dynamic enough to move relatively quickly.  The most
-    interesting dynamics start showing up at higher speeds, when the propellors
+    interesting dynamics start showing up at higher speeds, when the propellers
     start achieving lift from the airflow across them due to horizontal motion,
     or when they are close enough to the ground to experience significant
     ground-effect, but we won't try to capture those effects (yet) here.</p>
 
     <p>When the quadrotor revolution started to happen, I predicted that it
     would be followed quickly by a realization that fixed-wing vehicles are
-    better for most applications.  Propellors are almost optimally efficient
+    better for most applications.  Propellers are almost optimally efficient
     for producing thrust -- making quadrotors very efficient for hovering --
     but to be efficient in forward flight you probably want to have an airfoil.
     Wings are a really good idea!  But I was wrong -- quadrotors have
@@ -270,7 +270,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
       <p>We can get started with an extremely simple model of a quadrotor that
       is restricted to live in the plane.  In that case, it actually only needs
-      two propellors, but calling it a "birotor" doesn't have the same ring to
+      two propellers, but calling it a "birotor" doesn't have the same ring to
       it.  The equations of motion are almost trivial, since it is only a
       single rigid body, and certainly fit into our standard manipulator
       equations:
@@ -285,7 +285,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       <figcaption>The Planar Quadrotor System (which we also refer to in the
       code as "Quadrotor2D", to keep it next to "Quadrotor" in the directory
       listing). The model parameters are mass, $m$, moment of inertia, $I$, and
-      the distance from the center to the base of the propellor, $r$.
+      the distance from the center to the base of the propeller, $r$.
       </figcaption> </figure>
 
 
@@ -816,7 +816,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       </theorem>
 
         <p> In order to execute a task space trajectory one could command
-        $$\ddot\by^d = \ddot{\by}^d + \bK_d (\dot{\by}^d - \dot\by)
+        $$\ddot\by^d = \bK_d (\dot{\by}^d - \dot\by)
         + \bK_p (\by^d -\by).$$ Assuming the internal dynamics are stable,
         this yields converging error dynamics when
         $\bK_p,\bK_d > 0$<elib>Slotine90</elib>, which implies $y(t) \rightarrow y^d(t)$.  For a position control robot,
