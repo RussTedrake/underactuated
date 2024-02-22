@@ -9,12 +9,46 @@ load("//book/htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 rt_ipynb_test(
     name = "acrobot",
     srcs = ["acrobot.ipynb"],
-    data = ["//underactuated/models:cartpole.urdf"],
-    flaky = True,
-    tags = ["requires-network"], # to download drake-models
     deps = [
         "//underactuated",
         "//underactuated:meshcat_utils",
+    ],
+)
+
+rt_ipynb_test(
+    name = "cartpole",
+    srcs = ["cartpole.ipynb"],
+    data = ["//underactuated/models:cartpole.urdf"],
+    deps = [
+        "//underactuated",
+        "//underactuated:meshcat_utils",
+    ],
+)
+
+rt_ipynb_test(
+    name = "flatness",
+    srcs = ["flatness.ipynb"],
+    deps = [
+        "//underactuated",
         "//underactuated:quadrotor2d",
+    ],
+)
+
+rt_ipynb_test(
+    name = "planar_quadrotor",
+    srcs = ["planar_quadrotor.ipynb"],
+    deps = [
+        "//underactuated",
+        "//underactuated:quadrotor2d",
+    ],
+)
+
+rt_ipynb_test(
+    name = "quadrotor",
+    srcs = ["quadrotor.ipynb"],
+    flaky = True,
+    deps = [
+        "//underactuated",
+        "//underactuated:meshcat_utils",
     ],
 )
