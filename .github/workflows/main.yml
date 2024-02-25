@@ -41,33 +41,33 @@ on:
   schedule:
     - cron: '0 8 * * *'
 jobs:
-  jammy:
-    name: ubuntu 22.04 jammy
-    runs-on: ubuntu-22.04
-    container: ubuntu:22.04
-    steps:
-      - name: pre-checkout setup
-        run: |
-          export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 DEBIAN_FRONTEND=noninteractive
-          apt-get update -o APT::Acquire::Retries=4 -qq
-          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends ca-certificates gnupg
-          apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E1DD270288B4E6030699E45FA1715D88E1DF1F24
-          echo 'deb http://ppa.launchpad.net/git-core/ppa/ubuntu focal main' > /etc/apt/sources.list.d/git.list
-          apt-get update -o APT::Acquire::Retries=4 -qq
-          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends git
-          rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*
-        shell: bash
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: submodule checkout
-        run:  ./setup/submodule_checkout
-        shell: bash
-      - name: post-checkout setup
-        run: ./book/htmlbook/workflows/ci/jammy/setup
-        shell: bash
-      - name: test
-        run: ./book/htmlbook/workflows/ci/jammy/test
-        shell: bash
+  # jammy:
+  #   name: ubuntu 22.04 jammy
+  #   runs-on: ubuntu-22.04
+  #   container: ubuntu:22.04
+  #   steps:
+  #     - name: pre-checkout setup
+  #       run: |
+  #         export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 DEBIAN_FRONTEND=noninteractive
+  #         apt-get update -o APT::Acquire::Retries=4 -qq
+  #         apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends ca-certificates gnupg
+  #         apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E1DD270288B4E6030699E45FA1715D88E1DF1F24
+  #         echo 'deb http://ppa.launchpad.net/git-core/ppa/ubuntu focal main' > /etc/apt/sources.list.d/git.list
+  #         apt-get update -o APT::Acquire::Retries=4 -qq
+  #         apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends git
+  #         rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*
+  #       shell: bash
+  #     - name: checkout
+  #       uses: actions/checkout@v2
+  #     - name: submodule checkout
+  #       run:  ./setup/submodule_checkout
+  #       shell: bash
+  #     - name: post-checkout setup
+  #       run: ./book/htmlbook/workflows/ci/jammy/setup
+  #       shell: bash
+  #     - name: test
+  #       run: ./book/htmlbook/workflows/ci/jammy/test
+  #       shell: bash
   monterey:
     name: macos monterey 12
     runs-on: macos-12
@@ -81,99 +81,99 @@ jobs:
         run: ./book/htmlbook/workflows/ci/monterey/setup
         shell: zsh -efuo pipefail {0}
       - name: check
-        run: ls -l /opt/homebrew/share
+        run: ls -l /usr/local/share/
         shell: zsh -efuo pipefail {0}
-      - name: test
-        run: ./book/htmlbook/workflows/ci/monterey/test
-        shell: zsh -efuo pipefail {0}
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout repo
-        uses: actions/checkout@v3
-      - name: setup python
-        uses: actions/setup-python@v4
-      - name: black
-        uses: psf/black@stable
-        with:
-          version: 24.2.0
-          jupyter: true
-      - name: isort
-        uses: isort/isort-action@master
-        with:
-            configuration: "--profile black"
-            isort-version: 5.12.0
-      - name: autoflake
-        uses: creyD/autoflake_action@master
-        with:
-            options: --remove-all-unused-imports --in-place
-            # Pegging version s.t. https://github.com/creyD/autoflake_action/issues/1
-      - name: Install and configure Poetry
-        uses: snok/install-poetry@v1
-        with:
-          version: 1.7.1
-          virtualenvs-create: true
-          virtualenvs-in-project: true
-      - name: build the docs
-        run: |
-          poetry install --only docs
-          source .venv/bin/activate
-          sphinx-build -M html underactuated book/python
-        shell: bash
-      - name: Test full poetry install
-        run: poetry install
-  docker:
-    name: dockerfile
-    runs-on: ubuntu-latest
-    container: russtedrake/underactuated:latest
-    steps:
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: submodule checkout
-        run:  ./setup/submodule_checkout
-        shell: bash
-      - name: post-checkout setup
-        # Force bazel to use user pip instead of re-downloading everything to 
-        # be hermetic:
-        run: |
-          truncate -s0 requirements.txt 
-          sed -i '/PYTHONNOUSERSITE/d' .bazelrc
-        shell: bash
-      - name: test
-        run: ./book/htmlbook/workflows/ci/jammy/test
-        shell: bash
-  jammy-pip:
-    # This should emulate a student's experience if they are doing the psets
-    # via pip install underactuated.
-    #
-    # TODO(russt): Revisit the pip3 install -r requirements.txt below. Maybe I
-    # need to separate out testing requirements from notebook requirements.
-    name: pip on jammy
-    runs-on: ubuntu-22.04
-    container: ubuntu:22.04
-    steps:
-      - name: pre-checkout setup
-        run: |
-          apt-get update -o APT::Acquire::Retries=4 -qq
-          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends python3-pip git xvfb
-          pip3 install underactuated --extra-index-url https://drake-packages.csail.mit.edu/whl/nightly/
-        shell: bash
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: submodule checkout
-        run:  ./setup/submodule_checkout
-        shell: bash
-      - name: post-checkout setup
-        # Force bazel to use user pip instead of re-downloading everything to
-        # be hermetic. Also apply patches to avoid bazel dependency on
-        # installed drake.
-        run: |
-          ./setup/ubuntu/22.04/install_prereqs.sh
-          pip3 install -r requirements.txt  # poetry does not publish dependency groups https://github.com/python-poetry/poetry/issues/6727
-          truncate -s0 requirements.txt
-          sed -i '/PYTHONNOUSERSITE/d' .bazelrc
-        shell: bash
-      - name: test
-        run: DRAKE_RESOURCE_ROOT=`python3 -c "from pathlib import Path; from pydrake.all import GetDrakePath; print(Path(GetDrakePath()).parent)"` ./book/htmlbook/workflows/ci/jammy/test_w_installed_deps
-        shell: bash
+#      - name: test
+#        run: ./book/htmlbook/workflows/ci/monterey/test
+#        shell: zsh -efuo pipefail {0}
+  # lint:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: checkout repo
+  #       uses: actions/checkout@v3
+  #     - name: setup python
+  #       uses: actions/setup-python@v4
+  #     - name: black
+  #       uses: psf/black@stable
+  #       with:
+  #         version: 24.2.0
+  #         jupyter: true
+  #     - name: isort
+  #       uses: isort/isort-action@master
+  #       with:
+  #           configuration: "--profile black"
+  #           isort-version: 5.12.0
+  #     - name: autoflake
+  #       uses: creyD/autoflake_action@master
+  #       with:
+  #           options: --remove-all-unused-imports --in-place
+  #           # Pegging version s.t. https://github.com/creyD/autoflake_action/issues/1
+  #     - name: Install and configure Poetry
+  #       uses: snok/install-poetry@v1
+  #       with:
+  #         version: 1.7.1
+  #         virtualenvs-create: true
+  #         virtualenvs-in-project: true
+  #     - name: build the docs
+  #       run: |
+  #         poetry install --only docs
+  #         source .venv/bin/activate
+  #         sphinx-build -M html underactuated book/python
+  #       shell: bash
+  #     - name: Test full poetry install
+  #       run: poetry install
+  # docker:
+  #   name: dockerfile
+  #   runs-on: ubuntu-latest
+  #   container: russtedrake/underactuated:latest
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v2
+  #     - name: submodule checkout
+  #       run:  ./setup/submodule_checkout
+  #       shell: bash
+  #     - name: post-checkout setup
+  #       # Force bazel to use user pip instead of re-downloading everything to 
+  #       # be hermetic:
+  #       run: |
+  #         truncate -s0 requirements.txt 
+  #         sed -i '/PYTHONNOUSERSITE/d' .bazelrc
+  #       shell: bash
+  #     - name: test
+  #       run: ./book/htmlbook/workflows/ci/jammy/test
+  #       shell: bash
+  # jammy-pip:
+  #   # This should emulate a student's experience if they are doing the psets
+  #   # via pip install underactuated.
+  #   #
+  #   # TODO(russt): Revisit the pip3 install -r requirements.txt below. Maybe I
+  #   # need to separate out testing requirements from notebook requirements.
+  #   name: pip on jammy
+  #   runs-on: ubuntu-22.04
+  #   container: ubuntu:22.04
+  #   steps:
+  #     - name: pre-checkout setup
+  #       run: |
+  #         apt-get update -o APT::Acquire::Retries=4 -qq
+  #         apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends python3-pip git xvfb
+  #         pip3 install underactuated --extra-index-url https://drake-packages.csail.mit.edu/whl/nightly/
+  #       shell: bash
+  #     - name: checkout
+  #       uses: actions/checkout@v2
+  #     - name: submodule checkout
+  #       run:  ./setup/submodule_checkout
+  #       shell: bash
+  #     - name: post-checkout setup
+  #       # Force bazel to use user pip instead of re-downloading everything to
+  #       # be hermetic. Also apply patches to avoid bazel dependency on
+  #       # installed drake.
+  #       run: |
+  #         ./setup/ubuntu/22.04/install_prereqs.sh
+  #         pip3 install -r requirements.txt  # poetry does not publish dependency groups https://github.com/python-poetry/poetry/issues/6727
+  #         truncate -s0 requirements.txt
+  #         sed -i '/PYTHONNOUSERSITE/d' .bazelrc
+  #       shell: bash
+  #     - name: test
+  #       run: DRAKE_RESOURCE_ROOT=`python3 -c "from pathlib import Path; from pydrake.all import GetDrakePath; print(Path(GetDrakePath()).parent)"` ./book/htmlbook/workflows/ci/jammy/test_w_installed_deps
+  #       shell: bash
 

@@ -2,6 +2,7 @@
 # vi: set ft=ruby :
 
 brew "bazelisk"
+brew "jupyterlab"
 brew "python@3.12"
 brew "tidy-html5"
 brew "gprof2dot" # Supplies dot for pydot
