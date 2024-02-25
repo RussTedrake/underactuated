@@ -66,7 +66,6 @@ libsm6
 libx11-6
 locales
 python3
-python3-ipywidgets
 python3-pip
 python3-widgetsnbextension
 tidy

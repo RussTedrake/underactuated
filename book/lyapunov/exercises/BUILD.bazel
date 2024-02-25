@@ -20,6 +20,7 @@ rt_ipynb_test(
     name = "sos_and_psd",
     srcs = ["sos_and_psd.ipynb"],
     deps = [
+        "//underactuated",
         "//underactuated/exercises",
         "//underactuated/exercises/lyapunov:sos_and_psd",
     ],

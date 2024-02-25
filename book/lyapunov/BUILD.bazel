@@ -4,16 +4,23 @@
 # Copyright 2020-2022 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
+load("@pip_deps//:requirements.bzl", "requirement")
 load("//book/htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
     name = "common_lyap_linear",
     srcs = ["common_lyap_linear.ipynb"],
+    deps = [
+      "//underactuated",
+    ],
 )
 
 rt_ipynb_test(
     name = "cubic_poly",
     srcs = ["cubic_poly.ipynb"],
+    deps = [
+      requirement("drake"),
+    ],
 )
 
 rt_ipynb_test(
@@ -47,6 +54,7 @@ rt_ipynb_test(
     data = ["//underactuated/models:cartpole.urdf"],
     deps = [
       "//underactuated",
+      requirement("scipy"),
     ],
 )
 

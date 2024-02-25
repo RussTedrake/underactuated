@@ -1,6 +1,6 @@
 repos:
 - repo: https://github.com/psf/black
-  rev: 24.1.1  # NOTE: If updating, also update the version in .github/workflows/*
+  rev: 24.2.0  # NOTE: If updating, also update the version in .github/workflows/*
   hooks:
     - id: black-jupyter
       types_or: ["python","jupyter"] 
@@ -14,7 +14,7 @@ repos:
     - id: autoflake
       args: [--remove-all-unused-imports, --in-place]
 - repo: https://github.com/nbQA-dev/nbQA # for jupyter notebooks
-  rev: 1.3.1
+  rev: 1.7.1
   hooks:
     - id: nbqa-isort 
     # Note: autoflake is not officially supported; see Developers.md

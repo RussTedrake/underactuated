@@ -1,15 +1,10 @@
 ## Requirements management with Poetry
 
-Install poetry using the [official installer](https://python-poetry.org/docs/#installing-with-the-official-installer); not brew nor apt.
-Install the poetry export plugin:
 ```
-pip3 install poetry-plugin-export
+pip3 install poetry
+poetry install --with=dev,docs
 ```
-Then one can run
-```
-poetry install
-```
-(potentially in a virtual environment) to install the requirements.
+(in a virtual environment) to install the requirements.
 
 ## Bazel currently uses requirements-bazel.txt, which we generate from poetry
 

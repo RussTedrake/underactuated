@@ -80,6 +80,12 @@ jobs:
       - name: setup
         run: ./book/htmlbook/workflows/ci/monterey/setup
         shell: zsh -efuo pipefail {0}
+      - name: check
+        run: |
+          pip3 install --break-system-packages nbconvert 
+          jupyter --paths
+          python3 book/htmlbook/tools/jupyter/nbconvert_script.py book/intro/intro.ipynb
+        shell: zsh -efuo pipefail {0}
       - name: test
         run: ./book/htmlbook/workflows/ci/monterey/test
         shell: zsh -efuo pipefail {0}
@@ -93,7 +99,7 @@ jobs:
       - name: black
         uses: psf/black@stable
         with:
-          version: 24.1.1
+          version: 24.2.0
           jupyter: true
       - name: isort
         uses: isort/isort-action@master
