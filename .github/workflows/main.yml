@@ -81,7 +81,11 @@ jobs:
         run: ./book/htmlbook/workflows/ci/monterey/setup
         shell: zsh -efuo pipefail {0}
       - name: check
-        run: ls -l /usr/local/share/
+        run: |
+          ls -l /usr/local/share/
+          pip3 install nbconvert
+          ls -l /usr/local/share/
+          jupyter --paths
         shell: zsh -efuo pipefail {0}
 #      - name: test
 #        run: ./book/htmlbook/workflows/ci/monterey/test
