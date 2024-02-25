@@ -59,12 +59,15 @@ apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy \
   --no-install-recommends $(cat <<EOF
 graphviz
 jupyter
+jupyter-nbconvert
+jupyter-notebook
 libglib2.0-0
 libsm6
 libx11-6
 locales
 python3
 python3-pip
+python3-widgetsnbextension
 tidy
 wget
 g++
