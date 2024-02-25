@@ -80,6 +80,9 @@ jobs:
       - name: setup
         run: ./book/htmlbook/workflows/ci/monterey/setup
         shell: zsh -efuo pipefail {0}
+      - name: check
+        run: ls -l /opt/homebrew/share
+        shell: zsh -efuo pipefail {0}
       - name: test
         run: ./book/htmlbook/workflows/ci/monterey/test
         shell: zsh -efuo pipefail {0}
