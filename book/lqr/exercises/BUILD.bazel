@@ -10,6 +10,7 @@ rt_ipynb_test(
     name = "drake_diagrams",
     srcs = ["drake_diagrams.ipynb"],
     deps = [
+      "//underactuated",
       "//underactuated/exercises/lqr:drake_diagrams",
       "//underactuated/exercises", # Needed for grader throws logic.
     ],

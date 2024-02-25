@@ -9,6 +9,9 @@ load("//book/htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 rt_ipynb_test(
     name = "continuous_vs_discrete_time",
     srcs = ["continuous_vs_discrete_time.ipynb"],
+    deps = [
+      "//underactuated",
+    ],
 )
 
 rt_ipynb_test(

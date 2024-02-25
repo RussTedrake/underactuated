@@ -4,6 +4,7 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
+load("@pip_deps//:requirements.bzl", "requirement")
 load("//book/htmlbook/tools/python:defs.bzl", "rt_py_library")
 
 exports_files(
@@ -27,6 +28,11 @@ rt_py_library(
     data = [
         "package.xml",
     ],
+    deps = [
+      requirement("drake"),
+      requirement("ipython"),
+      requirement("mpld3"),
+    ],
     imports = [".."],
     visibility = ["//visibility:public"],
 )
@@ -44,7 +50,10 @@ rt_py_library(
     srcs = ["meshcat_utils.py"],
     imports = [".."],
     visibility = ["//visibility:public"],
-    deps = ["underactuated"],
+    deps = [
+      "underactuated",
+      requirement("ipywidgets"),
+    ],
 )
 
 rt_py_library(

@@ -4,11 +4,18 @@
 # Copyright 2020 Massachusetts Institute of Technology.
 # Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
 
+load("@pip_deps//:requirements.bzl", "requirement")
 load("//book/htmlbook/tools/python:defs.bzl", "rt_py_library")
 
 rt_py_library(
     name = "exercises",
     srcs = ["grader.py"],
+    deps = [
+      requirement("gradescope-utils"),
+      requirement("timeout-decorator"),
+      requirement("nbconvert"),
+      requirement("nbformat"),
+    ],
     visibility = ["//visibility:public"],
 )
 

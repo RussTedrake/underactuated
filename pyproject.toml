@@ -49,10 +49,11 @@ url = "https://drake-packages.csail.mit.edu/whl/nightly/"
 priority = "explicit"
 
 [tool.poetry.dependencies]
-python = "<3.12,>=3.10"  # <3.12 is for the newer versions of scipy
+python = "<4.0,>=3.10"
 #drake = { version = "==0.0.20231004", source = "drake-nightly" }
 drake = ">=1.23.0"
 gradescope-utils = ">=0.4.0"
+ipywidgets = ">7"
 mpld3 = ">=0.5.1"
 pandas = ">=1.0,<2.0" # matplotlib 3.5.1 on ubuntu fails with newer pandas
 pydot = ">=1.3.0"
@@ -66,7 +67,6 @@ optional = true
 [tool.poetry.group.docs.dependencies]
 drake = ">=1.23.0"  # Should match drake version above.
 ipython = ">=7.8.0"
-ipywidgets = ">7"
 sphinx = ">=7.2.6"
 myst-parser = ">=2.0.0"
 sphinx_rtd_theme = ">=2.0.0"
@@ -85,6 +85,7 @@ nbconvert = [
   {platform="darwin", version="7.0.0"},
   {platform="linux", version="6.4.0"},
 ]
+poetry-plugin-export = ">=1.6.0"
 pre-commit = "^3.4.0"
 # poetry-pre-commit-plugin = "^0.1.2" # causes cycle for bazel.
 requests = ">=2.25.1"
