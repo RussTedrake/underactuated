@@ -724,7 +724,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         <i>quite</i> the same as doing least-squares optimization of $$\sum_k
         \left(\hat{J}^*_\balpha(\bx_k) - \min_\bu \left[ \ell(\bx_k,\bu) +
         \hat{J}^*_\alpha\left({f(\bx_k,\bu)}\right) \right] \right)^2,$$
-        because in this equation $\alpha$ has an effect on both occurences of
+        because in this equation $\alpha$ has an effect on both occurrences of
         $\hat{J}^*$.  In \eqref{eq:fitted_value_iteration}, we cut that
         dependence by taking $J_k^d$ as fixed desired values; this version
         performs better in practice.  In the deep reinforcement learning
@@ -804,6 +804,34 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
       <subsubsection id="neural"><h1>Neural fitted value iteration</h1>
 
+        <p>Of course the most popular function approximators today are based on
+        neural networks. In these much more general approximators, we cannot
+        solve the least-squares update \eqref{eq:fitted_value_iteration}
+        exactly, but instead attempt to minimize the loss function: with a few
+        steps of (stochastic) gradient descent on each iteration. In practice,
+        we can use any of the standard optimizers (the examples below uses
+        Adam<elib>Kingma14</elib> as the default).</p>
+
+        <p>What sort of neural architectures work best for value iteration in
+        robotics? AlphaGo famously used convolutional
+        networks<elib>Silver16</elib>; here they could represent the state of
+        the board as an image and the some notion of translational equivariance
+        makes sense. But in "deep" reinforcement learning for robotics, when
+        the input to the network is a state vector, then the standard choice is
+        to use a simple multi-layered perceptron like the one I've used in the
+        examples below. For rotational coordinates, instead of passing in $\theta$ directly, we typically pass in both $\sin\theta$ and $\cos\theta.$</p>
+
+        <p>When it comes to neural network software, I'll mostly use <a
+        href="https://pytorch.org/">PyTorch</a> throughout these notes. But for
+        small problems (with small neural nets and modest batch sizes during
+        training) like the ones we'll consider here, the cost of going back and
+        forth to PyTorch and especially the GPU outweighs most of the benefits.
+        I've also implemented a simple CPU-based
+        <code>MultilayerPerceptron</code> in <drake></drake>, which can be used
+        directly in the <code>Systems</code> framework, and will use it when it
+        makes sense. My goal is to provide examples of both approaches so that
+        you can pick and choose.</p>
+
         <example><h1>Neural Fitted Value Iteration</h1>
 
           <p>Let us try reproducing our double-integrator value iteration
@@ -828,6 +856,13 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
           
         </example>        
         
+        <p>This is nice work on continuous neural fitted value iteration in
+        <elib>Lutter21</elib>. <elib>Bansal21</elib> has some of the most
+        complete and convincing HJB solutions with neural networks that I have
+        seen recently, and recommends a number of architectural and
+        optimization training tweaks which could make a significant
+        difference.</p>
+
       </subsubsection>
 
       <subsubsection><h1>Continuous-time systems</h1>
@@ -1427,6 +1462,30 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 <span class="author">Remi Munos and Andrew Moore</span>, 
 <span class="title">"Barycentric Interpolators for Continuous Space and Time Reinforcement Learning"</span>, 
 <span class="publisher">Advances in Neural Information Processing Systems</span> , vol. 11, pp. 1024--1030, <span class="year">1998</span>.
+
+</li><br>
+<li id=Kingma14>
+<span class="author">Diederik P Kingma and Jimmy Ba</span>, 
+<span class="title">"Adam: A method for stochastic optimization"</span>, 
+<span class="publisher">arXiv preprint arXiv:1412.6980</span>, <span class="year">2014</span>.
+
+</li><br>
+<li id=Silver16>
+<span class="author">David Silver and Aja Huang and Chris J Maddison and Arthur Guez and Laurent Sifre and George Van Den Driessche and Julian Schrittwieser and Ioannis Antonoglou and Veda Panneershelvam and Marc Lanctot and others</span>, 
+<span class="title">"Mastering the game of Go with deep neural networks and tree search"</span>, 
+<span class="publisher">nature</span>, vol. 529, no. 7587, pp. 484--489, <span class="year">2016</span>.
+
+</li><br>
+<li id=Lutter21>
+<span class="author">Michael Lutter and Shie Mannor and Jan Peters and Dieter Fox and Animesh Garg</span>, 
+<span class="title">"Value Iteration in Continuous Actions, States and Time"</span>, 
+<span class="publisher">International Conference on Machine Learning</span> , pp. 7224--7234, <span class="year">2021</span>.
+
+</li><br>
+<li id=Bansal21>
+<span class="author">Somil Bansal and Claire J Tomlin</span>, 
+<span class="title">"Deepreach: A deep learning approach to high-dimensional reachability"</span>, 
+<span class="publisher">2021 IEEE International Conference on Robotics and Automation (ICRA)</span> , pp. 1817--1824, <span class="year">2021</span>.
 
 </li><br>
 <li id=Osher03>
