@@ -2108,6 +2108,106 @@ V = RegionOfAttraction(sys, context)
 
     </exercise>
 
+    <exercise><h1>Lyapunov Instability Theorem and Barrier functions</h1>
+
+      <p>
+        Suppose that we are given a dynamical system $\dot \bx = f(\bx)$ with 
+        continuous $f$, and there exist a scalar continuously-differentiable 
+        function $V(\bx)$ such that:
+        \begin{align*} 
+        &\forall \bx, V(\bx)\leq 0: \; \dot V (\bx) \leq 0,\\
+        &\exists \bx_0: \; V(\bx_0) < V(0) = 0.
+        \end{align*}
+
+        <ol type="a">
+
+          <li>
+            Show that the trajectory $\bx(t)$ with $\dot \bx = f(\bx)$ and 
+            $\bx(0) = \bx_0$ does not converge to $0$.
+          </li>
+  
+          <li>
+            With that in mind, can $\dot \bx = f(\bx)$ be globally 
+            asymptotically stable to $0$?
+          </li>
+
+          <li>
+            Can $\dot \bx = f(\bx)$ be stable ISL to $0$?
+          </li>
+
+          <li>
+            Suppose our system starts at $\bx(0)$ where 
+            $V\big(\bx(0)\big) < 0$. Can there be a time $t$, such that  
+            $V\big(\bx(t)\big) \geq 0$? 
+            Explain how $V(\bx)$ can serve as a Barrier function.
+          </li>
+  
+        </ol>
+      </p>
+
+    </exercise>
+
+
+    <exercise><h1>Converse Lyapunov Theorem for global exponential stability</h1>
+
+      <p>
+        Suppose that we are given a dynamical system $\dot \bx = f(\bx)$ with 
+        continuous $f$ that is globally exponentially stable to $\bx^*$ -- i.e., 
+        there exist positive constants $C$ and $\alpha$, such that for any initial 
+        condition $\bx(0)$ and time $t$:  
+        $||\bx(t)-\bx^*|| < Ce^{-\alpha t} ||\bx(0)-\bx^*||$. 
+        Define $V(\mathbf z)$ according to:
+        $$V(\mathbf z) = \int_0^\infty ||\bx(t)-\bx^*||^2 dt, 
+        \;\text{ where } \bx(0)=\mathbf z, \;\;\dot\bx =f(\bx).$$
+
+        In this exercise, we will show that $V(\mathbf z)$ is a Lyapunov function 
+        that proves global exponential stability of $\dot \bx = f(\bx)$ as in 
+        Theorem 9.2,  i.e., that $V(\mathbf z)$ is positive definite, radially 
+        unbounded, and that $\exists \beta> 0$,  such that  
+        $\forall \mathbf z:\;\; \dot V(\mathbf z) \leq -\beta V(\mathbf z)$.
+
+        <ol type="a">
+
+          <li>
+            Show that $V(\mathbf z)$ is positive definite.
+          </li>
+  
+          <li>
+            Explain why $V(\mathbf z)$ is radially unbounded. 
+            An intuitive explanation is sufficient here.
+          </li>
+
+          <li>
+            c. Compute $\dot V(\mathbf z)$. Hint: notice that by definition, we have: 
+            $$\dot V(\mathbf  z) = 
+            \frac{d}{dt}V\big(\bx(t)\big)\Big|_{t=0} = 
+            \lim_{t\rightarrow 0}\frac{V\big(\bx(t)\big)-V\big(\bx(0)\big)}{t},$$
+            where $\bx(t)$ is trajectory with $\bx(0)=\mathbf z$. 
+          </li>
+
+          <li>
+            Find $\beta> 0$, such that 
+            $\forall \mathbf z:\;\; \dot V(\mathbf z) \leq -\beta V(\mathbf z)$.
+          </li>
+
+          <li>
+            What is the intuition for $V(\matbf z)$? Where have we already seen it before? 
+          </li>
+
+          <li>
+            Suppose you have a dynamical system $\dot \bx = f(\bx)$. 
+            Why can't you "simply" compute $V(\mathbf z)$ as above to check 
+            for globally asymptotic stability?
+          </li>
+  
+        </ol>
+      </p>
+
+    </exercise>
+
+
+
+
 
     <exercise><h1>Gradient Flow in Euclidean Space</h1>
 
