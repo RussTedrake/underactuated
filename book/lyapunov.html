@@ -2136,10 +2136,11 @@ V = RegionOfAttraction(sys, context)
           </li>
 
           <li>
+            Consider the set $B = \{\bx | V(\bx) \geq 0 \}$.
             Suppose our system starts at $\bx(0)$ where 
-            $V\big(\bx(0)\big) < 0$. Can there be a time $t$, such that  
-            $V\big(\bx(t)\big) \geq 0$? 
-            Explain how $V(\bx)$ can serve as a Barrier function.
+            $V\big(\bx(0)\big) < 0$.
+            Can there be a time $t$, such that $\bx(t) \in B$?
+            Explain why $V(\bx)$ serves as a Barrier function to set $B$.
           </li>
   
         </ol>
@@ -2196,8 +2197,8 @@ V = RegionOfAttraction(sys, context)
 
           <li>
             Suppose you have a dynamical system $\dot \bx = f(\bx)$. 
-            Why can't you "simply" compute $V(\mathbf z)$ as above to check 
-            for global asymptotic stability?
+            Why can't you "simply" compute (analytically or numerically) 
+            $V(\mathbf z)$ as above to check for global asymptotic stability?
           </li>
   
         </ol>
