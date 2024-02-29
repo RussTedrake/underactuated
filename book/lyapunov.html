@@ -113,16 +113,16 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       <center><img width="50%" src="figures/pend_undamped_phase.svg"/></center>
 
       <p>A natural route to proving the stability of the downward fixed points
-      is by arguing that energy decreases for the damped pendulum (with $b>0$)
-      and so the system will eventually come to rest at the minimum energy, $E =
-      -mgl$, which happens at $\theta=2\pi k$.  Let's make that argument
-      slightly more precise. </p>
+      is by arguing that energy (almost always) decreases for the damped
+      pendulum ($b>0$) and so the system will eventually come to rest at
+      the minimum energy, $E = -mgl$, which happens at $\theta=2\pi k$.  Let's
+      make that argument slightly more precise. </p>
 
       <p>Evaluating the time derivative of the energy reveals \[ \frac{d}{dt} E
       = - b\dot\theta^2 \le 0. \] This is sufficient to demonstrate that the
       energy will never increase, but it doesn't actually prove that the energy
       will converge to the minimum when $b>0$ because there are multiple
-      states(not only the minimum) for which $\dot{E}=0$.  To take the last
+      states (not only the minimum) for which $\dot{E}=0$.  To take the last
       step, we must observe that set of states with $\dot\theta=0$ is not an
       invariant set; that if the system is in, for instance
       $\theta=\frac{\pi}{4}, \dot\theta=0$ that it will not stay there, because
@@ -196,15 +196,16 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     t}.$</p>
 
     <p> Notice that the system analyzed above, $\dot{\bx}=f(\bx)$, did not have
-    any control inputs. Therefore, Lyapunov analysis is used to study either the
-    passive dynamics of a system or the dynamics of a closed-loop system (system
-    + control in feedback).  We will see generalizations of the Lyapunov
-    functions to input-output systems later in the text. </p>
+    any control inputs. Lyapunov analysis is used to study either the passive
+    dynamics of a system or the dynamics of a closed-loop system (e.g. the
+    plant and controller connected in a feedback loop).  We will see
+    generalizations of the Lyapunov function ideas to input-output systems
+    later in the text. </p>
 
     <subsection><h1>Global Stability</h1>
 
       <p>The notion of a fixed point being stable i.s.L. is inherently a local
-      notion of stability (defined with $\epsilon$- and $\delta$- balls around
+      notion of stability (defined with $\epsilon$ and $\delta$ balls around
       the origin), but the notions of asymptotic and exponential stability can
       be applied globally.  The Lyapunov theorems work for this case, too, with
       only minor modification.</p>
@@ -347,12 +348,13 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
           By LaSalle, $\bx$ will converge to the largest invariant subset of ${\cal
           G}$ on which $\dot{V}=0$.<p>
     
-          <p>Furthermore, if $\dot{V}(\bx) \prec 0$ in ${\cal G}$, then the origin
-          is locally asymptotically stable and the set ${\cal G}$ is inside the
-          region of attraction of this fixed point.  Alternatively, if $\dot{V}(\bx)
-          \preceq 0$ in ${\cal G}$ and $\bx = 0$ is the only invariant subset of
-          ${\cal G}$ where $\dot{V}=0$, then the origin is asymptotically stable and
-          the set ${\cal G}$ is inside the region of attraction of this fixed point.
+          <p>If $\dot{V}(\bx) \prec 0$ in ${\cal G}$, then the origin is
+          locally asymptotically stable and furthermore the set ${\cal G}$ is
+          inside the region of attraction of this fixed point.  Alternatively,
+          if $\dot{V}(\bx) \preceq 0$ in ${\cal G}$ and $\bx = 0$ is the only
+          invariant subset of ${\cal G}$ where $\dot{V}=0$, then the origin is
+          asymptotically stable and the set ${\cal G}$ is inside the region of
+          attraction of this fixed point.
           </p>
     
         </theorem>
