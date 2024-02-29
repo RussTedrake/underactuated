@@ -2112,7 +2112,7 @@ V = RegionOfAttraction(sys, context)
 
       <p>
         Suppose that we are given a dynamical system $\dot \bx = f(\bx)$ with 
-        continuous $f$, and there exist a scalar continuously-differentiable 
+        continuous $f$, and that there exists a scalar continuously-differentiable 
         function $V(\bx)$ such that:
         \begin{align*} 
         &\forall \bx, V(\bx)\leq 0: \; \dot V (\bx) \leq 0,\\
@@ -2137,7 +2137,7 @@ V = RegionOfAttraction(sys, context)
 
           <li>
             Consider the set $B = \{\bx | V(\bx) \geq 0 \}$.
-            Suppose our system starts at $\bx(0)$ where 
+            Suppose that our system starts at $\bx(0)$ where 
             $V\big(\bx(0)\big) < 0$.
             Can there be a time $t$, such that $\bx(t) \in B$?
             Explain why $V(\bx)$ serves as a Barrier function to set $B$.
@@ -2179,9 +2179,9 @@ V = RegionOfAttraction(sys, context)
           </li>
 
           <li>
-            c. Compute $\dot V(\mathbf z)$. Hint: notice that by definition, we have: 
-            $$\dot V(\mathbf  z) = 
-            \frac{d}{dt}V\big(\bx(t)\big)\Big|_{t=0} = 
+            Compute $\dot V(\mathbf z)$. Hint: notice that by definition, we have: 
+            $$\dot V(\mathbf  z) \;=\; 
+            \frac{d}{dt}V\big(\bx(t)\big)\Big|_{t=0} \;=\; 
             \lim_{t\rightarrow 0}\frac{V\big(\bx(t)\big)-V\big(\bx(0)\big)}{t},$$
             where $\bx(t)$ is trajectory with $\bx(0)=\mathbf z$. 
           </li>
@@ -2192,7 +2192,8 @@ V = RegionOfAttraction(sys, context)
           </li>
 
           <li>
-            What is the intuition for $V(\matbf z)$? Where have we already seen it before? 
+            What is the intuition for the $V(\mathbf z)$ defined above? 
+            Where have we already seen it before? 
           </li>
 
           <li>
