@@ -119,20 +119,16 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       make that argument slightly more precise. </p>
 
       <p>Evaluating the time derivative of the energy reveals \[ \frac{d}{dt} E
-      = - b\dot\theta^2 \le 0. \] This is sufficient to demonstrate that the
-      energy will never increase, but it doesn't actually prove that the energy
-      will converge to the minimum when $b>0$ because there are multiple
-      states (not only the minimum) for which $\dot{E}=0$.  To take the last
-      step, we must observe that set of states with $\dot\theta=0$ is not an
-      invariant set; that if the system is in, for instance
-      $\theta=\frac{\pi}{4}, \dot\theta=0$ that it will not stay there, because
-      $\ddot\theta \neq 0$.  And once it leaves that state, energy will decrease
-      once again.  In fact, the fixed points are the only subset the set of
-      states where $\dot{E}=0$ which do form an invariant set.  Therefore we can
-      conclude that as $t\rightarrow \infty$, the system will indeed come to
-      rest at a fixed point (though it could be any fixed point with an energy
-      less than or equal to the initial energy in the system, $E(0)$).</p>
+      = \pd{E}{\theta}\dot\theta + \pd{E}{\dot\theta}\ddot\theta = \dot\theta(ml^2\ddot\theta + mgl\sin\theta) = - b\dot\theta^2 \le 0. \] 
+      So we know that energy will never increase, that energy is bounded, and that it obtains it's minima at the downward (stable) fixed points.  Moreover, we now know that energy is strictly decreasing whenever $\dot\theta \neq 0$. We're getting close.</p>
 
+      <p>In order to show that the system converges asymptotically to some
+      fixed point, we need one more observation. For non-fixed-point states
+      with $\dot\theta = 0$, we have $\dot{E} = 0$, but only for an instant. A
+      moment later, we'll have some non-zero velocity once again, and again
+      start dissipating energy. All together, these arguments are sufficient to demonstrate that $\bx \rightarrow$ a fixed point as $t \rightarrow \infty$. We'll make this argument more general and more
+      precise below.</p>
+      
     </example>
 
     <p>This is an important example.  It demonstrated that we could use a
@@ -2349,8 +2345,7 @@ V = RegionOfAttraction(sys, context)
       of the time-reversed Van der Pol oscillator (a variation of the <a
       href="https://en.wikipedia.org/wiki/Van_der_Pol_oscillator">classical Van
       der Pol oscillator</a> which evolves backwards in time). In
-      <script>document.write(notebook_link('van_der_pol', deepnote['exercises/lyapunov'], link_text = 'this python notebook'))</script>
-      , you are asked to test the following SOS formulations.
+      <script>document.write(notebook_link('lyapunov', 'van_der_pol', link_text = 'this python notebook'))</script>, you are asked to test the following SOS formulations.
       </p>
 
       <ol type="a">
