@@ -553,7 +553,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         find a Lyapunov function $$V(\bx) = \bx^T {\bf P} \bx, \quad {\bf P} =
         {\bf P^T} \succ 0,$$ which also satisfies $$\dot{V}(\bx) = \bx^T {\bf
         PA} \bx + \bx^T {\bf A}^T {\bf P}\bx \prec 0.$$ Then the origin is
-        globally asymptotically stable.</p>
+        globally exponentially stable.</p>
 
       </theorem>
 
@@ -608,7 +608,8 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       would probably never use that particular formulation, since there
       specialized algorithms for solving the simple Lyapunov equation which are
       more efficient and more numerically stable. But the SDP formulation does
-      provide something new -- we can now easily formulate the search for a
+      provide something new -- it will give us our first example of robustness
+      analysis. In particular, we can now easily formulate the search for a
       <i>"common Lyapunov function"</i> for uncertain linear systems.</p>
 
       <example id="common-lyapunov-linear"><h1>Common Lyapunov analysis for
@@ -680,29 +681,35 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
     <subsection><h1>Global analysis for polynomial systems</h1>
 
-      <p><a href="optimization.html#sums_of_squares">Sums of squares
+      <p><a href="optimization.html#sums_of_squares">Sums of squares (SOS)
       optimization</a> provides a natural generalization of the SDP formulation
-      to nonlinear systems. In linear systems, we searched over $V(\bx) = \bx^T
-      {\bf P} \bx, {\bf P} \succeq 0.$ In the nonlinear generalization, we
-      search over $$V(\bx) = {\bf m}^T(\bx) {\bf P} {\bf m}(\bx),\quad {\bf P}
-      \succeq 0,$$ with ${\bf m}(\bx)$ a set of nonlinear basis functions. This
-      is a linear (in the parameters ${\bf P}$) function approximator which is
-      guaranteed to be strictly positive by virtue of being a sum of squares.
-      While the positivity of this sums of squares is valid for any choice of
-      ${\bf m}(\bx)$, the recipe is particularly powerful for polynomials,
-      because for any polynomial, $p(\bx)$, we can confirm its positivity by
-      creating a surrogate sums-of-squares representation, where we have strong
-      recipes for automatically choosing good bases ${\bf m}(\bx)$ given a
-      polynomial $p(\bx)$, and we can constrain that $p(\bx) = {\bf m}^T(\bx)
-      {\bf P} {\bf m}(\bx)$ with <i>linear</i> constraints relating the
-      coefficients of $p(\bx)$ with the coefficient in ${\bf P}$.</p>
+      to nonlinear systems. In SDP, we were allowed to write constraints of the
+      form, ${\bf P} \succeq 0$. In sums of squares optimization, we generalize
+      this to writing constraints of the form "$p_\balpha(\bx)$ is SOS", where
+      $p(\bx)$ is a polynomial with coefficients $\balpha$. Let's examine this
+      in the specific context of Lyapunov functions.</p>
+      
+      <p>In linear systems, we searched over $V(\bx) = \bx^T {\bf P} \bx, {\bf
+      P} \succeq 0.$ In the nonlinear generalization, we search over $$V(\bx) =
+      {\bf m}^T(\bx) {\bf P} {\bf m}(\bx),\quad {\bf P} \succeq 0,$$ with ${\bf
+      m}(\bx)$ a set of nonlinear basis functions. This is a linear (in the
+      parameters ${\bf P}$) function approximator which is guaranteed to be
+      strictly positive by virtue of being a sum of squares. While the
+      positivity of this sums of squares is valid for any choice of ${\bf
+      m}(\bx)$, the recipe is particularly powerful for polynomials, because
+      for any polynomial, $p(\bx)$, we can confirm its positivity by creating a
+      surrogate sums-of-squares representation, where we have strong recipes
+      for automatically choosing good bases ${\bf m}(\bx)$ given a polynomial
+      $p(\bx)$, and we can constrain that $p(\bx) = {\bf m}^T(\bx) {\bf P} {\bf
+      m}(\bx)$ with <i>linear</i> constraints relating the coefficients of
+      $p(\bx)$ with the coefficient in ${\bf P}$.</p>
       
       <p>This suggests that it may be possible to generalize the optimization
       approach using SDP to search for Lyapunov functions for linear systems to
       searching for Lyapunov functions for nonlinear systems: $\dot\bx =
-      f(\bx),$ where $f$ is a vector-valued <i>polynomial</i> function.
-      Importantly, if $V(\bx)$ is polynomial, and $f(\bx)$ is polynomial, then
-      $\dot{V}(\bx) = \pd{V}{\bx}f(\bx)$ is also polynomial.</p>
+      \bf{f}(\bx),$ where $\bf{f}$ is a vector-valued <i>polynomial</i> function.
+      Importantly, if $V(\bx)$ is polynomial, and $\bf{f}(\bx)$ is polynomial, then
+      $\dot{V}(\bx) = \pd{V}{\bx}{\bf f}(\bx)$ is also polynomial.</p>
       
       <p>If we parameterize a <em>fixed-degree</em> Lyapunov candidate as a
       polynomial with unknown coefficients, e.g., \[ V_\alpha(\bx) = \alpha_0 +
@@ -739,18 +746,6 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
       </example>
 
-      <example><h1>Cart-pole swingup (again)</h1>
-
-        <p>In the <a href="#cartpole_swingup">cart-pole swingup example</a>, we
-        took $$V(\bx) = \frac{1}{2} \tilde{E}^2(\bx) = \frac{1}{2}
-        (\frac{1}{2}\dot\theta^2 - \cos\theta - 1)^2.$$ This is clearly a sum
-        of squares.  Furthermore, we showed that $$\dot{V}(\bx) = -
-        \dot\theta^2 \cos^2\theta \tilde{E}^2(\bx),$$ which is also a sum of
-        squares.  So the proposal of using sums-of-squares optimization is not so different, actually, than the recipes that nonlinear control theorists have been using (on pen and paper) for years.  In this case, I would need a basis vector that includes many more monomials: $[1, \dot\theta, \cos\theta, ..., \dot\theta^3, ... ]^T,$ and setting up the equality constraints in an optimization requires more complicated term matching when trigonometric functions are involved, but the recipe still works.
-        </p>
-
-      </example>
-
       <example><h1>Searching for a Lyapunov function via SOS</h1>
 
         <p>Verifying a candidate Lyapunov function is all well and good, but
@@ -771,9 +766,38 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
       </example>
 
+      <example><h1>Cart-pole swingup (again)</h1>
+
+        <p>In the <a href="#cartpole_swingup">cart-pole swingup example</a>, we
+        took $$V(\bx) = \frac{1}{2} \tilde{E}^2(\bx) = \frac{1}{2}
+        (\frac{1}{2}\dot\theta^2 - \cos\theta - 1)^2.$$ This is clearly a sum
+        of squares.  Furthermore, we showed that $$\dot{V}(\bx) = -
+        \dot\theta^2 \cos^2\theta \tilde{E}^2(\bx),$$ which is also a sum of
+        squares.  So the proposal of using sums-of-squares optimization is not
+        so different, actually, than the recipes that nonlinear control
+        theorists have been using (on pen and paper) for years.</p>
+        
+        <p>The SOS approach, as presented so far, could take only the nonlinear
+        basis, ${\bf m}(\bx)$ for the candidate Lyapunov function, the degree
+        of that Lyapunov function, and the closed-loop nonlinear dynamics; it
+        would recover the parameters of a Lyapunov function and a certificate
+        demonstrating the $V(\bx)$ and $-\dot{V}(\bx)$ are SOS. In this case, I
+        would need a basis vector that includes many more monomials: $[1,
+        \dot\theta, \cos\theta, ..., \dot\theta^3, ... ]^T.$</p>
+
+        <p>You might have noticed that I did something sneaky in here. The
+        dynamics of the cart-pole are <i>not</i> simply polynomial in $\bx$;
+        there are trigonometric terms in there. Setting up the equality
+        constraints in an optimization requires more complicated term matching
+        when trigonometric functions are involved, but the recipe still works.
+        We will discuss this in more detail below.
+        </p>
+
+      </example>
+
       <p>It is important to remember that there are a handful of gaps which
       make the existence of this solution a sufficient condition (to guarantee
-      that $V(x)$ is a Lyapunov function for $f(x)$) instead of a necessary
+      that $V(\bx)$ is a Lyapunov function for $\bf{f}(\bx)$) instead of a necessary
       one.  First, there is no guarantee that a stable polynomial system can be
       verified using a polynomial Lyapunov function (of any degree), and in fact
       there are known counter-examples
@@ -814,8 +838,11 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
       <subsubsection><h1>The S-procedure</h1>
 
-        <p>Consider a scalar polynomial, $p(\bx)$, and a semi-algebraic set
-        $g(\bx) \preceq 0$, where $g$ is a vector of polynomials.  If I can
+        <p>Consider a scalar polynomial, $p(\bx)$, and a <a
+        href="https://en.wikipedia.org/wiki/Semialgebraic_set">semi-algebraic
+        set</a>
+        $g(\bx) \le 0$. The term "semi-algebraic set" just means the set is
+        defined by polynomial inequalities (here $g(\bx) \le 0$).  If I can
         find a polynomial "multiplier", $\lambda(\bx)$, such that \[ p(\bx) +
         \lambda^T(\bx) g(\bx) \sos, \quad \text{and} \quad \lambda(\bx) \sos,
         \] then this is sufficient to demonstrate that $$p(\bx)\ge 0 \quad
@@ -833,7 +860,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         \[p(\bx) + \lambda^T(\bx) g(\bx) \sos \] then this is sufficient to
         demonstrate that $$p(\bx)\ge 0 \quad \forall \bx \in \{ \bx | g(\bx) =
         0 \}.$$  Note the difference: for $g(\bx)\le 0$ we needed $\lambda(\bx)
-        >= 0$, but for $g(\bx) = 0$, $\lambda(\bx)$ can be arbitrary.  The
+        \ge 0$, but for $g(\bx) = 0$, $\lambda(\bx)$ can be arbitrary.  The
         intuition is that $\lambda(\bx)$ can add arbitrary positive terms to
         help me be SOS, but those terms contribute nothing precisely when
         $g(\bx)=0$.</p>
@@ -865,12 +892,12 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
           <p>Let's return to our example from above: \[ \dot{x} = -x + x^3 \]
           and try to use SOS optimization to demonstrate that the region of
           attraction of the fixed point at the origin is $x \in (-1,1)$, using
-          the Lyapunov candidate $V = x^2.$ </p>
+          the Lyapunov candidate $V(x) = x^2.$ </p>
 
           <p>First, define the multiplier polynomial, \[ \lambda(x) = c_0 + c_1
-          x + c_2 x^2. \]  Then define the optimization
-          \begin{align*} \find_{\bf c} \quad & \\  \subjto \quad& - \dot{V}(x) +
-          \lambda(x) (V(x)-1) \sos \\ & \lambda(x) \sos \end{align*} </p>
+          x + c_2 x^2. \]  Then define the optimization \begin{align*}
+          \find_{\bf c} \quad & \\  \subjto \quad& - \dot{V}(x) + \lambda(x)
+          (V(x)-1) \sos \\ & \lambda(x) \sos \end{align*} </p>
 
           <p>You can try these examples for yourself in <drake></drake>.</p>
 
@@ -942,7 +969,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
           <p>Let's return again to our example from above: \[ \dot{x} = -x +
           x^3 \] and try to use SOS optimization, this time to maximize the
-          sub-level set of our Lyapunov candidate $V = x^2,$ in order to
+          sub-level set of our Lyapunov candidate $V(x) = x^2,$ in order to
           certify the largest ROA that we can using these tools.</p>
 
           <p>Again, we define the multiplier polynomial, $\lambda(x)$, but this
@@ -975,45 +1002,36 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         we can obtain this candidate by solving a Lyapunov equation (Eq
         \ref{eq:algebraic_lyapunov}).</p>
 
-        <p>But what if we believe the system is regionally stable, despite
-        having an indefinite linearization?  Or perhaps we can certify a larger
+        <p>Recall that there are cases when the stability of the linearization
+        is not informative about the stability of the nonlinear system (if the
+        linearization has only non-negative eigenvalues instead of strictly
+        negative). Can we use our nonlinear tools to certify a region of
+        attraction for these systems, even when the linearization doesn't yield
+        a candidate Lyapunov function?  Or perhaps we can certify a larger
         volume of state space by optimizing our original Lyapunov candidate to
         maximize the volume of the verified region for the nonlinear system,
         potentially even considering Lyapunov functions with degree greater
         than two (the linear analysis will only give quadratic candidates). We
         can use sums-of-squares optimization in those cases, too!</p>
 
-        <p>To accomplish this, we will now make $V(\bx)$ a polynomial (of some
-        fixed degree) with the coefficients as decision variables.  First we
-        will need to add constraints to ensure that $$V({\bf 0}) = 0 \quad
-        {and} \quad V(\bx) - \epsilon \bx^T\bx \text{ is SOS},$$ where
-        $\epsilon$ is some small positive constant.  This $\epsilon$ term
-        simply ensures that $V$ is strictly positive definite.  Now let's
-        consider our basic formulation: 
+        <p>To accomplish this, we'll combine the ideas from our global
+        stability analysis (where we could search for $V(\bx)$) with these new
+        tools for regional analysis (where so far we had to fix $V(\bx)$).  Make
+        $V(\bx)$ a polynomial (of some fixed degree) with the coefficients as
+        decision variables.  First we will need to add constraints to ensure
+        that $$V({\bf 0}) = 0 \quad {and} \quad V(\bx) - \epsilon \bx^T\bx
+        \text{ is SOS},$$ where $\epsilon$ is some small positive constant.
+        This $\epsilon$ term simply ensures that $V$ is strictly positive
+        definite. Now let's consider our basic formulation: 
         
         $$-\dot{V}(\bx) + \lambda(\bx)(V(\bx) - 1) {\text{ is SOS}}, \quad 
         \text{and} \quad \lambda(\bx) \text{ is SOS}.$$
         
-        Notice that I've replaced $\rho=1$; now that we are 
-        searching for $V$ the scale of the level-set can be set arbitrarily to
-        1.  In fact, it's better to do so -- if we did not set $V(0)=0$ and
-        $V(\bx) \le 1$ as the sublevel set, then the optimization problem would
-        be under-constrained, and might cause problems for the solver.</p>
-
-        <p>A typical choice for the objective is to maximize the volume of the
-        certified region -- for quadratic Lyapunov functions described in our
-        standard quadratic form, $\bx^T {\bf P} \bx \le 1$, this volume is
-        proportional to $\det({\bf P}^{-\frac{1}{2}}).$ Minimizing this volume
-        is a convex optimization<elib part="&sect;8.4.1">Boyd04a</elib>, but
-        maximizing the volume is, in general, not.  We tend to use a heuristic
-        like minimizing $\tr(\hat{\bf P}^{-1}{\bf P})$ as a surrogate for the
-        true objective
-        <elib part="&sect;6.3.2">Posa17a</elib>, where $\hat{\bf P}$ is the
-        ${\bf P}$ from the previous alternation (or the identity matrix), which
-        is a linearization of the true objective<elib>Fazel03</elib>. For
-        higher-degree Lyapunov functions, typically we (approximately) maximize
-        the volume of a contained ellipse, $$\bx^T {\bf P} \bx \le 1
-        \Rightarrow V(\bx) \le 1,$$ as a surrogate for the true volume.</p>
+        Notice that I've replaced $\rho=1$; now that we are searching for $V$
+        the scale of the level-set can be set arbitrarily to 1.  In fact, it's
+        better to do so -- if we did not set $V(0)=0$ and $V(\bx) \le 1$ as the
+        sublevel set, then the optimization problem would be
+        under-constrained.</p>
 
         <p>Unfortunately, the derivative constraint is now nonconvex (bilinear)
         in the decision variables, since we are searching for both the
@@ -1043,6 +1061,22 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         equality constraint <elib>Shen20</elib>, but the basic formulation with
         line search can be used, too, and in some problems can be numerically
         more robust.</p>
+
+        <p>Where did the $\tr(\bf{P})$ objective come from?  A typical choice
+        for the objective of the alternations is to maximize the volume of the
+        certified region -- for quadratic Lyapunov functions described in our
+        standard quadratic form, $\bx^T {\bf P} \bx \le 1$, this volume is
+        proportional to $\det({\bf P}^{-\frac{1}{2}}).$ Minimizing this volume
+        is a convex optimization<elib part="&sect;8.4.1">Boyd04a</elib>, but
+        maximizing the volume is, in general, not.  We tend to use a heuristic
+        like minimizing $\tr(\hat{\bf P}^{-1}{\bf P})$ as a surrogate for the
+        true objective <elib part="&sect;6.3.2">Posa17a</elib>, where $\hat{\bf
+        P}$ is the ${\bf P}$ from a previous alternation of the algorithm (or
+        the identity matrix that I've written above), which is a linearization
+        of the true objective<elib>Fazel03</elib>. For higher-degree Lyapunov
+        functions, typically we (approximately) maximize the volume of a
+        contained ellipse, $$\bx^T {\bf P} \bx \le 1 \Rightarrow V(\bx) \le
+        1,$$ as a surrogate for the true volume.</p>
 
         <p>Barring numerical issues, this algorithm is guaranteed to have
         recursive feasibility and tends to converge in just a few alternations,
@@ -1124,14 +1158,14 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         $\mathcal{B}(\bx).$  Like a Lyapunov function, we'd like
         $\dot{\mathcal{B}}(\bx) \leq 0$; this time we'll ask for this to be
         true everywhere (or at least in some set that is sufficiently larger
-        than the ROA of interest).  Then we will set $\mathcal{B}(0) > 0$.  If
+        than the ROA of interest).  Then we will set $\mathcal{B}(0) = 1 > 0$.  If
         we can find such a function, then certainly any state for which
         $\mathcal{B}(\bx) < 0$ is outside of the region of attraction of the
         fixed point -- since $\mathcal{B}$ cannot increase it can never reach
-        the origin which has $\mathcal{B} > 0$.  The <i>super</i>level set $\{
+        the origin which has $\mathcal{B} > 0.$  The <i>super</i>level set $\{
         \bx | \mathcal{B}(\bx) \ge 0\}$ is an outer approximation of the true
         region of attraction: $$-\dot{\mathcal{B}}(\bx) \text{ is SOS} \quad
-        \text{and} \quad \mathcal{B}(0) > 0.$$</p>
+        \text{and} \quad \mathcal{B}(0) = 1.$$</p>
 
         <p>In order to find the smallest such outer approximation (given a
         fixed degree polynomial), we choose an objective that tries to
@@ -1156,13 +1190,13 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
           program: \begin{align*} \min_{\mathcal{B}(x), W(x)} \quad &
           \int_{-2}^2 W(x)dx, \\ \subjto \quad & -\dot{\mathcal{B}}(x) &
           \text{is SOS}, \\ & W(x) &\text{ is SOS}, \\ & W(x) - \mathcal{B}(x)
-          - 1.0 & \text{ is SOS}, \\ & \mathcal{B}(0) \ge 0.\end{align*}</p>
+          - 1.0 & \text{ is SOS}, \\ & \mathcal{B}(0)= 0.1.\end{align*}</p>
 
           <p>To make the problem a little numerically better, you'll see in the
           code that I've asked for $\dot{\mathcal{B}}(x)$ to be strictly
-          negative definite, for $\mathcal{B}(0) \ge 0.1$, and I've chosen to
-          only include even-degree monomials in $\mathcal{B}(x)$ and $W(x)$.
-          Plotting the solution reveals:</p>
+          negative definite, and I've chosen to only include even-degree
+          monomials in $\mathcal{B}(x)$ and $W(x)$. Plotting the solution
+          reveals:</p>
 
           <div  style="text-align:center"><img
             src="data/cubic_polynomial_outer_approx.svg" width="500px"/></div>
@@ -1176,6 +1210,10 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
           from $\mathcal{B}(\bx) \ge 0$).</p>
 
           <script>document.write(notebook_link('lyapunov', notebook="outer_approx"))</script>
+
+          <p>Go ahead and try adjusting some of these decisions. For example,
+          if you set $B(0)=1$, then you can increase the degree of $B(x)$ to
+          get tighter and tighter approximations.</p>
 
         </example>
 
@@ -2474,6 +2512,20 @@ PhD thesis, California Institute of Technology, May 18, <span class="year">2000<
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Shen20.pdf">link</a>&nbsp;]
 
 </li><br>
+<li id=Tedrake10>
+<span class="author">Russ Tedrake and Ian R. Manchester and Mark M. Tobenkin and John W. Roberts</span>, 
+<span class="title">"{LQR-Trees}: Feedback Motion Planning via Sums of Squares Verification"</span>, 
+<span class="publisher">International Journal of Robotics Research</span>, vol. 29, pp. 1038--1052, July, <span class="year">2010</span>.
+[&nbsp;<a href="http://dx.doi.org/10.1177/0278364910369189">link</a>&nbsp;]
+
+</li><br>
+<li id=Majumdar16a>
+<span class="author">Anirudha Majumdar</span>, 
+<span class="title">"Funnel Libraries for Real-Time Robust Feedback Motion Planning"</span>, 
+PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar16a.pdf">link</a>&nbsp;]
+
+</li><br>
 <li id=Boyd04a>
 <span class="author">Stephen Boyd and Lieven Vandenberghe</span>, 
 <span class="title">"Convex Optimization"</span>, Cambridge University Press
@@ -2491,20 +2543,6 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2017<
 <span class="author">Maryam Fazel and Haitham Hindi and Stephen P Boyd</span>, 
 <span class="title">"Log-det heuristic for matrix rank minimization with applications to Hankel and Euclidean distance matrices"</span>, 
 <span class="publisher">American Control Conference, 2003. Proceedings of the 2003</span> , vol. 3, pp. 2156--2162, <span class="year">2003</span>.
-
-</li><br>
-<li id=Tedrake10>
-<span class="author">Russ Tedrake and Ian R. Manchester and Mark M. Tobenkin and John W. Roberts</span>, 
-<span class="title">"{LQR-Trees}: Feedback Motion Planning via Sums of Squares Verification"</span>, 
-<span class="publisher">International Journal of Robotics Research</span>, vol. 29, pp. 1038--1052, July, <span class="year">2010</span>.
-[&nbsp;<a href="http://dx.doi.org/10.1177/0278364910369189">link</a>&nbsp;]
-
-</li><br>
-<li id=Majumdar16a>
-<span class="author">Anirudha Majumdar</span>, 
-<span class="title">"Funnel Libraries for Real-Time Robust Feedback Motion Planning"</span>, 
-PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016</span>.
-[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar16a.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Henrion14>
