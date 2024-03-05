@@ -332,7 +332,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       is known about the gap.  For our purposes this gap is very small (papers
       have been written about trying to find polynomials which are uniformly
       positive but not sums of squares); we should remember that it exists but
-      not worry about it too much for now.</p>
+      it won't hinder too many of our use cases.</p>
 
       <p>Even better, there is quite a bit that is known about how to choose
       the terms in ${\bf m}(\bx)$.  For example, if you give me the polynomial
@@ -342,10 +342,10 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       p(x) = \begin{bmatrix} 1 \\ x \end{bmatrix}^T \begin{bmatrix} 2 & -2 \\
       -2 & 5 \end{bmatrix} \begin{bmatrix} 1 \\ x \end{bmatrix}, \] since the
       matrix in this quadratic form is PSD.  In general, I can produce a
-      monomial vector containing all monomials with degree up to the the
-      half of the degree of $p$ (we can actually do much better, but I
-      will defer those details). In practice, what this means for us is that
-      people have authored optimization front-ends which take a high-level
+      monomial vector containing all monomials with degree up to the the half
+      of the degree of $p$ (we can actually do much better, but I will not
+      cover those details). In practice, what this means for us is that people
+      have authored optimization front-ends which take a high-level
       specification with constraints on the positivity of polynomials and they
       automatically generate the SDP problem for you, without having to think
       about what terms should appear in ${\bf m}(\bx)$ (c.f.
@@ -386,11 +386,12 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
         <script>document.write(notebook_link('optimization'))</script>
     
-        <p>Note that this finds the minimum value, but does not actually
-        produce the $\bx$ value which mimimizes it.  This is possible
-        <elib>Henrion09a</elib>, but it requires examining the dual of the
-        sums-of-squares solutions (which we don't need for the goals of this
-        chapter).</p>
+        <p>Note that this finds the minimum value, but does not immediately
+        produce the $\bx$ value which minimizes it.  To extract the minimizer,
+        one needs to examine the dual program (see, for instance 
+        <elib>Henrion09a</elib>). In many applications, such as <a
+        href="lyapunov.html#optimization">Lyapunov analysis</a>, obtaining the
+        minimizer is not even necessary.</p>
       </example>
 
       <subsubsection><h1>Sums of squares on a Semi-Algebraic Set</h1>
