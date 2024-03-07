@@ -59,6 +59,14 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
+    name = "sampling",
+    srcs = ["sampling.ipynb"],
+    deps = [
+      "//underactuated",
+    ],
+)
+
+rt_ipynb_test(
     name = "star_convex",
     srcs = ["star_convex.ipynb"],
     deps = [
