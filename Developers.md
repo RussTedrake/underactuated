@@ -62,7 +62,7 @@ the root directory, run:
 rm -rf dist/*
 poetry publish --build
 ```
-(Use `poetry config pypi-token.pypi <token>` once first)
+(Use `poetry config pypi-token.pypi <token>` once first; the token in saved with my other passwords)
 
 ## Building the documentation
 
