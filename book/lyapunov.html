@@ -956,13 +956,16 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         prove that $\dot{V}(\bx) \le 0$ whenever $V(\bx) \le \rho$, since $V$
         and $\dot{V}$ are smooth polynomials; we examine this claim in full detail in <a href="#van_der_pol_roa">one of the exercises</a>.</p>
 
-        <p>Using the S-procedure with equalities instead of inequalities also
-        has the potential advantage of removing the SOS constraint on
-        $\lambda(\bx).$  But perhaps the biggest advantage of this formulation
-        is the possibility of dramatically simplifying the problem using the
-        quotient ring of this algebraic variety, and in particular some recent
-        results for exact certification using sampling
-        varieties<elib>Shen20</elib>.</p>
+        <p>Using the S-procedure with equalities instead of inequalities has
+        the immediate advantage of removing the SOS constraint on
+        $\lambda(\bx).$  But there is a more subtle, and likely more important
+        advantage -- we have more mathematical tools for dealing with algebraic
+        varieties (defined by equality constraints) than for the semi-algebraic
+        sets (defined by inequality constraints). For an important example of
+        how this can be used to dramatically simplify the SOS programs, see for
+        instance <elib>Shen20</elib> which uses sampling on the variety to
+        provide an exact certification (for all $\bx$) on the quotient ring,
+        completely removing the need for the Lagrange multiplier terms.</p>
 
         <example id="max_roa_cubic_system"><h1>Maximizing the ROA for the cubic
         polynomial system</h1>
@@ -1011,8 +1014,8 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         volume of state space by optimizing our original Lyapunov candidate to
         maximize the volume of the verified region for the nonlinear system,
         potentially even considering Lyapunov functions with degree greater
-        than two (the linear analysis will only give quadratic candidates). We
-        can use sums-of-squares optimization in those cases, too!</p>
+        than two (the linear analysis will only give quadratic candidates)?
+        Yes. We can use sums-of-squares optimization in those cases, too!</p>
 
         <p>To accomplish this, we'll combine the ideas from our global
         stability analysis (where we could search for $V(\bx)$) with these new
@@ -1027,11 +1030,11 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         $$-\dot{V}(\bx) + \lambda(\bx)(V(\bx) - 1) {\text{ is SOS}}, \quad 
         \text{and} \quad \lambda(\bx) \text{ is SOS}.$$
         
-        Notice that I've replaced $\rho=1$; now that we are searching for $V$
-        the scale of the level-set can be set arbitrarily to 1.  In fact, it's
-        better to do so -- if we did not set $V(0)=0$ and $V(\bx) \le 1$ as the
-        sublevel set, then the optimization problem would be
-        under-constrained.</p>
+        Notice that I've substituted $\rho=1$; now that we are searching for
+        $V$ the scale of the level-set can be set arbitrarily to 1.  In fact,
+        it's better to do so -- if we did not set $V(0)=0$ and $V(\bx) \le 1$
+        as the sublevel set, then the optimization problem would be
+        under constrained.</p>
 
         <p>Unfortunately, the derivative constraint is now nonconvex (bilinear)
         in the decision variables, since we are searching for both the
@@ -1046,6 +1049,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
           \begin{align*} \max_{\rho, \lambda(\bx)} & \quad \rho \\ \subjto &
           \quad (\bx^T\bx)^d (V(\bx) - \rho) + \lambda^T(\bx) \dot{V}(\bx)
           \text{ is SOS},\end{align*} with $d$ a fixed, positive integer.
+          Update $V(\bx) \Leftarrow \frac{V(\bx)}{\rho}.$
         </li> 
         <li>Fix $\lambda(\bx)$ and solve for $V(\bx) = \bx^T{\bf P}\bx$:
         \begin{align*} \min_{{\bf P}} & \quad \tr({\bf P}) \\ \subjto & \quad
