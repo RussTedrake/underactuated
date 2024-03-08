@@ -1,0 +1,23 @@
+# -*- mode: python -*-
+# vi: set ft=python :
+
+# Copyright 2020-2022 Massachusetts Institute of Technology.
+# Licensed under the BSD 3-Clause License. See LICENSE.TXT for details.
+
+load("//book/htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
+
+rt_ipynb_test(
+    name = "sdp",
+    srcs = ["sdp.ipynb"],
+    deps = [
+      "//underactuated",
+    ],
+)
+
+rt_ipynb_test(
+    name = "sos_six_hump_camel",
+    srcs = ["sos_six_hump_camel.ipynb"],
+    deps = [
+      "//underactuated",
+    ],
+)

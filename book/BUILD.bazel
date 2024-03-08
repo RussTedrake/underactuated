@@ -148,14 +148,6 @@ rt_ipynb_test(
 rt_html_test(
     srcs = ["optimization.html"],
 )
-rt_ipynb_test(
-    name = "optimization",
-    srcs = ["optimization.ipynb"],
-    deps = [
-      "//underactuated",
-    ],
-)
-
 
 rt_html_test(
     srcs = ["playbook.html"],
