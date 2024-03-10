@@ -2423,7 +2423,16 @@ V = RegionOfAttraction(sys, context)
         the gravitational constant $g$. Is $V(x) = \frac{1}{2}\widetilde{E}^2$
         a Lyapunov function for the fixed point at the upright position? Show
         that the fixed point is attractive using LaSalle's Theorem and the
-        scalar function $V(x)$. </li>
+        scalar function $V(x)$. Note: LaSalle's Theorem in the textbook is not
+        sufficient for this problem, as it requires stronger conditions e.g. $V(x)$
+        being radially unbounded. please refer to the following variant of LaSalle's
+        Invariance Principle: If a scalar continuously differentiable function
+        $$ V: \mathbb{R}^n \rightarrow \mathbb{R} $$ satisfies
+        $$ \dot{V}(x) \leq 0, \forall x \in \mathbb{R}^n, $$ and
+        $$ V(x) \geq 0, \forall x \in \mathbb{R}^n, $$ and if
+        $$ x(t) $$ is a bounded trajectory, $$ x(t) $$ will converge to the largest
+        invariant set where $$\dot{V}(x) = 0 $$.
+        </li>
 
         <li>The swing-up controller is robust with respect to mass measurement.
         Suppose the mass measurement is incorrect $m_i \neq m$. Show that the
