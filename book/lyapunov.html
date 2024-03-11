@@ -226,7 +226,11 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       href="https://en.wikipedia.org/wiki/Radially_unbounded_function">radially
       unbounded</a>", and is required to make sure that trajectories cannot
       diverge to infinity even as $V$ decreases; it is only required for global
-      stability analysis.</p>  <!-- note: the first exercise below has an example -->
+      stability analysis. <!-- note: the first exercise below has an example -->
+      This radially unbounded condition is sufficient but is not necessary; other
+      conditions can potentially be invoked to guarantee that the system avoids this
+      pathology. More essential is that the resulting trajectory $\bx(t)$ is bounded for
+      all $t$.</p>
 
     </subsection> <!-- global stability -->
 
@@ -260,8 +264,12 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       leave.  The "largest invariant set" with $\dot{V}(\bx) = 0$ need not be
       connected; in fact for the pendulum example each fixed point is an
       invariant set with $\dot{V} = 0$, so the largest invariant set is the
-      <em>union</em> of all the fixed points of the system.  There are also
-      variants of LaSalle's Theorem which work over a region.</p>
+      <em>union</em> of all the fixed points of the system.  There are also variants of
+      LaSalle's Theorem which work over a region. For example, the total energy of the
+      pendulum does not actually satisfy the radially-unbounded condition (the energy is
+      finite as $\theta \rightarrow \infty$), but observing that $\bx(t)$ is bounded for
+      all initial conditions is sufficient to invoke a variant of LaSalle's theorem
+      <elib part="&sect;4.2">Khalil01</elib>.</p>
 
       <p>Finding a Lyapunov function which $\dot{V} \prec 0$ is more difficult
       than finding one that has $\dot{V} \preceq 0$.  LaSalle's theorem gives us
