@@ -91,20 +91,22 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
   <section><h1>Problem Formulation</h1>
 
-    <p>Given an initial condition, $\bx_0$, and an input trajectory $\bu(t)$
-    defined over a finite interval, $t\in[t_0,t_f],$   we can compute the
-    long-term (finite-horizon) cost of executing that trajectory   using the
-    standard additive-cost optimal control objective, \[ J_{\bu(\cdot)}(\bx_0)
-    = \ell_f (\bx(t_f)) + \int_{t_0}^{t_f} \ell(\bx(t),\bu(t)) dt. \]  We will
-    write the trajectory optimization problem as \begin{align*}
-    \min_{\bu(\cdot)} \quad & \ell_f (\bx(t_f)) + \int_{t_0}^{t_f}
-    \ell(\bx(t),\bu(t)) dt \\ \subjto \quad & \dot{\bx}(t) = f(\bx(t),\bu(t)),
-    \quad \forall t\in[t_0, t_f] \\ & \bx(t_0) = \bx_0. \\ \end{align*} Many
-    trajectory optimization problems will also include additional constraints,
-    such as collision avoidance (e.g., where the constraint is that the signed
-    distance between the robot's geometry and the obstacles stays positive) or
-    input limits (e.g. $\bu_{min} \le \bu \le \bu_{max}$ ). Constraints can be
-    defined for all time or some subset of the trajectory.</p>
+    <p>Given a state-space model, $\dot{\bx} = f(\bx,\bu)$, an initial condition,
+    $\bx_0$, and an input trajectory $\bu(t)$ defined over a finite interval,
+    $t\in[t_0,t_f],$ we can simulate the dynamics forward to obtain $\bx(t)$ over the
+    same interval. We will define the long-term (finite-horizon) cost of executing that
+    trajectory using the standard additive-cost optimal control objective, \[
+    J_{\bu(\cdot)}(\bx_0) = \ell_f (\bx(t_f)) + \int_{t_0}^{t_f} \ell(\bx(t),\bu(t)) dt.
+    \] $\ell_f$ is a <i>terminal cost</i>, evaluated at the end of the trajectory, which
+    we did not have in the infinite-horizon formulations we've focused on so far. We
+    will write the trajectory optimization problem as \begin{align*} \min_{\bu(\cdot)}
+    \quad & \ell_f (\bx(t_f)) + \int_{t_0}^{t_f} \ell(\bx(t),\bu(t)) dt \\ \subjto \quad
+    & \dot{\bx}(t) = f(\bx(t),\bu(t)), \quad \forall t\in[t_0, t_f] \\ & \bx(t_0) =
+    \bx_0. \\ \end{align*} Many trajectory optimization problems will also include
+    additional constraints, such as collision avoidance (e.g., where the constraint is
+    that the signed distance between the robot's geometry and the obstacles stays
+    positive) or input limits (e.g. $\bu_{min} \le \bu \le \bu_{max}$ ). Constraints can
+    be defined for all time or some subset of the trajectory.</p>
 
     <p> As written, the optimization above is an optimization over continuous
     trajectories.  In order to formulate this as a numerical optimization, we
@@ -133,11 +135,11 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
   <section><h1>Convex Formulations for Linear Systems</h1>
 
-    <p>Let us first consider the case of linear systems.  In fact, if we start
-    in discrete time, we can even defer the question of how to best discretize
-    the continuous-time problem.  There are a few different ways that we might
-    "transcribe" this optimization problem into a concrete mathematical
-    program.</p>
+    <p>Let us first consider the case of linear systems.  In fact, if we start in
+    discrete time with a state space model of the form $\bx[n+1] = {\bf A}\bx[n] + {\bf
+    B}\bu[n]$, we can even defer the question of how to best discretize the
+    continuous-time problem. There are a few different ways that we might "transcribe"
+    this optimization problem into a concrete mathematical program.</p>
 
     <subsection><h1>Direct Transcription</h1>
 
@@ -187,8 +189,8 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       decision variables ${\bf s}_x[\cdot]$ and ${\bf s}_u[\cdot]$ -- these are
       commonly referred to as <i>slack variables</i>
       -- and write $$\min_{\bx,\bu,{\bf s}_x,{\bf s}_u} \sum_n^{N-1} {\bf
-      s}_x[n] + {\bf s}_u[n], \quad \text{s.t.} \quad {\bf s}_x[n] \ge x[n],
-      \quad {\bf s}_x[n] \ge -x[n], \quad ...$$  The field of convex
+      s}_x[n] + {\bf s}_u[n], \quad \text{s.t.} \quad {\bf s}_x[n] \ge \bx[n],
+      \quad {\bf s}_x[n] \ge -\bx[n], \quad ...$$  The field of convex
       optimization is replete with tricks like this.  Knowing and recognizing
       them are skills of the (optimization) trade.  But there are also many
       relevant constraints which cannot be recast into convex constraints (in
@@ -224,28 +226,27 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     <subsection id="computational_considerations"><h1>Computational
     Considerations</h1></subsection>
 
-      <p>So is direct shooting uniformly better than the direct transcription
-      approach?  I think it is not.  There are a few potential reason that one
-      might prefer the direct transcription: <ul><li>Numerical conditioning.
-      Shooting involves calculating ${\bf A}^n$ for potentially large $n$,
-      which can lead to a large range of coefficient values in the constraints.
-      This problem is sometimes referred to as the "tail wagging the dog", or
-      in very deep neural networks as "vanishing gradients" and/or "exploding
-      gradients".  In trajectory optimization, it is not simply an artifact of
-      our transcription, but is a real property of the problem we have
-      formulated: the control input $\bu[0]$ really does have more opportunity
-      to have a large impact on the total cost than control input $\bu[N-1]$.
-      The direct transcription approach combats the numerical issue by
+      <p>So is direct shooting uniformly better than the direct transcription approach?
+      I think it is not.  There are a few potential reason that one might prefer the
+      direct transcription: <ul><li>Numerical conditioning. Shooting involves
+      calculating ${\bf A}^n$ for potentially large $n$, which can lead to a large range
+      of coefficient values in the constraints. This problem is sometimes referred to as
+      the "tail wagging the dog", or in very deep neural networks as "vanishing
+      gradients" and/or "exploding gradients".  In trajectory optimization, it is not
+      simply an artifact of the shooting transcription, but is a real property of the
+      problem we have formulated: the control input $\bu[0]$ really does have more
+      opportunity to have a large impact on the total cost than control input
+      $\bu[N-1]$. The direct transcription approach combats the numerical issue by
       spreading this effect out over a large number of well-balanced
-      constraints.</li><li>Adding state constraints.  Having $\bx[n]$ as
-      explicit decision variables makes it very easy/natural to add additional
-      state constraints; and the solver effectively reuses the computation of
-      ${\bf A}^n$ for each constraint. In shooting, one has to unroll those
-      terms for each new constraint.</li><li>Parallelization.  For larger
-      problems, evaluating the constraints can be a substantial cost.  In
-      direct transcription, one can evaluate the dynamics/constraints in
-      parallel (because each iteration begins with $\bx[n]$ already given),
-      whereas shooting is more fundamentally a serial operation.</li></ul></p>
+      constraints.</li><li>Adding state constraints.  Having $\bx[n]$ as explicit
+      decision variables makes it very easy/natural to add additional state constraints;
+      and the solver effectively reuses the computation of ${\bf A}^n$ for each
+      constraint. In shooting, one has to unroll those terms for each new
+      constraint.</li><li>Parallelization.  For larger problems, evaluating the
+      constraints can be a substantial cost.  In direct transcription, one can evaluate
+      the dynamics/constraints in parallel (because each iteration begins with $\bx[n]$
+      already given), whereas shooting is more fundamentally a serial
+      operation.</li></ul></p>
 
       <p>For linear convex problems, the solvers are mature enough that these
       differences often don't amount to much.  For nonlinear optimization
@@ -267,19 +268,17 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
     <subsection><h1>Continuous Time</h1>
 
-      <p>If we wish to solve the continuous-time version of the problem, then
-      we can discretize time and use the formulations above.  The most
-      important decision is the discretization / numerical integration scheme.
-      For linear systems, if we assume that the control inputs are held
-      constant for each time step (aka <a
-      href="https://en.wikipedia.org/wiki/Zero-order_hold">zero-order
-      hold</a>), then we can integrate the dynamics perfectly: $$\bx[n+1] =
-      \bx[n] + \int_{t_n}^{t_n + h} \left[ {\bf A} \bx(t) + {\bf B}\bu[n]
-      \right]dt = e^{{\bf A}h}\bx[n] + {\bf A}^{-1}(e^{{\bf A}h} - {\bf I}){\bf
-      B}\bu[n],$$ is the simple case (when ${\bf A}$ is invertible). But in
-      general, we can use any finitely-parameterized representation of $\bu(t)$
-      and any numerical integration scheme to obtain $\bx[n+1]={\bf f}(\bx[n],
-      \bu[n])$.</p>
+      <p>If we wish to solve the continuous-time version of the problem, then we can
+      discretize time and use the formulations above.  The most important decision is
+      the discretization / numerical integration scheme. For linear systems, if we
+      assume that the control inputs are held constant for each time step (aka <a
+      href="https://en.wikipedia.org/wiki/Zero-order_hold">zero-order hold</a>), then we
+      can integrate the dynamics perfectly: $$\bx[n+1] = \bx[n] + \int_{t_n}^{t_n + h}
+      \left[ {\bf A} \bx(t) + {\bf B}\bu[n] \right]dt = e^{{\bf A}h}\bx[n] + {\bf
+      A}^{-1}(e^{{\bf A}h} - {\bf I}){\bf B}\bu[n],$$ is the simple case (when ${\bf A}$
+      is invertible). But in general, we can use any finitely-parameterized
+      representation of $\bu(t)$ and any numerical integration scheme. Many (but not
+      all) integration schemes will still be convex in the decision variables.</p>
 
     </subsection>
 
@@ -287,14 +286,13 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
   <section><h1>Nonconvex Trajectory Optimization</h1>
 
-    <p>I strongly recommend that you study the convex trajectory optimization
-    case; it can lead you to mental clarity and sense of purpose.  But in
-    practice trajectory optimization is often used to solve nonconvex problems.
-    Our formulation can become nonconvex for a number of reasons.  For example,
-    if the dynamics are nonlinear, then the dynamic constraints become
-    nonconvex.  You may also wish to have a nonconvex objective or nonconvex
-    additional constraint (e.g. collision avoidance). Typically we formulate
-    these problems using tools from <a
+    <p>I strongly recommend that you study the convex trajectory optimization case; it
+    can lead you to mental clarity and sense of purpose.  But in practice trajectory
+    optimization is often used to solve nonconvex problems. Our formulation can become
+    nonconvex for a number of reasons.  For example, if the dynamics are nonlinear, then
+    the dynamic constraints become nonconvex.  You may also wish to have a nonconvex
+    objective or additional nonconvex constraints (e.g. collision avoidance). Typically
+    we formulate these problems using tools from <a
     href="optimization.html#nonlinear">nonlinear programming</a>.</p>
 
     <subsection><h1>Direct Transcription and Direct Shooting</h1>
@@ -356,7 +354,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
       <p> In direct collocation (c.f., <elib>Hargraves87</elib>), both the
       input trajectory and the state trajectory are represented explicitly as
-      piecewise polynomial functions.  In particular, the sweet spot for this
+      piecewise-polynomial functions.  In particular, the sweet spot for this
       algorithm is taking $\bu(t)$ to be a first-order polynomial and $\bx(t)$
       to be a cubic polynomial.</p>
 
@@ -371,7 +369,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       (\bx(t_k), \bu(t_k))$; and the four values $\bx(t_k), \bx(t_{k+1}),
       \dot\bx (t_k), \dot\bx(t_{k+1})$ completely define all of the parameters
       of the cubic spline over the interval $t\in[t_k, t_{k+1}]$.  This is very
-      convenient, because it is easy for us to add additional constraints to
+      convenient, because it is very natural to write constraints on 
       $\bu$ and $\bx$ at the sample points (and would have been relatively
       harder to have to convert every constraint into constraints on the spline
       coefficients).</p>
@@ -381,34 +379,31 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         <figcaption>Cubic spline parameters used in the direct collocation method.</figcaption>
       </figure>
 
-      <p>Given values of the decision variables ($\bu(t_k)$ and $\bx(t_k)$ at
-      the break points), the spline is fully specified, but we need dim$(\bx)$
-      additional constraints to constrain that $\bx(t_{k+1})$ is
-      (approximately) $\bx(t_k) + \int_{t_k}^{t_{k+1}} f(\bx(t),\bu(t)) dt.$ In
-      direct collocation, we impose this with derivative constraints at the
-      so-called <i>collocation points</i>.  In particular, if we choose the
-      collocation times to be the midpoints of the spline, then we have that
-      \begin{gather*} t_{c,k} = \frac{1}{2}\left(t_k + t_{k+1}\right), \qquad
-      h_k = t_{k+1} - t_k, \\ \bu(t_{c,k}) = \frac{1}{2}\left(\bu(t_k) +
-      \bu(t_{k+1})\right), \\ \bx(t_{c,k}) = \frac{1}{2}\left(\bx(t_k) +
-      \bx(t_{k+1})\right) + \frac{h}{8} \left(\dot\bx(t_k) -
-      \dot\bx(t_{k+1})\right), \\ \dot\bx(t_{c,k}) =
-      -\frac{3}{2h}\left(\bx(t_k) - \bx(t_{k+1})\right) - \frac{1}{4}
-      \left(\dot\bx(t_k) + \dot\bx(t_{k+1})\right). \end{gather*} These
-      equations come directly from the equations that fit the cubic spline to
-      the end points/derivatives then interpolate them at the midpoint.  They
-      give us precisely what we need to add the dynamics constraint to our
-      optimization at the collocation times:\begin{align*}
-      \min_{\bx[\cdot],\bu[\cdot]} \quad & \ell_f(\bx[N]) + \sum_{n=0}^{N-1}
-      h_n \ell(\bx[n],\bu[n]) \\ \subjto \quad & \dot\bx(t_{c,n}) =
-      f(\bx(t_{c,n}), \bu(t_{c,n})), & \forall n \in [0,N-1]  \\ & \bx[0] =
-      \bx_0 \\ & + \text{additional constraints}. \end{align*}  I hope this
-      notation is clear -- I'm using $\bx[k] = \bx(t_k)$ as the decision
-      variables, and the collocation constraint at $t_{c,k}$ depends on the
-      decision variables: $\bx[k], \bx[k+1], \bu[k], \bu[k+1]$. The actual
-      equations of motion get evaluated at both the break points, $t_k$, and
-      the collocation times, $t_{c,k}$, because we need to evaluate the
-      dynamics at the break points in order to write $\dot{\bx}(t_{c,k}).$</p>
+      <p>Given the dynamics and the values of the decision variables ($\bu(t_k)$ and
+      $\bx(t_k)$ at the break points), the spline is fully specified, but we need
+      dim$(\bx)$ additional constraints to constrain that $\bx(t_{k+1})$ is
+      (approximately) $\bx(t_k) + \int_{t_k}^{t_{k+1}} f(\bx(t),\bu(t)) dt.$ In direct
+      collocation, we impose this with derivative constraints at the so-called
+      <i>collocation points</i>.  In particular, if we choose the collocation times to
+      be the midpoints of the spline, then we have that \begin{gather*} t_{c,k} =
+      \frac{1}{2}\left(t_k + t_{k+1}\right), \qquad h_k = t_{k+1} - t_k, \\ \bu(t_{c,k})
+      = \frac{1}{2}\left(\bu(t_k) + \bu(t_{k+1})\right), \\ \bx(t_{c,k}) =
+      \frac{1}{2}\left(\bx(t_k) + \bx(t_{k+1})\right) + \frac{h}{8} \left(\dot\bx(t_k) -
+      \dot\bx(t_{k+1})\right), \\ \dot\bx(t_{c,k}) = -\frac{3}{2h}\left(\bx(t_k) -
+      \bx(t_{k+1})\right) - \frac{1}{4} \left(\dot\bx(t_k) + \dot\bx(t_{k+1})\right).
+      \end{gather*} These equations come directly from the equations that fit the cubic
+      spline to the end points/derivatives then interpolate them at the midpoint.  They
+      give us precisely what we need to add the dynamics constraint to our optimization
+      at the collocation times:\begin{align*} \min_{\bx[\cdot],\bu[\cdot]} \quad &
+      \ell_f(\bx[N]) + \sum_{n=0}^{N-1} h_n \ell(\bx[n],\bu[n]) \\ \subjto \quad &
+      \dot\bx(t_{c,n}) = f(\bx(t_{c,n}), \bu(t_{c,n})), & \forall n \in [0,N-1]  \\ &
+      \bx[0] = \bx_0 \\ & + \text{additional constraints}. \end{align*}  I hope this
+      notation is clear -- I'm using $\bx[k] = \bx(t_k)$ as the decision variables, and
+      the collocation constraint at $t_{c,k}$ depends on the decision variables:
+      $\bx[k], \bx[k+1], \bu[k], \bu[k+1]$. The actual equations of motion get evaluated
+      at both the break points, $t_k$, and the collocation times, $t_{c,k}$, because we
+      need to evaluate the dynamics at the break points in order to write
+      $\dot{\bx}(t_{c,k}).$</p>
 
       <p>Once again, direct collocation effectively integrates the equations of
       motion by satisfying the constraints of the optimization -- this time
@@ -446,27 +441,25 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
     <subsection id="pseudo-spectral"><h1>Pseudo-spectral Methods</h1>
 
-      <p>The direct collocation method of <elib>Hargraves87</elib> was our first
-      example of explicitly representing the solution of the optimal control
-      problem as a parameterized trajectory, and adding constraints to the
-      derivatives at a series of collocation times.  In the algorithm above,
-      the representation of choice was <i>piecewise-polynomials</i>, e.g. cubic
-      spines, and the spline coefficients were the decision variables.  A
-      closely related approach, often called "pseudo-spectral" optimal control,
-      uses the same collocation idea, but represents the trajectories instead
-      using a linear combination of <i>global, polynomial</i> basis functions.
-      These methods use typically much higher-degree polynomials, but can
-      leverage clever parameterizations to write sparse collocation objectives
-      and to select the collocation times <elib>Garg11+Ross12a</elib>.
-      Interestingly, The continuously-differentiable nature of the
-      representation of these methods has led to comparatively more theorems and
-      analysis than we have seen for other direct trajectory optimization
-      methods <elib>Ross12a</elib> -- but despite some of the language used in
-      these articles please remember they are still local optimization methods
-      trying to solve a nonconvex optimization problem.  While the direct
-      collocation method above might be expected to converge to the true optimal
-      solution by adding more segments to the piecewise polynomial (and having
-      each segment represent a smaller interval of time), here we expect
+      <p>The direct collocation method of <elib>Hargraves87</elib> was our first example
+      of explicitly representing the solution of the optimal control problem as a
+      parameterized trajectory, and adding constraints to the derivatives at a series of
+      collocation times.  In the algorithm above, the representation of choice was
+      <i>piecewise-polynomials</i>, e.g. cubic spines, and the trajectory values at the
+      break points were the decision variables. A closely related approach, often
+      called "pseudo-spectral" optimal control, uses the same collocation idea, but
+      represents the trajectories instead using a linear combination of <i>global,
+      polynomial</i> basis functions. These methods use typically much higher-degree
+      polynomials, but can leverage clever parameterizations to write sparse collocation
+      objectives and to select the collocation times <elib>Garg11+Ross12a</elib>.
+      Interestingly, the continuously-differentiable nature of the representation of
+      these methods has led to comparatively more theorems and analysis than we have
+      seen for other direct trajectory optimization methods <elib>Ross12a</elib> -- but
+      despite some of the language used in these articles please remember they are still
+      local optimization methods trying to solve a nonconvex optimization problem.
+      While the direct collocation method above might be expected to converge to the
+      true optimal solution by adding more segments to the piecewise polynomial (and
+      having each segment represent a smaller interval of time), here we expect
       convergence to happen as we increase the degree of the polynomials.</p>
 
       <p>The pseudo-spectral methods are also sometimes knowns as "orthogonal
@@ -710,6 +703,16 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       for $\bx(\cdot)$ as a straight line trajectory between the start and the
       goal was enough to help the solver find a good solution; in fact it was
       necessary.</p>
+
+      <p>I'm old enough now, though, that I've tired of playing games with finicky
+      solvers that require hand-holding. In recent work, my group has been working on
+      more robust "global" solutions to the motion planning problem, based on an idea
+      call Graphs of Convex Sets (GCS) <elib>Marcucci21</elib>. The initial
+      transcriptions of motion planning into GCS were focused on kinematic trajectory
+      optimization (as needed in robotic manipulation) <elib>Marcucci22</elib>, but we
+      are growing the capability towards dynamic (underactuated) trajectory
+      optimization. <a href="https://manipulation.mit.edu/trajectories.html#gcs">You can
+      read more about here</a>. </p>
 
     </subsection>
 
@@ -1643,6 +1646,20 @@ Tech. Report, GT-RIM-CP&R-2012-002, <span class="year">2012</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Li18a.pdf">link</a>&nbsp;]
 
 </li><br>
+<li id=Marcucci21>
+<span class="author">Tobia Marcucci and Jack Umenberger and Pablo A. Parrilo and Russ Tedrake</span>, 
+<span class="title">"Shortest Paths in Graphs of Convex Sets"</span>, 
+<span class="publisher">arXiv preprint</span>, <span class="year">2023</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Marcucci21.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Marcucci22>
+<span class="author">Tobia Marcucci and Mark Petersen and David von Wrangel and Russ Tedrake</span>, 
+<span class="title">"Motion Planning around Obstacles with Convex Optimization"</span>, 
+, <span class="year">2022</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Marcucci22.pdf">link</a>&nbsp;]
+
+</li><br>
 <li id=Mombaur05>
 <span class="author">Katja D. Mombaur and Hans Georg Bock and Johannes P. Schloder and Richard W. Longman</span>, 
 <span class="title">"Open-loop stable solutions of periodic optimal control problems in robotics"</span>, 
@@ -1793,20 +1810,6 @@ PhD thesis, Massachusetts Institute of Technology, September, <span class="year"
 <span class="title">"Aggressive Quadrotor Flight through Cluttered Environments Using Mixed Integer Programming"</span>, 
 <span class="publisher">Proceedings of the International Conference on Robotics and Automation (ICRA)</span> , May, <span class="year">2016</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Landry15b.pdf">link</a>&nbsp;]
-
-</li><br>
-<li id=Marcucci21>
-<span class="author">Tobia Marcucci and Jack Umenberger and Pablo A. Parrilo and Russ Tedrake</span>, 
-<span class="title">"Shortest Paths in Graphs of Convex Sets"</span>, 
-<span class="publisher">arXiv preprint</span>, <span class="year">2023</span>.
-[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Marcucci21.pdf">link</a>&nbsp;]
-
-</li><br>
-<li id=Marcucci22>
-<span class="author">Tobia Marcucci and Mark Petersen and David von Wrangel and Russ Tedrake</span>, 
-<span class="title">"Motion Planning around Obstacles with Convex Optimization"</span>, 
-, <span class="year">2022</span>.
-[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Marcucci22.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Alessio09>
