@@ -1461,7 +1461,39 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
     </exercise>
 
-    <exercise><h1>Iterative Linear Quadratic Regulator</h1>
+    <exercise><h1>Iterative Linear Quadratic Regulator: Theory</h1>
+
+      <p>
+        Please read sections 1 and 2 of this paper <elib>Nganga21</elib>, paying close attention to section 2 in particular. 
+        Then answer the following questions in your own words. 
+        Please refrain from submitting hand-written responses; 1-3 sentences per part would suffice.
+      </p>
+
+      <ol type="a">
+
+        <li>Explain what problem iLQR is solving.</li>
+
+        <li>Explain what the backward pass does and what purpose it serves.</li>
+
+        <li>Explain what the forward pass does and what purpose it serves.</li>
+
+        <li>Explain how the two interact with each other in an iterative manner. 
+          Do you expect the algorithm to converge? Why?
+        </li>
+
+        <li>Explain the difference between DDP and iLQR.</li>
+
+        <li>Suppose the system dynamics aren't smooth (i.e., not continuously differentiable), 
+          but are still available in closed form. 
+          Can you still apply the algorithm? Would the backward pass still work? 
+          What about the forward pass? 
+        </li>
+
+      </ol>
+
+    </exercise>
+
+    <exercise><h1>Iterative Linear Quadratic Regulator: Implementation</h1>
 
       <p>The exercise is self-contained in
         <script>document.write(notebook_link('trajopt', 'ilqr_driving', link_text='this notebook'))</script>.
@@ -1829,6 +1861,12 @@ PhD thesis, Massachusetts Institute of Technology, September, <span class="year"
 <span class="author">O. Junge and J. E. Marsden and S. Ober-Bloebaum</span>, 
 <span class="title">"Discrete mechanics and optimal control"</span>, 
 <span class="publisher">Proceedings of the 16th IFAC World Congress</span> , <span class="year">2005</span>.
+
+</li><br>
+<li id=Nganga21>
+<span class="author">John N Nganga and Patrick M Wensing</span>, 
+<span class="title">"Accelerating second-order differential dynamic programming for rigid-body systems"</span>, 
+<span class="publisher">IEEE Robotics and Automation Letters</span>, vol. 6, no. 4, pp. 7659--7666, <span class="year">2021</span>.
 
 </li><br>
 </ol>
