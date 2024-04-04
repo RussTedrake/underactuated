@@ -7,8 +7,16 @@
 load("//book/htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
-    name = "contact",
-    srcs = ["contact.ipynb"],
+    name = "basketball",
+    srcs = ["basketball.ipynb"],
+    deps = [
+      "//underactuated",
+    ],
+)
+
+rt_ipynb_test(
+    name = "rimless_wheel",
+    srcs = ["rimless_wheel.ipynb"],
     deps = [
       "//underactuated",
     ],
