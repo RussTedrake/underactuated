@@ -1,6 +1,7 @@
+import numpy as np
 import numpy.typing as npt
 from pydrake.multibody.plant import MultibodyPlant
-from pydrake.multibody.tree import MultibodyForces_
+from pydrake.multibody.tree import JointActuatorIndex, MultibodyForces_
 from pydrake.systems.framework import Context
 
 
@@ -35,3 +36,24 @@ def ManipulatorDynamics(
     tauExt = plant.CalcGeneralizedForces(context, forces) - tauG
 
     return (M, Cv, tauG, B, tauExt)
+
+
+def MakePidStateProjectionMatrix(plant: MultibodyPlant):
+    """Given a MultibodyPlant, returns a selection matrix, S, such that [q_a; v_a] = S @ [q; v], where q_a and v_a are the actuated positions and velocities and q, v, are the full state. This can be passed to e.g. the `state_projection` argument of the PidController constructor.
+
+    Args:
+        plant: The MultibodyPlant for the projection matrix.
+    """
+    num_q = plant.num_positions()
+    num_v = plant.num_velocities()
+    num_u = plant.num_actuators()
+    S = np.zeros((2 * num_u, num_q + num_v))
+    j = 0
+    for i in range(plant.num_actuators()):
+        actuator = plant.get_joint_actuator(JointActuatorIndex(i))
+        assert actuator.num_inputs() == 1
+        joint = actuator.joint()
+        S[j, joint.position_start()] = 1
+        S[num_u + j, num_q + joint.velocity_start()] = 1
+        j = j + 1
+    return S
