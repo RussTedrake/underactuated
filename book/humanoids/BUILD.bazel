@@ -14,3 +14,11 @@ rt_ipynb_test(
     data = ["//underactuated/models/littledog"],
     deps = ["//underactuated"],
 )
+
+# TODO(russt): Need to prefetch spot_ros2 assets for bazel
+#rt_ipynb_test(
+#    name = "spot",
+#    srcs = ["spot.ipynb"],
+#    data = ["//underactuated/models/spot"],
+#    deps = ["//underactuated"],
+#)

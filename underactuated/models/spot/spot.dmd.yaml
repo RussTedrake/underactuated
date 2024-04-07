@@ -1,0 +1,16 @@
+directives:
+- add_model:
+    name: spot
+    file: package://underactuated/models/spot/spot.urdf
+    default_free_body_pose:
+      body:
+        translation: [0, 0, 0.55]
+    default_joint_positions:
+        front_left_hip_y: [1.0]
+        front_left_knee: [-1.5]
+        front_right_hip_y: [1.0]
+        front_right_knee: [-1.5]
+        rear_left_hip_y: [1.0]
+        rear_left_knee: [-1.5]
+        rear_right_hip_y: [1.0]
+        rear_right_knee: [-1.5]
