@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<sdf version='1.5'>
+  <model name='PlanarOneLegHopper'>
+    <link name='planar_world'>
+      <pose rotation_format="euler_rpy" degrees='true'>0 0 0 90 0 0</pose>
+    </link>
+    <joint name='planar_weld' type='fixed'>
+      <parent>world</parent>
+      <child>planar_world</child>
+    </joint>
+    <link name='body'>
+      <inertial>
+        <mass>10</mass>
+        <inertia>
+          <ixx>1</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1</iyy> <!-- this is the only one that matters -->
+          <iyz>0</iyz>
+          <izz>1</izz>
+        </inertia>
+      </inertial>
+      <visual name='beam'>
+        <pose>0 0.0025 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>2 0.025 0.025</size>
+          </box>
+        </geometry>
+      </visual>
+      <visual name='weight1'>
+        <pose degrees="true">0.975 -0.085 0 90 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.075</radius>
+            <length>0.15</length>
+          </cylinder>
+        </geometry>
+      </visual>
+      <collision name='weight1'>
+        <pose degrees="true">0.975 -0.085 0 90 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.075</radius>
+            <length>0.15</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='weight2'>
+        <pose degrees="true">-0.975 -0.085 0 90 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.075</radius>
+            <length>0.15</length>
+          </cylinder>
+        </geometry>
+      </visual>
+      <collision name='weight2'>
+        <pose degrees="true">-0.975 -0.085 0 90 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.075</radius>
+            <length>0.15</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='box1'>
+        <pose>0.15 0.065 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.25 0.15 0.15</size>
+          </box>
+        </geometry>
+      </visual>
+      <visual name='box2'>
+        <pose>-0.15 0.065 0 0 0 0</pose>
+        <geometry>
+          <box>
+            <size>0.25 0.15 0.15</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <drake:joint name="body_joint" type="planar">
+      <drake:child>body</drake:child>
+      <drake:parent>planar_world</drake:parent>
+      <drake:damping>0 0 0</drake:damping>
+    </drake:joint>
+    <link name='piston'>
+      <inertial>
+        <mass>1</mass>
+        <inertia>
+          <ixx>1</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1</iyy>  <!-- this is the only one that matters -->
+          <iyz>0</iyz>
+          <izz>1</izz>
+        </inertia>
+      </inertial>
+      <visual name='piston'>
+        <pose degrees="true">0 0.115 0 90 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.04</radius>
+            <length>0.775</length>
+          </cylinder>
+        </geometry>
+      </visual>
+    </link>    
+    <joint name='hip' type='revolute'>
+      <parent>body</parent>
+      <child>piston</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <effort>10.0</effort>
+          <lower>-0.8</lower>
+          <upper>0.8</upper>
+        </limit>
+      </axis>
+    </joint>
+    <link name='foot'>
+      <inertial>
+        <mass>1</mass>
+        <inertia>
+          <ixx>1</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1</iyy>  <!-- this is the only one that matters -->
+          <iyz>0</iyz>
+          <izz>1</izz>
+        </inertia>
+      </inertial>
+      <visual name='rod'>
+        <pose degrees="true">0 -0.1875 0 90 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.015</radius>
+            <length>1.625</length>
+          </cylinder>
+        </geometry>
+      </visual>
+      <visual name='top'>
+        <pose degrees="true">0 0.65 0 90 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.025</radius>
+            <length>0.05</length>
+          </cylinder>
+        </geometry>
+      </visual>
+      <collision name='top'>
+        <pose degrees="true">0 0.65 0 90 0 0</pose>
+        <geometry>
+          <cylinder>
+            <radius>0.025</radius>
+            <length>0.05</length>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='foot'>
+        <pose>0 -0.9875 0 0 0 0</pose>
+        <geometry>
+          <sphere><radius>0.025</radius></sphere>
+        </geometry>
+      </visual>
+      <collision name='foot'>
+        <pose>0 -0.9875 0 0 0 0</pose>
+        <geometry>
+          <sphere><radius>0.025</radius></sphere>
+        </geometry>
+      </collision>
+    </link>
+    <joint name='leg' type='prismatic'>
+      <parent>piston</parent>
+      <child>foot</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <effort>10.0</effort>
+          <lower>-0.125</lower>
+          <upper>0.5</upper>
+        </limit>
+        <dynamics>
+          <damping>10</damping>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>1000</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+  </model>
+</sdf>

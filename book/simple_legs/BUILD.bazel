@@ -29,3 +29,16 @@ rt_ipynb_test(
         "//underactuated",
     ],
 )
+
+rt_ipynb_test(
+    name="planar_one_leg_hopper",
+    srcs=["planar_one_leg_hopper.ipynb"],
+    data = [
+      "//underactuated/models:planar_one_leg_hopper.sdf",
+      "//underactuated/models:planar_one_leg_hopper.dmd.yaml",
+      "//underactuated/models:ground.urdf",
+    ],
+    deps=[
+        "//underactuated",
+    ],
+)

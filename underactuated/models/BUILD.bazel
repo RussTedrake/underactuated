@@ -8,6 +8,7 @@ exports_files(
     glob([
         "*.sdf",
         "*.urdf",
+        "*.dmd.yaml",
     ]),
     visibility = ["//visibility:public"],
 )

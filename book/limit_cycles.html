@@ -193,32 +193,31 @@ for Limit Cycles</h1>
       independent from $\tau$.</li> </ul> <p>Given a state $\bx$ in the
       original coordinates, we must define a smooth mapping $\bx \rightarrow
       (\tau, \bx_\perp)$ to this new coordinate system.  For example, for a
-      simple ring oscillator we might have:</p> <figure><img width="80%"
-      src="figures/transverseCoordinates.svg"/><figcaption>A moving coordinate
-      system along the limit cycle.</figcaption></figure> In general, for an
-      $n$-dimensional state space, $\tau$ will always be a scalar, and
-      $\bx_\perp$ will be an $(n-1)$-dimensional vector defining the remaining
-      coordinates relative to $\bx^*(\tau)$. In fact, although we use the
-      notation $\bx_\perp$ the coordinate system need not be strictly
-      orthogonal to the orbit, but must simply be <em>transversal</em> (not
-      parallel). Having defined the smooth mapping $\bx \rightarrow
-      (\tau,\bx_\perp)$, we can always rewrite the dynamics in this new
-      coordinate system: \begin{gather*} \dot{\tau} = f_\tau(\bx_\perp,\tau) \\
-      \dot\bx_\perp = f_\perp(\bx_\perp,\tau). \end{gather*}  To keep our
-      notation simpler for the remainder of these notes, we will assume that
-      the origin of this new coordinate system is on the nominal trajectory
-      ($\min_\tau |\bx - \bx^*(\tau)| = 0 \Rightarrow \bx_\perp = 0$).
-      Similarly, by taking $\tau$ to be the phase variable, we will leverage
-      the fact that on the nominal trajectory, we have $\dot\tau = f_\tau(0,
-      \tau) = 1.$</p>
+      simple ring oscillator we might have:</p>
       
-      <p>The value of
-      this construction for Lyapunov analysis was proposed in
-      <elib>Hauser94a</elib>
-      and has been extended nicely to control design in <elib>Shiriaev08</elib>
-      and for region of attraction estimation in <elib>Manchester10b</elib>.  A
-      quite general numerical strategy for defining the transversal coordinates
-      is given in <elib>Manchester10a</elib>.</p>
+      <figure><img width="80%" src="figures/transverseCoordinates.svg"/><figcaption>A
+      moving coordinate system along the limit cycle of the ring
+      oscillator.</figcaption></figure> 
+      
+      <p>In general, for an $n$-dimensional state space, $\tau$ will always be a scalar,
+      and $\bx_\perp$ will be an $(n-1)$-dimensional vector defining the remaining
+      coordinates relative to $\bx^*(\tau)$. In fact, although we use the notation
+      $\bx_\perp$ the coordinate system need not be strictly orthogonal to the orbit,
+      but must simply be <em>transversal</em> (not parallel). Having defined the smooth
+      mapping $\bx \rightarrow (\tau,\bx_\perp)$, we can always rewrite the dynamics in
+      this new coordinate system: \begin{gather*} \dot{\tau} = f_\tau(\bx_\perp,\tau) \\
+      \dot\bx_\perp = f_\perp(\bx_\perp,\tau). \end{gather*}  To keep our notation
+      simpler for the remainder of these notes, we will assume that the origin of this
+      new coordinate system is on the nominal trajectory ($\min_\tau |\bx - \bx^*(\tau)|
+      = 0 \Rightarrow \bx_\perp = 0$). Similarly, by taking $\tau$ to be the phase
+      variable, we will leverage the fact that on the nominal trajectory, we have
+      $\dot\tau = f_\tau(0, \tau) = 1.$</p>
+      
+      <p>The value of this construction for Lyapunov analysis was proposed in
+      <elib>Hauser94a</elib> and has been extended nicely to control design in
+      <elib>Shiriaev08</elib> and for region of attraction estimation in
+      <elib>Manchester10b</elib>.  A quite general numerical strategy for defining the
+      transverse coordinates is given in <elib>Manchester10a</elib>.</p>
 
       <theorem><h1>A Lyapunov theorem for orbital stability</h1>
 
@@ -294,6 +293,12 @@ for Limit Cycles</h1>
       around the fixed point and using the Lyapunov candidate for the linear
       system as an initial guess.  That same approach can be extended to limit
       cycle analysis.</p>
+
+      <figure><img width="45%" src="figures/transversal_surfaces_1c.svg"/>&nbsp;
+      &nbsp;<img width="45%"
+      src="figures/transversal_surfaces_2c.svg"/><figcaption>Transverse surfaces and a
+      Lyapunov function defined in the transverse coordinates (reproduced from
+      <elib>Manchester10b</elib>).</figcaption></figure> 
 
       <p>In particular, let us make a linear approximation of the transverse
       dynamics: $$\dot{\bx}_\perp = f_\perp(\bx_\perp, \tau) \approx
