@@ -8,7 +8,7 @@
       <parent>world</parent>
       <child>planar_world</child>
     </joint>
-    <link name='body'>
+    <link name='body_link'>
       <inertial>
         <mass>10</mass>
         <inertia>
@@ -81,8 +81,8 @@
         </geometry>
       </visual>
     </link>
-    <drake:joint name="body_joint" type="planar">
-      <drake:child>body</drake:child>
+    <drake:joint name="body" type="planar">
+      <drake:child>body_link</drake:child>
       <drake:parent>planar_world</drake:parent>
       <drake:damping>0 0 0</drake:damping>
     </drake:joint>
@@ -109,7 +109,7 @@
       </visual>
     </link>    
     <joint name='hip' type='revolute'>
-      <parent>body</parent>
+      <parent>body_link</parent>
       <child>piston</child>
       <axis>
         <xyz>0 0 1</xyz>

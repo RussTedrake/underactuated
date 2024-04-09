@@ -3,7 +3,7 @@ directives:
     name: hopper
     file: package://underactuated/models/planar_one_leg_hopper.sdf
     default_joint_positions:
-        body_joint: [0, 1.5, 0]
+        body: [0, 1.5, 0]
 - add_model:
     name: ground
     file: package://underactuated/models/ground.urdf
