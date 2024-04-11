@@ -71,10 +71,10 @@ Robots</h1>
   penetrate that world.</p>
 
   <p>Perhaps one of the most surprising thing about the world of complex
-    (highly-articulated) legged robots is the dominant use of simple models for
-    estimation, planning, and control.  These abstractions become valuable when
-    you have enough degrees of freedom to move your feet independently (to an
-    extent) from how you move your body.</p>
+  (highly-articulated) legged robots is the dominant use of simple models for
+  estimation, planning, and control.  These abstractions become valuable when you have
+  enough degrees of freedom to move your feet (approximately) independently from how you
+  move your body.</p>
 
   <p>Since our robots are getting more complicated, I'm going to need a bit
   stronger notation. In Drake we use <a
@@ -97,19 +97,18 @@ Robots</h1>
 
       <figure><img width="70%" src="figures/zmp_thrusters.svg"/></figure>
 
-      <p>Imagine you have a flying vehicle modeled as a single rigid body in a
-      gravity field with some number of force "thrusters" attached.  We'll
-      describe the pose of the body in the world frame, ${}^WX^B$,
-      parameterized by its position $(x,z)$ and orientation $\theta$, and take
-      the center of mass to be at the origin of this body frame. The vector
-      from the center of mass to thruster $i$ in the world frame is given by
-      ${}^Bp^{B_i}_W$, yielding the equations of motion: \begin{align*}
-      m\ddot{x} =& \sum_i f^{B_i}_{W_x},\\ m\ddot{z} =& \sum_i f^{B_i}_{W_z} -
-      mg,\\ I\ddot\theta =& \sum_i \left[ {}^Bp^{B_i}_W \times f^{B_i}_W
-      \right]_y, \end{align*} where I've used $f^{B_i}_{W_x}$ to represent the
-      $x$-component of the force applied to $B$ at the location of thruster
-      $i$, expressed in the world frame, and we take the $y$-axis component of
-      the cross product on the last line.
+      <p>Imagine you have a flying vehicle modeled as a single rigid body in a gravity
+      field with some number of force "thrusters" attached.  We'll describe the pose of
+      the body in the world frame, ${}^WX^B$, parameterized by its position $(x,z)$ and
+      orientation $\theta$, and take the center of mass to be at the origin of this body
+      frame. The vector from the center of mass to thruster $i$ in the world frame is
+      given by ${}^Bp^{B_i}_W$, yielding the equations of motion: \begin{align}
+      m\ddot{x} =& \sum_i f^{B_i}_{W_x}, \label{eq:spacecraft_x} \\ m\ddot{z} =& \sum_i
+      f^{B_i}_{W_z} - mg,\label{eq:spacecraft_z}\\ I\ddot\theta =& \sum_i \left[
+      {}^Bp^{B_i}_W \times f^{B_i}_W \right]_y, \label{eq:spacecraft_theta}\end{align}
+      where I've used $f^{B_i}_{W_x}$ to represent the $x$-component of the force
+      applied to $B$ at the location of thruster $i$, expressed in the world frame, and
+      we take the $y$-axis component of the cross product on the last line.
       </p>
 
       <p>Our goal is to move the spacecraft to a desired position/orientation
@@ -129,11 +128,11 @@ Robots</h1>
       interesting, let us say that you're allowed to move the thrusters, so
       ${}^B\text{v}^{B_i} = \frac{d}{dt} {}^Bp^{B_i}$ becomes an additional
       control input, but with some important limitations:  you have to turn the
-      thrusters off when they are moving (e.g. $f^{B_i}{}^B_{W_j}
-      \text{v}^{B_i}_{W_j} = 0$) and there is a limit to how quickly you can
-      move the thrusters $|{}^B\text{v}^{B_i}_{W_j}| \le \text{v}_{max}$.  This
+      thrusters off when they are moving (e.g. $f^{B_i} = 0$ <i>or</i> ${}^B
+      \text{v}^{B_i} = 0$) and there is a limit to how quickly you can
+      move the thrusters $|{}^B\text{v}^{B_i}| \le \text{v}_{max}$.  This
       problem is now a lot more difficult, due especially to the fact that
-      constraints of the form $xy = 0$ are non-convex (the red area in the
+      constraints of the form "$x=0$ or $y=0$"" are non-convex (the red area in the
       illustration below represents the feasible set for $x \ge 0, y \ge
       0$).</p>
       <center><img width="25%"
@@ -146,10 +145,10 @@ Robots</h1>
       tools yet that deal well with this discrete plus continuous decision
       making.  We'll need to address that here.</p>
 
-      <p>Unfortunately, although the problem is already difficult, we need a
-      few more constraints to make it relevant for legged robots.  Now let's
-      say additionally, that the thrusters can only be turned on in certain
-      locations, as cartooned here:</p>
+      <p>Unfortunately, although the problem is already difficult, we need a few more
+      constraints to make it relevant for legged robots.  Now let's say additionally,
+      that the thrusters can only be turned on in certain locations (in the world
+      frame), as cartooned here:</p>
       
       <figure id="zmp_thrusters_w_regions"><img width="70%"
       src="figures/zmp_thrusters_w_regions.svg"/><figcaption>What if we can
@@ -188,25 +187,75 @@ Robots</h1>
 
     </subsection>
 
+    <subsection><h1>Spatial momentum</h1>
+    
+      <p>Let's generalize our notation a bit more before we make things more
+      complex.</p>
+
+      <p>In the simple model above, we chose to use the generalized positions $\bq =
+      [\theta, x, z]$, where $x$ and $z$ were taken to be the position of the center of
+      mass, ${}^Wp^{B_{cm}}$. $\bv = \dot{\bq}$ is the generalized velocities. Let's
+      observe that this particular choice of generalized velocity actually corresponds
+      to an important physical quantity -- the <a
+      href="https://manipulation.csail.mit.edu/pick.html#jacobian">spatial velocity</a>
+      (the concatenation of the angular velocity and the translational velocity). Using
+      the full monogram notation, we can write the spatial velocity of the center of
+      mass of body B, relative to the world frame, as $${}^WV^{B_{cm}} = \begin{bmatrix}
+      {}^W\dot\theta^B \\ {}^W\dot{p}^{B_{cm}} \end{bmatrix}.$$  We can similarly define
+      a <a href="https://manipulation.csail.mit.edu/clutter.html#spatial_force">spatial
+      force</a>, $F^{B_{cm}}_i$, by concentating the moment and forces, and <i>spatial
+      inertia</i> of the body taken around the center of mass: $$M^{B/B_{cm}} =
+      \begin{bmatrix} I & 0 & 0\\ 0 & m & 0 \\ 0 & 0 & m \end{bmatrix},$$ and the
+      <i>spatial momentum</i> vector (the concatenation of angular momentum +
+      linear/translational momentum) as $${}^W L^{B/B_{cm}}(\dot\bq) = \begin{bmatrix} I
+      \dot\theta \\ m \dot{x} \\ m \dot{z} \end{bmatrix} = M^{B/B_{cm}}
+      {}^WV^{B_{cm}}.$$ Now recognize that the left-hand side of equations
+      (\ref{eq:spacecraft_x}-\ref{eq:spacecraft_theta}) can be written simply as
+      \begin{equation}{}^W\dot{L}^{B/B_{cm}}(\ddot\bq) = \sum_i
+      F^{B_{cm}}_i,\label{eq:Ldot}\end{equation} the rate of change of the spatial
+      momentum is just the sum of the spatial forces applied applied at $B_{cm}$.</p>
+    
+    </subsection>
+
   </section>
 
   <section><h1>Centroidal dynamics</h1>
 
-    <p>It turns out the specific equations that we used in our thought
-    experiment aren't restricted to a single body and massless legs. If we
-    simply repurpose the coordinates $x,z$ to describe the location of the
-    center of mass (CoM) of the entire robot (not just the center of mass of a
-    single body, $B$), and $m$ to represent the entire mass of the robot, then
-    the first two equations remain unchanged. The center of mass is a
-    configuration dependent point, and does not have an orientation, but one
-    important generalization of the orientation dynamics is given by the
-    centroidal momentum matrix, $A(\bq)$, where $A(\bq)\dot{\bq}$ captures the
-    linear and angular momentum of the robot around the center of mass
-    <elib>Orin13</elib>. Note that the center of mass dynamics are still affine
-    -- even for a big complicated humanoid -- but the centroidal momentum
-    dynamics are nonlinear.</p>
+    <p>It turns out the specific equations that we used in our thought experiment aren't
+    restricted to a single body and massless legs. Although the equations of motion for
+    a full humanoid are indeed complicated, if we write the equations of motion <i>of
+    the center of mass</i>, then those dynamics are essentially the same as the single
+    body case we've derived above.</p>
+    
+    <p>We can write the <i>configuration-dependent</i> center of mass of the entire
+    robot, $R,$ as the (weighted) sum of the center of masses of the individual links:
+    $${}^Wp^{R_{cm}}(\bq) = \frac{\sum_i {}^W p^{B_{i,cm}}(\bq) \, m_i}{\sum_i m_i} =
+    \frac{\sum_i {}^WX^{B_i}(\bq) \,{}^B_i p^{B_{i,cm}} \, m_i}{\sum_i m_i}.$$</p>
 
-    <subsection><h1>Impact dynamics</h1>
+    <p>One can define the spatial momentum of the entire robot, $R,$ about this point.
+    It is now configuration dependent, but takes a particularly simple form: $${}^W
+    L^{R/R_{cm}}(\bq, \dot\bq) = A(\bq)\dot\bq,$$ it can be computed in Drake for a
+    <code>MultibodyPlant</code> using the
+    <code>CalcSpatialMomentumInWorldAboutPoint()</code> method. The matrix $A(\bq)$ is
+    known as the centroidal momentum matrix<elib>Orin13</elib>. The rate of change of
+    this whole-body spatial momentum is still given by the sum of the forces (once the
+    spatial tranforms are properly applied): \begin{equation}{}^W\dot{L}^{R/R_{cm}}(\bq,
+    \dot\bq, \ddot\bq) = \sum_i F^{B_{cm}}_i.\label{eq:centroidal} \end{equation}</p>
+
+    <p>I suspect you already know this intuitively. Imagine you are an astronaut
+    experiencing (effectively) zero-gravity. If you are not applying external forces,
+    then your center of mass acceleration will be zero, and your total angular momentum
+    will be conserved. Equation (\ref{eq:centroidal}) simply generalizes to the case
+    where forces are still applied.</p>
+
+    <p>Let me make one important point very clear: <b>this is not an approximation</b>.
+    This equations exactly describe the motion of the center of mass (and angular
+    momentum about the center of mass). The simplification here is not approximating the
+    dynamics, but rather that we have not yet captured all of the constraints we might
+    need to put on the forces we can produce with our limbs (due to kinematic
+    constraints) and our actuators (due to e.g. torque limits).</p>
+
+    <subsection><h1>A note about impact dynamics</h1>
 
       <p>In the previous chapter we devoted relatively a lot of attention to
       dynamics of impact, characterized for instance by a guard that resets
@@ -224,14 +273,15 @@ Robots</h1>
       However, if the robot has a spring leg and a massless toe like the SLIP
       model, then no energy need be lost.</p>
 
-      <p>One strategy that many highly-articulated legged robots use is to keep
-      their <i>center of mass</i> at a constant velocity, $$\dot{z} = c \quad
-      \Rightarrow \quad \ddot{z} = 0,$$  and minimize their angular momentum
-      about the center of mass (here $\ddot\theta=0$).  Using this strategy, if
-      the swinging foot lands roughly below the center of mass, then even with
-      a stiff leg there is no energy dissipated in the collision - all of the
-      momentum is conserved.  This often (but does not always) justify ignoring
-      the impacts in the center of mass dynamics of the system.</p>
+      <p>One strategy that many highly-articulated legged robots use is to keep the
+      vertical component of their <i>center of mass</i> at a constant velocity,
+      $$\dot{z} = c \quad \Rightarrow \quad \ddot{z} = 0,$$  and minimize their angular
+      momentum about the center of mass (here $\ddot\theta=0$).  Using this strategy, if
+      the swinging foot lands roughly below the center of mass, then even with a stiff
+      leg there is no energy dissipated in the collision - all of the momentum is
+      conserved.  This the common approach/justification for most of the humanoid
+      literature ignoring the impact dynamics when reasoning about the centroidal
+      dynamics.</p>
 
     </subsection>
 
@@ -248,25 +298,25 @@ Robots</h1>
         <figcaption>External forces acting on a robot pushing on a flat ground</figcaption>
       </figure>
 
-      <p>First, on flat terrain $f^{B_i}_{W_z}$ represents the force that is
+      <p>First, on flat terrain $f^{B_i}_{i,W_z}$ represents the force that is
       normal to the surface at contact point $i$.  If we assume that the robot
       can only push on the ground (and not pull), then this implies $$\forall i,
-      f^{B_i}_{W_z} \ge 0 \Rightarrow \sum_i f^{B_i}_{W_z} \ge 0 \Rightarrow
+      f^{B_i}_{i,W_z} \ge 0 \Rightarrow \sum_i f^{B_i}_{i,W_z} \ge 0 \Rightarrow
       \ddot{z} \ge -g.$$  In other words, if I cannot pull on the ground, then my
       center of mass cannot accelerate towards the ground faster than
       gravity.</p>
 
       <p>Furthermore, if we use a Coulomb model of friction on the ground, with
-      friction coefficient $\mu$, then $$\forall i, |f^{B_i}_{W_x}| \le \mu
-      f^{B_i}_{W_z} \Rightarrow \sum_i |f^{B_i}_{W_x}| \le \mu \sum_i
-      f^{B_i}_{W_z} \Rightarrow |\ddot{x}| \le \mu (\ddot{z} + g).$$  For
+      friction coefficient $\mu$, then $$\forall i, |f^{B_i}_{i,W_x}| \le \mu
+      f^{B_i}_{i,W_z} \Rightarrow \sum_i |f^{B_i}_{i,W_x}| \le \mu \sum_i
+      f^{B_i}_{i,W_z} \Rightarrow |\ddot{x}| \le \mu (\ddot{z} + g).$$  For
       instance, if I keep my center of mass height at a constant velocity, then
       $\ddot{z}=0$ and $|\ddot{x}| \le \mu g$; this is a nice reminder of just
       how important friction is if you want to be able to move around in the
       world.</p>
 
       <p>Even better, let us define the "center of pressure" (CoP) as the point
-      on the ground where $$x_{cop} = \frac{\sum_i {}^Wp^{B_i}_{W_x}
+      on the ground where $$x_{cop} = \frac{\sum_i {}^Wp^{B_i}_{W_x}\,
       f^{B_i}_{W_z}}{\sum_i f^{B_i}_{W_z}},$$ and since all ${}^Wp^{B_i}_{W_z}$
       are equal on flat terrain, $z_{cop}$ is just the height of the terrain.  It
       turns out that the center of pressure is a "zero-moment point" (ZMP) -- a
@@ -460,7 +510,7 @@ Robots</h1>
 
     <exercise><h1>Understanding the zero moment point</h1>
       <figure>
-        <img width="80%" src="figures/exercises/foot_on_ground.svg"/>
+        <img width="40%" src="figures/exercises/foot_on_ground.svg"/>
         <figcaption>External forces acting on a robot pushing on a flat ground</figcaption>
       </figure>
       Consider an abstracted legged robot. The foot and the leg are assumed to be massless. Suppose there is no actuator at the pin joint P
