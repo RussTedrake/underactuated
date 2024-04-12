@@ -508,65 +508,85 @@ Robots</h1>
 
     </exercise>
 
-    <exercise><h1>Understanding the zero moment point</h1>
+    <exercise><h1>Understanding the zero-moment point</h1>
       <figure>
-        <img width="40%" src="figures/exercises/foot_on_ground.svg"/>
-        <figcaption>External forces acting on a robot pushing on a flat ground</figcaption>
+        <img width="50%" src="figures/exercises/foot_on_ground.svg"/>
+        <figcaption>Model of a simplified legged robot on flat ground.</figcaption>
       </figure>
-      Consider an abstracted legged robot. The foot and the leg are assumed to be massless. Suppose there is no actuator at the pin joint P
-     <ol type = "a">
-       <li> 
+      Consider an abstracted legged robot.
+      The foot (enclosed by points HTP) and the leg of length $l$ are assumed to be massless.
+      The point mass $m$ at the end of the leg represents the robot's body.
+      The foot and the leg are connected via a pin joint at P.
+      For parts (a,b,c,d), assume that there is no actuator at the pin joint P.
+    <ol type = "a">
+      <li> 
+        Please draw separate free body diagrams for the bob, the leg, and the foot. 
+        For the foot, assume that the ground reaction forces are only applied at the heel and at the toe.
+      </li>
+
+      <li> 
           Is the system stable at $\theta = \pi/2 + 10^{-3}$?
-       </li>
+      </li>
 
-       <li>
-         Compute the zero moment point on the ground as a function of $\theta$ and the constants $m, h, g, l, L_{1}, L_{2}$ (if needed).
-       </li>
+      <li>
+        For the foot, compute the zero-moment point (ZMP) on the ground as a function of $\theta$ and the constants $m, h, g, l, L_{1}, L_{2}$ (as needed).
+      </li>
 
-       <li>
-         <ol type = i>
-           <li>
+      <li>
+        <ol type = i>
+          <li>
             For what value of $\theta$ does the ZMP reach the toe $T$?
-           </li>
-           <li>
+          </li>
+          <li>
             For what value of $\theta$ does the heel $H$ of the robot begin to lift?
-           </li>
-         </ol>
-       </li>
+          </li>
+        </ol>
+      </li>
 
-       <li>
-         Suppose now that there is an actuator at the ankle with a controller capable of perfectly cancelling the torque around $P$ due to gravity so $\ddot{\theta} = 0$. What value of $\theta$ can you achieve without falling down? Express your answer in terms of the constants $m, h, l, L_{1}, L_{2}$ (if needed).
-       </li>
+      
+      <li>
+        For the rest of this problem, assume that there is an actuator at the ankle with a controller that perfectly cancels out the gravitational torque due to the bob around $P$, so that $\ddot{\theta} = 0$. 
+        Suppose that the robot is about to fall down.
+        What can you say about the ground reaction forces at the heel and at the toe?
+      </li>
 
-       <li>
-         Suppose you are designing a foot that maximizes the postures you can assume without falling down. Suppose we can apply a torque at the ankle without torque limits.<ol type = i>
-           <li>
-            Would you want a taller or flatter foot?
-           </li>
-           <li>
-             Would you want a longer or shorter foot?
-           </li>
-           <li>
-             Where would you put the ankle with respect to the heel and toe?
-           </li>  
-         </ol>
-       </li>
+      <li>
+        What range of values of $\theta$ can you achieve without falling down? 
+        Express your answer in terms of the constants $m, h, l, L_{1}, L_{2}$ (as needed).
+      </li>
 
-       <li>
-         Suppose you are designing a robot designed to only walk forward. Suppose we can apply a torque at the ankle without torque limits.
+      <li>
+        Suppose you are designing a (massless) foot that maximizes the range of postures that the robot can assume without falling down. 
+        Suppose we can apply a torque at the ankle without torque limits.<ol type = i>
+          <li>
+            Would you want a taller or a flatter foot (bigger or smaller $h$)?
+          </li>
+          <li>
+            Would you want a longer or a shorter foot (bigger or smaller $L_1 + L_2$)?
+          </li>
+          <li>
+            Where would you put the ankle with respect to the heel and toe?
+          </li>  
+        </ol>
+      </li>
+
+      <li>
+        Suppose you are designing a (massless) foot for a robot that will only walk forward.
+        You thus wish to make it easier for the robot's heel to lift off the ground.
+        Suppose we can apply a torque at the ankle without torque limits.
           <ol type = i>
-           <li>
-            Explain the trade offs in foot height.
-           </li>
-           <li>
-            Explain the trade offs in the design of $L_{1}$.
-           </li>
-           <li>
-            Explain the trade offs in the design of $L_{2}$.
-           </li>  
-         </ol>
-       </li>
-     </ol>
+          <li>
+            Would a taller or a flatter foot (bigger or smaller $h$) make it easier to walk forward?
+          </li>
+          <li>
+            Would a longer and a shorter $L_{1}$ make it it easier to walk forward?
+          </li>
+          <li>
+            Would a longer and a shorter $L_{2}$ make it it easier to walk forward?
+          </li>  
+        </ol>
+      </li>
+    </ol>
 
     </exercise>
 
