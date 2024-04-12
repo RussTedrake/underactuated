@@ -95,7 +95,8 @@ Robots</h1>
     
     <subsection><h1>A spacecraft model</h1>
 
-      <figure><img width="70%" src="figures/zmp_thrusters.svg"/></figure>
+      <todo>Add subscripts to forces on the figure.</todo>
+      <figure><img width="50%" src="figures/zmp_thrusters.svg"/></figure>
 
       <p>Imagine you have a flying vehicle modeled as a single rigid body in a gravity
       field with some number of force "thrusters" attached.  We'll describe the pose of
@@ -103,47 +104,49 @@ Robots</h1>
       orientation $\theta$, and take the center of mass to be at the origin of this body
       frame. The vector from the center of mass to thruster $i$ in the world frame is
       given by ${}^Bp^{B_i}_W$, yielding the equations of motion: \begin{align}
-      m\ddot{x} =& \sum_i f^{B_i}_{W_x}, \label{eq:spacecraft_x} \\ m\ddot{z} =& \sum_i
-      f^{B_i}_{W_z} - mg,\label{eq:spacecraft_z}\\ I\ddot\theta =& \sum_i \left[
-      {}^Bp^{B_i}_W \times f^{B_i}_W \right]_y, \label{eq:spacecraft_theta}\end{align}
-      where I've used $f^{B_i}_{W_x}$ to represent the $x$-component of the force
-      applied to $B$ at the location of thruster $i$, expressed in the world frame, and
-      we take the $y$-axis component of the cross product on the last line.
+      m\ddot{x} =& \sum_i f^{B_i}_{i, W_x}, \label{eq:spacecraft_x} \\ m\ddot{z} =&
+      \sum_i f^{B_i}_{i,W_z} - mg,\label{eq:spacecraft_z}\\ I\ddot\theta =& \sum_i
+      \left[ {}^Bp^{B_i}_W(\theta) \times f^{B_i}_{i,W} \right]_y,
+      \label{eq:spacecraft_theta}\end{align} where I've used $f^{B_i}_{i,W_x}$ to
+      represent the $x$-component of the force applied to $B$ at the location of
+      thruster $i$, expressed in the world frame, and we take the $y$-axis component of
+      the cross product on the last line. You might compare this to the equations of
+      motion for the <a href="acrobot.html#planar_quadrotor">planar quadrotor</a>; the
+      only difference is that I've written the force inputs here in world coordinates
+      instead of body coordinates.
       </p>
 
-      <p>Our goal is to move the spacecraft to a desired position/orientation
-      and to keep it there.  If we take the inputs to be $f^{B_i}_W$, then the
-      dynamics are affine (linear plus a constant term).  As such, we can
-      stabilize a stabilizable fixed point using a change of coordinates plus
-      LQR or even plan/track a desired trajectory using time-varying LQR.  If I
-      were to add additional linear constraints, for instance constraining
-      $f_{min} \le f^{B_i}_W \le f_{max}$, then I can still use linear
-      model-predictive control (MPC) to plan and stabilize a desired motion. By
-      most accounts, this is a relatively easy control problem. (Note that it
-      would be considerably harder if my control input or input constraints
-      depend on the orientation, $\theta$, but we don't need that here yet).</p>
+      <p>Our goal is to move the spacecraft to a desired position/orientation and to
+      keep it there.  If we take the inputs to be $f^{B_i}_{i,W}$, then the
+      translational dynamics are affine (linear plus a constant term). The rotational
+      dynamics are nonlinear assuming that the positions of the thrusters rotate with
+      the spacecraft. But for small angles, we can stabilize a stabilizable fixed point
+      using linearization plus a change of coordinates then LQR, or even plan/track a
+      desired trajectory using time-varying LQR.  If I were to add additional linear
+      constraints, for instance constraining $f_{min} \le f^{B_i}_{i,W} \le f_{max}$,
+      then I can still use linear model-predictive control (MPC) to plan and stabilize a
+      desired motion. By most accounts, this is a relatively easy control problem. (If
+      we do consider the nonlinear dynamics in $\theta$, then we will resort to
+      nonlinear optimization, but this still feels fairly managable).</p>
 
       <p>Now imagine that you have just a small number of thrusters (let's say
       two) each with severe input constraints.  To make things more
       interesting, let us say that you're allowed to move the thrusters, so
       ${}^B\text{v}^{B_i} = \frac{d}{dt} {}^Bp^{B_i}$ becomes an additional
       control input, but with some important limitations:  you have to turn the
-      thrusters off when they are moving (e.g. $f^{B_i} = 0$ <i>or</i> ${}^B
+      thrusters off when they are moving (e.g. $f^{B_i}_i = 0$ <i>or</i> ${}^B
       \text{v}^{B_i} = 0$) and there is a limit to how quickly you can
       move the thrusters $|{}^B\text{v}^{B_i}| \le \text{v}_{max}$.  This
       problem is now a lot more difficult, due especially to the fact that
-      constraints of the form "$x=0$ or $y=0$"" are non-convex (the red area in the
-      illustration below represents the feasible set for $x \ge 0, y \ge
-      0$).</p>
-      <center><img width="25%"
-      src="figures/complementarity_constraint.svg"/></center> <p>I find this a
-      very useful thought exercise; somehow our controller needs to make an
-      effectively discrete decision to turn off a thruster and move it.  The
+      constraints of the form "$x=0$ or $y=0$"" are non-convex.</p>
+      
+      <p>I find this a very useful thought exercise; somehow our controller needs to
+      make an effectively discrete decision to turn off a thruster and move it.  The
       framework of optimal control should support this - you are sacrificing a
-      short-term loss of control authority for the long-term benefit of having
-      the thruster positioned where you would like, but we haven't developed
-      tools yet that deal well with this discrete plus continuous decision
-      making.  We'll need to address that here.</p>
+      short-term loss of control authority for the long-term benefit of having the
+      thruster positioned where you would like, but we haven't developed tools yet that
+      deal well with this discrete plus continuous decision making.  We'll need to
+      address that here.</p>
 
       <p>Unfortunately, although the problem is already difficult, we need a few more
       constraints to make it relevant for legged robots.  Now let's say additionally,
@@ -158,7 +161,7 @@ Robots</h1>
       <p>Even if the individual regions are convex, the union of these regions
       need not form a convex set.  Furthermore, these locations are often
       expressed in the world frame, not the robot frame, e.g. $${\bf A}\, {}^W
-      p^{R_i}_W \le {\bf b}.$$</p>
+      p^{B_i}_W(\theta) \le {\bf b}.$$</p>
 
     </subsection>
 
@@ -173,17 +176,17 @@ Robots</h1>
       described by a "friction cone" (you can push on the ground but not pull
       on the ground, and with Coulomb friction the forces tangential to the
       ground must be smaller than the forces normal to the ground, as described
-      by a coefficient of friction, e.g. $f^{B_i}_{C_z} \ge 0, |f^{B_i}_{C_x}|
-      < \mu f^{B_i}_{C_z}$) where $C$ is the <a
+      by a coefficient of friction, e.g. $f^{B_i}_{i,C_z} \ge 0, |f^{B_i}_{i,C_x}|
+      < \mu f^{B_i}_{i,C_z}$) where $C$ is the <a
       href="multibody.html#contact">contact frame</a>.</p>
 
       <figure><img width="50%" src="figures/hovercraftLegs.svg"/></figure>
 
-      <p>The constraints on where you can put your feet / thrusters will depend
-      on the kinematics of your leg, and the speed at which you can move them
-      will depend on the full dynamics of the leg -- these are difficult
-      constraints to deal with.  But the actual dynamics of the rigid body,
-      $B$, are actually still affine, and still simple!</p>
+      <p>The constraints on where you can put your feet / thrusters will depend on the
+      kinematics of your leg, and the speed at which you can move them will depend on
+      the full dynamics of the leg -- these are difficult constraints to deal with.  But
+      the actual dynamics of the rigid body, $B$, are actually still just the spacecraft
+      dynamics, and are still simple!</p>
 
     </subsection>
 
@@ -194,9 +197,8 @@ Robots</h1>
 
       <p>In the simple model above, we chose to use the generalized positions $\bq =
       [\theta, x, z]$, where $x$ and $z$ were taken to be the position of the center of
-      mass, ${}^Wp^{B_{cm}}$. $\bv = \dot{\bq}$ is the generalized velocities. Let's
-      observe that this particular choice of generalized velocity actually corresponds
-      to an important physical quantity -- the <a
+      mass, ${}^Wp^{B_{cm}}$. Let's observe that this particular choice of generalized
+      velocity actually corresponds to an important physical quantity -- the <a
       href="https://manipulation.csail.mit.edu/pick.html#jacobian">spatial velocity</a>
       (the concatenation of the angular velocity and the translational velocity). Using
       the full monogram notation, we can write the spatial velocity of the center of
@@ -229,7 +231,7 @@ Robots</h1>
     
     <p>We can write the <i>configuration-dependent</i> center of mass of the entire
     robot, $R,$ as the (weighted) sum of the center of masses of the individual links:
-    $${}^Wp^{R_{cm}}(\bq) = \frac{\sum_i {}^W p^{B_{i,cm}}(\bq) \, m_i}{\sum_i m_i} =
+    $$\begin{bmatrix} x_{cm} \\ z_{cm} \end{bmatrix} \equiv {}^Wp^{R_{cm}}(\bq) = \frac{\sum_i {}^W p^{B_{i,cm}}(\bq) \, m_i}{\sum_i m_i} =
     \frac{\sum_i {}^WX^{B_i}(\bq) \,{}^B_i p^{B_{i,cm}} \, m_i}{\sum_i m_i}.$$</p>
 
     <p>One can define the spatial momentum of the entire robot, $R,$ about this point.
@@ -255,36 +257,6 @@ Robots</h1>
     need to put on the forces we can produce with our limbs (due to kinematic
     constraints) and our actuators (due to e.g. torque limits).</p>
 
-    <subsection><h1>A note about impact dynamics</h1>
-
-      <p>In the previous chapter we devoted relatively a lot of attention to
-      dynamics of impact, characterized for instance by a guard that resets
-      dynamics in a hybrid dynamical system.  In those models we used impulsive
-      ground-reaction forces (these forces are instantaneously infinite, but
-      doing finite work) in order to explain the discontinuous change in
-      velocity required to avoid penetration with the ground.  This story can be
-      extended naturally to the dynamics of the center of mass.<p>
-
-      <p>For an articulated robot, though, there are a number of possible
-      strategies for the legs which can affect the dynamics of the center of
-      mass.  For example, if the robot hits the ground with a stiff leg like the
-      rimless wheel, then the angular momentum about the point of collision will
-      be conserved, but any momentum going into the ground will be lost.
-      However, if the robot has a spring leg and a massless toe like the SLIP
-      model, then no energy need be lost.</p>
-
-      <p>One strategy that many highly-articulated legged robots use is to keep the
-      vertical component of their <i>center of mass</i> at a constant velocity,
-      $$\dot{z} = c \quad \Rightarrow \quad \ddot{z} = 0,$$  and minimize their angular
-      momentum about the center of mass (here $\ddot\theta=0$).  Using this strategy, if
-      the swinging foot lands roughly below the center of mass, then even with a stiff
-      leg there is no energy dissipated in the collision - all of the momentum is
-      conserved.  This the common approach/justification for most of the humanoid
-      literature ignoring the impact dynamics when reasoning about the centroidal
-      dynamics.</p>
-
-    </subsection>
-
     <subsection><h1>The special case of flat terrain</h1>
 
       <p>While not the only important case, it is extremely common for our robots
@@ -298,41 +270,40 @@ Robots</h1>
         <figcaption>External forces acting on a robot pushing on a flat ground</figcaption>
       </figure>
 
-      <p>First, on flat terrain $f^{B_i}_{i,W_z}$ represents the force that is
-      normal to the surface at contact point $i$.  If we assume that the robot
-      can only push on the ground (and not pull), then this implies $$\forall i,
-      f^{B_i}_{i,W_z} \ge 0 \Rightarrow \sum_i f^{B_i}_{i,W_z} \ge 0 \Rightarrow
-      \ddot{z} \ge -g.$$  In other words, if I cannot pull on the ground, then my
-      center of mass cannot accelerate towards the ground faster than
-      gravity.</p>
+      <p>First, on flat terrain $f^{B_i}_{i,W_z}$ represents the normal component of the
+      force contact point $i$.  If we assume that the robot can only push on the ground
+      (and not pull), then this implies $$\forall i, f^{B_i}_{i,W_z} \ge 0 \Rightarrow
+      \sum_i f^{B_i}_{i,W_z} \ge 0 \Rightarrow \ddot{z}_{cm} \ge -g.$$  In
+      other words, if I cannot pull on the ground, then my center of mass cannot
+      accelerate towards the ground faster than gravity.</p>
 
       <p>Furthermore, if we use a Coulomb model of friction on the ground, with
       friction coefficient $\mu$, then $$\forall i, |f^{B_i}_{i,W_x}| \le \mu
       f^{B_i}_{i,W_z} \Rightarrow \sum_i |f^{B_i}_{i,W_x}| \le \mu \sum_i
-      f^{B_i}_{i,W_z} \Rightarrow |\ddot{x}| \le \mu (\ddot{z} + g).$$  For
+      f^{B_i}_{i,W_z} \Rightarrow |\ddot{x}_{cm}| \le \mu (\ddot{z}_{cm} + g).$$  For
       instance, if I keep my center of mass height at a constant velocity, then
       $\ddot{z}=0$ and $|\ddot{x}| \le \mu g$; this is a nice reminder of just
       how important friction is if you want to be able to move around in the
       world.</p>
 
-      <p>Even better, let us define the "center of pressure" (CoP) as the point
-      on the ground where $$x_{cop} = \frac{\sum_i {}^Wp^{B_i}_{W_x}\,
-      f^{B_i}_{W_z}}{\sum_i f^{B_i}_{W_z}},$$ and since all ${}^Wp^{B_i}_{W_z}$
-      are equal on flat terrain, $z_{cop}$ is just the height of the terrain.  It
-      turns out that the center of pressure is a "zero-moment point" (ZMP) -- a
-      property that we will demonstrate below -- and moment-balance equation
-      gives us a very important relationship between the location of the CoP and
-      the dynamics of the CoM: \begin{equation} (m\ddot{z} + mg) (x_{cop} - x) =
-      (z_{cop} - z) m\ddot{x} - I\ddot\theta. \label{eq:cop} \end{equation}  If
-      we use the strategy proposed above for ignoring collision dynamics,
-      $\ddot{z} = \ddot{\theta} = 0$, and the result is the famous "ZMP
-      equations": \begin{equation} \ddot{x} = g \frac{(x - x_{cop})}{(z -
-      z_{cop})}. \label{eq:zmp} \end{equation}  So the location of the center of
-      pressure completely determines the acceleration of the center of mass, and
-      vice versa!  What's more, when $z - z_{cop}$ is a constant (the center of
-      mass remains at a constant height relative to the ground) or following a
-      predetermined schedule, the remaining relationship is affine -- a property
-      that we can exploit in a number of ways.</p>
+      <p>Even better, let us define the "center of pressure" (CoP) as the point on the
+      ground where $$\begin{bmatrix} x_{cp} \\ z_{cp}\end{bmatrix} \equiv
+      \,{}^Wp^{R_{cp}}_W = \frac{\sum_i {}^Wp^{B_i}_{W}\, f^{B_i}_{W_z}}{\sum_i
+      f^{B_i}_{W_z}}.$$ Since all ${}^Wp^{B_i}_{W_z}$ are equal on flat terrain,
+      $z_{cp}$ is just the height of the terrain.  It turns out that the center of
+      pressure is a "zero-moment point" (ZMP) -- a property that we will demonstrate
+      below -- and a moment-balance equation (see below) gives us a very important
+      relationship between the location of the CoP and the dynamics of the CoM:
+      \begin{equation} (m\ddot{z}_{cm} + mg) (x_{cp} - x_{cm}) = (z_{cp} - z_{cm})
+      m\ddot{x}_{cm} - I\ddot\theta. \label{eq:cop} \end{equation} If we use the
+      strategy proposed above for ignoring collision dynamics, $\ddot{z} = \ddot{\theta}
+      = 0$, and the result is the famous "ZMP equations": \begin{equation} \ddot{x} = g
+      \frac{(x - x_{cop})}{(z - z_{cop})}. \label{eq:zmp} \end{equation} So the location
+      of the center of pressure completely determines the acceleration of the center of
+      mass, and vice versa!  What's more, when $z - z_{cop}$ is a constant (the center
+      of mass remains at a constant height relative to the ground) or following a
+      predetermined schedule, the remaining relationship is affine -- a property that we
+      can exploit in a number of ways.</p>
 
       <p> As an example, we can easily relate constraints on the CoP to
       constraints on $\ddot{x}$. It is easy to verify from the definition that
@@ -402,6 +373,35 @@ Robots</h1>
 
     </subsection>
 
+    <subsection><h1>A note about impact dynamics</h1>
+
+      <p>In the previous chapter we devoted relatively a lot of attention to
+      dynamics of impact, characterized for instance by a guard that resets
+      dynamics in a hybrid dynamical system.  In those models we used impulsive
+      ground-reaction forces (these forces are instantaneously infinite, but
+      doing finite work) in order to explain the discontinuous change in
+      velocity required to avoid penetration with the ground.  This story can be
+      extended naturally to the dynamics of the center of mass.<p>
+
+      <p>For an articulated robot, though, there are a number of possible
+      strategies for the legs which can affect the dynamics of the center of
+      mass.  For example, if the robot hits the ground with a stiff leg like the
+      rimless wheel, then the angular momentum about the point of collision will
+      be conserved, but any momentum going into the ground will be lost.
+      However, if the robot has a spring leg and a massless toe like the SLIP
+      model, then no energy need be lost.</p>
+
+      <p>One strategy that many highly-articulated legged robots use is to keep the
+      vertical component of their <i>center of mass</i> at a constant velocity,
+      $$\dot{z} = c \quad \Rightarrow \quad \ddot{z} = 0,$$  and minimize their angular
+      momentum about the center of mass (here $\ddot\theta=0$).  Using this strategy, if
+      the swinging foot lands roughly below the center of mass, then even with a stiff
+      leg there is no energy dissipated in the collision - all of the momentum is
+      conserved.  This the common approach/justification for most of the humanoid
+      literature ignoring the impact dynamics when reasoning about the centroidal
+      dynamics.</p>
+
+    </subsection>
   </section>
 
   <section><h1>ZMP-based planning</h1>

@@ -1,136 +1,508 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg xmlns:dc="http://purl.org/dc/elements/1.1/" version="1.1" xmlns:xl="http://www.w3.org/1999/xlink" xmlns="http://www.w3.org/2000/svg" viewBox="162.65188 157.1129 330.39943 284.131" width="330.39943" height="284.131">
-  <defs>
-    <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker" stroke-linejoin="miter" stroke-miterlimit="10" viewBox="-1 -3 6 6" markerWidth="6" markerHeight="6" color="#b1001c">
-      <g>
-        <path d="M 3.7333333 0 L 0 -1.4 L 0 1.4 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+<svg
+   version="1.1"
+   viewBox="162.65188 157.1129 330.39943 284.131"
+   width="330.39943"
+   height="284.131"
+   id="svg26"
+   sodipodi:docname="zmp_thrusters.svg"
+   inkscape:version="1.3.2 (091e20e, 2023-11-25)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview26"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:zoom="2.3492993"
+     inkscape:cx="150.04474"
+     inkscape:cy="141.53156"
+     inkscape:window-width="1320"
+     inkscape:window-height="856"
+     inkscape:window-x="55"
+     inkscape:window-y="38"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="Canvas_1_Layer_1" />
+  <defs
+     id="defs3">
+    <marker
+       orient="auto"
+       overflow="visible"
+       markerUnits="strokeWidth"
+       id="FilledArrow_Marker"
+       stroke-linejoin="miter"
+       stroke-miterlimit="10"
+       viewBox="-1 -3 6 6"
+       markerWidth="6"
+       markerHeight="6"
+       color="#b1001c">
+      <g
+         id="g1">
+        <path
+           d="M 3.7333333 0 L 0 -1.4 L 0 1.4 Z"
+           fill="currentColor"
+           stroke="currentColor"
+           stroke-width="1"
+           id="path1" />
       </g>
     </marker>
-    <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker_2" stroke-linejoin="miter" stroke-miterlimit="10" viewBox="-1 -3 6 6" markerWidth="6" markerHeight="6" color="#b1001c">
-      <g>
-        <path d="M 3.7333333 0 L 0 -1.4 L 0 1.4 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+    <marker
+       orient="auto"
+       overflow="visible"
+       markerUnits="strokeWidth"
+       id="FilledArrow_Marker_2"
+       stroke-linejoin="miter"
+       stroke-miterlimit="10"
+       viewBox="-1 -3 6 6"
+       markerWidth="6"
+       markerHeight="6"
+       color="#b1001c">
+      <g
+         id="g2">
+        <path
+           d="M 3.7333333 0 L 0 -1.4 L 0 1.4 Z"
+           fill="currentColor"
+           stroke="currentColor"
+           stroke-width="1"
+           id="path2" />
       </g>
     </marker>
-    <marker orient="auto" overflow="visible" markerUnits="strokeWidth" id="FilledArrow_Marker_3" stroke-linejoin="miter" stroke-miterlimit="10" viewBox="-1 -4 10 8" markerWidth="10" markerHeight="8" color="black">
-      <g>
-        <path d="M 8 0 L 0 -3 L 0 3 Z" fill="currentColor" stroke="currentColor" stroke-width="1"/>
+    <marker
+       orient="auto"
+       overflow="visible"
+       markerUnits="strokeWidth"
+       id="FilledArrow_Marker_3"
+       stroke-linejoin="miter"
+       stroke-miterlimit="10"
+       viewBox="-1 -4 10 8"
+       markerWidth="10"
+       markerHeight="8"
+       color="black">
+      <g
+         id="g3">
+        <path
+           d="M 8 0 L 0 -3 L 0 3 Z"
+           fill="currentColor"
+           stroke="currentColor"
+           stroke-width="1"
+           id="path3" />
       </g>
     </marker>
   </defs>
-  <g id="Canvas_1" stroke="none" stroke-dasharray="none" fill="none" stroke-opacity="1" fill-opacity="1">
-    <title>Canvas 1</title>
-    <g id="Canvas_1_Layer_1">
-      <title>Layer 1</title>
-      <g id="Graphic_2">
-        <path d="M 237.24525 289.86128 L 384.06578 352.1829 L 418.25475 271.63872 L 271.43422 209.3171 Z" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+  <g
+     id="Canvas_1"
+     stroke="none"
+     stroke-dasharray="none"
+     fill="none"
+     stroke-opacity="1"
+     fill-opacity="1">
+    <title
+       id="title3">Canvas 1</title>
+    <g
+       id="Canvas_1_Layer_1">
+      <title
+         id="title4">Layer 1</title>
+      <g
+         id="Graphic_2">
+        <path
+           d="M 237.24525 289.86128 L 384.06578 352.1829 L 418.25475 271.63872 L 271.43422 209.3171 Z"
+           stroke="black"
+           stroke-linecap="round"
+           stroke-linejoin="round"
+           stroke-width="1"
+           id="path4" />
       </g>
-      <g id="Graphic_5">
-        <circle cx="326.75" cy="279.75" r="3.00000479370568" fill="black"/>
-        <circle cx="326.75" cy="279.75" r="3.00000479370568" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <g
+         id="Graphic_5">
+        <circle
+           cx="326.75"
+           cy="279.75"
+           r="3.00000479370568"
+           fill="black"
+           id="circle4" />
+        <circle
+           cx="326.75"
+           cy="279.75"
+           r="3.00000479370568"
+           stroke="black"
+           stroke-linecap="round"
+           stroke-linejoin="round"
+           stroke-width="1"
+           id="circle5" />
       </g>
-      <g id="Group_12">
-        <g id="Graphic_7">
-          <path d="M 238.11604 201.80547 C 238.32673 210.80414 233.1314 223.04358 226.51193 229.14304 C 219.89248 235.24254 214.3556 232.89227 214.14494 223.89356 C 213.93426 214.89488 219.1296 202.65544 225.74905 196.556 C 232.3685 190.4565 237.9054 192.80676 238.11604 201.80547" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <g
+         id="Group_12">
+        <g
+           id="Graphic_7">
+          <path
+             d="M 238.11604 201.80547 C 238.32673 210.80414 233.1314 223.04358 226.51193 229.14304 C 219.89248 235.24254 214.3556 232.89227 214.14494 223.89356 C 213.93426 214.89488 219.1296 202.65544 225.74905 196.556 C 232.3685 190.4565 237.9054 192.80676 238.11604 201.80547"
+             stroke="black"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             stroke-width="1"
+             id="path5" />
         </g>
-        <g id="Line_9">
-          <path d="M 235.623 194.06527 L 267.5136 219.00882 L 257.74534 242.02144 L 219.02543 232.64716" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+        <g
+           id="Line_9">
+          <path
+             d="M 235.623 194.06527 L 267.5136 219.00882 L 257.74534 242.02144 L 219.02543 232.64716"
+             stroke="black"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             stroke-width="1"
+             id="path6" />
         </g>
-        <g id="Line_11">
-          <path d="M 164.15188 186.58125 L 197.9024 200.81188 L 212.02256 206.6737" marker-end="url(#FilledArrow_Marker)" stroke="#b1001c" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
-        </g>
-      </g>
-      <g id="Group_13">
-        <g id="Graphic_16">
-          <path d="M 238.97272 327.5217 C 247.9714 327.311 260.21083 332.50633 266.3103 339.1258 C 272.4098 345.74525 270.05952 351.28213 261.0608 351.4928 C 252.06214 351.70346 239.8227 346.50813 233.72324 339.88867 C 227.62374 333.2692 229.974 327.73233 238.97272 327.5217" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        </g>
-        <g id="Line_15">
-          <path d="M 231.23252 330.01473 L 256.17607 298.1241 L 279.1887 307.8924 L 269.8144 346.6123" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        </g>
-        <g id="Line_14">
-          <path d="M 223.7485 401.48584 L 237.97913 367.7353 L 243.84095 353.61516" marker-end="url(#FilledArrow_Marker_2)" stroke="#b1001c" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
-        </g>
-      </g>
-      <g id="Group_17">
-        <g id="Graphic_20">
-          <path d="M 328.94046 365.77975 C 337.93914 365.56906 350.17858 370.7644 356.27803 377.38386 C 362.37753 384.0033 360.02726 389.5402 351.02855 389.75085 C 342.02988 389.96153 329.79044 384.7662 323.691 378.14674 C 317.5915 371.5273 319.94175 365.9904 328.94046 365.77975" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        </g>
-        <g id="Line_19">
-          <path d="M 321.20026 368.2728 L 346.1438 336.38218 L 369.15644 346.15045 L 359.78215 384.87036" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
-        </g>
-        <g id="Line_18">
-          <path d="M 313.71625 439.7439 L 327.94687 405.9934 L 333.8087 391.87323" marker-end="url(#FilledArrow_Marker_2)" stroke="#b1001c" stroke-linecap="round" stroke-linejoin="round" stroke-width="3"/>
+        <g
+           id="Line_11">
+          <path
+             d="M 164.15188 186.58125 L 197.9024 200.81188 L 212.02256 206.6737"
+             marker-end="url(#FilledArrow_Marker)"
+             stroke="#b1001c"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             stroke-width="3"
+             id="path7" />
         </g>
       </g>
-      <g id="Line_21">
-        <line x1="489" y1="279" x2="489.33324" y2="328.73744" marker-end="url(#FilledArrow_Marker_3)" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width="1"/>
+      <g
+         id="Group_13">
+        <g
+           id="Graphic_16">
+          <path
+             d="M 238.97272 327.5217 C 247.9714 327.311 260.21083 332.50633 266.3103 339.1258 C 272.4098 345.74525 270.05952 351.28213 261.0608 351.4928 C 252.06214 351.70346 239.8227 346.50813 233.72324 339.88867 C 227.62374 333.2692 229.974 327.73233 238.97272 327.5217"
+             stroke="black"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             stroke-width="1"
+             id="path8" />
+        </g>
+        <g
+           id="Line_15">
+          <path
+             d="M 231.23252 330.01473 L 256.17607 298.1241 L 279.1887 307.8924 L 269.8144 346.6123"
+             stroke="black"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             stroke-width="1"
+             id="path9" />
+        </g>
+        <g
+           id="Line_14">
+          <path
+             d="M 223.7485 401.48584 L 237.97913 367.7353 L 243.84095 353.61516"
+             marker-end="url(#FilledArrow_Marker_2)"
+             stroke="#b1001c"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             stroke-width="3"
+             id="path10" />
+        </g>
       </g>
-      <g id="Graphic_23">
-        <text transform="translate(476.62903 291.5)" fill="black">
-          <tspan font-family="Times" font-style="italic" font-size="16" fill="black" x="0" y="15">g</tspan>
-        </text>
+      <g
+         id="Group_17">
+        <g
+           id="Graphic_20">
+          <path
+             d="M 328.94046 365.77975 C 337.93914 365.56906 350.17858 370.7644 356.27803 377.38386 C 362.37753 384.0033 360.02726 389.5402 351.02855 389.75085 C 342.02988 389.96153 329.79044 384.7662 323.691 378.14674 C 317.5915 371.5273 319.94175 365.9904 328.94046 365.77975"
+             stroke="black"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             stroke-width="1"
+             id="path11" />
+        </g>
+        <g
+           id="Line_19">
+          <path
+             d="M 321.20026 368.2728 L 346.1438 336.38218 L 369.15644 346.15045 L 359.78215 384.87036"
+             stroke="black"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             stroke-width="1"
+             id="path12" />
+        </g>
+        <g
+           id="Line_18">
+          <path
+             d="M 313.71625 439.7439 L 327.94687 405.9934 L 333.8087 391.87323"
+             marker-end="url(#FilledArrow_Marker_2)"
+             stroke="#b1001c"
+             stroke-linecap="round"
+             stroke-linejoin="round"
+             stroke-width="3"
+             id="path13" />
+        </g>
       </g>
-      <g id="Graphic_24">
-        <text transform="translate(376.3381 271.526)" fill="black">
-          <tspan font-family="Times" font-style="italic" font-size="16" fill="black" x="0" y="15">m, I</tspan>
-        </text>
+      <g
+         id="Line_21">
+        <line
+           x1="489"
+           y1="279"
+           x2="489.33324"
+           y2="328.73744"
+           marker-end="url(#FilledArrow_Marker_3)"
+           stroke="black"
+           stroke-linecap="round"
+           stroke-linejoin="round"
+           stroke-width="1"
+           id="line13" />
       </g>
-      <g id="Graphic_25">
-        <text transform="translate(288.44743 271.526)" fill="black">
-          <tspan font-family="Times" font-style="italic" font-size="16" fill="black" x="0" y="15">(x, z)</tspan>
-        </text>
+      <g
+         id="Graphic_23">
+        <text
+           transform="translate(476.62903 291.5)"
+           fill="black"
+           id="text13"><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="16"
+             fill="black"
+             x="0"
+             y="15"
+             id="tspan13">g</tspan></text>
       </g>
-      <g id="Graphic_26">
-        <text transform="translate(335.2742 177)" fill="black">
-          <tspan font-family="STIXGeneral" font-size="16" fill="black" x="2469136e-19" y="17">𝜽</tspan>
-        </text>
+      <g
+         id="Graphic_24">
+        <text
+           transform="translate(376.3381 271.526)"
+           fill="black"
+           id="text14"><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="16"
+             fill="black"
+             x="0"
+             y="15"
+             id="tspan14">m, I</tspan></text>
       </g>
-      <g id="Line_28">
-        <line x1="326" y1="271" x2="325" y2="175.40323" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5"/>
+      <g
+         id="Graphic_25">
+        <text
+           transform="translate(288.44743 271.526)"
+           fill="black"
+           id="text15"><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="16"
+             fill="black"
+             x="0"
+             y="15"
+             id="tspan15">(x, z)</tspan></text>
       </g>
-      <g id="Line_29">
-        <line x1="330.2742" y1="272.75806" x2="360.8871" y2="177.1613" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5"/>
+      <g
+         id="Graphic_26">
+        <text
+           transform="translate(335.2742 177)"
+           fill="black"
+           id="text16"><tspan
+             font-family="STIXGeneral"
+             font-size="16"
+             fill="black"
+             x="2469136e-19"
+             y="17"
+             id="tspan16">𝜽</tspan></text>
       </g>
-      <g id="Line_31">
-        <path d="M 325.2576 200.0287 C 325.2576 200.0287 332.2503 197.69616 339.91935 198.79032 C 347.5884 199.88449 352.3275 203.89083 352.3275 203.89083" stroke="black" stroke-linecap="round" stroke-linejoin="round" stroke-width=".5"/>
+      <g
+         id="Line_28">
+        <line
+           x1="326"
+           y1="271"
+           x2="325"
+           y2="175.40323"
+           stroke="black"
+           stroke-linecap="round"
+           stroke-linejoin="round"
+           stroke-width=".5"
+           id="line16" />
       </g>
-      <g id="Graphic_33">
-        <text transform="translate(238.355 369.88565)" fill="black">
-          <tspan font-family="Times" font-style="italic" font-size="20" fill="black" x="0" y="22">f </tspan>
-          <tspan font-family="Times" font-style="italic" font-size="15" fill="black" y="14">B</tspan>
-        </text>
+      <g
+         id="Line_29">
+        <line
+           x1="330.2742"
+           y1="272.75806"
+           x2="360.8871"
+           y2="177.1613"
+           stroke="black"
+           stroke-linecap="round"
+           stroke-linejoin="round"
+           stroke-width=".5"
+           id="line17" />
       </g>
-      <g id="Graphic_40">
-        <text transform="translate(330 405)" fill="black">
-          <tspan font-family="Times" font-style="italic" font-size="20" fill="black" x="0" y="22">f </tspan>
-          <tspan font-family="Times" font-style="italic" font-size="15" fill="black" y="14">B</tspan>
-        </text>
+      <g
+         id="Line_31">
+        <path
+           d="M 325.2576 200.0287 C 325.2576 200.0287 332.2503 197.69616 339.91935 198.79032 C 347.5884 199.88449 352.3275 203.89083 352.3275 203.89083"
+           stroke="black"
+           stroke-linecap="round"
+           stroke-linejoin="round"
+           stroke-width=".5"
+           id="path17" />
       </g>
-      <g id="Graphic_41">
-        <text transform="translate(189 162.1129)" fill="black">
-          <tspan font-family="Times" font-style="italic" font-size="20" fill="black" x="0" y="22">f </tspan>
-          <tspan font-family="Times" font-style="italic" font-size="15" fill="black" y="14">B</tspan>
-        </text>
+      <g
+         id="Graphic_33">
+        <text
+           transform="translate(238.355 369.88565)"
+           fill="black"
+           id="text18"><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="20"
+             fill="black"
+             x="0"
+             y="22"
+             id="tspan17">f </tspan><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="15"
+             fill="black"
+             y="14"
+             id="tspan18">B</tspan></text>
       </g>
-      <g id="Graphic_42">
-        <text transform="translate(207.93514 168.73943)" fill="black">
-          <tspan font-family="Times" font-style="italic" font-size="11" fill="black" x="0" y="10">1</tspan>
-        </text>
+      <g
+         id="Graphic_40">
+        <text
+           transform="translate(330 405)"
+           fill="black"
+           id="text20"><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="20"
+             fill="black"
+             x="0"
+             y="22"
+             id="tspan19">f </tspan><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="15"
+             fill="black"
+             y="14"
+             id="tspan20">B</tspan></text>
       </g>
-      <g id="Graphic_43">
-        <text transform="translate(257.8871 376.88565)" fill="black">
-          <tspan font-family="Times" font-style="italic" font-size="11" fill="black" x="0" y="10">2</tspan>
-        </text>
+      <g
+         id="Graphic_41">
+        <text
+           transform="translate(189 162.1129)"
+           fill="black"
+           id="text22"><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="20"
+             fill="black"
+             x="0"
+             y="22"
+             id="tspan21">f </tspan><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="15"
+             fill="black"
+             y="14"
+             id="tspan22">B</tspan></text>
       </g>
-      <g id="Graphic_44">
-        <text transform="translate(348.7742 414.1613)" fill="black">
-          <tspan font-family="Times" font-style="italic" font-size="11" fill="black" x="0" y="10">3</tspan>
-        </text>
+      <g
+         id="Graphic_42">
+        <text
+           transform="translate(207.93514 168.73943)"
+           fill="black"
+           id="text23"><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="11"
+             fill="black"
+             x="0"
+             y="10"
+             id="tspan23">1</tspan></text>
       </g>
-      <g id="Graphic_45">
-        <text transform="translate(372.5 314.5)" fill="black">
-          <tspan font-family="Times" font-style="italic" font-size="20" fill="black" x="0" y="19">B</tspan>
-        </text>
+      <g
+         id="Graphic_42-0"
+         transform="translate(-14.815,13.80706)">
+        <text
+           transform="translate(207.93514,168.73943)"
+           fill="#000000"
+           id="text23-3"><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="11px"
+             fill="#000000"
+             x="0"
+             y="10"
+             id="tspan23-9">1</tspan></text>
+      </g>
+      <g
+         id="Graphic_43">
+        <text
+           transform="translate(257.8871 376.88565)"
+           fill="black"
+           id="text24"><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="11"
+             fill="black"
+             x="0"
+             y="10"
+             id="tspan24">2</tspan></text>
+      </g>
+      <g
+         id="Graphic_43-3"
+         transform="translate(-15.35876,14.67159)">
+        <text
+           transform="translate(257.8871,376.88565)"
+           fill="#000000"
+           id="text24-6"><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="11px"
+             fill="#000000"
+             x="0"
+             y="10"
+             id="tspan24-5">2</tspan></text>
+      </g>
+      <g
+         id="Graphic_44">
+        <text
+           transform="translate(348.7742 414.1613)"
+           fill="black"
+           id="text25"><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="11"
+             fill="black"
+             x="0"
+             y="10"
+             id="tspan25">3</tspan></text>
+      </g>
+      <g
+         id="Graphic_44-4"
+         transform="translate(-14.28345,10.35834)">
+        <text
+           transform="translate(348.7742,414.1613)"
+           fill="#000000"
+           id="text25-6"><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="11px"
+             fill="#000000"
+             x="0"
+             y="10"
+             id="tspan25-0">3</tspan></text>
+      </g>
+      <g
+         id="Graphic_45">
+        <text
+           transform="translate(372.5 314.5)"
+           fill="black"
+           id="text26"><tspan
+             font-family="Times"
+             font-style="italic"
+             font-size="20"
+             fill="black"
+             x="0"
+             y="19"
+             id="tspan26">B</tspan></text>
       </g>
     </g>
   </g>
