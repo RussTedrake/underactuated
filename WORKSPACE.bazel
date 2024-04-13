@@ -40,6 +40,12 @@ pip_parse(
     requirements_darwin = "//:requirements-bazel-mac.txt",
     requirements_linux = "//:requirements-bazel-linux.txt",
     requirements_lock = "//:requirements-bazel.txt",
+    experimental_requirement_cycles = {
+      "lxml": [
+        "lxml",
+        "lxml-html-clean",
+      ],
+    },
 )
 
 load("@pip_deps//:requirements.bzl", "install_deps")

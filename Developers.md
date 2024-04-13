@@ -10,7 +10,7 @@ poetry install --with=dev,docs
 
 To generate it, run
 ```
-poetry export
+poetry lock
 ./book/htmlbook/PoetryExport.sh
 ```
 
