@@ -40,6 +40,12 @@ pip_parse(
     requirements_darwin = "//:requirements-bazel-mac.txt",
     requirements_linux = "//:requirements-bazel-linux.txt",
     requirements_lock = "//:requirements-bazel.txt",
+    experimental_requirement_cycles = {
+      "lxml": [
+        "lxml",
+        "lxml-html-clean",
+      ],
+    },
 )
 
 load("@pip_deps//:requirements.bzl", "install_deps")
@@ -59,12 +65,12 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 http_archive(
     name = "drake_models",
     urls = [
-        "https://github.com/RobotLocomotion/models/archive/fe5326c5ffc36fda12c58883d22d29dc86009d65.tar.gz",
-        "https://drake-mirror.csail.mit.edu/github/RobotLocomotion/models/fe5326c5ffc36fda12c58883d22d29dc86009d65.tar.gz",
-        "https://s3.amazonaws.com/drake-mirror/github/RobotLocomotion/models/fe5326c5ffc36fda12c58883d22d29dc86009d65.tar.gz",
+        "https://github.com/RobotLocomotion/models/archive/69c92595a391eb023c27ab6ac8f80d58a3e4612d.tar.gz",
+        "https://drake-mirror.csail.mit.edu/github/RobotLocomotion/models/69c92595a391eb023c27ab6ac8f80d58a3e4612d.tar.gz",
+        "https://s3.amazonaws.com/drake-mirror/github/RobotLocomotion/models/69c92595a391eb023c27ab6ac8f80d58a3e4612d.tar.gz",
     ],
-    sha256 = "2a232f7da8d575fe1fcc6ad396f634d1adc1c9ee856168f011fbeb42a01c76b1",
-    strip_prefix = "models-fe5326c5ffc36fda12c58883d22d29dc86009d65",
+    sha256 = "ba571c8b369a62c3764d250944b27d72071488789b2494604d23342994141fe2",
+    strip_prefix = "models-69c92595a391eb023c27ab6ac8f80d58a3e4612d",
     build_file_content = """
 package(default_visibility = ["//visibility:public"])
 
