@@ -50,8 +50,8 @@ priority = "explicit"
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-drake = { version = "==0.0.20240307", source = "drake-nightly" }
-#drake = ">=1.23.0"
+#drake = { version = "==0.0.20240307", source = "drake-nightly" }
+drake = ">=1.28.0"
 gradescope-utils = ">=0.4.0"
 ipywidgets = ">7"
 mpld3 = ">=0.5.1"
@@ -66,8 +66,8 @@ optional = true
 # Must include all dependencies required to build the docs with sphinx + autodoc.
 [tool.poetry.group.docs.dependencies]
 # Should match drake version above.
-drake = { version = "==0.0.20240307", source = "drake-nightly" }
-#drake = ">=1.23.0"
+#drake = { version = "==0.0.20240307", source = "drake-nightly" }
+drake = ">=1.28.0"
 ipython = ">=7.8.0"
 sphinx = ">=7.2.6"
 myst-parser = ">=2.0.0"
