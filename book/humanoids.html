@@ -190,73 +190,10 @@ Robots</h1>
 
     </subsection>
 
-    <subsection><h1>Spatial momentum</h1>
-    
-      <p>Let's generalize our notation a bit more before we make things more
-      complex.</p>
-
-      <p>In the simple model above, we chose to use the generalized positions $\bq =
-      [\theta, x, z]$, where $x$ and $z$ were taken to be the position of the center of
-      mass, ${}^Wp^{B_{cm}}$. Let's observe that this particular choice of generalized
-      velocity actually corresponds to an important physical quantity -- the <a
-      href="https://manipulation.csail.mit.edu/pick.html#jacobian">spatial velocity</a>
-      (the concatenation of the angular velocity and the translational velocity). Using
-      the full monogram notation, we can write the spatial velocity of the center of
-      mass of body B, relative to the world frame, as $${}^WV^{B_{cm}} = \begin{bmatrix}
-      {}^W\dot\theta^B \\ {}^W\dot{p}^{B_{cm}} \end{bmatrix}.$$  We can similarly define
-      a <a href="https://manipulation.csail.mit.edu/clutter.html#spatial_force">spatial
-      force</a>, $F^{B_{cm}}_i$, by concentating the moment and forces, and <i>spatial
-      inertia</i> of the body taken around the center of mass: $$M^{B/B_{cm}} =
-      \begin{bmatrix} I & 0 & 0\\ 0 & m & 0 \\ 0 & 0 & m \end{bmatrix},$$ and the
-      <i>spatial momentum</i> vector (the concatenation of angular momentum +
-      linear/translational momentum) as $${}^W L^{B/B_{cm}}(\dot\bq) = \begin{bmatrix} I
-      \dot\theta \\ m \dot{x} \\ m \dot{z} \end{bmatrix} = M^{B/B_{cm}}
-      {}^WV^{B_{cm}}.$$ Now recognize that the left-hand side of equations
-      (\ref{eq:spacecraft_x}-\ref{eq:spacecraft_theta}) can be written simply as
-      \begin{equation}{}^W\dot{L}^{B/B_{cm}}(\ddot\bq) = \sum_i
-      F^{B_{cm}}_i,\label{eq:Ldot}\end{equation} the rate of change of the spatial
-      momentum is just the sum of the spatial forces applied applied at $B_{cm}$.</p>
-    
-    </subsection>
-
   </section>
 
-  <section><h1>Centroidal dynamics</h1>
-
-    <p>It turns out the specific equations that we used in our thought experiment aren't
-    restricted to a single body and massless legs. Although the equations of motion for
-    a full humanoid are indeed complicated, if we write the equations of motion <i>of
-    the center of mass</i>, then those dynamics are essentially the same as the single
-    body case we've derived above.</p>
-    
-    <p>We can write the <i>configuration-dependent</i> center of mass of the entire
-    robot, $R,$ as the (weighted) sum of the center of masses of the individual links:
-    $$\begin{bmatrix} x_{cm} \\ z_{cm} \end{bmatrix} \equiv {}^Wp^{R_{cm}}(\bq) = \frac{\sum_i {}^W p^{B_{i,cm}}(\bq) \, m_i}{\sum_i m_i} =
-    \frac{\sum_i {}^WX^{B_i}(\bq) \,{}^B_i p^{B_{i,cm}} \, m_i}{\sum_i m_i}.$$</p>
-
-    <p>One can define the spatial momentum of the entire robot, $R,$ about this point.
-    It is now configuration dependent, but takes a particularly simple form: $${}^W
-    L^{R/R_{cm}}(\bq, \dot\bq) = A(\bq)\dot\bq,$$ it can be computed in Drake for a
-    <code>MultibodyPlant</code> using the
-    <code>CalcSpatialMomentumInWorldAboutPoint()</code> method. The matrix $A(\bq)$ is
-    known as the centroidal momentum matrix<elib>Orin13</elib>. The rate of change of
-    this whole-body spatial momentum is still given by the sum of the forces (once the
-    spatial tranforms are properly applied): \begin{equation}{}^W\dot{L}^{R/R_{cm}}(\bq,
-    \dot\bq, \ddot\bq) = \sum_i F^{B_{cm}}_i.\label{eq:centroidal} \end{equation}</p>
-
-    <p>I suspect you already know this intuitively. Imagine you are an astronaut
-    experiencing (effectively) zero-gravity. If you are not applying external forces,
-    then your center of mass acceleration will be zero, and your total angular momentum
-    will be conserved. Equation (\ref{eq:centroidal}) simply generalizes to the case
-    where forces are still applied.</p>
-
-    <p>Let me make one important point very clear: <b>this is not an approximation</b>.
-    This equations exactly describe the motion of the center of mass (and angular
-    momentum about the center of mass). The simplification here is not approximating the
-    dynamics, but rather that we have not yet captured all of the constraints we might
-    need to put on the forces we can produce with our limbs (due to kinematic
-    constraints) and our actuators (due to e.g. torque limits).</p>
-
+  <section><h1>Center of pressure (CoP) and Zero-moment point (ZMP)</h1>
+  
     <subsection><h1>The special case of flat terrain</h1>
 
       <p>While not the only important case, it is extremely common for our robots
@@ -273,14 +210,14 @@ Robots</h1>
       <p>First, on flat terrain $f^{B_i}_{i,W_z}$ represents the normal component of the
       force contact point $i$.  If we assume that the robot can only push on the ground
       (and not pull), then this implies $$\forall i, f^{B_i}_{i,W_z} \ge 0 \Rightarrow
-      \sum_i f^{B_i}_{i,W_z} \ge 0 \Rightarrow \ddot{z}_{cm} \ge -g.$$  In
+      \sum_i f^{B_i}_{i,W_z} \ge 0 \Rightarrow \ddot{z} \ge -g.$$  In
       other words, if I cannot pull on the ground, then my center of mass cannot
       accelerate towards the ground faster than gravity.</p>
 
       <p>Furthermore, if we use a Coulomb model of friction on the ground, with
       friction coefficient $\mu$, then $$\forall i, |f^{B_i}_{i,W_x}| \le \mu
       f^{B_i}_{i,W_z} \Rightarrow \sum_i |f^{B_i}_{i,W_x}| \le \mu \sum_i
-      f^{B_i}_{i,W_z} \Rightarrow |\ddot{x}_{cm}| \le \mu (\ddot{z}_{cm} + g).$$  For
+      f^{B_i}_{i,W_z} \Rightarrow |\ddot{x}| \le \mu (\ddot{z} + g).$$  For
       instance, if I keep my center of mass height at a constant velocity, then
       $\ddot{z}=0$ and $|\ddot{x}| \le \mu g$; this is a nice reminder of just
       how important friction is if you want to be able to move around in the
@@ -294,16 +231,16 @@ Robots</h1>
       pressure is a "zero-moment point" (ZMP) -- a property that we will demonstrate
       below -- and a moment-balance equation (see below) gives us a very important
       relationship between the location of the CoP and the dynamics of the CoM:
-      \begin{equation} (m\ddot{z}_{cm} + mg) (x_{cp} - x_{cm}) = (z_{cp} - z_{cm})
-      m\ddot{x}_{cm} - I\ddot\theta. \label{eq:cop} \end{equation} If we use the
-      strategy proposed above for ignoring collision dynamics, $\ddot{z} = \ddot{\theta}
-      = 0$, and the result is the famous "ZMP equations": \begin{equation} \ddot{x} = g
-      \frac{(x - x_{cop})}{(z - z_{cop})}. \label{eq:zmp} \end{equation} So the location
-      of the center of pressure completely determines the acceleration of the center of
-      mass, and vice versa!  What's more, when $z - z_{cop}$ is a constant (the center
-      of mass remains at a constant height relative to the ground) or following a
-      predetermined schedule, the remaining relationship is affine -- a property that we
-      can exploit in a number of ways.</p>
+      \begin{equation} (m\ddot{z} + mg) (x_{cp} - x) = (z_{cp} - z) m\ddot{x} -
+      I\ddot\theta. \label{eq:cop} \end{equation} If $\ddot{z} = \ddot{\theta} = 0$, or
+      more generally if the rate of change in vertical and angular momentum about the
+      center of mass is small, then the result is the famous "ZMP equations":
+      \begin{equation} \ddot{x} = g \frac{(x - x_{cp})}{(z - z_{cp})}. \label{eq:zmp}
+      \end{equation} So the location of the center of pressure completely determines the
+      acceleration of the center of mass, and vice versa!  What's more, when $z -
+      z_{cp}$ is a constant (the center of mass remains at a constant height relative to
+      the ground) or following a predetermined schedule, the remaining relationship is
+      affine -- a property that we can exploit in a number of ways.</p>
 
       <p> As an example, we can easily relate constraints on the CoP to
       constraints on $\ddot{x}$. It is easy to verify from the definition that
@@ -314,63 +251,75 @@ Robots</h1>
       accelerations of the center of mass given the locations of the ground
       contacts.</p>
 
-      <subsubsection><h1>An aside: the zero-moment point derivation</h1>
+    </subsection>
 
-        <p>The zero-moment point (ZMP) is discussed very frequently in the current
-        literature on legged robots.  It also has an unfortunate tendency to be
-        surrounded by some confusion; a number of people have defined the ZMP is
-        slightly different ways (see e.g. <elib>Goswami99</elib> for a summary).
-        Therefore, it makes sense to provide a simple derivation here.</p>
+    <subsection><h1>An aside: Zero-moment point derivation</h1>
 
-        <p>First let us recall that for rigid body systems I can always summarize
-        the contributions from many external forces as a single <i>wrench</i>
-        (force and torque) on the object -- this is simply because the $F_i$ terms
-        enter our equations of motion linearly.  Specifically, the position $p^A$ of an arbitrary point $A$:</p> <figure><img
-        width="70%" src="figures/zmp_derivation.svg"/></figure> 
+      <p>The zero-moment point (ZMP) is discussed very frequently in the current
+      literature on legged robots.  It also has an unfortunate tendency to be
+      surrounded by some confusion; a number of people have defined the ZMP is
+      slightly different ways (see e.g. <elib>Goswami99</elib> for a summary).
+      Therefore, it makes sense to provide a simple derivation here.</p>
 
-        <p>I can re-write the equations of motion as \begin{align*} m\ddot{x} =&
-        \sum_i f^{B_i}_{W_x} = f^A_{net,W_x},\\ m\ddot{z} =& \sum_i f^{B_i}_{W_z}
-        - mg = f^A_{net,W_z} - mg,\\ I\ddot\theta =& \sum_i \left[ {}^Bp^{B_i}_W
-        \times f^{B_i}_W \right]_y = [{}^Bp^A_W \times f^A_{net,W}]_y +
-        \tau^A_{net,W}, \end{align*} where $f^A_{net} = \sum_i f^{B_i}$ and the
-        value of $\tau^A_{net}$ depends on the position, $p^A$. For some choices
-        of $p^A$, we can make $\tau^A_{net}=0$. We'll call these points
-        $\text{ZMP}$, for which we have \begin{equation} \left[
-        {}^Bp^{\text{ZMP}}_W \times f^{\text{ZMP}}_{net,W} \right]_y =
-        {}^Bp^{\text{ZMP}}_{W_z} f^{\text{ZMP}}_{net,W_x} -
-        {}^Bp^{\text{ZMP}}_{W_x} f^{\text{ZMP}}_{net,W_z} = \sum_i \left[
-        {}^Bp^{B_i}_W \times f^{B_i}_W \right]_y, \label{eq:zmp_def}
-        \end{equation} we can see that whenever we have ground reaction forces
-        ($f^{\text{ZMP}}_{net,W_z} \ne 0$) there is an entire line of solutions,
-        ${}^Bp^{\text{ZMP}}_{W_x} = a\, {}^Bp^{\text{ZMP}}_{W_z} + b$, including
-        one that will intercept the terrain.  For walking robots, it is this
-        point on the ground from which the external wrench can be described by a
-        single force vector (and no moment) that is the famous "zero-moment
-        point" (ZMP).</p>
+      <p>First let us recall that for rigid body systems I can always summarize
+      the contributions from many external forces as a single <i>wrench</i>
+      (force and torque) on the object -- this is simply because the $F_i$ terms
+      enter our equations of motion linearly.  Specifically, the position $p^A$ of an arbitrary point $A$:</p> <figure><img
+      width="50%" src="figures/zmp_derivation.svg"/></figure> 
 
-        <p>We can rewrite the equations of motion in terms of the ZMP.
-        Substituting the equations of motion into equation \ref{eq:zmp_def},
-        to replace the individual terms of $f^{\text{ZMP}}_{net}$, we have \[
-        {}^Bp^{\text{ZMP}}_{W_z} m\ddot{x} - {}^Bp^{\text{ZMP}}_{W_x}
-        (m\ddot{z} + mg) = I \ddot{\theta}. \] But this is precisely the
-        equation \ref{eq:cop} presented above.</p>
+      <p>I can re-write the equations of motion as \begin{align*} m\ddot{x} =&
+      \sum_i f^{B_i}_{W_x} = f^A_{net,W_x},\\ m\ddot{z} =& \sum_i f^{B_i}_{W_z}
+      - mg = f^A_{net,W_z} - mg,\\ I\ddot\theta =& \sum_i \left[ {}^Bp^{B_i}_W
+      \times f^{B_i}_W \right]_y = [{}^Bp^A_W \times f^A_{net,W}]_y +
+      \tau^A_{net,W}, \end{align*} where $f^A_{net} = \sum_i f^{B_i}$ and the
+      value of $\tau^A_{net}$ depends on the position, $p^A$. For some choices
+      of $p^A$, we can make $\tau^A_{net}=0$. We'll call these points
+      $\text{ZMP}$, for which we have \begin{equation} \left[
+      {}^Bp^{\text{ZMP}}_W \times f^{\text{ZMP}}_{net,W} \right]_y =
+      {}^Bp^{\text{ZMP}}_{W_z} f^{\text{ZMP}}_{net,W_x} -
+      {}^Bp^{\text{ZMP}}_{W_x} f^{\text{ZMP}}_{net,W_z} = \sum_i \left[
+      {}^Bp^{B_i}_W \times f^{B_i}_W \right]_y. \label{eq:zmp_def}
+      \end{equation} We can see that whenever we have ground reaction forces
+      ($f^{\text{ZMP}}_{net,W_z} \ne 0$) there is an entire line of solutions,
+      ${}^Bp^{\text{ZMP}}_{W_x} = a\, {}^Bp^{\text{ZMP}}_{W_z} + b$, including
+      one that will intercept the terrain.  For walking robots, it is this
+      point on the ground from which the external wrench can be described by a
+      single force vector (and no moment) that is the famous "zero-moment
+      point" (ZMP).</p>
 
-        <p>Furthermore, since \[\sum_i \left[ {}^Bp^{B_i}_W \times f^{B_i}_W
-        \right]_y = \sum_i \left( {}^Bp^{B_i}_{W_z} f^{B_i}_{W_x} -
-        {}^Bp^{B_i}_{W_x} f^{B_i}_{W_z} \right), \] and for <i>flat terrain</i>
-        we have \[ \sum_i {}^Bp^{B_i}_{W_z} f^{B_i}_{W_x} =
-        {}^Bp^{\text{ZMP}}_{W_z} \sum_i f^{B_i}_{W_x} = {}^Bp^\text{ZMP}_{W_z}
-        f^\text{ZMP}_{net, W_x}, \] then we can see that this ZMP is exactly the
-        CoP: \[ {}^Bp^\text{ZMP}_{W_x} = \frac{\sum_i {}^Bp^{B_i}_{W_x}
-        f^{B_i}_{W_z}}{\sum_i f^{B_i}_{W_z} }. \] </p>
+      <definition id="zmp_def"><h1>Zero-moment point (ZMP)</h1>
+      <p>The total contribution of external forces on our robot can always be summarized as
+      a single <a
+      href="https://manipulation.csail.mit.edu/clutter.html#spatial_force">spatial
+      force</a> applied at any point $P$. We call $P$ a "zero-moment point" if at $P$,
+      the rotational component of the total spatial force (e.g. the torque or moment) is
+      zero.</p>
 
-        <p>In three dimensions, we solve for the point on the ground where
-        $\tau^\text{ZMP}_{net,W_y} = \tau^\text{ZMP}_{net,W_x} = 0$, but allow $\tau^\text{ZMP}_{net,W_z} \ne 0$ to
-        extract the analogous equations in the $y$-axis:  \[
-        {}^Bp^{\text{ZMP}}_{W_z} m\ddot{y} - {}^Bp^{\text{ZMP}}_{W_y} (m\ddot{z}
-        + mg) = I \ddot{\theta}. \] </p>
-      </subsubsection>
+      <p>For walking on flat terrain, by convection we denote "the ZMP" as the unique
+      zero-moment point on the terrain.</p>
+      </definition>
 
+      <p>We can rewrite the equations of motion in terms of the ZMP.
+      Substituting the equations of motion into equation \ref{eq:zmp_def},
+      to replace the individual terms of $f^{\text{ZMP}}_{net}$, we have \[
+      {}^Bp^{\text{ZMP}}_{W_z} m\ddot{x} - {}^Bp^{\text{ZMP}}_{W_x}
+      (m\ddot{z} + mg) = I \ddot{\theta}. \] But this is precisely the
+      equation \ref{eq:cop} presented above.</p>
+
+      <p>Furthermore, since \[\sum_i \left[ {}^Bp^{B_i}_W \times f^{B_i}_W
+      \right]_y = \sum_i \left( {}^Bp^{B_i}_{W_z} f^{B_i}_{W_x} -
+      {}^Bp^{B_i}_{W_x} f^{B_i}_{W_z} \right), \] and for <i>flat terrain</i>
+      we have \[ \sum_i {}^Bp^{B_i}_{W_z} f^{B_i}_{W_x} =
+      {}^Bp^{\text{ZMP}}_{W_z} \sum_i f^{B_i}_{W_x} = {}^Bp^\text{ZMP}_{W_z}
+      f^\text{ZMP}_{net, W_x}, \] then we can see that this ZMP is exactly the
+      CoP: \[ {}^Bp^\text{ZMP}_{W_x} = \frac{\sum_i {}^Bp^{B_i}_{W_x}
+      f^{B_i}_{W_z}}{\sum_i f^{B_i}_{W_z} }. \] </p>
+
+      <p>In three dimensions, we solve for the point on the ground where
+      $\tau^\text{ZMP}_{net,W_y} = \tau^\text{ZMP}_{net,W_x} = 0$, but allow $\tau^\text{ZMP}_{net,W_z} \ne 0$ to
+      extract the analogous equations in the $y$-axis:  \[
+      {}^Bp^{\text{ZMP}}_{W_z} m\ddot{y} - {}^Bp^{\text{ZMP}}_{W_y} (m\ddot{z}
+      + mg) = I \ddot{\theta}. \] </p>
     </subsection>
 
     <subsection><h1>A note about impact dynamics</h1>
@@ -394,12 +343,12 @@ Robots</h1>
       <p>One strategy that many highly-articulated legged robots use is to keep the
       vertical component of their <i>center of mass</i> at a constant velocity,
       $$\dot{z} = c \quad \Rightarrow \quad \ddot{z} = 0,$$  and minimize their angular
-      momentum about the center of mass (here $\ddot\theta=0$).  Using this strategy, if
-      the swinging foot lands roughly below the center of mass, then even with a stiff
-      leg there is no energy dissipated in the collision - all of the momentum is
-      conserved.  This the common approach/justification for most of the humanoid
-      literature ignoring the impact dynamics when reasoning about the centroidal
-      dynamics.</p>
+      momentum about the center of mass (here $I\dot\theta=0 \Rightarrow I\ddot\theta =
+      0$).  Using this strategy, if the swinging foot lands roughly below the center of
+      mass, then even with a stiff leg there is no energy dissipated in the collision -
+      all of the momentum is conserved.  This the common approach/justification for most
+      of the humanoid literature ignoring the impact dynamics when reasoning about the
+      centroidal dynamics.</p>
 
     </subsection>
   </section>
@@ -445,13 +394,87 @@ Robots</h1>
 
       <figure><img width="80%" src="figures/zmp_planning.svg"/></figure>
 
+      <p>The implementation that we used in the DARPA Robotics Challenge is available in
+      Drake as <a
+      href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1controllers_1_1_zmp_planner.html#afbd73e15fe7be53f20440245d9b562ad"><code>ZmpPlanner</code></a>.</p>
+
     </subsection>
 
     <subsection><h1>From a CoM plan to a whole-body
     plan</h1></subsection>
 
   </section>
+  
+  <section><h1>Centroidal dynamics</h1>
 
+    <p>It turns out the specific equations that we used in our thought experiment and
+    ZMP derivation aren't restricted to a single body and massless legs. Although the
+    equations of motion for a full humanoid are indeed complicated, if we write the
+    equations of motion <i>of the center of mass</i>, then those dynamics are
+    essentially the same as the single body case we've derived above.</p>
+
+    <subsection><h1>Spatial momentum</h1>
+    
+      <p>Let's generalize our notation for a single rigid body a bit more before we make
+      things more complex.</p>
+
+      <p>In the simple model above, we chose to use the generalized positions $\bq =
+      [\theta, x, z]$, where $x$ and $z$ were taken to be the position of the center of
+      mass, ${}^Wp^{B_{cm}}$. Let's observe that this particular choice of generalized
+      velocity actually corresponds to an important physical quantity -- the <a
+      href="https://manipulation.csail.mit.edu/pick.html#jacobian">spatial velocity</a>
+      (the concatenation of the angular velocity and the translational velocity). Using
+      the full monogram notation, we can write the spatial velocity of the center of
+      mass of body B, relative to the world frame, as $${}^WV^{B_{cm}} = \begin{bmatrix}
+      {}^W\dot\theta^B \\ {}^W\dot{p}^{B_{cm}} \end{bmatrix}.$$  We can similarly define
+      a <a href="https://manipulation.csail.mit.edu/clutter.html#spatial_force">spatial
+      force</a>, $F^{B_{cm}}_i$, by concentating the moment and forces, and <i>spatial
+      inertia</i> of the body taken around the center of mass: $$M^{B/B_{cm}} =
+      \begin{bmatrix} I & 0 & 0\\ 0 & m & 0 \\ 0 & 0 & m \end{bmatrix},$$ and the
+      <i>spatial momentum</i> vector (the concatenation of angular momentum +
+      linear/translational momentum) as $${}^W L^{B/B_{cm}}(\dot\bq) = \begin{bmatrix} I
+      \dot\theta \\ m \dot{x} \\ m \dot{z} \end{bmatrix} = M^{B/B_{cm}}
+      {}^WV^{B_{cm}}.$$ Now recognize that the left-hand side of equations
+      (\ref{eq:spacecraft_x}-\ref{eq:spacecraft_theta}) can be written simply as
+      \begin{equation}{}^W\dot{L}^{B/B_{cm}}(\ddot\bq) = \sum_i
+      F^{B_{cm}}_i,\label{eq:Ldot}\end{equation} the rate of change of the spatial
+      momentum is just the sum of the spatial forces applied applied at $B_{cm}$.</p>
+    
+    </subsection>    
+
+    <subsection><h1>Generalization to multibody</h1>
+
+      <p>We can write the <i>configuration-dependent</i> center of mass of the entire
+      robot, $R,$ as the (weighted) sum of the center of masses of the individual links:
+      $$\begin{bmatrix} x_{cm} \\ z_{cm} \end{bmatrix} \equiv {}^Wp^{R_{cm}}(\bq) = \frac{\sum_i {}^W p^{B_{i,cm}}(\bq) \, m_i}{\sum_i m_i} =
+      \frac{\sum_i {}^WX^{B_i}(\bq) \,{}^B_i p^{B_{i,cm}} \, m_i}{\sum_i m_i}.$$</p>
+
+      <p>One can define the spatial momentum of the entire robot, $R,$ about this point.
+      It is now configuration dependent, but takes a particularly simple form: $${}^W
+      L^{R/R_{cm}}(\bq, \dot\bq) = {\bf A}(\bq)\dot\bq,$$ it can be computed in Drake for
+      a <code>MultibodyPlant</code> using the
+      <code>CalcSpatialMomentumInWorldAboutPoint()</code> method. The matrix ${\bf
+      A}(\bq)$ is known as the centroidal momentum matrix<elib>Orin13</elib>. The rate of
+      change of this whole-body spatial momentum is still given by the sum of the forces
+      (once the spatial tranforms are properly applied):
+      \begin{equation}{}^W\dot{L}^{R/R_{cm}}(\bq, \dot\bq, \ddot\bq) = {\bf
+      A}(\bq)\ddot{\bq} + \dot{\bf A}(\bq, \dot\bq)\dot\bq = \sum_i
+      F^{B_{cm}}_i.\label{eq:centroidal} \end{equation}</p>
+
+      <p>I suspect you already know this intuitively. Imagine you are an astronaut
+      experiencing (effectively) zero-gravity. If you are not applying external forces,
+      then your center of mass acceleration will be zero, and your total angular momentum
+      will be conserved. Equation (\ref{eq:centroidal}) simply generalizes to the case
+      where forces are still applied.</p>
+
+      <p>Let me make one important point very clear: <b>this is not an approximation</b>.
+      This equations exactly describe the motion of the center of mass (and angular
+      momentum about the center of mass). The simplification here is not approximating the
+      dynamics, but rather that we have not yet captured all of the constraints we might
+      need to put on the forces we can produce with our limbs (due to kinematic
+      constraints) and our actuators (due to e.g. torque limits).</p>
+    </subsection>
+  </section>
 
   <section><h1>Whole-Body Control</h1>
 
@@ -627,12 +650,6 @@ Robots</h1>
 <div id="references"><section><h1>References</h1>
 <ol>
 
-<li id=Orin13>
-<span class="author">David E. Orin and Ambarish Goswami and Sung-Hee Lee</span>, 
-<span class="title">"Centroidal dynamics of a humanoid robot"</span>, 
-<span class="publisher">Autonomous Robots</span>, no. September 2012, pp. 1--16, jun, <span class="year">2013</span>.
-
-</li><br>
 <li id=Goswami99>
 <span class="author">A. Goswami</span>, 
 <span class="title">"Postural stability of biped robots and the foot rotation indicator ({FRI}) point"</span>, 
@@ -651,6 +668,12 @@ Robots</h1>
 <span class="title">"Optimization-based Locomotion Planning, Estimation, and Control Design for the {A}tlas Humanoid Robot"</span>, 
 <span class="publisher">Autonomous Robots</span>, vol. 40, no. 3, pp. 429--455, <span class="year">2016</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Kuindersma14.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Orin13>
+<span class="author">David E. Orin and Ambarish Goswami and Sung-Hee Lee</span>, 
+<span class="title">"Centroidal dynamics of a humanoid robot"</span>, 
+<span class="publisher">Autonomous Robots</span>, no. September 2012, pp. 1--16, jun, <span class="year">2013</span>.
 
 </li><br>
 <li id=Kuindersma13>
