@@ -266,7 +266,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
     </subsection>
 
-    <subsection><h1>Continuous Time</h1>
+    <subsection id="ct_lti"><h1>Continuous Time</h1>
 
       <p>If we wish to solve the continuous-time version of the problem, then we can
       discretize time and use the formulations above.  The most important decision is
@@ -276,9 +276,21 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       can integrate the dynamics perfectly: $$\bx[n+1] = \bx[n] + \int_{t_n}^{t_n + h}
       \left[ {\bf A} \bx(t) + {\bf B}\bu[n] \right]dt = e^{{\bf A}h}\bx[n] + {\bf
       A}^{-1}(e^{{\bf A}h} - {\bf I}){\bf B}\bu[n],$$ is the simple case (when ${\bf A}$
-      is invertible). But in general, we can use any finitely-parameterized
-      representation of $\bu(t)$ and any numerical integration scheme. Many (but not
-      all) integration schemes will still be convex in the decision variables.</p>
+      is invertible). Section 2.1 of these <a
+      href="https://web.mit.edu/2.14/www/Handouts/StateSpaceResponse.pdf">MIT 2.14
+      notes</a> has a nice presentation of the derivation.</p>
+      
+      <p>More generally, the solution of $\dot{\bx} = \bA\bx + \bB\bu$ with $\bu(t)$
+      given by a polynomial of the form $\bu(t) = \sum_{i=0}^k {\bf c}_i t^i$ takes the
+      form: $$\bx(t) = e^{\bA t}(\bx_0 - \bbeta_0) + \sum_{i=0}^k \bbeta_i t^i,$$ plus
+      additional linear constraints that define $\bbeta_i$ <elib>Tedrake15</elib>. To
+      see this, insert this form of $\bx(t)$ into the dynamics and equate it to the
+      time-derivative of the solution form: $$\dot\bx(t) = \bA \left( e^{\bA t}(\bx_0 -
+      \bbeta_0) + \sum_{i=0}^k \bbeta_i t^i\right) + \bB \sum_{i=0}^k {\bf c}_i t^i =
+      \bA e^{\bA t} (\bx_0 - \bbeta_0) + \sum_{i=1}^k i \bbeta_i t^{i-1}.$$ Matching the
+      polynomial coefficients reveals that \begin{align*} \bA \bbeta _i + \bB {\bf c}_i
+      &= (i+1)\bbeta_{i+1}, & \forall i \in [0, k-1], \\ \bA \bbeta_k + \bB {\bf c}_k &=
+      0.\end{align*}</p>
 
     </subsection>
 
@@ -1600,6 +1612,13 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 <span class="author">Frank Dellaert</span>, 
 <span class="title">"Factor graphs and GTSAM: A hands-on introduction"</span>, 
 Tech. Report, GT-RIM-CP&R-2012-002, <span class="year">2012</span>.
+
+</li><br>
+<li id=Tedrake15>
+<span class="author">Russ Tedrake and Scott Kuindersma and Robin Deits and Kanako Miura</span>, 
+<span class="title">"A closed-form solution for real-time {ZMP} gait generation and feedback stabilization"</span>, 
+<span class="publisher">Proceedings of the International Conference on Humanoid Robotics</span> , November, <span class="year">2015</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Tedrake15.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Hargraves87>
