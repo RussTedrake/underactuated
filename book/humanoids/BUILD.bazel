@@ -22,3 +22,10 @@ rt_ipynb_test(
 #    data = ["//underactuated/models/spot"],
 #    deps = ["//underactuated"],
 #)
+
+# TODO(russt): Waiting for drake PR #21305 to merge.
+#rt_ipynb_test(
+#    name = "zmp_planner",
+#    srcs = ["zmp_planner.ipynb"],
+#    deps = ["//underactuated"],
+#)

@@ -394,10 +394,23 @@ Robots</h1>
 
       <figure><img width="80%" src="figures/zmp_planning.svg"/></figure>
 
-      <p>The implementation that we used in the DARPA Robotics Challenge is available in
-      Drake as <a
+      <p>The implementation that we used in the DARPA Robotics Challenge is described in
+      <elib>Tedrake15</elib> and is available in Drake as <a
       href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1systems_1_1controllers_1_1_zmp_planner.html#afbd73e15fe7be53f20440245d9b562ad"><code>ZmpPlanner</code></a>.</p>
 
+      <example><h1>The ZMP Planner</h1>
+      
+        <p>I've coded up a simple example calling the planner with nominal footstep positions, generating a nominal zmp trajectory as a simple trajectory moving between the foot centers, and then calling <code>ZmpPlanner</code> to generate the center of mass trajectory.</p>
+
+        <figure><img width="90%" src="figures/zmp_planner.svg"/></figure>
+
+        <script>document.write(notebook_link('humanoids', "zmp_planner"))</script>
+
+        <p>Please take it for a spin! In particular, I recommend changing the footstep timing to see the impact on the center of mass trajectory.</p>
+
+        <p>Note that the <code>ZmpPlanner</code> also produces a feedback policy (on
+        the center of mass position and velocity) in addition to the nominal plan.</p>
+      </example>
     </subsection>
 
     <subsection><h1>From a CoM plan to a whole-body
@@ -668,6 +681,13 @@ Robots</h1>
 <span class="title">"Optimization-based Locomotion Planning, Estimation, and Control Design for the {A}tlas Humanoid Robot"</span>, 
 <span class="publisher">Autonomous Robots</span>, vol. 40, no. 3, pp. 429--455, <span class="year">2016</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Kuindersma14.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Tedrake15>
+<span class="author">Russ Tedrake and Scott Kuindersma and Robin Deits and Kanako Miura</span>, 
+<span class="title">"A closed-form solution for real-time {ZMP} gait generation and feedback stabilization"</span>, 
+<span class="publisher">Proceedings of the International Conference on Humanoid Robotics</span> , November, <span class="year">2015</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Tedrake15.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Orin13>
