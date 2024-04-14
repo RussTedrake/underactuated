@@ -280,17 +280,52 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       href="https://web.mit.edu/2.14/www/Handouts/StateSpaceResponse.pdf">MIT 2.14
       notes</a> has a nice presentation of the derivation.</p>
       
-      <p>More generally, the solution of $\dot{\bx} = \bA\bx + \bB\bu$ with $\bu(t)$
-      given by a polynomial of the form $\bu(t) = \sum_{i=0}^k {\bf c}_i t^i$ takes the
-      form: $$\bx(t) = e^{\bA t}(\bx_0 - \bbeta_0) + \sum_{i=0}^k \bbeta_i t^i,$$ plus
-      additional linear constraints that define $\bbeta_i$ <elib>Tedrake15</elib>. To
-      see this, insert this form of $\bx(t)$ into the dynamics and equate it to the
-      time-derivative of the solution form: $$\dot\bx(t) = \bA \left( e^{\bA t}(\bx_0 -
-      \bbeta_0) + \sum_{i=0}^k \bbeta_i t^i\right) + \bB \sum_{i=0}^k {\bf c}_i t^i =
-      \bA e^{\bA t} (\bx_0 - \bbeta_0) + \sum_{i=1}^k i \bbeta_i t^{i-1}.$$ Matching the
-      polynomial coefficients reveals that \begin{align*} \bA \bbeta _i + \bB {\bf c}_i
-      &= (i+1)\bbeta_{i+1}, & \forall i \in [0, k-1], \\ \bA \bbeta_k + \bB {\bf c}_k &=
-      0.\end{align*}</p>
+      <details>
+        <summary>Click to expand to see the solution when $\bu(t)$ is a polynomial
+        and/or $\bA$ is not invertible.</summary>
+
+        <p>More generally, when $\bA$ is invertible, the solution of $\dot{\bx} = \bA\bx
+        + \bB\bu$ with $\bu(t)$ given by a polynomial of the form $\bu(t) = \sum_{i=0}^k
+        {\bf c}_i t^i$ takes the form: $$\bx(t) = e^{\bA t}(\bx_0 - \bbeta_0) +
+        \sum_{i=0}^k \bbeta_i t^i,$$ where we can solve for $\bbeta_i$ recursively
+        <elib>Tedrake15</elib>. To see this, insert this form of $\bx(t)$ into the
+        dynamics and equate it to the time-derivative of the solution form: $$\dot\bx(t)
+        = \bA \left( e^{\bA t}(\bx_0 - \bbeta_0) + \sum_{i=0}^k \bbeta_i t^i\right) +
+        \bB \sum_{i=0}^k {\bf c}_i t^i = \bA e^{\bA t} (\bx_0 - \bbeta_0) + \sum_{i=1}^k
+        i \bbeta_i t^{i-1}.$$ Matching the polynomial coefficients reveals that
+        \begin{align*} \bA \bbeta _i + \bB {\bf c}_i &= (i+1)\bbeta_{i+1}, & \forall i
+        \in [0, k-1], \\ \bA \bbeta_k + \bB {\bf c}_k &= 0.\end{align*}</p>
+
+        <p>When $\bA$ is not invertible, the solution is defined by the
+        power series: $$\bx(t) = e^{\bA t}\bx_0 + \sum_{i=0}^k
+        \left(\frac{t^{i+1}}{i+1}{\bf I} + \frac{t^{i+2}}{i+2}\bA  +
+        \frac{t^{i+3}}{2!(i+3)} \bA^2 + ...\right)\bB {\bf c}_i.$$ This is not as
+        immediately useful for transcription into an optimization, except in some cases
+        where $\bA^n$ converges to zero in small $n$ (as in the double integrator example
+        below). Instead, we can use a numerical integration approximation; for many
+        choices of integration scheme, the optimization is still convex in the trajectory
+        parameters.
+        </p>  
+
+        <todo>The example counter doesn't increment when the details are closed.</todo>
+        <example><h1>Exact solutions to the double integrator</h1>
+
+          <p>As a sanity check, let's make sure these equations work out as expected for
+          the double integrator. $$\dot{\bx} = \bA\bx + \bB\bu; \quad \bA =
+          \begin{bmatrix} 0 & 1 \\ 0 & 0 \end{bmatrix}, \bB = \begin{bmatrix}0 \\ 1
+          \end{bmatrix}.$$ Here we have $\bA^2 = 0$, and so $e^{\bA t} = \begin{bmatrix} 1
+          & t \\ 0 & 1 \end{bmatrix}$. $u(t)$, and therefore $c_i$ are scalars. All of
+          this reduces the solution to: $$\bx(t) = \begin{bmatrix} q_0 + t\dot{q}_0 \\ \dot{q}_0 \end{bmatrix} + \sum_{i=0}^k
+          \left(\frac{t^{i+1}}{i+1}\begin{bmatrix} 0 \\ c_i \end{bmatrix} +
+          \frac{t^{i+2}}{i+2}\begin{bmatrix} c_i \\ 0 \end{bmatrix}\right).$$</p>
+          
+          <p>For example, the bang-bang solution when $\bu = 1$, is is $$\bx(t) =
+          \begin{bmatrix} 1 & t \\ 0 & 1 \end{bmatrix} \begin{bmatrix} q_0 \\ \dot{q}_0
+          \end{bmatrix} + t\begin{bmatrix} 0 \\ 1 \end{bmatrix} + \frac{t^2}{2}
+          \begin{bmatrix} 1 \\ 0 \end{bmatrix} = \begin{bmatrix} q_0 + t\dot{q}_0 +
+          \frac{1}{2}t^2 \\ \dot{q}_0 + t \end{bmatrix}.$$</p>
+        </example>
+      </details>
 
     </subsection>
 
