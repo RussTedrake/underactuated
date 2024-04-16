@@ -161,7 +161,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       scale; these days it is common to solve these optimization online inside
       a high-rate feedback controller.</p>
 
-      <example><h1>Trajectory optimization for the Double Integrator</h1>
+      <example id="double_integrator"><h1>Trajectory optimization for the Double Integrator</h1>
 
         <p>We've looked at a few optimal control problems for the double
         integrator using value iteration. For one of them -- the quadratic
@@ -1410,14 +1410,51 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       to solve the convex relaxation (followed by a little "rounding") to solve the
       problem to global optimality.</p>
 
-      <example><h1>Minimum-time problems</h1>
+      <example><h1>Minimum-time linear optimal control</h1>
       
-        <p>Recall one of our first </p>
-      
+        <p>Recall our <a href="#double_integrator">first example</a> of the chapter was
+        doing trajectory optimization for the double integrator. Optimizing convex
+        objectives over a fixed horizon is naturally transcribed into convex
+        optimization problem. But in order to solve the minimum-time problem (where the
+        horizon is unknown), we had to solve multiple optimization problems to find the
+        correct horizon.</p>
+
+        <p>This search over horizon can naturally be encoded as a mixed-integer problem,
+        and GCS provides a natural and efficient framework for doing it. First, let's
+        observe that the original fixed-horizon problem can naturally be described as a
+        GCS: take the sets to be the domain of $x$ (to make these domains bounded, one
+        can simply pick a conservative bounding box). Our graph will simply be a serial
+        chain with one copy of this set for each timestep, and edge constraints that
+        enforce the dynamics: $$\bx[n+1] - \bA \bx[n] \in \bB {\bf U},\qquad {\bf U} =
+        \left\{ \begin{bmatrix}u\end{bmatrix} \, | \, u \in [-1, 1] \right\}.$$
+        Awesomely, once we implement all of the code optimizations that we are currently
+        working on for Drake's GCS implementation, formulating the problem in this way
+        will give you back <i>exactly</i> the same linear program that we solved
+        above.</p>
+
+        <p>Now we can make the time duration optional by defining edges, with
+        constraints, from each timestep directly to the goal:</p>
+
+        <figure><img width="80%" src="figures/min_time_gcs.svg"/></figure>
+
+        <script>document.write(notebook_link('trajopt', "double_integrator"))</script>
+
+        <p>Note that for this example, the GCS convex relaxation is not tight (yet; I
+        still have some ideas), but the <code>convex_relaxation = False</code> version
+        solves beautifully, if you have an MIP solver available.</p>
+
+        <p>The minimum-time double integrator problem is too simple to warrant the use
+        of GCS. Afterall, the line search we recommended above can work efficiently
+        enough. But this is a nice simple illustration of how one might formulate
+        trajectory optimization as a GCS, and it will scale to much more complicated
+        formulations.</p>
+
       </example>
 
       <example><h1>MPC for piecewise-affine systems (PWAMPC)</h1>
       
+        <p></p>
+
       </example>
 
       <example><h1>Motion planning around obstacles</h1>
@@ -1434,6 +1471,34 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         <todo>Fill this out with all of the details from the slides in e.g. my columbia
         GCS seminar.</todo>
 
+      </example>
+
+      <example><h1>Minimum-snap trajectories for quadrotors flying around obstacles</h1>
+      
+        <p><elib>Mellinger11</elib> showed that minimum-snap is convex (as long as each
+        time step of the plan is confined to a <i>single</i> convex region) using
+        differential flatness. <elib>Mellinger12</elib> used an older MIP formulation to
+        allow the assignment of time steps to convex regions to be chosen by the
+        optimizer. But in both of these formulations, the total duration of the
+        trajectory had to be fixed. Requiring a fixed duration, in my opinion, is a very
+        unfortunate limitation.</p>
+
+        <p><elib>Marcucci22</elib> showed that the quadrotor motion planning problem
+        could be transcribed using GCS. Moreover, this paper considered a richer version
+        of the problem where the duration in each convex set is not pre-specified, but
+        is jointly optimized. Unfortunately, constraints on acceleration, jerk, and snap are nonconvex, and so did not fit neatly into this transcription.</p>
+
+        <p>More recently, <elib>Wrangel24</elib> showed that we can effectively handle
+        the non-convexity of the derivative constraints (with time-scaling) by using convex approximations of the constraints in the (global) GCS search, and then using the exact nonconvex version of these constraints in the final rounding step.</p>
+
+        <figure><img width="90%" src="data/drones.png"/>
+        <figcaption>Three candidate trajectories for a quadrotor navigating from the bottom left corner to the top right room of a building. The blue trajectory (convex GCS trajectory optimization) is fast but lacks smoothness and exhibits unrealistic roll due to high initial accelerations. The yellow and red trajectories (proposed method) enforce higher-order continuity, limit accelerations, and achieve smoother paths while the yellow trajectory also minimizes snap. (reproduced from <elib>Wrangel24</elib>)</figcaption>
+        </figure>
+
+        <p>You can check out the trajectories in <a href="data/drones_crazy.html">the
+        meshcat animation</a>.</p>
+
+        <p>Deepnote example notebook coming soon!</p>
       </example>
 
     </subsection>
@@ -1922,6 +1987,12 @@ PhD thesis, Massachusetts Institute of Technology, September, <span class="year"
 <span class="title">"Aggressive Quadrotor Flight through Cluttered Environments Using Mixed Integer Programming"</span>, 
 <span class="publisher">Proceedings of the International Conference on Robotics and Automation (ICRA)</span> , May, <span class="year">2016</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Landry15b.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Wrangel24>
+<span class="author">David von Wrangel and Russ Tedrake</span>, 
+<span class="title">"Using Graphs of Convex Sets to Guide Nonconvex Trajectory Optimization"</span>, 
+<span class="publisher">Under review</span> , <span class="year">2024</span>.
 
 </li><br>
 <li id=Alessio09>

@@ -76,6 +76,9 @@ rt_html_test(
 
 rt_html_test(
     srcs = ["trajopt.html"],
+    data = [
+      "//book/data:drones_crazy.html",
+    ],
 )
 
 rt_html_test(
