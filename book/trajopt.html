@@ -1385,29 +1385,56 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
     <todo>DMOC</todo>
 
-    <subsection><h1>Mixed-integer convex optimization for non-convex
-    constraints</h1>
+    <subsection id="combinatorial"><h1>Leveraging combinatorial optimization</h1>
 
-      <example><h1>Mixed-integer planning around obstacles</h1>
+      <p>Many of the nonconvex costs and constraints that we have been dealing with (or
+      avoiding!) can naturally be represented as "disjunctive" constraints (e.g. $x \in
+      A$ <i>or</i> $x \in B$). There has been an important series of work showing how
+      mixed-integer programming can be used, for instance, to perform trajectory
+      optimziation around obstacles
+      <elib>Richards02+Mellinger12+Deits15+Landry15b</elib>. These methods nicely
+      distinguish separate the discrete/combinatorial aspects of the optimization
+      problem (e.g. do I fly left or right around the tree) from the continuous aspects
+      (e.g. what smooth path/trajectory should I take, assuming I decide to fly left
+      around the tree?), and leverage mostly <a
+      href="optimization.html#combinatorial">mixed-integer programming solvers based on
+      "branch and bound"</a> to solve the transcribed problem to global optimality.
+      However, these transcriptions were not particularly efficient, leading to
+      potentially very long solve times in the branch-and-bound solver.</p>
+
+      <p>Recently this approach to trajectory optimization has gotten dramatically more
+      effective using a new framework call <a href="optimization.html#gcs">Graphs of
+      Convex Sets"</a> (GCS). GCS provides a much more efficient transcription for many
+      of the discrete+continuous trajectory optimization problems. In many cases, the
+      convex relaxation of the mixed-integer problem is tight enough that one only needs
+      to solve the convex relaxation (followed by a little "rounding") to solve the
+      problem to global optimality.</p>
+
+      <example><h1>Minimum-time problems</h1>
+      
+        <p>Recall one of our first </p>
+      
+      </example>
+
+      <example><h1>MPC for piecewise-affine systems (PWAMPC)</h1>
+      
+      </example>
+
+      <example><h1>Motion planning around obstacles</h1>
+
+        <p>Let's consider the simple problem of planning a path (even without any
+        dynamics) for a point robot moving around an obstacle. This is our canonical
+        example of a non-convex constraint that we might encounter in our trajectory
+        optimization formulations.</p>
+
+        <p>In the notebook below, I've implemented a handful of different ways to transcribe this into an optimization problem.</p>
 
         <script>document.write(notebook_link('trajopt', "mi_convex"))</script>
 
+        <todo>Fill this out with all of the details from the slides in e.g. my columbia
+        GCS seminar.</todo>
+
       </example>
-
-      <p><elib>Richards02</elib>, <elib>Mellinger12</elib>, <elib>Deits15+Landry15b</elib>.</p>
-
-      <p>Recent work makes a much stronger connection between the
-      optimization-approaches to graph search with our continuous optimization
-      <elib>Marcucci21</elib>. In this work, the authors have gone to great
-      lengths to produce <a href="https://youtu.be/NBR2G4gD7XI">"strong"
-      mixed-integer formulations with extremely tight convex relaxations</a>
-      (solving a convex relaxation of the problem is often sufficient to solve
-      the original problem). This approach provides excellent trajectory
-      optimization solutions to minimum-time problems (with affine dynamics),
-      and/or hybrid systems described as piecewise-affine systems (PWA)
-      <elib>Marcucci21</elib>. It also forms the basis for recent work on
-      kinematic trajectory optimization around obstacles
-      <elib>Marcucci22</elib>.</p>
 
     </subsection>
 

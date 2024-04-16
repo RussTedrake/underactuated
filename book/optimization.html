@@ -594,6 +594,12 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       sufficient to recover the optimal solution. Nowadays, we almost never
       solve the full MICP in our robotics applications of GCS.</p>
       
+      <p>Being able to solve combinatorial problems without an MIP solver is a big deal
+      for me in the context of these notes (and for companies): the best solvers for MIP
+      are all commercially licensed (and very expensive). Saying that we can solve hard
+      instances with only convex optimization also means that we can solve them with
+      open-sourced solvers.</p>
+      
       <details><summary>Expand this if you want a <i>few</i> more details about
       how/why GCS works.</summary>
       <p>A very standard approach to tightening any convex relaxation is to
@@ -631,22 +637,16 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
       </example>
 
-      <example><h1>Planning around obstacles</h1>
-        
-        <p>Let's compare a few different transcriptions that we have now for planning around obstacles.</p>
-
-        <todo>port content from slides (e.g. https://slides.com/russtedrake/2023-columbia/edit starting at slide 28) and link to mi_convex notebook</todo>
-
-        <script>document.write(notebook_link('optimization', "mi_convex"))</script>
-
-      </example>
-
       <p>Here are some back-references to applications of GCS throughout these notes:
         <ul>
-          <li>Quadrotor planning around obstacles (with differential flatness),</li>
-          <li>Footstep planning,</li>
-          <li>Piecewise-affine MPC (PWAMPC),</li>
-          <li>Basketball bounce passes and juggling.</li>
+          <li><a href="trajopt.html#combinatorial">Trajectory optimization</a>,
+          e.g.</li>
+          <ul>
+            <li>Quadrotor planning around obstacles (with differential flatness),</li>
+            <li>Piecewise-affine MPC (PWAMPC),</li>
+          </ul>
+          <li>Planning through contact.</li>
+          <li>Footstep planning.</li>
         </ul>
         You can also find more applications of GCS <a href="http://manipulation.mit.edu/trajectories.html#gcs">in my manipulation notes</a>.
       </p>
