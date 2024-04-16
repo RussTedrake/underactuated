@@ -507,7 +507,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
   </section> <!-- nonlinear optimization -->
 
-  <section><h1>Discrete+Continuous (combinatorial) optimization</h1>
+  <section id="combinatorial"><h1>Mixed-discrete (combinatorial) and continuous optimization</h1>
     <subsection><h1>Search, SAT, First order logic, SMT solvers, LP interpretation</h1></subsection>
     <subsection><h1>Mixed-integer convex optimization</h1>
     
@@ -515,7 +515,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     
     </subsection>
 
-    <subsection><h1>Graphs of Convex Sets</h1>
+    <subsection id="gcs"><h1>Graphs of Convex Sets</h1>
     
       <p>The GCS framework was originally introduced in
       <elib>Marcucci21</elib>, and we have a mature <a
@@ -565,21 +565,21 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       </p>
 
       <p>
-      GCS provides a simple, but powerful generalization to this problem:
-      whenever we visit a vertex in the graph, we are also allowed to pick one
-      element out of a convex set associated with that vertex. Edge lengths are
-      allowed to be convex functions of the continuous variables in the
-      corresponding sets, and we can also write convex constraints on the edges
-      (which must be satisfied by any solution path). For the generalization of
-      the shortest-path problem above, we now have: \begin{aligned}
-      \min_{\varphi,x} \quad & \sum_{(i,j) \in E} \ell_{ij}(x_i, x_j)
-      \varphi_{ij} \\ \mathrm{s.t.} \quad & x_i \in X_i, && \forall i \in V, \\
-      & \sum_{j \in E_i^{out}} \varphi_{ij} + \delta_{ti} = \sum_{j \in
-      E_i^{in}} \varphi_{ji} + \delta_{si} \le 1, && \forall i \in V, \\ &
-      \varphi_{ij} \in \{0, 1\}, && \forall (i,j) \in E. \end{aligned} Here
-      $\ell_{ij} \ge 0$ is the edge length, which can be a convex function of
-      the associated vertex variables, and $X_i$ is the bounded convex set
-      associated with vertex $i$.
+      GCS provides a simple, but powerful generalization to this problem: whenever we
+      visit a vertex in the graph, we are also allowed to pick one element out of a
+      convex set associated with that vertex. Edge lengths are allowed to be convex
+      functions of the continuous variables in the corresponding sets, and we can also
+      write convex constraints on the edges (which must be satisfied by any solution
+      path). For the generalization of the shortest-path problem above, we now have:
+      \begin{aligned} \min_{\varphi,x} \quad & \sum_{(i,j) \in E} \ell_{ij}(x_i, x_j)
+      \varphi_{ij} \\ \mathrm{s.t.} \quad & x_i \in X_i, && \forall i \in V, \\ &
+      \sum_{j \in E_i^{out}} \varphi_{ij} + \delta_{ti} = \sum_{j \in E_i^{in}}
+      \varphi_{ji} + \delta_{si} \le 1, && \forall i \in V, \\ & \varphi_{ij} \in \{0,
+      1\}, && \forall (i,j) \in E. \end{aligned} Here $\ell_{ij} \ge 0$ is the edge
+      length, which can be a convex function of the associated vertex variables, and
+      $X_i$ is the bounded convex set associated with vertex $i$. The
+      <code>GraphOfConvexSets</code> implementation in Drake also allows you to add
+      additional convex constraints on the vertices and the edges.
       </p>
 
       <p>The shortest path problem on a graph of convex sets can encode
@@ -595,7 +595,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       solve the full MICP in our robotics applications of GCS.</p>
       
       <details><summary>Expand this if you want a <i>few</i> more details about
-      how/why it works.</summary>
+      how/why GCS works.</summary>
       <p>A very standard approach to tightening any convex relaxation is to
       multiply constraints together. Typically, this can increase the number of
       constraints dramatically, and increase the complexity of the problem
@@ -614,6 +614,22 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       sets are points, reducing the problem back to the classical shortest path
       on a discrete graph. <elib>Marcucci21</elib> has all of the
       details!</p></details>
+
+      <example><h1>An example Graph of Convex Sets in 2D</h1>
+
+        <p>I've put together a toy GCS problem in two dimensions using a variety of
+        different sets. By solving the convex relaxation, we can obtain a lower boundo
+        on the total cost (path length). They by rounding we can find a feasible
+        solution, which gives an upper bound on the total cost. Since they are equal up
+        to numerical tolerances, in this problem we can confirm -- without ever solving
+        the mixed-integer version of the problem -- that the convex relaxation was
+        tight.</p>
+
+        <figure><img width="80%" src="figures/gcs_2d.svg"/></figure>
+
+        <script>document.write(notebook_link('optimization', "gcs"))</script>
+
+      </example>
 
       <example><h1>Planning around obstacles</h1>
         

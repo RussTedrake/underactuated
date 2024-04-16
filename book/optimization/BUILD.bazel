@@ -30,3 +30,11 @@ rt_ipynb_test(
         "//underactuated",
     ],
 )
+
+rt_ipynb_test(
+    name = "gcs",
+    srcs = ["gcs.ipynb"],
+    deps = [
+      "//underactuated",
+    ],
+)
