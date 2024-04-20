@@ -3,10 +3,8 @@
 <html>
 
   <head>
-    <title>Ch. 12 - Motion Planning as
-Search</title>
-    <meta name="Ch. 12 - Motion Planning as
-Search" content="text/html; charset=utf-8;" />
+    <title>Ch. 12 - Sampling-based motion planning</title>
+    <meta name="Ch. 12 - Sampling-based motion planning" content="text/html; charset=utf-8;" />
     <link rel="canonical" href="http://underactuated.mit.edu/planning.html" />
 
     <script src="https://hypothes.is/embed.js" async></script>
@@ -58,30 +56,28 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 <script type="text/javascript">document.write(notebook_header('planning'))
 </script>
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
-<chapter style="counter-reset: chapter 11"><h1>Motion Planning as
-Search</h1>
+<chapter style="counter-reset: chapter 11"><h1>Sampling-based motion planning</h1>
 
   <p>The term "motion planning" is a quite general term which almost certainly
   encompasses the dynamic programming, feedback design, and trajectory optimization
   algorithms that we have already discussed.  However, there are a number of algorithms
   and ideas that we have not yet discussed which have grown from the idea of formulating
   motion planning as a search problem -- for instance searching for a path from a start
-  to a goal in a graph which is too large solve completely with dynamic programming.
+  to a goal in a graph which is too large to fit in memory. In order to deal with the
+  continuous domains that are common in robotics, these algorithms often rely on
+  randomized sampling.</p>
   <!--Some, but certainly not all, of these algorithms sacrifice optimality in order to
   find any path if it exists, and the notion of a planner being "complete" -- guaranteed
   to find a path if one exists -- is highly valued.-->  </p>
   
-  <p>My goal for this chapter is to introduce these additional tools based on search
-  into our toolkit.  For robotics, they will play a particularly valuable role when the
-  planning problem is geometrically complex (e.g. a robot moving around obstacles in 3D)
-  or the optimization landscape is very nonconvex, because these are the problems where
-  the nonlinear trajectory optimization formulations that we've studied before will
-  potentially suffer badly from local minima. Many of these algorithms were developed
-  initially for discrete or purely kinematic planning problems; a major theme of this
-  chapter will be the adaptations that allow them to work for underactuated systems.
-  There are also many deep mathematical connections between discrete search and
-  <i>combinatorial</i> optimization; I hope to make a few of those connections
-  for you here.</p>
+  <p>My goal for this chapter is to introduce these additional tools into our toolkit.
+  For robotics, they will play a particularly valuable role when the planning problem is
+  geometrically complex (e.g. a robot moving around obstacles in 3D) or the optimization
+  landscape is very nonconvex, because these are the problems where the nonlinear
+  trajectory optimization formulations that we've studied before will potentially suffer
+  badly from local minima. Many of these algorithms were developed initially for
+  discrete or purely kinematic planning problems; a major theme of this chapter will be
+  the adaptations that allow them to work for underactuated systems.</p>
 
   <p><elib>LaValle06</elib> is a very nice book on planning algorithms in general and on
   motion planning algorithms in particular.  Compared to other planning problems,
@@ -92,29 +88,15 @@ Search</h1>
   dynamic constraints like underactuation, in addition to kinematic constraints like
   obstacle avoidance.</p>
 
-  <!--
-  <p>For this chapter, we will consider the following problem formulation:
-  given a system defined by the nonlinear dynamics (in continuous- or
-  discrete-time) $$\dot{\bx} = f(\bx,\bu) \quad \text{or} \quad \bx[n+1] =
-  f(\bx[n],\bu[n]),$$ and given a start state $\bx(0) = \bx_0$ and a goal
-  region ${\cal G}$, find any finite-time trajectory from $\bx_0$ to to $\bx
-  \in {\cal G}$ if such a trajectory exists.</p>-->
+  <section><h1>Large-scale Incremental Search</h1>
 
-  <section><h1>Artificial Intelligence as Search</h1>
-
-    <p>Before the recent rise of <a href="https://openai.com/blog/chatgpt">large
-    language models (LLMs)</a>, the . For decades, many AI researchers felt that the
-    route to creating intelligent machines was to collect large ontologies of knowledge,
-    and then perform very efficient search. Some notable examples from this storied
-    history include Samuel's checker players, theorem proving, Cyc, Deep Blue playing
-    chess, and IBM Watson. Now it seems that LLMs are providing evidence that humans
-    have put enough "knowledge" on the web such that relatively simple learning
-    paradigms like next-word prediction can lead to a surprising level of
-    "intelligence". As of early 2023, the word on the street is that these models are
-    not yet good at long-term reasoning -- making multi-step plans with more than a few
-    steps
-    <elib>Bubeck23</elib>. But they appear to be able to use (software) tools, and
-    <i>maybe</i> the tools that they need are basic planning/search algorithms.</p>
+    <p>For decades, many AI researchers felt that the route to creating intelligent
+    machines was to collect large ontologies of knowledge, and then perform very
+    efficient search. Some notable examples from this storied history include Samuel's
+    checker players, theorem proving, <a
+    href="https://en.wikipedia.org/wiki/Cyc">Cyc</a>, and <a
+    href="https://en.wikipedia.org/wiki/Deep_Blue_(chess_computer)">Deep Blue</a>
+    playing chess.</p>
 
     <p>Indeed, thanks to decades of research, planning algorithms in AI have
     also scaled to impressive heights, making efficient use of heuristics and
@@ -137,88 +119,155 @@ Search</h1>
     potentially do better.  In particular, in order to scale to very large
     planning instances, one of the essential ideas is the idea of "incremental"
     search, which can avoid every putting the entire (often exponentially
-    large) graph into memory.</p>
+    large and sometimes even infinite) graph into memory.</p>
     
-    <p>Is it possible to find an optimal path from the start to a goal without
-    visiting every node? Yes! Indeed, one of the key insights that powers these
-    incremental algorithms is the use of <a
-    href="https://en.wikipedia.org/wiki/Admissible_heuristic">admissible
-    heuristics</a> to guide the search -- an approximate cost-to-go which is
-    guaranteed to never over-estimate the cost-to-go. A great example of this
-    would be searching for directions on a map -- the straight-line distance
-    from the start to the goal ("as the crow flies") is guaranteed to never
-    over-estimate the true cost to go (which has to stay on the roads). The
-    most famous search algorithm to leverage these heuristics is <a
-    href="https://en.wikipedia.org/wiki/A*_search_algorithm">A*</a>. In
-    robotics, we often use online planning extensions, such as <a
+    <p>Is it possible to find an optimal path from the start to a goal without visiting
+    every node? Yes! Indeed, one of the key insights that powers these incremental
+    algorithms is the use of <a
+    href="https://en.wikipedia.org/wiki/Admissible_heuristic">admissible heuristics</a>
+    to guide the search -- an approximate cost-to-go which is guaranteed to never
+    over-estimate the cost-to-go. A great example of this would be searching for
+    directions on a map -- the straight-line distance from the start to the goal ("as
+    the crow flies") is guaranteed to never over-estimate the true cost to go (which has
+    to stay on the roads). The most famous search algorithm to leverage these heuristics
+    is <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A*</a>. In robotics,
+    we often use online planning extensions, such as <a
     href="https://en.wikipedia.org/wiki/D*">D* and D*-Lite</a>.
     </p>
 
-    <p>There are numerous other heuristics that power state-of-the-art
-    large-scale logical search algorithms. Another important one is
-    factorization. For a robotics example, consider a robot manipulating many
-    possible objects -- it's reasonable to plan the manipulation of one object
-    assuming it's independent of the other objects and then to revise that plan
-    only when the optimal plan ends up putting two objects on intersecting
-    paths. Many of these heuristics are summarized nicely in the Fast Downward
-    paper<elib>Helmert06</elib>; Fast Downward has been at the forefront of the
-    ICAPS planning competitions for many years.</p>
+    <algorithm><h1>Discrete A*</h1>
+      <p>The A* algorithm solves a shortest-path problem on a graph defined by vertices
+      $v_i \in V$, with source vertex, $v_s$ and target vertex, $v_t$, and (weighted)
+      edges defined implicitly by a function
+      <code>GetSuccessors(</code>$v_i$<code>)</code> which returns the set of vertices reachable from
+      $v$. We additionally define:
+      <ul>
+        <li>$g(v)$ is the optimal "cost to come" from $v_s$ to $v$,</li>
+        <li>$h(v)$ is the optimal "cost to go" from $v$ to $v_t$,</li>
+        <li>$f(v) = g(v) + h(v)$ is the cost of the optimal path from $v_s$ to
+          $v_t$ that is constrained to go through $v$.</li>
+      </ul>
+      Let's also define a path $p$ as a sequence of vertices (connected by edges in the graph), starting with $v_s$. We can then define the cost-to-come and cost-to-go for $p$:
+      <ul>
+        <li>$\tilde{g}(p)$ is the cost of traversing the path $p$,</li>
+        <li>$\tilde{h}(v)$ is a <i>"heuristic"</i> approximation the optimal cost to go from $v$ to $v_t,$</li>
+        <li>$\tilde{f}(p) = \tilde{g}(p) + \tilde{h}(v)$, where $v$ is the last vertex
+        in the sequence $p$.</li>
+      </ul>
+      We say that a heuristic is <i>admissible</i> if it never over-estimates the cost to go: $$\tilde{h}(v) \le h(v), \forall v \in V.$$
+      </p>
 
-    <p>Some of the most visible success stories in deep learning today still
-    make use of planning. For example: DeepMind's
-      <a href="https://en.wikipedia.org/wiki/AlphaGo">AlphaGo</a> and <a
-        href="https://en.wikipedia.org/wiki/AlphaZero">AlphaZero</a> combine the planning algorithms developed over the
-      years in discrete games , notably <a href="https://en.wikipedia.org/wiki/Monte_Carlo_tree_search">Monte-Carlo Tree
-        Search (MCTS)</a>, with learned heuristics in the form of policies and value functions.</p>
+      <p>
+      Using these definitions, the A* algorithm can be written as follows:
+      </p>
+      <hr/>
+      <div style="padding-left: 20px;">
+      <div style="display:inline-block;width:120px;border=1px">\(p = [v_s]\)</div><i>current path</i><br/>
+      <div style="display:inline-block;width:120px;border=1px">\(S = \{ v_s : p \}\) </div><i>"visited" dictionary</i><br/>
+      <div style="display:inline-block;width:120px;border=1px">\(Q.\text{insert}(p)\) </div><i>priority queue prioritized by lowest $\tilde{f}$</i><br/>
+      while not \(Q.\text{empty}()\):</br>
+      &emsp; \(p = Q.\text{pop}()\)<br/>
+      &emsp; \(u = p.\text{last}()\)<br/>
+      &emsp; if \(u = v_t,\) then return \(p\)<br/>
+      &emsp; for all \(v \in\) GetSuccessors\((u)\), where \(v \notin p\):<br/>
+      &emsp; &emsp; \(p' = \text{Path}(p, u)\)<br/>
+      &emsp; &emsp; if \(v \notin S\) or \(\tilde{g}(p') < \tilde{g}(S[v]),\):<br/>
+      &emsp; &emsp; &emsp; \(S[v] = p'\)<br/>
+      &emsp; &emsp; &emsp; \(Q.\text{insert}(p')\)<br/>
+      return failure
+      </div>
+      <hr/>
+      <p>A* has a remarkable property: if $\tilde{h}(v)$ is an admissible heuristic, then A* will never expand paths
+      for which $\tilde{f}(p) > f(v_s).$ Take a minute to appreciate that! If the
+      heuristic $\tilde{h}(v)$ is the optimal cost to go, then A* will only visit
+      vertices that are on the optimal path!</p>
 
+      <p>Unfortunately, the flip side of this is that A* will expand <i>all</i> paths in
+      the graph for which $\tilde{f}(p) < f(v_s).$ Stronger heuristics lead to more
+      performant/scalable search.</p>
+    </algorithm>
+
+    <p>In addition to their empirical performance, there are a handful of features that
+    one might like to understand about incremental planning algorithms like A*. The
+    first is the notion of <b>completeness</b>; a planning algorithm is complete if it
+    is guaranteed to find a feasible path from the start to the goal if one exists. A
+    second is what guarantees we can obtain about <b>optimality</b>; an optimal planning
+    algorithm is one that is guaranteed to find the optimal path. The A* algorithm is
+    both complete and optimal.</p>
+
+    <p>In addition to approximate cost-to-go functions, there are numerous other
+    heuristics that power state-of-the-art large-scale logical search algorithms.
+    Another important one is factorization. For a robotics example, consider a robot
+    manipulating many possible objects -- it's reasonable to plan the manipulation of
+    one object assuming it's independent of the other objects and then to revise that
+    plan only when the optimal plan ends up putting two objects on intersecting paths.
+    Many of these heuristics are summarized nicely in the Fast Downward
+    paper<elib>Helmert06</elib>; Fast Downward has been at the forefront of the ICAPS
+    planning competitions for many years.</p>
+
+    <p>Some of the most visible success stories in deep learning today still make use of
+    planning. For example: DeepMind's <a
+    href="https://en.wikipedia.org/wiki/AlphaGo">AlphaGo</a> and <a
+    href="https://en.wikipedia.org/wiki/AlphaZero">AlphaZero</a> combine the planning
+    algorithms developed over the years in discrete games , notably <a
+    href="https://en.wikipedia.org/wiki/Monte_Carlo_tree_search">Monte-Carlo Tree Search
+    (MCTS)</a>, with learned heuristics in the form of policies and value functions.
+    Finding ways to connect Large-Language Models (LLMs) with planning to support
+    longer-term reasoning is an extremely active area of research.</p>
   </section>
 
-  <section><h1>Sampling-based motion planning</h1>
+  <section><h1>Probabilistic RoadMaps (PRMs)</h1>
 
-    <p>If you remember how we introduced dynamic programming initially as a
-    graph search, you'll remember that there were some challenges in
-    discretizing the state space.  Let's assume that we have discretized the
-    continuous space into some finite set of discrete nodes in our graph.  Even
-    if we are willing to discretize the action space for the robot (this might
-    even be acceptable in practice), we had a problem where discrete actions
-    from one node in the graph, integrated over some finite interval $h$, are
-    extremely unlikely to land exactly on top of another node in the graph.  To
-    combat this, we had to start working on methods for interpolating the value
-    function estimate between nodes.</p>
+    <p>How can we generalize powerful incremental algorithms like A* to continuous
+    domains?</p>
+
+    <p>If you remember how we introduced dynamic programming initially as a graph
+    search, you'll remember that there were some challenges in discretizing the state
+    space.  Let's assume that we have discretized the continuous space into some finite
+    set of discrete nodes in our graph.  Even if we are willing to discretize the action
+    space for the robot (this might even be acceptable in practice), we had a problem
+    where discrete actions from one node in the graph, integrated over some finite
+    interval $h$, are extremely unlikely to land exactly on top of another node in the
+    graph.  To combat this, we had to start working on methods for interpolating the
+    value function estimate between nodes.</p>
 
     <todo>add figure illustrating the interpolation here</todo>
 
-    <p>Interpolation can work well if you are trying to solve for the
-    cost-to-go function over the entire state space, but it's less compatible
-    with search methods which are trying to find just a single path through the
-    space.  If I start in node 1, and land between node 2 and node 3, then
-    which node do I continue to expand from?</p>
+    <p>Interpolation can work well if you are trying to solve for the cost-to-go
+    function over the entire state space, but it's less compatible with search methods
+    which are trying to find just a single path through the space.  If I start in node
+    1, and land between node 2 and node 3, then which node do I continue to expand
+    from?</p>
 
-    <p>Fortunately, the incremental search algorithms from logical search
-    already give us a way to think about this -- we can simply build a
-    <em>search tree</em> as the search executes, instead of relying on a
-    predefined mesh discretization.  This tree will contain nodes rooted in
-    the continuous space at exactly the points where system can reach.</p>
+    <p>Fortunately, the incremental search algorithms from logical search already give
+    us a way to think about this -- we can simply build a
+    <em>search tree</em> as the search executes, instead of relying on a predefined mesh
+    discretization.  This tree will contain nodes rooted in the continuous space at
+    exactly the points where system can reach.</p>
 
-    <p>Another potential problem with any fixed-mesh discretization of a
-    continuous space, or even a fixed discretization of the action space, is
-    that unless we have specific geometric / dynamic insights into our
-    continuous system, it can be very difficult to provide a <i>complete</i>
-    planning algorithm. A planning algorithm is complete if it always finds a
-    path (from the start to the goal) when a path exists. Even if we can show
-    that no path to the goal exists on the tree/graph, how can we be certain
-    that there is no path for the continuous system?  Perhaps a solution would
-    have emerged if we had discretized the system differently, or more
-    finely?</p>
+    <p>Another potential problem with any fixed-mesh discretization of a continuous
+    space, or even a fixed discretization of the action space, is that unless we have
+    specific geometric / dynamic insights into our continuous system, it can be very
+    difficult to provide a <i>complete</i>
+    planning algorithm. A planning algorithm is complete if it always finds a path (from
+    the start to the goal) when a path exists. Even if we can show that no path to the
+    goal exists on the tree/graph, how can we be certain that there is no path for the
+    continuous system?  Perhaps a solution would have emerged if we had discretized the
+    system differently, or more finely?</p>
 
-    <p>One approach to addressing this second challenge is to toss out the
-    notion of a fixed discretizations, and replace them with random sampling
-    (another approach would be to adaptively add resolution to the
-    discretization as the algorithm runs).  Random sampling, e.g. of the action
-    space, can yield algorithms that are <i>probabilistically complete</i>
+    <p>One approach to addressing this second challenge is to toss out the notion of a
+    fixed discretizations, and replace them with random sampling (another approach would
+    be to adaptively add resolution to the discretization as the algorithm runs).
+    Random sampling, e.g. of the action space, can yield algorithms that are
+    <i>probabilistically complete</i>
     for the continuous space -- if a solution to the problem exists, then a
-    probabilistically complete algorithm will find that solution with
-    probability 1 as the number of samples goes to infinity.</p>
+    probabilistically complete algorithm will find that solution with probability 1 as
+    the number of samples goes to infinity.</p>
+  
+  </section>
+
+  <section><h1>Rapidly-exploring Random Trees (RRTs)</h1>
+
 
     <p>With these motivations in mind, we can build what is perhaps the
     simplest probabilistically complete algorithm for finding a path from a 
@@ -289,8 +338,6 @@ axis([-10,25,-10,25]);
     heuristic for encouraging the nodes to spread out and explore the space.
     </p>
 
-    <subsection><h1>Rapidly-Exploring Random Trees (RRTs)</h1>
-
       <figure>
         <img width="70%" src="figures/rrt.svg"/>
       </figure>
@@ -306,32 +353,30 @@ axis([-10,25,-10,25]);
       </figure>
 
 
-    </subsection>
-
     <subsection><h1>RRTs for robots with dynamics</h1>
 
     </subsection>
 
     <subsection><h1>Variations and extensions</h1>
 
-      <p>Multi-query planning with PRMs, ...
-      </p>
-
       <p>RRT*, RRT-sharp, RRTx, ...  </p>
-
+  
       <p>Kinodynamic-RRT*, LQR-RRT(*)</p>
-
+  
       <p>Complexity bounds and dispersion limits</p>
-
+  
     </subsection>
+  </section>
 
+
+    <!--
     <subsection><h1>Discussion</h1>
 
       <p>Not sure yet whether randomness is fundamental here, or whether is a temporary "crutch"
         until we understand geometric and dynamic planning better.</p>
 
     </subsection>
-  </section>
+-->
 
   <section><h1>Decomposition methods</h1>
 
@@ -339,17 +384,6 @@ axis([-10,25,-10,25]);
 
     <p>Approximate decompositions for complex environments (e.g. IRIS)</p>
 
-  </section>
-
-  <section><h1>Planning as Combinatorial + Continuous Optimization</h1>
-
-    <p>Shortest path on a graph as a linear program.</p>
-
-    <p>Mixed-integer planning.</p>
-
-    <subsection>
-      <h1>Motion Planning on Graphs of Convex Sets (GCS)</h1>
-    </subsection>
   </section>
 
   <section><h1>Exercises</h1>
@@ -385,12 +419,6 @@ axis([-10,25,-10,25]);
 <span class="author">Steven M. LaValle</span>, 
 <span class="title">"Planning Algorithms"</span>, Cambridge University Press
 , <span class="year">2006</span>.
-
-</li><br>
-<li id=Bubeck23>
-<span class="author">S{\'e}bastien Bubeck and Varun Chandrasekaran and Ronen Eldan and Johannes Gehrke and Eric Horvitz and Ece Kamar and Peter Lee and Yin Tat Lee and Yuanzhi Li and Scott Lundberg and others</span>, 
-<span class="title">"Sparks of artificial general intelligence: Early experiments with gpt-4"</span>, 
-<span class="publisher">arXiv preprint arXiv:2303.12712</span>, <span class="year">2023</span>.
 
 </li><br>
 <li id=Helmert06>
