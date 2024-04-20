@@ -517,144 +517,153 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
     <subsection id="gcs"><h1>Graphs of Convex Sets</h1>
     
-      <p>The GCS framework was originally introduced in
-      <elib>Marcucci21</elib>, and we have a mature <a
+      <p>Graphs of Convex Sets (GCS) is a general optimization framework for combining
+      combinatorial optimization problems that are naturally described on a graph (e.g.
+      network flows <elib>Ahuja93</elib>, traveling salesman, etc) with continuous
+      optimization. It was originally introduced in <elib>Marcucci21</elib>, and we have
+      a mature <a
       href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1geometry_1_1optimization_1_1_graph_of_convex_sets.html">implementation
-      in Drake</a>. It is a general optimization framework for combining
-      combinatorial optimizations, like graph search, with continuous
-      optimizations. GCS can provide a continuous extension to any "network
-      flow" optimization (c.f. <elib>Ahuja93</elib>), but for simplicity, I
-      will use  shortest paths on a graph as our running example.</p>
-
-      <p>Consider the very classical problem of finding the (weighted) shortest
-      path from a source, $s$, to a target, $t,$ on a graph, pictured on the
-      left. The problem is described by a set of vertices, a set of
-      (potentially directed) edges, and the cost of traversing each edge.
-      <figure>
-      <img width="49%" src="figures/shortest_path.svg"/>
-      <img width="49%" src="figures/shortest_path_between_convex_sets.svg"/>
-      <figcaption>Left: A shortest path problem (from source $s$ to target $t$)
-      on a standard directed graph. Right: The generalization to a graph of
-      convex sets.</figcaption>
-      </figure>
-      <p>It is well known that the discrete graph search can be formulated as a
-      linear program. Define the graph with vertices $V$ and edges $(i,j) \in
-      E$, with costs $c_{ij} \ge 0$ corresponding to the edge $(i,j)$. Define
-      decision variables $\varphi_{ij}$ where we seek a solution where
-      $\varphi_{ij}=1$ if the edge $(i,j)$ is in the shortest path, otherwise
-      $\varphi_{ij}=0$. We can write the linear program as \begin{align}
-      \min_{\varphi} \quad & \sum_{(i,j) \in E} c_{ij} \varphi_{ij} 
-      <!-- this line break is to prevent a "path length" getting split on
-      reflow -->
-      \tag{path length} \\ \mathrm{s.t.} \quad & \sum_{j \in E_i^{out}} \varphi_{ij} +
-      \delta_{ti} = \sum_{j \in E_i^{in}} \varphi_{ji} + \delta_{si},& \forall
-      i \in V, \tag{flow constraints} \\ & \varphi_{ij} \ge 0, & \forall (i,j)
-      \in E. \tag{binary relaxation} \end{align} The (path length) is simply
-      the sum of the edge costs for all edges in the solution path. The (flow
-      constraints) are a clever way of encoding that the sum of the flows in is
-      equal to the sum of the flows out (except at the source and the target,
-      which are modified by $\delta_{si}$ and $\delta_{ti}$, respectively).
-      Given our formulation, one might expect that the last line would be,
-      $\varphi_{ij} \in \{0, 1\}$, but it turns out that the relaxation
-      $\varphi_{ij} \in [0, 1]$ is sufficient. In fact, we don't even need the
-      upper bound on $\varphi_{ij}$ here, leading to the further simplification
-      to th (binary relaxation). Here's the essential point, despite this being
-      a relaxation of the binary optimization problem, it can easily be shown
-      that the relaxation is always tight: the solution to this linear program
-      will give the optimal solution to the shortest path problem.</p>
+      in Drake</a>. GCS extensions to the "shortest path problem" are very natural in
+      robotics, so I will use the shortest path problem as the running example here.
       </p>
 
-      <p>
-      GCS provides a simple, but powerful generalization to this problem: whenever we
-      visit a vertex in the graph, we are also allowed to pick one element out of a
-      convex set associated with that vertex. Edge lengths are allowed to be convex
-      functions of the continuous variables in the corresponding sets, and we can also
-      write convex constraints on the edges (which must be satisfied by any solution
-      path). For the generalization of the shortest-path problem above, we now have:
-      \begin{aligned} \min_{\varphi,x} \quad & \sum_{(i,j) \in E} \ell_{ij}(x_i, x_j)
-      \varphi_{ij} \\ \mathrm{s.t.} \quad & x_i \in X_i, && \forall i \in V, \\ &
-      \sum_{j \in E_i^{out}} \varphi_{ij} + \delta_{ti} = \sum_{j \in E_i^{in}}
-      \varphi_{ji} + \delta_{si} \le 1, && \forall i \in V, \\ & \varphi_{ij} \in \{0,
-      1\}, && \forall (i,j) \in E. \end{aligned} Here $\ell_{ij} \ge 0$ is the edge
-      length, which can be a convex function of the associated vertex variables, and
-      $X_i$ is the bounded convex set associated with vertex $i$. The
-      <code>GraphOfConvexSets</code> implementation in Drake also allows you to add
-      additional convex constraints on the vertices and the edges.
-      </p>
+      <subsubsection><h1>Shortest path problems</h1>
 
-      <p>The shortest path problem on a graph of convex sets can encode
-      problems that are NP-Hard, but these can be formulated as a mixed-integer
-      convex optimization (MICP). What makes the framework so powerful is that
-      this MICP has a very strong and efficient <i>convex relaxation</i>;
-      meaning that if you relax the binary variables to continuous variables
-      you get (nearly) the solution to the original MICP.  This means that you
-      can solve GCS problems to global optimality orders of magnitude faster
-      than previous transcriptions. But in practice, we find that <i>solving
-      only the convex relaxation</i> (plus a little rounding) is almost always
-      sufficient to recover the optimal solution. Nowadays, we almost never
-      solve the full MICP in our robotics applications of GCS.</p>
+        <p>Consider the very classical problem of finding the (weighted) shortest path
+        from a source, $s$, to a target, $t,$ on a graph, pictured on the left. The
+        problem is described by a set of vertices, a set of (potentially directed)
+        edges, and the cost of traversing each edge.
+        <figure>
+        <img width="49%" src="figures/shortest_path.svg"/>
+        <img width="49%" src="figures/shortest_path_between_convex_sets.svg"/>
+        <figcaption>Left: A shortest path problem (from source $s$ to target $t$)
+        on a standard directed graph. Right: The generalization to a graph of
+        convex sets.</figcaption>
+        </figure>
+        <p>It is well known that the discrete graph search can be formulated as a
+        linear program. Define the graph with vertices $V$ and edges $(i,j) \in
+        E$, with costs $c_{ij} \ge 0$ corresponding to the edge $(i,j)$. Define
+        decision variables $\varphi_{ij}$ where we seek a solution where
+        $\varphi_{ij}=1$ if the edge $(i,j)$ is in the shortest path, otherwise
+        $\varphi_{ij}=0$. We can write the linear program as \begin{align}
+        \min_{\varphi} \quad & \sum_{(i,j) \in E} c_{ij} \varphi_{ij} 
+        <!-- this line break is to prevent a "path length" getting split on
+        reflow -->
+        \tag{path length} \\ \mathrm{s.t.} \quad & \sum_{j \in E_i^{out}} \varphi_{ij} +
+        \delta_{ti} = \sum_{j \in E_i^{in}} \varphi_{ji} + \delta_{si},& \forall i \in V, <!-- no reflow -->
+        \tag{flow constraints} \\ & \varphi_{ij} \ge 0, & \forall (i,j) \in E. 
+        <!-- no reflow -->
+        \tag{binary relaxation} \end{align} The (path length) is simply the sum of the
+        edge costs for all edges in the solution path. The (flow constraints) are a
+        clever way of encoding that the sum of the flows in is equal to the sum of the
+        flows out (except at the source and the target, which are modified by
+        $\delta_{si}$ and $\delta_{ti}$, respectively). Given our formulation, one might
+        expect that the last line would be, $\varphi_{ij} \in \{0, 1\}$, but it turns
+        out that the relaxation $\varphi_{ij} \in [0, 1]$ is sufficient. In fact, we
+        don't even need the upper bound on $\varphi_{ij}$ here, leading to the further
+        simplification to th (binary relaxation). Here's the essential point: despite
+        this being a relaxation of the binary optimization problem, it can easily be
+        shown that the relaxation is always tight: the solution to this linear program
+        will give the optimal solution to the shortest path problem.</p>
+        </p>
+
+        <p>
+        GCS provides a simple, but powerful generalization to this problem: whenever we
+        visit a vertex in the graph, we are also allowed to pick one element out of a
+        convex set associated with that vertex. Edge lengths are allowed to be convex
+        functions of the continuous variables in the corresponding sets, and we can also
+        write convex constraints on the edges (which must be satisfied by any solution
+        path). For the generalization of the shortest-path problem above, we now have:
+        \begin{aligned} \min_{\varphi,x} \quad & \sum_{(i,j) \in E} \ell_{ij}(x_i, x_j)
+        \varphi_{ij} \\ \mathrm{s.t.} \quad & x_i \in X_i, && \forall i \in V, \\ &
+        \sum_{j \in E_i^{out}} \varphi_{ij} + \delta_{ti} = \sum_{j \in E_i^{in}}
+        \varphi_{ji} + \delta_{si} \le 1, && \forall i \in V, \\ & \varphi_{ij} \in \{0,
+        1\}, && \forall (i,j) \in E. \end{aligned} Here $\ell_{ij} \ge 0$ is the edge
+        length, which can be a convex function of the associated vertex variables, and
+        $X_i$ is the bounded convex set associated with vertex $i$. The
+        <code>GraphOfConvexSets</code> implementation in Drake also allows you to add
+        additional convex constraints on the vertices and the edges.
+        </p>
+
+        <p>The shortest path problem on a graph of convex sets can encode
+        problems that are NP-Hard, but these can be formulated as a mixed-integer
+        convex optimization (MICP). What makes the framework so powerful is that
+        this MICP has a very strong and efficient <i>convex relaxation</i>;
+        meaning that if you relax the binary variables to continuous variables
+        you get (nearly) the solution to the original MICP.  This means that you
+        can solve GCS problems to global optimality orders of magnitude faster
+        than previous transcriptions. But in practice, we find that <i>solving
+        only the convex relaxation</i> (plus a little rounding) is almost always
+        sufficient to recover the optimal solution. Nowadays, we almost never
+        solve the full MICP in our robotics applications of GCS.</p>
+        
+        <p>Being able to solve combinatorial problems without an MIP solver is a big deal
+        for me in the context of these notes (and for companies): the best solvers for MIP
+        are all commercially licensed (and very expensive). Saying that we can solve hard
+        instances with only convex optimization also means that we can solve them with
+        open-sourced solvers.</p>
+        
+        <details><summary>Expand this if you want a <i>few</i> more details about
+        how/why GCS works.</summary>
+        <p>A very standard approach to tightening any convex relaxation is to
+        multiply constraints together. Typically, this can increase the number of
+        constraints dramatically, and increase the complexity of the problem
+        (e.g. multiplying linear constraints results in quadratic constraints,
+        which are more challenging to deal with). They key observations that make
+        GCS so effective are: <ul>
+          <li>we only need to multiply a small number of constraints together to
+          see a huge improvement, due to the natural sparsity pattern introduced
+          by the graph, and</li>
+          <li>using the machinery of perspective functions <elib
+          part="2.3.3">Boyd04a</elib>, multiplying the binary variables times the
+          convex costs and constraints can be done without (significantly)
+          increasing the complexity class of the optimization.</li>
+        </ul> The GCS formulation has many nice properties. For instance, our
+        convex relaxation is guaranteed to be tight in the case when all of the
+        sets are points, reducing the problem back to the classical shortest path
+        on a discrete graph. <elib>Marcucci21</elib> has all of the
+        details!</p></details>
+
+        <example><h1>An example Graph of Convex Sets in 2D</h1>
+
+          <p>I've put together a toy GCS problem in two dimensions using a variety of
+          different sets. By solving the convex relaxation, we can obtain a lower boundo
+          on the total cost (path length). They by rounding we can find a feasible
+          solution, which gives an upper bound on the total cost. Since they are equal up
+          to numerical tolerances, in this problem we can confirm -- without ever solving
+          the mixed-integer version of the problem -- that the convex relaxation was
+          tight.</p>
+
+          <figure><img width="80%" src="figures/gcs_2d.svg"/></figure>
+
+          <script>document.write(notebook_link('optimization', "gcs"))</script>
+
+        </example>
+
+      </subsubsection>
       
-      <p>Being able to solve combinatorial problems without an MIP solver is a big deal
-      for me in the context of these notes (and for companies): the best solvers for MIP
-      are all commercially licensed (and very expensive). Saying that we can solve hard
-      instances with only convex optimization also means that we can solve them with
-      open-sourced solvers.</p>
-      
-      <details><summary>Expand this if you want a <i>few</i> more details about
-      how/why GCS works.</summary>
-      <p>A very standard approach to tightening any convex relaxation is to
-      multiply constraints together. Typically, this can increase the number of
-      constraints dramatically, and increase the complexity of the problem
-      (e.g. multiplying linear constraints results in quadratic constraints,
-      which are more challenging to deal with). They key observations that make
-      GCS so effective are: <ul>
-        <li>we only need to multiply a small number of constraints together to
-        see a huge improvement, due to the natural sparsity pattern introduced
-        by the graph, and</li>
-        <li>using the machinery of perspective functions <elib
-        part="2.3.3">Boyd04a</elib>, multiplying the binary variables times the
-        convex costs and constraints can be done without (significantly)
-        increasing the complexity class of the optimization.</li>
-      </ul> The GCS formulation has many nice properties. For instance, our
-      convex relaxation is guaranteed to be tight in the case when all of the
-      sets are points, reducing the problem back to the classical shortest path
-      on a discrete graph. <elib>Marcucci21</elib> has all of the
-      details!</p></details>
+      <subsubsection><h1>Applications</h1>
 
-      <example><h1>An example Graph of Convex Sets in 2D</h1>
-
-        <p>I've put together a toy GCS problem in two dimensions using a variety of
-        different sets. By solving the convex relaxation, we can obtain a lower boundo
-        on the total cost (path length). They by rounding we can find a feasible
-        solution, which gives an upper bound on the total cost. Since they are equal up
-        to numerical tolerances, in this problem we can confirm -- without ever solving
-        the mixed-integer version of the problem -- that the convex relaxation was
-        tight.</p>
-
-        <figure><img width="80%" src="figures/gcs_2d.svg"/></figure>
-
-        <script>document.write(notebook_link('optimization', "gcs"))</script>
-
-      </example>
-
-      <p>Here are some back-references to applications of GCS throughout these notes:
-        <ul>
-          <li><a href="trajopt.html#combinatorial">Trajectory optimization</a>,
-          e.g.</li>
+        <p>Here are some back-references to applications of GCS throughout these notes:
           <ul>
-            <li>Minimum-time linear optimal control,</li>
-            <li>Piecewise-affine MPC (PWAMPC),</li>
-            <li>Quadrotor planning around obstacles (with differential flatness),</li>
+            <li><a href="trajopt.html#combinatorial">Trajectory optimization</a>,
+            e.g.</li>
+            <ul>
+              <li>Minimum-time linear optimal control,</li>
+              <li>Piecewise-affine MPC (PWAMPC),</li>
+              <li>Quadrotor planning around obstacles (with differential flatness),</li>
+            </ul>
+            <li><a href="contact.html#gcs">Planning through contact</a>, and</li>
+            <li><a href="humanoids.html#footstep">Footstep planning</a> for humanoids and
+            quadrupeds.</li>
           </ul>
-          <li><a href="contact.html#gcs">Planning through contact</a>, and</li>
-          <li><a href="humanoids.html#footstep">Footstep planning</a> for humanoids and
-          quadrupeds.</li>
-        </ul>
-        You can also find more applications of GCS, especially for kinematic trajectory
-        optimization <a href="http://manipulation.mit.edu/trajectories.html#gcs">in my
-        manipulation notes</a>.
-      </p>
+          You can also find more applications of GCS, especially for <i>kinematic</i>
+          trajectory optimization, <a
+          href="http://manipulation.mit.edu/trajectories.html#gcs">in my manipulation
+          notes</a>.
+        </p>
 
+      </subsubsection>
     </subsection>
   </section>
   <section><h1>"Black-box" optimization</h1>
@@ -737,17 +746,17 @@ PhD thesis, Massachusetts Institute of Technology, <span class="year">2017</span
 <span class="publisher">Siam Review</span>, vol. 57, no. 1, pp. 3--57, <span class="year">2015</span>.
 
 </li><br>
+<li id=Ahuja93>
+<span class="author">Ravindra K Ahuja and Thomas L Magnanti and James B Orlin</span>, 
+<span class="title">"Network flows: theory, algorithms, and applications"</span>, Prentice-Hall, Inc.
+, <span class="year">1993</span>.
+
+</li><br>
 <li id=Marcucci21>
 <span class="author">Tobia Marcucci and Jack Umenberger and Pablo A. Parrilo and Russ Tedrake</span>, 
 <span class="title">"Shortest Paths in Graphs of Convex Sets"</span>, 
 <span class="publisher">arXiv preprint</span>, <span class="year">2023</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Marcucci21.pdf">link</a>&nbsp;]
-
-</li><br>
-<li id=Ahuja93>
-<span class="author">Ravindra K Ahuja and Thomas L Magnanti and James B Orlin</span>, 
-<span class="title">"Network flows: theory, algorithms, and applications"</span>, Prentice-Hall, Inc.
-, <span class="year">1993</span>.
 
 </li><br>
 </ol>

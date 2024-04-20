@@ -62,38 +62,35 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 Search</h1>
 
   <p>The term "motion planning" is a quite general term which almost certainly
-  encompasses the dynamic programming, feedback design, and trajectory
-  optimization algorithms that we have already discussed.  However, there are a
-  number of algorithms and ideas that we have not yet discussed which have
-  grown from the idea of formulating motion planning as a search problem -- for
-  instance searching for a path from a start to a goal in a graph which is too
-  large solve completely with dynamic programming. <!--Some, but certainly not
-  all, of these algorithms sacrifice optimality in order to find any path if it
-  exists, and the notion of a planner being "complete" -- guaranteed to find a
-  path if one exists -- is highly valued.-->  </p>
+  encompasses the dynamic programming, feedback design, and trajectory optimization
+  algorithms that we have already discussed.  However, there are a number of algorithms
+  and ideas that we have not yet discussed which have grown from the idea of formulating
+  motion planning as a search problem -- for instance searching for a path from a start
+  to a goal in a graph which is too large solve completely with dynamic programming.
+  <!--Some, but certainly not all, of these algorithms sacrifice optimality in order to
+  find any path if it exists, and the notion of a planner being "complete" -- guaranteed
+  to find a path if one exists -- is highly valued.-->  </p>
   
-  <p>My goal for this chapter is to introduce these additional tools based on
-  search into our toolkit.  For robotics, they will play a particularly
-  valuable role when the planning problem is geometrically complex (e.g. a
-  robot moving around obstacles in 3D) or the optimization landscape is very
-  nonconvex, because these are the problems where the trajectory optimization
-  formulation we've studied before will potentially suffer badly from local
-  minima. Many of these algorithms were developed initially for discrete or
-  purely kinematic planning problems; a major theme of this chapter will be the
-  adaptations that allow them to work for underactuated systems. There are also
-  many deep mathematical connections between discrete search and
+  <p>My goal for this chapter is to introduce these additional tools based on search
+  into our toolkit.  For robotics, they will play a particularly valuable role when the
+  planning problem is geometrically complex (e.g. a robot moving around obstacles in 3D)
+  or the optimization landscape is very nonconvex, because these are the problems where
+  the nonlinear trajectory optimization formulations that we've studied before will
+  potentially suffer badly from local minima. Many of these algorithms were developed
+  initially for discrete or purely kinematic planning problems; a major theme of this
+  chapter will be the adaptations that allow them to work for underactuated systems.
+  There are also many deep mathematical connections between discrete search and
   <i>combinatorial</i> optimization; I hope to make a few of those connections
   for you here.</p>
 
-  <p><elib>LaValle06</elib> is a very nice book on planning algorithms in
-  general and on motion planning algorithms in particular.  Compared to other
-  planning problems, <em>motion planning</em> typically refers to problems
-  where the planning domain is continuous (e.g. continuous state space,
-  continuous action space), but many motion planning algorithms trace their
-  origins back to ideas in discrete domains.  The term <em>kinodynamic motion
-  planning</em> is often used when the plant is subject to dynamic constraints
-  like underactuation, in addition to kinematic constraints like obstacle
-  avoidance.</p>
+  <p><elib>LaValle06</elib> is a very nice book on planning algorithms in general and on
+  motion planning algorithms in particular.  Compared to other planning problems,
+  <em>motion planning</em> typically refers to problems where the planning domain is
+  continuous (e.g. continuous state space, continuous action space), but many motion
+  planning algorithms trace their origins back to ideas in discrete domains.  The term
+  <em>kinodynamic motion planning</em> is often used when the plant is subject to
+  dynamic constraints like underactuation, in addition to kinematic constraints like
+  obstacle avoidance.</p>
 
   <!--
   <p>For this chapter, we will consider the following problem formulation:
@@ -105,20 +102,19 @@ Search</h1>
 
   <section><h1>Artificial Intelligence as Search</h1>
 
-    <p>Search algorithms have a long history in AI research -- even before the
-    recent rise of the <a href="https://openai.com/blog/chatgpt">large language
-    models (LLMs)</a>. For decades, many AI researchers felt that the route to
-    creating intelligent machines was to collect large ontologies of knowledge,
-    and then perform very efficient search. Some notable examples from this
-    storied history include Samuel's checker players, theorem proving, Cyc,
-    Deep Blue playing chess, and IBM Watson. Now it seems that LLMs are
-    providing evidence that humans have put enough "knowledge" on the web such
-    that relatively simple learning paradigms like next-word prediction can
-    lead to a surprising level of "intelligence". As of early 2023, the word on
-    the street is that these models are not yet good at long-term reasoning --
-    making multi-step plans with more than a few steps <elib>Bubeck23</elib>.
-    But they appear to be able to use (software) tools, and <i>maybe</i> the
-    tools that they need are basic planning/search algorithms.</p>
+    <p>Before the recent rise of <a href="https://openai.com/blog/chatgpt">large
+    language models (LLMs)</a>, the . For decades, many AI researchers felt that the
+    route to creating intelligent machines was to collect large ontologies of knowledge,
+    and then perform very efficient search. Some notable examples from this storied
+    history include Samuel's checker players, theorem proving, Cyc, Deep Blue playing
+    chess, and IBM Watson. Now it seems that LLMs are providing evidence that humans
+    have put enough "knowledge" on the web such that relatively simple learning
+    paradigms like next-word prediction can lead to a surprising level of
+    "intelligence". As of early 2023, the word on the street is that these models are
+    not yet good at long-term reasoning -- making multi-step plans with more than a few
+    steps
+    <elib>Bubeck23</elib>. But they appear to be able to use (software) tools, and
+    <i>maybe</i> the tools that they need are basic planning/search algorithms.</p>
 
     <p>Indeed, thanks to decades of research, planning algorithms in AI have
     also scaled to impressive heights, making efficient use of heuristics and
