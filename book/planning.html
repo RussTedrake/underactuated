@@ -77,23 +77,18 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
   trajectory optimization formulations that we've studied before will potentially suffer
   badly from local minima. Many of these algorithms were developed initially for
   discrete or purely kinematic planning problems; a major theme of this chapter will be
-  the adaptations that allow them to work for underactuated systems.</p>
+  the adaptations that allow them to work for systems with dynamic constraints
+  (including underactuated systems).</p>
 
   <p><elib>LaValle06</elib> is a very nice book on planning algorithms in general and on
-  motion planning algorithms in particular.  Compared to other planning problems,
-  <em>motion planning</em> typically refers to problems where the planning domain is
-  continuous (e.g. continuous state space, continuous action space), but many motion
-  planning algorithms trace their origins back to ideas in discrete domains.  The term
-  <em>kinodynamic motion planning</em> is often used when the plant is subject to
-  dynamic constraints like underactuation, in addition to kinematic constraints like
-  obstacle avoidance.</p>
+  motion planning algorithms in particular.</p>
 
   <section><h1>Large-scale Incremental Search</h1>
 
     <p>For decades, many AI researchers felt that the route to creating intelligent
     machines was to collect large ontologies of knowledge, and then perform very
     efficient search. Some notable examples from this storied history include Samuel's
-    checker players, theorem proving, <a
+    checker players, automated theorem proving, <a
     href="https://en.wikipedia.org/wiki/Cyc">Cyc</a>, and <a
     href="https://en.wikipedia.org/wiki/Deep_Blue_(chess_computer)">Deep Blue</a>
     playing chess.</p>
@@ -108,36 +103,36 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     href="https://en.wikipedia.org/wiki/Planning_Domain_Definition_Language">problem
     specification formats</a> and to benchmark the state of the art.</p>
 
-    <p>These algorithms have focused on primarily on logical/discrete planning
-    (although they do support "objects", and so can have a sort of open
-    vocabulary).  In the language of underactuated, this connects back to the
-    discrete-state, discrete-action, discrete-time planning problems that we
-    discussed to introduce <a href="dp.html#graph_search">dynamic programming
-    as graph search</a>. Dynamic programming is a very efficient algorithm to
-    solve for the cost-to-go from <i>every</i> state, but if we only need to
-    find an (optimal) path from a single start state to the goal, we can
-    potentially do better.  In particular, in order to scale to very large
-    planning instances, one of the essential ideas is the idea of "incremental"
-    search, which can avoid every putting the entire (often exponentially
+    <p>These algorithms have focused on primarily on logical/discrete planning (although
+    they do support "objects", and so can have a sort of open vocabulary).  In the
+    context of these notes, these approaches are most closely related to the
+    discrete-state, discrete-action, discrete-time planning problems that we discussed
+    to introduce <a href="dp.html#graph_search">dynamic programming as graph search</a>.
+    Dynamic programming is a very efficient algorithm to solve for the cost-to-go from
+    <i>every</i> state, but if we only need to find an (optimal) path from a single
+    start state to the goal, we can potentially do better.  In particular, in order to
+    scale to very large planning instances, one of the essential ideas is the idea of
+    "incremental" search, which can avoid ever putting the entire (often exponentially
     large and sometimes even infinite) graph into memory.</p>
     
-    <p>Is it possible to find an optimal path from the start to a goal without visiting
-    every node? Yes! Indeed, one of the key insights that powers these incremental
-    algorithms is the use of <a
+    <p>Is it possible to guarantee that we've found an optimal path from a start to a
+    goal without visiting every node? Yes! Indeed, one of the key insights that powers
+    these incremental algorithms is the use of <a
     href="https://en.wikipedia.org/wiki/Admissible_heuristic">admissible heuristics</a>
     to guide the search -- an approximate cost-to-go which is guaranteed to never
     over-estimate the cost-to-go. A great example of this would be searching for
-    directions on a map -- the straight-line distance from the start to the goal ("as
-    the crow flies") is guaranteed to never over-estimate the true cost to go (which has
-    to stay on the roads). The most famous search algorithm to leverage these heuristics
-    is <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A*</a>. In robotics,
-    we often use online planning extensions, such as <a
+    directions on a road map -- the Euclidean distance from the start to the goal ("as
+    the crow flies") is guaranteed to never over-estimate the true cost to go (which is
+    to stay on the roads). Perhaps most famous search algorithm to leverage these
+    heuristics is
+    <a href="https://en.wikipedia.org/wiki/A*_search_algorithm">A*</a>. In robotics, we
+    often use online planning extensions, such as <a
     href="https://en.wikipedia.org/wiki/D*">D* and D*-Lite</a>.
     </p>
 
     <algorithm><h1>Discrete A*</h1>
       <p>The A* algorithm solves a shortest-path problem on a graph defined by vertices
-      $v_i \in V$, with source vertex, $v_s$ and target vertex, $v_t$, and (weighted)
+      $v \in V$, with source vertex, $v_s$ and target vertex, $v_t$, and (weighted)
       edges defined implicitly by a function
       <code>GetSuccessors(</code>$v_i$<code>)</code> which returns the set of vertices reachable from
       $v$. We additionally define:
@@ -188,12 +183,12 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     </algorithm>
 
     <p>In addition to their empirical performance, there are a handful of features that
-    one might like to understand about incremental planning algorithms like A*. The
-    first is the notion of <b>completeness</b>; a planning algorithm is complete if it
-    is guaranteed to find a feasible path from the start to the goal if one exists. A
-    second is what guarantees we can obtain about <b>optimality</b>; an optimal planning
-    algorithm is one that is guaranteed to find the optimal path. The A* algorithm is
-    both complete and optimal.</p>
+    one might like to understand about incremental planning algorithms like A*. A first
+    is the notion of <b>completeness</b>; a planning algorithm is complete if it is
+    guaranteed to find a feasible path from the start to the goal if one exists. A
+    second is the notion of <b>optimality</b> (of the returned solution); an optimal
+    planning algorithm is one that is guaranteed to find the optimal path. The A*
+    algorithm is both complete and optimal.</p>
 
     <p>In addition to approximate cost-to-go functions, there are numerous other
     heuristics that power state-of-the-art large-scale logical search algorithms.
@@ -219,60 +214,95 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
   <section><h1>Probabilistic RoadMaps (PRMs)</h1>
 
     <p>How can we generalize powerful incremental algorithms like A* to continuous
-    domains?</p>
+    domains for motion planning?</p>
+    
+    <p>As typical in this literature, let us start by considering kinematic planning
+    problems; in these problems we only consider the positions (e.g. configurations),
+    $\bq$, and do not consider velocities or accelerations. In the simplest version of
+    the problem, any path between configurations $\bq_1$ and $\bq_2$ that is collision
+    free is considered feasible.</p>
 
-    <p>If you remember how we introduced dynamic programming initially as a graph
-    search, you'll remember that there were some challenges in discretizing the state
-    space.  Let's assume that we have discretized the continuous space into some finite
-    set of discrete nodes in our graph.  Even if we are willing to discretize the action
-    space for the robot (this might even be acceptable in practice), we had a problem
-    where discrete actions from one node in the graph, integrated over some finite
-    interval $h$, are extremely unlikely to land exactly on top of another node in the
-    graph.  To combat this, we had to start working on methods for interpolating the
-    value function estimate between nodes.</p>
+    <p>If we choose a fixed discretization of the configuration space, like the ones
+    that I used when introducing dynamic programming, then we will have sacrificed
+    completeness (and therefore also optimality). For instance, we could have a narrow
+    corridor in configuration space between obstacles -- a path could exist but it could
+    be easily missed by a fixed discretization. So naturally one must consider
+    discretization as an iterative procedure, and start by analyzing the completeness of
+    the planner the limit of infinite iterations. We use the term <i>resolution
+    complete</i> to describe an algorithm that is complete as the resolution becomes
+    arbitrarily fine. One can invoke minor assumptions, like assuming that feasible
+    paths are not infinitely narrow, to argue that an algorithm which increases the
+    resolution until finding a solution (if it exists) will terminate in a finite number
+    of iterations.</p>
 
-    <todo>add figure illustrating the interpolation here</todo>
+    <todo>figure on a fixed discretization failing in a narrow passage</todo>
 
-    <p>Interpolation can work well if you are trying to solve for the cost-to-go
-    function over the entire state space, but it's less compatible with search methods
-    which are trying to find just a single path through the space.  If I start in node
-    1, and land between node 2 and node 3, then which node do I continue to expand
-    from?</p>
+    <p>More popular is a variant which is even simpler to implement, and surprisingly
+    effective in practice. Rather than a fixed discretization, let us sample points from
+    a uniform random distribution over the configuration space, and reject samples that
+    are in collision. We can add edges in the graph to any neighbors for which the
+    straight-line path to the neighbor is collision-free. This allows us to build a
+    "probabilistic roadmap" over the configuration space offline <elib>Amato96</elib>.
+    Online, when presented with a new start and a new goal, we simply connect those
+    points to the roadmap and then plan with A* on the graph. This algorithm is complete
+    in the limit of infinite samples; we use the term <i>probabilistically
+    complete.</i></p>
 
-    <p>Fortunately, the incremental search algorithms from logical search already give
-    us a way to think about this -- we can simply build a
-    <em>search tree</em> as the search executes, instead of relying on a predefined mesh
-    discretization.  This tree will contain nodes rooted in the continuous space at
-    exactly the points where system can reach.</p>
+    <algorithm><h1>Probabilistic RoadMap (PRM)</h1>
+      <p>The PRM algorithm separates the computation into two phases: an offline phase
+      which builds the roadmap, and an online phase which finds a path using that
+      roadmap from a new start to a new goal.</p>
+      <hr/>
+      def BuildRoadmap(): &emsp; <i>(offline)</i>
+      <div style="padding-left: 20px;">
+        $V$ = {}, $E$ = {} <br/>
+        for k = 1 to K:<br/>
+          <div style="padding-left: 20px;">
+            do { $\bq$ = UniformRandom() } until $\bq$ is collision-free<br/>
+            $V$.insert($\bq$)<br/>
+          </div>
+        for all $\bq$ in $V$:<br/>
+          <div style="padding-left: 20px;">
+          for all $\bq_n$ in NearestNeighbors($\bq$, V):<br/>
+          &emsp;if {$\bq, \bq_n$} is collision free:<br/>
+          &emsp;&emsp;    $E$.insert({$\bq,\bq_n$})
+          </div>
+      </div>
+      <hr/>
+      def FindPath($V$, $E$, $\bq_s$, $\bq_t$): &emsp; <i>(online "query phase")</i>
+      <div style="padding-left: 20px;">
+        $V$.insert($\bq_s$)<br/>
+        $E$.insert(shortest collision-free path from $\bq_s$ to $V$)<br/>
+        $V$.insert($\bq_t$)<br/>
+        $E$.insert(shortest collision-free path from $V$ to $\bq_t$)<br/>
+        return DiscreteGraphSearch($V$, $E$, $\bq_s$, $\bq_t$)
+      </div>
+    </algorithm>
 
-    <p>Another potential problem with any fixed-mesh discretization of a continuous
-    space, or even a fixed discretization of the action space, is that unless we have
-    specific geometric / dynamic insights into our continuous system, it can be very
-    difficult to provide a <i>complete</i>
-    planning algorithm. A planning algorithm is complete if it always finds a path (from
-    the start to the goal) when a path exists. Even if we can show that no path to the
-    goal exists on the tree/graph, how can we be certain that there is no path for the
-    continuous system?  Perhaps a solution would have emerged if we had discretized the
-    system differently, or more finely?</p>
+    <todo>PRM examples!</todo>
 
-    <p>One approach to addressing this second challenge is to toss out the notion of a
-    fixed discretizations, and replace them with random sampling (another approach would
-    be to adaptively add resolution to the discretization as the algorithm runs).
-    Random sampling, e.g. of the action space, can yield algorithms that are
-    <i>probabilistically complete</i>
-    for the continuous space -- if a solution to the problem exists, then a
-    probabilistically complete algorithm will find that solution with probability 1 as
-    the number of samples goes to infinity.</p>
-  
+    <p>PRMs are a simple idea but surprisingly effective in practice, at least up to
+    let's say 10 dimensions. The most expensive steps of the algorithm are the nearest
+    neighbor queries and the collision detection queries that are called not only on the
+    sampled vertices, but also for the edges. Candidate edges are typically checked for
+    collisions by sampling densely along the edge and performing many point collision
+    detection queries, but algorithms with stronger guarantees do exist (c.f.
+    <elib>Amice23</elib>). Efficient PRM implementations optimize these queries and
+    parallelize them on the CPU or GPU. At TRI we have optimized implementations which
+    we intend to open-source in Drake, but admittedly <a
+    href="https://github.com/RobotLocomotion/drake/issues/14431">the issue</a> has been
+    open for a long time! </p>
+
+    <example><h1>How well would a PRM swing up a pendulum?</h1>
+    
+    </example>
+
   </section>
 
   <section><h1>Rapidly-exploring Random Trees (RRTs)</h1>
 
-
-    <p>With these motivations in mind, we can build what is perhaps the
-    simplest probabilistically complete algorithm for finding a path from a 
-    starting state to some goal region within a continuous state and action
-    space:</p>
+    <p>Thinking about how to extend the PRM to accommodate dynamic constraints leads up
+    to a slightly different, and also wildly popular, algorithm, known as the RRT.</p>
 
     <example><h1>Planning with a Random Tree</h1>
 
@@ -425,6 +455,19 @@ axis([-10,25,-10,25]);
 <span class="author">Malte Helmert</span>, 
 <span class="title">"The fast downward planning system"</span>, 
 <span class="publisher">Journal of Artificial Intelligence Research</span>, vol. 26, pp. 191--246, <span class="year">2006</span>.
+
+</li><br>
+<li id=Amato96>
+<span class="author">N.M. Amato and Y. Wu</span>, 
+<span class="title">"A randomized roadmap method for path and manipulation planning"</span>, 
+<span class="publisher">Proceedings of the IEEE International Conference on Robotics and Automation</span> , vol. 1, pp. 113 - 120, <span class="year">1996</span>.
+
+</li><br>
+<li id=Amice23>
+<span class="author">Amice and Alexandre and Werner and Peter and Tedrake and Russ</span>, 
+<span class="title">"Certifying Bimanual RRT Motion Plans in a Second"</span>, 
+<span class="publisher">arxiv</span>, <span class="year">2023</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Amice23.pdf">link</a>&nbsp;]
 
 </li><br>
 </ol>
