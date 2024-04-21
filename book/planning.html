@@ -267,6 +267,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
           &emsp;if {$\bq, \bq_n$} is collision free:<br/>
           &emsp;&emsp;    $E$.insert({$\bq,\bq_n$})
           </div>
+        return $V$, $E$
       </div>
       <hr/>
       def FindPath($V$, $E$, $\bq_s$, $\bq_t$): &emsp; <i>(online "query phase")</i>
@@ -297,7 +298,21 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     
     </example>
 
+    <subsection><h1>Getting smooth trajectories</h1>
+
+      <p>Even for kinematic motion planning, we might which to impose dynamic
+      constraints which require the path to be continuously differentiable (up to some
+      degree), and perhaps to respect velocity, acceleration, or other limits.</p>
+
+      <p>Post-processing PRM outputs.</p>
+
+      <p><a href="http://manipulation.mit.edu/trajectories.html#gcs">Kinematic
+      trajectory optimization w/ GCS</a> (using sampling to generate the regions).</p>
+    
+    </subsection>
+
   </section>
+
 
   <section><h1>Rapidly-exploring Random Trees (RRTs)</h1>
 
