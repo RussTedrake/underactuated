@@ -67,25 +67,23 @@ with Stochasticity</h1>
 
   <p>My goals for this chapter are to build intuition for the beautiful and rich
   behavior of nonlinear dynamical system that are subjected to random
-  (noise/disturbance) inputs.  So far we have focused primarily on systems
-  described by \[ \dot{\bx}(t) = f(\bx(t),\bu(t)) \quad \text{or} \quad \bx[n+1]
-  = f(\bx[n],\bu[n]). \] In this chapter, I would like to broaden the scope to
-  think about \[ \dot{\bx}(t) = f(\bx(t),\bu(t),\bw(t)) \quad \text{or} \quad
-  \bx[n+1] = f(\bx[n],\bu[n],\bw[n]), \] where this additional input $\bw$ is
-  the (vector) output of some random process.  In other words, we can begin
-  thinking about stochastic systems by simply understanding the dynamics of our
-  existing ODEs subjected to an additional random input. </p>
+  (noise/disturbance) inputs.  So far we have focused primarily on systems described by
+  \[ \dot{\bx}(t) = f(\bx(t),\bu(t)) \quad \text{or} \quad \bx[n+1] = f(\bx[n],\bu[n]).
+  \] In this chapter, I would like to broaden the scope to think about \[ \dot{\bx}(t) =
+  f(\bx(t),\bu(t),\bw(t)) \quad \text{or} \quad \bx[n+1] = f(\bx[n],\bu[n],\bw[n]), \]
+  where this additional input $\bw$ is the (vector) output of some random process.  In
+  other words, we can begin thinking about stochastic systems by simply understanding
+  the dynamics of our existing ODEs subjected to an additional random input. </p>
 
-  <p> This form is extremely general as written.  $\bw(t)$ can represent
-  time-varying random disturbances (e.g. gusts of wind), or even constant model
-  errors/uncertainty.  One thing that we are not adding, yet, is measurement
-  uncertainty.  There is a great deal of work on observability and state
-  estimation that study the question of how you can infer the true state of the
-  system given noise sensor readings.  For this chapter we are assuming perfect
-  measurements of the full state, and are focused instead on the way that
+  <p> This form is extremely general as written.  $\bw(t)$ can represent time-varying
+  random disturbances (e.g. gusts of wind), or even constant model errors/uncertainty.
+  One thing that we are not adding, yet, is measurement uncertainty (this will come
+  later, when we discuss <a href="state_estimation.html">state estimation</a> and <a
+  href="output_feedback.html">output feedback</a>).  For this chapter we are assuming
+  perfect measurements of the full state, and are focused instead on the way that
   "process noise" shapes the long-term dynamics of the system. </p>
 
-  <p> I will also stick primarily to discrete time dynamics for this chapter,
+  <p> I will also stick primarily to discrete-time dynamics for this chapter,
   simply because it is easier to think about the output of a discrete-time
   random process, $\bw[n]$, than a $\bw(t)$. But you should know that all of the
   ideas work in continuous time, too.  Also, most of our examples will take the
@@ -210,15 +208,15 @@ with Stochasticity</h1>
         are entirely deterministic!</figcaption>
         </figure>
 
-      <p>Here's what's completely fascinating -- even though the dynamics of any
-      one initial condition for this system are extremely complex, if we study
-      the dynamics of a distribution of states through the system, they are
-      surprisingly simple and well-behaved.  This system is one of the rare
-      cases when we can write the master equation in closed
-      form<elib>Lasota13</elib>: $$p_{n+1}(x) = \frac{1}{4\sqrt{1-x}} \left[
-      p_n\left(\frac{1}{2}-\frac{1}{2}\sqrt{1-x}\right) + p_n\left(\frac{1}{2} +
-      \frac{1}{2}\sqrt{1-x}\right) \right].$$  Moreover, this master equation
-      has a steady-state solution: $$p_*(x) = \frac{1}{\pi\sqrt{x(1-x)}}.$$ </p>
+      <p>Here's what's completely fascinating -- even though the dynamics of any one
+      initial condition for this system are extremely complex, if we study the dynamics
+      of a distribution of states through the system, they are surprisingly simple and
+      well-behaved.  This system is one of the rare cases when we can write the master
+      equation in closed form<elib>Lasota13</elib>: $$p_{n+1}(x) = \frac{1}{4\sqrt{1-x}}
+      \left[ p_n\left(\frac{1}{2}-\frac{1}{2}\sqrt{1-x}\right) + p_n\left(\frac{1}{2} +
+      \frac{1}{2}\sqrt{1-x}\right) \right].$$  Moreover, this master equation has a
+      steady-state solution: $$p_*(x) = \frac{1}{\pi\sqrt{x(1-x)}}, \qquad x \in [0,
+      1].$$ </p>
 
       <figure> <img width="116%" style="margin-left:-8%" src="figures/logistic_map_master.svg"/>
         <figcaption>Plotting the (closed-form) evolution of the master equation
@@ -255,14 +253,13 @@ with Stochasticity</h1>
 
   <section><h1>Stationary Distributions</h1>
 
-    <p>In the example above, the histogram is our numerical approximation of
-    the probability density. The logistic map example had the remarkable
-    property that, although the individual trajectories of the system <i>do
-    not</i> converge, the probability distribution actually <i>does</i>
-    converge to what's known as a <i>stationary distribution</i> -- a fixed
-    point of the master equation.  Instead of thinking about the dynamics of
-    the trajectories, we need to start thinking about the dynamics of the
-    distribution.</p>
+    <p>In the example above, the histogram is our numerical approximation of the
+    probability density. Each of those example systems had the remarkable property that,
+    although the individual trajectories of the system <i>do not</i> converge, the
+    probability distribution actually <i>does</i> converge to what's known as a
+    <i>stationary distribution</i> -- a fixed point of the master equation.  Instead of
+    thinking about the dynamics of the trajectories, we need to start thinking about the
+    dynamics of the distribution.</p>
 
     <p>The most important example of this analysis is for systems with linear
     dynamics and additive Gaussian noise; for this case we have closed-form
@@ -301,10 +298,11 @@ with Stochasticity</h1>
       href="https://en.wikipedia.org/wiki/Kalman_filter">Kalman filter</a>.
       </p>
 
-      <p>Taking it a step further, we can see that a stationary distribution for
-      this system is given by a mean-zero Gaussian with \[ \sigma_*^2 =
-      \frac{\sigma_w^2}{1-a^2}. \] Note that this distribution is well defined
-      when $-1 < a < 1$ (only when the system is stable).</p>
+      <p>Taking it a step further, we can see that a stationary distribution for this
+      system is given by a mean-zero Gaussian with \[ \sigma_*^2 =
+      \frac{\sigma_w^2}{1-a^2}. \] Note that this distribution is well defined when $-1
+      < a < 1$. In this case, these are the same conditions we have for
+      <i>deterministic</i> stability of this system.</p>
 
     </example>
 
@@ -317,11 +315,10 @@ with Stochasticity</h1>
     (larger $\sigma$ means larger noise and results in a wider distribution).
     </p>
 
-    <p>Given how rich the dynamics can be for deterministic nonlinear systems,
-    you can probably imagine that the possible long-term dynamics of the
-    probability are also extremely rich.  If we simply flip the signs in the
-    cubic polynomial dynamics we examined above, we'll get our next
-    example:</p>
+    <p>Given how rich the dynamics can be for deterministic nonlinear systems, you can
+    probably imagine that the possible long-term dynamics of the probability density are
+    also extremely rich.  If we simply flip the signs in the cubic polynomial dynamics
+    we examined above, we'll get our next example:</p>
 
     <example><h1>The Cubic Example + Noise</h1>
 
@@ -409,17 +406,16 @@ with Stochasticity</h1>
   <section><h1>Extended Example: The Rimless Wheel on Rough
   Terrain</h1>
 
-    <p>My favorite example of a meaningful source of randomness on a model
+    <p>One of my favorite examples of a meaningful source of randomness on a model
     underactuated system is the <a href="simple_legs.html#rimless_wheel">rimless
-    wheel</a> rolling down stochastically "rough" terrain<elib>Byl08f</elib>.
-    Generating interesting/relevant probabilistic models of terrain in general
-    can be quite complex, but the rimless wheel makes it easy -- since the robot
-    only contacts that ground at the point foot, we can model almost arbitrary
-    rough terrain by simply taking the ramp angle, $\gamma$, to be a random
-    variable. If we restrict our analysis to rolling only in one direction (e.g.
-    only downhill), then we can even consider this ramp angle to be i.i.d.;
-    after each footstep we will independently draw a new ramp angle $\gamma[n]$
-    for the next step.</p>
+    wheel</a> rolling down stochastically "rough" terrain<elib>Byl08f</elib>. Generating
+    interesting/relevant probabilistic models of terrain in general can be quite
+    complex, but the rimless wheel makes it easy -- since the robot only contacts that
+    ground at the point foot, we can model almost arbitrary rough terrain by simply
+    taking the ramp angle, $\gamma$, to be a random variable. If we restrict our
+    analysis to rolling only in one direction (e.g. only downhill), then we can even
+    consider this ramp angle to be i.i.d.; after each footstep we will independently
+    draw a new ramp angle $\gamma[n]$ for the next step.</p>
 
     <figure>
       <img width="40%" src="figures/rimlessWheel.svg"/>
@@ -432,6 +428,75 @@ with Stochasticity</h1>
 
     <p>More coming soon.  Read the paper <elib>Byl08f</elib> and/or watch the <a
         href="https://youtu.be/TaaJgvjYBQc">video</a>.</p>
+
+  </section>
+
+  <section><h1>Randomized smoothing of contact dynamics</h1>
+
+    <p>It is interesting to think more generally about how stochastic dynamics interact
+    with the contact dynamics that we have begun to study in these notes. For the
+    stochastic rimless wheel we studied the dynamics on the apex-to-apex map, but now
+    we'd like to consider a more typical (discrete-time, with a small, fixed, time step)
+    model of contact dynamics.</p>
+
+    <p>First we have to think about a simplest reasonable model for the process
+    noise/dynamics. In the multibody appendix, we develop the time-stepping dynamic
+    models of contact as the solution to an optimization problem, which strictly
+    enforces contact constraints (e.g. non-penetration) at the end of every time step.
+    Let's use that idea again here, following the ideas developed in
+    <elib>Suh22a+Pang22</elib>.</p>
+
+    <example><h1>A (stochastic) block near a wall</h1>
+    
+      <p></p>Consider the dynamics of an unactuated 1D block with a wall occupying $q
+      \leq 0$, such that the physical dynamics is identity <i>if</i> the block is in a
+      non-penetrating configuration, $q[n+1] = f(q[n])=q[n]$ if $q[n]\geq 0$. The
+      dynamics within the penetrating regime is not well-defined physically; yet,
+      applying the quasi-dynamic equations of motions from
+      <elib>Pang20b</elib> gives us a model that defines a minimal projection $\delta q$
+      which gets applied to the system to project it back out of collision via:
+      \begin{align} \underset{\delta q}{\minimize} \; &\frac{1}{2} m (\delta q)^2, \;
+      \text{subject to} \\ & q + \delta q \geq 0. \end{align} which leads to the
+      following deterministic dynamics: \begin{equation}
+      \label{eq:1d_projection_solution} f(q) = q + \delta q = \begin{cases} q & \text{
+      if } q \geq 0,  \text{ (no penetration) }\\ 0 & \text{ otherwise. } \text{
+      (penetration) } \end{cases} \end{equation} This model extends naturally to more
+      complicated contact systems.</p>
+
+      <p>This now gives us a natural model for adding noise while respecting the
+      non-penetration conditions. On each time step, we will apply a Gaussian
+      perturbation (e.g. Brownian motion), $w[n]$, and apply the dynamics $q[n+1] =
+      f(q[n] + w[n]).$ In this model, if we start the system from a known initial
+      condition, $p_0(q) = \delta(q-q_0),$ then after one step we obtain the
+      distribution pictured in the bottom left:</p>
+      
+      <figure>
+        <img src="figures/stochastic_force_field_pang22.png" width="90%"/>
+
+        <figcaption>(a) The block near a wall. (b) The distribution $q+w$ (green) and
+        $f(q+w)$ (pink). (c) The expected value of the one-step stochastic dynamics
+        looks like a "smoothed" version of the deterministic dynamics. (d) This has
+        important implications for gradient-based optimization <elib>Suh22b</elib>.</figcaption>
+      </figure>
+
+      <p>In some stochastic optimal control frameworks (and almost all reinforcement
+      learning algorithms), the optimization objective is specified in terms of the
+      expected value of the cost/reward. So it is very interesting to think about the
+      effect that the stochasticity has on the expected value of simulation roll-outs.
+      Here we see that, even after a single step, the stochasticity has the effect of
+      "smoothing" the hard contact dynamics, and giving a form of "contact forces at a
+      distance". <elib>Suh22b</elib> studied the effect that this can have on the
+      optimization landscape.</p>
+      
+      <todo>What is the stationary distribution of this system?</todo>
+    </example>
+
+    <p>Interestingly, reinforcement learning (RL) algorithms often <i>explicitly
+    inject</i> random perturbations (typically in the policy outputs) as a mechanism for
+    exploring the policy parameters. When coupled with a deterministic contact
+    simulation engine, the resulting dynamics look like the simple stochastic example
+    illustrated above. This is one explanation for why RL has performed surprisingly
+    well in problems involving contact dynamics.</p>
 
   </section>
 
@@ -467,6 +532,34 @@ with Stochasticity</h1>
 <span class="author">Andrzej Lasota and Michael C Mackey</span>, 
 <span class="title">"Chaos, fractals, and noise: stochastic aspects of dynamics"</span>, Springer Science \& Business Media
 , vol. 97, <span class="year">2013</span>.
+
+</li><br>
+<li id=Suh22a>
+<span class="author">H.J. Terry Suh and Tao Pang and Russ Tedrake</span>, 
+<span class="title">"Bundled Gradients through Contact via Randomized Smoothing"</span>, 
+<span class="publisher">IEEE Robotics and Automation Letters</span> , vol. 7 (2), pp. 4000-4007, April, <span class="year">2022</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Suh22a.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Pang22>
+<span class="author">Tao Pang and H.J. Terry Suh and Lujie Yang and Russ Tedrake.</span>, 
+<span class="title">"Global Planning for Contact-Rich Manipulation via Local Smoothing of Quasi-dynamic Contact Models"</span>, 
+<span class="publisher">Transactions of Robotics</span>, vol. 39, no. 6, pp. 4691--4711, December, <span class="year">2023</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Pang22.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Pang20b>
+<span class="author">Tao Pang and Russ Tedrake</span>, 
+<span class="title">"A Convex Quasistatic Time-stepping Scheme for Rigid Multibody Systems with Contact and Friction"</span>, 
+<span class="publisher">IEEE International Conference on Robotics and Automation (ICRA)</span>, May, <span class="year">2021</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Pang20b.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Suh22b>
+<span class="author">H. J. Terry Suh and Max Simchowitz and Kaiqing Zhang and Russ Tedrake</span>, 
+<span class="title">"Do Differentiable Simulators Give Better Policy Gradients?"</span>, 
+<span class="publisher">Proceedings of the 39th International Conference on Machine Learning</span> , vol. 162, pp. 20668--20696, July, <span class="year">2022</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Suh22b.pdf">link</a>&nbsp;]
 
 </li><br>
 </ol>
