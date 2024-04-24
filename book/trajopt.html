@@ -1689,20 +1689,36 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
           z_2 = y + \frac{I}{mr} \cos \theta
           \end{equation*}
             
-          In other words, given a sufficiently differentiable trajectory of the center of oscillation, $\mathbf{z}(t)$, 
-          show that we can uniquely determine the body's trajectory $\mathbf{x}(t)$, upto an ambiguity of $\pi$ in $\theta$. <br />
+          In other words, you must show that given a sufficiently differentiable trajectory $\mathbf{z}(t)$, 
+          you can uniquely determine the trajectory $\mathbf{x}(t)$ (upto an ambiguity of $\pi$ in $\theta$).
+          <br />
       
-          <i>Hint:</i> Example 10.3 is a good reference. Eliminate the forces from one of the equations of motion. Use $\ddot{z}_1$ and $\ddot{z}_2$ to substitute for $\ddot{x}$ and $\ddot{y}$. 
+          <i>Hint:</i> Show that $\theta$ is uniquely determined by some high order derivatives of $z_1$ and $z_2$. 
+          Then show that $\ddot x_1$ and $\ddot x_2$ are uniquely determined by some high order derivatives $z_1$ and $z_2$. 
+          <br />
+          <i>Hint:</i> Section 10.8.1 and Example 10.3 are a good reference. Substitute $\ddot{z}_1$, $\ddot{z}_2$ into the expressions for $\ddot{x}$ and $\ddot{y}$.
         </li>
 
-        <li>Suppose we can control the magnitude of forces $F_1$ and $F_2$ that act at point $P$, and want to find a trajectory such the 
-          body passes through certain waypoints. Assuming no constraints on $F_1$ and $F_2$, what will be a good choice of decision variables 
-          to find a solution for the trajectory? Justify your answer.
+        <li>
+          Suppose we can control the magnitude of forces $F_1$ and $F_2$ that act at point $P$, and that there are no constraints on $F_1$ and $F_2$.
+          We wish to find a trajectory (control and state) such that the body passes through certain waypoints $(x_k,y_k,\theta_k)$.
+          <ol type = i>
+            <li>
+              Explain how we can use differentially flat coordinates to produce such a trajectory.
+            </li>
+            <li>
+              Explain the difference between trajectory planning formulations in the original coordinates $\mathbf x$ and the differentially flat coordinates $\mathbf z$.
+              Are they convex?
+              Which one is easier to solve and why?
+            </li>
+          </ol>
+          <i>Hint:</i> Section 10.8.1 and Example 10.3 are a good reference.
         </li> 
       
         <li>
-          If the magnitude of forces $F_1$ and $F_2$ are constrained to be less than $F_{max}$, how will it affect the above trajectory optimization, 
-          in particular, will the formulation still be convex?
+          Suppose the magnitudes of forces $F_1$ and $F_2$ are constrained to be less than $F_{max}$. 
+          How will this affect the trajectory optimization in the differentiably flat coordinates?
+          In particular, will the resulting optimization be convex?
         </li>
 
       </ol>
