@@ -8,15 +8,15 @@ from pydrake.systems.scalar_conversion import TemplateSystem
 # see https://drake.mit.edu/pydrake/pydrake.systems.scalar_conversion.html
 
 
-# TODO(russt): Clean this up pending any resolutions on
-#  https://github.com/RobotLocomotion/drake/issues/10745
 @TemplateSystem.define("Quadrotor2D_")
 def Quadrotor2D_(T):
     class Impl(LeafSystem_[T]):
         def _construct(self, converter=None):
             LeafSystem_[T].__init__(self, converter)
-            # two inputs (thrust)
+            # control input (thrust)
             self.DeclareVectorInputPort("u", 2)
+            # disturbance input (e.g. a cartesian force from "wind")
+            self.DeclareVectorInputPort("w", 2)
             # three positions, three velocities
             state_index = self.DeclareContinuousState(3, 3, 0)
             # six outputs (full state)
@@ -27,6 +27,7 @@ def Quadrotor2D_(T):
             self.mass = 0.486  # mass of quadrotor
             self.inertia = 0.00383  # moment of inertia
             self.gravity = 9.81  # gravity
+            self.set_name("Quadrotor2D")
 
         def _construct_copy(self, other, converter=None):
             Impl._construct(self, converter=converter)
@@ -34,13 +35,18 @@ def Quadrotor2D_(T):
         def DoCalcTimeDerivatives(self, context, derivatives):
             x = context.get_continuous_state_vector().CopyToVector()
             u = self.EvalVectorInput(context, 0).CopyToVector()
+            w = (
+                self.EvalVectorInput(context, 1).CopyToVector()
+                if self.get_input_port(1).HasValue(context)
+                else [0, 0]
+            )
             q = x[:3]
             qdot = x[3:]
             qddot = np.array(
                 [
-                    -np.sin(q[2]) / self.mass * (u[0] + u[1]),
-                    np.cos(x[2]) / self.mass * (u[0] + u[1]) - self.gravity,
-                    self.length / self.inertia * (u[0] - u[1]),
+                    (w[0] - (u[0] + u[1]) * np.sin(q[2])) / self.mass,
+                    (w[1] + (u[0] + u[1]) * np.cos(x[2])) / self.mass - self.gravity,
+                    self.length * (u[0] - u[1]) / self.inertia,
                 ]
             )
             derivatives.get_mutable_vector().SetFromVector(

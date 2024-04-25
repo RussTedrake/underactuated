@@ -213,62 +213,13 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
   <section><h1>Finite Markov Decision Processes</h1>
 
-    <todo>Finalize if I want to use p_n(s) or \Pr_n(s) here, and use it throughout the
-    notes.</todo>
-
     <p>We already had quick preview into stochastic optimal control in one of the cases
     where it is particularly easy: <a href="dp.html#mdp">finite Markov Decision
-    Processes (MDPs)</a>.</p>
-
-    <p>Recall that in this setting, where the state space and action spaces are finite,
-    we write the dynamics completely in terms of the transition probabilities
-    \[p(s[n+1] = s' | s[n] = s, a[n] = a). \] Conveniently, we can represent the
-    entire state probability distribution as a vector, $p_n(s[n] = s),$ and write the
-    dynamics as a transition matrix for each action: $$T_{i,j}(a) = p(s_j | s_i, a).$$
-    The stochastic dynamics of the <a href="stochastic.html#master">master equation</a>
-    are then given by $$p_{n+1}(s') = {\bf T}(a[n]) p_{n}(s).$$ Take a moment to
-    appreciate this -- if we make a discrete-state / discrete-action approximation of
-    even the most complicated and rich nonlinear dynamical system, then the dynamics of
-    the state probability distribution are defined by an (action-dependent) linear map.
-    Note that ${\bf T}$ is not an arbitrary matrix of real numbers but rather a (left)
-    "<a href="https://en.wikipedia.org/wiki/Stochastic_matrix">stochastic matrix</a>":
-    we always have the $T_{ij} \in [0, 1]$ and $\sum_{i}T_{ij} = 1.$ </p>
-    
-    <subsection><h1>Dynamics of a Markov chain</h1>
-
-      <!-- should this moved into stochastic.html?  -->
-      <p>The dynamics of a closed-loop system (e.g. with no action inputs, or a fixed
-      policy, $\pi$), then the MDP equations reduce back to the simpler form of a Markov
-      chain: $$p_{n+1}(s') = {\bf T} p_{n}(s).$$ To evaluate the long-term dynamics of a
-      Markov chain, we have $$p_{n}(s') = {\bf T}^n p_{0}(s).$$ The eigenvalues of a
-      stochastic matrix are also bounded: $\forall i, \lambda_i \in [0, 1].$ Moreover,
-      it can be shown that every stochastic matrix has at least one eigenvalue of $1$;
-      any eigenvector corresponding to an eigenvalue of 1 is a <i>stationary
-      distribution</i> (a fixed point of the master equation) of the Markov chain. If
-      the Markov chain is "irreducible" and "aperiodic", then the stationary
-      distribution is unique and the Markov chain converges to it from any initial
-      condition.</p>
-
-      <example><h1>Discretized cubic polynomial w/ noise</h1>
-
-        <p>I used the discrete-time approximation of <a
-        href="stochastic.html#cubic">cubic polynomial with Gaussian noise</a> as an
-        example when we were first building our intuition about stochastic dynamics.
-        Let's now make a finite-state Markov chain approximation of those dynamics, by
-        discretizing the state space in 100 bins over the domain $x \ in [-2, 2].$</p>
-
-        <p>Let's examine the eigenvalues of this stochastic transition matrix...</p>
-
-        <todo>Finish coding up the example...</todo>
-      
-      </example>
-      <todo>example: discretized cubic polynomial (bistable version) + additive Gaussian noise</todo>
-
-      <todo>Metastability</todo>
-
-      <todo>example: discretized cubic polynomial negated. Metastability. Rimless wheel on rough terrain.</todo>
-
-    </subsection>
+    Processes (MDPs)</a>. And we have seen that <a
+    href="stochastic.html#mdp">finite-state approximations</a> can give us insights into
+    even very complex nonlinear dynamics. Let's make sure that we understand how to do
+    control design again the various cost and constraint formulations we've proposed
+    above...</p>
 
     <todo>Discounted cost. Infinite-horizon average cost.</todo>
 

@@ -339,7 +339,6 @@ with Stochasticity</h1>
       <figcaption>Histogram of the states of the bistable system with noise
       ($\sigma = 1.5$).</figcaption> </figure>
 
-
       <p>Be sure to watch the animation.  Or better yet, run the simulation for
       yourself by changing the sign of the derivative in the bistability example
       and re-running:</p>
@@ -401,6 +400,60 @@ with Stochasticity</h1>
 
   </section>
 
+  <section id="mdp"><h1>Finite Markov Decision Processes</h1>
+
+    <todo>Finalize if I want to use p_n(s) or \Pr_n(s) here, and use it throughout the
+    notes.</todo>
+
+    <p>In a setting where the state space and action spaces are finite, we can write the
+    dynamics completely in terms of the transition probabilities \[p(s[n+1] = s' | s[n]
+    = s, a[n] = a). \] Conveniently, we can represent the entire state probability
+    distribution as a vector, ${\bf b}[n],$ where ${\bf b}_i[n] = p_n(s_i),$ and write
+    the dynamics as a transition matrix for each action: $$T_{i,j}(a) = p(s_j | s_i,
+    a).$$ The stochastic dynamics of the master equation are then given by $${\bf
+    b}[n+1] = {\bf T}({\bf a}[n]) {\bf b}[n].$$ Note that
+    ${\bf T}$ is not an arbitrary matrix of real numbers but rather a (left) "<a
+    href="https://en.wikipedia.org/wiki/Stochastic_matrix">stochastic matrix</a>": we
+    always have the $T_{ij} \in [0, 1]$ and $\sum_{i}T_{ij} = 1.$ </p>
+    
+    <subsection id="markov_chain"><h1>Dynamics of a Markov chain</h1>
+
+      <!-- should this moved into stochastic.html?  -->
+      <p>The dynamics of a closed-loop system (e.g. with no action inputs, or a fixed
+      policy, $\pi$), then the MDP equations reduce back to the simpler form of a Markov
+      chain: $${\bf b}[n+1] = {\bf T} {\bf b}[n].$$ We've already
+      pointed out that the dynamics of the probability distribution are
+      (action-dependent) linear; this form makes it particularly clear. To evaluate the long-term dynamics
+      of a Markov chain, we have $${\bf b}[n] = {\bf T}^n {\bf b}[0].$$ The eigenvalues
+      of a stochastic matrix are also bounded: $\forall i, \lambda_i \in [0, 1].$
+      Moreover, it can be shown that every stochastic matrix has at least one eigenvalue
+      of $1$; any eigenvector corresponding to an eigenvalue of 1 is a <i>stationary
+      distribution</i> (a fixed point of the master equation) of the Markov chain. If
+      the Markov chain is "irreducible" and "aperiodic", then the stationary
+      distribution is unique and the Markov chain converges to it from any initial
+      condition.</p>
+
+      <example><h1>Discretized cubic polynomial w/ noise</h1>
+
+        <p>I used the discrete-time approximation of <a
+        href="stochastic.html#cubic">cubic polynomial with Gaussian noise</a> as an
+        example when we were first building our intuition about stochastic dynamics.
+        Let's now make a finite-state Markov chain approximation of those dynamics, by
+        discretizing the state space in 100 bins over the domain $x \ in [-2, 2].$</p>
+
+        <p>Let's examine the eigenvalues of this stochastic transition matrix...</p>
+
+        <todo>Finish coding up the example...</todo>
+      
+      </example>
+      <todo>example: discretized cubic polynomial (bistable version) + additive Gaussian noise</todo>
+
+      <todo>Metastability</todo>
+
+      <todo>example: discretized cubic polynomial negated. Metastability. Rimless wheel on rough terrain.</todo>
+
+    </subsection>
+  </section>
 
   <section><h1>Extended Example: The Rimless Wheel on Rough
   Terrain</h1>
@@ -508,7 +561,7 @@ with Stochasticity</h1>
     perception system is not Gaussian noise, it's missed
     detections/drop-outs...</p>
 
-    <p>Distributions over tasks/environments.</p>
+    <p>Distributions over tasks/environments. Domain randomization in RL.</p>
 
   </section>
 
