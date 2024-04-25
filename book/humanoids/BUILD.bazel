@@ -23,7 +23,7 @@ rt_ipynb_test(
 #    deps = ["//underactuated"],
 #)
 
-# TODO(russt): Waiting for drake PR #21305 to merge.
+# TODO(russt): Waiting for next drake version bump.
 #rt_ipynb_test(
 #    name = "zmp_planner",
 #    srcs = ["zmp_planner.ipynb"],

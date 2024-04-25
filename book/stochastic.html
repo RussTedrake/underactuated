@@ -100,7 +100,7 @@ with Stochasticity</h1>
   but still enable deterministic replay (simulation is deterministic given the
   random seed).</p>
 
-  <section><h1>The Master Equation</h1>
+  <section id="master"><h1>The Master Equation</h1>
 
     <p>Let's start by looking at some simple examples.</p>
 
@@ -320,15 +320,14 @@ with Stochasticity</h1>
     also extremely rich.  If we simply flip the signs in the cubic polynomial dynamics
     we examined above, we'll get our next example:</p>
 
-    <example><h1>The Cubic Example + Noise</h1>
+    <example id="cubic"><h1>The Cubic Polynomial + Noise</h1>
 
-      <p>Now let's consider the discrete-time approximation of \[ \dot{x} = -x +
-      x^3, \] again with additive noise: \[ x[n+1] = x[n] + h (-x[n] + x[n]^3 +
-      w[n]). \] With $w[n]=0$, the system has only a single stable fixed point
-      (at the origin), whose deterministic region of attraction is given by $x
-      \in (-1,1)$.  If we again simulate the system from a set of random initial
-      conditions and plot the histogram, we will see something like the figure
-      below. </p>
+      <p>Now let's consider the discrete-time approximation of \[ \dot{x} = -x + x^3, \]
+      again with additive noise: \[ x[n+1] = x[n] + h (-x[n] + x[n]^3 + w[n]). \] With
+      $w[n]=0$, the system has only a single stable fixed point (at the origin), whose
+      deterministic region of attraction is given by $x \in (-1,1)$.  If we again
+      simulate the system from a set of random initial conditions and plot the
+      histogram, we will see something like the figure below. </p>
 
       <figure> <img width="80%" src="figures/cubic_histogram.svg"/>
       <figcaption>Histogram of the states of the bistable system with noise

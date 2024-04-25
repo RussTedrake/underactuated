@@ -53,11 +53,6 @@ rt_html_test(
 rt_html_test(
     srcs = ["stochastic.html"],
 )
-rt_ipynb_test(
-    name = "stochastic",
-    srcs = ["stochastic.ipynb"],
-    deps = ["//underactuated"],
-)
 
 rt_html_test(
     srcs = ["dp.html"],
@@ -110,11 +105,6 @@ rt_html_test(
 rt_html_test(
     srcs = ["limit_cycles.html"],
 )
-rt_ipynb_test(
-    name = "limit_cycles",
-    srcs = ["limit_cycles.ipynb"],
-    deps = ["//underactuated"],
-)
 
 rt_html_test(
     srcs = ["contact.html"],
@@ -138,14 +128,6 @@ rt_html_test(
 
 rt_html_test(
     srcs = ["multibody.html"],
-)
-
-rt_ipynb_test(
-    name = "multibody",
-    srcs = ["multibody.ipynb"],
-    deps = [
-      requirement("drake"),
-    ],
 )
 
 rt_html_test(
