@@ -409,12 +409,12 @@ with Stochasticity</h1>
     dynamics completely in terms of the transition probabilities \[p(s[n+1] = s' | s[n]
     = s, a[n] = a). \] Conveniently, we can represent the entire state probability
     distribution as a vector, ${\bf b}[n],$ where ${\bf b}_i[n] = p_n(s_i),$ and write
-    the dynamics as a transition matrix for each action: $$T_{i,j}(a) = p(s_j | s_i,
+    the dynamics as a transition matrix for each action: $$T_{ij}(a) = p(s_j | s_i,
     a).$$ The stochastic dynamics of the master equation are then given by $${\bf
     b}[n+1] = {\bf T}({\bf a}[n]) {\bf b}[n].$$ Note that
     ${\bf T}$ is not an arbitrary matrix of real numbers but rather a (left) "<a
     href="https://en.wikipedia.org/wiki/Stochastic_matrix">stochastic matrix</a>": we
-    always have the $T_{ij} \in [0, 1]$ and $\sum_{i}T_{ij} = 1.$ </p>
+    always have that $T_{ij} \in [0, 1]$ and $\sum_{j}T_{ij} = 1.$ </p>
     
     <subsection id="markov_chain"><h1>Dynamics of a Markov chain</h1>
 
