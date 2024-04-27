@@ -292,7 +292,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       solutions to the problem, but please make sure to understand why they
       <i>must</i> be used.</p>
 
-      <subsection><h1>Non-i.i.d. disturbances</h1>
+      <subsection id="whitening_filter"><h1>Non-i.i.d. disturbances</h1>
     
         <p>The LQR derivation above assumed that the disturbances $\bw[n]$ were
         independent and identically distributed (i.i.d.). But many of the
@@ -318,7 +318,23 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       </subsection>
 
       <example><h1>A quadrotor flying in the wind.</h1>
-      
+
+        <p>I've adapted our simple 2D quadrotor model to have an (optional) additional
+        input port for Cartesian force disturbances. For the wind, I've added a
+        <code>RandomSource</code> to generate the output of iid Gaussain random process,
+        multiplied that by a scalar <code>Gain</code> to scale the covariance, and then
+        put it through a <code>FirstOrderLowPassFilter</code> to make the colored noise
+        wind model.</p>
+
+        <p>In the notebook, I've implemented LQR both ways: first the traditional LQR on
+        the quadrotor system <i>only</i> (ignoring the wind), and second on the diagram
+        that includes the <code>Gain</code> and <code>LowPassFilter</code> systems in
+        addition to the quadrotor.</p>
+
+        <p>
+        <script>document.write(notebook_link('robust', 'quadrotor_in_wind'))</script>
+        </p>
+
       </example>
 
     </subsection>

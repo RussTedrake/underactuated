@@ -8,8 +8,8 @@ load("@pip_deps//:requirements.bzl", "requirement")
 load("//book/htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 
 rt_ipynb_test(
-    name = "whitening_filter",
-    srcs = ["whitening_filter.ipynb"],
+    name = "quadrotor_in_wind",
+    srcs = ["quadrotor_in_wind.ipynb"],
     deps = [
         "//underactuated",
         "//underactuated:quadrotor2d",
