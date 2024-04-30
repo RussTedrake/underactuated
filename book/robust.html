@@ -366,7 +366,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         uncertainties.  In order to be compatible with convex optimization, we
         often choose to describe $\mathcal{W}$ as either an ellipsoid or as a
         convex polytope<elib>Boyd04a</elib>.  But let's remember a very important
-        point: in this situation with additive disturbances, we can no-longer
+        point: in this situation with additive disturbances, we can no longer
         expect the system to converge stably to the origin.  Our example before
         used the common Lyapunov function only to certify the <i>invariance</i>
         of a region (if I start inside some region, then I'll never leave).</p>
@@ -374,7 +374,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       </subsubsection>
 
       <!-- note: Sadra says ellipsoidal containment is too messy under the Minkowski sum
-for ellipsoids is too messy for stochastic dynamics. "Ellipsoids are good at
+for ellipsoids and so is too messy for stochastic dynamics. "Ellipsoids are good at
 deterministic dynamics where there is no minkowski sum needed." -->
 
       <subsubsection><h1>Polytope dynamics</h1>
@@ -410,18 +410,17 @@ deterministic dynamics where there is no minkowski sum needed." -->
         sum is given by: $$\mathbb{X} \oplus \mathbb{Y} = \mathcal{AH}\left([{\bf T}_x,
         {\bf T}_y], {\bf t}_x + {\bf t}_y, \mathcal{H}\left(\begin{bmatrix} {\bf H}_x &
         0 \\ 0 & {\bf H}_y \end{bmatrix}, \begin{bmatrix} {\bf h}_x \\ {\bf h}_y
-        \end{bmatrix}\right)\right).$$ If the two AH-polytopes are (potentially
-        different) affine projections of the same underlying polytope, as is common when
-        working with zonotopes, then we can simplify this to: $$\mathbb{X} \oplus
-        \mathbb{Y} = \mathcal{AH}\left({\bf T}_x + {\bf T}_y, , {\bf t}_x + {\bf t}_y,
-        \mathbb{P}_x\right), \quad \text{if } \mathbb{P}_y = \mathbb{P}_x.$$
+        \end{bmatrix}\right)\right).$$
         </p>
 
         <p>We can actually use this set notation now directly to write the dynamics of a
         polytope (over state) as it propagates through an uncertain linear dynamical
         system: $$\bx[n+1] = \bA \bx[n] + \bw[n], \quad \bx[0] \in \mathbb{X}_0, \bw[n]
         \in \mathbb{W}.$$ The result is $$\mathbb{X}_{n+1} = \bA \mathbb{X}_n \oplus
-        \mathbb{W}.$$ Beautiful! </p>
+        \mathbb{W}.$$ Beautiful! But please notice one important detail: the description
+        size of the polytope (via the ambient dimension of the underlying H-polytope) is
+        growing on each time step, due to the Minkowski sum with $\mathbb{W}$. The sets
+        can get complicated for long-horizon rollouts.</p>
 
       </subsubsection>
 
@@ -474,6 +473,13 @@ deterministic dynamics where there is no minkowski sum needed." -->
 
         </example>
 
+        <p>If one is simply performing reachability analysis (not joint with control
+        design), then polytopic containment can also be used on each time step to limit
+        the growth of the description length of the polytopes. We can attempt to replace
+        $\mathbb{X}_n$ with a minimal volume polytope, $\hat{\mathbb{X}}_n$ with a fixed
+        number of faces, subject to $\mathbb{X}_n \subseteq \hat{\mathbb{X}}_n.$ This,
+        of course, comes at the cost of conservatism (larger reachable sets).</p>
+
         <example><h1>TubeMPC with a goal polytope</h1>
         
           <p>Coming soon...</p>
@@ -492,16 +498,14 @@ deterministic dynamics where there is no minkowski sum needed." -->
 
     <subsection><h1>$L_2$ gain</h1>
 
-      <p>Which cost function should we use to do worst-case design and analysis
-      for linear systems? Certainly we can put an absolute bound on the
-      magnitude of $\bw$, and perform reachability analysis (we will do it
-      below). But knowing that the dependency on $\bw$ is linear allows us to
-      do something more natural, which can lead to tighter bounds. In
-      particular, we expect the magnitude of the deviation in $\bx$ compared to
-      the undisturbed case to be proportional to the magnitude of the
-      disturbance, $\bw$.  So the natural bound for a linear system is a
-      <i>relative</i> bound on the magnitude of the response (from zero initial
-      conditions) relative to the magnitude of the disturbance.
+      <p>By limiting $\bw$ to be drawn from a bounded (polytopic) set, we were able to
+      perform efficient reachability analysis. But knowing that the dependency on $\bw$
+      is linear allows us to do something potentially even more natural, which can lead
+      to tighter bounds. In particular, we expect the <i>magnitude</i> of the deviation
+      in $\bx$ compared to the undisturbed case to be proportional to the
+      <i>magnitude</i> of the disturbance, $\bw$.  So a perhaps more natural bound for a
+      linear system is a <i>relative</i> bound on the magnitude of the response (from
+      zero initial conditions) relative to the magnitude of the disturbance.
       </p>
         
       <!--
