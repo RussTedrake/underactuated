@@ -143,6 +143,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     cost and constraints using the distribution described e.g. $p_n(\bx)$.
     Broadly speaking, one might specify a cost in a handful of ways:</p>
     <ul>
+      <li><b>Desired state distribution.</b> One could specify a goal in terms of a desired state distribution, $p_n^d(\bx)$, and then try to minimize a measure of the difference between the actual and desired distributions.</li>
       <li><b>Average cost</b>, $E[ \sum_n \ell(\bx[n], \bu[n]) ]$, or some
       time-averaged/discounted variant.  This is by far the most popular choice
       (especially in reinforcement learning), because it preserves the dynamic
@@ -339,29 +340,148 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
     </subsection>
 
-    <!--
-    <subsection><h1>Common Lyapunov functions</h1>
-      <p>We've already seen one nice example of robustness analysis for linear
-      systems when we wrote a small optimization to find a <a
-      href="lyapunov.html#common-lyapunov-linear">common Lyapunov function for
-      uncertain linear systems</a>.  That example studied the dynamics
-      $\bx[n+1] = \bA \bx[n]$ where the coefficients of $\bA$ were unknown but
-      bounded.</p>  
+    <subsection><h1>Worst-case control w/ bounded uncertainty</h1>
     
-      <p><a href="lyapunov.html#common-lyapunov">We also saw</a> that
-      essentially the same technique can be used to certify stability against
-      disturbances, e.g.: $$\bx[n+1] = \bA\bx[n] + \bw[n], \qquad \bw[n] \in
-      \mathcal{W},$$ where $\mathcal{W}$ describes some bounded set of possible
-      uncertainties.  In order to be compatible with convex optimization, we
-      often choose to describe $\mathcal{W}$ as either an ellipsoid or as a
-      convex polytope<elib>Boyd04a</elib>.  But let's remember a very important
-      point: in this situation with additive disturbances, we can no-longer
-      expect the system to converge stably to the origin.  Our example before
-      used the common Lyapunov function only to certify the <i>invariance</i>
-      of a region (if I start inside some region, then I'll never leave).</p>
+      <subsubsection><h1>Common Lyapunov functions</h1>
+        <p>We've already seen one nice example of robustness analysis for linear
+        systems when we wrote a small optimization to find a <a
+        href="lyapunov.html#common-lyapunov-linear">common Lyapunov function for
+        uncertain linear systems</a>.  That example studied the dynamics
+        $\bx[n+1] = \bA \bx[n]$ where the coefficients of $\bA$ were unknown but
+        bounded.</p>  
+      
+        <p><a href="lyapunov.html#common-lyapunov">We also saw</a> that
+        essentially the same technique can be used to certify stability against
+        disturbances, e.g.: $$\bx[n+1] = \bA\bx[n] + \bw[n], \qquad \bw[n] \in
+        \mathcal{W},$$ where $\mathcal{W}$ describes some bounded set of possible
+        uncertainties.  In order to be compatible with convex optimization, we
+        often choose to describe $\mathcal{W}$ as either an ellipsoid or as a
+        convex polytope<elib>Boyd04a</elib>.  But let's remember a very important
+        point: in this situation with additive disturbances, we can no-longer
+        expect the system to converge stably to the origin.  Our example before
+        used the common Lyapunov function only to certify the <i>invariance</i>
+        of a region (if I start inside some region, then I'll never leave).</p>
+  
+      </subsubsection>
+
+      <!-- note: Sadra says ellipsoidal containment is too messy under the Minkowski sum
+for ellipsoids is too messy for stochastic dynamics. "Ellipsoids are good at
+deterministic dynamics where there is no minkowski sum needed." -->
+
+      <subsubsection><h1>Polytope dynamics</h1>
+
+        <p>A polytope is a bounded polyhedron. Let's take a moment to understand how a
+        polytope propagates through a linear dynamical system. There are a number of
+        possible representations for a polytope. The most common the so-called "H-rep",
+        or half-space representations, which is described by the linear constraints
+        ${\bf H}\bx \le {\bf h}$, or the "V-rep", or vertex representation, which is
+        described by the convex hull of a set of vertices. For optimization, we often
+        also study "zonotopes", which are defined as the affine projection of a unit
+        cube, or the more general "AH-polytopes" which are the affine projection of an
+        H-polytope <elib>Sadraddini19a+Sadraddini21</elib>. In Drake we have a <a
+        href="https://drake.mit.edu/doxygen_cxx/group__geometry__optimization.html">
+        library of these convex sets</a> with many of the most common operations
+        implemented and made compatible with <code>MathematicalProgram</code>.</p>
+
+        <p>Let's develop our notation for H-polytope and AH-polytopes here. We'll define
+        a polytope, $\mathbb{P} \subset \Re^n,$ as an H-polytope using $$\mathbb{P} =
+        \mathcal{H}({\bf H}, {\bf h}) := \{\bx \in \Re^n | {\bf H} \bx \le {\bf h} \}.$$
+        For an AH-polytope, we write $$\mathbb{X} := \mathcal{AH}({\bf T}, {\bf t},
+        \mathbb{P}) := \{{\bf T}\bx + {\bf t} \in \Re^n | \bx \in \mathbb{P} \subset
+        \Re^m \},$$ where ${\bf T} \in \Re^{n \times m}$ and ${\bf t} \in \Re^n$ define
+        the affine transform. Note that AH-polytope can be the projection of an
+        H-polytope with a different ambient dimension.</p>
+
+        <p>AH-polytopes are closed under many of the essential operations we need for
+        linear dynamical systems<elib>Sadraddini21</elib>. Using set notation, this
+        includes (further) affine transformations: $$\bA \mathbb{X} + {\bf b} =
+        \mathcal{AH}(\bA {\bf T}, \bA{\bf t} + {\bf b}, \mathbb{P}),$$ and the <a
+        href="https://en.wikipedia.org/wiki/Minkowski_addition">Minkowski sum</a>. Given
+        two AH-polytopes, $\mathbb{X}$ and $\mathbb{Y}$ both in $\Re^n$, their Minkowski
+        sum is given by: $$\mathbb{X} \oplus \mathbb{Y} = \mathcal{AH}\left([{\bf T}_x,
+        {\bf T}_y], {\bf t}_x + {\bf t}_y, \mathcal{H}\left(\begin{bmatrix} {\bf H}_x &
+        0 \\ 0 & {\bf H}_y \end{bmatrix}, \begin{bmatrix} {\bf h}_x \\ {\bf h}_y
+        \end{bmatrix}\right)\right).$$ If the two AH-polytopes are (potentially
+        different) affine projections of the same underlying polytope, as is common when
+        working with zonotopes, then we can simplify this to: $$\mathbb{X} \oplus
+        \mathbb{Y} = \mathcal{AH}\left({\bf T}_x + {\bf T}_y, , {\bf t}_x + {\bf t}_y,
+        \mathbb{P}_x\right), \quad \text{if } \mathbb{P}_y = \mathbb{P}_x.$$
+        </p>
+
+        <p>We can actually use this set notation now directly to write the dynamics of a
+        polytope (over state) as it propagates through an uncertain linear dynamical
+        system: $$\bx[n+1] = \bA \bx[n] + \bw[n], \quad \bx[0] \in \mathbb{X}_0, \bw[n]
+        \in \mathbb{W}.$$ The result is $$\mathbb{X}_{n+1} = \bA \mathbb{X}_n \oplus
+        \mathbb{W}.$$ Beautiful! </p>
+
+      </subsubsection>
+
+      <subsubsection><h1>Robust MPC</h1>
+  
+        <p>Although I've written out polytopic reachability for a closed-loop linear
+        system (+ noise) so far, one can similarly propagate the polytopic dynamics
+        under a feedback control of the form \begin{gather*}\bx[n+1] = \bA\bx[n] +
+        \bB\bu + \bw[n], \\
+        \mathbb{X}_{n+1} = (\bA\mathbb{X}_n + \bB\bu_n) \oplus \mathbb{W}.\end{gather*} This leads to a form of
+        robust model-predictive control commonly referred to as "TubeMPC"
+        <elib>Mayne05</elib>. One can optimize $\bu_n$ and the descriptions of
+        $\mathbb{X}_n$ using convex optimization subject to these linear dynamics.
+        Furthermore, this can be combined with disturbance-based feedback
+        parameterizations to simulataneously search for time-varying feedback gains,
+        $\bK_n$ <elib>Sadraddini20</elib>.</p>
+      
+        <example><h1>Tube MPC</h1>
+        
+          <p>Coming soon...</p>
+
+        </example>
+
+      </subsubsection>
+
+      <subsubsection><h1>Polytopic containment</h1>
+        
+        <p>One objective we might like to specify in our optimization is that the entire
+        reachable set at the final time is inside a goal set, e.g. $\mathbb{X}_N
+        \subseteq \mathbb{X}_{goal}.$  Checking this condition is a "polytopic
+        containment" problem -- a classic problem in computational geometry. But we want
+        to be able to optimize the form of $\mathbb{X}_N$ (via optimizing the sequence
+        of control decisions), so we want to be able to embed the polytopic containment
+        problem as just an additional set of constraints in our MPC problem.</p>
+
+        <p><elib>Sadraddini19a</elib> gave an efficient encoding of the polytopic
+        containment problem using only linear constraints that is sufficient to certify
+        the containment, and <elib>Sadraddini21</elib> gave an additional condition
+        which is both necessary and sufficient, but requires potentially an exponential
+        number of linear constraints. The specific equations are slightly messy, so I've
+        omitted them here, but in these linear constraints, the terms ${\bf T}_x, {\bf
+        t}_x, {\bf t}_\hat{x},$ and ${\bf h}_\hat{x}$ also appear linearly and so can be
+        optimized simultaneously.  Unfortunately, the terms ${\bf T}_\hat{x}, {\bf H}_x,
+        {\bf h}_x, $ and $\hat{\bf H}_\hat{x}$ appear bilinearly with the containment
+        decision variables, so we typically treat them as fixed.</p>
+
+        <todo>Minimum volume polytopic containment</todo>
+
+        <example><h1>Polytopic containment</h1>
+        
+          <p>Coming soon...</p>
+
+        </example>
+
+        <example><h1>TubeMPC with a goal polytope</h1>
+        
+          <p>Coming soon...</p>
+
+        </example>
+
+      </subsubsection>
+    
+      <subsubsection><h1>Robust constrained LQR</h1>
+      
+        <p>Coming soon...</p>
+
+      </subsubsection>
 
     </subsection>
--->
 
     <subsection><h1>$L_2$ gain</h1>
 
@@ -467,6 +587,8 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
       <todo>IQCs</todo>
 
+      <todo>Steinhardt11a</todo>
+      <todo>Maybe Guy's ellipsoidal slice sampling <elib>Scher22</elib>.</todo>
 
     </subsection>
 
@@ -643,21 +765,6 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       <todo>cover iLQR and perhaps Scott's UKF version in the output-feedback chapter?</todo>
     </subsection>
 
-    <subsection><h1>Finite-time (reachability) analysis</h1>
-
-      <p>Coming soon...</p>
-      <todo>Finite-time (reachability) analysis.  Sadra's polytopic
-        containment: Sadraddini19a</todo>
-      <todo>Steinhardt11a</todo>
-    </subsubsection>
-  
-    <subsection><h1>Robust MPC</h1>
-
-      <todo>Tube MPC <elib>Mayne05</elib>, Sadra linear polytopic containment <elib>Sadraddini19a</elib>,
-      ellipsoidal approximations (via SDP relaxations).</todo>
-    
-    </subsection>
-
     <todo>iLEQG/iLEG.</todo>
 
   </section>
@@ -741,6 +848,38 @@ PhD thesis, Massachusetts Institute of Technology, September, <span class="year"
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Moore14b.pdf">link</a>&nbsp;]
 
 </li><br>
+<li id=Boyd04a>
+<span class="author">Stephen Boyd and Lieven Vandenberghe</span>, 
+<span class="title">"Convex Optimization"</span>, Cambridge University Press
+, <span class="year">2004</span>.
+
+</li><br>
+<li id=Sadraddini19a>
+<span class="author">Sadra Sadraddini and Russ Tedrake</span>, 
+<span class="title">"Linear Encodings for Polytope Containment Problems"</span>, 
+<span class="publisher">Proceedings of the 2019 IEEE 58th Conference on Decision and Control (CDC)</span> , pp. 8, <span class="year">2019</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Sadraddini19a.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Sadraddini21>
+<span class="author">Sadra Sadraddini and Russ Tedrake</span>, 
+<span class="title">"Linear Encodings for Polytope Containment Problems: Theoretical Foundations and Applications"</span>, 
+, Feb, <span class="year">2021</span>.
+
+</li><br>
+<li id=Mayne05>
+<span class="author">D.Q. Mayne and M.M. Seron and SV Rakovic</span>, 
+<span class="title">"Robust model predictive control of constrained linear systems with bounded disturbances"</span>, 
+<span class="publisher">Automatica</span>, vol. 41, no. 2, pp. 219--224, <span class="year">2005</span>.
+
+</li><br>
+<li id=Sadraddini20>
+<span class="author">Sadra Sadraddini and Russ Tedrake</span>, 
+<span class="title">"Robust Output Feedback Control with Guaranteed Constraint Satisfaction"</span>, 
+<span class="publisher">In the Proceedings of 23rd ACM International Conference on Hybrid Systems: Computation and Control</span> , pp. 12, April, <span class="year">2020</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Sadraddini20.pdf">link</a>&nbsp;]
+
+</li><br>
 <li id=Ebenbauer09>
 <span class="author">Christian Ebenbauer and Tobias Raff and Frank Allgower</span>, 
 <span class="title">"Dissipation inequalities in systems theory: An introduction and recent results"</span>, 
@@ -781,19 +920,6 @@ PhD thesis, Massachusetts Institute of Technology, September, <span class="year"
 <span class="author">Sergey Levine and Chelsea Finn and Trevor Darrell and Pieter Abbeel</span>, 
 <span class="title">"End-to-end training of deep visuomotor policies"</span>, 
 <span class="publisher">The Journal of Machine Learning Research</span>, vol. 17, no. 1, pp. 1334--1373, <span class="year">2016</span>.
-
-</li><br>
-<li id=Mayne05>
-<span class="author">D.Q. Mayne and M.M. Seron and SV Rakovic</span>, 
-<span class="title">"Robust model predictive control of constrained linear systems with bounded disturbances"</span>, 
-<span class="publisher">Automatica</span>, vol. 41, no. 2, pp. 219--224, <span class="year">2005</span>.
-
-</li><br>
-<li id=Sadraddini19a>
-<span class="author">Sadra Sadraddini and Russ Tedrake</span>, 
-<span class="title">"Linear Encodings for Polytope Containment Problems"</span>, 
-<span class="publisher">Proceedings of the 2019 IEEE 58th Conference on Decision and Control (CDC)</span> , pp. 8, <span class="year">2019</span>.
-[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Sadraddini19a.pdf">link</a>&nbsp;]
 
 </li><br>
 </ol>
