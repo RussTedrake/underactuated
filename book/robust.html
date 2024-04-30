@@ -293,7 +293,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       solutions to the problem, but please make sure to understand why they
       <i>must</i> be used.</p>
 
-      <subsection id="whitening_filter"><h1>Non-i.i.d. disturbances</h1>
+      <subsubsection id="whitening_filter"><h1>Non-i.i.d. disturbances</h1>
     
         <p>The LQR derivation above assumed that the disturbances $\bw[n]$ were
         independent and identically distributed (i.i.d.). But many of the
@@ -316,27 +316,35 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
         <todo>definitely need a diagram here.</todo>
     
-      </subsection>
+        <example><h1>A quadrotor flying in the wind.</h1>
 
-      <example><h1>A quadrotor flying in the wind.</h1>
+          <p>I've adapted our simple 2D quadrotor model to have an (optional) additional
+          input port for Cartesian force disturbances. For the wind, I've added a
+          <code>RandomSource</code> to generate the output of iid Gaussain random
+          process, multiplied that by a scalar <code>Gain</code> to scale the
+          covariance, and then put it through a <code>FirstOrderLowPassFilter</code> to
+          make the colored noise wind model.</p>
 
-        <p>I've adapted our simple 2D quadrotor model to have an (optional) additional
-        input port for Cartesian force disturbances. For the wind, I've added a
-        <code>RandomSource</code> to generate the output of iid Gaussain random process,
-        multiplied that by a scalar <code>Gain</code> to scale the covariance, and then
-        put it through a <code>FirstOrderLowPassFilter</code> to make the colored noise
-        wind model.</p>
+          <p>In the notebook, I've implemented LQR both ways: first the traditional LQR
+          on the quadrotor system <i>only</i> (ignoring the wind), and second on the
+          diagram that includes the <code>Gain</code> and <code>LowPassFilter</code>
+          systems in addition to the quadrotor.</p>
 
-        <p>In the notebook, I've implemented LQR both ways: first the traditional LQR on
-        the quadrotor system <i>only</i> (ignoring the wind), and second on the diagram
-        that includes the <code>Gain</code> and <code>LowPassFilter</code> systems in
-        addition to the quadrotor.</p>
+          <p>
+          <script>document.write(notebook_link('robust', 'quadrotor_in_wind'))</script>
+          </p>
 
-        <p>
-        <script>document.write(notebook_link('robust', 'quadrotor_in_wind'))</script>
-        </p>
+        </example>
+      </subsubsection>
 
-      </example>
+      <subsubsection><h1>Stochastic linear MPC</h1>
+      
+        <p>Coming soon...</p>
+
+        <todo>(conservative) chance constraints. e.g. lars blackmore.</todo>
+        <todo>Maybe Guy's ellipsoidal slice sampling <elib>Scher22</elib>.</todo>
+
+      </subsubsection>
 
     </subsection>
 
@@ -458,8 +466,6 @@ deterministic dynamics where there is no minkowski sum needed." -->
         optimized simultaneously.  Unfortunately, the terms ${\bf T}_\hat{x}, {\bf H}_x,
         {\bf h}_x, $ and $\hat{\bf H}_\hat{x}$ appear bilinearly with the containment
         decision variables, so we typically treat them as fixed.</p>
-
-        <todo>Minimum volume polytopic containment</todo>
 
         <example><h1>Polytopic containment</h1>
         
@@ -588,7 +594,6 @@ deterministic dynamics where there is no minkowski sum needed." -->
       <todo>IQCs</todo>
 
       <todo>Steinhardt11a</todo>
-      <todo>Maybe Guy's ellipsoidal slice sampling <elib>Scher22</elib>.</todo>
 
     </subsection>
 
