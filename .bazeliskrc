@@ -1,4 +1,4 @@
 # Keep this version number in sync with 
 # https://github.com/RobotLocomotion/drake/blob/master/.bazeliskrc
 
-USE_BAZEL_VERSION=6.4.0
+USE_BAZEL_VERSION=7.1.1
