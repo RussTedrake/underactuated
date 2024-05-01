@@ -174,8 +174,8 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     Similarly, we can think about how to generalize our deterministic
     constraints, e.g. $g(\bx) \le 0,$ into a the stochastic framework:
     <ul>
-      <li><b>Chance constraints</b>, which take the form e.g. $\Pr[ g(\bx) >
-      0 ] \le \alpha.$  For instance, we might like to guarantee that the
+      <li><b>Chance constraints</b>, which take the form e.g. $P(g(\bx) >
+      0 ) \le \alpha.$  For instance, we might like to guarantee that the
       probability that our airplane will crash into a tree is less that
       $\alpha$. Even for Gaussian uncertainty and polytopic constraints, these
       quantities can be hard to evaluate exactly; we often end up making
@@ -431,14 +431,15 @@ deterministic dynamics where there is no minkowski sum needed." -->
         <p>Although I've written out polytopic reachability for a closed-loop linear
         system (+ noise) so far, one can similarly propagate the polytopic dynamics
         under a feedback control of the form \begin{gather*}\bx[n+1] = \bA\bx[n] +
-        \bB\bu + \bw[n], \\
+        \bB\bu[n] + \bw[n], \\
         \mathbb{X}_{n+1} = (\bA\mathbb{X}_n + \bB\bu_n) \oplus \mathbb{W}.\end{gather*} This leads to a form of
         robust model-predictive control commonly referred to as "TubeMPC"
         <elib>Mayne05</elib>. One can optimize $\bu_n$ and the descriptions of
         $\mathbb{X}_n$ using convex optimization subject to these linear dynamics.
-        Furthermore, this can be combined with disturbance-based feedback
-        parameterizations to simulataneously search for time-varying feedback gains,
-        $\bK_n$ <elib>Sadraddini20</elib>.</p>
+        Furthermore, this can be combined with <a
+        href="#disturbance-based">disturbance-based feedback parameterizations</a> to
+        simulataneously search for time-varying feedback gains, $\bK_n$
+        <elib>Sadraddini20</elib>.</p>
       
         <example><h1>Tube MPC</h1>
         
@@ -496,6 +497,44 @@ deterministic dynamics where there is no minkowski sum needed." -->
 
       </subsubsection>
 
+    </subsection>
+
+    <subsection id="disturbance-based"><h1>Disturbance-based feedback
+    parameterizations</h1>
+    
+      <p>Although it would be tempting to parameterize the feedback gains $\bK_n$ as
+      decision variables in our Robust MPC framework, searching for both $\bK_n$ and
+      $\bx_n$ in the traditional parameterization of $\bK_n\bx_n$ would result in terms
+      that are bilinear (and therefor nonconvex) in the decision variables. The
+      disturbance-based feedback parameterizations get around this. This is an old but
+      important idea which was made famous first as the <a
+      href="https://en.wikipedia.org/wiki/Youla%E2%80%93Kucera_parametrization">Youla
+      parameterization</a> (alternatively "Q-parameterization"). In the time domain this
+      typically leads to controllers which are "unrolled in time" and depend on a
+      potentially infinite history of disturbances; common practice it to approximate
+      these with a finite-impulse response (FIR) truncation. One could imagine
+      extracting a state-space realization of these FIR responses using the techniques
+      from <a href="sysid.html#linear">linear system identification</a>
+      <elib>Anderson17</elib>.</p>
+    
+      <p>We can understand the essence of this idea with a simple extension of
+      the <a href="lqr.html#sls">LQR with least-squares derivation</a>... (it's a
+      work in progress!)</p>
+        
+      <p>Given the state space equations: \begin{gather*} \bx[n+1] = \bA\bx[n] +
+      \bB\bu[n] + \bw[n],\end{gather*} Consider parameterizing an output feedback
+      policy of the form $$\bu[n] = \bK_0[n] \bx_0 +
+      \sum_{i=1}^{n-1}\bK_i[n]\bw[n-i],$$ then the closed-loop state is convex in
+      the control parameters, $\bK$: \begin{align*}\bx[n] =& \left( {\bf A}^n +
+      \sum_{i=0}^{n-1}{\bf A}^{n-i-1}{\bf B}{\bf K}_0[i] \right) \bx_0 +
+      \sum_{j=0}^{n-1} \sum_{i=0}^{n-1}{\bf A}^{n-i-1}{\bf B}{\bf K}_{j}[i]
+      \bw[i-j],\end{align*} and therefore objectives that are convex in $\bx$ and
+      $\bu$ (like LQR) are also convex in $\bK$.  Moreover, we can calculate
+      $\bw[n]$ by the time that it is needed given our observations of $\bx[n+1],
+      \bx[n],$ and knowledge of $\bu[n].$</p>
+    
+      <todo>SLS</todo>
+    
     </subsection>
 
     <subsection><h1>$L_2$ gain</h1>
@@ -890,6 +929,12 @@ PhD thesis, Massachusetts Institute of Technology, September, <span class="year"
 <span class="title">"Robust Output Feedback Control with Guaranteed Constraint Satisfaction"</span>, 
 <span class="publisher">In the Proceedings of 23rd ACM International Conference on Hybrid Systems: Computation and Control</span> , pp. 12, April, <span class="year">2020</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Sadraddini20.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Anderson17>
+<span class="author">James Anderson and Nikolai Matni</span>, 
+<span class="title">"Structured state space realizations for SLS distributed controllers"</span>, 
+<span class="publisher">2017 55th Annual Allerton Conference on Communication, Control, and Computing (Allerton)</span> , pp. 982-987, <span class="year">2017</span>.
 
 </li><br>
 <li id=Ebenbauer09>

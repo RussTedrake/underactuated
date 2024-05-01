@@ -136,24 +136,45 @@ Output Feedback (aka Pixels-to-Torques)</h1>
 
     <subsection><h1>From pixels to torques</h1>
 
-      <p>Just like some of our oldest approaches to control were fundamentally
-      solving an output feedback problem, some of our newest approaches to
-      control are doing it, too. Deep learning has revolutionized computer
-      vision, and "deep imitation learning" and "deep reinforcement learning"
-      have been a recent source of many impressive demonstrations of control
-      systems that can operate directly from pixels (e.g. consuming the output
-      of a deep perception system), without explicitly representing nor
-      estimating the full state of the system.  Unfortunately, the success or
-      failure of these methods are not yet well understood, and they often
-      require a great deal of artisanal tuning and an embarrassing (sometimes
-      prohibitive) amount of computation.</p>
+      <p>Just like some of our oldest approaches to control were fundamentally solving
+      an output feedback problem, some of our newest approaches to control are doing it,
+      too. Deep learning has revolutionized computer vision, and "deep imitation
+      learning" and "deep reinforcement learning" have been a recent source of many
+      impressive demonstrations of control systems that can operate directly from pixels
+      (e.g. consuming the output of a deep perception system), without explicitly
+      representing nor estimating the full state of the system.</p>
+      
+      <p>Imitation learning works incredibly well these days, even for very complicated
+      tasks (e.g. <elib>Chi24+Zhao23</elib>). One could argue that imitation learning is
+      not solving the full control problem -- once somebody has solved a control
+      problem, the imitation learning system is able to use supervised learning to map
+      the pixels to torques in a high-capacity neural network model. We'll cover these
+      techniques in some detail in a future chapter. In order to generalize well to
+      states not present in the training data, or to new tasks in a
+      (language-conditioned) multitask framework, the imitation learner must be
+      acquiring some implicit state representation of the world. Perhaps we can leverage
+      these learned state representations to synthesize additional controllers for new
+      tasks.</p>
+      
+      <p>Reinforcement learning (RL) definitely is solving difficult control problems,
+      though it currently still requires quite a bit of guidance (via cost function /
+      environment tuning) and requires an exhorbitant amount of computation.
+      Interestingly, it's quite common in reinforcement learning to solve a full-state
+      feedback problem first, and then to use "teacher student" (once again a form of
+      imitation learning) to distill the full-state feedback controller into an output
+      feedback control (e.g. <elib>Miki22+Chen23</elib>). Normally this is motivated by
+      training efficiency -- this way one does not need to include the renderer in the
+      simulation early in learning -- but it's not completely clear to me how much this
+      is helping the optimizer as well. There is no doubt that we would like to have
+      stronger RL algorithms that succeed more often and/or require less up-front
+      simulation engineering and compute.</p>
 
-      <p>The synthesis of ideas between machine learning (both theoretical and
-      applied) and control theory is one of the most exciting and productive
-      frontiers for research today.  I am highly optimistic that we will be
-      able to uncover the underlying principles and help transition this
-      budding field into a technology. I hope that summarizing some of the key
-      lessons from control here can help.</p>
+      <p>The synthesis of ideas between machine learning (both theoretical and applied)
+      and control theory is one of the most exciting and productive frontiers for
+      research today.  I am highly optimistic that we will be able to uncover the
+      underlying principles and help transition this budding field into a technology. My
+      goal for this chapter is to summarize some of the key lessons from control that
+      can, I hope, help with that discussion.</p>
     </subsection>
 
   </section>
@@ -206,29 +227,67 @@ Output Feedback (aka Pixels-to-Torques)</h1>
 
     </subsection>
 
-    <subsection><h1>Via policy search</h1>
+    <todo>Jack had another nice example in his poly search lecture:
+    https://youtu.be/JhjROrZxBhM?t=1099 and "what goes wrong in output
+    feedback?" https://youtu.be/JhjROrZxBhM?t=5066</todo>
 
-      <p>Searching for the best controller within a parametric class of
-      policies is generally referred to as <a href="policy_search.html">policy
-      search</a>.  If we do policy search on a class of static output feedback
-      policies, how well does it perform?  Of course, the answer depends on the
-      particular governing equations (for instance, $\by = \bx$ is a perfectly
-      reasonable output, and in this case the policy can be optimal).  But we
-      also have very simple <a
-      href="policy_search.html#static_output_feedback">counter-examples</a>
-      which demonstrate that the set of even stabilizing static output feedback
-      controllers can form a disconnected set.</p>
-
-      <todo>Jack had another nice example in his poly search lecture:
-      https://youtu.be/JhjROrZxBhM?t=1099 and "what goes wrong in output
-      feedback?" https://youtu.be/JhjROrZxBhM?t=5066</todo>
-
-      <todo>Bilinear alternations with SOS</todo>
-    
-    </subsection>
+    <todo>Bilinear alternations with SOS</todo>
   
   </section>
   
+  <section><h1>Partially-observable Markov Decision Processes (POMDPs)</h1>
+
+    <p>Making decisions based on a single observation is suboptimal (in addition to
+    being computationally hard). To make optimal decisions, our policy should be a
+    function of the entire history of actions and observations. This idea can be more
+    clearly understood through the framework of POMDPs.</p>
+
+    <p>A (finite) partially-observable Markov decision process (POMDP) is a stochastic
+    state-space dynamical system with discrete (but potentially infinite) states $S$,
+    actions $A$, observations $O$, initial condition probabilities $p_{s_0}(s)$,
+    transition probabilities $p(s'|s,a)$, observation probabilities $p_{o|s}(o | s)$, and
+    a deterministic  reward function $r: S \times A \rightarrow \Re$
+    <elib>Kaelbling98</elib>.  Our goal is to maximize the finite-horizon expected
+    rewards, $E[\sum_{n=1}^N r(s[n], u[n])].$  As is tradition, we'll denote a POMDP by
+    the tuple $\mathbb{P} = \langle S, A, O, p_{s_0}, p, p_{o|s}, r, N \rangle$.</p>
+
+    <p>An important idea for POMDP's is the notion of the <i>belief state</i> of a
+    POMDP: \[ b_i[n] = P(s[n] = s_i | a[0] = a_0, o[0] = o_0, ... a_{n-1}, o_{n-1}).\]
+    ${\bf b}[n] \in \mathcal{B}[n] \subset \Delta^{|S|}$ where $\Delta^m \subset \Re^m$ is the
+    $m$-dimensional simplex and we use $b_i[n]$ to denote the $i$th element.  ${\bf
+    b}[n]$ is a sufficient statistic for the POMDP, in the sense that it captures all
+    information about the history that can be used to predict the future state (and
+    therefore also observations, and rewards) of the process.  Using ${\bf h}_n = [a_0, o_0,
+    ..., a_{n-1}, o_{n-1}]$ to denote the history of all actions and observations, we
+    have  $$P(s[n+1] = s | {\bf b}[n] = {\bf b}_n, {\bf h}[n] = {\bf h}_n, a[n] = a_n) = P(s[n+1] = s | {\bf b}[n] = {\bf b}_n, a[n] = a_n).$$  It is
+    also <i>sufficient for optimal control</i>, in the sense that the optimal policy can
+    be written as $a^*[n] = \pi^*({\bf b}[n], n).$</p>
+
+    <p>The belief state is <i>observable</i>, with the optimal Bayesian
+    estimator/observer given by the (belief-)state-space form as \begin{gather*}
+    b_i[n+1] = f_i({\bf b}[n], a[n], o[n]) = \frac{p_{o|s}(o[n] \,|\, s_i) \sum_{j \in
+    |S|} p(s_i\,|\,s_j,a[n]) b_j[n]}{p_{o|b,a}(o[n] \,|\, {\bf b}[n],
+    a[n])}\end{gather*} where $b_i[0] = p_{s_0}(s_i)$, and the denominator is
+    $$p_{o|b,a}(o | {\bf b}, a) = \sum_{i \in |S|} p_{o|s}(o \,|\, s_i) \sum_{j \in |S|}
+    p(s_i | s_j, a) b_j.$$  Using the <a
+    href="http://128.30.27.120/underactuated/stochastic.html#mdp">transition matrix
+    notation from MDPs</a> we can rewrite this in vector form as $$f({\bf b}, a, o) =
+    \frac{\text{diag}({\bf c}(o)) \, {\bf T}(a) \, {\bf b}}{{\bf c}^T(o) \, {\bf T}(a)
+    \, {\bf b}},$$ where ${\bf c}(o)$ is the column vector with $c_i(o) = p_{o|s}(o
+    \,|\, s_i).$ Moreover, we can use this belief update to form the ``belief MDP'' for
+    planning by marginalizing over the future observations, giving the \begin{align*}
+    p_{\text{bMDP}}({\bf b}'|{\bf b}, a) = \sum_{i \in |O|} p({\bf b}'| {\bf b}, a, o_i)
+    p_{o |b,a}(o_i | {\bf b}, a) = \sum_{i \in |O|} p({\bf b}'| {\bf b}, a, o_i) {\bf
+    c}^T(o_i) \, {\bf T}(a) \, {\bf b},\end{align*} where $p({\bf b}'| {\bf b}, a, o)$
+    is 1 if ${\bf b}' = f({\bf b},a,o)$ and 0 otherwise.</p>
+    
+    <p>Note that although ${\bf b}[n]$ is represented with a vector of real values, it
+    actually lives in a finite space, $\mathcal{B}[n]$.  The policy $\pi^*({\bf b}[n],
+    n)$ which optimal state feedback for the belief MDP is exactly the optimal
+    belief-space feedback for the original POMDP.</p> 
+
+  </section>
+
   <section><h1>Observer-based Feedback</h1>
 
     <p>Since we know so much about designing full-state feedback controllers,
@@ -258,45 +317,19 @@ Output Feedback (aka Pixels-to-Torques)</h1>
 
   <section><h1 id="disturbance-based">Disturbance-based feedback</h1>
   
-    <p>There is an interesting alternative to trying to observe/estimate the
-    true state of the system, which can in some cases lead to convex
-    formulations of the output-feedback objective. Rather than estimate the
-    state (or belief state), one can try to estimate instead the
-    <i>disturbances</i> which cause the state to deviate from the nominal
-    trajectory, and design a feedback controller as a function of the
-    disturbance. This is an old but important idea which was made famous first
-    as the <a
-    href="https://en.wikipedia.org/wiki/Youla%E2%80%93Kucera_parametrization">Youla
-    parameterization</a> (alternatively "Q-parameterization"). In the time
-    domain this typically leads to controllers which are "unrolled in time" and
-    depend on a potentially infinite history of disturbances; common practice
-    it to approximate these with a finite-impulse response (FIR) truncation.
-    One could imagine extracting a state-space realization of these FIR
-    responses using the techniques from <a href="sysid.html#linear">linear
-    system identification</a> <elib>Anderson17</elib>.</p>
+    <p>There is an interesting alternative to trying to observe/estimate the true state
+    of the system, which can in some cases lead to convex formulations of the
+    output-feedback objective. The notion of disturbance-based feedback, which we <a
+    href="robust.html#disturbance-based">introduced in the context of stochastic/robust
+    MPC</a>, can be extended to disturbance-based <i>output</i> feedback:
+    \begin{gather*} \bx[n+1] = \bA\bx[n] + \bB\bu[n] + \bw[n],\\ \by[n] = \bC\bx[n] +
+    \bv[n], \end{gather*} by parameterizing an output feedback policy of the form
+    $$\bu[n] = \bK_0[n] \by[0] + \sum_{i=1}^{n-1}\bK_i[n]{\bf e}[n-i],$$ where ${\bf
+    e}[n] = ...$ <elib>Sadraddini20</elib>.</p>
 
-    <p>We can understand the essence of this idea with a simple extension of
-    the <a href="lqr.html#sls">LQR with least-squares derivation</a>... (it's a
-    work in progress!)</p>
+    <!-- <subsection><h1>SLS</h1>
     
-    <p>Given the state space equations: \begin{gather*} \bx[n+1] = \bA\bx[n] +
-    \bB\bu[n] + \bw[n],\end{gather*} Consider parameterizing an output feedback
-    policy of the form $$\bu[n] = \bK_0[n] \bx_0 +
-    \sum_{i=1}^{n-1}\bK_i[n]\bw[n-i],$$ then the closed-loop state is convex in
-    the control parameters, $\bK$: \begin{align*}\bx[n] =& \left( {\bf A}^n +
-    \sum_{i=0}^{n-1}{\bf A}^{n-i-1}{\bf B}{\bf K}_0[i] \right) \bx_0 +
-    \sum_{j=0}^{n-1} \sum_{i=0}^{n-1}{\bf A}^{n-i-1}{\bf B}{\bf K}_{j}[i]
-    \bw[i-j],\end{align*} and therefore objectives that are convex in $\bx$ and
-    $\bu$ (like LQR) are also convex in $\bK$.  Moreover, we can calculate
-    $\bw[n]$ by the time that it is needed given our observations of $\bx[n+1],
-    \bx[n],$ and knowledge of $\bu[n].$</p>
-
-    <p>We can extend this to output disturbance-based feedback: \begin{gather*}
-    \bx[n+1] = \bA\bx[n] + \bB\bu[n] + \bw[n],\\ \by[n] = \bC\bx[n] + \bv[n],
-    \end{gather*} by parameterizing an output feedback policy of the form
-    $$\bu[n] = \bK_0[n] \by[0] + \sum_{i=1}^{n-1}\bK_i[n]{\bf e}[n-i],$$ where ${\bf e}[n] = ...$ <elib>Sadraddini20</elib>.</p>
-
-    <subsection><h1>System-Level Synthesis</h1></subsection>
+    </subsection> -->
   
   </section>
 
@@ -357,8 +390,7 @@ Output Feedback (aka Pixels-to-Torques)</h1>
     
       <p>Visuomotor policies.  <todo>Sergey's original paper; Pete/Lucas paper...</todo></p>
 
-      <p>Diffusion policies <elib>Chi23</elib>. Transformer parameterizations
-      <elib>Zhao23</elib>.</p>
+      <p>Diffusion policies <elib>Chi24</elib>. Action-chunking transformers <elib>Zhao23</elib>.</p>
     
     </subsection>
 
@@ -382,16 +414,40 @@ Output Feedback (aka Pixels-to-Torques)</h1>
 , <span class="year">2010</span>.
 
 </li><br>
+<li id=Chi24>
+<span class="author">Cheng Chi and Zhenjia Xu and Siyuan Feng and Eric Cousineau and Yilun Du and Benjamin Burchfiel and Russ Tedrake and Shuran Song</span>, 
+<span class="title">"Diffusion Policy: Visuomotor Policy Learning via Action Diffusion"</span>, 
+, <span class="year">2024</span>.
+
+</li><br>
+<li id=Zhao23>
+<span class="author">Tony Z Zhao and Vikash Kumar and Sergey Levine and Chelsea Finn</span>, 
+<span class="title">"Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"</span>, 
+<span class="publisher">arXiv preprint arXiv:2304.13705</span>, <span class="year">2023</span>.
+
+</li><br>
+<li id=Miki22>
+<span class="author">Takahiro Miki and Joonho Lee and Jemin Hwangbo and Lorenz Wellhausen and Vladlen Koltun and Marco Hutter</span>, 
+<span class="title">"Learning robust perceptive locomotion for quadrupedal robots in the wild"</span>, 
+<span class="publisher">Science Robotics</span>, vol. 7, no. 62, pp. eabk2822, <span class="year">2022</span>.
+
+</li><br>
+<li id=Chen23>
+<span class="author">Tao Chen and Megha Tippur and Siyang Wu and Vikash Kumar and Edward Adelson and Pulkit Agrawal</span>, 
+<span class="title">"Visual dexterity: In-hand reorientation of novel and complex object shapes"</span>, 
+<span class="publisher">Science Robotics</span>, vol. 8, no. 84, <span class="year">2023</span>.
+
+</li><br>
 <li id=Blondel97>
 <span class="author">Vincent Blondel and John N Tsitsiklis</span>, 
 <span class="title">"{NP}-hardness of some linear control design problems"</span>, 
 <span class="publisher">SIAM journal on control and optimization</span>, vol. 35, no. 6, pp. 2118--2127, <span class="year">1997</span>.
 
 </li><br>
-<li id=Anderson17>
-<span class="author">James Anderson and Nikolai Matni</span>, 
-<span class="title">"Structured state space realizations for SLS distributed controllers"</span>, 
-<span class="publisher">2017 55th Annual Allerton Conference on Communication, Control, and Computing (Allerton)</span> , pp. 982-987, <span class="year">2017</span>.
+<li id=Kaelbling98>
+<span class="author">Leslie Pack Kaelbling and Michael L. Littman and Anthony R. Cassandra</span>, 
+<span class="title">"Planning and Acting in Partially Observable Stochastic Domains"</span>, 
+<span class="publisher">Artificial Intelligence</span>, vol. 101, January, <span class="year">1998</span>.
 
 </li><br>
 <li id=Sadraddini20>
@@ -418,18 +474,6 @@ Output Feedback (aka Pixels-to-Torques)</h1>
 <span class="title">"Synthesizing Stable Reduced-Order Visuomotor Policies for Nonlinear Systems via Sums-of-Squares Optimization"</span>, 
 <span class="publisher">Under review</span> , <span class="year">2023</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Chou23.pdf">link</a>&nbsp;]
-
-</li><br>
-<li id=Chi23>
-<span class="author">Cheng Chi and Siyuan Feng and Yilun Du and Zhenjia Xu and Eric Cousineau and Benjamin Burchfiel and Shuran Song</span>, 
-<span class="title">"Diffusion Policy: Visuomotor Policy Learning via Action Diffusion"</span>, 
-<span class="publisher">Proceedings of Robotics: Science and Systems</span> , <span class="year">2023</span>.
-
-</li><br>
-<li id=Zhao23>
-<span class="author">Tony Z Zhao and Vikash Kumar and Sergey Levine and Chelsea Finn</span>, 
-<span class="title">"Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"</span>, 
-<span class="publisher">arXiv preprint arXiv:2304.13705</span>, <span class="year">2023</span>.
 
 </li><br>
 </ol>

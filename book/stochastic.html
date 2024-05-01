@@ -158,13 +158,13 @@ with Stochasticity</h1>
     the <i>distribution</i> of this random variable is actually very well
     behaved.  This is the key idea for this chapter.</p>
 
-    <p>Let us use $p_n(x)$ to denote the <a
+    <p>Let us use $p_x(x; n)$ to denote the <a
     href="https://en.wikipedia.org/wiki/Probability_density_function">
     probability density function</a> over the random variable $x$ at time $n$.
-    Note that this density function must satisfy \[ \int_{-\infty}^\infty p_n(x)
+    Note that this density function must satisfy \[ \int_{-\infty}^\infty p_x(x ;n)
     dx = 1.\] It is actually possible to write the <i>dynamics of the
-    probability density</i> with the simple relation \[ p_{n+1}(x) =
-    \int_{-\infty}^\infty p(x|x') p_n(x') dx', \] where $p(x|x')$ encodes the
+    probability density</i> with the simple relation \[ p_x(x; n+1) =
+    \int_{-\infty}^\infty p(x|x') p_x(x'; n) dx', \] where $p(x|x')$ encodes the
     stochastic dynamics as a conditional distribution of the next state (here
     $x$) as a function of the current state (here $x'$).  Dynamical systems that
     can be encoded in this way are known as <i>continuous-state Markov
@@ -212,11 +212,11 @@ with Stochasticity</h1>
       initial condition for this system are extremely complex, if we study the dynamics
       of a distribution of states through the system, they are surprisingly simple and
       well-behaved.  This system is one of the rare cases when we can write the master
-      equation in closed form<elib>Lasota13</elib>: $$p_{n+1}(x) = \frac{1}{4\sqrt{1-x}}
-      \left[ p_n\left(\frac{1}{2}-\frac{1}{2}\sqrt{1-x}\right) + p_n\left(\frac{1}{2} +
-      \frac{1}{2}\sqrt{1-x}\right) \right].$$  Moreover, this master equation has a
-      steady-state solution: $$p_*(x) = \frac{1}{\pi\sqrt{x(1-x)}}, \qquad x \in [0,
-      1].$$ </p>
+      equation in closed form<elib>Lasota13</elib>: $$p_x(x; n+1) =
+      \frac{1}{4\sqrt{1-x}} \left[ p_x\left(\frac{1}{2}-\frac{1}{2}\sqrt{1-x}; n\right)
+      + p_x\left(\frac{1}{2} + \frac{1}{2}\sqrt{1-x}; n\right) \right].$$  Moreover,
+      this master equation has a steady-state solution: $$p_x(x; \infty) =
+      \frac{1}{\pi\sqrt{x(1-x)}}, \qquad x \in [0, 1].$$ </p>
 
       <figure> <img width="116%" style="margin-left:-8%" src="figures/logistic_map_master.svg"/>
         <figcaption>Plotting the (closed-form) evolution of the master equation
@@ -237,8 +237,8 @@ with Stochasticity</h1>
 
     <p>The slightly more general form of the master equation, which works for
     multivariate distributions with state-domain ${\cal X}$, and systems with
-    control inputs $\bu$, is \[ p_{n+1}(\bx) = \int_{\cal X} p(\bx|\bx',\bu)
-    p_n(\bx') d\bx'. \] This is a (continuous-state) Markov Decision
+    control inputs $\bu$, is \[ p_x(\bx; n+1) = \int_{\cal X} p(\bx|\bx',\bu)
+    p_x(\bx'; n) d\bx'. \] This is a (continuous-state) Markov Decision
     Process.</p>
 
     <p>Continuous-time formulations are also possible -- these lead to the
@@ -282,12 +282,12 @@ with Stochasticity</h1>
       noise is simply another Gaussian, with the mean given by $ax[n]$: \[
       p(x[n+1]|x[n]) = \frac{1}{\sqrt{2 \pi \sigma_w^2}}
       e^{-\frac{(x[n+1]-ax[n])^2}{2\sigma_w^2}}, \] yielding the master equation
-      \[ p_{n+1}(x) = \frac{1}{\sqrt{2 \pi \sigma_w^2}} \int_{-\infty}^\infty
-      e^{-\frac{(x-ax')^2}{2\sigma_w^2}} p_n(x') dx'. \] </p>
+      \[ p_{x}(x;n+1) = \frac{1}{\sqrt{2 \pi \sigma_w^2}} \int_{-\infty}^\infty
+      e^{-\frac{(x-ax')^2}{2\sigma_w^2}} p_{x}(x';n) dx'. \] </p>
 
-      <p>Now here's the magic.  Let's push a distribution, $p_n(x)$, which is
+      <p>Now here's the magic.  Let's push a distribution, $p_{x}(x;n)$, which is
       zero-mean, with standard deviation $\sigma_n$, through the master
-      equation: \begin{align*} p_{n+1}(x) =& \frac{1}{\sqrt{2 \pi
+      equation: \begin{align*} p_{x}(x;n+1) =& \frac{1}{\sqrt{2 \pi
       \sigma_w^2}}\frac{1}{\sqrt{2 \pi \sigma_n^2}} \int_{-\infty}^\infty
       e^{-\frac{(x-ax')^2}{2\sigma_w^2}} e^{-\frac{(x')^2}{2\sigma_n^2}} dx',\\
       =& \frac{1}{\sqrt{2 \pi (\sigma_w^2+a^2 \sigma_n^2)}}
@@ -406,15 +406,14 @@ with Stochasticity</h1>
     notes.</todo>
 
     <p>In a setting where the state space and action spaces are finite, we can write the
-    dynamics completely in terms of the transition probabilities \[p(s[n+1] = s' | s[n]
-    = s, a[n] = a). \] Conveniently, we can represent the entire state probability
-    distribution as a vector, ${\bf b}[n],$ where ${\bf b}_i[n] = p_n(s_i),$ and write
-    the dynamics as a transition matrix for each action: $$T_{ij}(a) = p(s_j | s_i,
+    dynamics completely in terms of the transition probabilities \[p(s' | s, a) = P(s[n+1] = s' | s[n] = s, a[n] = a). \] Conveniently, we can represent the entire state probability
+    distribution as a vector, ${\bf b}[n],$ where ${\bf b}_i[n] = p_s(s_i;n),$ and write
+    the dynamics as a transition matrix for each action: $$T_{ij}(a) = p(s_i | s_j,
     a).$$ The stochastic dynamics of the master equation are then given by $${\bf
     b}[n+1] = {\bf T}({\bf a}[n]) {\bf b}[n].$$ Note that
     ${\bf T}$ is not an arbitrary matrix of real numbers but rather a (left) "<a
     href="https://en.wikipedia.org/wiki/Stochastic_matrix">stochastic matrix</a>": we
-    always have that $T_{ij} \in [0, 1]$ and $\sum_{j}T_{ij} = 1.$ </p>
+    always have that $T_{ij} \in [0, 1]$ and $\sum_{i}T_{ij} = 1.$ </p>
     
     <subsection id="markov_chain"><h1>Dynamics of a Markov chain</h1>
 
@@ -439,7 +438,7 @@ with Stochasticity</h1>
         href="stochastic.html#cubic">cubic polynomial with Gaussian noise</a> as an
         example when we were first building our intuition about stochastic dynamics.
         Let's now make a finite-state Markov chain approximation of those dynamics, by
-        discretizing the state space in 100 bins over the domain $x \ in [-2, 2].$</p>
+        discretizing the state space in 100 bins over the domain $x \in [-2, 2].$</p>
 
         <p>Let's examine the eigenvalues of this stochastic transition matrix...</p>
 
