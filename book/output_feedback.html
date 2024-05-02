@@ -77,7 +77,7 @@ Output Feedback (aka Pixels-to-Torques)</h1>
     <script src="htmlbook/js-yaml.min.js"></script>
     <script type="text/javascript">
     var sys = jsyaml.load(`
-name: Plant
+name: <b>Plant</b>
 input_ports:
 - $\\bu$
 - $\\bw$
@@ -194,7 +194,7 @@ output_ports:
 
   </section>
 
-  <section><h1>Static Output Feedback</h1>
+  <section id="static_output_feedback"><h1>Static Output Feedback</h1>
   
     <p>One of the extremely important almost unstated lessons from dynamic
     programming with additive costs and the Bellman equation is that the
@@ -217,7 +217,7 @@ output_ports:
     <div id="static_output_feedback_diagram">
       <script type="text/javascript">
       var sys = jsyaml.load(`
-  name: Policy (static output feedback)
+  name: <b>Policy</b> (static output feedback)
   input_ports:
   - $\\by$
   output_ports:
@@ -262,7 +262,7 @@ output_ports:
   
   </section>
   
-  <section><h1>Partially-observable Markov Decision Processes (POMDPs)</h1>
+  <section id="pomdp"><h1>Partially-observable Markov Decision Processes (POMDPs)</h1>
 
     <p>Making decisions based on a single observation is suboptimal (in addition to
     being computationally hard). To make optimal decisions, our policy should be a
@@ -322,7 +322,7 @@ output_ports:
         <tr><td>
       <script type="text/javascript">
       var sys = jsyaml.load(`
-  name: Bayes Filter
+  name: <b>Bayes Filter</b>
   input_ports:
   - $\\by$ 
   - $\\bu$
@@ -333,7 +333,7 @@ output_ports:
       </td><td>
       <script type="text/javascript">
         var sys = jsyaml.load(`
-    name: Belief Policy
+    name: <b>Belief Policy</b>
     input_ports:
     - ""
     output_ports:
