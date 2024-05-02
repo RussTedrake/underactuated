@@ -73,6 +73,21 @@ Output Feedback (aka Pixels-to-Torques)</h1>
   use in our feedback controllers (and that's already been a hard problem).
   </p>
 
+  <div id="plant_diagram">
+    <script src="htmlbook/js-yaml.min.js"></script>
+    <script type="text/javascript">
+    var sys = jsyaml.load(`
+name: Plant
+input_ports:
+- $\\bu$
+- $\\bw$
+- $\\bv$
+output_ports:
+- $\\by$`);
+    document.write(system_html(sys));
+    </script>
+  </div> 
+
   <p>In some cases, we will see that the assumption of "full-state feedback" is
   not so bad -- we do have good tools for state estimation from raw sensor data.
   But even our best state estimation algorithms do add some dynamics to the
@@ -199,6 +214,18 @@ Output Feedback (aka Pixels-to-Torques)</h1>
     we restrict our search to static policies; our goal will be to find the
     best controller in this class to minimize the cost.</p>
 
+    <div id="static_output_feedback_diagram">
+      <script type="text/javascript">
+      var sys = jsyaml.load(`
+  name: Policy (static output feedback)
+  input_ports:
+  - $\\by$
+  output_ports:
+  - $\\bu$`);
+      document.write(system_html(sys));
+      </script>
+    </div>
+
     <subsection><h1>A hardness result</h1>
     
       <p>We've already seen <a
@@ -282,10 +309,42 @@ Output Feedback (aka Pixels-to-Torques)</h1>
     is 1 if ${\bf b}' = f({\bf b},a,o)$ and 0 otherwise.</p>
     
     <p>Note that although ${\bf b}[n]$ is represented with a vector of real values, it
-    actually lives in a finite space, $\mathcal{B}[n]$.  The policy $\pi^*({\bf b}[n],
-    n)$ which optimal state feedback for the belief MDP is exactly the optimal
-    belief-space feedback for the original POMDP.</p> 
+    actually lives in a finite space, $\mathcal{B}[n]$, because only a finite set of
+    beliefs are reachable in $n$ steps given finite actions and observations.  The
+    policy $\pi^*({\bf b}[n], n)$ which optimal state feedback for the belief MDP is
+    exactly the optimal output feedback for the original POMDP.</p> 
 
+    <p>More generally, the belief state is a function ${\bf b}(\bx, n) = p_{x|h}(\bx[n] \,|\, {\bf h}[n]):$</p>
+
+    <div id="belief_policy">
+      <center>
+      <table>
+        <tr><td>
+      <script type="text/javascript">
+      var sys = jsyaml.load(`
+  name: Bayes Filter
+  input_ports:
+  - $\\by$ 
+  - $\\bu$
+  output_ports:
+  - $\{\\bf b\}(\\bx)$`);
+      document.write(system_html(sys));
+      </script>
+      </td><td>
+      <script type="text/javascript">
+        var sys = jsyaml.load(`
+    name: Belief Policy
+    input_ports:
+    - ""
+    output_ports:
+    - $\\bu$.`);
+        document.write(system_html(sys));
+        </script>
+      </td></tr>
+      </table>
+    </center>
+    </div>
+    
   </section>
 
   <section><h1>Observer-based Feedback</h1>
@@ -302,12 +361,6 @@ Output Feedback (aka Pixels-to-Torques)</h1>
 
     <subsection><h1 id="lqg">Linear Quadratic Regulator w/ Gaussian Noise
     (LQG)</h1></subsection>
-
-    <subsection><h1>Partially-observable Markov Decision Processes</h1>
-      <todo>Defer most of the discussion to the state estimation
-        chapter</todo>
-    
-    </subsection>
 
     <subsection><h1>Trajectory optimization with Iterative LQG</h1></subsection>
     <todo>Note: I also have a <a href="belief.html">draft chapter on planning
