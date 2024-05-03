@@ -360,39 +360,12 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     href="lqr.html#sls">Youla parameterization</a>.  Their utility in a policy
     search setting was studied initially in <elib>Roberts11</elib>.</p>
 
-    <p>Unfortunately, we do not expect these nice properties to hold in
-    general.  There are a number of nearby problems which are known to be
-    nonconvex in the original parameters.  The case of <i>static output
-    feedback</i> is an important one.  If we extend our plant model to include
-    (potentially limited) observations: $\dot\bx = \bA\bx + \bB\bu, \by =
-    \bC\bx,$ then searching directly over controllers, $\bu = -{\bf K}\by$, is
-    known to be NP-hard<elib>Blondel97</elib>.  This time, the set of stabilizing ${\bf K}$ matrices may be not only nonconvex, but actually disconnected.  We can see that with a simple example (given to me once
-    during a conversation with Alex Megretski). 
-    </p>
-
-    <example id="static_output_feedback">
-      <h1>Parameterizations of Static Output Feedback</h1>
-
-    <p>Consider the single-input, single-output LTI system $$\dot{\bx} = {\bf
-    A}\bx + {\bf B} u, \quad y = {\bf C}\bx,$$ with $${\bf A} = \begin{bmatrix}
-    0 & 0 & 2 \\ 1 & 0 & 0 \\ 0 & 1 & 0\end{bmatrix}, \quad {\bf B} =
-    \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}, \quad {\bf C} = \begin{bmatrix}
-    1 & 1 & 3 \end{bmatrix}.$$  Here the linear static-output-feedback policy
-    can be written as $u = -ky$, with a single scalar parameter $k$. </p>
-
-    <p>Here is a plot of the maximum eigenvalue (real-part) of the closed-loop
-    system, as a function of $k$.  The system is only stable when this maximum
-    value is less than zero.  You'll find the set of stabilizing $k$'s is a
-    disconnected set.</p>
-
-    <figure><img width="80%" src="data/static_feedback_disconnected.svg"/></figure>
-
-    </example>
-
-    <p>There are many other known counter-examples.  <elib>Bhandari20</elib>
-    gives a particularly simple one with a two state MDP.  One of the big open
-    questions is whether deep network parameterizations are an example of a
-    good case.</p>
+    <p>Unfortunately, we do not expect these nice properties to hold in general.  There
+    are a number of nearby problems which are known to be nonconvex in the original
+    parameters, and which will not have a smooth change of variables which makes them
+    convex.  The case of <a href="output_feedback.html#static">static output
+    feedback</i> is an important one. There are many other known counter-examples.
+    <elib>Bhandari20</elib> gives a particularly simple one with a two state MDP.  One of the big open questions is whether deep network parameterizations are an example of a good case.</p>
 
   </section>
 
@@ -536,12 +509,6 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 <span class="title">"Feedback Controller Parameterizations for Reinforcement Learning"</span>, 
 <span class="publisher">Proceedings of the 2011 IEEE Symposium on Adaptive Dynamic Programming and Reinforcement Learning (ADPRL)</span> , <span class="year">2011</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Roberts11.pdf">link</a>&nbsp;]
-
-</li><br>
-<li id=Blondel97>
-<span class="author">Vincent Blondel and John N Tsitsiklis</span>, 
-<span class="title">"{NP}-hardness of some linear control design problems"</span>, 
-<span class="publisher">SIAM journal on control and optimization</span>, vol. 35, no. 6, pp. 2118--2127, <span class="year">1997</span>.
 
 </li><br>
 <li id=Bhandari20>

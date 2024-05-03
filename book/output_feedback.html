@@ -194,7 +194,7 @@ output_ports:
 
   </section>
 
-  <section id="static_output_feedback"><h1>Static Output Feedback</h1>
+  <section id="static"><h1>Static Output Feedback</h1>
   
     <p>One of the extremely important almost unstated lessons from dynamic
     programming with additive costs and the Bellman equation is that the
@@ -227,21 +227,36 @@ output_ports:
     </div>
 
     <subsection><h1>A hardness result</h1>
-    
-      <p>We've already seen <a
-      href="policy_search.html#static_output_feedback">an example</a> of a very
-      simple linear control problem where the set of stabilizing feedback gains
-      formed a disconnected set -- which is suggestive that it could be a
-      difficult problem for optimization.  For some other problems in control,
-      we've been able to find a convex reparametrization.</p>
-      
-      <p>Unfortunately, <elib>Blondel97</elib> showed that the question of
-      whether a stabilizing static output feedback $\bu = -\bK \by$ even exists
-      for a given system of the form $$\dot\bx = \bA\bx + \bB\bu,\quad \by =
-      \bC \bx,$$ is NP-hard. Many of the strongest results from $H_2$ and
-      $H_\infty$ design, for instance, are limited to dynamic controllers that
-      can effectively reconstruct the entire state.</p>
-      
+
+      <p>Let's consider the problem of designing a static output feedback for linear
+      systems (surely this should be the easy case!): $\dot\bx = \bA\bx + \bB\bu, \by =
+      \bC\bx.$ Unfortunately, <elib>Blondel97</elib> showed that the question of whether
+      a stabilizing static output feedback $\bu = -\bK \by$ even exists for a given
+      system of the form $$\dot\bx = \bA\bx + \bB\bu,\quad \by = \bC \bx,$$ is NP-hard.
+      The set of stabilizing ${\bf K}$ matrices may be not only nonconvex, but actually
+      disconnected.  We can see that with a simple example (given to me once during a
+      conversation with Alex Megretski). 
+      </p>
+
+    <example id="static_output_feedback">
+      <h1>Parameterizations of Static Output Feedback</h1>
+
+      <p>Consider the single-input, single-output LTI system $$\dot{\bx} = {\bf
+      A}\bx + {\bf B} u, \quad y = {\bf C}\bx,$$ with $${\bf A} = \begin{bmatrix}
+      0 & 0 & 2 \\ 1 & 0 & 0 \\ 0 & 1 & 0\end{bmatrix}, \quad {\bf B} =
+      \begin{bmatrix} 1 \\ 0 \\ 0 \end{bmatrix}, \quad {\bf C} = \begin{bmatrix}
+      1 & 1 & 3 \end{bmatrix}.$$  Here the linear static-output-feedback policy
+      can be written as $u = -ky$, with a single scalar parameter $k$. </p>
+
+      <p>Here is a plot of the maximum eigenvalue (real-part) of the closed-loop
+      system, as a function of $k.$  The system is only stable when this maximum
+      value is less than zero.  You'll find the set of stabilizing $k$'s is a
+      disconnected set.</p>
+
+      <figure><img width="80%" src="data/static_feedback_disconnected.svg"/></figure>
+
+      </example>
+
       <p>Just because this problem is NP-hard doesn't mean we can't find good
       controllers in practice. Some of the recent results from reinforcement
       learning have reminded us of this. We should not expect an efficient
@@ -260,23 +275,51 @@ output_ports:
 
     <todo>Bilinear alternations with SOS</todo>
   
+    <subsection><h1>Perhaps a history of observations?</h1>
+    
+      <p>In addition to giving a potentially bad optimization landscape, it's pretty
+      easy to convince yourself that making decisions only based on the current
+      observations is not sufficient for decision making in all problems. Take, for
+      example, the LQR controller we derived for balancing an Acrobot or Cart Pole --
+      these controllers were a function of the full state (positions and velocities). If
+      our robot is only instrumented with position sensors (e.g. encoders), or if our
+      observations are instead coming from a camera pointed at the robot, then by
+      looking at only the instantaneous observations would not have any information
+      about the joint velocities. Although it would have to be shown, it seems
+      reasonable to expect that no controller of this form could accomplish the
+      balancing task (even for the linearized system) from all initial conditions.</p>
+    
+      <p>One common response today is: what if we make the controller a function of some
+      finite recent <i>history</i> of observations? If there is no measurement noise,
+      then the last two position measurements are sufficient to make a (slightly
+      delayed) estimate of the velocity. If there is measurement noise, then taking a
+      slightly longer history would allow us to filter out some of that noise. Yes! This
+      is on the right track. Technically this would no longer be a "static" controller;
+      it requires memory to store the previous observations and memory is the defining
+      characteristic of a "dynamic" controller. But how much history/memory do we
+      need?</p>
+
+    </subsection>
+
   </section>
   
   <section id="pomdp"><h1>Partially-observable Markov Decision Processes (POMDPs)</h1>
 
-    <p>Making decisions based on a single observation is suboptimal (in addition to
-    being computationally hard). To make optimal decisions, our policy should be a
-    function of the entire history of actions and observations. This idea can be more
-    clearly understood through the framework of POMDPs.</p>
+    <p>For an upper bound on the answer to the question "how much memory do we need?",
+    we can turn to the key results from the framework of POMDPS. The short answer is
+    that if we use the <i>entire</i> history of actions and observations, then this is
+    clearly sufficient for optimal decision making. Rather than maintaining this
+    expanding history explicitly, we can instead maintain a representation that is a
+    <i>sufficient statistic</i> for this history. In the good cases, we can find
+    sufficient statistics that have a finite representation.</p>
 
     <p>A (finite) partially-observable Markov decision process (POMDP) is a stochastic
     state-space dynamical system with discrete (but potentially infinite) states $S$,
     actions $A$, observations $O$, initial condition probabilities $p_{s_0}(s)$,
     transition probabilities $p(s'|s,a)$, observation probabilities $p_{o|s}(o | s)$, and
-    a deterministic  reward function $r: S \times A \rightarrow \Re$
-    <elib>Kaelbling98</elib>.  Our goal is to maximize the finite-horizon expected
-    rewards, $E[\sum_{n=1}^N r(s[n], u[n])].$  As is tradition, we'll denote a POMDP by
-    the tuple $\mathbb{P} = \langle S, A, O, p_{s_0}, p, p_{o|s}, r, N \rangle$.</p>
+    a deterministic cost function $\ell: S \times A \rightarrow \Re$
+    <elib>Kaelbling98</elib>.  Our goal is to minimize the finite-horizon expected
+    cost, $E[\sum_{n=1}^N \ell(s[n], u[n])].$ </p>
 
     <p>An important idea for POMDP's is the notion of the <i>belief state</i> of a
     POMDP: \[ b_i[n] = P(s[n] = s_i | a[0] = a_0, o[0] = o_0, ... a_{n-1}, o_{n-1}).\]
@@ -291,12 +334,12 @@ output_ports:
     be written as $a^*[n] = \pi^*({\bf b}[n], n).$</p>
 
     <p>The belief state is <i>observable</i>, with the optimal Bayesian
-    estimator/observer given by the (belief-)state-space form as \begin{gather*}
-    b_i[n+1] = f_i({\bf b}[n], a[n], o[n]) = \frac{p_{o|s}(o[n] \,|\, s_i) \sum_{j \in
-    |S|} p(s_i\,|\,s_j,a[n]) b_j[n]}{p_{o|b,a}(o[n] \,|\, {\bf b}[n],
-    a[n])}\end{gather*} where $b_i[0] = p_{s_0}(s_i)$, and the denominator is
-    $$p_{o|b,a}(o | {\bf b}, a) = \sum_{i \in |S|} p_{o|s}(o \,|\, s_i) \sum_{j \in |S|}
-    p(s_i | s_j, a) b_j.$$  Using the <a
+    estimator/observer given by the (belief-)state-space form as $$
+    b_i[n+1] = f_i({\bf b}[n], a[n], o[n]),$$  where $b_i[0] = p_{s_0}(s_i)$, and $$f_i({\bf b}, a, o) = \frac{p_{o|s}(o \,|\, s_i) \sum_{j \in
+      |S|} p(s_i\,|\,s_j,a) b_j}{p_{o|b,a}(o \,|\, {\bf b},
+      a)} = \frac{p_{o|s}(o \,|\, s_i) \sum_{j \in
+        |S|} p(s_i\,|\,s_j,a) b_j}{\sum_{i \in |S|} p_{o|s}(o \,|\, s_i) \sum_{j \in |S|}
+        p(s_i | s_j, a) b_j}.$$  Using the <a
     href="http://128.30.27.120/underactuated/stochastic.html#mdp">transition matrix
     notation from MDPs</a> we can rewrite this in vector form as $$f({\bf b}, a, o) =
     \frac{\text{diag}({\bf c}(o)) \, {\bf T}(a) \, {\bf b}}{{\bf c}^T(o) \, {\bf T}(a)
@@ -308,13 +351,42 @@ output_ports:
     c}^T(o_i) \, {\bf T}(a) \, {\bf b},\end{align*} where $p({\bf b}'| {\bf b}, a, o)$
     is 1 if ${\bf b}' = f({\bf b},a,o)$ and 0 otherwise.</p>
     
-    <p>Note that although ${\bf b}[n]$ is represented with a vector of real values, it
-    actually lives in a finite space, $\mathcal{B}[n]$, because only a finite set of
-    beliefs are reachable in $n$ steps given finite actions and observations.  The
-    policy $\pi^*({\bf b}[n], n)$ which optimal state feedback for the belief MDP is
-    exactly the optimal output feedback for the original POMDP.</p> 
+    <p>The belief MDP is a little scary -- we are evolving distributions over possible
+    beliefs! Perhaps one small consolation is that for discrete problems, even though
+    ${\bf b}[n]$ is represented with a vector of real values, it actually lives in a
+    finite space, $\mathcal{B}[n]$, because only a finite set of beliefs are reachable
+    in $n$ steps given finite actions and observations. The policy $\pi^*({\bf b}[n],
+    n)$ which optimal state feedback for the belief MDP is exactly the optimal output
+    feedback for the original POMDP.</p> 
 
-    <p>More generally, the belief state is a function ${\bf b}(\bx, n) = p_{x|h}(\bx[n] \,|\, {\bf h}[n]):$</p>
+    <example><h1>The Cheeze Maze</h1>
+
+      <p>One of the classic simple examples from the world of POMDPs is the "cheese
+      maze"<elib>McCallum92</elib> (though it's not much of a maze). The robot mouse can
+      move one square at a time, the observations are the integer labels drawn on the
+      map below. The goal is the shaded region.</p>
+
+      <figure><img width="50%" src="figures/cheesemaze.png"/></figure>
+
+      <p>Imagine you are placed at a (uniform) random position in the maze. You do get
+      to know the map, but you don't get to know your location. What would be your
+      strategy for navigating to the goal? If your initial observation is 5, you have a
+      decision to make... are you optimistic and try moving down (in the hopes that
+      you'll find the goal?), or do you move up to see a 1, 3, or 4? What about if your
+      initial observation is a 2?</p>
+    
+      <p>One can write the optimal policy for this specific problem with exactly 7
+      discrete (belief) states.  Can you find them?</p>
+
+    </example>
+
+    <todo>
+    <p>It's not immediately clear how to losslessly represent distributions over
+    possible beliefs (functions over $\Re^{|S|}$ in the finite state case), but it turns
+    out that the value function has some known important properties...</p></todo>
+
+    <p>More generally, in continuous state spaces, the belief state is a function ${\bf
+    b}(\bx, n) = p_{x|h}(\bx[n] \,|\, {\bf h}[n]):$</p>
 
     <div id="belief_policy">
       <center>
@@ -344,7 +416,21 @@ output_ports:
       </table>
     </center>
     </div>
-    
+
+    <p>There is a wealth of literature on POMDPs in robotics, and on POMDP solution techniques. See <elib>Lauri22</elib> for a nice recent survey.</p>
+
+  </section>
+
+  <section><h1>Linear systems w/ Gaussian noise</h1>
+  
+    <subsection><h1 id="lqg">Linear Quadratic Regulator w/ Gaussian Noise
+      (LQG)</h1>
+    </subsection>
+  
+    <subsection><h1>Trajectory optimization with Iterative LQG</h1></subsection>
+    <todo>Note: I also have a <a href="belief.html">draft chapter on planning
+    under uncertainty</a></todo>
+  
   </section>
 
   <section><h1>Observer-based Feedback</h1>
@@ -359,12 +445,6 @@ output_ports:
 
     <subsection><h1>Luenberger Observer</h1></subsection>
 
-    <subsection><h1 id="lqg">Linear Quadratic Regulator w/ Gaussian Noise
-    (LQG)</h1></subsection>
-
-    <subsection><h1>Trajectory optimization with Iterative LQG</h1></subsection>
-    <todo>Note: I also have a <a href="belief.html">draft chapter on planning
-    under uncertainty</a></todo>
 
   </section>
 
@@ -501,6 +581,18 @@ output_ports:
 <span class="author">Leslie Pack Kaelbling and Michael L. Littman and Anthony R. Cassandra</span>, 
 <span class="title">"Planning and Acting in Partially Observable Stochastic Domains"</span>, 
 <span class="publisher">Artificial Intelligence</span>, vol. 101, January, <span class="year">1998</span>.
+
+</li><br>
+<li id=McCallum92>
+<span class="author">R. Andrew McCallum</span>, 
+<span class="title">"First results with utile distinction memory for reinforcement learning"</span>, 
+, <span class="year">1992</span>.
+
+</li><br>
+<li id=Lauri22>
+<span class="author">Mikko Lauri and David Hsu and Joni Pajarinen</span>, 
+<span class="title">"Partially observable markov decision processes in robotics: A survey"</span>, 
+<span class="publisher">IEEE Transactions on Robotics</span>, vol. 39, no. 1, pp. 21--40, <span class="year">2022</span>.
 
 </li><br>
 <li id=Sadraddini20>
