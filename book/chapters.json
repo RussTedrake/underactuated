@@ -19,6 +19,7 @@
     "contact",
     "sysid",
     "state_estimation",
+    "imitation",
     "rl_policy_search",
     "drake",
     "multibody",
@@ -34,7 +35,6 @@
     "drake": "Appendix"
   },
   "draft_chapter_ids": [
-    "belief",
-    "imitation"
+    "belief"
   ]
 }

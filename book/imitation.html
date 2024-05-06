@@ -3,8 +3,8 @@
 <html>
 
   <head>
-    <title>Ch. DRAFT - Imitation Learning</title>
-    <meta name="Ch. DRAFT - Imitation Learning" content="text/html; charset=utf-8;" />
+    <title>Ch. 20 - Imitation Learning</title>
+    <meta name="Ch. 20 - Imitation Learning" content="text/html; charset=utf-8;" />
     <link rel="canonical" href="http://underactuated.mit.edu/imitation.html" />
 
     <script src="https://hypothes.is/embed.js" async></script>
@@ -48,18 +48,94 @@ at MIT</a>. They will be updated throughout the Spring 2024 semester.  <a
 href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">Lecture videos are available on YouTube</a>.</p>
 
 <table style="width:100%;"><tr style="width:100%">
-  <td style="width:33%;text-align:left;"><a class="previous_chapter"></a></td>
+  <td style="width:33%;text-align:left;"><a class="previous_chapter" href=state_estimation.html>Previous Chapter</a></td>
   <td style="width:33%;text-align:center;"><a href=index.html>Table of contents</a></td>
-  <td style="width:33%;text-align:right;"><a class="next_chapter"></a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter" href=rl_policy_search.html>Next Chapter</a></td>
 </tr></table>
 
 <script type="text/javascript">document.write(notebook_header('imitation'))
 </script>
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
-<chapter style="counter-reset: chapter 100"><h1>Imitation Learning</h1>
+<chapter style="counter-reset: chapter 19"><h1>Imitation Learning</h1>
 
-  <p>Two dominant approaches to imitation learning are <i>behavioral cloning</i> and <i>inverse reinforcement learning</i>...
+  <p>Imitation learning, also known as "learning from demonstrations" (LfD), is the
+  problem of learning a policy from a collection of demonstrations. For state-based
+  feedback, these demonstrations take the form of a set of state-action sequences,
+  $\left[ \bx[\cdot], \bu[\cdot]\right]$. For the richer class of <a
+  href="output_feedback.html">output feedback</a>, this takes the form of
+  observation-action sequences, $\left[ \by[\cdot], \bu[\cdot]\right]$. Note that we do
+  not require any explicit definition of a cost or reward function; in most cases we
+  assume that the demonstrations are obtained from an optimal or near-optimal policy.
   </p>
+  
+  <p>Broadly speaking, most approaches to imitation learning can be categorized as
+  either <i>behavioral cloning</i> or <i>inverse reinforcement learning</i>. I think
+  it's fair to say that today, in 2024, behavior cloning is taking the robotics world by
+  storm (especially in manipulation research), and it now seems like the shortest path
+  to building "robot foundation models".
+  </p>
+
+  <section><h1>Behavior cloning</h1>
+
+    <p>basic definition. state feedback is regression. output feedback is sequence learning.</p>
+    
+    <p>LLMs (at least the first step).</p>
+
+    <p>Although I spend a significant amount of time on it these days, I don't actually
+    love behavior cloning (decision making >> mimicry). But it's an awfully clever way
+    to explore the space of policy representations. And address many essential questions
+    about learning representations, etc. The success of LLMs (and now multimodal models)
+    is undeniable.</p>
+
+    <p>Key result: BC can outperform human demonstrators.</p>
+
+    <subsection><h1>Offline learning</h1>
+    
+    
+    </subsection>
+
+    <subsection><h1>Online (active) learning</h1>
+    
+      <p>DAGGER <elib>Ross11</elib></p>
+    
+      <p>Teacher/Student.</p>
+
+    </subsection>
+
+    <subsection id="visuomotor"><h1>Visuomotor policies (aka control from pixels)</h1>
+    
+      <p><todo>Sergey's original paper; Pete/Lucas paper...</todo></p>
+
+      <figure><img width="60%" src="figures/visuomotor.svg"/><figcaption>The (now)
+      classical visuomotor policy architecture, adapted from
+      <elib>Levine16+Florence20</elib>. The emphasis here is that $z$ is a <i>learned
+      state representation</i> which encodes the state of the environment.
+      </figcaption></figure>
+
+    </subsection>
+  
+    <subsection><h1>Multitask / foundation models for control</h1>
+    
+    </subsection>
+
+  </section>
+
+  <section><h1>Architectures for visuomotor policies</h1>
+  
+    <subsection><h1>(Multi-modal) input encoders</h1>
+    
+      <p>ImageNET, Dense object nets, CLIP-pretrained ViT, VLMs, Spatial VLMs, ... </p>
+
+    </subsection>
+
+    <subsection><h1>Output/action decoders</h1>
+
+      <p>RT-2. Diffusion policies <elib>Chi24</elib>. Action-chunking transformers
+      <elib>Zhao23</elib>.</p>
+
+    </subsection>
+
+  </section>
 
   <section><h1>Diffusion Policy</h1>
   
@@ -228,12 +304,51 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
   
   </section>
 
+  <section><h1>Inverse reinforcement learning</h1>
+
+  </section>
+
+  <section><h1>Important open questions</h1>
+  
+  </section>
+
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 
 <div id="references"><section><h1>References</h1>
 <ol>
 
+<li id=Ross11>
+<span class="author">St{\'e}phane Ross and Geoffrey Gordon and Drew Bagnell</span>, 
+<span class="title">"A reduction of imitation learning and structured prediction to no-regret online learning"</span>, 
+<span class="publisher">Proceedings of the fourteenth international conference on artificial intelligence and statistics</span> , pp. 627--635, <span class="year">2011</span>.
+
+</li><br>
+<li id=Levine16>
+<span class="author">Sergey Levine and Chelsea Finn and Trevor Darrell and Pieter Abbeel</span>, 
+<span class="title">"End-to-end training of deep visuomotor policies"</span>, 
+<span class="publisher">The Journal of Machine Learning Research</span>, vol. 17, no. 1, pp. 1334--1373, <span class="year">2016</span>.
+
+</li><br>
+<li id=Florence20>
+<span class="author">Peter Florence and Lucas Manuelli and Russ Tedrake</span>, 
+<span class="title">"Self-Supervised Correspondence in Visuomotor Policy Learning"</span>, 
+<span class="publisher">IEEE Robotics and Automation Letters</span>, vol. 5, no. 2, pp. 492-499, April, <span class="year">2020</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Florence20.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Chi24>
+<span class="author">Cheng Chi and Zhenjia Xu and Siyuan Feng and Eric Cousineau and Yilun Du and Benjamin Burchfiel and Russ Tedrake and Shuran Song</span>, 
+<span class="title">"Diffusion Policy: Visuomotor Policy Learning via Action Diffusion"</span>, 
+, <span class="year">2024</span>.
+
+</li><br>
+<li id=Zhao23>
+<span class="author">Tony Z Zhao and Vikash Kumar and Sergey Levine and Chelsea Finn</span>, 
+<span class="title">"Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"</span>, 
+<span class="publisher">arXiv preprint arXiv:2304.13705</span>, <span class="year">2023</span>.
+
+</li><br>
 <li id=Chi23>
 <span class="author">Cheng Chi and Siyuan Feng and Yilun Du and Zhenjia Xu and Eric Cousineau and Benjamin Burchfiel and Shuran Song</span>, 
 <span class="title">"Diffusion Policy: Visuomotor Policy Learning via Action Diffusion"</span>, 
@@ -288,12 +403,6 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 <span class="publisher">International Conference on Machine Learning</span> , pp. 9902--9915, <span class="year">2022</span>.
 
 </li><br>
-<li id=Zhao23>
-<span class="author">Tony Z Zhao and Vikash Kumar and Sergey Levine and Chelsea Finn</span>, 
-<span class="title">"Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"</span>, 
-<span class="publisher">arXiv preprint arXiv:2304.13705</span>, <span class="year">2023</span>.
-
-</li><br>
 <li id=Block23b>
 <span class="author">Adam Block and Ali Jadbabaie and Daniel Pfrommer and Max Simchowitz and Russ Tedrake</span>, 
 <span class="title">"Provable Guarantees for Generative Behavior Cloning: Bridging Low-Level Stability and High-Level Behavior"</span>, 
@@ -305,9 +414,9 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 </div>
 
 <table style="width:100%;"><tr style="width:100%">
-  <td style="width:33%;text-align:left;"><a class="previous_chapter"></a></td>
+  <td style="width:33%;text-align:left;"><a class="previous_chapter" href=state_estimation.html>Previous Chapter</a></td>
   <td style="width:33%;text-align:center;"><a href=index.html>Table of contents</a></td>
-  <td style="width:33%;text-align:right;"><a class="next_chapter"></a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter" href=rl_policy_search.html>Next Chapter</a></td>
 </tr></table>
 
 <div id="footer">
