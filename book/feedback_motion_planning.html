@@ -134,18 +134,32 @@ simple cases, but richer connections are possible.</p>
   <p>This idea of planning with primitives which are feedback controllers instead of
   trajectories is potentially very powerful. Let me emphasize one of the key points:
   <i>trajectories can't be robust, but funnels can</i>.</p>
+
+  <subsection><h1>Parameterized controllers and Lyapunov functions</h1>
+  
+    <p>Polynomial parameterizations and SOS. But there are a few special cases that can
+    work out particularly nicely...</p>
+
+    <p>Equivariance (cyclic coordinates) <elib>Majumdar16a</elib>.</p>
+
+    <p>State-dependent Riccati equations (SDRE) <elib>Majumdar12</elib>.</p>
+  
+    <todo>Maybe Joe's adaptive control SOS paper, which included polynomially
+    parameterized controllers.</todo>
+
+  </subsection>
   
 </section>
 
-<section><h1>Skill composition</h1>
+<section><h1>Probabilistic feedback coverage</h1>
 
-  <todo>one-step lookahead might be convex, but more generally we need something like GCS.</todo>
-
-  <todo>Case study: Koditschek's jugglers.</todo>
+  <todo>Case study: Compass gait?</todo>
 
 </section>
 
-<section><h1>Probabilistic feedback coverage</h1>
+<section><h1>Online planning</h1>
+
+  <todo>one-step lookahead might be convex, but more generally we need something like GCS.</todo>
 
 </section>
 
@@ -171,6 +185,20 @@ simple cases, but richer connections are possible.</p>
 <span class="author">Patrik Haslum and Nir Lipovetzky and Daniele Magazzeni and Christian Muise and Ronald Brachman and Francesca Rossi and Peter Stone</span>, 
 <span class="title">"An introduction to the planning domain definition language"</span>, Springer
 , vol. 13, <span class="year">2019</span>.
+
+</li><br>
+<li id=Majumdar16a>
+<span class="author">Anirudha Majumdar</span>, 
+<span class="title">"Funnel Libraries for Real-Time Robust Feedback Motion Planning"</span>, 
+PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar16a.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Majumdar12>
+<span class="author">Anirudha Majumdar and Mark Tobenkin and Russ Tedrake</span>, 
+<span class="title">"Algebraic Verification for Parameterized Motion Planning Libraries"</span>, 
+<span class="publisher">Proceedings of the 2012 American Control Conference (ACC)</span> , pp. 8, June, <span class="year">2012</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar12.pdf">link</a>&nbsp;]
 
 </li><br>
 </ol>

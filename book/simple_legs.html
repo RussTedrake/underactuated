@@ -1073,6 +1073,60 @@ of Walking and Running</h1>
 
   </section> <!-- end of walk+run -->
 
+  <section><h1>Juggling</h1>
+    
+    <p>Although they are not technically legged robots, there is another beautiful set
+    of model systems that were developed alongside some of the results that we've been
+    describing here, making use of the same tools and analysis. Juggling in its full
+    generality is, of course, a very dynamic and dexterous task that requires great
+    skill. But clever roboticists have found a way to distill it down to its essence
+    <elib>Buehler90+Buehler90a+Rizzi94</elib>. Let's start with the absolutely simplest
+    model, because it will lead to the clearest insights, and then we'll work back up to
+    something a bit more palletable.</p>
+
+    <figure><img width="30%" src="figures/juggler.svg"/><figcaption>The line juggler
+    <elib>Buehler90</elib>.</figcaption></figure>
+
+    <p>The simplest possible model is called the "line juggler", because both the robot
+    (which here is just a simple paddle) and the single ball are constrained to move
+    only along a line -- imagine the ball being constrained in a vertical track. We will
+    write the robotics's configuration as $r$, the vertical distance from the horizon,
+    and the ball's configuration as $b$, the vertical distance from the same horizon. We
+    will assume that we have velocity control over the robot so can command $\dot{r}$
+    directly. When the ball is in the air, then it's dynamics are simply $\ddot{b} =
+    -mg$. We will model the contact between the paddle and the ball as being
+    instantantious elastic collision with coefficient of restitution, $0 \le e \le
+    1$.</p>
+
+    <p>Once again, the intermittent dynamics of the juggler are most naturally expressed
+    on the Poincar&eacute map. This map can be difficult to compute in general, but
+    there is a clever parameterization of the action space which mitigates all of the
+    potential complexity. In particular, <elib>Buehler90</elib> introduced the <b>mirror
+    law</b>, where we restrict our controllers to follow a (scaled) mirror image of the
+    trajectory of the ball: $$r = -k(b, \dot{b}) b.$$ One of the beautiful things about
+    this law is that collisions always occur at $r = b = 0, \dot{b} < 0.$.  
+    In particular, <elib>Buehler90</elib> chose a feedback law of the form $k(b,\dot{b})
+    = \kappa_0 + \frac{\kappa_1}{m}(E_d - E),$ where $E$ is the total energy of the ball
+    ($E = mgb + \frac{1}{2} m\dot{b}^2$) and $E_d$ is the desired energy. This allows us
+    to once again simplify our Poincar&eacute analysis to the one-dimensional pre-impact
+    to pre-impact map<elib>Rizzi94</elib>: $$\dot{b}[n+1] = f(\dot{b}[n]; \kappa_0,
+    \kappa_1) = \dot{b}[n] \left[ 1 - \frac{1+e}{2}\kappa_1(\dot{b}^2[n] - \dot{b}_d^2)
+    \right].$$ This system converges the stable fixed point for all $\dot{b}[0] <
+    0.$</p>
+
+    <example><h1>The Line Juggler</h1>
+
+      <todo>Make a simulation. (as a hybrid system, and possibly with multibody). Plot the return map.</todo>
+    
+    </example>
+
+    <p>Planar juggler <elib>Buehler90a</elib>. 3D juggler
+    <elib>Rizzi94</elib>.</p>
+  
+    <todo>ETH Blind Juggler</todo>
+
+  </section>
+
   <section><h1>Exercises</h1>
 
     <exercise><h1>One-Dimensional Hopper</h1>
@@ -1217,6 +1271,24 @@ PhD thesis, University of Jena, <span class="year">2005</span>.
 <span class="author">Raibert and M. H. and Chepponis and M. and Brown and H. B.</span>, 
 <span class="title">"Running on four legs as though they were one"</span>, 
 <span class="publisher">IEEE Journal of Robotics and Automation</span>, vol. 2, no. 2, pp. 70--82, <span class="year">1986</span>.
+
+</li><br>
+<li id=Buehler90>
+<span class="author">M. Buehler and D.E. Koditschek</span>, 
+<span class="title">"From Stable to Chaotic Juggling: Theory, Simulation, and Experiments"</span>, 
+<span class="publisher">Proceedings of the IEEE International Conference on Robotics and Automation</span> , vol. 3, pp. 1976 - 1981, May, <span class="year">1990</span>.
+
+</li><br>
+<li id=Buehler90a>
+<span class="author">Martin Buehler and Daniel E Koditschek and PJ Kindlmann</span>, 
+<span class="title">"A simple juggling robot: Theory and experimentation"</span>, 
+<span class="publisher">Experimental Robotics I: The First International Symposium Montreal, June 19--21, 1989</span> , pp. 35--73, <span class="year">1990</span>.
+
+</li><br>
+<li id=Rizzi94>
+<span class="author">A.A. Rizzi and D.E. Koditschek</span>, 
+<span class="title">"Further progress in robot juggling: solvable mirror laws"</span>, 
+<span class="publisher">Proceedings of the IEEE International Conference on Robotics and Automation</span> , vol. 4, pp. 2935-2940, <span class="year">1994</span>.
 
 </li><br>
 <li id=Raibert84>
