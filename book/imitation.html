@@ -69,10 +69,17 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
   </p>
   
   <p>Broadly speaking, most approaches to imitation learning can be categorized as
-  either <i>behavioral cloning</i> or <i>inverse reinforcement learning</i>. I think
-  it's fair to say that today, in 2024, behavior cloning is taking the robotics world by
-  storm (especially in manipulation research), and it now seems like the shortest path
-  to building "robot foundation models".
+  either <i>behavioral cloning</i> or <i>inverse reinforcement learning</i>. Behavior
+  cloning attempts to learn a policy directly from the data using supervised learning.
+  Inverse RL (aka inverse optimal control) attempts to learn a cost function from the
+  data, and then uses potentially more traditional optimal control approaches to
+  synthesize a policy for this cost function, in the hopes of generalizing significantly
+  beyond the demonstration data.</p>
+  
+  <p>I think it's fair to say that today, in 2024, behavior cloning is once again taking
+  the robotics world by storm (especially in manipulation research), and it now seems
+  like the shortest path to building "robot foundation models". We'll devote most of
+  this chapter to it.
   </p>
 
   <section><h1>Behavior cloning</h1>

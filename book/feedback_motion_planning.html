@@ -3,9 +3,9 @@
 <html>
 
   <head>
-    <title>Ch. 13 - Feedback Motion
+    <title>Ch. 14 - Feedback Motion
   Planning</title>
-    <meta name="Ch. 13 - Feedback Motion
+    <meta name="Ch. 14 - Feedback Motion
   Planning" content="text/html; charset=utf-8;" />
     <link rel="canonical" href="http://underactuated.mit.edu/feedback_motion_planning.html" />
 
@@ -50,26 +50,106 @@ at MIT</a>. They will be updated throughout the Spring 2024 semester.  <a
 href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">Lecture videos are available on YouTube</a>.</p>
 
 <table style="width:100%;"><tr style="width:100%">
-  <td style="width:33%;text-align:left;"><a class="previous_chapter" href=planning.html>Previous Chapter</a></td>
+  <td style="width:33%;text-align:left;"><a class="previous_chapter" href=robust.html>Previous Chapter</a></td>
   <td style="width:33%;text-align:center;"><a href=index.html>Table of contents</a></td>
-  <td style="width:33%;text-align:right;"><a class="next_chapter" href=robust.html>Next Chapter</a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter" href=output_feedback.html>Next Chapter</a></td>
 </tr></table>
 
 <script type="text/javascript">document.write(notebook_header('feedback_motion_planning'))
 </script>
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
-<chapter style="counter-reset: chapter 12"><h1>Feedback Motion
+<chapter style="counter-reset: chapter 13"><h1>Feedback Motion
   Planning</h1>
+
+<p>Throughout these notes we have been developing core ideas from motion planning
+(especially trajectory optimization and sampling-based planning) and for feedback
+control (e.g. linear and nonlinear policies). Of course these two lines of work are
+deeply connected. If you have a trajectory planner that can run fast enough to be
+evaluated at every control time step (e.g. model-predictive control), then the planner
+can become a policy. Of course, the opposite is true, too. If you have a policy then you
+can simulate it forward to generate a trajectory plan.</p>
+
+<p>In the last chapter we started explicitly considering robustness and uncertainty.
+This complicates the story (but in a beautiful way!). Feedback controllers can be
+robust, or not, but the planners we've built so far start to struggle. What does it mean
+for a trajectory to be robust? If we're using $\bx(\cdot), \bu(\cdot)$ to represent a
+trajectory plan, then the presence of noise can make the plan infeasible. Planning
+without considering the noise/uncertainty and then stablizing that plan can work in the
+simple cases, but richer connections are possible.</p>
+
+<section><h1>Parameterized feedback policies as "skills"</h1>
+
+  <p>When I first introduced the notion of a controller, the job for the controller was
+  to e.g. stabilize a fixed point, or minimize the long-term cost, for all possible
+  initial conditions. Motivated initially by the ability to use linearization and linear
+  optimal control to find feedback controllers even for nonlinear systems, we started to
+  admit that some controllers have a more limited applicablity, and to develop tools for
+  estimating their regions of attraction and/or invariant funnels around
+  trajectories.</p>
+
+  <p>One of the very original approaches to planning in artificial intelligence research
+  was the <a
+  href="https://en.wikipedia.org/wiki/Stanford_Research_Institute_Problem_Solver">Stanford
+  Research Institute Problem Solver</a> (STRIPS) framework. The original STRIPS
+  framework was for discrete states (actually boolean propositions), with the initial
+  state specifid by a set of propositions and the goal state specified by another set of
+  propositions. Most importantly for our discussion here, the "dynamics" were given by a
+  set of actions (or "skills") which were defined by a set of <i>preconditions</i> (what
+  propositions must be satisfied for the skill to be executed), and a set of
+  <i>postconditions</i> (what propositions will be true if the action is executed).</p>
+
+  <p>I'll credit <elib>Burridge99</elib> as the paper that first gave me the mental
+  imagery for how regions of attraction and Lyapunov functions can help us lift the
+  notions of continuous control up into this space of "skills" that can potentially be
+  combined with a high-level planning framework like STRIPS. (Ironically, when I asked
+  Dan Koditschek about the sequential composition of funnels idea, he credited Matt
+  Mason; when I asked Matt Mason, he credited Marc Raibert; when I asked Marc Raibert,
+  he said something along the lines of "oh, that's interesting..."). The picture in that
+  paper is simple but powerful: a local controller combined with an estimate of it's
+  region of attraction defined the preconditions (also commonly referred to as the
+  <i>initiation set</i>) of the skill. An associated Lyapunov function gives us the
+  framework to talk about the postconditions.</p>
+
+  <figure><img width="45%" src="figures/funnels.png"/><figcaption>A controller equipped
+  with a Lyapunov function can be thought of as a "skill" with preconditions and
+  postconditions, providing rules for composition.</figcaption></figure>
+
+  <todo>Goal-conditioned</todo>
+
+</section>
+
+<section><h1>Skill composition</h1>
+
+  <todo>one-step lookahead might be convex, but more generally we need something like GCS.</todo>
+
+  <todo>Case study: Koditschek's jugglers.</todo>
+
+</section>
+
+<section><h1>Probabilistic feedback coverage</h1>
+
+</section>
 
 </chapter>
 <!-- EVERYTHING BELOW THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 
-<div id="references"></div>
+<div id="references"><section><h1>References</h1>
+<ol>
+
+<li id=Burridge99>
+<span class="author">R. R. Burridge and A. A. Rizzi and D. E. Koditschek</span>, 
+<span class="title">"Sequential Composition of Dynamically Dexterous Robot Behaviors"</span>, 
+<span class="publisher">International Journal of Robotics Research</span>, vol. 18, no. 6, pp. 534-555, June, <span class="year">1999</span>.
+
+</li><br>
+</ol>
+</section><p/>
+</div>
 
 <table style="width:100%;"><tr style="width:100%">
-  <td style="width:33%;text-align:left;"><a class="previous_chapter" href=planning.html>Previous Chapter</a></td>
+  <td style="width:33%;text-align:left;"><a class="previous_chapter" href=robust.html>Previous Chapter</a></td>
   <td style="width:33%;text-align:center;"><a href=index.html>Table of contents</a></td>
-  <td style="width:33%;text-align:right;"><a class="next_chapter" href=robust.html>Next Chapter</a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter" href=output_feedback.html>Next Chapter</a></td>
 </tr></table>
 
 <div id="footer">
