@@ -105,7 +105,7 @@ simple cases, but richer connections are possible.</p>
   Dan Koditschek about the sequential composition of funnels idea, he credited Matt
   Mason; when I asked Matt Mason, he credited Marc Raibert; when I asked Marc Raibert,
   he said something along the lines of "oh, that's interesting..."). The picture in that
-  paper is simple but powerful: a local controller combined with an estimate of it's
+  paper is simple but powerful: a local controller combined with an estimate of its
   region of attraction defined the preconditions (also commonly referred to as the
   <i>initiation set</i>) of the skill. An associated Lyapunov function gives us the
   framework to talk about the postconditions.</p>
@@ -114,8 +114,27 @@ simple cases, but richer connections are possible.</p>
   with a Lyapunov function can be thought of as a "skill" with preconditions and
   postconditions, providing rules for composition.</figcaption></figure>
 
-  <todo>Goal-conditioned</todo>
+  <p>The field of automated reasoning / task-level planning has evolved dramatically
+  since the introduction of STRIPS. The planning domain definition language (PDDL)
+  <elib>Aeronautiques98+Haslum19</elib> extended the STRIPS representation to include
+  more expressive features such as typed variables, conditional effects, and (even
+  temporal logic) quantifiers, and served as the specification language for a
+  long-running and highly influential series of <a
+  href="https://www.icaps-conference.org/competitions/">ICAPS planning competitions</a>.
+  </p>
 
+  <p>We can similarly extend our notion of a continuous feedback skills to include
+  parameterized skills/funnels, for instance when the skills are "goal-conditioned".</p>
+
+  <example><h1>Koditschek's juggling robots</h1>
+  
+  
+  </example>
+
+  <p>This idea of planning with primitives which are feedback controllers instead of
+  trajectories is potentially very powerful. Let me emphasize one of the key points:
+  <i>trajectories can't be robust, but funnels can</i>.</p>
+  
 </section>
 
 <section><h1>Skill composition</h1>
@@ -140,6 +159,18 @@ simple cases, but richer connections are possible.</p>
 <span class="author">R. R. Burridge and A. A. Rizzi and D. E. Koditschek</span>, 
 <span class="title">"Sequential Composition of Dynamically Dexterous Robot Behaviors"</span>, 
 <span class="publisher">International Journal of Robotics Research</span>, vol. 18, no. 6, pp. 534-555, June, <span class="year">1999</span>.
+
+</li><br>
+<li id=Aeronautiques98>
+<span class="author">Constructions Aeronautiques and Adele Howe and Craig Knoblock and ISI Drew McDermott and Ashwin Ram and Manuela Veloso and Daniel Weld and David Wilkins SRI and Anthony Barrett and Dave Christianson and others</span>, 
+<span class="title">"{PDDL}| the planning domain definition language"</span>, 
+<span class="publisher">Technical Report, Tech. Rep.</span>, <span class="year">1998</span>.
+
+</li><br>
+<li id=Haslum19>
+<span class="author">Patrik Haslum and Nir Lipovetzky and Daniele Magazzeni and Christian Muise and Ronald Brachman and Francesca Rossi and Peter Stone</span>, 
+<span class="title">"An introduction to the planning domain definition language"</span>, Springer
+, vol. 13, <span class="year">2019</span>.
 
 </li><br>
 </ol>
