@@ -123,26 +123,66 @@ simple cases, but richer connections are possible.</p>
   href="https://www.icaps-conference.org/competitions/">ICAPS planning competitions</a>.
   </p>
 
-  <p>We can similarly extend our notion of a continuous feedback skills to include
-  parameterized skills/funnels, for instance when the skills are "goal-conditioned".</p>
-
-  <example><h1>Koditschek's juggling robots</h1>
-  
-  
-  </example>
-
   <p>This idea of planning with primitives which are feedback controllers instead of
   trajectories is potentially very powerful. Let me emphasize one of the key points:
   <i>trajectories can't be robust, but funnels can</i>.</p>
 
-  <subsection><h1>Parameterized controllers and Lyapunov functions</h1>
+  <subsection><h1>The rules of composition</h1>
   
+    <p>Imagine I have two controllers, $\pi_1(\bx)$ and $\pi_2(\bx)$, each equipped with
+    a corresponding function $V_1(\bx)$ and $V_2(\bx)$ which has been certified
+    to satisfy the Lyapunov conditions over their respective sublevel sets, $V_1(\bx)
+    \le \rho_1$, $V_2(\bx) \le \rho_2.$</p>
+    
+    <p>Let's remember a slightly subtle point. If $\dot{V} \prec 0$, then I'm guaranteed
+    to move down the Lyapunov function, but if $\dot{V} \preceq 0$, then my Lyapunov
+    function only guarantees invariance. For robust stability (again unknown
+    disturbances or modeling errors), it might be unlikely that we can achieve true
+    asymptotic stability. However the cartoon illustration with the funnels above may
+    still be very reasonable. It requires that we have $0 \le \bar{\rho}_{i} \le \rho_i$
+    such that $$\bar\rho_{i} \le V_i(\bx) \le \rho_i \rightarrow \dot{V}_i(\bx) \prec
+    0.$$ In words, we would like to have some (asymptotic) convergence from the
+    initiation set $V_i(\bx) \le \rho_i$ to a smaller invariant set $V_i(\bx) \le
+    \bar\rho_i.$ Then we can guarantee that a higher-level planner/controller can
+    transition from executing skill $i$ to executing skill $j$ if $V_i(\bx) \le
+    \bar\rho_i \rightarrow V_j(\bx) \le \rho_j$. For polynomial Lyapunov functions, one
+    can certify these containment conditions using sum-of-squares optimization with the
+    S-procedure; for quadratic Lyapunov functions this reduces nicely to ellipsoidal
+    containment.
+    </p>
+
+    <p>The other form of Lyapunov functions which we have studied are the <a
+    href="lyapunov.html#finite-time">time-varying Lyapunov functions</a> associated e.g.
+    with stabilizing a trajectory. In this case, if the Lyapunov conditions,
+    $\dot{V}(t, \bx) \le \dot\rho_i(t)$, are satisfied for all $\{t, \bx | V_i(t, \bx) =
+    \rho_i(t), t_0 \le t \le t_f \},$ and the underlying dynamics are time-invariant,
+    then it is sufficient to satisfy the containment conditions $V_i(t_i,\bx) \le
+    \rho_i(t_i) \rightarrow V_j(t_j, \bx) \le \rho_j(t_j)$ for any valid $t_i, t_j.$</p>
+
+    <example><h1>Pendulum: transitioning from swing-up to balance</h1>
+    
+    </example>
+
+  </subsection>
+
+  <subsection><h1>Parameterized controllers and Lyapunov functions</h1>
+
+    <p>We can similarly extend our notion of a continuous feedback skills to include
+      parameterized skills/funnels, for instance when the skills are "goal-conditioned".</p>
+    
+    <example><h1>Koditschek's juggling robots</h1>
+  
+  
+    </example>
+    
     <p>Polynomial parameterizations and SOS. But there are a few special cases that can
     work out particularly nicely...</p>
 
     <p>Equivariance (cyclic coordinates) <elib>Majumdar16a</elib>.</p>
 
     <p>State-dependent Riccati equations (SDRE) <elib>Majumdar12</elib>.</p>
+
+    <p>Parameterizing via a nominal trajectory.</p>
   
     <todo>Maybe Joe's adaptive control SOS paper, which included polynomially
     parameterized controllers.</todo>
@@ -153,13 +193,21 @@ simple cases, but richer connections are possible.</p>
 
 <section><h1>Probabilistic feedback coverage</h1>
 
+  <p>There is a nice way to combine the ideas from sampling-based motion planning with
+  this idea of (guaranteed) sequential composition with funnels
+  <elib>Tedrake10</elib>.</p>
+
   <todo>Case study: Compass gait?</todo>
+
+  <todo>Word on the street is that Spot's main controller makes very heavy use of
+  sequential composition. Shout out to Al.</todo>
 
 </section>
 
 <section><h1>Online planning</h1>
 
-  <todo>one-step lookahead might be convex, but more generally we need something like GCS.</todo>
+  <todo>one-step lookahead might be convex, but more generally we need something like
+  GCS.</todo>
 
 </section>
 
@@ -199,6 +247,13 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2016<
 <span class="title">"Algebraic Verification for Parameterized Motion Planning Libraries"</span>, 
 <span class="publisher">Proceedings of the 2012 American Control Conference (ACC)</span> , pp. 8, June, <span class="year">2012</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar12.pdf">link</a>&nbsp;]
+
+</li><br>
+<li id=Tedrake10>
+<span class="author">Russ Tedrake and Ian R. Manchester and Mark M. Tobenkin and John W. Roberts</span>, 
+<span class="title">"{LQR-Trees}: Feedback Motion Planning via Sums of Squares Verification"</span>, 
+<span class="publisher">International Journal of Robotics Research</span>, vol. 29, pp. 1038--1052, July, <span class="year">2010</span>.
+[&nbsp;<a href="http://dx.doi.org/10.1177/0278364910369189">link</a>&nbsp;]
 
 </li><br>
 </ol>

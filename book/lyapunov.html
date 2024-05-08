@@ -1189,7 +1189,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         computed over a compact set like a ball in $\Re^n$
         <elib>Folland01</elib> and is linear in the coefficients.  More
         sophisticated alternatives also exist<elib>Henrion09</elib>. <elib
-        sect="Ch.~4">Majumdar13f</elib> writes the objective as minimizing the
+        sect="Ch.~4">Majumdar16a</elib> writes the objective as minimizing the
         volume of the covering ellipse, which is convex<elib
         part="&sect;8.4.1">Boyd04a</elib>.</p>
 
@@ -1674,7 +1674,7 @@ V = RegionOfAttraction(sys, context)
       dynamics and Lyapunov functions, as well, so: \begin{align*} \forall
       t\in[t_1, t_2], \quad \forall \bx, \qquad& V(t,\bx) > 0, \quad& V(t, 0) =
       0 \\ \forall t \in [t_1, t_2], \quad \forall \bx \in \{\bx | V(t,\bx) =
-      \rho(t)\}, \qquad& \dot{V}(t, x) < \dot\rho(t).\end{align*}  Note that
+      \rho(t)\}, \qquad& \dot{V}(t, x) \le \dot\rho(t).\end{align*}  Note that
       finite-time reachability is about proving invariance of the set, not
       stability, and the $\dot{V}$ condition need only be certified at the
       boundary of the level set.  If $V$ is decreasing at the boundary, then
@@ -1705,8 +1705,7 @@ V = RegionOfAttraction(sys, context)
       adding $t$ into all of the equation otherwise can dramatically increase
       the degree of the polynomials required for the SOS certificates.  All of
       this was written up nicely in <elib>Tobenkin10b</elib>, and robust
-      variants of it were developed in
-      <elib>Majumdar13f+Majumdar16a</elib>.</p>
+      variants of it were developed in <elib>Majumdar16a</elib>.</p>
 
     </subsection>
 
@@ -2574,13 +2573,6 @@ PhD thesis, Massachusetts Institute of Technology, Jun, <span class="year">2017<
 <span class="author">D. Henrion and J.B. Lasserre and C. Savorgnan</span>, 
 <span class="title">"Approximate volume and integration for basic semialgebraic sets"</span>, 
 <span class="publisher">SIAM Review</span>, vol. 51, no. 4, pp. 722--743, <span class="year">2009</span>.
-
-</li><br>
-<li id=Majumdar13f>
-<span class="author">Anirudha Majumdar</span>, 
-<span class="title">"Robust Online Motion Planning with Reachable Sets"</span>, 
-, May, <span class="year">2013</span>.
-[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Majumdar13f.pdf">link</a>&nbsp;]
 
 </li><br>
 <li id=Wampler11>
