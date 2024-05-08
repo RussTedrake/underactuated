@@ -69,12 +69,12 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
   </p>
   
   <p>Broadly speaking, most approaches to imitation learning can be categorized as
-  either <i>behavioral cloning</i> or <i>inverse reinforcement learning</i>. Behavior
-  cloning attempts to learn a policy directly from the data using supervised learning.
-  Inverse RL (aka inverse optimal control) attempts to learn a cost function from the
-  data, and then uses potentially more traditional optimal control approaches to
-  synthesize a policy for this cost function, in the hopes of generalizing significantly
-  beyond the demonstration data.</p>
+  either <i>behavioral cloning</i> (BC) or <i>inverse reinforcement learning</i> (IRL).
+  Behavior cloning attempts to learn a policy directly from the data using supervised
+  learning. Inverse RL (aka inverse optimal control) attempts to learn a cost function
+  from the data, and then uses potentially more traditional optimal control approaches
+  to synthesize a policy for this cost function, in the hopes of generalizing
+  significantly beyond the demonstration data.</p>
   
   <p>I think it's fair to say that today, in 2024, behavior cloning is once again taking
   the robotics world by storm (especially in manipulation research), and it now seems
@@ -84,17 +84,70 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
   <section><h1>Behavior cloning</h1>
 
-    <p>basic definition. state feedback is regression. output feedback is sequence learning.</p>
+    <p>Behavior cloning <elib>Pomerleau88+Bain95</elib> attempts to learn a policy
+    directly from the policy's input-output data using supervised learning. In the case
+    of full-state feedback, where we know that the optimal policy can be represented as
+    a simple function of the state, this is typically cast as a simple regression
+    problem, e.g. $\min_\theta \sum_{i} |\bu_i - \pi_\theta(\bx_i)|^2.$ In the richer
+    case of output feedback, where we have learned to think about a policy as a
+    dynamical system, then this becomes a sequence learning problem (given a sequence of
+    observations, predict a sequence of actions).</p>
     
-    <p>LLMs (at least the first step).</p>
+    <p>Famously, Large Language Models are trained with behavior cloning (and then
+    fine-tuned to make them more aligned with human preferences <elib>Ziegler19</elib>).
+    OpenAI's GPT models are <a href="sysid.html#autoregressive">autoregressive
+    models</a> that predict the next token given a "context" of recent tokens
+    <elib>Radford18+Radford19+Brown20+Bubeck23</elib>. More recently, we've seen the extension to multi-modal models, such as visually-conditioned language models (like GPT-4V and LLaVa <elib>Liu23</elib>) with an increasing wealth of open-source reproductions <elib>Karamcheti24+Laurençon24</elib>.</p>
+    
+    <p>Is predicting actions fundamentally different from next-token prediction in
+    language? There are a few reasons why it might be. Actions are continuous and
+    high-dimensional, whereas language tokens are discrete. Our control systems get put
+    into the feedback loop with physics, and have to deal with stochasticity from the
+    environment that LLMs don't experience. However, I would say that in 2024, there
+    were two main lines of work which I believe made people realize that predicting
+    future actions may not be so fundamentally different than language, at least for
+    dexterous manipulation. Those were the <a
+    href="https://diffusion-policy.cs.columbia.edu/">Diffusion Policy</a>
+    <elib>Chi24</elib> and the Action Chunking Transformer (ACT) from the <a
+    href="https://tonyzhaozh.github.io/aloha/">ALOHA project</a>
+    <elib>Zhao23</elib>. Of course, these were built on a long line of progress
+    which started anew in the age of deep learning (e.g.
+    <elib>Levine16+Florence20+Florence22</elib>).</p>
 
-    <p>Although I spend a significant amount of time on it these days, I don't actually
-    love behavior cloning (decision making >> mimicry). But it's an awfully clever way
-    to explore the space of policy representations. And address many essential questions
-    about learning representations, etc. The success of LLMs (and now multimodal models)
-    is undeniable.</p>
+    <figure>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/w-CGSQAO5-Q?si=tNIJzVegfsIwb7tK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </figure>
 
-    <p>Key result: BC can outperform human demonstrators.</p>
+    <p>Diffusion Policy and ALOHA seem to have been the watershed results for dexterous
+    manipulation in robotics. Since that time, the internet is now
+    rich with videos of highly dexterous manipulation from all sorts of robots up to and
+    including humanoid robots with dexterous hands.</p>
+
+    <p>In one sense, it might seem a little disappointing that, after we've spent so
+    much time in these notes exploring the rich mathematical foundations of dynamics and
+    control, that behavior cloning from human teleop demonstrations can outperform some
+    of our best methods, at least for some class of problems (which are arguably more
+    about understanding the world than about dynamics and control). But think of it this
+    way: using supervised learning is an awfully clever way to explore the space of
+    policy parameterizations, and has accelerated us into bigger questions about
+    multi-task/foundation-model architectures, and leveraging structure (such as 3D
+    geometry / objectness) in our representations or not. I must say that the success of
+    LLMs (and now multimodal models) is undeniable, and it would be a mistake to ignore
+    the great new possibilities that have opened up. I'm very confident that our
+    knowledge of dynamics and control will help us penetrate the new vistas enabled by
+    these high-capacity models.</p>
+    
+    <p>Let me make one important point. Sometimes people say that BC is fundamentally
+    limited because it can never outperform the human demonstrator. But that is not
+    strictly true. <todo>cite the classic result; i forget which classic paper it came
+    from</todo> Certainly Chat-GPT can produce text output that by some metrics
+    surpasses the capabilities of any one human.</p>
+  
+    <p>There is also a precident for combining BC with other methods to improve beyond
+    the original demonstrations. For DeepMind's AlphaGo<elib>Silver16</elib>, behavior
+    cloning was only the first step -- it was enough to get us to a strong Go player,
+    but not enough to be championship level. Adding "self-play" and improvement via
+    Monte-Carlo tree search was fundamental to "mastering the game of Go". </p>
 
     <subsection><h1>Offline learning</h1>
     
@@ -313,6 +366,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
   <section><h1>Inverse reinforcement learning</h1>
 
+    <todo>Some good notes here: https://web.stanford.edu/class/cs237b/pdfs/lecture/lecture_10111213.pdf</todo>
   </section>
 
   <section><h1>Important open questions</h1>
@@ -325,10 +379,76 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 <div id="references"><section><h1>References</h1>
 <ol>
 
-<li id=Ross11>
-<span class="author">St{\'e}phane Ross and Geoffrey Gordon and Drew Bagnell</span>, 
-<span class="title">"A reduction of imitation learning and structured prediction to no-regret online learning"</span>, 
-<span class="publisher">Proceedings of the fourteenth international conference on artificial intelligence and statistics</span> , pp. 627--635, <span class="year">2011</span>.
+<li id=Pomerleau88>
+<span class="author">Dean A Pomerleau</span>, 
+<span class="title">"Alvinn: An autonomous land vehicle in a neural network"</span>, 
+<span class="publisher">Advances in neural information processing systems</span>, vol. 1, <span class="year">1988</span>.
+
+</li><br>
+<li id=Bain95>
+<span class="author">Michael Bain and Claude Sammut</span>, 
+<span class="title">"A Framework for Behavioural Cloning."</span>, 
+<span class="publisher">Machine Intelligence 15</span> , pp. 103--129, <span class="year">1995</span>.
+
+</li><br>
+<li id=Ziegler19>
+<span class="author">Daniel M Ziegler and Nisan Stiennon and Jeffrey Wu and Tom B Brown and Alec Radford and Dario Amodei and Paul Christiano and Geoffrey Irving</span>, 
+<span class="title">"Fine-tuning language models from human preferences"</span>, 
+<span class="publisher">arXiv preprint arXiv:1909.08593</span>, <span class="year">2019</span>.
+
+</li><br>
+<li id=Radford18>
+<span class="author">Alec Radford and Karthik Narasimhan and Tim Salimans and Ilya Sutskever and others</span>, 
+<span class="title">"Improving language understanding by generative pre-training"</span>, 
+, <span class="year">2018</span>.
+
+</li><br>
+<li id=Radford19>
+<span class="author">Alec Radford and Jeffrey Wu and Rewon Child and David Luan and Dario Amodei and Ilya Sutskever and others</span>, 
+<span class="title">"Language models are unsupervised multitask learners"</span>, 
+<span class="publisher">OpenAI blog</span>, vol. 1, no. 8, pp. 9, <span class="year">2019</span>.
+
+</li><br>
+<li id=Brown20>
+<span class="author">Tom Brown and Benjamin Mann and Nick Ryder and Melanie Subbiah and Jared D Kaplan and Prafulla Dhariwal and Arvind Neelakantan and Pranav Shyam and Girish Sastry and Amanda Askell and others</span>, 
+<span class="title">"Language models are few-shot learners"</span>, 
+<span class="publisher">Advances in neural information processing systems</span>, vol. 33, pp. 1877--1901, <span class="year">2020</span>.
+
+</li><br>
+<li id=Bubeck23>
+<span class="author">S{\'e}bastien Bubeck and Varun Chandrasekaran and Ronen Eldan and Johannes Gehrke and Eric Horvitz and Ece Kamar and Peter Lee and Yin Tat Lee and Yuanzhi Li and Scott Lundberg and others</span>, 
+<span class="title">"Sparks of artificial general intelligence: Early experiments with gpt-4"</span>, 
+<span class="publisher">arXiv preprint arXiv:2303.12712</span>, <span class="year">2023</span>.
+
+</li><br>
+<li id=Liu23>
+<span class="author">Haotian Liu and Chunyuan Li and Qingyang Wu and Yong Jae Lee</span>, 
+<span class="title">"Visual Instruction Tuning"</span>, 
+, <span class="year">2023</span>.
+
+</li><br>
+<li id=Karamcheti24>
+<span class="author">Siddharth Karamcheti and Suraj Nair and Ashwin Balakrishna and Percy Liang and Thomas Kollar and Dorsa Sadigh</span>, 
+<span class="title">"Prismatic vlms: Investigating the design space of visually-conditioned language models"</span>, 
+<span class="publisher">arXiv preprint arXiv:2402.07865</span>, <span class="year">2024</span>.
+
+</li><br>
+<li id=Laurençon24>
+<span class="author">Hugo Laurençon and Léo Tronchon and Matthieu Cord and Victor Sanh</span>, 
+<span class="title">"What matters when building vision-language models?"</span>, 
+, <span class="year">2024</span>.
+
+</li><br>
+<li id=Chi24>
+<span class="author">Cheng Chi and Zhenjia Xu and Siyuan Feng and Eric Cousineau and Yilun Du and Benjamin Burchfiel and Russ Tedrake and Shuran Song</span>, 
+<span class="title">"Diffusion Policy: Visuomotor Policy Learning via Action Diffusion"</span>, 
+, <span class="year">2024</span>.
+
+</li><br>
+<li id=Zhao23>
+<span class="author">Tony Z Zhao and Vikash Kumar and Sergey Levine and Chelsea Finn</span>, 
+<span class="title">"Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"</span>, 
+<span class="publisher">arXiv preprint arXiv:2304.13705</span>, <span class="year">2023</span>.
 
 </li><br>
 <li id=Levine16>
@@ -344,16 +464,22 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Florence20.pdf">link</a>&nbsp;]
 
 </li><br>
-<li id=Chi24>
-<span class="author">Cheng Chi and Zhenjia Xu and Siyuan Feng and Eric Cousineau and Yilun Du and Benjamin Burchfiel and Russ Tedrake and Shuran Song</span>, 
-<span class="title">"Diffusion Policy: Visuomotor Policy Learning via Action Diffusion"</span>, 
-, <span class="year">2024</span>.
+<li id=Florence22>
+<span class="author">Pete Florence and Corey Lynch and Andy Zeng and Oscar A Ramirez and Ayzaan Wahid and Laura Downs and Adrian Wong and Johnny Lee and Igor Mordatch and Jonathan Tompson</span>, 
+<span class="title">"Implicit behavioral cloning"</span>, 
+<span class="publisher">Conference on Robot Learning</span> , pp. 158--168, <span class="year">2022</span>.
 
 </li><br>
-<li id=Zhao23>
-<span class="author">Tony Z Zhao and Vikash Kumar and Sergey Levine and Chelsea Finn</span>, 
-<span class="title">"Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware"</span>, 
-<span class="publisher">arXiv preprint arXiv:2304.13705</span>, <span class="year">2023</span>.
+<li id=Silver16>
+<span class="author">David Silver and Aja Huang and Chris J Maddison and Arthur Guez and Laurent Sifre and George Van Den Driessche and Julian Schrittwieser and Ioannis Antonoglou and Veda Panneershelvam and Marc Lanctot and others</span>, 
+<span class="title">"Mastering the game of Go with deep neural networks and tree search"</span>, 
+<span class="publisher">nature</span>, vol. 529, no. 7587, pp. 484--489, <span class="year">2016</span>.
+
+</li><br>
+<li id=Ross11>
+<span class="author">St{\'e}phane Ross and Geoffrey Gordon and Drew Bagnell</span>, 
+<span class="title">"A reduction of imitation learning and structured prediction to no-regret online learning"</span>, 
+<span class="publisher">Proceedings of the fourteenth international conference on artificial intelligence and statistics</span> , pp. 627--635, <span class="year">2011</span>.
 
 </li><br>
 <li id=Chi23>
