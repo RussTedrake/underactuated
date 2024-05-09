@@ -3,8 +3,8 @@
 <html>
 
   <head>
-    <title>Ch. 20 - Imitation Learning</title>
-    <meta name="Ch. 20 - Imitation Learning" content="text/html; charset=utf-8;" />
+    <title>Ch. 21 - Imitation Learning</title>
+    <meta name="Ch. 21 - Imitation Learning" content="text/html; charset=utf-8;" />
     <link rel="canonical" href="http://underactuated.mit.edu/imitation.html" />
 
     <script src="https://hypothes.is/embed.js" async></script>
@@ -48,15 +48,15 @@ at MIT</a>. They will be updated throughout the Spring 2024 semester.  <a
 href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">Lecture videos are available on YouTube</a>.</p>
 
 <table style="width:100%;"><tr style="width:100%">
-  <td style="width:33%;text-align:left;"><a class="previous_chapter" href=state_estimation.html>Previous Chapter</a></td>
+  <td style="width:33%;text-align:left;"><a class="previous_chapter" href=rl_policy_search.html>Previous Chapter</a></td>
   <td style="width:33%;text-align:center;"><a href=index.html>Table of contents</a></td>
-  <td style="width:33%;text-align:right;"><a class="next_chapter" href=rl_policy_search.html>Next Chapter</a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter" href=drake.html>Next Chapter</a></td>
 </tr></table>
 
 <script type="text/javascript">document.write(notebook_header('imitation'))
 </script>
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
-<chapter style="counter-reset: chapter 19"><h1>Imitation Learning</h1>
+<chapter style="counter-reset: chapter 20"><h1>Imitation Learning</h1>
 
   <p>Imitation learning, also known as "learning from demonstrations" (LfD), is the
   problem of learning a policy from a collection of demonstrations. For state-based
@@ -116,6 +116,8 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
     <figure>
     <iframe width="560" height="315" src="https://www.youtube.com/embed/w-CGSQAO5-Q?si=tNIJzVegfsIwb7tK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    <figcaption>Diffusion Policy started as an intern project(!) by Cheng Chi at TRI,
+    and blossomed into a great collaboration with Shuran Song.</figcaption>
     </figure>
 
     <p>Diffusion Policy and ALOHA seem to have been the watershed results for dexterous
@@ -129,13 +131,13 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     of our best methods, at least for some class of problems (which are arguably more
     about understanding the world than about dynamics and control). But think of it this
     way: using supervised learning is an awfully clever way to explore the space of
-    policy parameterizations, and has accelerated us into bigger questions about
-    multi-task/foundation-model architectures, and leveraging structure (such as 3D
-    geometry / objectness) in our representations or not. I must say that the success of
-    LLMs (and now multimodal models) is undeniable, and it would be a mistake to ignore
-    the great new possibilities that have opened up. I'm very confident that our
-    knowledge of dynamics and control will help us penetrate the new vistas enabled by
-    these high-capacity models.</p>
+    policy parameterizations, and has accelerated us into bigger questions about using
+    cameras in the feedback loop, learning multitask/foundation models, and leveraging
+    structure (such as 3D geometry / objectness) in our representations or not. I must
+    say that the success of LLMs (and now multimodal models) is undeniable, and it would
+    be a mistake to ignore the great new possibilities that have opened up. I'm very
+    confident that our knowledge of dynamics and control will help us penetrate the new
+    vistas enabled by these high-capacity models.</p>
     
     <p>Let me make one important point. Sometimes people say that BC is fundamentally
     limited because it can never outperform the human demonstrator. But that is not
@@ -149,22 +151,21 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     but not enough to be championship level. Adding "self-play" and improvement via
     Monte-Carlo tree search was fundamental to "mastering the game of Go". </p>
 
-    <subsection><h1>Offline learning</h1>
-    
-    
-    </subsection>
-
-    <subsection><h1>Online (active) learning</h1>
-    
-      <p>DAGGER <elib>Ross11</elib></p>
-    
-      <p>Teacher/Student.</p>
-
-    </subsection>
-
     <subsection id="visuomotor"><h1>Visuomotor policies (aka control from pixels)</h1>
     
-      <p><todo>Sergey's original paper; Pete/Lucas paper...</todo></p>
+      <p>My own journey with imitation learning started with a <a
+      href="https://sites.google.com/view/visuomotor-correspondence">project led by Pete
+      Florence and Lucas Manuelli</a> on using a particular form of self-supervised
+      learning for 3D geometries to train "visuomotor policies" <elib>Florence20</elib>.
+      The name "visuomotor" is chosen to emphasize that the policy is trained to predict
+      actions directly from RGB camera images, using architectures similar to the one
+      pictured below. In retrospect, I probably should have more fully recognized the
+      potential from the <a href="https://www.youtube.com/watch?v=Q4bMcUk6pcw">original
+      visuomotor policy paper</a> <elib>Levine16</elib>. But for me, I wasn't fully
+      convinced until I got to see directly how the model was trained, and until I got
+      to experience the incredibly impressive robustness that was possible in the
+      roll-outs, even with a relatively modest amount of robot training data (the visual
+      encoder backbone at that time was a ResNet pretrained on ImageNet).</p>
 
       <figure><img width="60%" src="figures/visuomotor.svg"/><figcaption>The (now)
       classical visuomotor policy architecture, adapted from
@@ -172,10 +173,50 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       state representation</i> which encodes the state of the environment.
       </figcaption></figure>
 
+      <p>Writing feedback controllers which operate directly on the RGB camera images
+      was something entirely new for me. We had been using RGB-D cameras to do some
+      amount of visual state estimation / pose estimation before that, but were leaning
+      pretty heavily on the depth channel and very explicit 3D reasoning/matching. But I
+      remember around the time of our first imitation learning project, I asked the
+      students "if you could only choose one, RGB <i>or</i> depth, which would you
+      choose". They chose RGB. One could easily underestimate just how valuable the RGB
+      channel is, but there are many situations where a task is unclear or even
+      ambiguous when looking only at a depth image which become clear in RGB, and there
+      are many depth cues in RGB that allow us and our visuomotor policies to be
+      successfull for 3D tasks even without an explicit depth sensor.</p>
+
+      <p>In my experience, control theorists have very satisfying answers to almost any
+      dynamics and control problem. But (with a few rare exceptions) they didn't do
+      computer vision. This was something entirely new. The sensor model -- the mapping
+      from, e.g. the state and parameters of a <code>MultibodyPlant</code> to the output
+      image $y$ -- is potentially a full game-engine-quality renderer. Even though there
+      are lots of projects now on making differentiable renderers, these can only do so
+      much because the pixelation process is inherently very local/non-smooth. Going
+      from the image back into a manageable intermediate (latent) state representation,
+      $z$, simply did not work nearly as well until we got deep networks for perception.
+      Data/learning <i>does</i> feel fundamental here -- mapping from RGB into a
+      meaningful representation for control is more about the statistics of natural
+      scenes than about the model-based physics of propagating light.</p>
+
     </subsection>
   
-    <subsection><h1>Multitask / foundation models for control</h1>
+    <subsection><h1>Supervised learning in a feedback loop: dealing with distribution
+    shift</h1>
     
+      <p>One of the famous challenges in imitation learning is the problem of
+      distribution shift. Imagine that you are training a policy for driving a car...
+      </p>
+
+      <p>DAGGER <elib>Ross11</elib></p>
+    
+      <p>Teacher/Student.</p>
+
+    </subsection>
+
+    <subsection><h1>Dealing with suboptimal and multimodal demonstrations</h1>
+
+      <todo>Discrete maze example w/ symmetries. Push-T example.</todo>
+
     </subsection>
 
   </section>
@@ -369,8 +410,97 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     <todo>Some good notes here: https://web.stanford.edu/class/cs237b/pdfs/lecture/lecture_10111213.pdf</todo>
   </section>
 
-  <section><h1>Important open questions</h1>
+  <section><h1>Vistas</h1>
+    <subsection><h1>Multitask / foundation models for control</h1>
+    
+      <p>If control directly from pixels was the first capability unlocked by imitation
+      learning, I would say that large-scale multitask decision making is the second.
+      Multitask learning has a long history in the machine learning community
+      <elib>Zhang21</elib>, and multitask learning for control was popular first in
+      "multitask RL" <todo>citation?</todo>. But the rise of foundation models
+      <elib>Bommasani21</elib> in language and now in multimodal models, has completely
+      changed our capabilities and our expectations. Suddenly, one can imagine a single
+      policy, represented in a high-capacity neural network model, whose inputs are the
+      robot sensors (including RGB cameras) plus a natural language command ("Robot,
+      please make me a pizza"), and for the first time ever it seems like something like
+      this could plausibly work.</p>
+
+      <p>In my view, this has potentially profound implications for how we think about
+      control. Our basic control definitions start with, e.g. we have a state $\bx$,
+      inputs $\bu$, outputs $\by.$ The discussion on output feedback got us thinking a
+      little about state representations for control -- for instance a belief state is a
+      sufficient (but not necessary) state because it is a sufficient statistic of the
+      history of actions and observations. But multitask in the imitation learning
+      setting changes things. In the simple case, we'll say that our inputs $\bu$, and
+      outputs $\by$ are the same across all of the tasks. But it may well be that the
+      underlying state space is not. (I admit that philosophically there is a state of
+      the entire universe which is the same across tasks, but I mean the more tractable
+      representations of state that we've been using through the notes.) What does it
+      mean to learn a state representation for control across tasks where even the
+      dimension/cardinality of the state space can be different? Even our catch-all
+      definition of belief state breaks down in this case.</p>
+
+      <p>Are there tractable ways to describe distributions over tasks that are amenable
+      to our strongest theoretical tools, but still relevant for the complexity and
+      diversity of the real world? When we talked about stochastic optimal control, we
+      gave examples where taking an average over many possible rollouts can actually
+      simplify the loss landscape, avoiding some local minima and making optimization
+      easier. Can multitask control formulations have a similar effect?</p>
+
+      <p>Going further, how exactly is it that solving/learning one task can potentially
+      help us in solving/learning another? This brings up basic questions about
+      designing a curriculum for our control systems. Is is possible for us to soar to
+      higher and higher heights if we sequence our control problem instances
+      correctly?</p>
+
+    </subsection>
+
+    <subsection><h1>Distributed decentralized learning (aka "fleet learning")</h1>
+    
+      <p>When I start using phrases like "learning" and "curriculum", then it becomes
+      very natural to think in terms of our natural intelligence. How did we learn to
+      walk? To play tennis? But let's remember that these analogies only go so far. For
+      me, the GPT series of models are clearly unlike any single natural intelligence,
+      they are more like a collective intelligence of the entire species (though still
+      certainly deficient in some metrics). In the age of foundation models, it may not
+      be the case that every robot needs to learn to use a toaster; the dream of "fleet
+      learning" is that one robot will learn how to use a toaster and then they will all
+      have learned.</p>
+
+      <p>This brings up fundamental questions about the learning algorithms, about data
+      efficiency (and privacy). But it also challenges our theories of dynamics and
+      control. For instance, there are open questions about how to balance being a
+      generalist and using only shared data vs being a specialist. Certainly if a
+      particular robot is solving problems in a particular warehouse, then while the
+      statistics of tasks across the world may help form robust representations, this
+      robot can almost certainly perform better if it narrows and specializes the
+      policies (and world models) to exploit the distribution of tasks in the
+      warehouse.</p>
+      
+      <p>A particular version of this question appears in the context of
+      "cross-embodiment" data and models. Right now, robot data with action labels is
+      scarce (compared with online data for text and images). This, in part, has
+      motivated the use of datasets which combine data from many robots/platforms
+      <elib>Shah23+Padalkar23</elib>, and architectures that can share representations
+      and transfer learning even when the number/types of sensors and actuators changes
+      across the fleet.</p>
+
+    </subsection>
+
+    <subsection><h1>Be rigorous</h1>
+
+      <p>The fact that many of these fundamental questions are now being asked makes
+      this a simply amazing time to be a roboticist. However, the pace of new
+      innovations is so fast that often researchers feel pressure to race to publication
+      before having done proper rigorous theoretical or empirical work. We are building
+      tall towers but with somewhat shakey foundations. I firmly believe that the
+      tenants of dynamics and control (amongst other rigorous technical tools) have a
+      lot to contribute to understanding and continuing to push the field forward, and
+      that some of the maturity with which we can understand these simpler (but not very
+      simple!) problems can serve as a model for what we should expect about our
+      understanding of the even more complex ones.</p>
   
+    </subsection>
   </section>
 
 </chapter>
@@ -542,14 +672,38 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 <span class="publisher">Thirty-seventh Conference on Neural Information Processing Systems</span> , <span class="year">2023</span>.
 
 </li><br>
+<li id=Zhang21>
+<span class="author">Yu Zhang and Qiang Yang</span>, 
+<span class="title">"A survey on multi-task learning"</span>, 
+<span class="publisher">IEEE Transactions on Knowledge and Data Engineering</span>, vol. 34, no. 12, pp. 5586--5609, <span class="year">2021</span>.
+
+</li><br>
+<li id=Bommasani21>
+<span class="author">Rishi Bommasani and Drew A Hudson and Ehsan Adeli and Russ Altman and Simran Arora and Sydney von Arx and Michael S Bernstein and Jeannette Bohg and Antoine Bosselut and Emma Brunskill and others</span>, 
+<span class="title">"On the opportunities and risks of foundation models"</span>, 
+<span class="publisher">arXiv preprint arXiv:2108.07258</span>, <span class="year">2021</span>.
+
+</li><br>
+<li id=Shah23>
+<span class="author">Dhruv Shah and Ajay Sridhar and Nitish Dashora and Kyle Stachowicz and Kevin Black and Noriaki Hirose and Sergey Levine</span>, 
+<span class="title">"ViNT: A Foundation Model for Visual Navigation"</span>, 
+<span class="publisher">Conference on Robot Learning</span> , pp. 711--733, <span class="year">2023</span>.
+
+</li><br>
+<li id=Padalkar23>
+<span class="author">Abhishek Padalkar and Acorn Pooley and Ajinkya Jain and Alex Bewley and Alex Herzog and Alex Irpan and Alexander Khazatsky and Anant Rai and Anikait Singh and Anthony Brohan and others</span>, 
+<span class="title">"Open x-embodiment: Robotic learning datasets and rt-x models"</span>, 
+<span class="publisher">arXiv preprint arXiv:2310.08864</span>, <span class="year">2023</span>.
+
+</li><br>
 </ol>
 </section><p/>
 </div>
 
 <table style="width:100%;"><tr style="width:100%">
-  <td style="width:33%;text-align:left;"><a class="previous_chapter" href=state_estimation.html>Previous Chapter</a></td>
+  <td style="width:33%;text-align:left;"><a class="previous_chapter" href=rl_policy_search.html>Previous Chapter</a></td>
   <td style="width:33%;text-align:center;"><a href=index.html>Table of contents</a></td>
-  <td style="width:33%;text-align:right;"><a class="next_chapter" href=rl_policy_search.html>Next Chapter</a></td>
+  <td style="width:33%;text-align:right;"><a class="next_chapter" href=drake.html>Next Chapter</a></td>
 </tr></table>
 
 <div id="footer">
