@@ -153,25 +153,28 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
     <subsection id="visuomotor"><h1>Visuomotor policies (aka control from pixels)</h1>
     
-      <p>My own journey with imitation learning started with a <a
-      href="https://sites.google.com/view/visuomotor-correspondence">project led by Pete
-      Florence and Lucas Manuelli</a> on using a particular form of self-supervised
-      learning for 3D geometries to train "visuomotor policies" <elib>Florence20</elib>.
-      The name "visuomotor" is chosen to emphasize that the policy is trained to predict
-      actions directly from RGB camera images, using architectures similar to the one
-      pictured below. In retrospect, I probably should have more fully recognized the
-      potential from the <a href="https://www.youtube.com/watch?v=Q4bMcUk6pcw">original
-      visuomotor policy paper</a> <elib>Levine16</elib>. But for me, I wasn't fully
-      convinced until I got to see directly how the model was trained, and until I got
-      to experience the incredibly impressive robustness that was possible in the
-      roll-outs, even with a relatively modest amount of robot training data (the visual
-      encoder backbone at that time was a ResNet pretrained on ImageNet).</p>
-
+      <p>In 2016, a few years after the start of the deep learning revolution,
+      <elib>Levine16</elib> introduced the concept of a "visuomotor policy", and
+      produced <a href="https://www.youtube.com/watch?v=Q4bMcUk6pcw">fairly stunning
+      videos</a> of robots performing complicated tasks. The name "visuomotor" is chosen
+      to emphasize that the policy is trained to predict actions directly from RGB
+      camera images, using architectures similar to the one pictured below; in a sense
+      this was a return to the early ideas of <elib>Pomerleau88</elib>, but now powered
+      with deep learning architectures and pretraining.</p>
+      
       <figure><img width="60%" src="figures/visuomotor.svg"/><figcaption>The (now)
       classical visuomotor policy architecture, adapted from
       <elib>Levine16+Florence20</elib>. The emphasis here is that $z$ is a <i>learned
       state representation</i> which encodes the state of the environment.
       </figcaption></figure>
+
+      <p>My own journey with imitation learning started with a <a
+      href="https://sites.google.com/view/visuomotor-correspondence">project led by Pete
+      Florence and Lucas Manuelli</a> on using a particular form of self-supervised
+      learning for 3D geometries to train the policies <elib>Florence20</elib>. For me,
+      this was the first I got to really experience directly how the model was trained,
+      and I got to experience the incredibly impressive robustness that was possible in
+      the roll-outs, even with a relatively modest amount of robot training data.</p>
 
       <p>Writing feedback controllers which operate directly on the RGB camera images
       was something entirely new for me. We had been using RGB-D cameras to do some
