@@ -74,13 +74,13 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
   learning. Inverse RL (aka inverse optimal control) attempts to learn a cost function
   from the data, and then uses potentially more traditional optimal control approaches
   to synthesize a policy for this cost function, in the hopes of generalizing
-  significantly beyond the demonstration data.</p>
+  significantly beyond the demonstration data. See
+  <elib>Argall09+Bagnell15+Osa18</elib> for some fairly recent surveys, though
+  admittedly they appeared a bit before the latest boom.</p>
   
   <p>I think it's fair to say that today, in 2024, behavior cloning is once again taking
   the robotics world by storm (especially in manipulation research), and it now seems
-  like the shortest path to building "robot foundation models". We'll devote most of
-  this chapter to it.
-  </p>
+  like the shortest path to building "robot foundation models". We'll devote most of this chapter to it.</p>
 
   <section><h1>Behavior cloning</h1>
 
@@ -142,8 +142,9 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     <p>Let me make one important point. Sometimes people say that BC is fundamentally
     limited because it can never outperform the human demonstrator. But that is not
     strictly true. <todo>cite the classic result; i forget which classic paper it came
-    from</todo> Certainly Chat-GPT can produce text output that by some metrics
-    surpasses the capabilities of any one human.</p>
+    from. Chowdery23 figure 6 is relevant, but they seem to hedge a bit because perhaps
+    the metric isn't great.</todo> Certainly Chat-GPT can produce text output that by
+    some metrics surpasses the capabilities of any one human.</p>
   
     <p>There is also a precident for combining BC with other methods to improve beyond
     the original demonstrations. For DeepMind's AlphaGo<elib>Silver16</elib>, behavior
@@ -284,7 +285,9 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       $$\bu_{k-1} = \bu_k + (\sigma_{k-1} - \sigma_k)f_\theta(\bu_k,
       \sigma_k).$$ This specific parameterization of the update (and my
       preferred notation more generally) comes from
-      <elib>Permenter23</elib>.</p>
+      <elib>Permenter23</elib>. I've presented the deterministic denoiser here, but some
+      analysis suggests that Langevin sampling can improve performance if one takes many
+      denoising steps<elib>Xu23</elib>.</p>
       
       <p>Diffusion models have a slightly convoluted history. The term
       "diffusion" came from a paper <elib>Sohl-Dickstein15</elib>
@@ -512,6 +515,24 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 <div id="references"><section><h1>References</h1>
 <ol>
 
+<li id=Argall09>
+<span class="author">Brenna D Argall and Sonia Chernova and Manuela Veloso and Brett Browning</span>, 
+<span class="title">"A survey of robot learning from demonstration"</span>, 
+<span class="publisher">Robotics and autonomous systems</span>, vol. 57, no. 5, pp. 469--483, <span class="year">2009</span>.
+
+</li><br>
+<li id=Bagnell15>
+<span class="author">J.A. Bagnell</span>, 
+<span class="title">"An Invitation to Imitation"</span>, 
+Tech. Report, CMU-RI-TR-15-08, March, <span class="year">2015</span>.
+
+</li><br>
+<li id=Osa18>
+<span class="author">Takayuki Osa and Joni Pajarinen and Gerhard Neumann and J Andrew Bagnell and Pieter Abbeel and Jan Peters and others</span>, 
+<span class="title">"An algorithmic perspective on imitation learning"</span>, 
+<span class="publisher">Foundations and Trends in Robotics</span>, vol. 7, no. 1-2, pp. 1--179, <span class="year">2018</span>.
+
+</li><br>
 <li id=Pomerleau88>
 <span class="author">Dean A Pomerleau</span>, 
 <span class="title">"Alvinn: An autonomous land vehicle in a neural network"</span>, 
@@ -631,6 +652,12 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 <span class="author">Frank Permenter and Chenyang Yuan</span>, 
 <span class="title">"Interpreting and Improving Diffusion Models Using the Euclidean Distance Function"</span>, 
 <span class="publisher">arXiv preprint arXiv:2306.04848</span>, <span class="year">2023</span>.
+
+</li><br>
+<li id=Xu23>
+<span class="author">Yilun Xu and Mingyang Deng and Xiang Cheng and Yonglong Tian and Ziming Liu and Tommi Jaakkola</span>, 
+<span class="title">"Restart Sampling for Improving Generative Processes"</span>, 
+<span class="publisher">Advances in Neural Information Processing Systems</span> , vol. 36, pp. 76806--76838, <span class="year">2023</span>.
 
 </li><br>
 <li id=Sohl-Dickstein15>
