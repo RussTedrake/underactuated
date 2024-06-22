@@ -6,17 +6,6 @@ poetry install --with=dev,docs
 ```
 (in a virtual environment) to install the requirements.
 
-## Bazel currently uses requirements-bazel.txt, which we generate from poetry
-
-To generate it, run
-```
-poetry lock
-./book/htmlbook/PoetryExport.sh
-```
-
-Hopefully [direct poetry
-support](https://github.com/bazelbuild/rules_python/issues/340) in bazel will land soon, or I can use [rules_python_poetry](https://github.com/AndrewGuenther/rules_python_poetry) directly; but it looks like it will still require poetry to fix [their issue](# https://github.com/python-poetry/poetry-plugin-export/issues/176).
-
 ## Please install the pre-commit hooks
 
 ```
@@ -51,6 +40,20 @@ Then run
 bazel test //...
 ```
 
+## Updating dependencies
+
+Bazel currently uses requirements-bazel.txt, which we generate from poetry
+
+To generate it, run
+```
+poetry lock
+./book/htmlbook/PoetryExport.sh
+```
+
+Hopefully [direct poetry
+support](https://github.com/bazelbuild/rules_python/issues/340) in bazel will land soon, or I can use [rules_python_poetry](https://github.com/AndrewGuenther/rules_python_poetry) directly; but it looks like it will still require poetry to fix [their issue](# https://github.com/python-poetry/poetry-plugin-export/issues/176).
+
+
 ## To update the pip wheels
 
 Note: This should really only happen when drake publishes new wheels (since I'm
@@ -63,6 +66,13 @@ rm -rf dist/*
 poetry publish --build
 ```
 (Use `poetry config pypi-token.pypi <token>` once first; the token in saved with my other passwords)
+
+## Publishing to Deepnote
+
+```
+cd book
+./Deepnote.sh
+```
 
 ## Building the documentation
 
