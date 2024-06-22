@@ -1,0 +1,26 @@
+<sdf version="1.5">
+  <model name="Robot">
+    <link name="Robot">
+      <visual name="visual_Ceiling">
+        <pose>0.0 0.0 3.0 0.0 0.0 0.0</pose>
+        <geometry>
+          <box>
+            <size>5.0 5.0 0.10000000149011612</size>
+          </box>
+        </geometry>
+        <material>
+          <diffuse>0.5 0.5 0.5 0.1</diffuse>
+        </material>
+
+      </visual>
+      <collision name="collision_Ceiling">
+        <pose>0.0 0.0 3.0 0.0 0.0 0.0</pose>
+        <geometry>
+          <box>
+            <size>5.0 5.0 0.10000000149011612</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+  </model>
+</sdf>

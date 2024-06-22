@@ -1,0 +1,41 @@
+<sdf version="1.5">
+  <model name="wall_with_center_door_internal">
+    <link name="wall_with_center_door_internal">
+      <visual name="visual">
+        <pose>0 0 0 0 0 -1.57</pose>
+        <geometry>
+          <mesh>
+            <uri>package://ngcs_models/room_assets/wall_with_center_door_internal.obj</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision_Wall.020">
+        <pose>0.0 -1.5569394826889038 1.5 0.0 0.0 0.0</pose>
+        <geometry>
+          <box>
+            <size>0.25 1.8581310510635376 3.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <collision name="collision_Wall.023">
+        <pose>0.0 1.5570484399795532 1.5 0.0 0.0 0.0</pose>
+        <geometry>
+          <box>
+            <size>0.25 1.8626335859298706 3.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <collision name="collision_Wall.024">
+        <pose>0.0 0.0 2.5 0.0 0.0 0.0</pose>
+        <geometry>
+          <box>
+            <size>0.25 1.25 1.0</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+    <frame name="frame_InDoor.001">
+      <pose>0.0 0.0 1.0 0.0 0.0 0.0</pose>
+    </frame>
+  </model>
+</sdf>
