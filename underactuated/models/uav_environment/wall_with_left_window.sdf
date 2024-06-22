@@ -5,7 +5,7 @@
         <pose>0 0 0 0 0 -1.57</pose>
         <geometry>
           <mesh>
-            <uri>package://ngcs_models/room_assets/wall_with_left_window.obj</uri>
+            <uri>package://underactuated/models/uav_environment/wall_with_left_window.obj</uri>
           </mesh>
         </geometry>
       </visual>
