@@ -41,3 +41,13 @@ rt_ipynb_test(
         "//underactuated",
     ],
 )
+
+rt_ipynb_test(
+    name = "gcs_quadrotor",
+    srcs = ["gcs_quadrotor.ipynb"],
+    data = ["//underactuated/models/uav_environment"],
+    deps = [
+        "//underactuated",
+        "//underactuated:uav_environment",
+    ],
+)

@@ -78,3 +78,15 @@ rt_py_library(
     visibility = ["//visibility:public"],
     deps = ["underactuated"],
 )
+
+rt_py_library(
+    name = "uav_environment",
+    srcs = ["uav_environment.py"],
+    imports = [".."],
+    visibility = ["//visibility:public"],
+    deps = [
+      "underactuated",
+      requirement("lxml"),
+      requirement("scipy"),
+    ],
+)
