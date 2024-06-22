@@ -1,0 +1,25 @@
+<sdf version="1.5">
+  <model name="Robot">
+    <link name="Robot">
+      <visual name="visual_Wall.019">
+        <pose>0.0 0.0 0.0 0.0 0.0 -1.57</pose>
+        <geometry>
+          <mesh>
+            <uri>package://ngcs_models/room_assets/half_wall_vertical.obj</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision_Wall.019">
+        <pose>0.0 0.0 0.75 0.0 0.0 0.0</pose>
+        <geometry>
+          <box>
+            <size>0.25 5.0 1.5</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+    <frame name="frame_AboveHalfWall">
+      <pose>0.0 0.0 2.25 0.0 0.0 0.0</pose>
+    </frame>
+  </model>
+</sdf>

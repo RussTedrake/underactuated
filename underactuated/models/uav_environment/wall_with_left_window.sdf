@@ -1,0 +1,57 @@
+<sdf version="1.5">
+  <model name="wall_with_left_window">
+    <link name="wall_with_left_window">
+      <visual name="visual">
+        <pose>0 0 0 0 0 -1.57</pose>
+        <geometry>
+          <mesh>
+            <uri>package://ngcs_models/room_assets/wall_with_left_window.obj</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <collision name="collision_Wall.005">
+        <pose>0.0 -2.261723518371582 1.5 0.0 0.0 0.0</pose>
+        <geometry>
+          <box>
+            <size>0.25 0.49168092012405396 3.0</size>
+          </box>
+        </geometry>
+      </collision>
+      <collision name="collision_Wall.006">
+        <pose>0.0 -0.8953216671943665 0.02500000037252903 0.0 0.0 0.0</pose>
+        <geometry>
+          <box>
+            <size>0.25 1.195443034172058 0.05000000074505806</size>
+          </box>
+        </geometry>
+      </collision>
+      <collision name="collision_Wall.007">
+        <pose>0.0 0.0 2.625 0.0 0.0 0.0</pose>
+        <geometry>
+          <box>
+            <size>0.25 5.0 0.7505852580070496</size>
+          </box>
+        </geometry>
+      </collision>
+      <collision name="collision_Wall.009">
+        <pose>0.0 0.0 0.35619157552719116 0.0 0.0 0.0</pose>
+        <geometry>
+          <box>
+            <size>0.25 5.0 0.7154595851898193</size>
+          </box>
+        </geometry>
+      </collision>
+      <collision name="collision_Wall.010">
+        <pose>0.0 1.0085575580596924 1.5 0.0 0.0 0.0</pose>
+        <geometry>
+          <box>
+            <size>0.25 2.9878196716308594 3.0</size>
+          </box>
+        </geometry>
+      </collision>
+    </link>
+    <frame name="frame_InWindow">
+      <pose>0.0 -1.25 1.5 0.0 0.0 0.0</pose>
+    </frame>
+  </model>
+</sdf>
