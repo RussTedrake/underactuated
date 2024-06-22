@@ -3,12 +3,12 @@
 from enum import Enum
 from typing import Dict, List, Optional, Sequence, Set, Tuple
 
+# Define the IBM color map
+import matplotlib.colors as mcolors
 import numpy as np
 from lxml.etree import Element, ElementTree, SubElement, tostring
-from ngcs.helpers import shift_composite_trajectory
-from ngcs.models import get_models_directory
-from ngcs.visualization import TraceVisualizer, cmap_ibm
-from pydrake.common import Parallelism
+
+# from ngcs.visualization import TraceVisualizer, cmap_ibm
 from pydrake.common.value import Value
 from pydrake.geometry import FramePoseVector, Meshcat, Rgba, SceneGraph
 from pydrake.geometry.optimization import (
@@ -31,13 +31,21 @@ from pydrake.systems.framework import (
     BasicVector,
     Context,
     DiagramBuilder,
+    EventStatus,
     InputPort,
     LeafSystem,
 )
 from pydrake.systems.primitives import TrajectorySource
-from pydrake.trajectories import CompositeTrajectory, Trajectory
+from pydrake.trajectories import BezierCurve, CompositeTrajectory, Trajectory
 from pydrake.visualization import ApplyVisualizationConfig, VisualizationConfig
 from scipy.spatial import ConvexHull
+
+# from ngcs.helpers import shift_composite_trajectory
+# from ngcs.models import get_models_directory
+from underactuated import ConfigureParser
+
+colors = ["#648FFF", "#DC267F", "#FE6100", "#FFB000"]  # "#785EF0"]
+cmap_ibm = mcolors.LinearSegmentedColormap.from_list("IBM", colors)
 
 CONVEX_GCS_OPTION = GraphOfConvexSetsOptions()
 CONVEX_GCS_OPTION.solver = (
@@ -62,7 +70,7 @@ CONVEX_GCS_OPTION.solver_options.SetOption(GurobiSolver.id(), "MIPGap", 1e-3)
 CONVEX_GCS_OPTION.solver_options.SetOption(GurobiSolver.id(), "TimeLimit", 3600.0)
 CONVEX_GCS_OPTION.max_rounded_paths = 12
 CONVEX_GCS_OPTION.preprocessing = True
-CONVEX_GCS_OPTION.parallelize = Parallelism(CONVEX_GCS_OPTION.max_rounded_paths)
+# CONVEX_GCS_OPTION.parallelize = Parallelism(CONVEX_GCS_OPTION.max_rounded_paths)
 
 NONLINEAR_GCS_OPTION = GraphOfConvexSetsOptions()
 NONLINEAR_GCS_OPTION.max_rounded_paths = 12
@@ -88,8 +96,8 @@ restriction_solver_options.SetOption(SnoptSolver.id(), "Major Iterations Limit",
 restriction_solver_options.SetOption(SnoptSolver.id(), "Superbasics limit", 209)
 NONLINEAR_GCS_OPTION.restriction_solver_options = restriction_solver_options
 NONLINEAR_GCS_OPTION.preprocessing = True
-NONLINEAR_GCS_OPTION.use_initial_guess = False
-NONLINEAR_GCS_OPTION.parallelize = Parallelism(NONLINEAR_GCS_OPTION.max_rounded_paths)
+# NONLINEAR_GCS_OPTION.use_initial_guess = False
+# NONLINEAR_GCS_OPTION.parallelize = Parallelism(NONLINEAR_GCS_OPTION.max_rounded_paths)
 
 
 # The following constants are used to define the environment.
@@ -110,6 +118,106 @@ QUAD_COPTER_DIAMETER = 0.4  # meters.
 ASSET_WIDTH = 1  # meters.
 
 
+def shift_composite_trajectory(
+    traj: CompositeTrajectory, offset_time: float
+) -> CompositeTrajectory:
+    """Shifts a composite trajectory by a given offset time.
+
+    Args:
+        traj: A composite trajectory consisting of bezier curves.
+        offset_time: The amount of time to shift the trajectory by.
+
+    Returns:
+        A composite trajectory shifted by offset_time.
+    """
+    bezier_curves: List[BezierCurve] = []
+    for i in range(traj.get_number_of_segments()):
+        traj_segment = traj.segment(i)
+        if not isinstance(traj_segment, BezierCurve):
+            raise ValueError("Trajectory is not a composite of bezier curves.")
+
+        bezier_curves.append(
+            BezierCurve(
+                traj_segment.start_time() + offset_time,
+                traj_segment.end_time() + offset_time,
+                traj_segment.control_points(),
+            )
+        )
+    return CompositeTrajectory(bezier_curves)  # type: ignore
+
+
+class TraceVisualizer(LeafSystem):
+    """A meshcat visualizer for cartesian positions."""
+
+    # The tolerance for checking if the position has changed.
+    POSITION_TOLERANCE = 1e-2
+
+    def __init__(
+        self,
+        meshcat: Meshcat,
+        line_width: float = 1.0,
+        rgba: Rgba = Rgba(0.5, 0.5, 0.5, 0.5),
+    ) -> None:
+        """Trace a given trajectory input.
+
+        Input_ports:
+            position: The cartesian position to trace (x, y, z).
+
+        Args:
+            meshcat: The meshcat instance to use.
+            line_width: The width of the trace line.
+            rgba: The color of the trace line.
+        """
+        super().__init__()
+        self._meshcat = meshcat
+        self._line_width = line_width
+        self._trace_color = rgba
+
+        self._input_port = self.DeclareVectorInputPort("position", BasicVector(3))
+        self.DeclarePerStepPublishEvent(self.visualize_trace)
+
+        self._last_position = np.zeros(3)
+        self._position_cnt = 0
+
+    def visualize_trace(self, context: Context) -> EventStatus:
+        """Visualize the trace of the input position."""
+        position = self._input_port.Eval(context)
+
+        if self._position_cnt:
+            if not np.allclose(
+                position, self._last_position, atol=self.POSITION_TOLERANCE
+            ):
+                self._meshcat.SetLine(
+                    path=f"traces/{self.get_name()}/{self._position_cnt}",
+                    vertices=np.array([self._last_position, position]).T,
+                    line_width=self._line_width,
+                    rgba=self._trace_color,
+                )
+
+                # Show the trace at its corresponding time.
+                self._meshcat.SetProperty(
+                    path=f"traces/{self.get_name()}/{self._position_cnt}",
+                    property="visible",
+                    value=False,
+                    time_in_recording=0.0,
+                )
+
+                self._meshcat.SetProperty(
+                    path=f"traces/{self.get_name()}/{self._position_cnt}",
+                    property="visible",
+                    value=True,
+                    time_in_recording=context.get_time(),
+                )
+
+                self._last_position = position
+                self._position_cnt += 1
+        else:
+            self._last_position = position
+            self._position_cnt += 1
+
+        return EventStatus.Succeeded()
+
+
 def add_static_model_to_environment(
     model_item: Element, name: str, uri: str, X_WB: RigidTransform
 ) -> None:
@@ -124,7 +232,7 @@ def add_static_model_to_environment(
             be added.
         name: The name of the model.
         uri: The URI for the model, used to locate the model resource. We will
-            always prepend 'package://ngcs_models/' to the provided URI.
+            always prepend 'package://underactuated/models/' to the provided URI.
         X_WB: A transformation representing the pose of the model.
     """
     include_item = SubElement(model_item, "include")
@@ -134,7 +242,7 @@ def add_static_model_to_environment(
 
     # Add the URI.
     uri_item = SubElement(include_item, "uri")
-    uri_item.text = "package://ngcs_models/" + uri
+    uri_item.text = "package://underactuated/models/" + uri
 
     # Add the pose.
     static_item = SubElement(include_item, "static")
@@ -257,7 +365,7 @@ class Building(Asset):
             y: The y coordinate of the wall.
             direction: The direction of the wall.
         """
-        sdf_filename = "room_assets/wall_with_center_door_internal.sdf"
+        sdf_filename = "uav_environment/wall_with_center_door_internal.sdf"
 
         door_width = 1.25  # meters.
         door_height = 2  # meters.
@@ -341,7 +449,7 @@ class Building(Asset):
             y: The y coordinate of the center of the wall.
             direction: The direction of the wall.
         """
-        sdf_filename = "room_assets/half_wall_vertical.sdf"
+        sdf_filename = "uav_environment/half_wall_vertical.sdf"
 
         margin = WALL_THICKNESS + QUAD_COPTER_DIAMETER
 
@@ -417,7 +525,7 @@ class Building(Asset):
             y: The y coordinate of the center of the wall.
             direction: The direction of the wall.
         """
-        sdf_filename = "room_assets/half_wall_horizontal_mirror.sdf"
+        sdf_filename = "uav_environment/half_wall_horizontal_mirror.sdf"
 
         margin = WALL_THICKNESS + QUAD_COPTER_DIAMETER
         # Make the collision free sets.
@@ -492,7 +600,7 @@ class Building(Asset):
             y: The y coordinate of the center of the wall.
             direction: The direction of the wall.
         """
-        sdf_filename = "room_assets/half_wall_horizontal.sdf"
+        sdf_filename = "uav_environment/half_wall_horizontal.sdf"
 
         margin = WALL_THICKNESS + QUAD_COPTER_DIAMETER
         # Make the collision free sets.
@@ -655,7 +763,7 @@ class Building(Asset):
             y: The y coordinate of the center of the door.
             direction: The direction of the wall the door is in.
         """
-        sdf_filename = "room_assets/wall_with_center_door.sdf"
+        sdf_filename = "uav_environment/wall_with_center_door.sdf"
 
         door_width = 1.25  # meters.
         door_height = 2  # meters.
@@ -741,7 +849,7 @@ class Building(Asset):
             y: The y coordinate of the center of the wall.
             direction: The direction of the wall.
         """
-        sdf_filename = "room_assets/wall_with_left_window.sdf"
+        sdf_filename = "uav_environment/wall_with_left_window.sdf"
 
         window_width = 1.5  # meters.
         window_offset = CELL_SIZE / 4
@@ -860,7 +968,7 @@ class Building(Asset):
             y: The y coordinate of the center of the wall.
             direction: The direction of the wall.
         """
-        sdf_filename = "room_assets/wall_with_right_window.sdf"
+        sdf_filename = "uav_environment/wall_with_right_window.sdf"
 
         window_width = 1.5  # meters.
         window_offset = CELL_SIZE / 4
@@ -979,7 +1087,7 @@ class Building(Asset):
             y: The y coordinate of the center of the wall.
             direction: The direction of the wall.
         """
-        sdf_filename = "room_assets/wall_with_windows.sdf"
+        sdf_filename = "uav_environment/wall_with_windows.sdf"
 
         window_width = 1.5  # meters.
         window_offset = CELL_SIZE / 4
@@ -1101,7 +1209,7 @@ class Building(Asset):
             y: The y coordinate of the center of no wall.
             direction: The direction of the no wall.
         """
-        sdf_filename = "room_assets/just_wall.sdf"
+        sdf_filename = "uav_environment/just_wall.sdf"
 
         match direction:
             case Direction.TOP:
@@ -1226,7 +1334,7 @@ class OutdoorDecoration(Asset):
                 of type indoor. This is a list of directions of all the
                 neighbors that are of type indoor.
         """
-        sdf_filename = "room_assets/tree.sdf"
+        sdf_filename = "uav_environment/tree.sdf"
         tree_width = 1.0
 
         lb, ub = cls.compute_cell_bounds(x, y, indoor_neighbor_directions)
@@ -1451,13 +1559,13 @@ class UavEnvironment:
                         add_static_model_to_environment(
                             model_item,
                             f"indoor/floor/{x_idx}_{y_idx}",
-                            "room_assets/floor_indoor.sdf",
+                            "uav_environment/floor_indoor.sdf",
                             X_Cell,
                         )
                         add_static_model_to_environment(
                             model_item,
                             f"indoor/ceiling/{x_idx}_{y_idx}",
-                            "room_assets/ceiling.sdf",
+                            "uav_environment/ceiling.sdf",
                             X_Cell,
                         )
 
@@ -1537,7 +1645,7 @@ class UavEnvironment:
                         add_static_model_to_environment(
                             model_item,
                             f"outdoor/floor/{x_idx}_{y_idx}",
-                            "room_assets/floor_outdoor.sdf",
+                            "uav_environment/floor_outdoor.sdf",
                             X_Cell,
                         )
 
@@ -1679,7 +1787,7 @@ class UavEnvironment:
         builder = DiagramBuilder()
         plant, scene_graph = AddMultibodyPlantSceneGraph(builder, time_step=1e-3)
         parser = Parser(plant)
-        parser.package_map().AddPackageXml(get_models_directory() + "/package.xml")
+        ConfigureParser(parser)
         parser.AddModelsFromString(self.sdf_as_string, "sdf")
         plant.Finalize()
 
@@ -1844,7 +1952,7 @@ class QuadrotorGeometry(LeafSystem):
         parser.SetAutoRenaming(True)
 
         model_instance_indices = parser.AddModelsFromUrl(
-            "package://drake_models/quadrotor/quadrotor.urdf"
+            "package://drake_models/skydio_2/quadrotor.urdf"
         )
         plant.Finalize()
 

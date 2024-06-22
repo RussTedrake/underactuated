@@ -5,7 +5,7 @@
         <pose>0.0 0.0 0.0 0.0 0.0 0.0</pose>
         <geometry>
           <mesh>
-          <uri>package://ngcs_models/room_assets/floor.obj</uri>
+          <uri>package://underactuated/models/uav_environment/floor.obj</uri>
           </mesh>
         </geometry>
 
