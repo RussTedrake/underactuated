@@ -84,8 +84,8 @@ rt_ipynb_test(
 )
 
 rt_ipynb_test(
-    name = "van_der_pol",
-    srcs = ["van_der_pol.ipynb"],
+    name = "van_der_pol_w_alternations",
+    srcs = ["van_der_pol_w_alternations.ipynb"],
     deps = [
       "//underactuated",
     ],
