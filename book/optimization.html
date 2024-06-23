@@ -521,9 +521,9 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     
       <p>Graphs of Convex Sets (GCS) is a general optimization framework for combining
       combinatorial optimization problems that are naturally described on a graph (e.g.
-      network flows <elib>Ahuja93</elib>, traveling salesman, etc) with continuous
-      optimization. It was originally introduced in <elib>Marcucci21</elib>, and we have
-      a mature <a
+      shortest path problems <elib>Ahuja93</elib>, traveling salesperson, minimum
+      spanning tree, facility location, etc) with continuous optimization. It was
+      originally introduced in <elib>Marcucci21</elib>, and we have a mature <a
       href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1geometry_1_1optimization_1_1_graph_of_convex_sets.html">implementation
       in Drake</a>. GCS extensions to the "shortest path problem" are very natural in
       optimal control, so I will use the shortest path problem as the running example
@@ -555,25 +555,17 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         reflow -->
         \tag{path length} \\ \mathrm{s.t.} \quad & \sum_{j \in E_i^{out}} \varphi_{ij} +
         \delta_{ti} = \sum_{j \in E_i^{in}} \varphi_{ji} + \delta_{si},& \forall i \in V, <!-- no reflow -->
-        \tag{flow constraints} \\ & \varphi_{ij} \ge 0, & \forall (i,j) \in E. 
+        \tag{flow constraints} \\ & \varphi_{ij} \in \{0, 1\}, & \forall (i,j) \in E. 
         <!-- no reflow -->
-        \tag{binary relaxation} \end{align} The (path length) is simply the sum of the
+        \tag{binary constraints} \end{align} The (path length) is simply the sum of the
         edge costs for all edges in the solution path. The (flow constraints) are a
         clever way of encoding that the sum of the flows in is equal to the sum of the
         flows out (except at the source and the target, which are modified by
-        $\delta_{si}$ and $\delta_{ti}$, respectively). Given our formulation, one might
-        expect that the last line would be, $\varphi_{ij} \in \{0, 1\}$, but it turns
-        out that the relaxation $\varphi_{ij} \in [0, 1]$ is sufficient. In fact, we
-        don't even need the upper bound on $\varphi_{ij}$ here, leading to the further
-        simplification to th (binary relaxation). Here's the essential point: despite
-        this being a relaxation of the binary optimization problem, it can easily be
-        shown that the relaxation is always tight: the solution to this linear program
-        will give the optimal solution to the shortest path problem.</p>
+        $\delta_{si}$ and $\delta_{ti}$, respectively). 
         </p>
 
-        <p>
-        GCS provides a simple, but powerful generalization to this problem: whenever we
-        visit a vertex in the graph, we are also allowed to pick one element out of a
+        <p>GCS provides a simple, but powerful generalization to this problem: whenever
+        we visit a vertex in the graph, we are also allowed to pick one element out of a
         convex set associated with that vertex. Edge lengths are allowed to be convex
         functions of the continuous variables in the corresponding sets, and we can also
         write convex constraints on the edges (which must be satisfied by any solution
@@ -589,21 +581,30 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         additional convex constraints on the vertices and the edges.
         </p>
 
-        <p>The shortest path problem on a graph of convex sets can encode
-        problems that are NP-Hard, but these can be formulated as a mixed-integer
-        convex optimization (MICP). What makes the framework so powerful is that
-        this MICP has a very strong and efficient <i>convex relaxation</i>;
-        meaning that if you relax the binary variables to continuous variables
-        you get (nearly) the solution to the original MICP.  This means that you
-        can solve GCS problems to global optimality orders of magnitude faster
-        than previous transcriptions. But in practice, we find that <i>solving
-        only the convex relaxation</i> (plus a little rounding) is almost always
-        sufficient to recover the optimal solution. Nowadays, we almost never
+        <p>GCS is relatively new, but much is known about the integer programming
+        formulation of the original shortest path problem. In particular, it is well
+        known that if all costs are positive, then if we take the natural convex
+        relaxation of the last line, replacing $\varphi_{ij} \in \{0, 1\}$ with
+        $\varphi_{ij} \in [0, 1]$, then this convex relaxation \emph{is always tight}.
+        The solution to this linear program will give the optimal solution to the
+        shortest path problem! Technically, in this particular instance, we can even
+        relax the last line to $\varphi_{ij} \ge 0$.</p>
+
+        <p>Although the shortest path problem on a graph of convex sets as written has a
+        bilinear objective, it can naturally be described by a mixed-integer convex
+        optimization problem (MICP). Indeed, GCS can encode problems that are NP-Hard,
+        but once again we can study the tightness of the natural convex relaxation of
+        the binary variables. What makes the framework so powerful is that we have
+        developed a convex relaxation for GCS which is both efficient and very strong.
+        This means that you can solve GCS problems to global optimality orders of
+        magnitude faster than previous transcriptions. But in practice, we find that
+        <i>solving only the convex relaxation</i> (plus a little rounding) is almost
+        always sufficient to recover the optimal solution. Nowadays, we almost never
         solve the full MICP in our robotics applications of GCS.</p>
         
-        <p>Being able to solve combinatorial problems without an MIP solver is a big deal
-        for me in the context of these notes (and for companies): the best solvers for MIP
-        are all commercially licensed (and very expensive). Saying that we can solve hard
+        <p>Being able to solve combinatorial problems without an MIP solver is a big
+        deal for me in the context of these notes: the best solvers for MIP are all
+        commercially licensed (and very expensive). Saying that we can solve hard
         instances with only convex optimization also means that we can solve them with
         open-sourced solvers.</p>
         
@@ -622,10 +623,10 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
           part="2.3.3">Boyd04a</elib>, multiplying the binary variables times the
           convex costs and constraints can be done without (significantly)
           increasing the complexity class of the optimization.</li>
-        </ul> The GCS formulation has many nice properties. For instance, our
-        convex relaxation is guaranteed to be tight in the case when all of the
-        sets are points, reducing the problem back to the classical shortest path
-        on a discrete graph. <elib>Marcucci21</elib> has all of the
+        </ul> The GCS formulation has many nice properties. For instance, our convex
+        relaxation is guaranteed to be tight in the case when all of the sets are
+        points, reducing the problem back to the classical shortest path on a discrete
+        graph. <elib>Marcucci21</elib> and <elib>Marcucci24a</elib> have all of the
         details!</p></details>
 
         <example><h1>An example Graph of Convex Sets in 2D</h1>
