@@ -1491,6 +1491,10 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         <p>More recently, <elib>Wrangel24</elib> showed that we can effectively handle
         the non-convexity of the derivative constraints (with time-scaling) by using convex approximations of the constraints in the (global) GCS search, and then using the exact nonconvex version of these constraints in the final rounding step.</p>
 
+        <p>Try it out for yourself:
+        <script>document.write(notebook_link('trajopt', "gcs_quadrotor"))</script>
+        </p>
+
         <figure><img width="90%" src="data/drones.png"/>
         <figcaption>Three candidate trajectories for a quadrotor navigating from the bottom left corner to the top right room of a building. The blue trajectory (convex GCS trajectory optimization) is fast but lacks smoothness and exhibits unrealistic roll due to high initial accelerations. The yellow and red trajectories (proposed method) enforce higher-order continuity, limit accelerations, and achieve smoother paths while the yellow trajectory also minimizes snap. (reproduced from <elib>Wrangel24</elib>)</figcaption>
         </figure>
@@ -1498,7 +1502,6 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         <p>You can check out the trajectories in <a href="data/drones_crazy.html">the
         meshcat animation</a>.</p>
 
-        <p>Deepnote example notebook coming soon!</p>
       </example>
 
     </subsection>
