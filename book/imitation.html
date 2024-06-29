@@ -97,22 +97,26 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     fine-tuned to make them more aligned with human preferences <elib>Ziegler19</elib>).
     OpenAI's GPT models are <a href="sysid.html#autoregressive">autoregressive
     models</a> that predict the next token given a "context" of recent tokens
-    <elib>Radford18+Radford19+Brown20+Bubeck23</elib>. More recently, we've seen the extension to multi-modal models, such as visually-conditioned language models (like GPT-4V and LLaVa <elib>Liu23</elib>) with an increasing wealth of open-source reproductions <elib>Karamcheti24+Laurençon24</elib>.</p>
+    <elib>Radford18+Radford19+Brown20+Bubeck23</elib>. More recently, we've seen the
+    extension to multi-modal models, such as visually-conditioned language models (VLMs)
+    like GPT-4V and LLaVa <elib>Liu23</elib> with an increasing wealth of open-source
+    reproductions <elib>Karamcheti24+Laurençon24</elib>.</p>
     
     <p>Is predicting actions fundamentally different from next-token prediction in
     language? There are a few reasons why it might be. Actions are continuous and
     high-dimensional, whereas language tokens are discrete. Our control systems get put
     into the feedback loop with physics, and have to deal with stochasticity from the
-    environment that LLMs don't experience. However, I would say that in 2024, there
-    were two main lines of work which I believe made people realize that predicting
-    future actions may not be so fundamentally different than language, at least for
-    dexterous manipulation. Those were the <a
+    environment that LLMs don't experience. Google DeepMind released the RT series of
+    "vision-language-action" (VLA) models (RT-1, RT-2, and RT-2-X) which started to show
+    that predicting actions may not be so fundamentally different than language, at
+    least for simple pick-and-place tasks. Then in 2024, there were two main lines of
+    work which convincingly demonstrated this capability could even extend to
+    surprisngly dexterous manipulation. Those were the <a
     href="https://diffusion-policy.cs.columbia.edu/">Diffusion Policy</a>
     <elib>Chi24</elib> and the Action Chunking Transformer (ACT) from the <a
     href="https://tonyzhaozh.github.io/aloha/">ALOHA project</a>
-    <elib>Zhao23</elib>. Of course, these were built on a long line of progress
-    which started anew in the age of deep learning (e.g.
-    <elib>Levine16+Florence20+Florence22</elib>).</p>
+    <elib>Zhao23</elib>. Of course, these were built on a long line of progress on
+    "visuomotor policies" which we'll discuss below.</p>
 
     <figure>
     <iframe width="560" height="315" src="https://www.youtube.com/embed/w-CGSQAO5-Q?si=tNIJzVegfsIwb7tK" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
@@ -140,11 +144,14 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     vistas enabled by these high-capacity models.</p>
     
     <p>Let me make one important point. Sometimes people say that BC is fundamentally
-    limited because it can never outperform the human demonstrator. But that is not
-    strictly true. <todo>cite the classic result; i forget which classic paper it came
-    from. Chowdery23 figure 6 is relevant, but they seem to hedge a bit because perhaps
-    the metric isn't great.</todo> Certainly Chat-GPT can produce text output that by
-    some metrics surpasses the capabilities of any one human.</p>
+    limited because it can never outperform the human demonstrator. But one of the early
+    results from behavior cloning was that this limit that is not strictly true.
+    <todo>cite the classic result; i forget which classic paper it came from. Chowdery23
+    figure 6 is relevant, but they seem to hedge a bit because perhaps the metric isn't
+    great.</todo> Certainly Chat-GPT can produce text output that by some metrics
+    surpasses the capabilities of any one human. <a
+    href="https://kempnerinstitute.harvard.edu/research/deeper-learning/transcendence-generative-models-can-outperform-the-experts-that-train-them/">Here</a>
+    is a recent case study of this phenomenon for chess.</p>
   
     <p>There is also a precident for combining BC with other methods to improve beyond
     the original demonstrations. For DeepMind's AlphaGo<elib>Silver16</elib>, behavior
@@ -185,9 +192,10 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       students "if you could only choose one, RGB <i>or</i> depth, which would you
       choose". They chose RGB. One could easily underestimate just how valuable the RGB
       channel is, but there are many situations where a task is unclear or even
-      ambiguous when looking only at a depth image which become clear in RGB, and there
-      are many depth cues in RGB that allow us and our visuomotor policies to be
-      successfull for 3D tasks even without an explicit depth sensor.</p>
+      ambiguous when looking only at a depth image. The ambiguities can often be
+      resolved with the addition of RGB, and there are many depth cues in RGB that allow
+      us and our visuomotor policies to be successfull for 3D tasks even without an
+      explicit depth sensor.</p>
 
       <p>In my experience, control theorists have very satisfying answers to almost any
       dynamics and control problem. But (with a few rare exceptions) they didn't do
@@ -227,16 +235,16 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
   <section><h1>Architectures for visuomotor policies</h1>
   
-    <subsection><h1>(Multi-modal) input encoders</h1>
-    
-      <p>ImageNET, Dense object nets, CLIP-pretrained ViT, VLMs, Spatial VLMs, ... </p>
-
-    </subsection>
-
     <subsection><h1>Output/action decoders</h1>
 
       <p>RT-2. Diffusion policies <elib>Chi24</elib>. Action-chunking transformers
       <elib>Zhao23</elib>.</p>
+
+    </subsection>
+
+    <subsection><h1>(Multi-modal) input encoders</h1>
+    
+      <p>ImageNET, Dense object nets, CLIP-pretrained ViT, VLMs, Spatial VLMs, ... </p>
 
     </subsection>
 
@@ -256,17 +264,18 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
     <subsection><h1>Denoising Diffusion models</h1>
     
-      <p>"Denoising Diffusion" models are an approach to generative AI, made
-      famous by their ability to generate high-resolution photorealistic
-      images. Inspired by the "manifold hypothesis" (e.g. the idea that
-      realistic images live on a low-dimensional manifold in pixel space), the
-      intuition behind denoising diffusion is that we train a model by adding
-      noise to samples drawn from the data distribution, then learn to predict
-      the noise from the noisy images, in order to "denoise" random images back
-      on to the manifold. While image generation made these models famous, they
-      have proven to be highly capable in generating samples from a wide
-      variety of high-dimension continuous distributions, even distributions
-      that are conditioned on high-dimensional inputs.</p>
+      <p>"Denoising Diffusion" models are an approach to generative AI, made famous by
+      their ability to generate high-resolution photorealistic images. Inspired by the
+      "manifold hypothesis" (e.g. the idea that realistic images live on a
+      low-dimensional manifold in pixel space), the intuition behind denoising diffusion
+      is that we train a model by adding noise to samples drawn from the data
+      distribution, then learn to predict the noise from the noisy images, in order to
+      "denoise" random images back on to the manifold. While image generation made these
+      models famous, they have proven to be highly capable in generating samples from a
+      wide variety of high-dimension continuous distributions, even distributions that
+      are conditioned on high-dimensional inputs. I recommend <a
+      href="https://chenyang.co/diffusion.html">this blog post</a> and
+      <elib>Nakkiran24</elib> as excellent introductions.</p>
       
       <p>Let's consider samples $\bu \in \Re^m$ drawn from a training dataset
       $\mathcal{D}.$ Diffusion models are trained to estimate a noise vector
@@ -605,6 +614,12 @@ Tech. Report, CMU-RI-TR-15-08, March, <span class="year">2015</span>.
 <span class="publisher">arXiv preprint arXiv:2304.13705</span>, <span class="year">2023</span>.
 
 </li><br>
+<li id=Silver16>
+<span class="author">David Silver and Aja Huang and Chris J Maddison and Arthur Guez and Laurent Sifre and George Van Den Driessche and Julian Schrittwieser and Ioannis Antonoglou and Veda Panneershelvam and Marc Lanctot and others</span>, 
+<span class="title">"Mastering the game of Go with deep neural networks and tree search"</span>, 
+<span class="publisher">nature</span>, vol. 529, no. 7587, pp. 484--489, <span class="year">2016</span>.
+
+</li><br>
 <li id=Levine16>
 <span class="author">Sergey Levine and Chelsea Finn and Trevor Darrell and Pieter Abbeel</span>, 
 <span class="title">"End-to-end training of deep visuomotor policies"</span>, 
@@ -618,18 +633,6 @@ Tech. Report, CMU-RI-TR-15-08, March, <span class="year">2015</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Florence20.pdf">link</a>&nbsp;]
 
 </li><br>
-<li id=Florence22>
-<span class="author">Pete Florence and Corey Lynch and Andy Zeng and Oscar A Ramirez and Ayzaan Wahid and Laura Downs and Adrian Wong and Johnny Lee and Igor Mordatch and Jonathan Tompson</span>, 
-<span class="title">"Implicit behavioral cloning"</span>, 
-<span class="publisher">Conference on Robot Learning</span> , pp. 158--168, <span class="year">2022</span>.
-
-</li><br>
-<li id=Silver16>
-<span class="author">David Silver and Aja Huang and Chris J Maddison and Arthur Guez and Laurent Sifre and George Van Den Driessche and Julian Schrittwieser and Ioannis Antonoglou and Veda Panneershelvam and Marc Lanctot and others</span>, 
-<span class="title">"Mastering the game of Go with deep neural networks and tree search"</span>, 
-<span class="publisher">nature</span>, vol. 529, no. 7587, pp. 484--489, <span class="year">2016</span>.
-
-</li><br>
 <li id=Ross11>
 <span class="author">St{\'e}phane Ross and Geoffrey Gordon and Drew Bagnell</span>, 
 <span class="title">"A reduction of imitation learning and structured prediction to no-regret online learning"</span>, 
@@ -640,6 +643,12 @@ Tech. Report, CMU-RI-TR-15-08, March, <span class="year">2015</span>.
 <span class="author">Cheng Chi and Siyuan Feng and Yilun Du and Zhenjia Xu and Eric Cousineau and Benjamin Burchfiel and Shuran Song</span>, 
 <span class="title">"Diffusion Policy: Visuomotor Policy Learning via Action Diffusion"</span>, 
 <span class="publisher">Proceedings of Robotics: Science and Systems</span> , <span class="year">2023</span>.
+
+</li><br>
+<li id=Nakkiran24>
+<span class="author">Preetum Nakkiran and Arwen Bradley and Hattie Zhou and Madhu Advani</span>, 
+<span class="title">"Step-by-Step Diffusion: An Elementary Tutorial"</span>, 
+, <span class="year">2024</span>.
 
 </li><br>
 <li id=Song20>
