@@ -235,10 +235,46 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
   <section><h1>Architectures for visuomotor policies</h1>
   
+    <subsection><h1>Desiderata</h1>
+
+      <p>scalable, reliable training, ..., can cope with multimodality, ...</p>
+
+    </subsection>
+
     <subsection><h1>Output/action decoders</h1>
 
-      <p>RT-1 <elib>Brohan22</elib>, RT-2 <elib>Brohan23</elib>, RT-X
-      <elib>Padalkar23</elib>.</p>
+      <p>There is a lot of work on using LLMs/VLMs to output high-level actions, but we
+      focus here on the control part (outputting lower-level actions).</p>
+
+      <p>There is a series of work, now commonly referred to as VLA
+      (vision-language-action) architectures, which leverage the successful transformer architectures from language and vision by discretizing and tokenize the robot
+      action space. Early examples include Decision Transformer <elib>Chen21</elib>,
+      Gato<elib>Reed22</elib>, and more recently these powered the Robot Transformer
+      (RT) line of models from Google DeepMind: RT-1 <elib>Brohan22</elib>, RT-2
+      <elib>Brohan23</elib>, RT-X
+      <elib>Padalkar23</elib>. For example, in RT, the action is represented using a
+      uniform discretization with 256 bins over each coordinate (using the 1st and 99th
+      quantile of the actions in the training data as the minumum and maximum values,
+      respectively); in those models the action space was taken to be the end-effector
+      pose and gripper extension. Then they literally output a string of integers
+      corresponding to those coordinates as desired text output for the VLM; if the
+      integers not already represented as tokens in the VLM, then they simply overwrite
+      the 256 least frequently used tokens
+      <elib>Brohan23</elib>. You can find an strong open-source reproduction of RT-2X
+      models in the <a href="https://openvla.github.io/">OpenVLA project</a>
+      <elib>Kim24</elib>.</p>
+      
+      <p>These tokenized-action architectures naturally learn a probability over next
+      tokens, which deals very directly with the potential multimodality in the training
+      data. But this comes at the cost of having discretized the action space. I don't
+      worry much about the resolution of this discretization being limiting, but I'm a
+      bit worried that the discretization destroys the natural inductive bias of the
+      continuous space. (For instance, the end-effector position 0.1 is closer to 0.2
+      than to 0.5, but this information is completely discarded in the discretization.)
+      Other people don't seem as concerned, and perhaps when we eventually have enough
+      data it will all be in the noise.</p>
+
+      <!-- maybe use the graph search formulation from decision transformer as an example here? it's nice and conceptually simple. -->
 
       <p>Behavior Transformers (BeT) <elib>Shafiullah22</elib> / VQ-BeT
       <elib>Lee24</elib>.</p> 
@@ -249,12 +285,19 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
       <p>Diffusion policies <elib>Chi24</elib>.</p>
 
+      <!-- 3D diffuser, etc. -->
+
+      <!-- PerceiverActor is another candidate for this section; it uses voxelized 6-dof
+poses for the action space. But it's perhaps not quite as general as the others, so I'm
+not sure if I want to include it here. -->
+
     </subsection>
 
     <subsection><h1>(Multi-modal) input encoders</h1>
     
       <p>ImageNET, Dense object nets, CLIP-pretrained ViT, VLMs, Spatial VLMs, ... </p>
 
+      <!--  Palm-E <elib>Driess23</elib>, Prismatic, ... -->
     </subsection>
 
   </section>
@@ -648,6 +691,18 @@ Tech. Report, CMU-RI-TR-15-08, March, <span class="year">2015</span>.
 <span class="publisher">Proceedings of the fourteenth international conference on artificial intelligence and statistics</span> , pp. 627--635, <span class="year">2011</span>.
 
 </li><br>
+<li id=Chen21>
+<span class="author">Lili Chen and Kevin Lu and Aravind Rajeswaran and Kimin Lee and Aditya Grover and Misha Laskin and Pieter Abbeel and Aravind Srinivas and Igor Mordatch</span>, 
+<span class="title">"Decision transformer: Reinforcement learning via sequence modeling"</span>, 
+<span class="publisher">Advances in neural information processing systems</span>, vol. 34, pp. 15084--15097, <span class="year">2021</span>.
+
+</li><br>
+<li id=Reed22>
+<span class="author">Scott Reed and Konrad Zolna and Emilio Parisotto and Sergio Gomez Colmenarejo and Alexander Novikov and Gabriel Barth-Maron and Mai Gimenez and Yury Sulsky and Jackie Kay and Jost Tobias Springenberg and others</span>, 
+<span class="title">"A generalist agent"</span>, 
+<span class="publisher">arXiv preprint arXiv:2205.06175</span>, <span class="year">2022</span>.
+
+</li><br>
 <li id=Brohan22>
 <span class="author">Anthony	Brohan and Noah Brown and Justice Carbajal and Yevgen Chebotar and Joseph Dabis and Chelsea Finn and Keerthana Gopalakrishnan and Karol Hausman and Alex Herzog and Jasmine Hsu and Julian Ibarz and Brian Ichter and Alex Irpan and Tomas Jackson and Sally Jesmonth and Nikhil Joshi and Ryan Julian and Dmitry Kalashnikov and Yuheng Kuang and Isabel Leal and Kuang-Huei Lee and Sergey Levine and Yao Lu and Utsav Malla and Deeksha Manjunath and Igor Mordatch and Ofir Nachum and Carolina Parada and Jodilyn Peralta and Emily Perez and Karl Pertsch and Jornell Quiambao and Kanishka Rao and Michael Ryoo and Grecia Salazar and Pannag Sanketi and Kevin Sayed and Jaspiar Singh and Sumedh Sontakke and Austin Stone and Clayton Tan and Huong Tran and Vincent Vanhoucke and Steve Vega and Quan Vuong and Fei Xia and Ted Xiao and Peng Xu and Sichun Xu and Tianhe Yu and Brianna Zitkovich</span>, 
 <span class="title">"RT-1: Robotics Transformer for Real-World Control at Scale"</span>, 
@@ -664,6 +719,12 @@ Tech. Report, CMU-RI-TR-15-08, March, <span class="year">2015</span>.
 <span class="author">Abhishek Padalkar and Acorn Pooley and Ajinkya Jain and Alex Bewley and Alex Herzog and Alex Irpan and Alexander Khazatsky and Anant Rai and Anikait Singh and Anthony Brohan and others</span>, 
 <span class="title">"Open x-embodiment: Robotic learning datasets and rt-x models"</span>, 
 <span class="publisher">arXiv preprint arXiv:2310.08864</span>, <span class="year">2023</span>.
+
+</li><br>
+<li id=Kim24>
+<span class="author">{Moo Jin} Kim and Karl Pertsch and Siddharth Karamcheti and Ted Xiao and Ashwin Balakrishna and Suraj Nair and Rafael Rafailov and Ethan Foster and Grace Lam and Pannag Sanketi and Quan Vuong and Thomas Kollar and Benjamin Burchfiel and Russ Tedrake and Dorsa Sadigh and Sergey Levine and Percy Liang and Chelsea Finn</span>, 
+<span class="title">"OpenVLA: An Open-Source Vision-Language-Action Model"</span>, 
+<span class="publisher">arXiv preprint arXiv:2406.09246</span>, <span class="year">2024</span>.
 
 </li><br>
 <li id=Shafiullah22>
