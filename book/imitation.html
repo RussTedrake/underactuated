@@ -211,6 +211,13 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       scenes than about the model-based physics of propagating light.</p>
 
     </subsection>
+
+    <subsection><h1>Behavior cloning as sequence modeling</h1>
+    
+     <!-- aka system id. as we know, for output feedback, even the optimal policy might
+require a history of observations. -->
+
+    </subsection>
   
     <subsection><h1>Supervised learning in a feedback loop: dealing with distribution
     shift</h1>
@@ -264,6 +271,8 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       models in the <a href="https://openvla.github.io/">OpenVLA project</a>
       <elib>Kim24</elib>.</p>
       
+      <!-- maybe use the graph search formulation from decision transformer as an example here? it's nice and conceptually simple. -->
+  
       <p>These tokenized-action architectures naturally learn a probability over next
       tokens, which deals very directly with the potential multimodality in the training
       data. But this comes at the cost of having discretized the action space. I don't
@@ -274,18 +283,26 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       Other people don't seem as concerned, and perhaps when we eventually have enough
       data it will all be in the noise.</p>
 
-      <!-- maybe use the graph search formulation from decision transformer as an example here? it's nice and conceptually simple. -->
+      <p>Behavior Transformers (BeT) <elib>Shafiullah22</elib> and VQ-BeT
+      <elib>Lee24</elib> put more work into discretizing the action space, by
+      preprocessing the data with k-means (in BeT) or Residual Vector Quantization (in
+      VQ-BeT), and then doing some continuous up-sampling.</p> 
+  
+      <p>There were a number of attempts to handle multimodality in a more natively
+      continous setting. Implicit BC <elib>Florence22</elib> called this out very
+      explicitly, and also explored the use of Mixture Density Networks
+      <elib>Bishop94</elib> for behavior cloning. But things really started working well
+      when some of the new tools from generative AI started getting applied to robotics;
+      most notably in the Action-chunking transformers (ACT) <elib>Zhao23</elib> which
+      used Conditional <a
+      href="https://towardsdatascience.com/understanding-variational-autoencoders-vaes-f70510919f73">Variational
+      Autoencoders</a> (CVAE) and in Diffusion Policy <elib>Chi24</elib> which used
+      Diffusion models. We'll discuss these in more detail below.</p>
 
-      <p>Behavior Transformers (BeT) <elib>Shafiullah22</elib> / VQ-BeT
-      <elib>Lee24</elib>.</p> 
-
-      <p>Implicit BC<elib>Florence22</elib></p>
-
-      <p>Action-chunking transformers (ACT) <elib>Zhao23</elib>.</p>
-
-      <p>Diffusion policies <elib>Chi24</elib>.</p>
-
-      <!-- 3D diffuser, etc. -->
+      <p>Both the ACT paper and the Diffusion Policy paper strongly emphasized another
+      detail about the output encoding: rather than predicting a single (current) action
+      to take, these models predicted an entire sequence of future actions, and then
+      operate in a fashion similar to model-predictive control.</p>
 
       <!-- PerceiverActor is another candidate for this section; it uses voxelized 6-dof
 poses for the action space. But it's perhaps not quite as general as the others, so I'm
@@ -743,6 +760,12 @@ Tech. Report, CMU-RI-TR-15-08, March, <span class="year">2015</span>.
 <span class="author">Pete Florence and Corey Lynch and Andy Zeng and Oscar A Ramirez and Ayzaan Wahid and Laura Downs and Adrian Wong and Johnny Lee and Igor Mordatch and Jonathan Tompson</span>, 
 <span class="title">"Implicit behavioral cloning"</span>, 
 <span class="publisher">Conference on Robot Learning</span> , pp. 158--168, <span class="year">2022</span>.
+
+</li><br>
+<li id=Bishop94>
+<span class="author">Christopher M Bishop</span>, 
+<span class="title">"Mixture density networks"</span>, 
+, <span class="year">1994</span>.
 
 </li><br>
 <li id=Chi23>
