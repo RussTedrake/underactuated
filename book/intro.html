@@ -593,14 +593,14 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
       <p> You might have heard of the term "nonholonomic system" (see e.g.
       <elib>Bloch03</elib>), and be thinking about how nonholonomy relates to
-      underactuation.  Briefly, a nonholonomic constraint is a constraint of the
-      form $\phi(\bq, {\bf \dot{q}}, t) = 0$, which cannot be integrated into a
-      constraint of the form $\phi(\bq, t) = 0$ (a holonomic constraint). A
-      nonholonomic constraint does not restrain the possible configurations of
-      the system, but rather the manner in which those configurations can be
-      reached. While a holonomic constraint reduces the number of degrees of
-      freedom of a system by one, a nonholonomic constraint does not.  An
-      automobile or traditional wheeled robot provides a canonical example:</p>
+      underactuation.  Briefly, a nonholonomic constraint is a first-order constraint of
+      the form $\phi(\bq, {\bf \dot{q}}, t) = 0$, which cannot be integrated into a
+      constraint of the form $\phi(\bq, t) = 0$ (a holonomic constraint). A nonholonomic
+      constraint does not restrain the possible configurations of the system, but rather
+      the manner in which those configurations can be reached. While a holonomic
+      constraint reduces the number of degrees of freedom of a system by one, a
+      nonholonomic constraint does not.  An automobile or traditional wheeled robot
+      provides a canonical example:</p>
 
       <example id="wheeled_robot"><h1>Wheeled robot</h1> Consider a simple model of
       a wheeled robot whose configuration is described by its Cartesian position
@@ -623,13 +623,13 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       constraint on configuration. The track restrains the possible
       configurations of the system.</p>
 
-      <p> A nonholonomic constraint like the no-side-slip constraint on the
-      wheeled vehicle certainly results in an underactuated system.  The
-      converse is not necessarily true&mdash;the double pendulum system which is
-      missing an actuator is underactuated but would not typically be called a
-      nonholonomic system.  Note that the Lagrangian equations of motion are a
-      constraint of the form \[\bphi(\bq,\dot\bq, \ddot\bq, \bu, t) =  0,\]
-      so do not qualify as a nonholonomic constraint.</p>
+      <p> A nonholonomic constraint like the no-side-slip constraint on the wheeled
+      vehicle certainly results in an underactuated system.  The converse is not
+      necessarily true&mdash;the double pendulum system which is missing an actuator is
+      underactuated but would not typically be called a nonholonomic system.  Note that
+      the Lagrangian equations of motion are a constraint of the form
+      \[\bphi(\bq,\dot\bq, \ddot\bq, \bu, t) =  0,\] so do fit our simple form for a
+      first-order nonholonomic constraint.</p>
 
     </subsection>
 

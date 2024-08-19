@@ -69,7 +69,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
   </p>
   
   <p>Broadly speaking, most approaches to imitation learning can be categorized as
-  either <i>behavioral cloning</i> (BC) or <i>inverse reinforcement learning</i> (IRL).
+  either <i>behavior cloning</i> (BC) or <i>inverse reinforcement learning</i> (IRL).
   Behavior cloning attempts to learn a policy directly from the data using supervised
   learning. Inverse RL (aka inverse optimal control) attempts to learn a cost function
   from the data, and then uses potentially more traditional optimal control approaches
@@ -190,8 +190,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       pretty heavily on the depth channel and very explicit 3D reasoning/matching. But I
       remember around the time of our first imitation learning project, I asked the
       students "if you could only choose one, RGB <i>or</i> depth, which would you
-      choose". They chose RGB. One could easily underestimate just how valuable the RGB
-      channel is, but there are many situations where a task is unclear or even
+      choose". They chose RGB. There are many situations where a task is unclear or even
       ambiguous when looking only at a depth image. The ambiguities can often be
       resolved with the addition of RGB, and there are many depth cues in RGB that allow
       us and our visuomotor policies to be successfull for 3D tasks even without an
@@ -205,7 +204,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       are lots of projects now on making differentiable renderers, these can only do so
       much because the pixelation process is inherently very local/non-smooth. Going
       from the image back into a manageable intermediate (latent) state representation,
-      $z$, simply did not work nearly as well until we got deep networks for perception.
+      $z$, started becoming viable with the rise of deep networks for perception.
       Data/learning <i>does</i> feel fundamental here -- mapping from RGB into a
       meaningful representation for control is more about the statistics of natural
       scenes than about the model-based physics of propagating light.</p>
@@ -214,6 +213,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
 
     <subsection><h1>Behavior cloning as sequence modeling</h1>
     
+     <!-- note: already mentioned this once above. -->
      <!-- aka system id. as we know, for output feedback, even the optimal policy might
 require a history of observations. -->
 
@@ -248,10 +248,24 @@ require a history of observations. -->
 
     </subsection>
 
-    <subsection><h1>Output/action decoders</h1>
+    <subsection><h1>Output/action decoders)</h1>
 
-      <p>There is a lot of work on using LLMs/VLMs to output high-level actions, but we
-      focus here on the control part (outputting lower-level actions).</p>
+      <p>The visuomotor policies that we'll study here should output low-level robot
+      actions -- $\bu$ in the parlance of these notes. These need not be torque commands
+      directly... in fact it's more typical for them to output a slightly higher-level
+      command like joint velocity or end-effector velocity, which gets passed to a
+      low-level controller. Note that there is also a now large body of literature where
+      people use LLMs or VLMs to determine a sequence of high level actions, but assume
+      that someone has authored or otherwise obtained a set of "skill libraries" that
+      map the discrete high-level actions to control; while interesting, I would not
+      call those approached visuomotor policies and will not discuss those here.</p>
+      
+      <p>In all cases, the input encoders (discussed next) map the recent history of
+      observations into some latent representation, which then eventually gets mapped
+      back into actions via the action decoder. It is quite useful to categorize the
+      different visuomotor policy architectures based on the different choices that they
+      make about the action decoder.
+      </p>
 
       <p>There is a series of work, now commonly referred to as VLA
       (vision-language-action) architectures, which leverage the successful transformer architectures from language and vision by discretizing and tokenize the robot
@@ -311,8 +325,21 @@ not sure if I want to include it here. -->
     </subsection>
 
     <subsection><h1>(Multi-modal) input encoders</h1>
-    
-      <p>ImageNET, Dense object nets, CLIP-pretrained ViT, VLMs, Spatial VLMs, ... </p>
+
+      <p>Although researchers are rapidly adopting additional input modalities, by far
+      the most common input modalities are the robot proprioception (e.g. joint
+      sensors), which can be passed into the model directly, and image observations
+      which need to be encoded from raw RGB into some intermediate representation.
+      Although there is a torrent of literature on this, there are a few choices that
+      have clearly emerged as the standards: ResNet and ViT. For instance, the original
+      Diffusion Policy paper used a ResNet-18 (without pretraining) with small
+      modifications, e.g. to maintain spatial information <elib>Chi24</elib>, but as the
+      scale of the experiments has increased we have seen more success with
+      CLIP-pretrained ViT <elib>Chi24a</elib>. 
+
+      <!-- there is also considerable work on making equivariant, etc. platt, bohg, ..-->
+
+      <p>Language-conditioned multitask policies... <elib>Padalkar23+Kim24</elib>.</p>
 
       <!--  Palm-E <elib>Driess23</elib>, Prismatic, ... -->
     </subsection>
@@ -766,6 +793,12 @@ Tech. Report, CMU-RI-TR-15-08, March, <span class="year">2015</span>.
 <span class="author">Christopher M Bishop</span>, 
 <span class="title">"Mixture density networks"</span>, 
 , <span class="year">1994</span>.
+
+</li><br>
+<li id=Chi24a>
+<span class="author">Cheng Chi and Zhenjia Xu and Chuer Pan and Eric Cousineau and Benjamin Burchfiel and Siyuan Feng and Russ Tedrake and Shuran Song</span>, 
+<span class="title">"Universal Manipulation Interface: In-The-Wild Robot Teaching Without In-The-Wild Robots"</span>, 
+, <span class="year">2024</span>.
 
 </li><br>
 <li id=Chi23>
