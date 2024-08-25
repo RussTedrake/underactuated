@@ -411,7 +411,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       would need the coefficients of the cubic spline parameters, but you do
       not.  For the first-order interpolation on $\bu(t)$, given $\bu(t_k)$ and
       $\bu(t_{k+1})$, we can solve for every value $\bu(t)$ over the interval
-      $t \in [k, k+1]$.  But we also have everything that we need for the cubic
+      $t \in [t_k, t_{k+1}]$.  But we also have everything that we need for the cubic
       spline: given $\bx(t_k)$ and $\bu(t_k),$ we can compute $\dot\bx(t_k) = f
       (\bx(t_k), \bu(t_k))$; and the four values $\bx(t_k), \bx(t_{k+1}),
       \dot\bx (t_k), \dot\bx(t_{k+1})$ completely define all of the parameters
