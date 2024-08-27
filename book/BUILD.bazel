@@ -147,3 +147,12 @@ filegroup(
     srcs = ["chapters.json"],
     visibility = ["//visibility:public"],
 )
+
+filegroup(
+    name = "deepnote",
+    srcs = [
+      "Deepnote.json",
+      "Deepnote_workspace.txt",
+    ],
+    visibility = ["//visibility:public"],
+)
