@@ -260,7 +260,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       powered on in order to obtain the offset.  I've worked on one advanced
       robot that had a quite elaborate and painful kinematic calibration
       procedure which involve fitting additional hardware over the joints to
-      ensure they were in a known location and then running a script.  Having a
+      ensure they were in a known location and then running a script.  Having
       an expensive and/or unreliable calibration procedure can put a damper on
       any robotics project.</p>
 
@@ -305,7 +305,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     <subsection><h1 id="inertial">Estimating inertial parameters (and
     friction)</h1>
 
-      <p>Now let's thinking about estimating the inertial parameters of
+      <p>Now let's think about estimating the inertial parameters of
       multibody system.  We've been writing the manipulation equations in the
       form: \begin{equation}\bM({\bq})\ddot{\bq} + \bC(\bq,\dot{\bq})\dot\bq =
       \btau_g(\bq) + \bB\bu + \text{friction, etc.}\end{equation}  Each of the
@@ -575,12 +575,11 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       understanding of mechanics.  One important example is the "energy
       formulations" of parameter estimation <elib>Gautier97</elib>.</p>
 
-      <p>We have already observed that evaluating the equation error in torque
-      space (inverse dynamics) is likely better than evaluating it in state
-      space space (forward dynamics), because we can factorized the inverse
-      dynamics.  But this property is not exclusive to inverse dynamics.  The
-      total energy of the system (kinetic + potential) is also affine in the
-      lumped parameters.  We can use the relation
+      <p>We have already observed that evaluating the equation error in torque space
+      (inverse dynamics) is likely better than evaluating it in state space space
+      (forward dynamics), because we can avoid inverting the mass matrix and stay linear
+      in the lumped parameters. The total energy of the system (kinetic + potential) is
+      also affine in the lumped parameters.  We can use the relation
       $$\dot{E}(\bq,\dot\bq,\ddot\bq) = \dot\bq^T (\bB\bu + \text{ friction,
       ...}).$$</p>
 
