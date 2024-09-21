@@ -58,7 +58,7 @@ jobs:
           rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*
         shell: bash
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: submodule checkout
         run:  ./setup/submodule_checkout
         shell: bash
@@ -73,7 +73,7 @@ jobs:
     runs-on: macos-14
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: submodule checkout
         run:  ./setup/submodule_checkout
         shell: zsh -efuo pipefail {0}
@@ -92,9 +92,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: setup python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10' 
       - name: black
         uses: psf/black@stable
         with:
@@ -130,7 +132,7 @@ jobs:
     container: russtedrake/underactuated:latest
     steps:
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: submodule checkout
         run:  ./setup/submodule_checkout
         shell: bash
@@ -161,7 +163,7 @@ jobs:
           pip3 install underactuated --extra-index-url https://drake-packages.csail.mit.edu/whl/nightly/
         shell: bash
       - name: checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: submodule checkout
         run:  ./setup/submodule_checkout
         shell: bash
