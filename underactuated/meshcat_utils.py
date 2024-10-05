@@ -369,7 +369,7 @@ def PublishPositionTrajectory(
         trajectory.end_time(),
     ):
         root_context.SetTime(t)
-        plant.SetPositions(plant_context, trajectory.value(t))
+        plant.SetPositions(plant_context, trajectory.value(t)[: plant.num_positions()])
         visualizer.ForcedPublish(visualizer_context)
 
     visualizer.StopRecording()

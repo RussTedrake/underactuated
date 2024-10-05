@@ -9,6 +9,7 @@ This package contains code to support the [Underactuated Robotics](http://undera
    meshcat_utils
    multibody
    plot_utils
+   pyplot_utils
    utils
 ```
 

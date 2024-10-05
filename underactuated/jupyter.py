@@ -4,7 +4,6 @@ import sys
 from warnings import warn
 
 from IPython import get_ipython
-from IPython.display import HTML, display
 
 # Use a global variable here because some calls to IPython will actually case an
 # interpreter to be created.  This file needs to be imported BEFORE that
@@ -22,40 +21,6 @@ def pyplot_is_interactive():
     from matplotlib.rcsetup import interactive_bk
 
     return plt.get_backend() in interactive_bk
-
-
-def AdvanceToAndVisualize(
-    simulator,
-    visualizer,
-    time,
-    time_if_running_headless=0.1,
-    movie_filename=None,
-):
-    """
-    Helper to support visualizing a simulation with pyplot visualizer.
-    Will simply simulate (with target_realtime_rate = 1) if visualizer.show =
-    True, or will record and render an animation if visualizer.show = False. If
-    specified, time_if_running_headless will be used instead of time if
-    running_as_notebook is False.
-    """
-    if visualizer._show:
-        target_rate = simulator.get_target_realtime_rate()
-        simulator.set_target_realtime_rate(1.0)
-    else:
-        print("simulating... ", end=" ")
-        visualizer.start_recording()
-    if time_if_running_headless and not running_as_notebook:
-        time = time_if_running_headless
-    simulator.AdvanceTo(time)
-    if not visualizer._show or movie_filename:
-        print("done.\ngenerating animation...")
-        ani = visualizer.get_recording_as_animation()
-        display(HTML(ani.to_jshtml()))
-        if movie_filename:
-            with open(movie_filename, "w") as f:
-                f.write(ani.to_jshtml())
-    else:
-        simulator.set_target_realtime_rate(target_rate)
 
 
 def SetupMatplotlibBackend(wishlist=["notebook"]):
@@ -90,7 +55,11 @@ def SetupMatplotlibBackend(wishlist=["notebook"]):
     return False
 
 
-# Deprecate everything below this line:
+# Deprecate/remove everything below this line:
+
+
+def AdvanceToAndVisualize(*args, **kwargs):
+    raise Exception("AdvanceToAndVisualize() has moved to underactuated.pyplot_utils.")
 
 
 def setup_matplotlib_backend(**kwargs):
