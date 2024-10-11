@@ -83,7 +83,7 @@ jobs:
       - name: check
         run: |
           jupyter --paths
-          python3 book/htmlbook/tools/jupyter/nbconvert_script.py book/intro/intro.ipynb
+          /opt/homebrew/opt/python@3.12/bin/python3 book/htmlbook/tools/jupyter/nbconvert_script.py book/intro/intro.ipynb
         shell: zsh -efuo pipefail {0}
       - name: test
         run: ./book/htmlbook/workflows/ci/sonoma/test
