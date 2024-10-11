@@ -34,7 +34,7 @@ build --test_summary=terse
 
 build:linux --action_env=PATH=/usr/sbin:/usr/bin:/sbin:/bin
 
-build:macos --action_env=PATH=/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+build:macos --action_env=PATH=/opt/homebrew/opt/python@3.12/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 build:macos --test_timeout=120,600,1800,7200
 
 # Disable python imports from ~/.local (pip -U) during build and test.
