@@ -10,6 +10,39 @@ from pydrake.trajectories import Trajectory
 from underactuated.jupyter import running_as_notebook
 
 
+class HistogramVisualizer(PyPlotVisualizer):
+    """A simple visualizer that plots a histogram of the input vector."""
+
+    def __init__(
+        self, num_samples, bins, xlim, ylim, draw_time_step, figsize=(6, 4), show=True
+    ):
+        PyPlotVisualizer.__init__(self, draw_time_step, figsize=figsize, show=show)
+        self.DeclareVectorInputPort(f"x", num_samples)
+        self.num_samples = num_samples
+        self.bins = bins
+        self.data = [0] * num_samples
+        self.scale = 10
+        self.limits = xlim
+        self.ax.set_xlim(xlim)
+        self.ax.axis("auto")
+        self.ax.set_ylim(ylim)
+        self.patches = None
+
+    def draw(self, context):
+        if self.patches:
+            [p.remove() for p in self.patches]
+        self.data = self.EvalVectorInput(context, 0).value()
+        count, bins, self.patches = self.ax.hist(
+            self.data,
+            bins=self.bins,
+            range=self.limits,
+            density=False,
+            weights=[self.scale / self.num_samples] * self.num_samples,
+            facecolor="b",
+        )
+        self.ax.set_title("t = " + str(context.get_time()))
+
+
 class SliderSystem(VectorSystem):
     def __init__(self, ax, title, min, max):
         # 0 inputs, 1 output.
