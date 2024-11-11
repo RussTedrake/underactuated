@@ -48,6 +48,7 @@ To generate it, run
 ```
 poetry lock
 ./book/htmlbook/PoetryExport.sh
+cd book && ./Deepnote.sh
 ```
 
 Hopefully [direct poetry
