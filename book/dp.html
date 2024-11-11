@@ -716,7 +716,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         \right], \\ \balpha \Leftarrow \argmin_\balpha \sum_k
         \left(\hat{J}^*_\balpha(\bx_k) - J^d_k \right)^2.
         \label{eq:fitted_value_iteration} \end{gather} Since the desired values
-        $J^d_k$ are depend on the current guess of the cost-to-go, we will
+        $J^d_k$ are dependent on the current guess of the cost-to-go, we will
         apply this value iteration algorithm iteratively until (hopefully) we
         achieve some numerical convergence.</p>
       
@@ -856,7 +856,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
           
         </example>        
         
-        <p>This is nice work on continuous neural fitted value iteration in
+        <p>There is nice work on continuous neural fitted value iteration in
         <elib>Lutter21</elib>. <elib>Bansal21</elib> has some of the most
         complete and convincing HJB solutions with neural networks that I have
         seen recently, and recommends a number of architectural and
@@ -975,7 +975,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       preserves the recursive structure of the Bellman equation. In discrete
       time, it takes the form $$\min_{\bu[\cdot]} \sum_{n=0}^\infty \gamma^n
       \ell(\bx[n], \bu[n]),$$ which leads to the Bellman equation $$J^*(\bx) =
-      \min_\bu \left[ \ell(\bx, \bx) + \gamma J^*(f(\bx,\bu) \right].$$  In
+      \min_\bu \left[ \ell(\bx, \bu) + \gamma J^*(f(\bx,\bu) \right].$$  In
       continuous time we have<elib>Doya00</elib> $$\min_\bu(\cdot)
       \int_0^\infty e^{-\frac{t}{\tau}} \ell(\bx(t), \bu(t)) dt,$$ which leads
       to the corresponding HJB: $$\frac{1}{\tau} J^*(\bx) = \min_\bu \left[
