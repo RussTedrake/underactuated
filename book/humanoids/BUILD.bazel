@@ -23,9 +23,8 @@ rt_ipynb_test(
 #    deps = ["//underactuated"],
 #)
 
-# TODO(russt): Waiting for next drake version bump.
-#rt_ipynb_test(
-#    name = "zmp_planner",
-#    srcs = ["zmp_planner.ipynb"],
-#    deps = ["//underactuated"],
-#)
+rt_ipynb_test(
+    name = "zmp_planner",
+    srcs = ["zmp_planner.ipynb"],
+    deps = ["//underactuated"],
+)

@@ -7,11 +7,10 @@
 load("@pip_deps//:requirements.bzl", "requirement")
 load("//book/htmlbook/tools/jupyter:defs.bzl", "rt_ipynb_test")
 
-# Waiting on https://github.com/RobotLocomotion/drake/pull/21610.
-# rt_ipynb_test(
-#    name = "acrobot_w_encoders",
-#    srcs = ["acrobot_w_encoders.ipynb"],
-#    deps = [
-#        "//underactuated",
-#    ],
-#)
+rt_ipynb_test(
+    name = "acrobot_w_encoders",
+    srcs = ["acrobot_w_encoders.ipynb"],
+    deps = [
+        "//underactuated",
+    ],
+)

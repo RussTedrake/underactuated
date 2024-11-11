@@ -3,7 +3,7 @@ from IPython.display import HTML, display
 from matplotlib.animation import HTMLWriter
 from matplotlib.widgets import Slider
 from pydrake.multibody.plant import MultibodyPlant
-from pydrake.systems.framework import Context, VectorSystem
+from pydrake.systems.framework import Context, LeafSystem
 from pydrake.systems.pyplot_visualizer import PyPlotVisualizer
 from pydrake.trajectories import Trajectory
 
@@ -43,10 +43,11 @@ class HistogramVisualizer(PyPlotVisualizer):
         self.ax.set_title("t = " + str(context.get_time()))
 
 
-class SliderSystem(VectorSystem):
+class SliderSystem(LeafSystem):
     def __init__(self, ax, title, min, max):
         # 0 inputs, 1 output.
-        VectorSystem.__init__(self, 0, 1)
+        LeafSystem.__init__(self)
+        self.DeclareVectorOutputPort("slider", 1, self.DoCalcVectorOutput)
         self.value = 0
         self.slider = Slider(ax, title, min, max, valinit=self.value)
         self.slider.on_changed(self.update)
@@ -54,8 +55,8 @@ class SliderSystem(VectorSystem):
     def update(self, val):
         self.value = val
 
-    def DoCalcVectorOutput(self, context, unused, unused2, output):
-        output[:] = self.value
+    def DoCalcVectorOutput(self, context, output):
+        output.SetAtIndex(0, self.value)
 
 
 def AdvanceToAndVisualize(
