@@ -7,8 +7,6 @@ from typing import Dict, List, Optional, Sequence, Set, Tuple
 import matplotlib.colors as mcolors
 import numpy as np
 from lxml.etree import Element, ElementTree, SubElement, tostring
-
-# from ngcs.visualization import TraceVisualizer, cmap_ibm
 from pydrake.common.value import Value
 from pydrake.geometry import FramePoseVector, Meshcat, Rgba, SceneGraph
 from pydrake.geometry.optimization import (
@@ -40,8 +38,6 @@ from pydrake.trajectories import BezierCurve, CompositeTrajectory, Trajectory
 from pydrake.visualization import ApplyVisualizationConfig, VisualizationConfig
 from scipy.spatial import ConvexHull
 
-# from ngcs.helpers import shift_composite_trajectory
-# from ngcs.models import get_models_directory
 from underactuated import ConfigureParser
 
 colors = ["#648FFF", "#DC267F", "#FE6100", "#FFB000"]  # "#785EF0"]
@@ -173,7 +169,7 @@ class TraceVisualizer(LeafSystem):
         self._line_width = line_width
         self._trace_color = rgba
 
-        self._input_port = self.DeclareVectorInputPort("position", BasicVector(3))
+        self._input_port = self.DeclareVectorInputPort("position", 3)
         self.DeclarePerStepPublishEvent(self.visualize_trace)
 
         self._last_position = np.zeros(3)
@@ -1759,7 +1755,7 @@ class UavEnvironment:
         meshcat: Meshcat,
         trajectories: Sequence[CompositeTrajectory] = [],
         fly_in_sequence: bool = True,
-        quadrotor_seperation: Optional[float] = None,
+        quadrotor_separation: Optional[float] = None,
     ) -> None:
         """Visualize the environment with drones following the trajectories.
 
@@ -1771,7 +1767,7 @@ class UavEnvironment:
             trajectories: A list of trajectories to visualize.
             fly_in_sequence: If true, the drones will fly one by one, otherwise
                 they will fly all at the same time.
-            quadrotor_seperation: The time between each quadrotor taking off,
+            quadrotor_separation: The time between each quadrotor taking off,
                 used to visalize the motion in a still picture.
         """
         meshcat.Delete()
@@ -1814,11 +1810,11 @@ class UavEnvironment:
             total_animation_duration = max(total_animation_duration, traj.end_time())
 
             # Visualize the quadrotor.
-            if quadrotor_seperation:
+            if quadrotor_separation:
                 offsets = np.linspace(
                     traj.start_time(),
                     traj.end_time(),
-                    int((traj.end_time() - traj.start_time()) / quadrotor_seperation),
+                    int((traj.end_time() - traj.start_time()) / quadrotor_separation),
                 )
                 for j, offset in enumerate(offsets):
                     flat_traj_source = builder.AddSystem(
@@ -1832,7 +1828,6 @@ class UavEnvironment:
                         scene_graph,
                         f"quadrotor_{i}/{j}",
                     )
-
             else:
                 flat_traj_source = builder.AddSystem(
                     FlatQuadrotorTrajectorySource(traj)

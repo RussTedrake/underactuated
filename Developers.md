@@ -98,3 +98,19 @@ import sys
 sys.path.append('/home/russt/drake-install/lib/python3.6/site-packages')
 sys.path.append('/home/russt/underactuated')
 ```
+
+## To debug a notebook with a local build of Drake
+
+There are several approaches, but perhaps easiest is to just add a few lines at the top of the notebook:
+```
+import sys
+import os
+
+python_version = f"python{sys.version_info.major}.{sys.version_info.minor}"
+drake_path = os.path.expanduser(f"~/drake-install/lib/{python_version}/site-packages")
+if drake_path not in sys.path:
+    sys.path.insert(0, drake_path)
+
+import pydrake
+print(f"Using pydrake from: {pydrake.__file__}")
+```
