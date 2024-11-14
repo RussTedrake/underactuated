@@ -2,7 +2,7 @@
 name = "underactuated"
 # Use e.g. 2023.10.4.rc0 if I need to release a release candidate.
 # Use e.g. 2023.10.4.post1 if I need to rerelease on the same day.
-version = "2024.11.11"
+version = "2024.11.14"
 description = "MIT 6.821 - Underactuated Robotics"
 authors = ["Russ Tedrake <russt@mit.edu>"]
 license = "BSD License"
@@ -54,6 +54,7 @@ python = "<4.0,>=3.10"
 drake = ">=1.30.0"
 gradescope-utils = ">=0.4.0"
 ipywidgets = ">7"
+lxml = {version = ">=4.9.2", extras = ["html_clean"] }  # used in uav_environment.py
 mpld3 = ">=0.5.1"
 numpy = "<2.0.0" # https://github.com/RobotLocomotion/drake/issues/21577
 pandas = ">=2.0"
@@ -77,7 +78,6 @@ sphinx_rtd_theme = ">=2.0.0"
 [tool.poetry.group.dev.dependencies]
 beautifulsoup4 = ">=4.6.3"
 black = { version = ">=23.*", extras = ["jupyter"] }
-lxml = {version = ">=4.9.2", extras = ["html_clean"] }
 # Blocked on poetry known issue; see Developers.md
 #matplotlib = [ 
 #  {platform="darwin", version=">=3.7.0"}, # old versions don't build in XCode

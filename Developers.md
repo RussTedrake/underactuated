@@ -48,7 +48,6 @@ To generate it, run
 ```
 poetry lock
 ./book/htmlbook/PoetryExport.sh
-cd book && ./Deepnote.sh
 ```
 
 Hopefully [direct poetry
@@ -65,6 +64,7 @@ the root directory, run:
 ```
 rm -rf dist/*
 poetry publish --build
+cd book && ./Deepnote.sh
 ```
 (Use `poetry config pypi-token.pypi <token>` once first; the token in saved with my other passwords)
 
