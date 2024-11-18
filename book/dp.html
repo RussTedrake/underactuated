@@ -109,31 +109,30 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       surface</figcaption>
       </figure>
 
-      <p>In order to formulate this control design problem using optimal
-      control, we must define a scalar objective which scores the long-term
-      performance of running each candidate control policy, $\pi(\bx,t)$, from
-      each initial condition, $(\bx_0,t_0)$, and a list of constraints that
-      must be satisfied. For the task of driving the double integrator to the
-      origin, one could imagine a number of optimal control formulations which
-      would accomplish the task, e.g.: <ul> <li> Minimum time:  $\min_\pi t_f,$
-      subject to $\bx(t_0) = \bx_0,$ $\bx(t_f) = {\bf 0}.$ </li> <li> Quadratic
-      cost:  $\min_\pi \int_{t_0}^{\infty} \left[ \bx^T(t) {\bf Q} \bx(t)
-      \right] dt,$ ${\bf Q}\succ0$.</li> </ul> The first is a constrained
-      optimization formulation which optimizes time, and the second accrues a
-      penalty at every instance according to the distance that the state is
-      away from the origin (with weights defined by the matrix ${\bf Q}$), and
-      therefore encourages trajectories that go more directly towards the goal,
-      possibly at the expense of requiring a longer time to reach the goal. In
-      fact the quadratic cost will result in an exponential approach to the
-      goal, where as the minimum-time formulation will arrive at the goal in
-      finite time. Note that both optimization problems only have well-defined
-      solutions if it is possible for the system to actually reach the origin,
-      otherwise the minimum-time problem cannot satisfy the terminal
-      constraint, and the integral in the quadratic cost would not converge to
-      a finite value as time approaches infinity (fortunately the
-      double-integrator system is <a
-      href="acrobot.html#controllability">controllable</a>, and therefore can
-      be driven to the goal in finite time).</p>
+      <p>In order to formulate this control design problem using optimal control, we
+      must define a scalar objective which scores the long-term performance of running
+      each candidate control policy, $\pi(\bx,t)$, from each initial condition,
+      $(\bx_0,t_0)$, and a list of constraints that must be satisfied. For the task of
+      driving the double integrator to the origin, one could imagine a number of optimal
+      control formulations which would accomplish the task, e.g.: <ul> <li> Minimum
+      time:  $\min_\pi t_f,$ subject to $\bx(t_0) = \bx_0,$ $\bx(t_f) = {\bf 0}.$ </li>
+      <li> Quadratic cost:  $\min_\pi \int_{t_0}^{\infty} \left[ \bx^T(t) {\bf Q} \bx(t)
+      \right] dt,$ ${\bf Q}\succ0$.</li> </ul> The first is a constrained optimization
+      formulation which optimizes time, and the second accrues a penalty at every
+      instance according to the distance that the state is away from the origin (with
+      weights defined by the matrix ${\bf Q}$), and therefore encourages trajectories
+      that go more directly towards the goal, possibly at the expense of requiring a
+      longer time to reach the goal. In fact the quadratic cost will result in an
+      exponential approach to the goal, where as the minimum-time formulation will
+      arrive at the goal in finite time. Note that there are some requirements for these
+      optimization problems to have achieve a finite cost and have a well-defined
+      optimal solution: for the minimum-time problem we must be able to drive the system
+      to the origin in finite time, and for the quadratic cost, the (infinite) cost
+      integral must converge to a finite value for all initial conditions. Fortunately
+      both of these conditions are satisfied for the double integrator system, which is
+      <a href="acrobot.html#stabilizable">stabilizable</a>
+      and <a href="acrobot.html#controllability">controllable</a>, and therefore can be
+      driven to the origin in finite time.</p>
 
       <p> Note that the input limits, $|u|\le1$ are also required to make this
       problem well-posed; otherwise both optimizations would result in the
