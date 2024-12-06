@@ -80,7 +80,8 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
   
   <p>I think it's fair to say that today, in 2024, behavior cloning is once again taking
   the robotics world by storm (especially in manipulation research), and it now seems
-  like the shortest path to building "robot foundation models". We'll devote most of this chapter to it.</p>
+  like the shortest path to building "generalist" robot foundation-model-style policies.
+  We'll devote most of this chapter to it.</p>
 
   <section><h1>Behavior cloning</h1>
 
@@ -88,28 +89,30 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     directly from the policy's input-output data using supervised learning. In the case
     of full-state feedback, where we know that the optimal policy can be represented as
     a simple function of the state, this is typically cast as a simple regression
-    problem, e.g. $\min_\theta \sum_{i} |\bu_i - \pi_\theta(\bx_i)|^2.$ In the richer
-    case of output feedback, where we have learned to think about a policy as a
-    dynamical system, then this becomes a sequence learning problem (given a sequence of
-    observations, predict a sequence of actions).</p>
+    problem, e.g. $\min_\theta \sum_{i} |\bu_i - \pi_\theta(\bx_i)|^2,$ where $\theta$
+    are the parameters of e.g. the neural network. In the richer case of <a
+    href="output_feedback.html">output feedback</a>, then this becomes a sequence
+    learning problem (we are learning a dynamical system which transforms a sequence of
+    observations into a sequence of actions).</p>
     
-    <p>Famously, Large Language Models are trained with behavior cloning (and then
-    fine-tuned to make them more aligned with human preferences <elib>Ziegler19</elib>).
-    OpenAI's GPT models are <a href="sysid.html#autoregressive">autoregressive
-    models</a> that predict the next token given a "context" of recent tokens
+    <p>Famously, Large Language Models (LLMs) are trained with behavior cloning (and
+    then fine-tuned to make them more aligned with human preferences
+    <elib>Ziegler19+Zhang24</elib>). OpenAI's GPT models are <a
+    href="sysid.html#autoregressive">autoregressive models</a> that predict the next
+    token given a "context" of recent tokens
     <elib>Radford18+Radford19+Brown20+Bubeck23</elib>. More recently, we've seen the
     extension to multi-modal models, such as visually-conditioned language models (VLMs)
-    like GPT-4V and LLaVa <elib>Liu23</elib> with an increasing wealth of open-source
-    reproductions <elib>Karamcheti24+Laurençon24</elib>.</p>
+    like Flamingo, GPT-4V, and LLaVa <elib>Liu23</elib> with an increasing wealth of
+    open-source reproductions <elib>Karamcheti24+Laurençon24</elib>.</p>
     
     <p>Is predicting actions fundamentally different from next-token prediction in
     language? There are a few reasons why it might be. Actions are continuous and
     high-dimensional, whereas language tokens are discrete. Our control systems get put
     into the feedback loop with physics, and have to deal with stochasticity from the
     environment that LLMs don't experience. Google DeepMind released the RT series of
-    "vision-language-action" (VLA) models (RT-1, RT-2, and RT-2-X) which started to show
+    "vision-language-action" (VLA) models (RT-1 <elib>Brohan22</elib>, RT-2 <elib>Brohan23</elib>, and RT-X <elib>O’Neill24</elib>) which started to show
     that predicting actions may not be so fundamentally different than language, at
-    least for simple pick-and-place tasks. Then in 2024, there were two main lines of
+    least for simple pick-and-place tasks. Then in 2023, there were two main lines of
     work which convincingly demonstrated this capability could even extend to
     surprisngly dexterous manipulation. Those were the <a
     href="https://diffusion-policy.cs.columbia.edu/">Diffusion Policy</a>
@@ -125,28 +128,32 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     </figure>
 
     <p>Diffusion Policy and ALOHA seem to have been the watershed results for dexterous
-    manipulation in robotics. Since that time, the internet is now
-    rich with videos of highly dexterous manipulation from all sorts of robots up to and
-    including humanoid robots with dexterous hands.</p>
+    manipulation in robotics. Since that time, the internet is now rich with videos of
+    highly dexterous manipulation from all sorts of robots ranging from very low cost
+    manipulators up to and including humanoid robots with dexterous hands.</p>
 
     <p>In one sense, it might seem a little disappointing that, after we've spent so
     much time in these notes exploring the rich mathematical foundations of dynamics and
-    control, that behavior cloning from human teleop demonstrations can outperform some
-    of our best methods, at least for some class of problems (which are arguably more
-    about understanding the world than about dynamics and control). But think of it this
-    way: using supervised learning is an awfully clever way to explore the space of
-    policy parameterizations, and has accelerated us into bigger questions about using
-    cameras in the feedback loop, learning multitask/foundation models, and leveraging
-    structure (such as 3D geometry / objectness) in our representations or not. I must
-    say that the success of LLMs (and now multimodal models) is undeniable, and it would
-    be a mistake to ignore the great new possibilities that have opened up. I'm very
-    confident that our knowledge of dynamics and control will help us penetrate the new
-    vistas enabled by these high-capacity models.</p>
+    control, that behavior cloning from human teleop demonstrations can outperform out
+    best methods for some class of problems (which are arguably more about understanding
+    the world than about dynamics and control). But think of it this way: using
+    supervised learning is an awfully clever way to explore the space of policy
+    parameterizations, and has accelerated us into bigger questions about using cameras
+    in the feedback loop, learning multitask/foundation models, and leveraging structure
+    (such as 3D geometry / objectness) in our representations or not. The success of
+    LLMs (and now multimodal models) is undeniable, and it would be a mistake to ignore
+    the great new possibilities that have opened up. And I do think that there is
+    something fundamentally about imitation learning for manipulation: in many cases the
+    "rules of the game" (e.g. task specification) is not fully described by physics --
+    I've come to appreciate that humans bring an amazing amount of background knowledge
+    / common sense to bear when they are performing even relatively simple manipulation
+    tasks. I'm very confident that our knowledge of dynamics and control will help us
+    penetrate the new vistas enabled by these high-capacity models.</p>
     
-    <p>Let me make one important point. Sometimes people say that BC is fundamentally
-    limited because it can never outperform the human demonstrator. But one of the early
-    results from behavior cloning was that this limit that is not strictly true.
-    <todo>cite the classic result; i forget which classic paper it came from. Chowdery23
+    <p>Let me make one more important point. Sometimes people say that BC is
+    fundamentally limited because it can never outperform the human demonstrator. But
+    one of the early results from behavior cloning was that this limit that is not
+    strictly true. <todo>cite the classic result; i forget which classic paper it came from. Chowdery23
     figure 6 is relevant, but they seem to hedge a bit because perhaps the metric isn't
     great.</todo> Certainly Chat-GPT can produce text output that by some metrics
     surpasses the capabilities of any one human. <a
@@ -180,9 +187,10 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       href="https://sites.google.com/view/visuomotor-correspondence">project led by Pete
       Florence and Lucas Manuelli</a> on using a particular form of self-supervised
       learning for 3D geometries to train the policies <elib>Florence20</elib>. For me,
-      this was the first I got to really experience directly how the model was trained,
-      and I got to experience the incredibly impressive robustness that was possible in
-      the roll-outs, even with a relatively modest amount of robot training data.</p>
+      this was the first time I got to really experience directly how the model was
+      trained, and I got to experience the incredibly impressive robustness that was
+      possible in the roll-outs, even with a relatively modest amount of robot training
+      data.</p>
 
       <p>Writing feedback controllers which operate directly on the RGB camera images
       was something entirely new for me. We had been using RGB-D cameras to do some
@@ -194,7 +202,8 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       ambiguous when looking only at a depth image. The ambiguities can often be
       resolved with the addition of RGB, and there are many depth cues in RGB that allow
       us and our visuomotor policies to be successfull for 3D tasks even without an
-      explicit depth sensor.</p>
+      explicit depth sensor. Diffusion Policy and ACT, for instance, achieve their
+      amazing performance by consuming RGB (no depth).</p>
 
       <p>In my experience, control theorists have very satisfying answers to almost any
       dynamics and control problem. But (with a few rare exceptions) they didn't do
@@ -209,6 +218,15 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       meaningful representation for control is more about the statistics of natural
       scenes than about the model-based physics of propagating light.</p>
 
+      <p>This, for me, was the first main lesson I took from our imitation learning
+      work: closing feedback loops by directly consuming RGB at control rates is now
+      possible, and is incredibly powerful for robust performance in visually complex
+      settings. Imitation learning (and reinforcement learning) have so far enabled this
+      in a way that model-based control pipelines which require explicit state (or
+      belief) estimation do not. (Of course, techniques like teacher-student
+      distillation <elib>Chen20+Hwangbo19</elib> and <elib>Chou23</elib> might help us
+      bridge that gap.)</p>
+
     </subsection>
 
     <subsection><h1>Behavior cloning as sequence modeling</h1>
@@ -216,6 +234,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
      <!-- note: already mentioned this once above. -->
      <!-- aka system id. as we know, for output feedback, even the optimal policy might
 require a history of observations. -->
+     <!-- bagnell has some classic papers on this -->
 
     </subsection>
   
@@ -236,6 +255,8 @@ require a history of observations. -->
 
       <todo>Discrete maze example w/ symmetries. Push-T example.</todo>
 
+      <todo>is multimodality at odds with (local) stability? cite max's neurips
+      paper.</todo>
     </subsection>
 
   </section>
@@ -248,7 +269,7 @@ require a history of observations. -->
 
     </subsection>
 
-    <subsection><h1>Output/action decoders)</h1>
+    <subsection><h1>Output/action decoders</h1>
 
       <p>The visuomotor policies that we'll study here should output low-level robot
       actions -- $\bu$ in the parlance of these notes. These need not be torque commands
@@ -273,7 +294,7 @@ require a history of observations. -->
       Gato<elib>Reed22</elib>, and more recently these powered the Robot Transformer
       (RT) line of models from Google DeepMind: RT-1 <elib>Brohan22</elib>, RT-2
       <elib>Brohan23</elib>, RT-X
-      <elib>Padalkar23</elib>. For example, in RT, the action is represented using a
+      <elib>O’Neill24</elib>. For example, in RT, the action is represented using a
       uniform discretization with 256 bins over each coordinate (using the 1st and 99th
       quantile of the actions in the training data as the minumum and maximum values,
       respectively); in those models the action space was taken to be the end-effector
@@ -339,9 +360,9 @@ not sure if I want to include it here. -->
 
       <!-- there is also considerable work on making equivariant, etc. platt, bohg, ..-->
 
-      <p>Language-conditioned multitask policies... <elib>Padalkar23+Kim24</elib>.</p>
+      <p>Language-conditioned multitask policies... <elib>O’Neill24+Kim24</elib>.</p>
 
-      <!--  Palm-E <elib>Driess23</elib>, Prismatic, ... -->
+      <!--  Palm-E <elib>Driess23</elib>, Prismatic, Pi0 ... -->
     </subsection>
 
   </section>
@@ -449,69 +470,80 @@ not sure if I want to include it here. -->
 
     </subsection>
 
-    <subsection id="dp_lqg"><h1>Diffusion Policy for LQG</h1>
+    <subsection id="dp_lqg"><h1>Diffusion Policy for Linear Policies</h1>
     
-      <p>Let me be clear, it almost certainly does <i>not</i> make sense to use
-      a diffusion policy to implement LQG control. But because we understand
-      LQG so well at this point, it can be helpful to understand what the
-      Diffusion Policy looks like in this extremely simplified case.</p>
+      <p>Let me be clear, it almost certainly does <i>not</i> make sense to use a
+      diffusion policy to represent a linear (output) feedback control policy. But it
+      can be helpful to understand what the Diffusion Policy looks like in this
+      extremely simplified case.</p>
 
       <p>Consider the case where we have the standard linear-Gaussian dynamical
       system: \begin{gather*} \bx[n+1] = \bA\bx[n] + \bB\bu[n] + \bw[n], \\
       \by[n] = \bC\bx[n] + \bD\bu[n] + \bv[n], \\ \bw[n] \sim \mathcal{N}({\bf
       0}, {\bf \Sigma}_w), \quad \bv[n] \sim \mathcal{N}({\bf 0}, {\bf
       \Sigma}_v). \end{gather*} Imagine that we create a dataset by rolling out
-      trajectory demonstrations using the optimal LQG policy. The question is:
+      trajectory demonstrations using a linear (output) feedback policy -- it could be, for instance, the optimal policy from LQG design. The question is:
       what (exactly) does the diffusion policy learn?</p>
     
-      <p>Let's start with the $\mathcal{H}_2$ problem (e.g. <a
-      href="policy_search.html#lqr">LQR with Gaussian noise</a>), where the
-      observation and prediction horizons are limited to a single step, $H_y =
-      H_u = 1$, and the denoiser is conditioned directly on state observations.
-      We will generate roll-outs using the optimal policy, $\bu = - \bK^*\bx$,
-      given a Gaussian distribution of intial conditions and Gaussian process
-      noise. In this case, the training loss function reduces to $$\ell(\theta)
-      = \mathbb{E}_{\bx, {\bf \epsilon}, \sigma} || {\bf f}_\theta(-\bK\bx +
-      \sigma {\bf \epsilon}, \sigma, \bx) - {\bf \epsilon} ||^2,$$ where the
-      expectation in $\bx$ is over the <a
-      href="policy_search.html#lqr">stationary distribution of the optimal
-      policy</a>. In this case, we don't need a neural network; take $f_\theta$
-      to be a simple function. In particular the optimal denoiser is given by
-      $${\bf f}_\theta(\bu, \sigma, \bx) = \frac{1}{\sigma}\left[\bu +
-      \bK\bx\right].$$ At evaluation time, the sampling iterations, $$\bu_{k-1}
-      = \bu_k + \frac{\sigma_{k-1} - \sigma_k}{\sigma_k}\left[\bu_k +
-      \bK\bx\right],$$ will converge on $\bu_0 = -\bK\bx.$ (Clearly $\bu_k =
-      -\bK\bx$ is a fixed point of the iteration, and the $\frac{\sigma_{k-1} -
-      \sigma_k}{\sigma_k}$ term is like the step-size of gradient descent.)</p>
+      <subsubsection><h1>State-feedback</h1>
 
-      <p>Returning to LQG, the diffusion policy architecture (with $H_u=1$)
-      will be learning a denoiser conditioned on a finite history of actions
-      and observations, \begin{gather*}f_\theta(\bu[n], \sigma,
-      \bar{\by}_{H_y}, \bar{\bu}_{H_y}), \\ \bar{\by}_{H_y} =
-      \left[\by[n-1],... ,\by[n-H_y]\right], \\ \bar{\bu}_{H_y} =
-      \left[\bu[n-1],... ,\bu[n-H_y]\right].\end{gather*} We know that for <a
-      href="output_feedback.html#lqg">LQG</a>, the optimal actor that we will
-      use for generating training data takes the form of a Kalman filter
-      followed by LQR feedback on the estimated state. We can <a
-      href="output_feedback.html#disturbance_based">"unroll" the (truncated)
-      Kalman filter</a> into a linear function of the history of actions and
-      observations; for observable and stabilizable linear systems we know that
-      this truncation error will converge to zero as we increase $H_y$. Let's
-      call this unrolled policy $\bu[n] = \hat{\pi}_{LQG}(\bar{\by}_{H_y},
-      \bar{\bu}_{H_y}).$ With some care, it can be shown that the optimal
-      denoiser is given by $${\bf f}_\theta(\bu, \sigma, \bar{\by}_{H_y},
-      \bar{\bu}_{H_y}) = \frac{1}{\sigma}\left[\bu +
-      \hat{\pi}_{LQG}(\bar{\by}_{H_y}, \bar{\bu}_{H_y})\right],$$ which will
-      converge onto the truncated Kalman filter.</p>
+      <p>Let's start with the state-feedback case, where we generate roll-outs using a
+      controller, $\bu = - \bK\bx$, given a Gaussian distribution of intial conditions
+      and Gaussian process noise. In this case, the training loss function reduces to
+      $$\ell(\theta) = \mathbb{E}_{\bx, {\bf \epsilon}, \sigma} || {\bf
+      f}_\theta(-\bK\bx + \sigma {\bf \epsilon}, \sigma, \bx) - {\bf \epsilon} ||^2,$$
+      where the expectation in $\bx$ is over the <a
+      href="policy_search.html#lqr">stationary distribution of the closed-loop
+      system</a>. In this case, we don't need a neural network; take $f_\theta$ to be a
+      simple function. In particular, we can achieve zero loss using the denoiser given
+      by $${\bf f}_\theta(\bu, \sigma, \bx) = \frac{1}{\sigma}\left[\bu +
+      \bK\bx\right].$$ At evaluation time, the sampling iterations, $$\bu_{k-1} = \bu_k
+      + \frac{\sigma_{k-1} - \sigma_k}{\sigma_k}\left[\bu_k + \bK\bx\right],$$ will
+      converge on $\bu_0 = -\bK\bx.$ (Clearly $\bu_k = -\bK\bx$ is a fixed point of the
+      iteration, and the $\frac{\sigma_{k-1} - \sigma_k}{\sigma_k}$ term is like the
+      step-size of gradient descent.)</p>
+
+      </subsubsection>
+      <subsubsection><h1>Output-feedback</h1>
+
+      <p>Returning to output feedback, we know that the optimal linear output-feedback
+      policy from LQG is typically written in a state-space form, e.g.: \begin{gather*}
+      \hat{\bx}[n+1] = \bA\hat{\bx}[n] + \bB_c\bu[n] + {\bf L}\left(\by[n] -
+      \bC\hat{x}[n] - \bD\bu[n]\right), \\ \bu[n] = -\bK\hat{\bx}[n]. \end{gather*} But
+      the Diffusion Policy architecture (with $H_u=1$) is typically formulated as
+      learning a denoiser conditioned on a finite history of actions and observations,
+      \begin{gather*}f_\theta(\bu[n], \sigma, \bar{\by}_{H_y}, \bar{\bu}_{H_y}), \\
+      \bar{\by}_{H_y} = \left[\by[n-1],... ,\by[n-H_y]\right], \\ \bar{\bu}_{H_y} =
+      \left[\bu[n-1],... ,\bu[n-H_y]\right].\end{gather*} So the more direct analogy
+      would be to generating demonstrations from an autoregressive linear policy, e.g.
+      $$\bu[n] = -\bK \begin{bmatrix} \bar{\by}_{H_y} \\ \bar{\bu}_{H_y}\end{bmatrix}.$$
+      This autoregressive form is commonly used in <a
+      href="output_feedback.html#disturbance-based">disturbance-based</a> output
+      feedback, and may be helpful to think of it e.g. as an "unrolled" (truncated)
+      Kalman filter. Again, we can achieve zero loss with a denoiser of the form $${\bf
+      f}_\theta(\bu, \sigma, \bar{\by}_{H_y}, \bar{\bu}_{H_y}) =
+      \frac{1}{\sigma}\left[\bu + \bK \begin{bmatrix} \bar{\by}_{H_y} \\
+      \bar{\bu}_{H_y}\end{bmatrix}\right].$$</p>
 
       <todo>Notebook example</todo>
 
-      <p>Predicting actions multiple steps into the future is a fundamentally
-      important aspect of the Diffusion Policy architecture
-      <elib>Block23b</elib>. For LQG, ...</p>  
+      <p>This shapes my current mental model for what Diffusion Policy is learning, even
+      in complicated manipulation settings: it may be helpful to think about the history
+      of actions and observations being compressed into a (task-relevant) belief-state
+      representation, like we would have in an (unrolled, truncated) Kalman filter, that
+      is sufficient for predicting actions.</p>
 
-      <todo>Reduced-order LQG</todo>
+      </subsubsection>
+      <subsubsection><h1>Action sequence prediction</h1>
+      <p>Another important aspect of the Diffusion Policy architecture is that it is
+      predicting not just the instantaneous action, but a sequence of future
+      actions. Even in the linear policy setting, we can see that this puts different pressure on the learned representations...</p>
 
+      <todo>
+      <elib>Block23b</elib> ?
+      </todo>
+
+      </subsubsection>
     </subsection>
   
   </section>
@@ -656,6 +688,12 @@ Tech. Report, CMU-RI-TR-15-08, March, <span class="year">2015</span>.
 <span class="publisher">arXiv preprint arXiv:1909.08593</span>, <span class="year">2019</span>.
 
 </li><br>
+<li id=Zhang24>
+<span class="author">Shengyu Zhang and Linfeng Dong and Xiaoya Li and Sen Zhang and Xiaofei Sun and Shuhe Wang and Jiwei Li and Runyi Hu and Tianwei Zhang and Fei Wu and Guoyin Wang</span>, 
+<span class="title">"Instruction Tuning for Large Language Models: A Survey"</span>, 
+, <span class="year">2024</span>.
+
+</li><br>
 <li id=Radford18>
 <span class="author">Alec Radford and Karthik Narasimhan and Tim Salimans and Ilya Sutskever and others</span>, 
 <span class="title">"Improving language understanding by generative pre-training"</span>, 
@@ -698,6 +736,24 @@ Tech. Report, CMU-RI-TR-15-08, March, <span class="year">2015</span>.
 , <span class="year">2024</span>.
 
 </li><br>
+<li id=Brohan22>
+<span class="author">Anthony	Brohan and Noah Brown and Justice Carbajal and Yevgen Chebotar and Joseph Dabis and Chelsea Finn and Keerthana Gopalakrishnan and Karol Hausman and Alex Herzog and Jasmine Hsu and Julian Ibarz and Brian Ichter and Alex Irpan and Tomas Jackson and Sally Jesmonth and Nikhil Joshi and Ryan Julian and Dmitry Kalashnikov and Yuheng Kuang and Isabel Leal and Kuang-Huei Lee and Sergey Levine and Yao Lu and Utsav Malla and Deeksha Manjunath and Igor Mordatch and Ofir Nachum and Carolina Parada and Jodilyn Peralta and Emily Perez and Karl Pertsch and Jornell Quiambao and Kanishka Rao and Michael Ryoo and Grecia Salazar and Pannag Sanketi and Kevin Sayed and Jaspiar Singh and Sumedh Sontakke and Austin Stone and Clayton Tan and Huong Tran and Vincent Vanhoucke and Steve Vega and Quan Vuong and Fei Xia and Ted Xiao and Peng Xu and Sichun Xu and Tianhe Yu and Brianna Zitkovich</span>, 
+<span class="title">"RT-1: Robotics Transformer for Real-World Control at Scale"</span>, 
+<span class="publisher">arXiv preprint arXiv:2212.06817</span> , <span class="year">2022</span>.
+
+</li><br>
+<li id=Brohan23>
+<span class="author">Anthony Brohan and Noah Brown and Justice Carbajal and Yevgen Chebotar and Xi Chen and Krzysztof Choromanski and Tianli Ding and Danny Driess and Avinava Dubey and Chelsea Finn and Pete Florence and Chuyuan Fu and Montse Gonzalez Arenas and Keerthana Gopalakrishnan and Kehang Han and Karol Hausman and Alex Herzog and Jasmine Hsu and Brian Ichter and Alex Irpan and Nikhil Joshi and Ryan Julian and Dmitry Kalashnikov and Yuheng Kuang and Isabel Leal and Lisa Lee and Tsang-Wei Edward Lee and Sergey Levine and Yao Lu and Henryk Michalewski and Igor Mordatch and Karl Pertsch and Kanishka Rao and Krista Reymann and Michael Ryoo and Grecia Salazar and Pannag Sanketi and Pierre Sermanet and Jaspiar Singh and Anikait Singh and Radu Soricut and Huong Tran and Vincent Vanhoucke and Quan Vuong and Ayzaan Wahid and Stefan Welker and Paul Wohlhart and Jialin Wu and Fei Xia and Ted Xiao and Peng Xu and Sichun Xu and Tianhe Yu and Brianna Zitkovich</span>, 
+<span class="title">"RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control"</span>, 
+<span class="publisher">arXiv preprint arXiv:2307.15818</span> , <span class="year">2023</span>.
+
+</li><br>
+<li id=O’Neill24>
+<span class="author">Abby O’Neill and Abdul Rehman and Abhiram Maddukuri and Abhishek Gupta and Abhishek Padalkar and Abraham Lee and Acorn Pooley and Agrim Gupta and Ajay Mandlekar and Ajinkya Jain and others</span>, 
+<span class="title">"Open x-embodiment: Robotic learning datasets and rt-x models: Open x-embodiment collaboration 0"</span>, 
+<span class="publisher">2024 IEEE International Conference on Robotics and Automation (ICRA)</span> , pp. 6892--6903, <span class="year">2024</span>.
+
+</li><br>
 <li id=Chi24>
 <span class="author">Cheng Chi and Zhenjia Xu and Siyuan Feng and Eric Cousineau and Yilun Du and Benjamin Burchfiel and Russ Tedrake and Shuran Song</span>, 
 <span class="title">"Diffusion Policy: Visuomotor Policy Learning via Action Diffusion"</span>, 
@@ -729,6 +785,25 @@ Tech. Report, CMU-RI-TR-15-08, March, <span class="year">2015</span>.
 [&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Florence20.pdf">link</a>&nbsp;]
 
 </li><br>
+<li id=Chen20>
+<span class="author">Dian Chen and Brady Zhou and Vladlen Koltun and Philipp Krahenbuhl</span>, 
+<span class="title">"Learning by cheating"</span>, 
+<span class="publisher">Conference on Robot Learning</span> , pp. 66--75, <span class="year">2020</span>.
+
+</li><br>
+<li id=Hwangbo19>
+<span class="author">Jemin Hwangbo and Joonho Lee and Alexey Dosovitskiy and Dario Bellicoso and Vassilios Tsounis and Vladlen Koltun and Marco Hutter</span>, 
+<span class="title">"Learning agile and dynamic motor skills for legged robots"</span>, 
+<span class="publisher">Science Robotics</span>, vol. 4, no. 26, pp. eaau5872, <span class="year">2019</span>.
+
+</li><br>
+<li id=Chou23>
+<span class="author">Glen Chou and Russ Tedrake</span>, 
+<span class="title">"Synthesizing Stable Reduced-Order Visuomotor Policies for Nonlinear Systems via Sums-of-Squares Optimization"</span>, 
+<span class="publisher">Proceedings of the IEEE 62nd Annual Conference on Decision and Control (CDC)</span> , <span class="year">2023</span>.
+[&nbsp;<a href="http://groups.csail.mit.edu/robotics-center/public_papers/Chou23.pdf">link</a>&nbsp;]
+
+</li><br>
 <li id=Ross11>
 <span class="author">St&eacute;phane Ross and Geoffrey Gordon and Drew Bagnell</span>, 
 <span class="title">"A reduction of imitation learning and structured prediction to no-regret online learning"</span>, 
@@ -745,24 +820,6 @@ Tech. Report, CMU-RI-TR-15-08, March, <span class="year">2015</span>.
 <span class="author">Scott Reed and Konrad Zolna and Emilio Parisotto and Sergio Gomez Colmenarejo and Alexander Novikov and Gabriel Barth-Maron and Mai Gimenez and Yury Sulsky and Jackie Kay and Jost Tobias Springenberg and others</span>, 
 <span class="title">"A generalist agent"</span>, 
 <span class="publisher">arXiv preprint arXiv:2205.06175</span>, <span class="year">2022</span>.
-
-</li><br>
-<li id=Brohan22>
-<span class="author">Anthony	Brohan and Noah Brown and Justice Carbajal and Yevgen Chebotar and Joseph Dabis and Chelsea Finn and Keerthana Gopalakrishnan and Karol Hausman and Alex Herzog and Jasmine Hsu and Julian Ibarz and Brian Ichter and Alex Irpan and Tomas Jackson and Sally Jesmonth and Nikhil Joshi and Ryan Julian and Dmitry Kalashnikov and Yuheng Kuang and Isabel Leal and Kuang-Huei Lee and Sergey Levine and Yao Lu and Utsav Malla and Deeksha Manjunath and Igor Mordatch and Ofir Nachum and Carolina Parada and Jodilyn Peralta and Emily Perez and Karl Pertsch and Jornell Quiambao and Kanishka Rao and Michael Ryoo and Grecia Salazar and Pannag Sanketi and Kevin Sayed and Jaspiar Singh and Sumedh Sontakke and Austin Stone and Clayton Tan and Huong Tran and Vincent Vanhoucke and Steve Vega and Quan Vuong and Fei Xia and Ted Xiao and Peng Xu and Sichun Xu and Tianhe Yu and Brianna Zitkovich</span>, 
-<span class="title">"RT-1: Robotics Transformer for Real-World Control at Scale"</span>, 
-<span class="publisher">arXiv preprint arXiv:2212.06817</span> , <span class="year">2022</span>.
-
-</li><br>
-<li id=Brohan23>
-<span class="author">Anthony Brohan and Noah Brown and Justice Carbajal and Yevgen Chebotar and Xi Chen and Krzysztof Choromanski and Tianli Ding and Danny Driess and Avinava Dubey and Chelsea Finn and Pete Florence and Chuyuan Fu and Montse Gonzalez Arenas and Keerthana Gopalakrishnan and Kehang Han and Karol Hausman and Alex Herzog and Jasmine Hsu and Brian Ichter and Alex Irpan and Nikhil Joshi and Ryan Julian and Dmitry Kalashnikov and Yuheng Kuang and Isabel Leal and Lisa Lee and Tsang-Wei Edward Lee and Sergey Levine and Yao Lu and Henryk Michalewski and Igor Mordatch and Karl Pertsch and Kanishka Rao and Krista Reymann and Michael Ryoo and Grecia Salazar and Pannag Sanketi and Pierre Sermanet and Jaspiar Singh and Anikait Singh and Radu Soricut and Huong Tran and Vincent Vanhoucke and Quan Vuong and Ayzaan Wahid and Stefan Welker and Paul Wohlhart and Jialin Wu and Fei Xia and Ted Xiao and Peng Xu and Sichun Xu and Tianhe Yu and Brianna Zitkovich</span>, 
-<span class="title">"RT-2: Vision-Language-Action Models Transfer Web Knowledge to Robotic Control"</span>, 
-<span class="publisher">arXiv preprint arXiv:2307.15818</span> , <span class="year">2023</span>.
-
-</li><br>
-<li id=Padalkar23>
-<span class="author">Abhishek Padalkar and Acorn Pooley and Ajinkya Jain and Alex Bewley and Alex Herzog and Alex Irpan and Alexander Khazatsky and Anant Rai and Anikait Singh and Anthony Brohan and others</span>, 
-<span class="title">"Open x-embodiment: Robotic learning datasets and rt-x models"</span>, 
-<span class="publisher">arXiv preprint arXiv:2310.08864</span>, <span class="year">2023</span>.
 
 </li><br>
 <li id=Kim24>
@@ -884,6 +941,12 @@ Tech. Report, CMU-RI-TR-15-08, March, <span class="year">2015</span>.
 <span class="author">Dhruv Shah and Ajay Sridhar and Nitish Dashora and Kyle Stachowicz and Kevin Black and Noriaki Hirose and Sergey Levine</span>, 
 <span class="title">"ViNT: A Foundation Model for Visual Navigation"</span>, 
 <span class="publisher">Conference on Robot Learning</span> , pp. 711--733, <span class="year">2023</span>.
+
+</li><br>
+<li id=Padalkar23>
+<span class="author">Abhishek Padalkar and Acorn Pooley and Ajinkya Jain and Alex Bewley and Alex Herzog and Alex Irpan and Alexander Khazatsky and Anant Rai and Anikait Singh and Anthony Brohan and others</span>, 
+<span class="title">"Open x-embodiment: Robotic learning datasets and rt-x models"</span>, 
+<span class="publisher">arXiv preprint arXiv:2310.08864</span>, <span class="year">2023</span>.
 
 </li><br>
 </ol>
