@@ -8,7 +8,7 @@ import matplotlib.colors as mcolors
 import numpy as np
 from lxml.etree import Element, ElementTree, SubElement, tostring
 from pydrake.common.value import Value
-from pydrake.geometry import FramePoseVector, Meshcat, Rgba, SceneGraph
+from pydrake.geometry import FramePoseVector, Meshcat, Rgba, Role, SceneGraph
 from pydrake.geometry.optimization import (
     GraphOfConvexSetsOptions,
     HPolyhedron,
@@ -1822,7 +1822,7 @@ class UavEnvironment:
                             shift_composite_trajectory(traj, -offset)
                         )
                     )
-                    QuadrotorGeometry.add_to_builder(
+                    _QuadrotorGeometry.AddToBuilder(
                         builder,
                         flat_traj_source.get_output_port(0),
                         scene_graph,
@@ -1832,7 +1832,7 @@ class UavEnvironment:
                 flat_traj_source = builder.AddSystem(
                     FlatQuadrotorTrajectorySource(traj)
                 )
-                QuadrotorGeometry.add_to_builder(
+                _QuadrotorGeometry.AddToBuilder(
                     builder,
                     flat_traj_source.get_output_port(0),
                     scene_graph,
@@ -1928,11 +1928,11 @@ class UavEnvironment:
         self.tree.write(filename, pretty_print=True)
 
 
-class QuadrotorGeometry(LeafSystem):
-    """A copy of the QuadrotorGeometry class from the drake examples."""
+class _QuadrotorGeometry(LeafSystem):
+    """A copy of the QuadrotorGeometry class from the drake examples, with an additional model_name_prefix argument."""
 
     def __init__(self, scene_graph: SceneGraph, model_name_prefix: str = "") -> None:
-        """Create a QuadrotorGeometry system.
+        """Create a _QuadrotorGeometry system.
 
         Args:
             scene_graph: The SceneGraph to register the quadrotor geometry with.
@@ -1949,6 +1949,14 @@ class QuadrotorGeometry(LeafSystem):
         model_instance_indices = parser.AddModelsFromUrl(
             "package://drake_models/skydio_2/quadrotor.urdf"
         )
+        # Remove collision geometries.  This class is only intended to be used for visualization.
+        inspector = scene_graph.model_inspector()
+        body = plant.GetBodyByName("base_link", model_instance_indices[0])
+        frame_id = plant.GetBodyFrameIdIfExists(body.index())
+        geom_ids = inspector.GetGeometries(frame_id, role=Role.kProximity)
+        for geom_id in geom_ids:
+            scene_graph.RemoveGeometry(plant.get_source_id(), geom_id)
+
         plant.Finalize()
 
         body_index = plant.GetBodyIndices(model_instance_indices[0])[0]
@@ -1971,7 +1979,7 @@ class QuadrotorGeometry(LeafSystem):
         output.get_mutable_value().set_value(self._frame_id, pose)
 
     @classmethod
-    def add_to_builder(
+    def AddToBuilder(
         cls,
         builder: DiagramBuilder,
         quadrotor_state_port: InputPort,

@@ -42,7 +42,6 @@ rt_ipynb_test(
     ],
 )
 
-""" waiting for https://github.com/RobotLocomotion/drake/issues/22164
 rt_ipynb_test(
     name = "gcs_quadrotor",
     srcs = ["gcs_quadrotor.ipynb"],
@@ -52,4 +51,3 @@ rt_ipynb_test(
         "//underactuated:uav_environment",
     ],
 )
-"""

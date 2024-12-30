@@ -51,7 +51,7 @@ priority = "explicit"
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
 #drake = { version = "==0.0.20240307", source = "drake-nightly" }
-drake = ">=1.30.0"
+drake = ">=1.36.0"
 gradescope-utils = ">=0.4.0"
 ipywidgets = ">7"
 lxml = {version = ">=4.9.2", extras = ["html_clean"] }  # used in uav_environment.py
@@ -69,7 +69,7 @@ optional = true
 [tool.poetry.group.docs.dependencies]
 # Should match drake version above.
 #drake = { version = "==0.0.20240307", source = "drake-nightly" }
-drake = ">=1.30.0"
+drake = ">=1.36.0"
 ipython = ">=7.8.0"
 sphinx = ">=7.2.6"
 myst-parser = ">=2.0.0"
