@@ -99,15 +99,16 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     $\bx^T{\bf SA}\bx = \bx^T{\bf A}^T{\bf S}\bx$, we can write $$0 = \bx^T
     \left[ {\bf Q} - {\bf S B R}^{-1}\bB^T{\bf S} + {\bf SA} + {\bf A}^T{\bf S}
     \right]\bx.$$ and since this condition must hold for all $\bx$, it is
-    sufficient to consider the matrix equation $$0 = {\bf S} {\bf A} + {\bf A}^T
-    {\bf S} - {\bf S} \bB {\bf R}^{-1} \bB^T {\bf S} + {\bf Q}.$$ This extremely
-    important equation is a version of the <em>algebraic Riccati equation</em>.
-    Note that it is quadratic in ${\bf S}$, making its solution non-trivial, but
-    it is well known that the equation has a single positive-definite solution
-    if and only if the system is controllable. Moreover, there are good numerical
-    methods for finding that solution, even in high-dimensional problems.  Both
-    the optimal policy and optimal cost-to-go function are available from
-    <drake></drake> by calling <code> (K,S) =
+    sufficient to consider the matrix equation $$0 = {\bf S} {\bf A} + {\bf
+    A}^T {\bf S} - {\bf S} \bB {\bf R}^{-1} \bB^T {\bf S} + {\bf Q}.$$ This
+    extremely important equation is a version of the <em>algebraic Riccati
+    equation</em>. Note that it is quadratic in ${\bf S}$, making its solution
+    non-trivial, but it is well known that the equation has a single
+    positive-definite solution if and only if the system is <a
+    href="acrobot.html#stabilizable">stabilizable</a>. Moreover, there are good
+    numerical methods for finding that solution, even in high-dimensional
+    problems.  Both the optimal policy and optimal cost-to-go function are
+    available from <drake></drake> by calling <code> (K,S) =
     LinearQuadraticRegulator(A,B,Q,R)</code>.</p>
 
     <p>If the appearance of the quadratic form of the cost-to-go seemed
