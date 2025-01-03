@@ -129,6 +129,7 @@ jobs:
   docker:
     name: dockerfile
     runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'requires new pip wheels') }}
     container: russtedrake/underactuated:latest
     steps:
       - name: checkout
@@ -154,6 +155,7 @@ jobs:
     # need to separate out testing requirements from notebook requirements.
     name: pip on jammy
     runs-on: ubuntu-22.04
+    if: ${{ !contains(github.event.pull_request.labels.*.name, 'requires new pip wheels') }}
     container: ubuntu:22.04
     steps:
       - name: pre-checkout setup
