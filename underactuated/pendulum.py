@@ -58,5 +58,5 @@ class PendulumVisualizer(PyPlotVisualizer):
         path.vertices[:, 0] = self.arm_x * np.cos(theta) - self.arm_y * np.sin(theta)
         path.vertices[:, 1] = self.arm_x * np.sin(theta) + self.arm_y * np.cos(theta)
         self.center_of_mass[0].set_data(
-            self.ac1 * np.sin(theta), -self.ac1 * np.cos(theta)
+            [self.ac1 * np.sin(theta)], [-self.ac1 * np.cos(theta)]
         )
