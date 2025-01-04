@@ -125,7 +125,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
       href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/intro.ipynb">https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/intro.ipynb</a>.
       Then you must manually add the following line in a code cell at the top
       of the notebook (and run it once)
-        <pre><code class="python">!pip install underactuated</code></pre>
+        <pre><code class="python">!pip install underactuated[all]</code></pre>
       </p>
 
       <p>Note: Drake's pip wheels are only updated at each (monthly) release.
@@ -154,7 +154,7 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         <div style="display:flex; justify-content:flex-end;"><button style="padding:10; background-color: transparent; border:0" onclick="copy_code_to_clipboard(this)"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="icon-sm" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div>
         <pre><code class="bash">python3 -m venv venv
 source venv/bin/activate
-pip3 install underactuated --extra-index-url https://drake-packages.csail.mit.edu/whl/nightly/       
+pip3 install underactuated[all] --extra-index-url https://drake-packages.csail.mit.edu/whl/nightly/       
         </code></pre>
       </div>
       Then you can download notebooks directly from Deepnote and run them locally (or
