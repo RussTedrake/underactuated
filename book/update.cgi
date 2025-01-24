@@ -25,32 +25,30 @@ try:
 
     os.chdir("..")
 
-    build_output = subprocess.run(
-        [
-            "/bin/bash",
-            "-c",
-            "source venv/bin/activate && "
-            "poetry install --only docs && "
-            "echo 'Contents of /tmp before:' && ls -la /tmp && "
-            "sphinx-build -M html underactuated /tmp/underactuated_doc && "
-            "echo 'Contents of /tmp after:' && ls -la /tmp && "
-            "rm -rf book/python && "
-            "cp -r /tmp/underactuated_doc/html book/python",
-        ],
-        capture_output=True,
-        text=True,
-        check=True,
-    ).stdout
+    # Start the build process in background
+    with open("/tmp/underactuated_build_docs.log", "w") as log_file:
+        subprocess.Popen(
+            [
+                "/bin/bash",
+                "-c",
+                "source venv/bin/activate && "
+                "poetry install --only docs && "
+                "sphinx-build -M html underactuated /tmp/underactuated_doc && "
+                "rm -rf book/python && "
+                "cp -r /tmp/underactuated_doc/html book/python",
+            ],
+            stdout=log_file,
+            stderr=subprocess.STDOUT,
+            start_new_session=True,
+        )
 
-    # Now we can safely print headers and content
     print("Content-Type: text/html\n")
     print("<html><body>")
     print("<p>pulling repo...</p>")
     print(f"<pre>{git_output}</pre>")
     print("<p>done.</p>")
-    print("<p>building documentation...</p>")
-    print(f"<pre>{build_output}</pre>")
-    print("<p>done.</p>")
+    print("<p>Documentation build started in the background.</p>")
+    print("<p>Check /tmp/underactuated_build_docs.log for progress.</p>")
     print("</body></html>")
 
 except Exception as e:
