@@ -251,7 +251,7 @@ print("S = " + str(S))</code></pre></div>
 
       <p>Note that the infinite-horizon LQR solution described in the prequel is
       exactly the steady-state solution of this equation, defined by $\dot{\bf
-      S}(t) = 0$. Indeed, for controllable systems this equation is stable
+      S}(t) = 0$. Indeed, for stabilizable systems this equation is stable
       (backwards in time), and as expected the finite-horizon solution converges
       on the infinite-horizon solution as the horizon time limits to infinity.
       </p>
@@ -262,7 +262,7 @@ print("S = " + str(S))</code></pre></div>
       chapter.</todo>
 
       <p>The solution ${\bf S}(t)$ will be the result of numerical integration.
-      On weakly controllable systems (like the <a
+      On weakly stabilizable systems (like the <a
       href="trajopt.html#perching">perching airplane</a>), I've found that even
       error-controlled integration can lead to crippling numerical artifacts
       such as the loss of symmetry or positive definiteness. For a more robust
@@ -605,7 +605,7 @@ print("S = " + str(S))</code></pre></div>
         <code>PlanarJoint</code> for the floating base, giving us 4 degrees of
         freedom: $[x, z, \theta_{ball}, \theta_{bot-ball}].$  If we linearize
         this model and call LQR, the LQR call will fail because <i>the system
-        is not controllable in the full coordinates</i>.  The first reason is
+        is not stabilizable in the full coordinates</i>.  The first reason is
         easy to see: there is nothing that the actuators can do to change $z$,
         the vertical position of the ball. Perhaps the more subtle reason is
         that there is a (holonomic) constraint from the ball rolling without
