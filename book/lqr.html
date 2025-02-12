@@ -840,52 +840,105 @@ print("S = " + str(S))</code></pre></div>
       B}(t)\bu + {\bf c}(t),$$ and a running cost function in the general
       quadratic form: \begin{gather*} \ell(t, \bx,\bu) = \begin{bmatrix} \bx \\
       1 \end{bmatrix}^T {\bf Q}(t) \begin{bmatrix} \bx \\ 1 \end{bmatrix} +
-      \begin{bmatrix} \bu \\ 1 \end{bmatrix}^T {\bf R}(t) \begin{bmatrix} \bu \\
-      1 \end{bmatrix} + 2\bx^T{\bf N}(t)\bu, \\ \forall t\in[t_0, t_f], \quad
-      \bQ(t) = \begin{bmatrix} \bQ_{xx}(t) & \bq_x(t) \\ \bq_x^T(t) & q_0(t)
-      \end{bmatrix}, \bQ_{xx}(t) \succeq 0, \quad \bR(t) = \begin{bmatrix}
-      \bR_{uu}(t) & {\bf r}_u(t) \\ {\bf r}_u^T(t) & r_0(t) \end{bmatrix},
-      \bR_{uu}(t) \succ 0.\end{gather*}  Observe that our LQR "optimal tracking"
-      derivation fits in this form, as we can always write $$(\bx - \bx_d(t))^T
-      \bQ_t (\bx - \bx_d(t)) + (\bu - \bu_d(t))^T \bR_t (\bu - \bu_d(t)) + 2
-      (\bx - \bx_d(t))^T {\bf N}_t (\bu - \bu_d(t)),$$ by taking \begin{gather*}
-      \bQ_{xx} = \bQ_t,\quad \bq_x = -\bQ_t \bx_d - {\bf N}_t\bu_d, \quad q_0 =
-      \bx_d^T \bQ_t \bx_d + 2 \bx_d^T {\bf N}_t \bu_d, \\ \bR_{uu} = \bR_t,
-      \quad {\bf r}_u = -\bR_t \bu_d - {\bf N}_t^T \bx_d, \quad r_0 = \bu_d^T
-      \bR_t \bu_d, \quad {\bf N} = {\bf N}_t.\end{gather*} Of course, we can
-      also add a quadratic final cost with $\bQ_f$. Let's search for a positive
-      quadratic, time-varying cost-to-go function of the form: \begin{gather*}
-      J(t, \bx)=\begin{bmatrix} \bx \\ 1 \end{bmatrix}^T {\bf S}(t)
-      \begin{bmatrix} \bx \\ 1 \end{bmatrix}, \quad {\bf S}(t) = \begin{bmatrix}
-      {\bf S}_{xx}(t) & {\bf s}_x(t) \\ {\bf s}_x^T(t) & s_0(t) \end{bmatrix},
-      {\bf S}_{xx}(t) \succ 0, \\ \frac{\partial J}{\partial \bx} = 2\bx^T{\bf
-      S}_{xx} + 2{\bf s}_x^T, \quad \frac{\partial J}{\partial t} =
-      \begin{bmatrix} \bx \\ 1 \end{bmatrix}^T\dot{\bf S} \begin{bmatrix} \bx \\
-      1 \end{bmatrix}. \end{gather*} Writing out the HJB: \begin{gather*}
-      \min_\bu \left[\ell(\bx,\bu) + \frac{\partial J}{\partial \bx} \left[{\bf
-      A}(t)\bx + {\bf B}(t)\bu + {\bf c}(t) \right] + \frac{\partial J}{\partial
-      t} \right] = 0, \end{gather*} we can find the minimizing $\bu$ with
-      \begin{gather*} \frac{\partial}{\partial \bu} = 2\bu^T{\bf R}_{uu} + 2{\bf
-      r}_u^T + 2\bx^T{\bf N} + (2\bx^T{\bf S}_{xx} + 2{\bf s}_x^T){\bf B} = 0 \\
-      \bu^* = -{\bf R}_{uu}^{-1} \begin{bmatrix} {\bf N} + {\bf S}_{xx} \bB \\
-      {\bf r}^T_{u} + {\bf s}^T_{x}\bB \end{bmatrix}^T \begin{bmatrix} \bx \\ 1
-      \end{bmatrix} = -{\bf K}(t) \begin{bmatrix} \bx \\ 1 \end{bmatrix} = -{\bf
-      K}_x(t) \bx - {\bf k}_0(t). \end{gather*} Inserting this back into the HJB gives
-      us the updated Riccati differential equation. Since this must hold for all
-      $\bx$, we can collect the quadratic, linear, and offset terms and set them
-      each individually equal to zero, yielding: \begin{align*} -\dot{\bf
-      S}_{xx} =& \bQ_{xx} - ({\bf N} + {\bf S}_{xx} \bB){\bf R}_{uu}^{-1}({\bf
-      N} + {\bf S}_{xx} \bB)^T + {\bf S}_{xx}{\bf A} + {\bf A}^T{\bf S}_{xx}, \\
-      -\dot{\bf s}_x =& \bq_x - ({\bf N} + {\bf S}_{xx} \bB){\bf R}_{uu}^{-1}
-      ({\bf r}_u + \bB^T {\bf s}_x ) + {\bf A}^T{\bf s}_x + {\bf S}_{xx}{\bf c},
-      \\ -\dot{s}_0 =& q_0 + r_0 - ({\bf r}_u + \bB^T {\bf s}_x)^T{\bf
-      R}_{uu}^{-1} ({\bf r}_u + \bB^T {\bf s}_x) + 2{\bf s}_x^T {\bf c},
-      \end{align*} with the final conditions ${\bf S}(t_f) = {\bf Q}_f.$
+      \begin{bmatrix} \bu \\ 1 \end{bmatrix}^T {\bf R}(t) \begin{bmatrix} \bu
+      \\ 1 \end{bmatrix} + 2\bx^T{\bf N}(t)\bu, \\ \forall t\in[t_0, t_f],
+      \quad \bQ = \begin{bmatrix} \bQ_{xx} & \bq_x \\ \bq_x^T & q_0
+      \end{bmatrix}, \bQ_{xx} \succeq 0, \quad \bR(t) = \begin{bmatrix}
+      \bR_{uu} & {\bf r}_u \\ {\bf r}_u^T & r_0 \end{bmatrix}, \bR_{uu} \succ
+      0.\end{gather*} It's tempting to require that the cost is always
+      positive, e.g. with conditions of the form $r_0 - \bf{r}_u^T
+      \bR_{uu}^{-1} {\bf r}_u \ge 0$, but this is not actually necessary in the
+      finite-horizon case.</p>
+      <p>Observe that our LQR "optimal tracking" derivation fits in this form,
+      as we can always write $$(\bx - \bx_d(t))^T \bQ_t (\bx - \bx_d(t)) + (\bu
+      - \bu_d(t))^T \bR_t (\bu - \bu_d(t)) + 2 (\bx - \bx_d(t))^T {\bf N}_t
+      (\bu - \bu_d(t)),$$ by taking \begin{gather*} \bQ_{xx} = \bQ_t,\quad
+      \bq_x = -\bQ_t \bx_d - {\bf N}_t\bu_d, \quad q_0 = \bx_d^T \bQ_t \bx_d +
+      2 \bx_d^T {\bf N}_t \bu_d, \\ \bR_{uu} = \bR_t, \quad {\bf r}_u = -\bR_t
+      \bu_d - {\bf N}_t^T \bx_d, \quad r_0 = \bu_d^T \bR_t \bu_d, \quad {\bf N}
+      = {\bf N}_t.\end{gather*} Of course, we can also add a quadratic final
+      cost with $\bQ_f$. Let's search for a positive quadratic, time-varying
+      cost-to-go function of the form: \begin{gather*} J(t,
+      \bx)=\begin{bmatrix} \bx \\ 1 \end{bmatrix}^T {\bf S}(t) \begin{bmatrix}
+      \bx \\ 1 \end{bmatrix}, \quad {\bf S}(t) = \begin{bmatrix} {\bf S}_{xx} &
+      {\bf s}_x \\ {\bf s}_x^T & s_0 \end{bmatrix}, {\bf S}_{xx} \succeq
+      0, \\ \frac{\partial
+      J}{\partial \bx} = 2\bx^T{\bf S}_{xx} + 2{\bf s}_x^T, \quad
+      \frac{\partial J}{\partial t} = \begin{bmatrix} \bx \\ 1
+      \end{bmatrix}^T\dot{\bf S} \begin{bmatrix} \bx \\ 1 \end{bmatrix}.
+      \end{gather*} Writing out the HJB: \begin{gather*} \min_\bu
+      \left[\ell(\bx,\bu) + \frac{\partial J}{\partial \bx} \left[{\bf A}(t)\bx
+      + {\bf B}(t)\bu + {\bf c}(t) \right] + \frac{\partial J}{\partial t}
+      \right] = 0, \end{gather*} we can find the minimizing $\bu$ with
+      \begin{gather*} \frac{\partial}{\partial \bu} = 2\bu^T{\bf R}_{uu} +
+      2{\bf r}_u^T + 2\bx^T{\bf N} + (2\bx^T{\bf S}_{xx} + 2{\bf s}_x^T){\bf B}
+      = 0 \\ \bu^* = -{\bf R}_{uu}^{-1} \begin{bmatrix} {\bf N} + {\bf S}_{xx}
+      \bB \\ {\bf r}^T_{u} + {\bf s}^T_{x}\bB \end{bmatrix}^T \begin{bmatrix}
+      \bx \\ 1 \end{bmatrix} = -{\bf K}(t) \begin{bmatrix} \bx \\ 1
+      \end{bmatrix} = -{\bf K}_x(t) \bx - {\bf k}_0(t). \end{gather*} Inserting
+      this back into the HJB gives us the updated Riccati differential
+      equation. Since this must hold for all $\bx$, we can collect the
+      quadratic, linear, and offset terms and set them each individually equal
+      to zero, yielding: \begin{align*} -\dot{\bf S}_{xx} =& \bQ_{xx} - ({\bf
+      N} + {\bf S}_{xx} \bB){\bf R}_{uu}^{-1}({\bf N} + {\bf S}_{xx} \bB)^T +
+      {\bf S}_{xx}{\bf A} + {\bf A}^T{\bf S}_{xx}, \\ -\dot{\bf s}_x =& \bq_x -
+      ({\bf N} + {\bf S}_{xx} \bB){\bf R}_{uu}^{-1} ({\bf r}_u + \bB^T {\bf
+      s}_x ) + {\bf A}^T{\bf s}_x + {\bf S}_{xx}{\bf c}, \\ -\dot{s}_0 =& q_0 +
+      r_0 - ({\bf r}_u + \bB^T {\bf s}_x)^T{\bf R}_{uu}^{-1} ({\bf r}_u + \bB^T
+      {\bf s}_x) + 2{\bf s}_x^T {\bf c}, \end{align*} with the final conditions
+      ${\bf S}(t_f) = {\bf Q}_f.$
       </p>
 
       <todo>Provide the sqrt formulation of the S1 equation here</todo>
 
-      <p>In the discrete-time version, we have... </p>
+      <p>In the discrete-time version, we have $$\bx[n+1] = {\bf A}[n] \bx[n] +
+      {\bf B}[n] \bu[n] + {\bf c}[n],$$ and a running cost function of the form
+      \begin{gather*} \ell(n, \bx,\bu) = <!-- \begin{bmatrix} \bx \\ \bu \\ 1
+      \end{bmatrix}^T \begin{bmatrix} \bQ_{xx} & {\bf N} &\bq_x \\ {\bf N}^T &
+      \bR_{uu} & {\bf r}_u \\ \bq_x^T & {\bf r}_u^T & q_0 + r_0
+      \end{bmatrix} \begin{bmatrix} \bx \\ \bu \\ 1 \end{bmatrix} = -->
+      \begin{bmatrix} \bx \\ 1 \end{bmatrix}^T {\bf Q}[n] \begin{bmatrix} \bx
+      \\ 1 \end{bmatrix} + \begin{bmatrix} \bu \\ 1 \end{bmatrix}^T {\bf R}[n]
+      \begin{bmatrix} \bu \\ 1 \end{bmatrix} + 2\bx^T{\bf N}[n]\bu, \\ \forall
+      n \in [n_0, n_f] \in \mathbb{Z}, \quad \bQ[n] = \begin{bmatrix} \bQ_{xx}
+      & \bq_x \\ \bq_x^T & q_0 \end{bmatrix}, \bQ_{xx} \succeq 0, \quad \bR[n]
+      = \begin{bmatrix} \bR_{uu} & {\bf r}_u \\ {\bf r}_u^T & r_0
+      \end{bmatrix}, \bR_{uu} \succ 0. \end{gather*} and a terminal cost
+      evaluated at $\bx[n_f]$ of the form $$\ell_f(\bx) = \begin{bmatrix} \bx
+      \\ 1 \end{bmatrix}^T {\bf Q}_f \begin{bmatrix} \bx \\ 1 \end{bmatrix}.$$
+      Let's search for a positive quadratic, time-varying cost-to-go of the
+      form: \begin{gather*} J(n,\bx) = \begin{bmatrix} \bx \\ 1 \end{bmatrix}
+      {\bf S}[n]\begin{bmatrix}\bx \\ 1 \end{bmatrix}, \,{\bf S}[n] =
+      \begin{bmatrix} {\bf S}_{xx} & {\bf s}_x \\ {\bf s}_x^T & s_0
+      \end{bmatrix}, \quad {\bf S}_{xx} \succeq 0, s_0 - \bf{s}_x^T {\bf
+      S}_{xx}^+ \bf{s}_x \ge 0. \end{gather*} Writing out the HJB: $$J(n, \bx)
+      = \min_\bu \left[\ell(n, \bx,\bu) + J(n+1, {\bf A}[n]\bx + {\bf B}[n]\bu
+      + {\bf c}[n]) \right],$$ we can find the minimizing $\bu$ (with the time
+      dependence suppressed for brevity) with \begin{gather*}
+      \frac{\partial}{\partial \bu} = 2\bu^T{\bf R}_{uu} + 2{\bf r}_u^T +
+      2\bx^T{\bf N} + 2((\bA\bx + \bB\bu + {\bf c})^T{\bf S}_{xx} + {\bf
+      s}_x^T){\bf B} = 0 \\ \bu^* = -({\bf R}_{uu} + \bB^T{\bf S}_{xx}\bB)^{-1}
+      \begin{bmatrix} {\bf N} + \bA^T{\bf S}_{xx} \bB, \\ {\bf r}^T_{u} + {\bf
+      c}^T{\bf S}_{xx} \bB + {\bf s}^T_{x}\bB \end{bmatrix}^T \begin{bmatrix}
+      \bx \\ 1 \end{bmatrix} = -{\bf K}[n] \begin{bmatrix} \bx \\ 1
+      \end{bmatrix} = -{\bf K}_x[n] \bx - {\bf k}_0[n]. \end{gather*} Inserting
+      this back into the HJB gives us the updated Riccati difference equation
+      (with all of the terms on the right evaluated at time $n$): <!--
+      \begin{align*} {\bf S}[n-1] =& \bQ + \begin{bmatrix} \bK_x^T \bR_{uu}
+      \bK_x & \bK_x^T (\bR_{uu} {\bf k}_0 - {\bf r_u}) \\ (\bR_{uu} {\bf k}_0 -
+      {\bf r_u})^T \bK_x & {\bf k}_0^T \bR_{uu}{\bf k}_0 - 2 {\bf k}_0^T {\bf
+      r}_u + r_0 \end{bmatrix} - \begin{bmatrix} {\bf N} \\ {\bf 0}
+      \end{bmatrix} {\bf K} - {\bf K}^T \begin{bmatrix} {\bf N}^T & {\bf 0} \end{bmatrix} \\ &+ \begin{bmatrix} (\bA-\bB\bK_x)^T {\bf S}_{xx}
+      (\bA - \bB\bK) & (\bA-\bB\bK_x)^T\left({\bf S}_{xx} ({\bf c} - \bB{\bf
+      k}_0) + {\bf s}_x \right) \\ \left(({\bf c} - \bB{\bf k}_0)^T{\bf S}_{xx}
+      + {\bf s}_x^T \right)(\bA-\bB\bK_x) & ({\bf c} - \bB {\bf k}_0)^T {\bf
+      S}_{xx} ({\bf c} - \bB {\bf k}_0) + 2{\bf s}_x^T({\bf c} - \bB{\bf k}_0)
+      + s_0\end{bmatrix}\end{align*} or -->\begin{align*} {\bf S}_{xx}[n-1] <!-- =&
+      \bQ_{xx} + \bK_x^T\bR_{uu}\bK_x - {\bf N}\bK_x - \bK_x^T{\bf N}^T + (\bA - \bB\bK_x)^T {\bf
+      S}_{xx} (\bA - \bB\bK_x) \\ --> =& \, \bQ_{xx}  + \bA^T{\bf S}_{xx}\bA -
+      ({\bf N}+\bA^T{\bf S}_{xx}\bB)(\bR_{uu}+\bB^T{\bf S}_{xx}\bB)^{-1}({\bf
+      N}+\bA^T{\bf S}_{xx}\bB)^T, \\ {\bf s}_x[n-1] =& \,\bq_x + \bA^T{\bf S}_{xx} c + \bA^T{\bf s}_x \\ &- ({\bf N}+\bA^T{\bf S}_{xx}\bB)(\bR_{uu}+\bB^T{\bf S}_{xx}\bB)^{-1}({\bf r}_u + \bB^T{\bf S}_{xx} {\bf c} + \bB^T{\bf s}_x), \\ s_0[n-1] =&\, q_0 + r_0 + s_0 + {\bf c}^T{\bf S}_{xx}{\bf c} + 2 {\bf c}^T {\bf s}_x \\ &- ({\bf r}_u + \bB^T{\bf S}_{xx} {\bf c} + \bB^T{\bf s}_x)^T(\bR_{uu}+\bB^T{\bf S}_{xx}\bB)^{-1}({\bf r}_u + \bB^T{\bf S}_{xx} {\bf c} + \bB^T{\bf s}_x). \end{align*}
+      </p>
 
       <p>Phew!  Numerical solutions to these equations can be obtained by
       calling the <a
