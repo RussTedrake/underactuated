@@ -922,22 +922,31 @@ print("S = " + str(S))</code></pre></div>
       c}^T{\bf S}_{xx} \bB + {\bf s}^T_{x}\bB \end{bmatrix}^T \begin{bmatrix}
       \bx \\ 1 \end{bmatrix} = -{\bf K}[n] \begin{bmatrix} \bx \\ 1
       \end{bmatrix} = -{\bf K}_x[n] \bx - {\bf k}_0[n]. \end{gather*} Inserting
-      this back into the HJB gives us the updated Riccati difference equation
-      (with all of the terms on the right evaluated at time $n$): <!--
-      \begin{align*} {\bf S}[n-1] =& \bQ + \begin{bmatrix} \bK_x^T \bR_{uu}
-      \bK_x & \bK_x^T (\bR_{uu} {\bf k}_0 - {\bf r_u}) \\ (\bR_{uu} {\bf k}_0 -
-      {\bf r_u})^T \bK_x & {\bf k}_0^T \bR_{uu}{\bf k}_0 - 2 {\bf k}_0^T {\bf
-      r}_u + r_0 \end{bmatrix} - \begin{bmatrix} {\bf N} \\ {\bf 0}
-      \end{bmatrix} {\bf K} - {\bf K}^T \begin{bmatrix} {\bf N}^T & {\bf 0} \end{bmatrix} \\ &+ \begin{bmatrix} (\bA-\bB\bK_x)^T {\bf S}_{xx}
+      this back into the HJB gives us the updated Riccati difference equation,
+      we obtain: <!-- \begin{align*} {\bf S}[n] =& \bQ + \begin{bmatrix}
+      \bK_x^T \bR_{uu} \bK_x & \bK_x^T (\bR_{uu} {\bf k}_0 - {\bf r_u}) \\
+      (\bR_{uu} {\bf k}_0 - {\bf r_u})^T \bK_x & {\bf k}_0^T \bR_{uu}{\bf k}_0
+      - 2 {\bf k}_0^T {\bf r}_u + r_0 \end{bmatrix} - \begin{bmatrix} {\bf N}
+      \\ {\bf 0} \end{bmatrix} {\bf K} - {\bf K}^T \begin{bmatrix} {\bf N}^T &
+      {\bf 0} \end{bmatrix} \\ &+ \begin{bmatrix} (\bA-\bB\bK_x)^T {\bf S}_{xx}
       (\bA - \bB\bK) & (\bA-\bB\bK_x)^T\left({\bf S}_{xx} ({\bf c} - \bB{\bf
       k}_0) + {\bf s}_x \right) \\ \left(({\bf c} - \bB{\bf k}_0)^T{\bf S}_{xx}
       + {\bf s}_x^T \right)(\bA-\bB\bK_x) & ({\bf c} - \bB {\bf k}_0)^T {\bf
       S}_{xx} ({\bf c} - \bB {\bf k}_0) + 2{\bf s}_x^T({\bf c} - \bB{\bf k}_0)
-      + s_0\end{bmatrix}\end{align*} or -->\begin{align*} {\bf S}_{xx}[n-1] <!-- =&
-      \bQ_{xx} + \bK_x^T\bR_{uu}\bK_x - {\bf N}\bK_x - \bK_x^T{\bf N}^T + (\bA - \bB\bK_x)^T {\bf
-      S}_{xx} (\bA - \bB\bK_x) \\ --> =& \, \bQ_{xx}  + \bA^T{\bf S}_{xx}\bA -
-      ({\bf N}+\bA^T{\bf S}_{xx}\bB)(\bR_{uu}+\bB^T{\bf S}_{xx}\bB)^{-1}({\bf
-      N}+\bA^T{\bf S}_{xx}\bB)^T, \\ {\bf s}_x[n-1] =& \,\bq_x + \bA^T{\bf S}_{xx} c + \bA^T{\bf s}_x \\ &- ({\bf N}+\bA^T{\bf S}_{xx}\bB)(\bR_{uu}+\bB^T{\bf S}_{xx}\bB)^{-1}({\bf r}_u + \bB^T{\bf S}_{xx} {\bf c} + \bB^T{\bf s}_x), \\ s_0[n-1] =&\, q_0 + r_0 + s_0 + {\bf c}^T{\bf S}_{xx}{\bf c} + 2 {\bf c}^T {\bf s}_x \\ &- ({\bf r}_u + \bB^T{\bf S}_{xx} {\bf c} + \bB^T{\bf s}_x)^T(\bR_{uu}+\bB^T{\bf S}_{xx}\bB)^{-1}({\bf r}_u + \bB^T{\bf S}_{xx} {\bf c} + \bB^T{\bf s}_x). \end{align*}
+      + s_0\end{bmatrix}\end{align*} or -->\begin{align*} {\bf S}_{xx}[n] <!--
+      =& \bQ_{xx} + \bK_x^T\bR_{uu}\bK_x - {\bf N}\bK_x - \bK_x^T{\bf N}^T +
+      (\bA - \bB\bK_x)^T {\bf S}_{xx} (\bA - \bB\bK_x) \\ --> =& \, \bQ_{xx}  +
+      \bA^T{\bf S}_{xx}\bA - ({\bf N}+\bA^T{\bf S}_{xx}\bB)(\bR_{uu}+\bB^T{\bf
+      S}_{xx}\bB)^{-1}({\bf N}+\bA^T{\bf S}_{xx}\bB)^T, \\ {\bf s}_x[n] =&
+      \,\bq_x + \bA^T{\bf S}_{xx} c + \bA^T{\bf s}_x \\ &- ({\bf N}+\bA^T{\bf
+      S}_{xx}\bB)(\bR_{uu}+\bB^T{\bf S}_{xx}\bB)^{-1}({\bf r}_u + \bB^T{\bf
+      S}_{xx} {\bf c} + \bB^T{\bf s}_x), \\ s_0[n] =&\, q_0 + r_0 + s_0 + {\bf
+      c}^T{\bf S}_{xx}{\bf c} + 2 {\bf c}^T {\bf s}_x \\ &- ({\bf r}_u +
+      \bB^T{\bf S}_{xx} {\bf c} + \bB^T{\bf s}_x)^T(\bR_{uu}+\bB^T{\bf
+      S}_{xx}\bB)^{-1}({\bf r}_u + \bB^T{\bf S}_{xx} {\bf c} + \bB^T{\bf s}_x).
+      \end{align*} where the ${\bf S}$ terms on the right hand side evaluated
+      at time $n+1$, and all remaining time-dependent terms ($\bA, \bB,$ etc)
+      are evaluated at time $n$.
       </p>
 
       <p>Phew!  Numerical solutions to these equations can be obtained by
