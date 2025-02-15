@@ -27,6 +27,7 @@ rt_py_library(
     ],
     data = [
         "package.xml",
+        "@drake_models",
     ],
     deps = [
       requirement("drake"),
