@@ -124,7 +124,15 @@ dpkg_install_from_wget() {
   rm "${tmpdeb}"
 }
 
-dpkg_install_from_wget \
-  bazel 6.1.1 \
-  https://releases.bazel.build/6.1.1/release/bazel_6.1.1-linux-x86_64.deb \
-  a90246165f0972629506132975a7c5d5aecd42453e03e0f88e175a33601cdf70
+# Install bazelisk.
+if [[ $(arch) = "aarch64" ]]; then
+  dpkg_install_from_wget \
+    bazelisk 1.25.0 \
+    https://github.com/bazelbuild/bazelisk/releases/download/v1.25.0/bazelisk-arm64.deb \
+    6370ee55d7bb45b3511b7a1c1c93c565a5f5afcd24555820231c9c48beac95f3
+else
+  dpkg_install_from_wget \
+    bazelisk 1.25.0 \
+    https://github.com/bazelbuild/bazelisk/releases/download/v1.25.0/bazelisk-amd64.deb \
+    f16dc348190990eb2e8950e773bc91dcdc7632517e5b63bdc4dd58f90062920c
+fi
