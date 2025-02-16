@@ -41,6 +41,6 @@ build:macos --test_timeout=120,600,1800,7200
 # https://github.com/bazelbuild/bazel/issues/4939
 # https://github.com/RobotLocomotion/drake/issues/8475
 build --action_env=PYTHONNOUSERSITE=1
-build --test_env=PYTHONNOUSERSITE=1
+test --test_env=PYTHONNOUSERSITE=1
 
 try-import %workspace%/user.bazelrc

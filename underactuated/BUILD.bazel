@@ -32,6 +32,7 @@ rt_py_library(
     deps = [
       requirement("drake"),
       requirement("ipython"),
+      requirement("matplotlib"),
       requirement("mpld3"),
     ],
     imports = [".."],
