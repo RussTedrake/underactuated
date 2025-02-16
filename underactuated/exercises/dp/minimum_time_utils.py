@@ -1,9 +1,10 @@
 import matplotlib.animation as ani
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib import cm
+from matplotlib import cm, projections
+from mpl_toolkits.mplot3d import Axes3D
 
-# pydrake imports
+projections.register_projection(Axes3D)  # needed for Bazel
 
 
 def create_animation(J_grid, pi_grid, mesh):
