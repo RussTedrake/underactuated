@@ -177,6 +177,13 @@ jobs:
           sed -i '/PYTHONNOUSERSITE/d' .bazelrc
         shell: bash
       - name: test
-        run: EXCLUDE_TESTS="//book/htmlbook/..." DRAKE_RESOURCE_ROOT=`python3 -c "from pathlib import Path; from pydrake.all import GetDrakePath; print(Path(GetDrakePath()).parent)"` UNDERACTUATED_DATA_DIR="`pwd`/book/data" ./book/htmlbook/workflows/ci/jammy/test_w_installed_deps
+        run: |
+          EXCLUDE_TESTS="//book/htmlbook/..." \
+          DRAKE_RESOURCE_ROOT=`python3 -c \
+          "from pathlib import Path; from pydrake.all import GetDrakePath; \
+          print(Path(GetDrakePath()).parent)"` \
+          UNDERACTUATED_DATA_DIR="`pwd`/book/data" \
+          BAZEL_TEST_FLAGS="--define=use_dependencies=none" \
+          ./book/htmlbook/workflows/ci/jammy/test
         shell: bash
 
