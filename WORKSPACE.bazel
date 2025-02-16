@@ -39,7 +39,7 @@ pip_parse(
     name = "pip_deps",
     requirements_darwin = "//:requirements-bazel-mac.txt",
     requirements_linux = "//:requirements-bazel-linux.txt",
-    requirements_lock = "//:requirements-bazel.txt",
+    #requirements_lock = "//:requirements-bazel.txt",
     experimental_requirement_cycles = {
       "lxml": [
         "lxml",
