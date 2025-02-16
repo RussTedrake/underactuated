@@ -142,7 +142,7 @@ jobs:
         # Force bazel to use user pip instead of re-downloading everything to 
         # be hermetic:
         run: |
-          pip install underactuated[all] --extra-index-url https://drake-packages.csail.mit.edu/whl/nightly/
+          pip install underactuated[all] -U --extra-index-url https://drake-packages.csail.mit.edu/whl/nightly/
           truncate -s0 requirements*.txt 
           sed -i '/PYTHONNOUSERSITE/d' .bazelrc
         shell: bash
