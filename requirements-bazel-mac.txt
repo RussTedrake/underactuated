@@ -1,3 +1,5 @@
+--find-links https://download.pytorch.org/whl/torch_stable.html
+--extra-index-url https://drake-packages.csail.mit.edu/whl/nightly
 asttokens==3.0.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 attrs==25.1.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 backports-tarfile==1.2.0 ; python_version >= "3.10" and python_version <= "3.11"
@@ -7,7 +9,7 @@ bleach==6.2.0 ; python_version >= "3.10" and python_version <= "3.11" or python_
 build==1.2.2.post1 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 cachecontrol==0.14.2 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 certifi==2025.1.31 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
-cffi==1.17.1 ; python_version >= "3.10" and python_version <= "3.11" and implementation_name == "pypy" or python_version >= "3.12" and python_version < "4.0" and implementation_name == "pypy" or python_version >= "3.10" and python_version <= "3.11" and (sys_platform == "linux" or sys_platform == "darwin") and platform_python_implementation != "PyPy" or python_version >= "3.10" and python_version <= "3.11" and sys_platform == "darwin" or python_version >= "3.12" and python_version < "4.0" and (sys_platform == "linux" or sys_platform == "darwin") and platform_python_implementation != "PyPy" or python_version >= "3.12" and python_version < "4.0" and sys_platform == "darwin"
+cffi==1.17.1 ; python_version >= "3.10" and python_version <= "3.11" and (sys_platform == "linux" or sys_platform == "darwin") and platform_python_implementation != "PyPy" or python_version >= "3.10" and python_version <= "3.11" and sys_platform == "darwin" or python_version >= "3.12" and python_version < "4.0" and (sys_platform == "linux" or sys_platform == "darwin") and platform_python_implementation != "PyPy" or python_version >= "3.12" and python_version < "4.0" and sys_platform == "darwin" or python_version >= "3.10" and python_version <= "3.11" and implementation_name == "pypy" or python_version >= "3.12" and python_version < "4.0" and implementation_name == "pypy"
 cfgv==3.4.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 charset-normalizer==3.4.1 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 cleo==2.1.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
@@ -19,7 +21,7 @@ cycler==0.12.1 ; python_version >= "3.10" and python_version <= "3.11" or python
 decorator==5.1.1 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 defusedxml==0.7.1 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 distlib==0.3.9 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
-drake==1.37.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
+drake==0.0.20250329 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 dulwich==0.22.7 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 exceptiongroup==1.2.2 ; python_version >= "3.10" and python_version < "3.11"
 executing==2.2.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
@@ -76,7 +78,7 @@ pre-commit==4.1.0 ; python_version >= "3.10" and python_version <= "3.11" or pyt
 prompt-toolkit==3.0.50 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 ptyprocess==0.7.0 ; python_version >= "3.10" and python_version <= "3.11" and (sys_platform != "win32" and sys_platform != "emscripten") or python_version >= "3.12" and python_version < "4.0" and (sys_platform != "win32" and sys_platform != "emscripten")
 pure-eval==0.2.3 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
-pycparser==2.22 ; python_version >= "3.10" and python_version <= "3.11" and implementation_name == "pypy" or python_version >= "3.12" and python_version < "4.0" and implementation_name == "pypy" or python_version >= "3.10" and python_version <= "3.11" and (sys_platform == "linux" or sys_platform == "darwin") and platform_python_implementation != "PyPy" or python_version >= "3.10" and python_version <= "3.11" and sys_platform == "darwin" or python_version >= "3.12" and python_version < "4.0" and (sys_platform == "linux" or sys_platform == "darwin") and platform_python_implementation != "PyPy" or python_version >= "3.12" and python_version < "4.0" and sys_platform == "darwin"
+pycparser==2.22 ; python_version >= "3.10" and python_version <= "3.11" and (sys_platform == "linux" or sys_platform == "darwin") and platform_python_implementation != "PyPy" or python_version >= "3.10" and python_version <= "3.11" and sys_platform == "darwin" or python_version >= "3.12" and python_version < "4.0" and (sys_platform == "linux" or sys_platform == "darwin") and platform_python_implementation != "PyPy" or python_version >= "3.12" and python_version < "4.0" and sys_platform == "darwin" or python_version >= "3.10" and python_version <= "3.11" and implementation_name == "pypy" or python_version >= "3.12" and python_version < "4.0" and implementation_name == "pypy"
 pydot==3.0.4 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 pygments==2.19.1 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 pyparsing==3.2.1 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"

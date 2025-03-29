@@ -50,8 +50,8 @@ priority = "explicit"
 
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
-#drake = { version = ">=0.0.20240307 <1.0", source = "drake-nightly" }
-drake = ">=1.36.0"
+drake = { version = ">=0.0.20250328 <1.0", source = "drake-nightly" }
+#drake = ">=1.39.0"
 gradescope-utils = { version=">=0.4.0", optional=true }
 ipython = ">=7.8.0"
 ipywidgets = { version=">=8" } # TODO: purge this 
@@ -88,8 +88,8 @@ optional = true
 # script uses `poetry install --only docs`. This include any requirements
 # needed to import for a file that sphinx autodoc is trying to index.
 # Should match drake version above.
-#drake = { version = ">=0.0.20240307 <1.0", source = "drake-nightly" }
-drake = ">=1.36.0"
+drake = { version = ">=0.0.20250328 <1.0", source = "drake-nightly" }
+#drake = ">=1.39.0"
 ipython = ">=7.8.0"
 sphinx = ">=7.2.6"
 myst-parser = ">=2.0.0"
