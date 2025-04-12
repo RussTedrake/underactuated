@@ -1,6 +1,4 @@
 --find-links https://download.pytorch.org/whl/torch_stable.html
---extra-index-url https://drake-packages.csail.mit.edu/whl/nightly
-
 asttokens==3.0.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 attrs==25.1.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 backports-tarfile==1.2.0 ; python_version >= "3.10" and python_version <= "3.11"
@@ -24,7 +22,7 @@ cycler==0.12.1 ; python_version >= "3.10" and python_version <= "3.11" or python
 decorator==5.1.1 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 defusedxml==0.7.1 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 distlib==0.3.9 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
-drake==0.0.20250329 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
+drake==1.40.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 dulwich==0.22.7 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 exceptiongroup==1.2.2 ; python_version >= "3.10" and python_version < "3.11"
 executing==2.2.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
