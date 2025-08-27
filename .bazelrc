@@ -1,3 +1,27 @@
+# Enable bzlmod by default (Bazel's new module system)
+# This replaces the WORKSPACE-based dependency management
+build --enable_bzlmod
+common --enable_bzlmod
+
+# Automatic platform-specific Python version selection following Drake recommendations
+# These configs are automatically applied based on the detected platform
+
+# macOS: Python 3.13
+build:macos --@rules_python//python/config_settings:python_version=3.13
+build:macos --action_env=PATH=/opt/homebrew/opt/python@3.13/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+
+# Linux: Default to Python 3.12 (Noble), but can be overridden by OS version detection
+build:linux --@rules_python//python/config_settings:python_version=3.12
+build:linux --action_env=PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+# Manual override configs (for testing or specific use cases)
+build:force-python-313 --@rules_python//python/config_settings:python_version=3.13
+build:force-python-312 --@rules_python//python/config_settings:python_version=3.12
+build:force-python-310 --@rules_python//python/config_settings:python_version=3.10
+
+# Python version is automatically selected based on what's available on the system
+# Following Drake's platform defaults: Jammy=3.10, Noble=3.12, macOS=3.13
+
 # Location of the Gurobi license key file, typically named "gurobi.lic".
 build --action_env=GRB_LICENSE_FILE
 
@@ -23,6 +47,7 @@ build --test_env=LANG=en_US.UTF-8
 build --test_env=LC_ALL=en_US.UTF-8
 build --test_env=MOSEKLM_LICENSE_FILE
 build --test_env=MPLBACKEND=Template
+build --test_env=MPLCONFIGDIR=/tmp
 
 # TODO(jamiesnape): Fix "Invalid -W option ignored: invalid module name:
 # 'pydrake.common.deprecation' warning and ensure that Drake deprecation
@@ -34,13 +59,18 @@ build --test_summary=terse
 
 build:linux --action_env=PATH=/usr/sbin:/usr/bin:/sbin:/bin
 
-build:macos --action_env=PATH=/opt/homebrew/opt/python@3.12/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
+build:macos --action_env=PATH=/opt/homebrew/opt/python@3.13/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/local/sbin:/usr/sbin:/sbin
 build:macos --test_timeout=120,600,1800,7200
 
 # Disable python imports from ~/.local (pip -U) during build and test.
 # https://github.com/bazelbuild/bazel/issues/4939
 # https://github.com/RobotLocomotion/drake/issues/8475
 build --action_env=PYTHONNOUSERSITE=1
-test --test_env=PYTHONNOUSERSITE=1
+build --test_env=PYTHONNOUSERSITE=1
+
+# Set matplotlib config directory to avoid conflicts (Drake issue #14250)
+build --action_env=MPLCONFIGDIR=/tmp
+build --action_env=MPLBACKEND=Template
 
 try-import %workspace%/user.bazelrc
+try-import %workspace%/.bazelrc.local

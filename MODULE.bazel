@@ -1,6 +1,132 @@
-###############################################################################
-# Bazel now uses Bzlmod by default to manage external dependencies.
-# Please consider migrating your external dependencies from WORKSPACE to MODULE.bazel.
-#
-# For more details, please check https://github.com/bazelbuild/bazel/issues/18958
-###############################################################################
+module(name = "underactuated")
+
+# If you don't want to support building on macOS, you may remove the next line.
+# Note that it must appear prior to loading "rules_cc", per the documentation:
+# https://github.com/bazelbuild/apple_support?tab=readme-ov-file#bazel-7-setup
+bazel_dep(name = "apple_support", version = "1.17.1")
+
+# Add the Bazel rules we need.
+bazel_dep(name = "bazel_skylib", version = "1.8.0")
+bazel_dep(name = "rules_cc", version = "0.2.0") 
+bazel_dep(name = "rules_python", version = "0.40.0")
+
+# Note: This repository uses Drake via pip wheels, not as a Bazel dependency.
+# We only use drake_models as a Bazel repository for performance.
+
+# Drake models repository for the underactuated examples
+http_archive = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+http_archive(
+    name = "drake_models",
+    urls = [
+        "https://github.com/RobotLocomotion/models/archive/69c92595a391eb023c27ab6ac8f80d58a3e4612d.tar.gz",
+        "https://drake-mirror.csail.mit.edu/github/RobotLocomotion/models/69c92595a391eb023c27ab6ac8f80d58a3e4612d.tar.gz",
+        "https://s3.amazonaws.com/drake-mirror/github/RobotLocomotion/models/69c92595a391eb023c27ab6ac8f80d58a3e4612d.tar.gz",
+    ],
+    sha256 = "ba571c8b369a62c3764d250944b27d72071488789b2494604d23342994141fe2",
+    strip_prefix = "models-69c92595a391eb023c27ab6ac8f80d58a3e4612d",
+    build_file_content = """
+package(default_visibility = ["//visibility:public"])
+
+_SRCS = glob(["**/*"])
+
+exports_files(_SRCS)
+
+filegroup(
+    name = "drake_models",
+    srcs = _SRCS,
+)
+
+""",
+)
+
+# Buildifier dependencies
+http_file = use_repo_rule("@bazel_tools//tools/build_defs/repo:http.bzl", "http_file")
+http_file(
+    name = "buildifier_linux",
+    downloaded_file_path = "buildifier",
+    executable = True,
+    sha256 = "ec064a5edd2a2a210cf8162305869a27b3ed6c7e50caa70687bc9d72177f61f3",
+    urls = ["https://github.com/bazelbuild/buildtools/releases/download/1.0.0/buildifier"],
+)
+http_file(
+    name = "buildifier_macos",
+    downloaded_file_path = "buildifier",
+    executable = True,
+    sha256 = "6e7545fdfd4b142041b4fefd8f338b31dee556aa37e9fa8e244ee66a765d352f",
+    urls = ["https://github.com/bazelbuild/buildtools/releases/download/1.0.0/buildifier.mac"],
+)
+
+# Tidy dependencies - local file repositories
+local_file = use_repo_rule("//book/htmlbook/tools/repo:local.bzl", "local_file")
+local_file(
+    name = "tidy_linux",
+    path = "/usr/bin/tidy",
+    symlinked_file_path = "tidy",
+)
+local_file(
+    name = "tidy_macos_i386",
+    path = "/usr/local/bin/tidy",
+    symlinked_file_path = "tidy",
+)
+local_file(
+    name = "tidy_macos_arm64",
+    path = "/opt/homebrew/bin/tidy",
+    symlinked_file_path = "tidy",
+)
+
+# Python setup for bzlmod - use host system Python instead of hermetic
+# Configure toolchains to use the host system Python interpreter
+python = use_extension("@rules_python//python/extensions:python.bzl", "python")
+python.toolchain(python_version = "3.10")  # Ubuntu 22.04 (Jammy)
+python.toolchain(python_version = "3.12")  # Ubuntu 24.04 (Noble) 
+python.toolchain(python_version = "3.13")  # macOS
+use_repo(python, "python_3_10", "python_3_12", "python_3_13")
+
+# Python pip dependencies with automatic platform detection
+pip = use_extension("@rules_python//python/extensions:pip.bzl", "pip")
+
+# Multi-version pip repository using same hub_name
+# This allows automatic Python version selection at runtime
+pip.parse(
+    hub_name = "htmlbook_pip",
+    python_version = "3.10",
+    requirements_darwin = "//:requirements-bazel-mac.txt",
+    requirements_linux = "//:requirements-bazel-linux.txt", 
+    requirements_lock = "//:requirements-bazel.txt",
+    experimental_requirement_cycles = {
+      "lxml": [
+        "lxml",
+        "lxml-html-clean",
+      ],
+    },
+)
+
+pip.parse(
+    hub_name = "htmlbook_pip",
+    python_version = "3.12",
+    requirements_darwin = "//:requirements-bazel-mac.txt",
+    requirements_linux = "//:requirements-bazel-linux.txt", 
+    requirements_lock = "//:requirements-bazel.txt",
+    experimental_requirement_cycles = {
+      "lxml": [
+        "lxml",
+        "lxml-html-clean",
+      ],
+    },
+)
+
+pip.parse(
+    hub_name = "htmlbook_pip",
+    python_version = "3.13",
+    requirements_darwin = "//:requirements-bazel-mac.txt",
+    requirements_linux = "//:requirements-bazel-linux.txt", 
+    requirements_lock = "//:requirements-bazel.txt",
+    experimental_requirement_cycles = {
+      "lxml": [
+        "lxml",
+        "lxml-html-clean",
+      ],
+    },
+)
+
+use_repo(pip, "htmlbook_pip")
