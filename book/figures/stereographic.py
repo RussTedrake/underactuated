@@ -41,5 +41,5 @@ ax.text(0.5, -0.275, "1", fontsize=14)
 
 ax.axis("off")
 
-plt.savefig("book/figures/stereographic.svg")
+# plt.savefig("book/figures/stereographic.svg")
 plt.show()
