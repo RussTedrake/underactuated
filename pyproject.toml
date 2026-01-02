@@ -2,7 +2,7 @@
 name = "underactuated"
 # Use e.g. 2023.10.4.rc0 if I need to release a release candidate.
 # Use e.g. 2023.10.4.post1 if I need to rerelease on the same day.
-version = "2025.4.12"
+version = "2026.1.2"
 description = "MIT 6.821 - Underactuated Robotics"
 authors = ["Russ Tedrake <russt@mit.edu>"]
 license = "BSD License"
