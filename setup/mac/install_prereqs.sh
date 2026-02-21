@@ -21,5 +21,4 @@ fi
 export HOMEBREW_CURL_RETRIES=4
 
 brew update
-if [[ -e /usr/local/bin/bazelisk ]]; then brew rm bazelisk; fi;
 brew bundle --file="$(dirname ${(%):-%x})/Brewfile"

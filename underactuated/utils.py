@@ -27,7 +27,7 @@ def FindDataResource(filename: str):
     """
     Returns the absolute path to the given filename relative to the data directory; fetching it from a remote host if necessary.
     """
-    data = os.path.join(os.path.dirname(os.path.dirname(__file__)), "data")
+    data = os.path.join(os.path.dirname(os.path.dirname(__file__)), "book", "data")
     if not os.path.exists(data):
         os.makedirs(data)
     path = os.path.join(data, filename)

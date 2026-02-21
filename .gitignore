@@ -9,6 +9,7 @@ package*.json
 \.DS_Store
 
 __pycache__/
+/.cursor/
 .ipynb_checkpoints/
 /.idea/
 /.ijwb/

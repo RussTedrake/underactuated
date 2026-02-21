@@ -121,7 +121,3 @@ dpkg_install_from_wget() {
   rm "${tmpdeb}"
 }
 
-dpkg_install_from_wget \
-  bazel 5.0.0 \
-  https://releases.bazel.build/5.0.0/release/bazel_5.0.0-linux-x86_64.deb \
-  e3361645ccd731abc424bb3a322d8e6f513b7258f5ca11ff04d6067aff5d09b1

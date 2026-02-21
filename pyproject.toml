@@ -105,6 +105,8 @@ pip-requirements-parser = ">=32.0"
 poetry = ">=2.0,<2.1.0"  # https://github.com/python-poetry/poetry/issues/10184
 poetry-plugin-export = ">=1.6.0"
 pre-commit = ">=3.4.0"
+pytest = ">=8.0"
+pytest-timeout = ">=2.3.1"
 poetry-pre-commit-plugin = ">=0.1.2"
 requests = ">=2.25.1"
 
@@ -141,3 +143,17 @@ ignore-init-module-imports = true
 remove-all-unused-imports = true
 remove-duplicate-keys = true
 remove-unused-variables = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra"
+testpaths = [
+  "book",
+  "solutions",
+]
+python_files = [
+  "test_*.py",
+]
+markers = [
+  "notebook: notebook execution tests",
+]
