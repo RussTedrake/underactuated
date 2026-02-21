@@ -5,7 +5,3 @@
 	path = book/data
 	url = https://github.com/RussTedrake/underactuated-data
 	shallow = True
-[submodule "book/htmlbook"]
-	url = https://github.com/RussTedrake/htmlbook
-[submodule "book/data"]
-	url = https://github.com/RussTedrake/underactuated-data

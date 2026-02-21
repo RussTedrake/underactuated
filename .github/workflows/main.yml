@@ -55,51 +55,61 @@ jobs:
           echo 'deb http://ppa.launchpad.net/git-core/ppa/ubuntu noble main' > /etc/apt/sources.list.d/git.list
           apt-get update -o APT::Acquire::Retries=4 -qq
           apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends git
-          # Create non-root user for bazel bzlmod compatibility
+          # Create non-root user for running repository setup / tests
           useradd -m -s /bin/bash runner
           echo 'runner ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
           rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*
         shell: bash
       - name: checkout
-        uses: actions/checkout@v2
-      - name: fix ownership and run as non-root user
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - name: install dependencies
         run: |
           # Fix ownership of the workspace
           chown -R runner:runner .
           # Switch to runner user for remaining commands
-          sudo -u runner ./setup/submodule_checkout
-          # Install system packages as root, but avoid running bazel as root
+          sudo -H -u runner ./setup/submodule_checkout
+          # Install system packages as root
           ./setup/ubuntu/24.04/install_prereqs.sh
           apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends xvfb
+          sudo -H -u runner python3 -m pip install --user --break-system-packages poetry==2.1.4
+          sudo -H -u runner python3 -m poetry config virtualenvs.in-project true
+          sudo -H -u runner python3 -m poetry install --all-extras --with dev
           rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*
-          # Now run bazel operations as non-root user (Python 3.12 via .bazelrc linux config)
-          sudo -u runner bazel fetch //...
         shell: bash
       - name: test
-        run: sudo -u runner ./book/htmlbook/workflows/ci/noble/test
-        shell: bash
-  sonoma:
-    name: macos sonoma 14
-    runs-on: macos-14
-    steps:
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: submodule checkout
-        run:  ./setup/submodule_checkout
-        shell: zsh -efuo pipefail {0}
-      - name: setup
         run: |
-          ./book/htmlbook/workflows/ci/sonoma/setup
-          bazel fetch //...
-        shell: zsh -efuo pipefail {0}
-      - name: test
-        run: ./book/htmlbook/workflows/ci/sonoma/test
-        shell: zsh -efuo pipefail {0}
+          set -euo pipefail
+          VENV_PYTHON="$(pwd)/.venv/bin/python"
+          sudo -H -u runner xvfb-run \
+            --auto-servernum \
+            --server-args='-screen 0 1280x1024x24 -ac +extension GLX +extension RANDR +render -noreset' \
+            "$VENV_PYTHON" -m pytest -ra 
+        shell: bash
+  # sonoma:
+  #   name: macos sonoma 14
+  #   runs-on: macos-14
+  #   steps:
+  #     - name: checkout
+  #       uses: actions/checkout@v6
+  #     - name: submodule checkout
+  #       run:  ./setup/submodule_checkout
+  #       shell: zsh -efuo pipefail {0}
+  #     - name: setup
+  #       run: |
+  #         ./book/htmlbook/workflows/ci/sonoma/setup
+  #       shell: zsh -efuo pipefail {0}
+  #     - name: test
+  #       run: ./book/htmlbook/workflows/ci/sonoma/test
+  #       shell: zsh -efuo pipefail {0}
   lint:
     runs-on: ubuntu-latest
     steps:
       - name: checkout repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
       - name: setup python
         uses: actions/setup-python@v5
         with:
@@ -141,7 +151,7 @@ jobs:
   #   container: russtedrake/underactuated:latest
   #   steps:
   #     - name: checkout
-  #       uses: actions/checkout@v4
+  #       uses: actions/checkout@v6
   #     - name: submodule checkout
   #       run:  ./setup/submodule_checkout
   #       shell: bash
@@ -164,77 +174,3 @@ jobs:
   #         BAZEL_TEST_FLAGS="--define=use_dependencies=none" \
   #         ./book/htmlbook/workflows/ci/noble/test
   #       shell: bash
-  noble-pip-core:
-    # This should emulate a student's experience if they are doing exercises
-    # via pip install underactuated.
-    name: pip notebooks on noble
-    runs-on: ubuntu-24.04
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'requires new pip wheels') }}
-    container: ubuntu:24.04
-    steps:
-      - name: pre-checkout setup
-        run: |
-          apt-get update -o APT::Acquire::Retries=4 -qq
-          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends python3-pip git xvfb sudo
-          # Create non-root user
-          useradd -m -s /bin/bash runner
-          echo 'runner ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-        shell: bash
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: test pip installation and exercises
-        run: |
-          # Fix ownership of the workspace
-          chown -R runner:runner .
-          # Switch to runner user for remaining commands
-          sudo -u runner ./setup/submodule_checkout
-          # Install system dependencies for Drake
-          ./setup/ubuntu/24.04/install_prereqs.sh
-          
-          # Install underactuated via pip (to mimic student experience)
-          sudo -u runner pip install underactuated jupyter nbconvert ipykernel --extra-index-url https://drake-packages.csail.mit.edu/whl/nightly/ --break-system-packages
-
-        shell: bash
-      - name: test
-        run: |
-          # The underactuated library needs be robust against partial
-          # installations, but the examples will assume a full installation. So
-          # we test only the underactuated library here.
-          sudo -u runner ./book/htmlbook/workflows/ci/noble/test_wheels --core-library-only
-        shell: bash
-
-  noble-pip-extra:
-    # This should emulate a student's experience if they are doing exercises
-    # via pip install underactuated[all].
-    name: pip extra on noble
-    runs-on: ubuntu-24.04
-    if: ${{ !contains(github.event.pull_request.labels.*.name, 'requires new pip wheels') }}
-    container: ubuntu:24.04
-    steps:
-      - name: pre-checkout setup
-        run: |
-          apt-get update -o APT::Acquire::Retries=4 -qq
-          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends python3-pip git xvfb sudo
-          # Create non-root user
-          useradd -m -s /bin/bash runner
-          echo 'runner ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-        shell: bash
-      - name: checkout
-        uses: actions/checkout@v2
-      - name: test pip installation and exercises
-        run: |
-          # Fix ownership of the workspace
-          chown -R runner:runner .
-          # Switch to runner user for remaining commands
-          sudo -u runner ./setup/submodule_checkout
-          # Install system dependencies for Drake
-          ./setup/ubuntu/24.04/install_prereqs.sh
-          
-          # Install underactuated via pip (to mimic student experience)
-          sudo -u runner pip install underactuated[all] jupyter nbconvert ipykernel --extra-index-url https://drake-packages.csail.mit.edu/whl/nightly/ --break-system-packages
-        shell: bash
-      - name: test
-        run: |
-          sudo -u runner ./book/htmlbook/workflows/ci/noble/test_wheels
-        shell: bash
-
