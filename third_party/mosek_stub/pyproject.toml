@@ -1,0 +1,12 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Mosek"
+version = "11.0.24"
+description = "Stub for Drake's optional Mosek dependency (no license required)"
+requires-python = ">=3.10"
+
+[tool.setuptools.packages.find]
+include = ["mosek*"]

@@ -1,0 +1,5 @@
+Metadata-Version: 2.4
+Name: Mosek
+Version: 11.0.24
+Summary: Stub for Drake's optional Mosek dependency (no license required)
+Requires-Python: >=3.10

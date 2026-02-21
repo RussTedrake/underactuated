@@ -56,8 +56,10 @@ gradescope-utils = { version=">=0.4.0", optional=true }
 ipython = ">=7.8.0"
 ipywidgets = { version=">=8" } # TODO: purge this 
 lxml = {version = ">=4.9.2", extras = ["html_clean"], optional=true }
-# Note: matplotlib gets additional handling in PoetryExport.sh for bazel. 
+# Note: matplotlib gets additional handling in PoetryExport.sh for bazel.
 matplotlib = {version = ">=3.7.0", extras = ["mplot3d"]}
+# Stub for Drake's platform-specific Mosek dep (wheel in third_party/wheels; find_links in pants.toml).
+mosek = "==11.0.24"
 mpld3 = ">=0.5.1"
 nbconvert = { version = ">=7.0.0", optional = true }
 numpy = ">2.0.0"
@@ -98,7 +100,7 @@ sphinx_rtd_theme = ">=2.0.0"
 [tool.poetry.group.dev.dependencies]
 # These should not appear as requirements in any BUILD.bazel (except htmlbook)
 beautifulsoup4 = ">=4.6.3"
-black = { version = ">=23.*", extras = ["jupyter"] }
+black = { version = ">=23.0.0,<24", extras = ["jupyter"] }
 mysql-connector-python = ">=8.0.23"
 packaging = ">=24.2"
 pip-requirements-parser = ">=32.0"

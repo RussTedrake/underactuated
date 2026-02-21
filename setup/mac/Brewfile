@@ -1,7 +1,10 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+tap "pantsbuild/tap"
+
 brew "bazelisk"
+brew "pants"
 brew "python@3.13"
 brew "tidy-html5"
 brew "gprof2dot" # Supplies dot for pydot

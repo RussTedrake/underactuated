@@ -1,0 +1,6 @@
+pyproject.toml
+Mosek.egg-info/PKG-INFO
+Mosek.egg-info/SOURCES.txt
+Mosek.egg-info/dependency_links.txt
+Mosek.egg-info/top_level.txt
+mosek/__init__.py

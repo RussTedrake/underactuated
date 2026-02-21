@@ -1,0 +1,41 @@
+# Pants build configuration for underactuated (replacing Bazel for Python/testing).
+# See https://pantsbuild.org/docs
+
+[GLOBAL]
+pants_version = "2.30.0"
+# Only parse BUILD (not BUILD.bazel) so Bazel and Pants coexist.
+build_patterns = ["BUILD"]
+backend_packages = [
+    "pants.backend.python",
+    "pants.backend.shell",
+]
+
+[source]
+# "book" as root so book/htmlbook is importable as "htmlbook" (matches Bazel imports).
+root_patterns = ["/", "book", "pants.toml", "pyproject.toml"]
+
+[python]
+enable_resolves = true
+interpreter_constraints = [">=3.10,<4"]
+
+[python.resolves]
+# Resolve name must match what Pants infers (from lockfile path); use python-default.
+python-default = "python-default.lock"
+
+[python-repos]
+# Drake wheels (optional; set in environment or .pants.rc if needed).
+# indexes.add = ["https://drake-packages.csail.mit.edu/whl/nightly/"]
+# Mosek stub so Drake's platform-specific Mosek dep resolves (wheel in repo; path_mappings for sandbox).
+find_links = ["file://%(buildroot)s/third_party/wheels"]
+path_mappings = ["WHEELS|%(buildroot)s/third_party/wheels"]
+
+[test]
+output = "failed"
+timeout_default = 120
+timeout_maximum = 600
+
+[pytest]
+args = ["-v", "--no-header", "-q"]
+
+[tailor]
+ignore_paths = ["bazel-*", ".git", "**/BUILD.bazel", "**/MODULE.bazel"]
