@@ -56,7 +56,6 @@ gradescope-utils = { version=">=0.4.0", optional=true }
 ipython = ">=7.8.0"
 ipywidgets = { version=">=8" } # TODO: purge this 
 lxml = {version = ">=4.9.2", extras = ["html_clean"], optional=true }
-# Note: matplotlib gets additional handling in PoetryExport.sh for bazel. 
 matplotlib = {version = ">=3.7.0", extras = ["mplot3d"]}
 mpld3 = ">=0.5.1"
 nbconvert = { version = ">=7.0.0", optional = true }
@@ -103,11 +102,9 @@ mysql-connector-python = ">=8.0.23"
 packaging = ">=24.2"
 pip-requirements-parser = ">=32.0"
 poetry = ">=2.0,<2.1.0"  # https://github.com/python-poetry/poetry/issues/10184
-poetry-plugin-export = ">=1.6.0"
 pre-commit = ">=3.4.0"
 pytest = ">=8.0"
 pytest-timeout = ">=2.3.1"
-poetry-pre-commit-plugin = ">=0.1.2"
 requests = ">=2.25.1"
 
 [tool.black]
