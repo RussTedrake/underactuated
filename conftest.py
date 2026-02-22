@@ -21,8 +21,8 @@ def pytest_configure() -> None:
 def pytest_ignore_collect(collection_path, config):  # type: ignore[no-untyped-def]
     solutions_dir = REPO_ROOT / "solutions"
     if solutions_dir.exists():
-        return False
+        return None
     try:
         return Path(collection_path).resolve().is_relative_to(solutions_dir)
     except Exception:
-        return False
+        return None
