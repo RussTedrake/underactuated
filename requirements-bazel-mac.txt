@@ -44,7 +44,7 @@ jupyterlab-pygments==0.3.0 ; python_version >= "3.10" and python_version <= "3.1
 jupyterlab-widgets==3.0.13 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 keyring==25.6.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 kiwisolver==1.4.8 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
-lxml-html-clean==0.4.1 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
+lxml-html-clean==0.4.4 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 lxml==5.3.1 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 markupsafe==3.0.2 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 matplotlib-inline==0.1.7 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
