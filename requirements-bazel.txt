@@ -3,7 +3,7 @@ asttokens==3.0.0 ; python_version >= "3.10" and python_version <= "3.11" or pyth
 attrs==25.1.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 backports-tarfile==1.2.0 ; python_version >= "3.10" and python_version <= "3.11"
 beautifulsoup4==4.13.3 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
-black==25.1.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
+black==26.3.1 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 bleach==6.2.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 build==1.2.2.post1 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 cachecontrol==0.14.2 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
