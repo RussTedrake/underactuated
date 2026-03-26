@@ -94,7 +94,7 @@ pyzmq==26.2.1 ; python_version >= "3.10" and python_version <= "3.11" or python_
 rapidfuzz==3.12.1 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 referencing==0.36.2 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 requests-toolbelt==1.0.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
-requests==2.32.3 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
+requests==2.33.0 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 rpds-py==0.22.3 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 scipy==1.15.1 ; python_version >= "3.10" and python_version <= "3.11" or python_version >= "3.12" and python_version < "4.0"
 secretstorage==3.3.3 ; python_version >= "3.10" and python_version <= "3.11" and sys_platform == "linux" or python_version >= "3.12" and python_version < "4.0" and sys_platform == "linux"
