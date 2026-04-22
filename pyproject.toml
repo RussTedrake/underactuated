@@ -101,7 +101,7 @@ black = { version = ">=23.*", extras = ["jupyter"] }
 mysql-connector-python = ">=8.0.23"
 packaging = ">=24.2"
 pip-requirements-parser = ">=32.0"
-poetry = ">=2.0,<2.1.0"  # https://github.com/python-poetry/poetry/issues/10184
+poetry = ">=2.0,<2.4.0"  # https://github.com/python-poetry/poetry/issues/10184
 pre-commit = ">=3.4.0"
 pytest = ">=8.0"
 pytest-timeout = ">=2.3.1"
