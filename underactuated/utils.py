@@ -1,7 +1,10 @@
 import os
+from datetime import date
 from urllib.request import urlretrieve
+from warnings import warn
 
 from pydrake.all import PackageMap, namedview
+from pydrake.common import GetDrakePath
 
 running_as_test = False
 
@@ -110,3 +113,59 @@ def MakeNamedViewActuation(mbp, view_name):
         view_name,
         plant.GetActuatorNames(add_model_instance_prefix=False),
     )
+
+
+def GetDrakeVersion() -> str:
+    """Returns a string representing the Drake version, if available, or "source"."""
+    import importlib.metadata
+
+    try:
+        return importlib.metadata.version("drake")
+    except importlib.metadata.PackageNotFoundError:
+        return "source"
+
+
+def DrakeVersionGreaterThan(minimum_date: date):
+    """Check that the Drake version is at least `minimum_date`."""
+    version_dates = {
+        "1.13.0": date(year=2023, month=2, day=14),
+        "1.14.0": date(year=2023, month=3, day=15),
+        "1.15.0": date(year=2023, month=4, day=18),
+        "1.16.0": date(year=2023, month=5, day=18),
+        "1.17.0": date(year=2023, month=5, day=23),
+        "1.18.0": date(year=2023, month=6, day=20),
+        "1.19.0": date(year=2023, month=7, day=13),
+        "1.20.0": date(year=2023, month=8, day=16),
+        "1.21.0": date(year=2023, month=9, day=14),
+        "1.22.0": date(year=2023, month=10, day=16),
+        "1.23.0": date(year=2023, month=11, day=17),
+        "1.24.0": date(year=2023, month=12, day=18),
+    }
+    drake_version = GetDrakeVersion()
+    # A source install won't have package metadata; assume it's new enough.
+    if drake_version == "source":
+        return
+    # Nightly builds look like "0.0.YYYYMMDD" via importlib.metadata.
+    if drake_version.startswith("0.0."):
+        date_str = drake_version[4:]
+        if len(date_str) == 8:
+            drake_date = date(
+                year=int(date_str[:4]),
+                month=int(date_str[4:6]),
+                day=int(date_str[6:8]),
+            )
+        else:
+            warn(f"Unrecognized drake version {drake_version}")
+            return
+    elif drake_version in version_dates:
+        drake_date = version_dates[drake_version]
+    else:
+        warn(f"Unrecognized drake version {drake_version}")
+        return
+    if drake_date < minimum_date:
+        raise RuntimeError(
+            f"You need to update your Drake version. Python is using the Drake "
+            f"installation in {GetDrakePath()}. This installation was from a "
+            f"nightly build on {drake_date}, but this method requires Drake "
+            f"from at least {minimum_date}."
+        )
