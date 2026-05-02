@@ -5,4 +5,9 @@ from .pyplot_utils import SliderSystem
 
 # Note: can't import running_as_test here.  Will get a copy instead of a
 # reference.
-from .utils import ConfigureParser, DrakeVersionGreaterThan, FindResource, GetDrakeVersion
+from .utils import (
+    ConfigureParser,
+    DrakeVersionGreaterThan,
+    FindResource,
+    GetDrakeVersion,
+)
