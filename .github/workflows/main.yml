@@ -178,10 +178,9 @@ jobs:
             configuration: "--profile black --check-only"
             isort-version: 5.12.0
       - name: autoflake
-        uses: creyD/autoflake_action@master
-        with:
-            options: --remove-all-unused-imports --in-place
-            # Pegging version s.t. https://github.com/creyD/autoflake_action/issues/1
+        run: |
+          python -m pip install autoflake==2.0.2
+          autoflake . --remove-all-unused-imports --in-place
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
