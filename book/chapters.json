@@ -1,4 +1,5 @@
 {
+  "elib_url": "https://underactuated.csail.mit.edu/htmlbook/elib.cgi",
   "chapter_ids" : [
     "intro",
     "pend",
