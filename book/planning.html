@@ -8,8 +8,8 @@
     <link rel="canonical" href="http://underactuated.mit.edu/planning.html" />
 
     <script src="https://hypothes.is/embed.js" async></script>
-    <script type="text/javascript" src="chapters.js"></script>
     <script type="text/javascript" src="htmlbook/book.js"></script>
+    <script type="text/javascript" src="notebooks.js"></script>
 
     <script src="htmlbook/mathjax-config.js" defer></script>
     <script type="text/javascript" id="MathJax-script" defer
@@ -53,8 +53,6 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
   <td style="width:33%;text-align:right;"><a class="next_chapter" href=robust.html>Next Chapter</a></td>
 </tr></table>
 
-<script type="text/javascript">document.write(notebook_header('planning'))
-</script>
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 11"><h1>Sampling-based motion planning</h1>
 
@@ -435,7 +433,7 @@ axis([-10,25,-10,25]);
 
     <exercise><h1>RRT Planning</h1>
 
-      <p>In this  <script>document.write(notebook_link('planning', 'rrt_planning', link_text = 'notebook'))</script> 
+      <p>In this  <script>document.write(notebook_link('planning', 'exercises/rrt_planning', link_text = 'notebook'))</script>
          we will write code for the Rapidly-Exploring Random 
          Tree (RRT). Building on this implementation we will also implement RRT*, 
          a variant of RRT that converges towards an optimal solution.</p>

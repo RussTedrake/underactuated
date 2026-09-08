@@ -10,8 +10,8 @@
     <link rel="canonical" href="http://underactuated.mit.edu/lyapunov.html" />
 
     <script src="https://hypothes.is/embed.js" async></script>
-    <script type="text/javascript" src="chapters.js"></script>
     <script type="text/javascript" src="htmlbook/book.js"></script>
+    <script type="text/javascript" src="notebooks.js"></script>
 
     <script src="htmlbook/mathjax-config.js" defer></script>
     <script type="text/javascript" id="MathJax-script" defer
@@ -55,8 +55,6 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
   <td style="width:33%;text-align:right;"><a class="next_chapter" href=trajopt.html>Next Chapter</a></td>
 </tr></table>
 
-<script type="text/javascript">document.write(notebook_header('lyapunov'))
-</script>
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter style="counter-reset: chapter 8"><h1>Lyapunov
   Analysis</h1>
@@ -2345,7 +2343,7 @@ V = RegionOfAttraction(sys, context)
         \pi(\bx))$.  Use LaSalle's theorem to show (global) asymptotic stability
         of the closed-loop system.</li>
 
-        <li>In <script>document.write(notebook_link('lyapunov', 'control', link_text = 'this python notebook'))</script>
+        <li>In <script>document.write(notebook_link('lyapunov', 'exercises/control', link_text = 'this python notebook'))</script>
         we set up a simulation environment for you to try the controller we
         just derived.  Type the control law from point (b) in the dedicated
         cell, and use the notebook plot to check your work.</li>
@@ -2359,7 +2357,7 @@ V = RegionOfAttraction(sys, context)
       <ol type="a">
 
         <li>For each of the following polynomials, using
-        <script>document.write(notebook_link('lyapunov', 'sos_and_psd', link_text = 'this python notebook'))</script>,
+        <script>document.write(notebook_link('lyapunov', 'exercises/sos_and_psd', link_text = 'this python notebook'))</script>,
         find whether they (1) admit a sum of squares formulation, and (2) are 
         positive semi-definite functions:
           
@@ -2395,7 +2393,7 @@ V = RegionOfAttraction(sys, context)
       of the time-reversed Van der Pol oscillator (a variation of the <a
       href="https://en.wikipedia.org/wiki/Van_der_Pol_oscillator">classical Van
       der Pol oscillator</a> which evolves backwards in time). In
-      <script>document.write(notebook_link('lyapunov', 'van_der_pol', link_text = 'this python notebook'))</script>, you are asked to test the following SOS formulations.
+      <script>document.write(notebook_link('lyapunov', 'exercises/van_der_pol', link_text = 'this python notebook'))</script>, you are asked to test the following SOS formulations.
       </p>
 
       <ol type="a">
