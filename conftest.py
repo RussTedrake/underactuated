@@ -28,6 +28,9 @@ def pytest_ignore_collect(collection_path, config):  # type: ignore[no-untyped-d
     if solutions_dir.exists():
         return None
     try:
-        return Path(collection_path).resolve().is_relative_to(solutions_dir)
+        if Path(collection_path).resolve().is_relative_to(solutions_dir):
+            return True
     except Exception:
-        return None
+        pass
+    # Let pytest apply its own collection rules (including collect_ignore).
+    return None
