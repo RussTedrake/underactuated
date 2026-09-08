@@ -1,3 +1,5 @@
+import logging
+import sys
 import time
 import typing
 from functools import partial
@@ -20,6 +22,62 @@ from pydrake.systems.framework import Context, EventStatus, LeafSystem
 from pydrake.trajectories import Trajectory
 
 from underactuated import running_as_notebook
+
+
+def StartMeshcat() -> Meshcat:
+    """Starts Meshcat and displays a separate-window link in Google Colab.
+
+    On other platforms, preserves Drake's StartMeshcat behavior. Keep the returned object alive while using the
+    viewer. Use DisplayMeshcat to optionally embed the viewer in Colab.
+    """
+    from pydrake.geometry import StartMeshcat as DrakeStartMeshcat
+
+    if "google.colab" not in sys.modules:
+        return DrakeStartMeshcat()
+
+    from google.colab import output
+
+    # Drake routes its C++ startup message through Python logging. Hide only
+    # the internal URL while constructing the Colab viewer.
+    def hide_meshcat_url(record):
+        return not (
+            record.levelno == logging.INFO
+            and record.getMessage().startswith("Meshcat listening for connections at ")
+        )
+
+    logger = logging.getLogger("drake")
+    logger.addFilter(hide_meshcat_url)
+    try:
+        meshcat = DrakeStartMeshcat()
+    finally:
+        logger.removeFilter(hide_meshcat_url)
+
+    output.serve_kernel_port_as_window(
+        meshcat.port(),
+        anchor_text="Open Meshcat in a separate window",
+        skip_warning=True,
+    )
+    print("Or run DisplayMeshcat(meshcat) to embed it in this notebook.")
+    return meshcat
+
+
+def DisplayMeshcat(meshcat: Meshcat, height: int = 600) -> None:
+    """Displays an existing viewer beside the current notebook cell.
+
+    In Colab, embeds another view of the same Meshcat server. Locally, displays
+    a link that opens the viewer in a separate tab.
+    """
+    if "google.colab" in sys.modules:
+        from google.colab import output
+
+        output.serve_kernel_port_as_iframe(meshcat.port(), height=height)
+    else:
+        from html import escape
+
+        from IPython.display import HTML, display
+
+        url = escape(meshcat.web_url(), quote=True)
+        display(HTML(f'<a href="{url}" target="_blank">Open Meshcat</a>'))
 
 
 # This class is scheduled for removal.  Use meshcat interaction methods instead.
