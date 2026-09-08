@@ -88,7 +88,7 @@ jobs:
         shell: bash
   # TODO(russt): add noble-pip-core workflow which only runs the tests in underactuated, but uses the underactuated module from pip.
   noble-pip-all:
-    name: ubuntu noble using pip all
+    name: ubuntu noble using wheel all
     runs-on: ubuntu-24.04
     container: ubuntu:24.04
     steps:
@@ -118,8 +118,11 @@ jobs:
           # Install system packages as root
           ./setup/ubuntu/24.04/install_prereqs.sh
           apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends xvfb
-          rm -rf ./underactuated  # remove the local underactuated module, to force using the pip module.
-          sudo -H -u runner python3 -m pip install --user --break-system-packages --upgrade underactuated[all] pytest pytest-timeout
+          # Test this revision's wheel before publishing a release to PyPI.
+          sudo -H -u runner python3 -m pip wheel --no-deps --wheel-dir /tmp/underactuated-wheels .
+          WHEEL_PATH="$(find /tmp/underactuated-wheels -name 'underactuated-*.whl')"
+          sudo -H -u runner python3 -m pip install --user --break-system-packages "${WHEEL_PATH}[all]" pytest pytest-timeout
+          rm -rf ./underactuated  # Force the tests to import the installed wheel.
           rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*
         shell: bash
       - name: test
