@@ -8,8 +8,8 @@
     <link rel="canonical" href="http://underactuated.mit.edu/drake.html" />
 
     <script src="https://hypothes.is/embed.js" async></script>
-    <script type="text/javascript" src="chapters.js"></script>
     <script type="text/javascript" src="htmlbook/book.js"></script>
+    <script type="text/javascript" src="notebooks.js"></script>
 
     <script src="htmlbook/mathjax-config.js" defer></script>
     <script type="text/javascript" id="MathJax-script" defer
@@ -53,8 +53,6 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
   <td style="width:33%;text-align:right;"><a class="next_chapter" href=multibody.html>Next Chapter</a></td>
 </tr></table>
 
-<script type="text/javascript">document.write(notebook_header('drake'))
-</script>
 <!-- EVERYTHING ABOVE THIS LINE IS OVERWRITTEN BY THE INSTALL SCRIPT -->
 <chapter class="appendix" style="counter-reset: chapter 0"><h1>Drake</h1>
 
@@ -87,60 +85,25 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
     href="http://jupyter.org/">Jupyter Notebook</a> so that we can leverage the
     fantastic and relatively recent availability of (free) cloud resources.</p>
 
-    <subsection><h1>Running on Deepnote</h1>
-    
-    <p>We'll use Deepnote as the primary platform for the course.  After
-    following any of the links from the chapters, you should:
-    </p>
-
-      <ol>
-      <li>Log in (the free account will be sufficient for this class)</li>
-      <li>"Duplicate" the document.  Icon is in the top right next to
-      Login.</li> 
-      <li>Run all of the cells (can use the "Run notebook" icon just above this
-      cell)</li>
-      <li>Many of the notebooks use <a
-      href="https://github.com/rdeits/meshcat">MeshCat</a> for interactive
-      visualizations.  Click on the url printed just below "StartMeshcat"
-      (often the second code cell of the notebook) to see the MeshCat
-      window.</li>
-      </ol>
-    </subsection>
-
     <subsection><h1>Running on Google Colab</h1>
 
-      <p>As of now, Drake no longer supports Google Colab, which is stuck on
-      Ubuntu 18.04 and Python 3.7.  We will try to support it again if/when
-      they upgrade.</p>
+    <p>Follow an "Open in Colab" link beside an example and run the cells in
+    order. The first code cell installs the required packages. Save a copy in
+    Google Drive if you want to keep your edits.</p>
 
-      <!--
-      <p>Although I believe that Deepnote provides a better and more reliable
-      experience overall, there are a few reasons to be able to also run the
-      notebooks on Google Colab.  It has very convenient connections to Google
-      Drive, and also substantial free GPU resources (useful for training big
-      neural nets).</p>
-      
-      <p>To run any notebook on Colab, just open the file in colab using a
-      direct link to the relevant notebook, e.g.: <a
-      href="https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/intro.ipynb">https://colab.research.google.com/github/RussTedrake/underactuated/blob/master/intro.ipynb</a>.
-      Then you must manually add the following line in a code cell at the top
-      of the notebook (and run it once)
-        <pre><code class="python">!pip install underactuated[all]</code></pre>
-      </p>
-
-      <p>Note: Drake's pip wheels are only updated at each (monthly) release.
-      During the semester, I will often use bleeding-edge features from Drake;
-      they will be available in Deepnote immediately, but will only work in
-      Colab after the next monthly release.</p>
-      -->
+    <p>Many notebooks use Meshcat for interactive visualizations. After running
+    <code>StartMeshcat()</code>, click "Open Meshcat in a separate window" and
+    keep the notebook open while using the viewer. To embed the viewer beside
+    your current cell, run:</p>
+    <pre><code class="python">from underactuated.meshcat_utils import DisplayMeshcat
+DisplayMeshcat(meshcat)</code></pre>
     </subsection>
 
     <subsection><h1>Enabling licensed solvers</h1>
 
-      <p>You can enabled more powerful solvers for
+      <p>You can enable more powerful solvers for
       <code>MathematicalProgram</code> if you have a license (most are free for
-      academics).  Please see this <a
-      href="https://deepnote.com/workspace/russtedrake-b58d8141-6691-43e8-ad76-0575b319c8b8/project/Enabling-licensed-solvers-on-Deepnote-7581ca0c-04be-4632-9108-f0426b6c3fbb/%2Flicensed_solvers.ipynb">tutorial</a>
+      academics).  Please see the <a href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1solvers_1_1_mosek_solver.html">MOSEK</a> and <a href="https://drake.mit.edu/doxygen_cxx/classdrake_1_1solvers_1_1_gurobi_solver.html">Gurobi documentation</a>
       for instructions.</p>
 
     </subsection>
@@ -154,13 +117,13 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
         <div style="display:flex; justify-content:flex-end;"><button style="padding:10; background-color: transparent; border:0" onclick="copy_code_to_clipboard(this)"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="icon-sm" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div>
         <pre><code class="bash">python3 -m venv venv
 source venv/bin/activate
-pip3 install underactuated[all] --extra-index-url https://drake-packages.csail.mit.edu/whl/nightly/       
+python -m pip install "underactuated[all]" jupyterlab
         </code></pre>
       </div>
-      Then you can download notebooks directly from Deepnote and run them locally (or
+      Then you can download notebooks from the <a href="https://github.com/RussTedrake/underactuated/tree/master/book">book directory on GitHub</a> and run them locally (or
       develop your own notebooks).
       </p>
-            
+
     <p></p>The <drake></drake> website also has a number of alternative <a href="https://drake.mit.edu/installation.html">installation options</a>, including precompiled binaries and Docker instances.</p>
 
     <p>If you want to download all of the notebooks at once, you can <code>git
@@ -174,7 +137,7 @@ pip3 install underactuated[all] --extra-index-url https://drake-packages.csail.m
     </div>
 
     <p>The examples for each chapter that has them will be in a .ipynb file
-    right alongside the chapter's html file, and the notebook exercises are
+    in that chapter's subdirectory under <code>book</code>, and the notebook exercises are
     all located in the <code>exercises</code> subdirectory.
 
   </section>
