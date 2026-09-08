@@ -6,6 +6,11 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent
 
+# Deepnote projects are retired and will not receive this package release.
+# Remove this exclusion when the Colab migration updates htmlbook, which deletes
+# the obsolete test while also removing the legacy textbook link helpers.
+collect_ignore = ["book/htmlbook/test_check_deepnote_requirements.py"]
+
 
 def pytest_configure() -> None:
     os.environ.setdefault("MPLBACKEND", "Agg")
