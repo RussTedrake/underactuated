@@ -3,4 +3,4 @@
 
 brew "python@3.13"
 brew "tidy-html5"
-brew "gprof2dot" # Supplies dot for pydot
+brew "graphviz" # Supplies dot for pydot

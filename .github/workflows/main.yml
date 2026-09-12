@@ -134,9 +134,10 @@ jobs:
             --server-args='-screen 0 1280x1024x24 -ac +extension GLX +extension RANDR +render -noreset' \
             python3 -m pytest -ra
         shell: bash
-  sonoma:
-    name: macos sonoma 14
-    runs-on: macos-14
+  sequoia:
+    name: macos sequoia 15
+    # Homebrew's gts dependency no longer provides macOS 14 bottles.
+    runs-on: macos-15
     steps:
       - name: checkout
         uses: actions/checkout@v6
