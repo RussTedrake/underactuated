@@ -561,9 +561,12 @@ of Walking and Running</h1>
 
       <!-- My derivation is here: https://www.wolframcloud.com/objects/02914093-8fcd-4bd2-abb3-e76ca196b393 -->
 
-      <p>The foot collision is an instantaneous change of velocity caused by a
-      impulsive force at the foot that brings the foot to rest.  The update to
-      the velocities can be calculated using the derivation for impulsive
+      <p>The foot collision is an instantaneous change of velocity caused by an
+      impulsive force at the foot that brings the foot to rest.  This impact
+      brings the contacting foot's translational velocity to zero, but does not
+      generally make either leg's angular velocity zero; the contacting leg
+      becomes the new stance leg and continues rotating about its stationary
+      toe.  The update to the velocities can be calculated using the derivation for impulsive
       collisions <a href="multibody.html#impulsive_collision">derived in the
       appendix</a>.  To use it, we proceed with the following steps:</p>
 
