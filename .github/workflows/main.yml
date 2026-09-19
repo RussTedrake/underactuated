@@ -72,7 +72,7 @@ jobs:
           # Install system packages as root
           ./setup/ubuntu/24.04/install_prereqs.sh
           apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends xvfb
-          sudo -H -u runner python3 -m pip install --user --break-system-packages poetry==2.1.4
+          sudo -H -u runner python3 -m pip install --user --break-system-packages poetry==2.4.3
           sudo -H -u runner python3 -m poetry config virtualenvs.in-project true
           sudo -H -u runner python3 -m poetry install --all-extras --with dev
           rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*
@@ -150,7 +150,7 @@ jobs:
       - name: setup
         run: |
           ./setup/mac/install_prereqs.sh
-          python -m pip install --user poetry==2.1.4
+          python -m pip install --user poetry==2.4.3
           python -m poetry config virtualenvs.in-project true
           python -m poetry env use "$(python -c 'import sys; print(sys.executable)')"
           python -m poetry install --all-extras --with dev
@@ -174,7 +174,7 @@ jobs:
       - name: black
         uses: psf/black@stable
         with:
-          version: 24.10.0
+          version: 26.5.1
           jupyter: true
       - name: isort
         uses: isort/isort-action@master
@@ -188,7 +188,7 @@ jobs:
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
-          version: 2.1.4
+          version: 2.4.3
           virtualenvs-create: true
           virtualenvs-in-project: true
       - name: build the docs

@@ -51,27 +51,34 @@ priority = "explicit"
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
 #drake = { version = ">=0.0.20250328 <1.0", source = "drake-nightly" }
-drake = ">=1.40.0"
+drake = ">=1.51.1"
 gradescope-utils = { version=">=0.4.0", optional=true }
-ipython = ">=7.8.0"
-ipywidgets = { version=">=8" } # TODO: purge this 
-lxml = {version = ">=4.9.2", extras = ["html_clean"], optional=true }
+ipython = ">=8.39.0"
+ipywidgets = { version=">=8.1.9" } # TODO: purge this
+lxml = {version = ">=6.1.3", extras = ["html_clean"], optional=true }
 matplotlib = {version = ">=3.10.9", extras = ["mplot3d"]}
-mpld3 = ">=0.5.1"
+mpld3 = ">=0.5.12"
 nbconvert = { version = ">=7.17.1", optional = true }
-nbformat = { version = ">=5.1", optional = true }
-numpy = ">2.0.0"
-pandas = { version=">=2.0", optional=true }
+nbformat = { version = ">=5.11.1", optional = true }
+numpy = ">=2.2.6"
+pandas = { version=">=2.3.3", optional=true }
 pillow = ">=12.3.0"
 pydot = ">=4.0.1"
-scipy = { version=">=1.10.0", optional=true }
+scipy = { version=">=1.15.3", optional=true }
 # Minimum fixed version for Beautiful Soup's transitive selector dependency.
 soupsieve = ">=2.9"
 timeout-decorator = { version=">=0.4.1", optional=true }
 tornado = { version = ">=6.5.8", optional = true }
+# Keep transitive security fixes in the manifest for unlocked installs too.
+fonttools = ">=4.60.2"
+jinja2 = ">=3.1.6"
+pygments = ">=2.20.0"
+bleach = {version = ">=6.4.0", optional = true}
+mistune = {version = ">=3.3.3", optional = true}
+lxml-html-clean = {version = ">=0.4.4", optional = true}
 
 [tool.poetry.extras]
-grader = ["gradescope-utils", "nbconvert", "nbformat", "timeout-decorator", "tornado", ]
+grader = ["gradescope-utils", "nbconvert", "nbformat", "timeout-decorator", "tornado", "bleach", "mistune" ]
 # 'all' should have all of the optional dependencies required to run any notebook in this repo.
 all = [
   "gradescope-utils",
@@ -79,9 +86,12 @@ all = [
   "nbconvert",
   "nbformat",
   "pandas",
-  "scipy", 
+  "scipy",
   "timeout-decorator",
-  "tornado"
+  "tornado",
+  "bleach",
+  "mistune",
+  "lxml-html-clean"
 ]
 
 [tool.poetry.group.docs]
@@ -94,27 +104,41 @@ optional = true
 # needed to import for a file that sphinx autodoc is trying to index.
 # Should match drake version above.
 #drake = { version = ">=0.0.20250328 <1.0", source = "drake-nightly" }
-drake = ">=1.40.0"
-ipython = ">=7.8.0"
+drake = ">=1.51.1"
+ipython = ">=8.39.0"
 pillow = ">=12.3.0"
 sphinx = ">=7.2.6"
 myst-parser = ">=2.0.0"
-sphinx_rtd_theme = ">=2.0.0"
+sphinx_rtd_theme = ">=3.1.0"
+# Docs-only installs need the same transitive security minimums.
+fonttools = ">=4.60.2"
+idna = ">=3.15"
+jinja2 = ">=3.1.6"
+pygments = ">=2.20.0"
+urllib3 = ">=2.7.0"
 
 [tool.poetry.group.dev.dependencies]
 # These should not appear as requirements in any BUILD.bazel (except htmlbook)
-beautifulsoup4 = ">=4.6.3"
-black = { version = ">=23.*", extras = ["jupyter"] }
+beautifulsoup4 = ">=4.15.0"
+black = { version = ">=26.5.1", extras = ["jupyter"] }
 # Minimum fixed version for SecretStorage's Linux-only dependency.
 cryptography = { version = ">=50.0.0", markers = "sys_platform == 'linux'" }
-mysql-connector-python = ">=8.0.23"
+mysql-connector-python = ">=26.7.0"
 packaging = ">=26.3"
 pip-requirements-parser = ">=32.0"
-poetry = ">=2.0,<2.1.0"  # https://github.com/python-poetry/poetry/issues/10184
-pre-commit = ">=3.4.0"
+poetry = ">=2.4.3,<2.5.0"
+pre-commit = ">=4.6.2"
 pytest = ">=9.1.1"
 pytest-timeout = ">=2.3.1"
-requests = ">=2.25.1"
+requests = ">=2.34.2"
+# Minimum versions for transitive development dependency security fixes.
+dulwich = ">=1.2.15"
+filelock = ">=3.20.3"
+idna = ">=3.15"
+msgpack = ">=1.2.1"
+pygments = ">=2.20.0"
+urllib3 = ">=2.7.0"
+virtualenv = ">=20.36.1"
 
 [tool.black]
 include = '\.ipynb?$|\.pyi?$'
