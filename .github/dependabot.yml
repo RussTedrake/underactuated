@@ -1,0 +1,10 @@
+version: 2
+updates:
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    # Raise minimum versions in pyproject.toml and regenerate poetry.lock.
+    versioning-strategy: increase
+    allow:
+      - dependency-type: direct

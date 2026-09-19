@@ -3425,15 +3425,15 @@ files = [
 
 [[package]]
 name = "soupsieve"
-version = "2.6"
+version = "2.9.2"
 description = "A modern CSS selector implementation for Beautiful Soup."
 optional = false
-python-versions = ">=3.8"
+python-versions = ">=3.10"
 groups = ["main", "dev"]
 markers = "python_version <= \"3.11\" or python_version >= \"3.12\""
 files = [
-    {file = "soupsieve-2.6-py3-none-any.whl", hash = "sha256:e72c4ff06e4fb6e4b5a9f0f55fe6e81514581fca1515028625d0f299c602ccc9"},
-    {file = "soupsieve-2.6.tar.gz", hash = "sha256:e2e68417777af359ec65daac1057404a3c8a5455bb8abc36f1a9866ab1a51abb"},
+    {file = "soupsieve-2.9.2-py3-none-any.whl", hash = "sha256:8089a26fd974ca7a1f30276d3d8492ab266ab15af581642dfe8aa162e0c1c823"},
+    {file = "soupsieve-2.9.2.tar.gz", hash = "sha256:4a55d8cf158a9c2e587fa4922f1bbb91d68ac829e2d6f25403a85747c71daf74"},
 ]
 
 [[package]]
@@ -4005,10 +4005,10 @@ test = ["big-O", "importlib-resources", "jaraco.functools", "jaraco.itertools", 
 type = ["pytest-mypy"]
 
 [extras]
-all = ["gradescope-utils", "lxml", "nbconvert", "pandas", "scipy", "timeout-decorator"]
-grader = ["gradescope-utils", "nbconvert", "timeout-decorator"]
+all = ["gradescope-utils", "lxml", "nbconvert", "nbformat", "pandas", "scipy", "timeout-decorator"]
+grader = ["gradescope-utils", "nbconvert", "nbformat", "timeout-decorator"]
 
 [metadata]
 lock-version = "2.1"
 python-versions = "<4.0,>=3.10"
-content-hash = "ccec6158eec093a66e398ffe80790e8f4c16df4acdf9e9c7a689ba6629416782"
+content-hash = "8fd1adce1bd2661ac3798e08648dd87f917ca0d5dcce5ec717402c61717b56ec"

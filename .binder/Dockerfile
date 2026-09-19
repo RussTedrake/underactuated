@@ -30,7 +30,6 @@ RUN chown -R ${NB_UID}:${NB_GID} ${HOME} \
     .github \
     drake_version.json \
     LICENSE.TXT \
-    requirements.txt \
     scripts \
     setup.cfg \
     tools \

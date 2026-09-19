@@ -30,18 +30,19 @@ LABEL org.opencontainers.image.vendor="Massachusetts Institute of Technology"
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US.UTF-8
 ENV LC_ALL en_US.UTF-8
-COPY requirements.txt /tmp/requirements.txt
+COPY pyproject.toml README.md LICENSE.txt /tmp/underactuated/
+COPY underactuated /tmp/underactuated/underactuated
 COPY setup/docker/pip.conf /root/.config/pip/pip.conf
 COPY setup/ubuntu/22.04/install_prereqs.sh /tmp/
 RUN /tmp/install_prereqs.sh
 RUN apt-get -q update && apt-get -q install -y --no-install-recommends \
     curl git nginx-light python-is-python3 python3-pip python3-venv xvfb \
     && apt-get remove -y python3-notebook && apt-get autoremove -y && apt-get -q clean
-# Install the notebook dependencies and released course package.
-RUN pip3 install -r /tmp/requirements.txt pyvirtualdisplay underactuated
+# Install the course package and notebook dependencies from pyproject.toml.
+RUN pip3 install '/tmp/underactuated[all]' pyvirtualdisplay
 RUN rm -rf /root/.cache /root/.config
 RUN rm -f /tmp/install_prereqs.sh
-RUN rm -f /tmp/requirements.txt
+RUN rm -rf /tmp/underactuated
 RUN rm -f /var/cache/debconf/*-old
 RUN rm -rf /var/lib/apt/lists/*
 RUN rm -f /var/log/*.log
