@@ -8,3 +8,12 @@ updates:
     versioning-strategy: increase
     allow:
       - dependency-type: direct
+    groups:
+      python-version-updates:
+        applies-to: version-updates
+        patterns:
+          - "*"
+      python-security-updates:
+        applies-to: security-updates
+        patterns:
+          - "*"
