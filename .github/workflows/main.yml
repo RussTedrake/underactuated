@@ -155,6 +155,11 @@ jobs:
           python -m poetry env use "$(python -c 'import sys; print(sys.executable)')"
           python -m poetry install --all-extras --with dev
         shell: zsh -efuo pipefail {0}
+      - name: configure LCM multicast loopback
+        run: |
+          # https://drake.mit.edu/troubleshooting.html#lcm-macos
+          sudo route -nv delete 224.0.0.0/4 || true
+          sudo route -nv add -net 224.0.0.0/4 -interface lo0
       - name: test
         run: |
           set -euo pipefail

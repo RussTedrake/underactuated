@@ -28,8 +28,7 @@ class TestMinimumTime(unittest.TestCase):
                 policy_closed_form(q, qdot),
                 1,
                 "Incorrect control applied at \
-                              [q=%2.2f, qd=%2.2f]."
-                % (q, qdot),
+                              [q=%2.2f, qd=%2.2f]." % (q, qdot),
             )
 
         qdot = 15.0
@@ -38,6 +37,5 @@ class TestMinimumTime(unittest.TestCase):
                 policy_closed_form(q, qdot),
                 -1,
                 "Incorrect control applied at \
-                             [q=%2.2f, qd=%2.2f]."
-                % (q, qdot),
+                             [q=%2.2f, qd=%2.2f]." % (q, qdot),
             )
