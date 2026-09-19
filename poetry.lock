@@ -4379,4 +4379,4 @@ grader = ["bleach", "gradescope-utils", "mistune", "nbconvert", "nbformat", "tim
 [metadata]
 lock-version = "2.1"
 python-versions = "<4.0,>=3.10"
-content-hash = "6ad8f3422733c5f8cb7821b759ccad15890ec0955a99d0212d92d506bca8edeb"
+content-hash = "fbd39d8e4aa3ad718208eda1d1876efd01d319e4f398deabd61fb0f96667e1a2"

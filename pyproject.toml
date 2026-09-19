@@ -51,7 +51,8 @@ priority = "explicit"
 [tool.poetry.dependencies]
 python = "<4.0,>=3.10"
 #drake = { version = ">=0.0.20250328 <1.0", source = "drake-nightly" }
-drake = ">=1.51.1"
+# Drake 1.57 segfaults while recording the stochastic notebook in wheel CI.
+drake = ">=1.51.1,<1.52"
 gradescope-utils = { version=">=0.4.0", optional=true }
 ipython = ">=8.39.0"
 ipywidgets = { version=">=8.1.9" } # TODO: purge this
@@ -104,7 +105,7 @@ optional = true
 # needed to import for a file that sphinx autodoc is trying to index.
 # Should match drake version above.
 #drake = { version = ">=0.0.20250328 <1.0", source = "drake-nightly" }
-drake = ">=1.51.1"
+drake = ">=1.51.1,<1.52"
 ipython = ">=8.39.0"
 pillow = ">=12.3.0"
 sphinx = ">=7.2.6"
