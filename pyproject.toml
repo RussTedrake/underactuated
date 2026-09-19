@@ -56,7 +56,7 @@ gradescope-utils = { version=">=0.4.0", optional=true }
 ipython = ">=7.8.0"
 ipywidgets = { version=">=8" } # TODO: purge this 
 lxml = {version = ">=4.9.2", extras = ["html_clean"], optional=true }
-matplotlib = {version = ">=3.7.0", extras = ["mplot3d"]}
+matplotlib = {version = ">=3.10.9", extras = ["mplot3d"]}
 mpld3 = ">=0.5.1"
 nbconvert = { version = ">=7.0.0", optional = true }
 nbformat = { version = ">=5.1", optional = true }
