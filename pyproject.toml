@@ -67,7 +67,7 @@ pillow = ">=12.3.0"
 pydot = ">=4.0.1"
 scipy = { version=">=1.15.3", optional=true }
 # Minimum fixed version for Beautiful Soup's transitive selector dependency.
-soupsieve = ">=2.9"
+soupsieve = ">=2.10"
 timeout-decorator = { version=">=0.4.1", optional=true }
 tornado = { version = ">=6.5.8", optional = true }
 # Keep transitive security fixes in the manifest for unlocked installs too.
@@ -127,14 +127,14 @@ cryptography = { version = ">=50.0.0", markers = "sys_platform == 'linux'" }
 mysql-connector-python = ">=26.7.0"
 packaging = ">=26.3"
 pip-requirements-parser = ">=32.0"
-poetry = ">=2.4.3,<2.5.0"
+poetry = ">=2.5.1,<2.6.0"
 pre-commit = ">=4.6.2"
 pytest = ">=9.1.1"
 pytest-timeout = ">=2.3.1"
 requests = ">=2.34.2"
 # Minimum versions for transitive development dependency security fixes.
 dulwich = ">=1.2.15"
-filelock = ">=3.32.7"
+filelock = ">=4.0.3"
 idna = ">=3.20"
 msgpack = ">=1.2.2"
 pygments = ">=2.21.0"
