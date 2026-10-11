@@ -123,7 +123,7 @@ urllib3 = ">=2.8.0"
 beautifulsoup4 = ">=4.15.0"
 black = { version = ">=26.5.1", extras = ["jupyter"] }
 # Minimum fixed version for SecretStorage's Linux-only dependency.
-cryptography = { version = ">=50.0.0", markers = "sys_platform == 'linux'" }
+cryptography = { version = ">=50.0.2", markers = "sys_platform == 'linux'" }
 mysql-connector-python = ">=26.7.0"
 packaging = ">=26.3"
 pip-requirements-parser = ">=32.0"
@@ -134,12 +134,12 @@ pytest-timeout = ">=2.3.1"
 requests = ">=2.34.2"
 # Minimum versions for transitive development dependency security fixes.
 dulwich = ">=1.2.15"
-filelock = ">=4.0.3"
+filelock = ">=4.0.9"
 idna = ">=3.20"
-msgpack = ">=1.2.2"
+msgpack = ">=1.2.3"
 pygments = ">=2.21.0"
 urllib3 = ">=2.8.0"
-virtualenv = ">=21.7.14"
+virtualenv = ">=21.14.5"
 
 [tool.black]
 include = '\.ipynb?$|\.pyi?$'
