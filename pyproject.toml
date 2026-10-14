@@ -121,7 +121,7 @@ urllib3 = ">=2.8.0"
 [tool.poetry.group.dev.dependencies]
 # These should not appear as requirements in any BUILD.bazel (except htmlbook)
 beautifulsoup4 = ">=4.15.0"
-black = { version = ">=26.5.1", extras = ["jupyter"] }
+black = { version = ">=26.10.1", extras = ["jupyter"] }
 # Minimum fixed version for SecretStorage's Linux-only dependency.
 cryptography = { version = ">=50.0.2", markers = "sys_platform == 'linux'" }
 mysql-connector-python = ">=26.7.0"
@@ -133,13 +133,13 @@ pytest = ">=9.1.1"
 pytest-timeout = ">=2.3.1"
 requests = ">=2.34.2"
 # Minimum versions for transitive development dependency security fixes.
-dulwich = ">=1.2.15"
-filelock = ">=4.0.9"
+dulwich = ">=1.2.17"
+filelock = ">=4.1.0"
 idna = ">=3.20"
 msgpack = ">=1.2.3"
 pygments = ">=2.21.0"
 urllib3 = ">=2.8.0"
-virtualenv = ">=21.14.5"
+virtualenv = ">=21.14.6"
 
 [tool.black]
 include = '\.ipynb?$|\.pyi?$'
