@@ -1052,8 +1052,12 @@ href="https://www.youtube.com/playlist?list=PLkx8KyIQkMfU5szP43GlE_S1QGSPQfL9s">
           \begin{align*} \max_{\rho, \lambda(\bx)} & \quad \rho \\ \subjto &
           \quad (\bx^T\bx)^d (V(\bx) - \rho) + \lambda^T(\bx) \dot{V}(\bx)
           \text{ is SOS},\end{align*} with $d$ a fixed, positive integer.
-          Update $V(\bx) \Leftarrow \frac{V(\bx)}{\rho}.$
-        </li> 
+          Update $V(\bx) \Leftarrow \frac{V(\bx)}{\rho}.$  Dividing the SOS
+          constraint by $\rho > 0$ shows that this rescaled $V$, with the same
+          $\lambda(\bx)$, satisfies the constraint in step 2 with the level set
+          $V(\bx) \le 1$.  So step 2 is always feasible, and its solution is
+          at least as good (in its objective) as the current $V$.
+        </li>
         <li>Fix $\lambda(\bx)$ and solve for $V(\bx) = \bx^T{\bf P}\bx$:
         \begin{align*} \min_{{\bf P}} & \quad \tr({\bf P}) \\ \subjto & \quad
         (\bx^T\bx)^d (V(\bx) - 1) + \lambda^T(\bx) \dot{V}(\bx) \text{ is SOS},
