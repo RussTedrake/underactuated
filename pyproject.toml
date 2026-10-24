@@ -139,7 +139,7 @@ idna = ">=3.20"
 msgpack = ">=1.2.3"
 pygments = ">=2.21.0"
 urllib3 = ">=2.8.0"
-virtualenv = ">=21.14.8"
+virtualenv = ">=21.14.13"
 
 [tool.black]
 include = '\.ipynb?$|\.pyi?$'
