@@ -2157,15 +2157,15 @@ files = [
 
 [[package]]
 name = "mistune"
-version = "3.3.4"
+version = "3.4.0"
 description = "A sane and fast Markdown parser with useful plugins and renderers"
 optional = true
-python-versions = ">=3.8"
+python-versions = ">=3.10"
 groups = ["main"]
 markers = "extra == \"all\" or extra == \"grader\""
 files = [
-    {file = "mistune-3.3.4-py3-none-any.whl", hash = "sha256:ee015381e955e370962968befe1d729ab60fafb6a715ac6751763fbce38c8d4a"},
-    {file = "mistune-3.3.4.tar.gz", hash = "sha256:58b5c96d6fcb61190dfe5fae498d2b2065f99cf61e9649418fd54cf1ada86dfe"},
+    {file = "mistune-3.4.0-py3-none-any.whl", hash = "sha256:d03cec4c8620f21517a996d82d14f3b59c30d79bda2cc6c56bd32b839f18ce6b"},
+    {file = "mistune-3.4.0.tar.gz", hash = "sha256:2eaf7952af928ca8d33b779762effc1da517b62c6ad85ec8ca957e3b07b9782a"},
 ]
 
 [package.dependencies]
@@ -4446,4 +4446,4 @@ grader = ["bleach", "gradescope-utils", "mistune", "nbconvert", "nbformat", "tim
 [metadata]
 lock-version = "2.1"
 python-versions = "<4.0,>=3.10"
-content-hash = "32eb3250ddc1e5d2f526622e2013a322d036035a953a6762ae55d2b0e64a519e"
+content-hash = "f788bba5d15944a502ee965bbe6dd8db7e4f03e0f02de097711c63cfbb198e37"
