@@ -59,7 +59,7 @@ ipywidgets = { version=">=8.1.9" } # TODO: purge this
 lxml = {version = ">=6.1.3", extras = ["html_clean"], optional=true }
 matplotlib = {version = ">=3.10.9", extras = ["mplot3d"]}
 mpld3 = ">=0.5.12"
-nbconvert = { version = ">=7.17.1", optional = true }
+nbconvert = { version = ">=7.17.2", optional = true }
 nbformat = { version = ">=5.11.1", optional = true }
 numpy = ">=2.2.6"
 pandas = { version=">=2.3.3", optional=true }
@@ -139,7 +139,7 @@ idna = ">=3.20"
 msgpack = ">=1.2.3"
 pygments = ">=2.21.0"
 urllib3 = ">=2.8.0"
-virtualenv = ">=21.14.6"
+virtualenv = ">=21.14.13"
 
 [tool.black]
 include = '\.ipynb?$|\.pyi?$'
