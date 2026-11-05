@@ -144,7 +144,7 @@ jobs:
         with:
           submodules: recursive
       - name: setup python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.13'
       - name: setup
@@ -166,14 +166,14 @@ jobs:
           .venv/bin/python -m pytest -ra
         shell: zsh -efuo pipefail {0}
   lint:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: checkout repo
         uses: actions/checkout@v6
         with:
           submodules: recursive
       - name: setup python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@v7
         with:
           python-version: '3.10' 
       - name: black
