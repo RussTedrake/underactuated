@@ -133,13 +133,13 @@ pytest = ">=9.2.0"
 pytest-timeout = ">=2.3.1"
 requests = ">=2.34.2"
 # Minimum versions for transitive development dependency security fixes.
-dulwich = ">=1.2.20"
+dulwich = ">=1.2.21"
 filelock = ">=4.1.0"
 idna = ">=3.20"
 msgpack = ">=1.2.4"
 pygments = ">=2.21.0"
 urllib3 = ">=2.8.0"
-virtualenv = ">=21.15.1"
+virtualenv = ">=21.15.6"
 
 [tool.black]
 include = '\.ipynb?$|\.pyi?$'
