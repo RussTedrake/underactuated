@@ -20,6 +20,7 @@ __pycache__/
 /.history
 dist/
 .claude/
+.obsidian/
 
 underactuated.egg-info/
 .vscode
