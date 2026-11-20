@@ -134,10 +134,10 @@ jobs:
             --server-args='-screen 0 1280x1024x24 -ac +extension GLX +extension RANDR +render -noreset' \
             python3 -m pytest -ra
         shell: bash
-  sequoia:
-    name: macos sequoia 15
-    # Homebrew's gts dependency no longer provides macOS 14 bottles.
-    runs-on: macos-15
+  tahoe:
+    name: macos tahoe 26
+    # Drake 1.58+ only publishes macOS 26 (arm64) wheels.
+    runs-on: macos-26
     steps:
       - name: checkout
         uses: actions/checkout@v6
@@ -175,7 +175,7 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v7
         with:
-          python-version: '3.10' 
+          python-version: '3.12'
       - name: black
         uses: psf/black@stable
         with:
