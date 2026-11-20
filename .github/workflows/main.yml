@@ -125,6 +125,37 @@ jobs:
           rm -rf ./underactuated  # Force the tests to import the installed wheel.
           rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*
         shell: bash
+      # TEMPORARY: capture a native backtrace for the stochastic notebook
+      # segfault in PyPlotVisualizer recording. Remove before merging.
+      - name: debug stochastic segfault (temporary)
+        continue-on-error: true
+        run: |
+          set -uo pipefail
+          apt-get update -o APT::Acquire::Retries=4 -qq
+          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends gdb
+          sudo -H -u runner python3 -m pip list 2>/dev/null | grep -iE '^(drake|numpy|matplotlib) '
+          sudo -H -u runner env PYTHONPATH="$PWD/book" python3 -c "
+          from pathlib import Path
+          from htmlbook import ipynb_test
+          src = ipynb_test._notebook_source(Path('book/stochastic/stochastic.ipynb'))
+          Path('/tmp/nb_stochastic.py').write_text(src)
+          "
+          for i in 1 2 3; do
+            echo "::group::gdb attempt $i"
+            sudo -H -u runner env \
+              PYTHONPATH="$PWD:$PWD/book:$PWD/book/stochastic" \
+              PYTHONFAULTHANDLER=1 OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 \
+              MKL_NUM_THREADS=1 NUMEXPR_NUM_THREADS=1 \
+              xvfb-run --auto-servernum \
+              gdb -q -batch \
+                -ex 'set pagination off' \
+                -ex run \
+                -ex 'bt 80' \
+                -ex 'info sharedlibrary' \
+                --args python3 /tmp/nb_stochastic.py
+            echo "::endgroup::"
+          done
+        shell: bash
       - name: test
         run: |
           set -euo pipefail
@@ -175,7 +206,7 @@ jobs:
       - name: setup python
         uses: actions/setup-python@v7
         with:
-          python-version: '3.10' 
+          python-version: '3.12'
       - name: black
         uses: psf/black@stable
         with:
