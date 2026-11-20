@@ -179,7 +179,7 @@ jobs:
       - name: black
         uses: psf/black@stable
         with:
-          version: 26.5.1
+          version: 26.10.1
           jupyter: true
       - name: isort
         uses: isort/isort-action@master
