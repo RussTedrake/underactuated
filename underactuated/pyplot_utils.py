@@ -31,7 +31,10 @@ class HistogramVisualizer(PyPlotVisualizer):
     def draw(self, context):
         if self.patches:
             [p.remove() for p in self.patches]
-        self.data = self.EvalVectorInput(context, 0).value()
+        # Copy the input, rather than holding a view into context-owned
+        # memory; the visualizer can outlive the Simulator that owns the
+        # context.
+        self.data = self.EvalVectorInput(context, 0).CopyToVector()
         count, bins, self.patches = self.ax.hist(
             self.data,
             bins=self.bins,
