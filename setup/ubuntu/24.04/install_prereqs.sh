@@ -55,15 +55,20 @@ apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy \
 
 apt-get update -qq || (sleep 15; apt-get update -qq)
 
+# CI installs notebook dependencies in its Python environment instead.
+jupyter_packages=()
+if [[ "${INSTALL_JUPYTER:-1}" != "0" ]]; then
+  jupyter_packages=(jupyter-notebook jupyter-nbconvert)
+fi
+
 # Keep this up to date with Drake's
 # setup/ubuntu/binary_distribution/packages-noble.txt, except that we choose to
 # not install most of the system `python3-*` packages. The second batch are new
 # requirements from this repo.
 apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy \
-  --no-install-recommends $(cat <<EOF
+  --no-install-recommends "${jupyter_packages[@]}" $(cat <<EOF
 build-essential
 default-jre
-jupyter-notebook
 libblas-dev
 libegl1
 libeigen3-dev
@@ -84,7 +89,6 @@ python3
 zlib1g
 
 graphviz
-jupyter-nbconvert
 locales
 python3-pip
 tidy

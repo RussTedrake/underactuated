@@ -130,6 +130,7 @@ poetry = ">=2.5.1,<2.6.0"
 pre-commit = ">=4.7.0"
 pytest = ">=9.2.0"
 pytest-timeout = ">=2.3.1"
+pytest-xdist = ">=3.6,<4"
 requests = ">=2.34.2"
 # Minimum versions for transitive development dependency security fixes.
 dulwich = ">=1.2.21"
