@@ -35,172 +35,398 @@ on:
       - opened
       - reopened
       - synchronize
+  pull_request_target:
+    types:
+      - labeled
   push:
     branches:
       - master
   schedule:
     - cron: '0 8 * * *'
+
+# Avoid multiplying native numerical-library threads across pytest workers.
+env:
+  OMP_NUM_THREADS: '1'
+  OPENBLAS_NUM_THREADS: '1'
+  MKL_NUM_THREADS: '1'
+  NUMEXPR_NUM_THREADS: '1'
+
+concurrency:
+  # Label-triggered runs must not cancel the regular pull-request checks.
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
+  check-approval:
+    name: Check PR approval status
+    runs-on: ubuntu-latest
+    outputs:
+      should-run: ${{ steps.check.outputs.should-run }}
+      is-trusted: ${{ steps.check.outputs.is-trusted }}
+    steps:
+      - name: Check approval status
+        id: check
+        run: |
+          if [[ "${{ github.event_name }}" != "pull_request_target" ]]; then
+            echo "is-trusted=true" >> $GITHUB_OUTPUT
+            echo "should-run=true" >> $GITHUB_OUTPUT
+            echo "✅ Push or scheduled event - running tests automatically"
+            exit 0
+          fi
+
+          if [[ "${{ github.event.pull_request.author_association }}" == "COLLABORATOR" ]] || \
+             [[ "${{ github.event.pull_request.author_association }}" == "MEMBER" ]] || \
+             [[ "${{ github.event.pull_request.author_association }}" == "OWNER" ]]; then
+            echo "is-trusted=true" >> $GITHUB_OUTPUT
+            echo "should-run=true" >> $GITHUB_OUTPUT
+            echo "✅ Trusted contributor - running tests automatically"
+          elif [[ "${{ contains(github.event.pull_request.labels.*.name, 'approved-for-ci') }}" == "true" ]]; then
+            echo "is-trusted=false" >> $GITHUB_OUTPUT
+            echo "should-run=true" >> $GITHUB_OUTPUT
+            echo "✅ First-time contributor approved via label - running tests"
+          else
+            echo "is-trusted=false" >> $GITHUB_OUTPUT
+            echo "should-run=false" >> $GITHUB_OUTPUT
+            echo "⏳ First-time contributor - waiting for maintainer approval"
+            echo "To approve this PR for CI, add the 'approved-for-ci' label"
+          fi
+
   noble-poetry:
     name: ubuntu noble using poetry
     runs-on: ubuntu-24.04
     container: ubuntu:24.04
+    needs: [check-approval]
+    if: >
+      (github.event_name == 'pull_request' &&
+       github.event.pull_request.head.repo.full_name == github.repository)
+      ||
+      (github.event_name == 'pull_request_target' &&
+       github.event.pull_request.head.repo.full_name != github.repository &&
+       needs.check-approval.outputs.should-run == 'true')
+      ||
+      (github.event_name != 'pull_request' &&
+       github.event_name != 'pull_request_target')
     steps:
       - name: pre-checkout setup
         run: |
-          export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 DEBIAN_FRONTEND=noninteractive
+          export DEBIAN_FRONTEND=noninteractive
           apt-get update -o APT::Acquire::Retries=4 -qq
-          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends ca-certificates gnupg sudo
-          apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E1DD270288B4E6030699E45FA1715D88E1DF1F24
-          echo 'deb http://ppa.launchpad.net/git-core/ppa/ubuntu noble main' > /etc/apt/sources.list.d/git.list
-          apt-get update -o APT::Acquire::Retries=4 -qq
-          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends git
+          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends ca-certificates sudo git
           # Create non-root user for running repository setup / tests
           useradd -m -s /bin/bash runner
           echo 'runner ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-          rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*
         shell: bash
+
+      - name: checkout PR code
+        if: github.event_name == 'pull_request_target'
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          sparse-checkout: |
+            *
+            !.github
+          sparse-checkout-cone-mode: false
+
       - name: checkout
+        if: github.event_name != 'pull_request_target'
         uses: actions/checkout@v6
         with:
           submodules: recursive
+
+      - name: checkout solutions
+        env:
+          SOLUTIONS_TOKEN: ${{ secrets.SOLUTIONS_TOKEN }}
+        run: |
+          if [[ -z "${SOLUTIONS_TOKEN}" ]]; then
+            echo "SOLUTIONS_TOKEN not available; skipping solutions checkout"
+            exit 0
+          fi
+          git clone https://x-access-token:${SOLUTIONS_TOKEN}@github.com/RobotLocomotion/underactuated-solutions.git solutions
+          cd solutions && git checkout $(cat ../solutions_sha.txt) && cd ..
+        shell: bash
+
       - name: install dependencies
         run: |
           # Fix ownership of the workspace
           chown -R runner:runner .
           # Switch to runner user for remaining commands
+          sudo -H -u runner ./setup/submodule_checkout
           # Install system packages as root
-          ./setup/ubuntu/24.04/install_prereqs.sh
-          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends xvfb
-          sudo -H -u runner python3 -m pip install --user --break-system-packages poetry==2.4.3
+          INSTALL_JUPYTER=0 ./setup/ubuntu/24.04/install_prereqs.sh
+          sudo -H -u runner python3 -m pip install --user --break-system-packages poetry==2.5.1
           sudo -H -u runner python3 -m poetry config virtualenvs.in-project true
           sudo -H -u runner python3 -m poetry install --all-extras --with dev
           rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*
         shell: bash
+
+      - name: prefetch remote packages
+        run: |
+          sudo -H -u runner env XDG_CACHE_HOME=/tmp \
+            "$(pwd)/.venv/bin/python" -m setup.prefetch_remotes
+        shell: bash
+
       - name: test
         run: |
           set -euo pipefail
           VENV_PYTHON="$(pwd)/.venv/bin/python"
-          sudo -H -u runner xvfb-run \
-            --auto-servernum \
-            --server-args='-screen 0 1280x1024x24 -ac +extension GLX +extension RANDR +render -noreset' \
-            "$VENV_PYTHON" -m pytest -ra 
+          sudo --preserve-env=OMP_NUM_THREADS,OPENBLAS_NUM_THREADS,MKL_NUM_THREADS,NUMEXPR_NUM_THREADS \
+            -H -u runner env -u DISPLAY XDG_CACHE_HOME=/tmp \
+            DRAKE_ALLOW_NETWORK=lcm:meshcat "$VENV_PYTHON" -m pytest -n 2 --dist loadfile -ra --durations=30 --junitxml=test-results/pytest.xml
         shell: bash
-  # TODO(russt): add noble-pip-core workflow which only runs the tests in underactuated, but uses the underactuated module from pip.
+
+      - name: upload test timings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-${{ github.job }}
+          path: test-results/pytest.xml
+          if-no-files-found: ignore
+          retention-days: 14
+
+  # TODO(russt): add noble-pip-core workflow which only runs the tests in
+  # underactuated, but uses the underactuated module from pip.
   noble-pip-all:
     name: ubuntu noble using wheel all
     runs-on: ubuntu-24.04
     container: ubuntu:24.04
+    needs: [check-approval]
+    if: >
+      (github.event_name == 'pull_request' &&
+       github.event.pull_request.head.repo.full_name == github.repository)
+      ||
+      (github.event_name == 'pull_request_target' &&
+       github.event.pull_request.head.repo.full_name != github.repository &&
+       needs.check-approval.outputs.should-run == 'true')
+      ||
+      (github.event_name != 'pull_request' &&
+       github.event_name != 'pull_request_target')
     steps:
       - name: pre-checkout setup
         run: |
-          export APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 DEBIAN_FRONTEND=noninteractive
+          export DEBIAN_FRONTEND=noninteractive
           apt-get update -o APT::Acquire::Retries=4 -qq
-          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends ca-certificates gnupg sudo
-          apt-key adv --keyserver keyserver.ubuntu.com --recv-keys E1DD270288B4E6030699E45FA1715D88E1DF1F24
-          echo 'deb http://ppa.launchpad.net/git-core/ppa/ubuntu noble main' > /etc/apt/sources.list.d/git.list
-          apt-get update -o APT::Acquire::Retries=4 -qq
-          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends git
+          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends ca-certificates sudo git
           # Create non-root user for running repository setup / tests
           useradd -m -s /bin/bash runner
           echo 'runner ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
-          rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*
         shell: bash
+
+      - name: checkout PR code
+        if: github.event_name == 'pull_request_target'
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          sparse-checkout: |
+            *
+            !.github
+          sparse-checkout-cone-mode: false
+
       - name: checkout
+        if: github.event_name != 'pull_request_target'
         uses: actions/checkout@v6
         with:
           submodules: recursive
+
+      - name: checkout solutions
+        env:
+          SOLUTIONS_TOKEN: ${{ secrets.SOLUTIONS_TOKEN }}
+        run: |
+          if [[ -z "${SOLUTIONS_TOKEN}" ]]; then
+            echo "SOLUTIONS_TOKEN not available; skipping solutions checkout"
+            exit 0
+          fi
+          git clone https://x-access-token:${SOLUTIONS_TOKEN}@github.com/RobotLocomotion/underactuated-solutions.git solutions
+          cd solutions && git checkout $(cat ../solutions_sha.txt) && cd ..
+        shell: bash
+
       - name: install dependencies
         run: |
           # Fix ownership of the workspace
           chown -R runner:runner .
           # Switch to runner user for remaining commands
+          sudo -H -u runner ./setup/submodule_checkout
           # Install system packages as root
           ./setup/ubuntu/24.04/install_prereqs.sh
-          apt-get install -o APT::Acquire::Retries=4 -o Dpkg::Use-Pty=0 -qy --no-install-recommends xvfb
           # Test this revision's wheel before publishing a release to PyPI.
           sudo -H -u runner python3 -m pip wheel --no-deps --wheel-dir /tmp/underactuated-wheels .
           WHEEL_PATH="$(find /tmp/underactuated-wheels -name 'underactuated-*.whl')"
-          sudo -H -u runner python3 -m pip install --user --break-system-packages "${WHEEL_PATH}[all]" pytest pytest-timeout
+          sudo -H -u runner python3 -m pip install --user --break-system-packages \
+            "${WHEEL_PATH}[all]" pytest pytest-timeout 'pytest-xdist>=3.6,<4'
           rm -rf ./underactuated  # Force the tests to import the installed wheel.
           rm -rf /var/cache/apt/archives/*.deb /var/cache/apt/archives/partial/*.deb /var/cache/apt/*.bin /var/lib/apt/lists/* /var/log/apt/*
         shell: bash
+
+      - name: prefetch remote packages
+        run: |
+          sudo -H -u runner env XDG_CACHE_HOME=/tmp \
+            python3 -m setup.prefetch_remotes
+        shell: bash
+
       - name: test
         run: |
           set -euo pipefail
-          find book/htmlbook -type f -name 'test_*.py' -delete  # remove the htmlbook tests, which have more python requirements
-          sudo -H -u runner xvfb-run \
-            --auto-servernum \
-            --server-args='-screen 0 1280x1024x24 -ac +extension GLX +extension RANDR +render -noreset' \
-            python3 -m pytest -ra
+          find book/htmlbook -type f -name 'test_*.py' -delete  # remove htmlbook tests (extra Python requirements)
+          sudo --preserve-env=OMP_NUM_THREADS,OPENBLAS_NUM_THREADS,MKL_NUM_THREADS,NUMEXPR_NUM_THREADS \
+            -H -u runner env -u DISPLAY XDG_CACHE_HOME=/tmp DRAKE_ALLOW_NETWORK=lcm:meshcat \
+            python3 -m pytest -n 2 --dist loadfile -ra --durations=30 --junitxml=test-results/pytest.xml
         shell: bash
+
+      - name: upload test timings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-${{ github.job }}
+          path: test-results/pytest.xml
+          if-no-files-found: ignore
+          retention-days: 14
+
   tahoe:
     name: macos tahoe 26
     # Drake 1.58+ only publishes macOS 26 (arm64) wheels.
     runs-on: macos-26
+    needs: [check-approval]
+    if: >
+      (github.event_name == 'pull_request' &&
+       github.event.pull_request.head.repo.full_name == github.repository)
+      ||
+      (github.event_name == 'pull_request_target' &&
+       github.event.pull_request.head.repo.full_name != github.repository &&
+       needs.check-approval.outputs.should-run == 'true')
+      ||
+      (github.event_name != 'pull_request' &&
+       github.event_name != 'pull_request_target')
     steps:
+      - name: checkout PR code
+        if: github.event_name == 'pull_request_target'
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          sparse-checkout: |
+            *
+            !.github
+          sparse-checkout-cone-mode: false
+
       - name: checkout
+        if: github.event_name != 'pull_request_target'
         uses: actions/checkout@v6
         with:
           submodules: recursive
+
       - name: setup python
         uses: actions/setup-python@v7
         with:
           python-version: '3.13'
+
+      - name: checkout solutions
+        env:
+          SOLUTIONS_TOKEN: ${{ secrets.SOLUTIONS_TOKEN }}
+        run: |
+          if [[ -z "${SOLUTIONS_TOKEN}" ]]; then
+            echo "SOLUTIONS_TOKEN not available; skipping solutions checkout"
+            exit 0
+          fi
+          git clone https://x-access-token:${SOLUTIONS_TOKEN}@github.com/RobotLocomotion/underactuated-solutions.git solutions
+          cd solutions && git checkout $(cat ../solutions_sha.txt) && cd ..
+        shell: zsh -efuo pipefail {0}
+
       - name: setup
         run: |
+          ./setup/submodule_checkout
           ./setup/mac/install_prereqs.sh
-          python -m pip install --user poetry==2.4.3
+          python -m pip install --user poetry==2.5.1
           python -m poetry config virtualenvs.in-project true
           python -m poetry env use "$(python -c 'import sys; print(sys.executable)')"
           python -m poetry install --all-extras --with dev
         shell: zsh -efuo pipefail {0}
+
       - name: configure LCM multicast loopback
         run: |
           # https://drake.mit.edu/troubleshooting.html#lcm-macos
           sudo route -nv delete 224.0.0.0/4 || true
           sudo route -nv add -net 224.0.0.0/4 -interface lo0
+
+      - name: prefetch remote packages
+        run: XDG_CACHE_HOME=/tmp .venv/bin/python -m setup.prefetch_remotes
+        shell: zsh -efuo pipefail {0}
+
       - name: test
         run: |
-          set -euo pipefail
-          .venv/bin/python -m pytest -ra
+          XDG_CACHE_HOME=/tmp DRAKE_ALLOW_NETWORK=lcm:meshcat .venv/bin/python -m pytest -n 2 --dist loadfile -ra --durations=30 --junitxml=test-results/pytest.xml
         shell: zsh -efuo pipefail {0}
+
+      - name: upload test timings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pytest-${{ github.job }}
+          path: test-results/pytest.xml
+          if-no-files-found: ignore
+          retention-days: 14
+
   lint:
     runs-on: ubuntu-24.04
+    needs: [check-approval]
+    if: >
+      (github.event_name == 'pull_request' &&
+       github.event.pull_request.head.repo.full_name == github.repository)
+      ||
+      (github.event_name == 'pull_request_target' &&
+       github.event.pull_request.head.repo.full_name != github.repository &&
+       needs.check-approval.outputs.should-run == 'true')
+      ||
+      (github.event_name != 'pull_request' &&
+       github.event_name != 'pull_request_target')
     steps:
+      - name: checkout PR code
+        if: github.event_name == 'pull_request_target'
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          sparse-checkout: |
+            *
+            !.github
+          sparse-checkout-cone-mode: false
+
       - name: checkout repo
+        if: github.event_name != 'pull_request_target'
         uses: actions/checkout@v6
         with:
           submodules: recursive
+
       - name: setup python
         uses: actions/setup-python@v7
         with:
           python-version: '3.12'
+
       - name: black
         uses: psf/black@stable
         with:
           version: 26.10.1
           jupyter: true
+
       - name: isort
         uses: isort/isort-action@master
         with:
-            configuration: "--profile black --check-only"
-            isort-version: 5.12.0
+          configuration: "--profile black --check-only"
+          isort-version: 5.12.0
+
       - name: autoflake
         run: |
           python -m pip install autoflake==2.0.2
           autoflake . --remove-all-unused-imports --in-place
+
       - name: Install and configure Poetry
         uses: snok/install-poetry@v1
         with:
-          version: 2.4.3
+          version: 2.5.1
           virtualenvs-create: true
           virtualenvs-in-project: true
+
       - name: build the docs
         run: |
           poetry install --only docs
           source .venv/bin/activate
           sphinx-build -M html underactuated book/python
         shell: bash
+
       - name: Test full poetry install
         run: poetry install
